@@ -18,7 +18,10 @@ package org.pircbotx;
 
 import java.io.BufferedReader;
 import java.io.InterruptedIOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
+import java.util.StringTokenizer;
 
 
 /**
@@ -82,32 +85,47 @@ public class InputThread implements Runnable {
 	 * in your code is something you should really fix.
 	 */
 	public void run() {
-		while (true)
-			try {
-				String line = null;
-				while ((line = _breader.readLine()) != null)
-					_bot.handleLine(line);
-
-				if (line == null)
-					// The server must have disconnected us.
-					break;
-			} catch (InterruptedIOException iioe) {
-				// This will happen if we haven't received anything from the server for a while.
-				// So we shall send it a ping to check that we are still connected.
-				_bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
-				// Now we go back to listening for stuff from the server...
-			} catch (Throwable t) {
-				//Either readLine or handleLine encountered an error, but don't care
-			}
+		try {
+            boolean running = true;
+            while (running) {
+                try {
+                    String line = null;
+                    while ((line = _breader.readLine()) != null) {
+                        try {
+                            _bot.handleLine(line);
+                        }
+                        catch (Throwable t) {
+                            // Stick the whole stack trace into a String so we can output it nicely.
+                            _bot.logException(t);
+                        }
+                    }
+                    if (line == null) {
+						System.err.println("Null line, socket closed");
+                        // The server must have disconnected us.
+                        running = false;
+                    }
+                }
+                catch (InterruptedIOException iioe) {
+                    // This will happen if we haven't received anything from the server for a while.
+                    // So we shall send it a ping to check that we are still connected.
+                    _bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
+                    // Now we go back to listening for stuff from the server...
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
 		//Disconnected at this point
 		try {
 			_socket.close();
 		} catch (Exception e) {
-			// Just assume the socket was already closed.
+			e.printStackTrace();
 		}
 
 		//Now that the socket is definatly closed, call event and log
+		_bot.removeAllChannels();
 		_bot.onDisconnect();
 		_bot.log("*** Disconnected.");
 	}

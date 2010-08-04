@@ -105,6 +105,7 @@ public abstract class PircBotX {
 	private String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
+	private final Object logLock = null;
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -852,6 +853,25 @@ public abstract class PircBotX {
 			System.out.println(System.currentTimeMillis() + " " + line);
 	}
 
+	public void logException(Throwable t) {
+		if (!_verbose)
+			return;
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		pw.flush();
+		StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
+		synchronized (logLock) {
+			log("### Your implementation of PircBot is faulty and you have");
+			log("### allowed an uncaught Exception or Error to propagate in your");
+			log("### code. It may be possible for PircBot to continue operating");
+			log("### normally. Here is the stack trace that was produced: -");
+			log("### ");
+			while (tokenizer.hasMoreTokens())
+				log("### " + tokenizer.nextToken());
+		}
+	}
+
 	/**
 	 * This method handles events when any line of text arrives from the server,
 	 * then calling the appropriate method in the PircBotX.  This method is
@@ -962,13 +982,13 @@ public abstract class PircBotX {
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				String channel = target;
-				if(sourceNick.equalsIgnoreCase(_nick)) {
+				if (sourceNick.equalsIgnoreCase(_nick)) {
 					//Its us, do some setup
 					_channels.put(channel, new Channel(channel));
-					sendRawLine("WHO "+channel);
-					sendRawLine("MODE "+channel);
+					sendRawLine("WHO " + channel);
+					sendRawLine("MODE " + channel);
 				}
-				
+
 				User usr = _channels.get(channel).getUser(sourceNick);
 				usr.setLogin(sourceLogin);
 				usr.setHostmask(sourceHostname);
@@ -1103,7 +1123,7 @@ public abstract class PircBotX {
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined.
-			String[] parsed = response.split(" ",3);
+			String[] parsed = response.split(" ", 3);
 			String channel = parsed[1];
 			String topic = parsed[2].substring(1);
 
@@ -1153,7 +1173,7 @@ public abstract class PircBotX {
 			//Part of a WHO reply on information on individual users
 			String[] parsed = response.split(" ", 9);
 			Channel chan = _channels.get(parsed[1]);
-			
+
 			User curUser = chan.getUser(parsed[5]);
 			curUser.setLogin(parsed[2]);
 			curUser.setIdentified(parsed[2].startsWith("~"));
@@ -1181,10 +1201,9 @@ public abstract class PircBotX {
 			String[] parsed = response.split(" ");
 			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
 			_channels.get(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
-		} else if(code == 376) {
+		} else if (code == 376)
 			//EXAMPLE: PircBotX :End of /MOTD command.
 			onMotdFinished();
-		}
 
 		onServerResponse(code, response);
 	}
@@ -2776,14 +2795,13 @@ public abstract class PircBotX {
 	 * @since 1.2.2
 	 */
 	public synchronized void dispose() {
-		//System.out.println("disposing...");
-		_actualOutputThread.interrupt();
-
-		//Close the socket from here and let _inputThread die
+		System.out.println("disposing...");
+		//Close the socket from here and let the threads die
 		try {
 			_socket.close();
 		} catch (Exception e) {
-			//Something went wrong, interrupt InputThread to make sure its closed
+			//Something went wrong, interrupt to make sure they are closed
+			_actualOutputThread.interrupt();
 			_actualInputThread.interrupt();
 		}
 	}
@@ -2830,7 +2848,7 @@ public abstract class PircBotX {
 	/**
 	 * Removes all channels from our memory of users.
 	 */
-	private void removeAllChannels() {
+	void removeAllChannels() {
 		synchronized (_channels) {
 			_channels.clear();
 		}
