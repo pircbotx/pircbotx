@@ -1,21 +1,27 @@
-/* 
-Copyright Paul James Mutton, 2001-2009, http://www.jibble.org/
-
-This file is part of PircBot.
-
-This software is dual-licensed, allowing you to choose between the GNU
-General Public License (GPL) and the www.jibble.org Commercial License.
-Since the GPL may be too restrictive for use in a proprietary application,
-a commercial license is also provided. Full license information can be
-found at http://www.jibble.org/licenses/
-
-*/
-
-
+/*
+ * Copyright (C) 2009-2010 Leon Blakey
+ *
+ * Quackedbot is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Quackedbot  is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.pircbotx;
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * A simple IdentServer (also know as "The Identification Protocol").
@@ -37,83 +43,78 @@ import java.io.*;
  * a server socket on that port number.
  *
  * @since   0.9c
- * @author  Paul James Mutton,
+ * @author  Origionally by Paul James Mutton,
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
- * @version    1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
+ *          <p/>Forked by Leon Blakey as part of the PircBotX project
+ *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
+ * @version    2.0 Alpha
  */
 public class IdentServer extends Thread {
-    
-    /**
-     * Constructs and starts an instance of an IdentServer that will
-     * respond to a client with the provided login.  Rather than calling
-     * this constructor explicitly from your code, it is recommended that
-     * you use the startIdentServer method in the PircBot class.
-     *  <p>
-     * The ident server will wait for up to 60 seconds before shutting
-     * down.  Otherwise, it will shut down as soon as it has responded
-     * to an ident request.
-     *
-     * @param bot The PircBot instance that will be used to log to.
-     * @param login The login that the ident server will respond with.
-     */
-    IdentServer(PircBot bot, String login) {
-        _bot = bot;
-        _login = login;
+	/**
+	 * Constructs and starts an instance of an IdentServer that will
+	 * respond to a client with the provided login.  Rather than calling
+	 * this constructor explicitly from your code, it is recommended that
+	 * you use the startIdentServer method in the PircBot class.
+	 *  <p>
+	 * The ident server will wait for up to 60 seconds before shutting
+	 * down.  Otherwise, it will shut down as soon as it has responded
+	 * to an ident request.
+	 *
+	 * @param bot The PircBot instance that will be used to log to.
+	 * @param login The login that the ident server will respond with.
+	 */
+	IdentServer(PircBot bot, String login) {
+		_bot = bot;
+		_login = login;
 
-        try {
-            _ss = new ServerSocket(113);
-            _ss.setSoTimeout(60000);
-        }
-        catch (Exception e) {
-            _bot.log("*** Could not start the ident server on port 113.");
-            return;
-        }
-        
-        _bot.log("*** Ident server running on port 113 for the next 60 seconds...");
-        this.setName(this.getClass() + "-Thread");
-        this.start();
-    }
-    
-    
-    /**
-     * Waits for a client to connect to the ident server before making an
-     * appropriate response.  Note that this method is started by the class
-     * constructor.
-     */
-    public void run() {
-        try {
-            Socket socket = _ss.accept();
-            socket.setSoTimeout(60000);
-            
-            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            
-            String line = reader.readLine();
-            if (line != null) {
-                _bot.log("*** Ident request received: " + line);
-                line = line + " : USERID : UNIX : " + _login;
-                writer.write(line + "\r\n");
-                writer.flush();
-                _bot.log("*** Ident reply sent: " + line);
-                writer.close();
-            }
-        }
-        catch (Exception e) {
-            // We're not really concerned with what went wrong, are we?
-        }
-        
-        try {
-            _ss.close();
-        }
-        catch (Exception e) {
-            // Doesn't really matter...
-        }
-        
-        _bot.log("*** The Ident server has been shut down.");
-    }
-    
-    private PircBot _bot;
-    private String _login;
-    private ServerSocket _ss = null;
-    
+		try {
+			_ss = new ServerSocket(113);
+			_ss.setSoTimeout(60000);
+		} catch (Exception e) {
+			_bot.log("*** Could not start the ident server on port 113.");
+			return;
+		}
+
+		_bot.log("*** Ident server running on port 113 for the next 60 seconds...");
+		this.setName(this.getClass() + "-Thread");
+		this.start();
+	}
+
+	/**
+	 * Waits for a client to connect to the ident server before making an
+	 * appropriate response.  Note that this method is started by the class
+	 * constructor.
+	 */
+	public void run() {
+		try {
+			Socket socket = _ss.accept();
+			socket.setSoTimeout(60000);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
+			String line = reader.readLine();
+			if (line != null) {
+				_bot.log("*** Ident request received: " + line);
+				line = line + " : USERID : UNIX : " + _login;
+				writer.write(line + "\r\n");
+				writer.flush();
+				_bot.log("*** Ident reply sent: " + line);
+				writer.close();
+			}
+		} catch (Exception e) {
+			// We're not really concerned with what went wrong, are we?
+		}
+
+		try {
+			_ss.close();
+		} catch (Exception e) {
+			// Doesn't really matter...
+		}
+
+		_bot.log("*** The Ident server has been shut down.");
+	}
+	private PircBot _bot;
+	private String _login;
+	private ServerSocket _ss = null;
 }
