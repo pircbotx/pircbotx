@@ -16,14 +16,13 @@
  */
 package org.pircbotx;
 
+import java.util.HashMap;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
-import java.util.List;
 import java.util.Map;
 import java.util.Collections;
 import java.util.Set;
 import java.util.Collection;
-import java.util.TreeMap;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.BufferedReader;
@@ -81,6 +80,8 @@ public abstract class PircBotX {
 	// Connection stuff.
 	private InputThread _inputThread = null;
 	private OutputThread _outputThread = null;
+	private Thread _actualInputThread;
+	private Thread _actualOutputThread;
 	private String _charset = null;
 	private InetAddress _inetAddress = null;
 	// Details about the last server that we connected to.
@@ -90,7 +91,7 @@ public abstract class PircBotX {
 	private long _messageDelay = 1000;
 	// A Hashtable of channels that points to a selfreferential Hashtable of
 	// User objects (used to remember which users are in which channels).
-	private final Map<String, Channel> _channels = Collections.synchronizedMap(new TreeMap<String, Channel>());
+	private final Map<String, Channel> _channels = Collections.synchronizedMap(new HashMap<String, Channel>());
 	// DccManager to process and handle all DCC events.
 	private DccManager _dccManager = new DccManager(this);
 	private int[] _dccPorts = null;
@@ -236,7 +237,6 @@ public abstract class PircBotX {
 					} else {
 						_socket.close();
 						_inputThread = null;
-						_outputThread.interrupt();
 						throw new NickAlreadyInUseException(line);
 					}
 				else if (code.equals("439")) {
@@ -257,8 +257,10 @@ public abstract class PircBotX {
 		_socket.setSoTimeout(getSocketTimeout());
 
 		//Start input and output threads to start accepting lines
-		_inputThread.start();
-		_outputThread.start();
+		_actualInputThread = InputThread.threadFactory.newThread(_inputThread, this);
+		_actualOutputThread = OutputThread.threadFactory.newThread(_outputThread, this);
+		_actualInputThread.start();
+		_actualOutputThread.start();
 
 		onConnect();
 	}
@@ -346,7 +348,7 @@ public abstract class PircBotX {
 	 * @param channel The name of the channel to join (eg "#cs").
 	 */
 	public final void joinChannel(String channel) {
-		sendRawLine("JOIN " + channel);
+		sendRawLineViaQueue("JOIN " + channel);
 	}
 
 	/**
@@ -960,6 +962,13 @@ public abstract class PircBotX {
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				String channel = target;
+				if(sourceNick.equalsIgnoreCase(_nick)) {
+					//Its us, do some setup
+					_channels.put(channel, new Channel(channel));
+					sendRawLine("WHO "+channel);
+					sendRawLine("MODE "+channel);
+				}
+				
 				User usr = _channels.get(channel).getUser(sourceNick);
 				usr.setLogin(sourceLogin);
 				usr.setHostmask(sourceHostname);
@@ -1094,7 +1103,7 @@ public abstract class PircBotX {
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined.
-			String[] parsed = response.split("3");
+			String[] parsed = response.split(" ",3);
 			String channel = parsed[1];
 			String topic = parsed[2].substring(1);
 
@@ -1130,9 +1139,8 @@ public abstract class PircBotX {
 
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = chan.getUser(nick);
-				curUser.setOp(nick.substring(0, 3).contains("@"));
-				curUser.setVoice(nick.substring(0, 3).contains("+"));
-				addUser(parsed[2], curUser);
+				curUser.setOp(nick.contains("@"));
+				curUser.setVoice(nick.contains("+"));
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: PircBotX #aChannel :End of /NAMES list
@@ -1144,7 +1152,7 @@ public abstract class PircBotX {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
 			String[] parsed = response.split(" ", 9);
-			Channel chan = _channels.get(parsed[2]);
+			Channel chan = _channels.get(parsed[1]);
 			
 			User curUser = chan.getUser(parsed[5]);
 			curUser.setLogin(parsed[2]);
@@ -1155,7 +1163,6 @@ public abstract class PircBotX {
 			curUser.parseStatus(parsed[6]);
 			curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
 			curUser.setRealname(parsed[8]);
-			addUser(parsed[1], curUser);
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
@@ -1174,6 +1181,9 @@ public abstract class PircBotX {
 			String[] parsed = response.split(" ");
 			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
 			_channels.get(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
+		} else if(code == 376) {
+			//EXAMPLE: PircBotX :End of /MOTD command.
+			onMotdFinished();
 		}
 
 		onServerResponse(code, response);
@@ -1236,7 +1246,7 @@ public abstract class PircBotX {
 	 *
 	 * @see User
 	 */
-	protected void onUserList(String channel, List<User> users) {
+	protected void onUserList(String channel, Collection<User> users) {
 	}
 
 	/**
@@ -2722,7 +2732,7 @@ public abstract class PircBotX {
 	 *
 	 * @see #onUserList(String,User[]) onUserList
 	 */
-	public final List<User> getUsers(String channel) {
+	public final Collection<User> getUsers(String channel) {
 		return _channels.get(channel).getAllUsers();
 	}
 
@@ -2767,24 +2777,14 @@ public abstract class PircBotX {
 	 */
 	public synchronized void dispose() {
 		//System.out.println("disposing...");
-		_outputThread.interrupt();
+		_actualOutputThread.interrupt();
 
 		//Close the socket from here and let _inputThread die
 		try {
 			_socket.close();
 		} catch (Exception e) {
 			//Something went wrong, interrupt InputThread to make sure its closed
-			_inputThread.interrupt();
-		}
-	}
-
-	/**
-	 * Add a user to the specified channel in our memory.
-	 * Overwrite the existing entry if it exists.
-	 */
-	private void addUser(String channel, User user) {
-		synchronized (_channels) {
-			_channels.get(channel.toLowerCase()).addUser(user);
+			_actualInputThread.interrupt();
 		}
 	}
 
@@ -2814,10 +2814,7 @@ public abstract class PircBotX {
 	private void renameUser(String oldNick, String newNick) {
 		synchronized (_channels) {
 			for (Channel curChannel : _channels.values())
-				if (curChannel.userExists(oldNick)) {
-					curChannel.getUser(oldNick).setNick(newNick);
-					return;
-				}
+				curChannel.renameUser(oldNick, newNick);
 		}
 	}
 
@@ -2857,5 +2854,8 @@ public abstract class PircBotX {
 	 */
 	public void setSocketTimeout(int socketTimeout) {
 		this.socketTimeout = socketTimeout;
+	}
+
+	protected void onMotdFinished() {
 	}
 }

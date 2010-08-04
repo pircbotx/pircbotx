@@ -4,8 +4,8 @@
  */
 package org.pircbotx;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  *
@@ -18,7 +18,7 @@ public class Channel {
 	private long _timestamp;
 	private long _topicTimestamp;
 	private String _topicSetter = "";
-	private List<User>_users = new ArrayList<User>();
+	private HashMap<String, User> _users = new HashMap<String, User>();
 
 	Channel(String name) {
 		this._name = name;
@@ -49,15 +49,14 @@ public class Channel {
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
 		boolean adding = true;
 		for (char curChar : rawMode.toCharArray())
-			if ("--".contains(Character.toString(curChar))) {
+			if ("--".contains(Character.toString(curChar)))
 				adding = false;
-			} else if (curChar == '+') {
+			else if (curChar == '+')
 				adding = true;
-			} else if (adding) {
+			else if (adding)
 				_mode = _mode + curChar;
-			} else {
+			else
 				_mode = _mode.replace(Character.toString(curChar), "");
-			}
 	}
 
 	/**
@@ -77,8 +76,8 @@ public class Channel {
 	/**
 	 * @return the users
 	 */
-	public List<User> getAllUsers() {
-		return _users;
+	public Collection<User> getAllUsers() {
+		return _users.values();
 	}
 
 	/**
@@ -88,32 +87,33 @@ public class Channel {
 	 * @return
 	 */
 	public User getUser(String nick) {
-		for (User curUser : _users)
-			if (curUser.getNick().toLowerCase().equals(nick))
-				return curUser;
-		//User does not exist, create one
-		User usr = new User(nick);
-		_users.add(usr);
+		User usr = _users.get(nick);
+		if (usr == null) {
+			//User does not exist, create one
+			usr = new User(nick);
+			_users.put(nick, usr);
+		}
 		return usr;
 	}
 
-	public void addUser(User usr) {
-		_users.add(usr);
-	}
-
 	public void removeUser(String nick) {
-		for (User curUsr : _users)
-			if (curUsr.getNick().equalsIgnoreCase(nick)) {
-				_users.remove(curUsr);
-				break;
-			}
+		_users.remove(nick);
 	}
 
 	public boolean userExists(String nick) {
-		for (User curUser : getAllUsers())
-			if (curUser.getNick().equals(nick))
-				return true;
+		_users.containsKey(nick);
 		return false;
+	}
+
+	public void renameUser(String oldNick,String newNick) {
+		try {
+		User removed = _users.remove(oldNick);
+		removed.setNick(newNick);
+		_users.put(newNick, removed);
+		}
+		catch(Exception e) {
+			System.err.println("OldNick: "+oldNick+" | NewNick: "+newNick);
+		}
 	}
 
 	/**
@@ -156,13 +156,15 @@ public class Channel {
 
 	/**
 	 * @return the _topicSetter
-	 */ public String getTopicSetter() {
+	 */
+	public String getTopicSetter() {
 		return _topicSetter;
 	}
 
 	/**
 	 * @param topicSetter the _topicSetter to set
-	 */ public void setTopicSetter(String topicSetter) {
+	 */
+	public void setTopicSetter(String topicSetter) {
 		this._topicSetter = topicSetter;
 	}
 }

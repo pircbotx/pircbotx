@@ -33,13 +33,17 @@ import java.net.Socket;
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
  * @version    2.0 Alpha
  */
-public class InputThread extends Thread {
-	private PircBotX _bot = null;
-	private Socket _socket = null;
+public class InputThread implements Runnable {
+	private final PircBotX _bot;
+	private Socket _socket;
 	private BufferedReader _breader = null;
 	private boolean _isConnected = true;
-	private boolean _disposed = false;
 	public static final int MAX_LINE_LENGTH = 512;
+	public static ThreadFactory threadFactory = new ThreadFactory() {
+		public Thread newThread(Runnable r, PircBotX bot) {
+			return new Thread(r, bot.getServer() + "-" + bot.getNick() + "-InputThread");
+		}
+	};
 
 	/**
 	 * The InputThread reads lines from the IRC server and allows the
@@ -53,7 +57,6 @@ public class InputThread extends Thread {
 		_bot = bot;
 		_socket = socket;
 		_breader = breader;
-		this.setName(this.getClass() + "-Thread");
 	}
 
 	/**
