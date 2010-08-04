@@ -16,6 +16,7 @@ import org.pircbotx.User;
 public class PircBotXTest extends PircBotX {
 	public PircBotXTest() {
 		setName("TheLQ");
+		setLogin("LQ");
 		setAutoNickChange(true);
 		setFinger("Quackbot IRC bot by Lord.Quackstar. Source: http://quackbot.googlecode.com/");
 		setMessageDelay(0);
@@ -40,7 +41,6 @@ public class PircBotXTest extends PircBotX {
 		joinChannel("#mysql");
 		joinChannel("#vim");
 		joinChannel("#perl");
-		joinChannel("#freenode");
 	}
 
 	@Override

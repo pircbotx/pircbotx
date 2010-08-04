@@ -1,2 +1,3 @@
 -Figure out what to do with the rediculous exception handling in InputThread
 -Figure out better User.toString() method;
+-Should removeCommand throw a InvalidCMDException?
