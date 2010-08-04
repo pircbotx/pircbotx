@@ -20,9 +20,7 @@ package org.pircbotx;
  * This class is used to represent a user on an IRC server.
  * Instances of this class are returned by the getUsers method
  * in the PircBot class.
- *  <p>
- * Note that this class no longer implements the Comparable interface
- * for Java 1.1 compatibility reasons.
+
  *
  * @since   1.0.0
  * @author  Origionally by Paul James Mutton,
@@ -32,90 +30,77 @@ package org.pircbotx;
  * @version    2.0 Alpha
  */
 public class User implements Comparable<User> {
+	/**
+	 * The user represented by this object's nickname on the server.
+	 */
 	private String _nick;
-	private String _lowerNick;
-	private String _name;
-	private String _hostmask;
-	private boolean _op;
-	private boolean _voice;
+	/**
+	 * The real name of this user represented by this object on the server
+	 */
+	private String _realname = "";
+	/**
+	 * The login of the user represented by this object on the server
+	 */
+	private String _login = "";
+	/**
+	 * The hostmask of the user represented by this object on this server
+	 */
+	private String _hostmask = "";
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 */
+	private boolean _op = false;
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 */
+	private boolean _voice = false;
+	/**
+	 * Weather or not the user represented by this object is away in the channel
+	 * this object was fetched from
+	 */
+	private boolean _away = false;
+	/**
+	 * Weather or not the user represented by this object is a zombie in the channel
+	 * this object was fetched from
+	 */
+	private boolean _zombie = false;
+	/**
+	 * Weather or not the user represented by this object is deaf in the channel
+	 * this object was fetched from
+	 */
+	private boolean _deaf = false;
+	/**
+	 * Weather or not the user represented by this object is an IRCop on the server
+	 */
+	private boolean _ircop = false;
+	/**
+	 * The server that the user represented by this object is joined to
+	 */
+	private String _server = "";
+	/**
+	 * Weather or not the user represented by this object is identified. Note that
+	 * on some server's this is not 100% reliable
+	 */
+	private boolean _identified = true;
+	/**
+	 * The number of hops it takes to the user represented by this object
+	 */
+	private int _hops = 0;
 
-	User(String nick, String name, String hostmask) {
+	User(String nick) {
 		_nick = nick;
-		_lowerNick = nick.toLowerCase();
-		_hostmask = hostmask;
-		_name = name;
 	}
 
-	User(String nick, String name, String hostmask, String prefix) {
-		_nick = nick;
-		_lowerNick = nick.toLowerCase();
-		_hostmask = hostmask;
-		_name = name;
-		if(prefix.contains("@"))
-			_op = true;
-		if(prefix.contains("+"))
-			_voice = true;
-	}
-
-	/**
-	 * Constructs a User object with a known prefix and nick.
-	 *
-	 * @param prefix The status of the user, for example, "@".
-	 * @param nick The nick of the user.
-	 */
-	User(String nick, String name, String hostmask, boolean op, boolean voice) {
-		_nick = nick;
-		_lowerNick = nick.toLowerCase();
-		_hostmask = hostmask;
-		_name = name;
-		_op = op;
-		_voice = voice;
-	}
-
-	/**
-	 * Returns whether or not the user represented by this object is an
-	 * operator. If the User object has been obtained from a list of users
-	 * in a channel, then this will reflect the user's operator status in
-	 * that channel.
-	 *
-	 * @return true if the user is an operator in the channel.
-	 */
-	public boolean isOp() {
-		return _op;
-	}
-
-	public void setOp(boolean op) {
-		_op = op;
-	}
-
-	/**
-	 * Returns whether or not the user represented by this object has
-	 * voice. If the User object has been obtained from a list of users
-	 * in a channel, then this will reflect the user's voice status in
-	 * that channel.
-	 *
-	 * @return true if the user has voice in the channel.
-	 */
-	public boolean hasVoice() {
-		return _voice;
-	}
-
-	public void setVoice(boolean voice) {
-		_voice = voice;
-	}
-
-	public User parsePrefix(String prefix) {
-
-		return this;
-	}
-
-	/**
-	 * Returns the nick of the user.
-	 *
-	 * @return The user's nick.
-	 */
-	public String getNick() {
-		return _nick;
+	public void parseStatus(String prefix) {
+		setOp(prefix.contains("@"));
+		setVoice(prefix.contains("+"));
+		setZombie(prefix.contains("+"));
+		setDeaf(prefix.contains("d"));
+		setZombie(prefix.contains("+"));
+		setAway(prefix.contains("G")); //Assume here (H) if there is no G
+		setIrcop(prefix.contains("*"));
 	}
 
 	/**
@@ -127,11 +112,11 @@ public class User implements Comparable<User> {
 	@Override
 	public String toString() {
 		String prefix = "";
-		if(_op)
-			prefix = prefix+"@";
-		if(_voice)
-			prefix = prefix+"+";
-		return prefix + this.getNick();
+		if (isOp())
+			prefix = prefix + "@";
+		if (hasVoice())
+			prefix = prefix + "+";
+		return prefix + getNick();
 	}
 
 	/**
@@ -141,7 +126,7 @@ public class User implements Comparable<User> {
 	 * @return true if the nicks are identical (case insensitive).
 	 */
 	public boolean equals(String nick) {
-		return nick.toLowerCase().equals(_lowerNick);
+		return nick.equalsIgnoreCase(nick);
 	}
 
 	/**
@@ -155,7 +140,7 @@ public class User implements Comparable<User> {
 	public boolean equals(Object o) {
 		if (o instanceof User) {
 			User other = (User) o;
-			return other._lowerNick.equals(_lowerNick);
+			return other.getNick().equalsIgnoreCase(getNick());
 		}
 		return false;
 	}
@@ -167,7 +152,7 @@ public class User implements Comparable<User> {
 	 */
 	@Override
 	public int hashCode() {
-		return _lowerNick.hashCode();
+		return getNick().toLowerCase().hashCode();
 	}
 
 	/**
@@ -178,29 +163,226 @@ public class User implements Comparable<User> {
 	 */
 	@Override
 	public int compareTo(User other) {
-		return other._lowerNick.compareTo(_lowerNick);
-	}
-
-	public void setNick(String nick) {
-		_nick = nick;
-		_lowerNick = nick.toLowerCase();
+		return other.getNick().compareToIgnoreCase(getNick());
 	}
 
 	/**
-	 * Gets the Name of the user
-	 *
-	 * @return User's name
+	 * The user represented by this object's nickname on the server.
+	 * @return the _nick
 	 */
-	public String getName() {
-		return _name;
+	public String getNick() {
+		return _nick;
 	}
 
 	/**
-	 * Get the HostMask of the user
-	 *
-	 * @return User's hostmask
+	 * The user represented by this object's nickname on the server.
+	 * @param nick the _nick to set
+	 */
+	void setNick(String nick) {
+		_nick = nick;
+	}
+
+	/**
+	 * The real name of this user represented by this object on the server
+	 * @return the _realname
+	 */
+	public String getRealname() {
+		return _realname;
+	}
+
+	/**
+	 * The real name of this user represented by this object on the server
+	 * @param realname the _realname to set
+	 */
+	void setRealname(String realname) {
+		_realname = realname;
+	}
+
+	/**
+	 * The hostmask of the user represented by this object on this server
+	 * @return the _hostmask
 	 */
 	public String getHostmask() {
 		return _hostmask;
+	}
+
+	/**
+	 * The hostmask of the user represented by this object on this server
+	 * @param hostmask the _hostmask to set
+	 */
+	void setHostmask(String hostmask) {
+		_hostmask = hostmask;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 * @return the _op
+	 */
+	public boolean isOp() {
+		return _op;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 * @param op the _op to set
+	 */
+	public void setOp(boolean op) {
+		_op = op;
+	}
+
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 * @return the _voice
+	 */
+	public boolean hasVoice() {
+		return _voice;
+	}
+
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 * @param voice the _voice to set
+	 */
+	public void setVoice(boolean voice) {
+		_voice = voice;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is away in the channel
+	 * this object was fetched from
+	 * @return the _away
+	 */
+	public boolean isAway() {
+		return _away;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is away in the channel
+	 * this object was fetched from
+	 * @param away the _away to set
+	 */
+	public void setAway(boolean away) {
+		_away = away;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is a zombie in the channel
+	 * this object was fetched from
+	 * @return the _zombie
+	 */
+	public boolean isZombie() {
+		return _zombie;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is a zombie in the channel
+	 * this object was fetched from
+	 * @param zombie the _zombie to set
+	 */
+	public void setZombie(boolean zombie) {
+		_zombie = zombie;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is deaf in the channel
+	 * this object was fetched from
+	 * @return the _deaf
+	 */
+	public boolean isDeaf() {
+		return _deaf;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is deaf in the channel
+	 * this object was fetched from
+	 * @param deaf the _deaf to set
+	 */
+	public void setDeaf(boolean deaf) {
+		_deaf = deaf;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an IRCop on the server
+	 * @return the _ircop
+	 */
+	public boolean isIrcop() {
+		return _ircop;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an IRCop on the server
+	 * @param ircop the _ircop to set
+	 */
+	public void setIrcop(boolean ircop) {
+		_ircop = ircop;
+	}
+
+	/**
+	 * The server that the user represented by this object is joined to
+	 * @return the _server
+	 */
+	public String getServer() {
+		return _server;
+	}
+
+	/**
+	 * The server that the user represented by this object is joined to
+	 * @param server the _server to set
+	 */
+	void setServer(String server) {
+		_server = server;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is identified. Note that
+	 * on some server's this is not 100% reliable
+	 * @return the _identified
+	 */
+	public boolean isIdentified() {
+		return _identified;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is identified. Note that
+	 * on some server's this is not 100% reliable
+	 * @param identified the _identified to set
+	 */
+	void setIdentified(boolean identified) {
+		_identified = identified;
+	}
+
+	/**
+	 * The number of hops it takes to the user represented by this object
+	 * @return the hops
+	 */
+	public int getHops() {
+		return _hops;
+	}
+
+	/**
+	 * The number of hops it takes to the user represented by this object
+	 * @param hops the hops to set
+	 */
+	public void setHops(int hops) {
+		_hops = hops;
+	}
+
+	/**
+	 * The login of the user represented by this object on the server
+	 * @return the _login
+	 */
+	public String getLogin() {
+		return _login;
+	}
+
+	/**
+	 * The login of the user represented by this object on the server
+	 * @param login the _login to set
+	 */
+	void setLogin(String login) {
+		this._login = login;
 	}
 }

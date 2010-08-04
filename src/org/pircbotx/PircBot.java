@@ -958,7 +958,9 @@ public abstract class PircBot {
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				String channel = target;
-				addUser(channel, new User(sourceNick, sourceLogin, sourceHostname));
+				User usr = _channels.get(channel).getUser(sourceNick);
+				usr.setLogin(sourceLogin);
+				usr.setHostmask(sourceHostname);
 				onJoin(channel, sourceNick, sourceLogin, sourceHostname);
 			} else if (command.equals("PART")) {
 				// Someone is parting from a channel.
@@ -1070,7 +1072,7 @@ public abstract class PircBot {
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
-	private final void processServerResponse(int code, String response) {
+	private void processServerResponse(int code, String response) {
 
 		if (code == RPL_LIST) {
 			// This is a bit of information about a channel.
@@ -1119,25 +1121,57 @@ public abstract class PircBot {
 
 			onTopic(channel, chan.getTopic(), setBy, date, false);
 		} else if (code == RPL_NAMREPLY) {
+			//EXAMPLE: PircBotX = #aChannel :PircBotX @SuperOp
 			// This is a list of nicks in a channel that we've just joined.
-			int channelEndIndex = response.indexOf(" :");
-			String channel = response.substring(response.lastIndexOf(' ', channelEndIndex - 1) + 1, channelEndIndex);
+			String[] parsed = response.split(" ", 4);
+			Channel chan = _channels.get(parsed[2]);
 
-			StringTokenizer tokenizer = new StringTokenizer(response.substring(response.indexOf(" :") + 2));
-			while (tokenizer.hasMoreTokens()) {
-
-				String nick = tokenizer.nextToken();
-
-				User curUser = new User(nick.replace("@", "").replace("+", ""),"", "");
-				curUser.setOp(nick.substring(0,3).contains("@"));
-				curUser.setVoice(nick.substring(0,3).contains("+"));
-				addUser(channel, curUser);
+			for (String nick : parsed[3].substring(1).split(" ")) {
+				User curUser = chan.getUser(nick);
+				curUser.setOp(nick.substring(0, 3).contains("@"));
+				curUser.setVoice(nick.substring(0, 3).contains("+"));
+				addUser(parsed[2], curUser);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
+			//EXAMPLE: PircBotX #aChannel :End of /NAMES list
 			// This is the end of a NAMES list, so we know that we've got
 			// the full list of users in the channel that we just joined.
-			String channel = response.substring(response.indexOf(' ') + 1, response.indexOf(" :"));
+			String channel = response.split(" ", 3)[1];
 			onUserList(channel, getUsers(channel));
+		} else if (code == RPL_WHOREPLY) {
+			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
+			//Part of a WHO reply on information on individual users
+			String[] parsed = response.split(" ", 9);
+			Channel chan = _channels.get(parsed[2]);
+			
+			User curUser = chan.getUser(parsed[5]);
+			curUser.setLogin(parsed[2]);
+			curUser.setIdentified(parsed[2].startsWith("~"));
+			curUser.setHostmask(parsed[3]);
+			curUser.setServer(parsed[4]);
+			curUser.setNick(parsed[5]);
+			curUser.parseStatus(parsed[6]);
+			curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
+			curUser.setRealname(parsed[8]);
+			addUser(parsed[1], curUser);
+		} else if (code == RPL_ENDOFWHO) {
+			//EXAMPLE: PircBotX #aChannel :End of /WHO list
+			//End of the WHO reply
+			String channel = response.split(" ")[1];
+			System.out.println("Who reply finished for " + channel);
+			onUserList(channel, this.getUsers(channel));
+		} else if (code == RPL_CHANNELMODEIS) {
+			//EXAMPLE: PircBotX #aChannel +cnt
+			//Full channel mode (In response to MODE <channel>)
+			String[] parsed = response.split(" ");
+			System.out.println("Setting mode for channel " + parsed[1] + " to " + parsed[2]);
+			_channels.get(parsed[1]).parseMode(parsed[2]);
+		} else if (code == 329) {
+			//EXAMPLE: PircBotX #aChannel 1237581422
+			//Timestamp of the channel
+			String[] parsed = response.split(" ");
+			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
+			_channels.get(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
 		}
 
 		onServerResponse(code, response);
@@ -1428,7 +1462,7 @@ public abstract class PircBot {
 
 			Channel channelInfo = _channels.get(channel);
 			//Get the user or create a dummy object to prevent NPE's
-			User user = (channelInfo.userExists(sourceNick)) ? channelInfo.getUser(sourceNick) : new User("","","","");
+			User user = channelInfo.getUser(sourceNick);
 
 			// All of this is very large and ugly, but it's the only way of providing
 			// what the users want :-/
@@ -2268,7 +2302,7 @@ public abstract class PircBot {
 	 *
 	 * @param nick The new nick.
 	 */
-	private final void setNick(String nick) {
+	private void setNick(String nick) {
 		_nick = nick;
 	}
 
