@@ -23,7 +23,7 @@ import java.net.Socket;
 
 /**
  * A Thread which reads lines from the IRC server.  It then
- * passes these lines to the PircBot without changing them.
+ * passes these lines to the PircBotX without changing them.
  * This running Thread also detects disconnection from the server
  * and is thus used by the OutputThread to send lines to the server.
  *
@@ -34,7 +34,7 @@ import java.net.Socket;
  * @version    2.0 Alpha
  */
 public class InputThread extends Thread {
-	private PircBot _bot = null;
+	private PircBotX _bot = null;
 	private Socket _socket = null;
 	private BufferedReader _breader = null;
 	private boolean _isConnected = true;
@@ -43,13 +43,13 @@ public class InputThread extends Thread {
 
 	/**
 	 * The InputThread reads lines from the IRC server and allows the
-	 * PircBot to handle them.
+	 * PircBotX to handle them.
 	 *
-	 * @param bot An instance of the underlying PircBot.
+	 * @param bot An instance of the underlying PircBotX.
 	 * @param breader The BufferedReader that reads lines from the server.
 	 * @param bwriter The BufferedWriter that sends lines to the server.
 	 */
-	InputThread(PircBot bot, Socket socket, BufferedReader breader) {
+	InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
 		_bot = bot;
 		_socket = socket;
 		_breader = breader;
@@ -70,11 +70,11 @@ public class InputThread extends Thread {
 	/**
 	 * Called to start this Thread reading lines from the IRC server.
 	 * When a line is read, this method calls the handleLine method
-	 * in the PircBot, which may subsequently call an 'onXxx' method
-	 * in the PircBot subclass.  If any subclass of Throwable (i.e.
+	 * in the PircBotX, which may subsequently call an 'onXxx' method
+	 * in the PircBotX subclass.  If any subclass of Throwable (i.e.
 	 * any Exception or Error) is thrown by your method, then this
 	 * method will print the stack trace to the standard output.  It
-	 * is probable that the PircBot may still be functioning normally
+	 * is probable that the PircBotX may still be functioning normally
 	 * after such a problem, but the existence of any uncaught exceptions
 	 * in your code is something you should really fix.
 	 */

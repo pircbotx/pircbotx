@@ -16,6 +16,8 @@
  */
 package org.pircbotx;
 
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NickAlreadyInUseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
@@ -39,29 +41,29 @@ import java.util.StringTokenizer;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
- * PircBot is a Java framework for writing IRC bots quickly and easily.
+ * PircBotX is a Java framework for writing IRC bots quickly and easily.
  *  <p>
  * It provides an event-driven architecture to handle common IRC
  * events, flood protection, DCC support, ident support, and more.
  * The comprehensive logfile format is suitable for use with pisg to generate
  * channel statistics.
  *  <p>
- * Methods of the PircBot class can be called to send events to the IRC server
+ * Methods of the PircBotX class can be called to send events to the IRC server
  * that it connects to.  For example, calling the sendMessage method will
  * send a message to a channel or user on the IRC server.  Multiple servers
- * can be supported using multiple instances of PircBot.
+ * can be supported using multiple instances of PircBotX.
  *  <p>
- * To perform an action when the PircBot receives a normal message from the IRC
- * server, you would override the onMessage method defined in the PircBot
- * class.  All on<i>XYZ</i> methods in the PircBot class are automatically called
+ * To perform an action when the PircBotX receives a normal message from the IRC
+ * server, you would override the onMessage method defined in the PircBotX
+ * class.  All on<i>XYZ</i> methods in the PircBotX class are automatically called
  * when the event <i>XYZ</i> happens, so you would override these if you wish
  * to do something when it does happen.
  *  <p>
  * Some event methods, such as onPing, should only really perform a specific
  * function (i.e. respond to a PING from the server).  For your convenience, such
- * methods are already correctly implemented in the PircBot and should not
+ * methods are already correctly implemented in the PircBotX and should not
  * normally need to be overridden.  Please read the full documentation for each
- * method to see which ones are already implemented by the PircBot class.
+ * method to see which ones are already implemented by the PircBotX class.
  *
  * @author  Origionally by Paul James Mutton,
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
@@ -69,16 +71,12 @@ import static org.pircbotx.ReplyConstants.*;
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
  * @version    2.0 Alpha
  */
-public abstract class PircBot {
+public abstract class PircBotX {
 	/**
-	 * The definitive version number of this release of PircBot.
+	 * The definitive version number of this release of PircBotX.
 	 * (Note: Change this before automatically building releases)
 	 */
 	public static final String VERSION = "2.0 Alpha";
-	private static final int OP_ADD = 1;
-	private static final int OP_REMOVE = 2;
-	private static final int VOICE_ADD = 3;
-	private static final int VOICE_REMOVE = 4;
 	protected Socket _socket;
 	// Connection stuff.
 	private InputThread _inputThread = null;
@@ -97,12 +95,12 @@ public abstract class PircBot {
 	private DccManager _dccManager = new DccManager(this);
 	private int[] _dccPorts = null;
 	private InetAddress _dccInetAddress = null;
-	// Default settings for the PircBot.
+	// Default settings for the PircBotX.
 	private boolean _autoNickChange = false;
 	private boolean _verbose = false;
-	private String _name = "PircBot";
+	private String _name = "PircBotX";
 	private String _nick = _name;
-	private String _login = "PircBot";
+	private String _login = "PircBotX";
 	private String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
@@ -114,11 +112,11 @@ public abstract class PircBot {
 	private int socketTimeout = 1000 * 60 * 5;
 
 	/**
-	 * Constructs a PircBot with the default settings.  Your own constructors
-	 * in classes which extend the PircBot abstract class should be responsible
+	 * Constructs a PircBotX with the default settings.  Your own constructors
+	 * in classes which extend the PircBotX abstract class should be responsible
 	 * for changing the default settings if required.
 	 */
-	public PircBot() {
+	public PircBotX() {
 	}
 
 	/**
@@ -169,7 +167,7 @@ public abstract class PircBot {
 		_password = password;
 
 		if (isConnected())
-			throw new IrcException("The PircBot is already connected to an IRC server.  Disconnect first.");
+			throw new IrcException("The PircBotXis already connected to an IRC server.  Disconnect first.");
 
 		// Don't clear the outqueue - there might be something important in it!
 
@@ -267,7 +265,7 @@ public abstract class PircBot {
 	 * This method will throw an IrcException if we have never connected
 	 * to an IRC server previously.
 	 *
-	 * @since PircBot 0.9.9
+	 * @since PircBotX 0.9.9
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
@@ -281,7 +279,7 @@ public abstract class PircBot {
 
 	/**
 	 * This method disconnects from the server cleanly by calling the
-	 * quitServer() method.  Providing the PircBot was connected to an
+	 * quitServer() method.  Providing the PircBotX was connected to an
 	 * IRC server, the onDisconnect() will be called as soon as the
 	 * disconnection is made by the server.
 	 *
@@ -312,7 +310,7 @@ public abstract class PircBot {
 	 * hosts in order to determine the user's identity.  A few IRC servers
 	 * will not allow you to connect unless this information is provided.
 	 *  <p>
-	 * So when a PircBot is run on a machine that does not run an ident server,
+	 * So when a PircBotX is run on a machine that does not run an ident server,
 	 * it may be necessary to call this method to start one up.
 	 *  <p>
 	 * Calling this method starts up an ident server which will respond with
@@ -332,7 +330,7 @@ public abstract class PircBot {
 	 * IRC server, then make sure that port 113 on your machine is visible to
 	 * the IRC server so that it may contact the ident server.
 	 *
-	 * @since PircBot 0.9c
+	 * @since PircBotX 0.9c
 	 */
 	public final void startIdentServer() {
 		new IdentServer(this, getLogin());
@@ -475,7 +473,7 @@ public abstract class PircBot {
 	 * The type of response to such commands is largely dependant on the target
 	 * client software.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param target The name of the channel or user to send the CTCP message to.
 	 * @param command The CTCP command to send.
@@ -672,7 +670,7 @@ public abstract class PircBot {
 
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
-	 * When the PircBot receives information for each channel, it will
+	 * When the PircBotX receives information for each channel, it will
 	 * call the onChannelInfo method, which you will need to override
 	 * if you want it to do anything useful.
 	 *
@@ -684,7 +682,7 @@ public abstract class PircBot {
 
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
-	 * When the PircBot receives information for each channel, it will
+	 * When the PircBotX receives information for each channel, it will
 	 * call the onChannelInfo method, which you will need to override
 	 * if you want it to do anything useful.
 	 *  <p>
@@ -737,7 +735,7 @@ public abstract class PircBot {
 	 * Receives a file that is being sent to us by a DCC SEND request.
 	 * Please use the onIncomingFileTransfer method to receive files.
 	 *
-	 * @deprecated As of PircBot 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
+	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
 	 */
 	protected final void dccReceiveFile(File file, long address, int port, int size) {
 		throw new RuntimeException("dccReceiveFile is deprecated, please use sendFile");
@@ -756,7 +754,7 @@ public abstract class PircBot {
 	 *  <p>
 	 * This method may not be overridden.
 	 *
-	 * @since PircBot 0.9.8
+	 * @since PircBotX 0.9.8
 	 *
 	 * @param nick The nick of the user we are trying to establish a chat with.
 	 * @param timeout The number of milliseconds to wait for the recipient to
@@ -818,7 +816,7 @@ public abstract class PircBot {
 	 * Attempts to accept a DCC CHAT request by a client.
 	 * Please use the onIncomingChatRequest method to receive files.
 	 *
-	 * @deprecated As of PircBot 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
+	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
 	 */
 	protected final DccChat dccAcceptChatRequest(String sourceNick, long address, int port) {
 		throw new RuntimeException("dccAcceptChatRequest is deprecated, please use onIncomingChatRequest");
@@ -838,7 +836,7 @@ public abstract class PircBot {
 	 * Exceptions and Errors use "###".
 	 *  <p>
 	 * This implementation of the method will only cause log entries to be
-	 * output if the PircBot has had its verbose mode turned on by calling
+	 * output if the PircBotX has had its verbose mode turned on by calling
 	 * setVerbose(true);
 	 *
 	 * @param line The line to add to the log.
@@ -850,7 +848,7 @@ public abstract class PircBot {
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
-	 * then calling the appropriate method in the PircBot.  This method is
+	 * then calling the appropriate method in the PircBotX.  This method is
 	 * protected and only called by the InputThread for this instance.
 	 *  <p>
 	 * This method may not be overridden!
@@ -1006,7 +1004,7 @@ public abstract class PircBot {
 				// Somebody is inviting somebody else into a channel.
 				onInvite(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
 			else
-				// If we reach this point, then we've found something that the PircBot
+				// If we reach this point, then we've found something that the PircBotX
 				// Doesn't currently deal with.
 				onUnknown(line);
 		} catch (Throwable t) {
@@ -1016,9 +1014,9 @@ public abstract class PircBot {
 			t.printStackTrace(pw);
 			pw.flush();
 			synchronized (this) {
-				log("### Your implementation of PircBot is faulty and you have");
+				log("### Your implementation of PircBotXis faulty and you have");
 				log("### allowed an uncaught Exception or Error to propagate in your");
-				log("### code. It may be possible for PircBot to continue operating");
+				log("### code. It may be possible for PircBotXto continue operating");
 				log("### normally. Here is the stack trace that was produced: -");
 				log("### ");
 				for (String curLine : sw.toString().split("\r\n"))
@@ -1028,20 +1026,20 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * This method is called once the PircBot has successfully connected to
+	 * This method is called once the PircBotX has successfully connected to
 	 * the IRC server.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.6
+	 * @since PircBotX 0.9.6
 	 */
 	protected void onConnect() {
 	}
 
 	/**
-	 * This method carries out the actions to be performed when the PircBot
-	 * gets disconnected.  This may happen if the PircBot quits from the
+	 * This method carries out the actions to be performed when the PircBotX
+	 * gets disconnected.  This may happen if the PircBotX quits from the
 	 * server, or if the connection is unexpectedly lost.
 	 *  <p>
 	 * Disconnection from the IRC server is detected immediately if either
@@ -1054,16 +1052,16 @@ public abstract class PircBot {
 	 * the connection has been lost, then this is probably the ideal method to
 	 * override to implement such functionality.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 */
 	protected void onDisconnect() {
 	}
 
 	/**
-	 * This method is called by the PircBot when a numeric response
+	 * This method is called by the PircBotX when a numeric response
 	 * is received from the IRC server.  We use this method to
-	 * allow PircBot to process various responses from the server
+	 * allow PircBotX to process various responses from the server
 	 * before then passing them on to the onServerResponse method.
 	 *  <p>
 	 * Note that this method is private and should not appear in any
@@ -1189,17 +1187,17 @@ public abstract class PircBot {
 	 * For example, we can use this method to discover the topic of a
 	 * channel when we join it.  If we join the channel #test which
 	 * has a topic of &quot;I am King of Test&quot; then the response
-	 * will be &quot;<code>PircBot #test :I Am King of Test</code>&quot;
+	 * will be &quot;<code>PircBotX #test :I Am King of Test</code>&quot;
 	 * with a code of 332 to signify that this is a topic.
 	 * (This is just an example - note that overriding the
 	 * <code>onTopic</code> method is an easier way of finding the
 	 * topic for a channel). Check the IRC RFC for the full list of other
 	 * command response codes.
 	 *  <p>
-	 * PircBot implements the interface ReplyConstants, which contains
+	 * PircBotX implements the interface ReplyConstants, which contains
 	 * contstants that you may find useful here.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param code The three-digit numerical code for the response.
@@ -1215,7 +1213,7 @@ public abstract class PircBot {
 	 * after joining a channel.
 	 *  <p>
 	 * Shortly after joining a channel, the IRC server sends a list of all
-	 * users in that channel. The PircBot collects this information and
+	 * users in that channel. The PircBotX collects this information and
 	 * calls this method as soon as it has the full list.
 	 *  <p>
 	 * To obtain the nick of each user in the channel, call the getNick()
@@ -1224,10 +1222,10 @@ public abstract class PircBot {
 	 * At a later time, you may call the getUsers method to obtain an
 	 * up to date list of the users in the channel.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 1.0.0
+	 * @since PircBotX 1.0.0
 	 *
 	 * @param channel The name of the channel.
 	 * @param users An array of User objects belonging to this channel.
@@ -1240,7 +1238,7 @@ public abstract class PircBot {
 	/**
 	 * This method is called whenever a message is sent to a channel.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel to which the message was sent.
@@ -1253,9 +1251,9 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * This method is called whenever a private message is sent to the PircBot.
+	 * This method is called whenever a private message is sent to the PircBotX.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param sender The nick of the person who sent the private message.
@@ -1270,7 +1268,7 @@ public abstract class PircBot {
 	 * This method is called whenever an ACTION is sent from a user.  E.g.
 	 * such events generated by typing "/me goes shopping" in most IRC clients.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param sender The nick of the user that sent the action.
@@ -1285,7 +1283,7 @@ public abstract class PircBot {
 	/**
 	 * This method is called whenever we receive a notice.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param sourceNick The nick of the user that sent the notice.
@@ -1301,7 +1299,7 @@ public abstract class PircBot {
 	 * This method is called whenever someone (possibly us) joins a channel
 	 * which we are on.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel which somebody joined.
@@ -1316,7 +1314,7 @@ public abstract class PircBot {
 	 * This method is called whenever someone (possibly us) parts a channel
 	 * which we are on.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel which somebody parted from.
@@ -1331,7 +1329,7 @@ public abstract class PircBot {
 	 * This method is called whenever someone (possibly us) changes nick on any
 	 * of the channels that we are on.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param oldNick The old nick.
@@ -1346,7 +1344,7 @@ public abstract class PircBot {
 	 * This method is called whenever someone (possibly us) is kicked from
 	 * any of the channels that we are in.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel from which the recipient was kicked.
@@ -1364,7 +1362,7 @@ public abstract class PircBot {
 	 * server.  We will only observe this if the user was in one of the
 	 * channels to which we are connected.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param sourceNick The nick of the user that quit from the server.
@@ -1377,9 +1375,9 @@ public abstract class PircBot {
 
 	/**
 	 * This method is called whenever a user sets the topic, or when
-	 * PircBot joins a new channel and discovers its topic.
+	 * PircBotX joins a new channel and discovers its topic.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel that the topic belongs to.
@@ -1392,9 +1390,9 @@ public abstract class PircBot {
 
 	/**
 	 * This method is called whenever a user sets the topic, or when
-	 * PircBot joins a new channel and discovers its topic.
+	 * PircBotX joins a new channel and discovers its topic.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel that the topic belongs to.
@@ -1409,7 +1407,7 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * After calling the listChannels() method in PircBot, the server
+	 * After calling the listChannels() method in PircBotX, the server
 	 * will start to send us information about each channel on the
 	 * server.  You may override this method in order to receive the
 	 * information about each channel as soon as it is received.
@@ -1417,7 +1415,7 @@ public abstract class PircBot {
 	 * Note that certain channels, such as those marked as hidden,
 	 * may not appear in channel listings.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The name of the channel.
@@ -1555,7 +1553,7 @@ public abstract class PircBot {
 	 * onChannelKey, onDeChannelKey, onChannelLimit, onDeChannelLimit,
 	 * onChannelBan or onDeChannelBan methods as appropriate.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param channel The channel that the mode operation applies to.
@@ -1571,10 +1569,10 @@ public abstract class PircBot {
 	/**
 	 * Called when the mode of a user is set.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 1.2.0
+	 * @since PircBotX 1.2.0
 	 *
 	 * @param targetNick The nick that the mode operation applies to.
 	 * @param sourceNick The nick of the user that set the mode.
@@ -1590,12 +1588,12 @@ public abstract class PircBot {
 	 * Called when a user (possibly us) gets granted operator status for a channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1610,12 +1608,12 @@ public abstract class PircBot {
 	 * Called when a user (possibly us) gets operator status taken away.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1630,12 +1628,12 @@ public abstract class PircBot {
 	 * Called when a user (possibly us) gets voice status granted in a channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1650,12 +1648,12 @@ public abstract class PircBot {
 	 * Called when a user (possibly us) gets voice status removed.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1672,12 +1670,12 @@ public abstract class PircBot {
 	 * are sometimes referred to as passwords.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1692,12 +1690,12 @@ public abstract class PircBot {
 	 * Called when a channel key is removed.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1713,12 +1711,12 @@ public abstract class PircBot {
 	 * the channel cannot exceed this limit.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1733,12 +1731,12 @@ public abstract class PircBot {
 	 * Called when the user limit is removed for a channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1755,12 +1753,12 @@ public abstract class PircBot {
 	 * followed by the user being kicked :-)
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1775,12 +1773,12 @@ public abstract class PircBot {
 	 * Called when a hostmask ban is removed from a channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1796,12 +1794,12 @@ public abstract class PircBot {
 	 * means that only operators in a channel may change the topic.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1815,12 +1813,12 @@ public abstract class PircBot {
 	 * Called when topic protection is removed for a channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1835,12 +1833,12 @@ public abstract class PircBot {
 	 * are in the channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1855,12 +1853,12 @@ public abstract class PircBot {
 	 * if they are not actually in the channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1876,12 +1874,12 @@ public abstract class PircBot {
 	 * channel.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1895,12 +1893,12 @@ public abstract class PircBot {
 	 * Called when a channel has 'invite only' removed.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1916,12 +1914,12 @@ public abstract class PircBot {
 	 * or change their nicks.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1935,12 +1933,12 @@ public abstract class PircBot {
 	 * Called when a channel has moderated mode removed.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1954,12 +1952,12 @@ public abstract class PircBot {
 	 * Called when a channel is marked as being in private mode.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1973,12 +1971,12 @@ public abstract class PircBot {
 	 * Called when a channel is marked as not being in private mode.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -1993,12 +1991,12 @@ public abstract class PircBot {
 	 * typically do not appear on a server's channel listing.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -2012,12 +2010,12 @@ public abstract class PircBot {
 	 * Called when a channel has 'secret' mode removed.
 	 *  <p>
 	 * This is a type of mode change and is also passed to the onMode
-	 * method in the PircBot class.
+	 * method in the PircBotX class.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param channel The channel in which the mode change took place.
 	 * @param sourceNick The nick of the user that performed the mode change.
@@ -2030,10 +2028,10 @@ public abstract class PircBot {
 	/**
 	 * Called when we are invited to a channel by a user.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 0.9.5
+	 * @since PircBotX 0.9.5
 	 *
 	 * @param targetNick The nick of the user being invited - should be us!
 	 * @param sourceNick The nick of the user that sent the invitation.
@@ -2045,27 +2043,27 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * This method used to be called when a DCC SEND request was sent to the PircBot.
+	 * This method used to be called when a DCC SEND request was sent to the PircBotX.
 	 * Please use the onIncomingFileTransfer method to receive files, as it
 	 * has better functionality and supports resuming.
 	 *
-	 * @deprecated As of PircBot 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
+	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
 	 */
 	protected void onDccSendRequest(String sourceNick, String sourceLogin, String sourceHostname, String filename, long address, int port, int size) {
 	}
 
 	/**
-	 * This method used to be called when a DCC CHAT request was sent to the PircBot.
+	 * This method used to be called when a DCC CHAT request was sent to the PircBotX.
 	 * Please use the onIncomingChatRequest method to accept chats, as it
 	 * has better functionality.
 	 *
-	 * @deprecated As of PircBot 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
+	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
 	 */
 	protected void onDccChatRequest(String sourceNick, String sourceLogin, String sourceHostname, long address, int port) {
 	}
 
 	/**
-	 * This method is called whenever a DCC SEND request is sent to the PircBot.
+	 * This method is called whenever a DCC SEND request is sent to the PircBotX.
 	 * This means that a client has requested to send a file to us.
 	 * This abstract implementation performs no action, which means that all
 	 * DCC SEND requests will be ignored by default. If you wish to receive
@@ -2086,7 +2084,7 @@ public abstract class PircBot {
 	 * checks so that this file does not overwrite anything important!
 	 *  <p>
 	 * Each time a file is received, it happens within a new Thread
-	 * in order to allow multiple files to be downloaded by the PircBot
+	 * in order to allow multiple files to be downloaded by the PircBotX
 	 * at the same time.
 	 *  <p>
 	 * If you allow resuming and the file already partly exists, it will
@@ -2097,10 +2095,10 @@ public abstract class PircBot {
 	 * method on the DccFileTransfer object, either before you receive the
 	 * file or at any moment during the transfer.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 1.2.0
+	 * @since PircBotX 1.2.0
 	 *
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 *
@@ -2119,7 +2117,7 @@ public abstract class PircBot {
 	 * You can determine the type by calling the isIncoming or isOutgoing
 	 * methods on the DccFileTransfer object.
 	 *
-	 * @since PircBot 1.2.0
+	 * @since PircBotX 1.2.0
 	 *
 	 * @param transfer The DccFileTransfer that has finished.
 	 * @param e null if the file was transfered successfully, otherwise this
@@ -2163,10 +2161,10 @@ public abstract class PircBot {
 	 * Each time this method is called, it is called from within a new Thread
 	 * so that multiple DCC CHAT sessions can run concurrently.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
-	 * @since PircBot 1.2.0
+	 * @since PircBotX 1.2.0
 	 *
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 *
@@ -2178,7 +2176,7 @@ public abstract class PircBot {
 
 	/**
 	 * This method is called whenever we receive a VERSION request.
-	 * This abstract implementation responds with the PircBot's _version string,
+	 * This abstract implementation responds with the PircBotX's _version string,
 	 * so if you override this method, be sure to either mimic its functionality
 	 * or to call super.onVersion(...);
 	 *
@@ -2256,9 +2254,9 @@ public abstract class PircBot {
 
 	/**
 	 * This method is called whenever we receive a line from the server that
-	 * the PircBot has not been programmed to recognise.
+	 * the PircBotX has not been programmed to recognise.
 	 *  <p>
-	 * The implementation of this method in the PircBot abstract class
+	 * The implementation of this method in the PircBotX abstract class
 	 * performs no actions and may be overridden as required.
 	 *
 	 * @param line The raw line that was received from the server.
@@ -2284,7 +2282,7 @@ public abstract class PircBot {
 	 * tries to join an IRC server.  This should be set before joining
 	 * any servers, otherwise the default nick will be used.  You would
 	 * typically call this method from the constructor of the class that
-	 * extends PircBot.
+	 * extends PircBotX.
 	 *  <p>
 	 * The changeNick method should be used if you wish to change your nick
 	 * when you are connected to a server.
@@ -2297,7 +2295,7 @@ public abstract class PircBot {
 
 	/**
 	 * Sets the internal nick of the bot.  This is only to be called by the
-	 * PircBot class in response to notification of nick changes that apply
+	 * PircBotX class in response to notification of nick changes that apply
 	 * to us.
 	 *
 	 * @param nick The new nick.
@@ -2337,10 +2335,10 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * Gets the name of the PircBot. This is the name that will be used as
+	 * Gets the name of the PircBotX. This is the name that will be used as
 	 * as a nick when we try to join servers.
 	 *
-	 * @return The name of the PircBot.
+	 * @return The name of the PircBotX.
 	 */
 	public final String getName() {
 		return _name;
@@ -2351,10 +2349,10 @@ public abstract class PircBot {
 	 * your nick, this method will still return the old nick until confirmation
 	 * of the nick change is received from the server.
 	 *  <p>
-	 * The nick returned by this method is maintained only by the PircBot
+	 * The nick returned by this method is maintained only by the PircBotX
 	 * class and is guaranteed to be correct in the context of the IRC server.
 	 *
-	 * @since PircBot 1.0.0
+	 * @since PircBotX 1.0.0
 	 *
 	 * @return The current nick of the bot.
 	 */
@@ -2363,38 +2361,38 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * Gets the internal login of the PircBot.
+	 * Gets the internal login of the PircBotX.
 	 *
-	 * @return The login of the PircBot.
+	 * @return The login of the PircBotX.
 	 */
 	public final String getLogin() {
 		return _login;
 	}
 
 	/**
-	 * Gets the internal version of the PircBot.
+	 * Gets the internal version of the PircBotX.
 	 *
-	 * @return The version of the PircBot.
+	 * @return The version of the PircBotX.
 	 */
 	public final String getVersion() {
 		return _version;
 	}
 
 	/**
-	 * Gets the internal finger message of the PircBot.
+	 * Gets the internal finger message of the PircBotX.
 	 *
-	 * @return The finger message of the PircBot.
+	 * @return The finger message of the PircBotX.
 	 */
 	public final String getFinger() {
 		return _finger;
 	}
 
 	/**
-	 * Returns whether or not the PircBot is currently connected to a server.
+	 * Returns whether or not the PircBotX is currently connected to a server.
 	 * The result of this method should only act as a rough guide,
 	 * as the result may not be valid by the time you act upon it.
 	 *
-	 * @return True if and only if the PircBot is currently connected to a server.
+	 * @return True if and only if the PircBotX is currently connected to a server.
 	 */
 	public final synchronized boolean isConnected() {
 		return _inputThread != null && _inputThread.isConnected();
@@ -2432,7 +2430,7 @@ public abstract class PircBot {
 	 * Gets the maximum length of any line that is sent via the IRC protocol.
 	 * The IRC RFC specifies that line lengths, including the trailing \r\n
 	 * must not exceed 512 bytes.  Hence, there is currently no option to
-	 * change this value in PircBot.  All lines greater than this length
+	 * change this value in PircBotX.  All lines greater than this length
 	 * will be truncated before being sent to the IRC server.
 	 *
 	 * @return The maximum line length (currently fixed at 512)
@@ -2446,7 +2444,7 @@ public abstract class PircBot {
 	 * If this returns 0, then the Queue is empty and any new message is likely
 	 * to be sent to the IRC server immediately.
 	 *
-	 * @since PircBot 0.9.9
+	 * @since PircBotX 0.9.9
 	 *
 	 * @return The number of lines in the outgoing message Queue.
 	 */
@@ -2455,10 +2453,10 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * Returns the name of the last IRC server the PircBot tried to connect to.
+	 * Returns the name of the last IRC server the PircBotX tried to connect to.
 	 * This does not imply that the connection attempt to the server was
 	 * successful (we suggest you look at the onConnect method).
-	 * A value of null is returned if the PircBot has never tried to connect
+	 * A value of null is returned if the PircBotX has never tried to connect
 	 * to a server.
 	 *
 	 * @return The name of the last machine we tried to connect to. Returns
@@ -2469,14 +2467,14 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * Returns the port number of the last IRC server that the PircBot tried
+	 * Returns the port number of the last IRC server that the PircBotX tried
 	 * to connect to.
 	 * This does not imply that the connection attempt to the server was
 	 * successful (we suggest you look at the onConnect method).
-	 * A value of -1 is returned if the PircBot has never tried to connect
+	 * A value of -1 is returned if the PircBotX has never tried to connect
 	 * to a server.
 	 *
-	 * @since PircBot 0.9.9
+	 * @since PircBotX 0.9.9
 	 *
 	 * @return The port number of the last IRC server we connected to.
 	 *         Returns -1 if no connection attempts have ever been made.
@@ -2489,10 +2487,10 @@ public abstract class PircBot {
 	 * Returns the last password that we used when connecting to an IRC server.
 	 * This does not imply that the connection attempt to the server was
 	 * successful (we suggest you look at the onConnect method).
-	 * A value of null is returned if the PircBot has never tried to connect
+	 * A value of null is returned if the PircBotX has never tried to connect
 	 * to a server using a password.
 	 *
-	 * @since PircBot 0.9.9
+	 * @since PircBotX 0.9.9
 	 *
 	 * @return The last password that we used when connecting to an IRC server.
 	 *         Returns null if we have not previously connected using a password.
@@ -2506,7 +2504,7 @@ public abstract class PircBot {
 	 * long and returns an integer array of size 4 representing the same
 	 * IP address.
 	 *
-	 * @since PircBot 0.9.4
+	 * @since PircBotX 0.9.4
 	 *
 	 * @param address the long value representing the IP address.
 	 *
@@ -2526,7 +2524,7 @@ public abstract class PircBot {
 	 * of size 4 and returns this as a long representation of the same IP
 	 * address.
 	 *
-	 * @since PircBot 0.9.4
+	 * @since PircBotX 0.9.4
 	 *
 	 * @param address the byte[] of size 4 representing the IP address.
 	 *
@@ -2550,12 +2548,12 @@ public abstract class PircBot {
 	 * from the IRC server.  If set to null, then the platform's default
 	 * charset is used.  You should only use this method if you are
 	 * trying to send text to an IRC server in a different charset, e.g.
-	 * "GB2312" for Chinese encoding.  If a PircBot is currently connected
+	 * "GB2312" for Chinese encoding.  If a PircBotX is currently connected
 	 * to a server, then it must reconnect before this change takes effect.
 	 *
-	 * @since PircBot 1.0.4
+	 * @since PircBotX 1.0.4
 	 *
-	 * @param charset The new encoding charset to be used by PircBot.
+	 * @param charset The new encoding charset to be used by PircBotX.
 	 *
 	 * @throws UnsupportedEncodingException If the named charset is not
 	 *                                      supported.
@@ -2572,7 +2570,7 @@ public abstract class PircBot {
 	 * the IRC server, or null if not set.  Use the setEncoding
 	 * method to change the encoding charset.
 	 *
-	 * @since PircBot 1.0.4
+	 * @since PircBotX 1.0.4
 	 *
 	 * @return The encoding used to send outgoing messages, or
 	 *         null if not set.
@@ -2582,11 +2580,11 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * Returns the InetAddress used by the PircBot.
-	 * This can be used to find the I.P. address from which the PircBot is
+	 * Returns the InetAddress used by the PircBotX.
+	 * This can be used to find the I.P. address from which the PircBotX is
 	 * connected to a server.
 	 *
-	 * @since PircBot 1.4.4
+	 * @since PircBotX 1.4.4
 	 *
 	 * @return The current local InetAddress, or null if never connected.
 	 */
@@ -2600,7 +2598,7 @@ public abstract class PircBot {
 	 * is behind a firewall and you need to tell receiving clients to connect
 	 * to a NAT/router, which then forwards the connection.
 	 *
-	 * @since PircBot 1.4.4
+	 * @since PircBotX 1.4.4
 	 *
 	 * @param dccInetAddress The new InetAddress, or null to use the default.
 	 */
@@ -2612,7 +2610,7 @@ public abstract class PircBot {
 	 * Returns the InetAddress used when sending DCC chat or file transfers.
 	 * If this is null, the default InetAddress will be used.
 	 *
-	 * @since PircBot 1.4.4
+	 * @since PircBotX 1.4.4
 	 *
 	 * @return The current DCC InetAddress, or null if left as default.
 	 */
@@ -2628,9 +2626,9 @@ public abstract class PircBot {
 	 * fail if all ports are already in use.
 	 * If set to null, <i>any</i> free port number will be used.
 	 *
-	 * @since PircBot 1.4.4
+	 * @since PircBotX 1.4.4
 	 *
-	 * @return An array of port numbers that PircBot can use to send DCC
+	 * @return An array of port numbers that PircBotX can use to send DCC
 	 *         transfers, or null if any port is allowed.
 	 */
 	public int[] getDccPorts() {
@@ -2648,9 +2646,9 @@ public abstract class PircBot {
 	 * fail if all ports are already in use.
 	 * If set to null, <i>any</i> free port number will be used.
 	 *
-	 * @since PircBot 1.4.4
+	 * @since PircBotX 1.4.4
 	 *
-	 * @param ports The set of port numbers that PircBot may use for DCC
+	 * @param ports The set of port numbers that PircBotX may use for DCC
 	 *              transfers, or null to let it use any free port (default).
 	 *
 	 */
@@ -2665,19 +2663,19 @@ public abstract class PircBot {
 	/**
 	 * Returns a String representation of this object.
 	 * You may find this useful for debugging purposes, particularly
-	 * if you are using more than one PircBot instance to achieve
+	 * if you are using more than one PircBotX instance to achieve
 	 * multiple server connectivity. The format of
-	 * this String may change between different versions of PircBot
+	 * this String may change between different versions of PircBotX
 	 * but is currently something of the form
 	 * <code>
-	 *   Version{PircBot x.y.z Java IRC Bot - www.jibble.org}
+	 *   Version{PircBotX x.y.z Java IRC Bot - www.jibble.org}
 	 *   Connected{true}
 	 *   Server{irc.dal.net}
 	 *   Port{6667}
 	 *   Password{}
 	 * </code>
 	 *
-	 * @since PircBot 0.9.10
+	 * @since PircBotX 0.9.10
 	 *
 	 * @return a String representation of this object.
 	 */
@@ -2711,7 +2709,7 @@ public abstract class PircBot {
 	 *  </li>
 	 * </ul>
 	 *
-	 * @since PircBot 1.0.0
+	 * @since PircBotX 1.0.0
 	 *
 	 * @param channel The name of the channel to list.
 	 *
@@ -2731,7 +2729,7 @@ public abstract class PircBot {
 	 * if the join was successful until a response is received from the
 	 * IRC server.
 	 *
-	 * @since PircBot 1.0.0
+	 * @since PircBotX 1.0.0
 	 *
 	 * @return A String array containing the names of all channels that we
 	 *         are in.
@@ -2745,20 +2743,20 @@ public abstract class PircBot {
 	}
 
 	/**
-	 * Disposes of all thread resources used by this PircBot. This may be
+	 * Disposes of all thread resources used by this PircBotX. This may be
 	 * useful when writing bots or clients that use multiple servers (and
-	 * therefore multiple PircBot instances) or when integrating a PircBot
+	 * therefore multiple PircBotX instances) or when integrating a PircBotX
 	 * with an existing program.
 	 *  <p>
-	 * Each PircBot runs its own threads for dispatching messages from its
+	 * Each PircBotX runs its own threads for dispatching messages from its
 	 * outgoing message queue and receiving messages from the server.
 	 * Calling dispose() ensures that these threads are
-	 * stopped, thus freeing up system resources and allowing the PircBot
+	 * stopped, thus freeing up system resources and allowing the PircBotX
 	 * object to be garbage collected if there are no other references to
 	 * it.
 	 *  <p>
-	 * Once a PircBot object has been disposed, it should not be used again.
-	 * Attempting to use a PircBot that has been disposed may result in
+	 * Once a PircBotX object has been disposed, it should not be used again.
+	 * Attempting to use a PircBotX that has been disposed may result in
 	 * unpredictable behaviour.
 	 *
 	 * @since 1.2.2
