@@ -202,10 +202,10 @@ public abstract class PircBotX {
 
 		// Attempt to join the server.
 		if (Utils.isBlank(password))
-			_outputThread.sendRawLine("PASS " + password);
+			_outputThread.sendRawLineNow("PASS " + password);
 		String nick = getName();
-		_outputThread.sendRawLine("NICK " + nick);
-		_outputThread.sendRawLine("USER " + getLogin() + " 8 * :" + getVersion());
+		_outputThread.sendRawLineNow("NICK " + nick);
+		_outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
 		// Read stuff back from the server to see if we connected.
 		String line = null;
@@ -223,19 +223,24 @@ public abstract class PircBotX {
 				String code = line.substring(firstSpace + 1, secondSpace);
 
 				if (code.equals("004"))
+					//EXAMPLE: PircBotX gibson.freenode.net a-ircd-version1.5 allUserModes allChannelModes
 					// We're connected to the server.
 					break;
 				else if (code.equals("433"))
+					//EXAMPLE: AnAlreadyUsedName :Nickname already in use
+					//Nickname in use, rename
 					if (_autoNickChange) {
 						tries++;
 						nick = getName() + tries;
-						_outputThread.sendRawLine("NICK " + nick);
+						_outputThread.sendRawLineNow("NICK " + nick);
 					} else {
 						_socket.close();
 						_inputThread = null;
+						_outputThread.interrupt();
 						throw new NickAlreadyInUseException(line);
 					}
 				else if (code.equals("439")) {
+					//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 					// No action required.
 				} else if (code.startsWith("5") || code.startsWith("4")) {
 					_socket.close();
@@ -249,7 +254,6 @@ public abstract class PircBotX {
 		log("*** Logged onto server.");
 
 		// This makes the socket timeout on read operations after 5 minutes.
-		// Maybe in some future version I will let the user change this at runtime.
 		_socket.setSoTimeout(getSocketTimeout());
 
 		//Start input and output threads to start accepting lines
@@ -404,7 +408,7 @@ public abstract class PircBotX {
 	 */
 	public final synchronized void sendRawLine(String line) {
 		if (isConnected())
-			_outputThread.sendRawLine(line);
+			_outputThread.sendRawLineNow(line);
 	}
 
 	/**

@@ -61,7 +61,7 @@ public class OutputThread extends Thread {
 	 * @param encoding The charset to use when encoing this string into a
 	 *                 byte array.
 	 */
-	public void sendRawLine(String line) {
+	public void sendRawLineNow(String line) {
 		if (line.length() > _bot.getMaxLineLength() - 2)
 			line = line.substring(0, _bot.getMaxLineLength() - 2);
 		synchronized (_bwriter) {
