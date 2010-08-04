@@ -13,3 +13,4 @@ This is a list of all the changes from PircBot. This list excludes any changes t
 -Removed redundant equals and hashCode methods
 -PircBot._channels is now a synchronized map
 -User object greatly extended
+-Server info written but not used
