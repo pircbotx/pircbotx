@@ -31,29 +31,45 @@ package org.pircbotx;
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
  * @version    2.0 Alpha
  */
-public class User {
+public class User implements Comparable<User> {
+	private String _nick;
+	private String _lowerNick;
+	private String _name;
+	private String _hostmask;
+	private boolean _op;
+	private boolean _voice;
+
+	User(String nick, String name, String hostmask) {
+		_nick = nick;
+		_lowerNick = nick.toLowerCase();
+		_hostmask = hostmask;
+		_name = name;
+	}
+
+	User(String nick, String name, String hostmask, String prefix) {
+		_nick = nick;
+		_lowerNick = nick.toLowerCase();
+		_hostmask = hostmask;
+		_name = name;
+		if(prefix.contains("@"))
+			_op = true;
+		if(prefix.contains("+"))
+			_voice = true;
+	}
+
 	/**
 	 * Constructs a User object with a known prefix and nick.
 	 *
 	 * @param prefix The status of the user, for example, "@".
 	 * @param nick The nick of the user.
 	 */
-	User(String prefix, String nick) {
-		_prefix = prefix;
+	User(String nick, String name, String hostmask, boolean op, boolean voice) {
 		_nick = nick;
 		_lowerNick = nick.toLowerCase();
-	}
-
-	/**
-	 * Returns the prefix of the user. If the User object has been obtained
-	 * from a list of users in a channel, then this will reflect the user's
-	 * status in that channel.
-	 *
-	 * @return The prefix of the user. If there is no prefix, then an empty
-	 *         String is returned.
-	 */
-	public String getPrefix() {
-		return _prefix;
+		_hostmask = hostmask;
+		_name = name;
+		_op = op;
+		_voice = voice;
 	}
 
 	/**
@@ -65,7 +81,11 @@ public class User {
 	 * @return true if the user is an operator in the channel.
 	 */
 	public boolean isOp() {
-		return _prefix.indexOf('@') >= 0;
+		return _op;
+	}
+
+	public void setOp(boolean op) {
+		_op = op;
 	}
 
 	/**
@@ -77,7 +97,16 @@ public class User {
 	 * @return true if the user has voice in the channel.
 	 */
 	public boolean hasVoice() {
-		return _prefix.indexOf('+') >= 0;
+		return _voice;
+	}
+
+	public void setVoice(boolean voice) {
+		_voice = voice;
+	}
+
+	public User parsePrefix(String prefix) {
+
+		return this;
 	}
 
 	/**
@@ -95,8 +124,14 @@ public class User {
 	 *
 	 * @return The user's prefix and nick.
 	 */
+	@Override
 	public String toString() {
-		return this.getPrefix() + this.getNick();
+		String prefix = "";
+		if(_op)
+			prefix = prefix+"@";
+		if(_voice)
+			prefix = prefix+"+";
+		return prefix + this.getNick();
 	}
 
 	/**
@@ -116,6 +151,7 @@ public class User {
 	 *
 	 * @return true if o is a User object with a matching lowercase nick.
 	 */
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof User) {
 			User other = (User) o;
@@ -129,6 +165,7 @@ public class User {
 	 *
 	 * @return the hash code of the User object.
 	 */
+	@Override
 	public int hashCode() {
 		return _lowerNick.hashCode();
 	}
@@ -139,14 +176,31 @@ public class User {
 	 *
 	 * @return the result of calling compareTo on lowercased nicks.
 	 */
-	public int compareTo(Object o) {
-		if (o instanceof User) {
-			User other = (User) o;
-			return other._lowerNick.compareTo(_lowerNick);
-		}
-		return -1;
+	@Override
+	public int compareTo(User other) {
+		return other._lowerNick.compareTo(_lowerNick);
 	}
-	private String _prefix;
-	private String _nick;
-	private String _lowerNick;
+
+	public void setNick(String nick) {
+		_nick = nick;
+		_lowerNick = nick.toLowerCase();
+	}
+
+	/**
+	 * Gets the Name of the user
+	 *
+	 * @return User's name
+	 */
+	public String getName() {
+		return _name;
+	}
+
+	/**
+	 * Get the HostMask of the user
+	 *
+	 * @return User's hostmask
+	 */
+	public String getHostmask() {
+		return _hostmask;
+	}
 }
