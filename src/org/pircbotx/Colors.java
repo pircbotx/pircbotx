@@ -1,17 +1,19 @@
-/* 
-Copyright Paul James Mutton, 2001-2009, http://www.jibble.org/
-
-This file is part of PircBot.
-
-This software is dual-licensed, allowing you to choose between the GNU
-General Public License (GPL) and the www.jibble.org Commercial License.
-Since the GPL may be too restrictive for use in a proprietary application,
-a commercial license is also provided. Full license information can be
-found at http://www.jibble.org/licenses/
-
-*/
-
-
+/*
+ * Copyright (C) 2009-2010 Leon Blakey
+ *
+ * Quackedbot is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Quackedbot  is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.pircbotx;
 
 /**
@@ -46,248 +48,194 @@ package org.pircbotx;
  *
  *
  * @since   0.9.12
- * @author  Paul James Mutton,
+ * @author  Origionally by Paul James Mutton,
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
- * @version    1.5.0 (Build time: Mon Dec 14 20:07:17 2009)
+ *          <p/>Forked by Leon Blakey as part of the PircBotX project
+ *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
+ * @version    2.0 Alpha
  */
 public class Colors {
+	/**
+	 * Removes all previously applied color and formatting attributes.
+	 */
+	public static final String NORMAL = "\u000f";
+	/**
+	 * Bold text.
+	 */
+	public static final String BOLD = "\u0002";
+	/**
+	 * Underlined text.
+	 */
+	public static final String UNDERLINE = "\u001f";
+	/**
+	 * Reversed text (may be rendered as italic text in some clients).
+	 */
+	public static final String REVERSE = "\u0016";
+	/**
+	 * White coloured text.
+	 */
+	public static final String WHITE = "\u000300";
+	/**
+	 * Black coloured text.
+	 */
+	public static final String BLACK = "\u000301";
+	/**
+	 * Dark blue coloured text.
+	 */
+	public static final String DARK_BLUE = "\u000302";
+	/**
+	 * Dark green coloured text.
+	 */
+	public static final String DARK_GREEN = "\u000303";
+	/**
+	 * Red coloured text.
+	 */
+	public static final String RED = "\u000304";
+	/**
+	 * Brown coloured text.
+	 */
+	public static final String BROWN = "\u000305";
+	/**
+	 * Purple coloured text.
+	 */
+	public static final String PURPLE = "\u000306";
+	/**
+	 * Olive coloured text.
+	 */
+	public static final String OLIVE = "\u000307";
+	/**
+	 * Yellow coloured text.
+	 */
+	public static final String YELLOW = "\u000308";
+	/**
+	 * Green coloured text.
+	 */
+	public static final String GREEN = "\u000309";
+	/**
+	 * Teal coloured text.
+	 */
+	public static final String TEAL = "\u000310";
+	/**
+	 * Cyan coloured text.
+	 */
+	public static final String CYAN = "\u000311";
+	/**
+	 * Blue coloured text.
+	 */
+	public static final String BLUE = "\u000312";
+	/**
+	 * Magenta coloured text.
+	 */
+	public static final String MAGENTA = "\u000313";
+	/**
+	 * Dark gray coloured text.
+	 */
+	public static final String DARK_GRAY = "\u000314";
+	/**
+	 * Light gray coloured text.
+	 */
+	public static final String LIGHT_GRAY = "\u000315";
 
-    
-    /**
-     * Removes all previously applied color and formatting attributes.
-     */
-    public static final String NORMAL = "\u000f";
+	/**
+	 * This class should not be constructed.
+	 */
+	private Colors() {
+	}
 
+	/**
+	 * Removes all colours from a line of IRC text.
+	 *
+	 * @since PircBot 1.2.0
+	 *
+	 * @param line the input text.
+	 *
+	 * @return the same text, but with all colours removed.
+	 */
+	public static String removeColors(String line) {
+		int length = line.length();
+		StringBuffer buffer = new StringBuffer();
+		int i = 0;
+		while (i < length) {
+			char ch = line.charAt(i);
+			if (ch == '\u0003') {
+				i++;
+				// Skip "x" or "xy" (foreground color).
+				if (i < length) {
+					ch = line.charAt(i);
+					if (Character.isDigit(ch)) {
+						i++;
+						if (i < length) {
+							ch = line.charAt(i);
+							if (Character.isDigit(ch))
+								i++;
+						}
+						// Now skip ",x" or ",xy" (background color).
+						if (i < length) {
+							ch = line.charAt(i);
+							if (ch == ',') {
+								i++;
+								if (i < length) {
+									ch = line.charAt(i);
+									if (Character.isDigit(ch)) {
+										i++;
+										if (i < length) {
+											ch = line.charAt(i);
+											if (Character.isDigit(ch))
+												i++;
+										}
+									} else
+										// Keep the comma.
+										i--;
+								} else
+									// Keep the comma.
+									i--;
+							}
+						}
+					}
+				}
+			} else if (ch == '\u000f')
+				i++;
+			else {
+				buffer.append(ch);
+				i++;
+			}
+		}
+		return buffer.toString();
+	}
 
-    /**
-     * Bold text.
-     */
-    public static final String BOLD = "\u0002";
-    
+	/**
+	 * Remove formatting from a line of IRC text.
+	 *
+	 * @since PircBot 1.2.0
+	 *
+	 * @param line the input text.
+	 *
+	 * @return the same text, but without any bold, underlining, reverse, etc.
+	 */
+	public static String removeFormatting(String line) {
+		int length = line.length();
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < length; i++) {
+			char ch = line.charAt(i);
+			if (ch == '\u000f' || ch == '\u0002' || ch == '\u001f' || ch == '\u0016') {
+				// Don't add this character.
+			} else
+				buffer.append(ch);
+		}
+		return buffer.toString();
+	}
 
-    /**
-     * Underlined text.
-     */
-    public static final String UNDERLINE = "\u001f";
-
-
-    /**
-     * Reversed text (may be rendered as italic text in some clients).
-     */
-    public static final String REVERSE = "\u0016";
-    
-
-    /**
-     * White coloured text.
-     */
-    public static final String WHITE = "\u000300";
-    
-
-    /**
-     * Black coloured text.
-     */
-    public static final String BLACK = "\u000301";
-    
-
-    /**
-     * Dark blue coloured text.
-     */
-    public static final String DARK_BLUE = "\u000302";
-    
-
-    /**
-     * Dark green coloured text.
-     */
-    public static final String DARK_GREEN = "\u000303";
-    
-
-    /**
-     * Red coloured text.
-     */
-    public static final String RED = "\u000304";
-    
-
-    /**
-     * Brown coloured text.
-     */
-    public static final String BROWN = "\u000305";
-    
-
-    /**
-     * Purple coloured text.
-     */
-    public static final String PURPLE = "\u000306";
-    
-
-    /**
-     * Olive coloured text.
-     */
-    public static final String OLIVE = "\u000307";
-    
-
-    /**
-     * Yellow coloured text.
-     */
-    public static final String YELLOW = "\u000308";
-    
-
-    /**
-     * Green coloured text.
-     */
-    public static final String GREEN = "\u000309";
-    
-
-    /**
-     * Teal coloured text.
-     */
-    public static final String TEAL = "\u000310";
-    
-
-    /**
-     * Cyan coloured text.
-     */
-    public static final String CYAN = "\u000311";
-    
-
-    /**
-     * Blue coloured text.
-     */
-    public static final String BLUE = "\u000312";
-    
-
-    /**
-     * Magenta coloured text.
-     */
-    public static final String MAGENTA = "\u000313";
-    
-
-    /**
-     * Dark gray coloured text.
-     */
-    public static final String DARK_GRAY = "\u000314";
-    
-
-    /**
-     * Light gray coloured text.
-     */
-    public static final String LIGHT_GRAY = "\u000315";
-
-    
-    /**
-     * This class should not be constructed.
-     */
-    private Colors() {
-        
-    }
-    
-    
-    /**
-     * Removes all colours from a line of IRC text.
-     * 
-     * @since PircBot 1.2.0
-     * 
-     * @param line the input text.
-     * 
-     * @return the same text, but with all colours removed.
-     */
-    public static String removeColors(String line) {
-        int length = line.length();
-        StringBuffer buffer = new StringBuffer();
-        int i = 0;
-        while (i < length) {
-            char ch = line.charAt(i);
-            if (ch == '\u0003') {
-                i++;
-                // Skip "x" or "xy" (foreground color).
-                if (i < length) {
-                    ch = line.charAt(i);
-                    if (Character.isDigit(ch)) {
-                        i++;
-                        if (i < length) {
-                            ch = line.charAt(i);
-                            if (Character.isDigit(ch)) {
-                                i++;
-                            }
-                        }
-                        // Now skip ",x" or ",xy" (background color).
-                        if (i < length) {
-                            ch = line.charAt(i);
-                            if (ch == ',') {
-                                i++;
-                                if (i < length) {
-                                    ch = line.charAt(i);
-                                    if (Character.isDigit(ch)) {
-                                        i++;
-                                        if (i < length) {
-                                            ch = line.charAt(i);
-                                            if (Character.isDigit(ch)) {
-                                                i++;
-                                            }
-                                        }
-                                    }
-                                    else {
-                                        // Keep the comma.
-                                        i--;
-                                    }
-                                }
-                                else {
-                                    // Keep the comma.
-                                    i--;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else if (ch == '\u000f') {
-                i++;
-            }
-            else {
-                buffer.append(ch);
-                i++;
-            }
-        }
-        return buffer.toString();
-    }
-    
-    
-    /**
-     * Remove formatting from a line of IRC text.
-     * 
-     * @since PircBot 1.2.0
-     * 
-     * @param line the input text.
-     * 
-     * @return the same text, but without any bold, underlining, reverse, etc.
-     */
-    public static String removeFormatting(String line) {
-        int length = line.length();
-        StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < length; i++) {
-            char ch = line.charAt(i);
-            if (ch == '\u000f' || ch == '\u0002' || ch == '\u001f' || ch == '\u0016') {
-                // Don't add this character.
-            }
-            else {
-                buffer.append(ch);
-            }
-        }
-        return buffer.toString();
-    }
-    
-    
-    /**
-     * Removes all formatting and colours from a line of IRC text.
-     * 
-     * @since PircBot 1.2.0
-     *
-     * @param line the input text.
-     * 
-     * @return the same text, but without formatting and colour characters.
-     * 
-     */
-    public static String removeFormattingAndColors(String line) {
-        return removeFormatting(removeColors(line));
-    }
-    
+	/**
+	 * Removes all formatting and colours from a line of IRC text.
+	 *
+	 * @since PircBot 1.2.0
+	 *
+	 * @param line the input text.
+	 *
+	 * @return the same text, but without formatting and colour characters.
+	 *
+	 */
+	public static String removeFormattingAndColors(String line) {
+		return removeFormatting(removeColors(line));
+	}
 }
