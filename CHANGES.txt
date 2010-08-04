@@ -1,9 +1,10 @@
 This is a list of all the changes from PircBot. This list excludes any changes to already rewritten code.
 
--Input and Output has been refractored for a better flow. Origional: Bot -> InputThread(due to it holding the writer for some reason) -> OutputThread. New: Bot -> OutputThread. As a result, removed InputThread.sendRawLine, changed OutputThread.sendRawLine to public (old: package static)
+-Input and Output has been refactored for a better flow. Origional: Bot -> InputThread(due to it holding the writer for some reason) -> OutputThread. New: Bot -> OutputThread. As a result, removed InputThread.sendRawLine, changed OutputThread.sendRawLine to public (old: package static)
 -Removed the custom Queue, replaced by LinkedBlockingQueue in OutputThread
 -Removed sendRawLine from PircBot. 
 -Can now set socket timeout
 -If bot is already connected and connect is called again, throw a IrcException instead of a IOException
 -Minor: Removed InputThread.dispose(), replaced by simply closing the socket and letting the thread exit after the loop
 -Minor: All imports are now using full path vs wildcard matching
+-Basic utility class created, might be useful

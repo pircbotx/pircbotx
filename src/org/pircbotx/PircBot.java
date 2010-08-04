@@ -16,6 +16,12 @@
  */
 package org.pircbotx;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Collections;
+import java.util.Set;
+import java.util.Collection;
+import java.util.TreeMap;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.BufferedReader;
@@ -29,8 +35,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.StringTokenizer;
 import static org.pircbotx.ReplyConstants.*;
 
@@ -58,12 +62,6 @@ import static org.pircbotx.ReplyConstants.*;
  * methods are already correctly implemented in the PircBot and should not
  * normally need to be overridden.  Please read the full documentation for each
  * method to see which ones are already implemented by the PircBot class.
- *  <p>
- * Please visit the PircBot homepage at
- * <a href="http://www.jibble.org/pircbot.php">http://www.jibble.org/pircbot.php</a>
- * for full revision history, a beginners guide to creating your first PircBot
- * and a list of some existing Java IRC bots and clients that use the PircBot
- * framework.
  *
  * @author  Origionally by Paul James Mutton,
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
@@ -76,7 +74,7 @@ public abstract class PircBot {
 	 * The definitive version number of this release of PircBot.
 	 * (Note: Change this before automatically building releases)
 	 */
-	public static final String VERSION = "1.5.0";
+	public static final String VERSION = "2.0 Alpha";
 	private static final int OP_ADD = 1;
 	private static final int OP_REMOVE = 2;
 	private static final int VOICE_ADD = 3;
@@ -94,10 +92,7 @@ public abstract class PircBot {
 	private long _messageDelay = 1000;
 	// A Hashtable of channels that points to a selfreferential Hashtable of
 	// User objects (used to remember which users are in which channels).
-	private Hashtable _channels = new Hashtable();
-	// A Hashtable to temporarily store channel topics when we join them
-	// until we find out who set that topic.
-	private Hashtable _topics = new Hashtable();
+	private final Map<String, Channel> _channels = Collections.synchronizedMap(new TreeMap<String, Channel>());
 	// DccManager to process and handle all DCC events.
 	private DccManager _dccManager = new DccManager(this);
 	private int[] _dccPorts = null;
@@ -108,7 +103,7 @@ public abstract class PircBot {
 	private String _name = "PircBot";
 	private String _nick = _name;
 	private String _login = "PircBot";
-	private String _version = "PircBot " + VERSION + " Java IRC Bot - www.jibble.org";
+	private String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
 	/**
@@ -963,7 +958,7 @@ public abstract class PircBot {
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				String channel = target;
-				addUser(channel, new User("", sourceNick));
+				addUser(channel, new User(sourceNick, sourceLogin, sourceHostname));
 				onJoin(channel, sourceNick, sourceLogin, sourceHostname);
 			} else if (command.equals("PART")) {
 				// Someone is parting from a channel.
@@ -1093,18 +1088,20 @@ public abstract class PircBot {
 			String topic = response.substring(colon + 1);
 			onChannelInfo(channel, userCount, topic);
 		} else if (code == RPL_TOPIC) {
-			// This is topic information about a channel we've just joined.
-			int firstSpace = response.indexOf(' ');
-			int secondSpace = response.indexOf(' ', firstSpace + 1);
-			int colon = response.indexOf(':');
-			String channel = response.substring(firstSpace + 1, secondSpace);
-			String topic = response.substring(colon + 1);
+			//EXAMPLE: PircBotX #aChannel :I'm some random topic
+			//This is topic about a channel we've just joined.
+			String[] parsed = response.split("3");
+			String channel = parsed[1];
+			String topic = parsed[2].substring(1);
 
-			_topics.put(channel, topic);
+			_channels.get(channel).setTopic(topic);
+
 
 			// For backwards compatibility only - this onTopic method is deprecated.
 			onTopic(channel, topic);
 		} else if (code == RPL_TOPICINFO) {
+			//EXAMPLE: PircBotX #quackbot ISetTopic 1564842512
+			//This is information on the topic of the channel we've just joined
 			StringTokenizer tokenizer = new StringTokenizer(response);
 			tokenizer.nextToken();
 			String channel = tokenizer.nextToken();
@@ -1116,10 +1113,11 @@ public abstract class PircBot {
 				// Stick with the default value of zero.
 			}
 
-			String topic = (String) _topics.get(channel);
-			_topics.remove(channel);
+			Channel chan = _channels.get(channel);
+			chan.setTopicTimestamp(date);
+			chan.setTopicSetter(setBy);
 
-			onTopic(channel, topic, setBy, date, false);
+			onTopic(channel, chan.getTopic(), setBy, date, false);
 		} else if (code == RPL_NAMREPLY) {
 			// This is a list of nicks in a channel that we've just joined.
 			int channelEndIndex = response.indexOf(" :");
@@ -1127,26 +1125,19 @@ public abstract class PircBot {
 
 			StringTokenizer tokenizer = new StringTokenizer(response.substring(response.indexOf(" :") + 2));
 			while (tokenizer.hasMoreTokens()) {
+
 				String nick = tokenizer.nextToken();
-				String prefix = "";
-				if (nick.startsWith("@"))
-					// User is an operator in this channel.
-					prefix = "@";
-				else if (nick.startsWith("+"))
-					// User is voiced in this channel.
-					prefix = "+";
-				else if (nick.startsWith("."))
-					// Some wibbly status I've never seen before...
-					prefix = ".";
-				nick = nick.substring(prefix.length());
-				addUser(channel, new User(prefix, nick));
+
+				User curUser = new User(nick.replace("@", "").replace("+", ""),"", "");
+				curUser.setOp(nick.substring(0,3).contains("@"));
+				curUser.setVoice(nick.substring(0,3).contains("+"));
+				addUser(channel, curUser);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			// This is the end of a NAMES list, so we know that we've got
 			// the full list of users in the channel that we just joined.
 			String channel = response.substring(response.indexOf(' ') + 1, response.indexOf(" :"));
-			User[] users = getUsers(channel);
-			onUserList(channel, users);
+			onUserList(channel, getUsers(channel));
 		}
 
 		onServerResponse(code, response);
@@ -1209,7 +1200,7 @@ public abstract class PircBot {
 	 *
 	 * @see User
 	 */
-	protected void onUserList(String channel, User[] users) {
+	protected void onUserList(String channel, List<User> users) {
 	}
 
 	/**
@@ -1418,7 +1409,7 @@ public abstract class PircBot {
 	 * @param sourceHostname The hostname of the user that set the mode.
 	 * @param mode  The mode that has been set.
 	 */
-	private final void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
+	private void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 
 		if (_channelPrefixes.indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
@@ -1435,6 +1426,10 @@ public abstract class PircBot {
 			char pn = ' ';
 			int p = 1;
 
+			Channel channelInfo = _channels.get(channel);
+			//Get the user or create a dummy object to prevent NPE's
+			User user = (channelInfo.userExists(sourceNick)) ? channelInfo.getUser(sourceNick) : new User("","","","");
+
 			// All of this is very large and ugly, but it's the only way of providing
 			// what the users want :-/
 			for (int i = 0; i < params[0].length(); i++) {
@@ -1444,19 +1439,19 @@ public abstract class PircBot {
 					pn = atPos;
 				else if (atPos == 'o') {
 					if (pn == '+') {
-						updateUser(channel, OP_ADD, params[p]);
+						user.setOp(true);
 						onOp(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					} else {
-						updateUser(channel, OP_REMOVE, params[p]);
+						user.setOp(false);
 						onDeop(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					}
 					p++;
 				} else if (atPos == 'v') {
 					if (pn == '+') {
-						updateUser(channel, VOICE_ADD, params[p]);
+						user.setVoice(true);
 						onVoice(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					} else {
-						updateUser(channel, VOICE_REMOVE, params[p]);
+						user.setVoice(false);
 						onDeVoice(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					}
 					p++;
@@ -2615,7 +2610,7 @@ public abstract class PircBot {
 	 * Sets the choice of port numbers that can be used when sending a DCC chat
 	 * or file transfer. This is useful when you are behind a firewall and
 	 * need to set up port forwarding. The array of port numbers is traversed
-	 * in sequence until a free port is found to listen on. A DCC tranfer will
+	 * in sequence until a free port is found to listen on. A DCC transfer will
 	 * fail if all ports are already in use.
 	 * If set to null, <i>any</i> free port number will be used.
 	 *
@@ -2631,37 +2626,6 @@ public abstract class PircBot {
 		else
 			// Clone the array to prevent external modification.
 			_dccPorts = (int[]) ports.clone();
-	}
-
-	/**
-	 * Returns true if and only if the object being compared is the exact
-	 * same instance as this PircBot. This may be useful if you are writing
-	 * a multiple server IRC bot that uses more than one instance of PircBot.
-	 *
-	 * @since PircBot 0.9.9
-	 *
-	 * @return true if and only if Object o is a PircBot and equal to
-	 */
-	public boolean equals(Object o) {
-		// This probably has the same effect as Object.equals, but that may change...
-		if (o instanceof PircBot) {
-			PircBot other = (PircBot) o;
-			return other == this;
-		}
-		return false;
-	}
-
-	/**
-	 * Returns the hashCode of this PircBot. This method can be called by hashed
-	 * collection classes and is useful for managing multiple instances of
-	 * PircBots in such collections.
-	 *
-	 * @since PircBot 0.9.9
-	 *
-	 * @return the hash code for this instance of PircBot.
-	 */
-	public int hashCode() {
-		return super.hashCode();
 	}
 
 	/**
@@ -2683,6 +2647,7 @@ public abstract class PircBot {
 	 *
 	 * @return a String representation of this object.
 	 */
+	@Override
 	public String toString() {
 		return "Version{" + _version + "}"
 				+ " Connected{" + isConnected() + "}"
@@ -2721,21 +2686,8 @@ public abstract class PircBot {
 	 *
 	 * @see #onUserList(String,User[]) onUserList
 	 */
-	public final User[] getUsers(String channel) {
-		channel = channel.toLowerCase();
-		User[] userArray = new User[0];
-		synchronized (_channels) {
-			Hashtable users = (Hashtable) _channels.get(channel);
-			if (users != null) {
-				userArray = new User[users.size()];
-				Enumeration enumeration = users.elements();
-				for (int i = 0; i < userArray.length; i++) {
-					User user = (User) enumeration.nextElement();
-					userArray[i] = user;
-				}
-			}
-		}
-		return userArray;
+	public final List<User> getUsers(String channel) {
+		return _channels.get(channel).getAllUsers();
 	}
 
 	/**
@@ -2750,15 +2702,12 @@ public abstract class PircBot {
 	 * @return A String array containing the names of all channels that we
 	 *         are in.
 	 */
-	public final String[] getChannels() {
-		String[] channels = new String[0];
-		synchronized (_channels) {
-			channels = new String[_channels.size()];
-			Enumeration enumeration = _channels.keys();
-			for (int i = 0; i < channels.length; i++)
-				channels[i] = (String) enumeration.nextElement();
-		}
-		return channels;
+	public final Collection<Channel> getChannels() {
+		return _channels.values();
+	}
+
+	public Set<String> getChannelsNames() {
+		return _channels.keySet();
 	}
 
 	/**
@@ -2797,120 +2746,60 @@ public abstract class PircBot {
 	 * Add a user to the specified channel in our memory.
 	 * Overwrite the existing entry if it exists.
 	 */
-	private final void addUser(String channel, User user) {
-		channel = channel.toLowerCase();
+	private void addUser(String channel, User user) {
 		synchronized (_channels) {
-			Hashtable users = (Hashtable) _channels.get(channel);
-			if (users == null) {
-				users = new Hashtable();
-				_channels.put(channel, users);
-			}
-			users.put(user, user);
+			_channels.get(channel.toLowerCase()).addUser(user);
 		}
 	}
 
 	/**
 	 * Remove a user from the specified channel in our memory.
 	 */
-	private final User removeUser(String channel, String nick) {
-		channel = channel.toLowerCase();
-		User user = new User("", nick);
+	private void removeUser(String channel, String nick) {
 		synchronized (_channels) {
-			Hashtable users = (Hashtable) _channels.get(channel);
-			if (users != null)
-				return (User) users.remove(user);
+			_channels.get(channel.toLowerCase()).removeUser(nick);
 		}
-		return null;
 	}
 
 	/**
 	 * Remove a user from all channels in our memory.
 	 */
-	private final void removeUser(String nick) {
+	private void removeUser(String nick) {
 		synchronized (_channels) {
-			Enumeration enumeration = _channels.keys();
-			while (enumeration.hasMoreElements()) {
-				String channel = (String) enumeration.nextElement();
-				removeUser(channel, nick);
-			}
+			for (Channel curChannel : _channels.values())
+				//Can blindly call remove user since checking is going to be done anyway
+				curChannel.removeUser(nick);
 		}
 	}
 
 	/**
 	 * Rename a user if they appear in any of the channels we know about.
 	 */
-	private final void renameUser(String oldNick, String newNick) {
+	private void renameUser(String oldNick, String newNick) {
 		synchronized (_channels) {
-			Enumeration enumeration = _channels.keys();
-			while (enumeration.hasMoreElements()) {
-				String channel = (String) enumeration.nextElement();
-				User user = removeUser(channel, oldNick);
-				if (user != null) {
-					user = new User(user.getPrefix(), newNick);
-					addUser(channel, user);
+			for (Channel curChannel : _channels.values())
+				if (curChannel.userExists(oldNick)) {
+					curChannel.getUser(oldNick).setNick(newNick);
+					return;
 				}
-			}
 		}
 	}
 
 	/**
 	 * Removes an entire channel from our memory of users.
 	 */
-	private final void removeChannel(String channel) {
-		channel = channel.toLowerCase();
+	private void removeChannel(String channel) {
 		synchronized (_channels) {
-			_channels.remove(channel);
+			_channels.remove(channel.toLowerCase());
 		}
 	}
 
 	/**
 	 * Removes all channels from our memory of users.
 	 */
-	private final void removeAllChannels() {
+	private void removeAllChannels() {
 		synchronized (_channels) {
-			_channels = new Hashtable();
-		}
-	}
-
-	private final void updateUser(String channel, int userMode, String nick) {
-		channel = channel.toLowerCase();
-		synchronized (_channels) {
-			Hashtable users = (Hashtable) _channels.get(channel);
-			User newUser = null;
-			if (users != null) {
-				Enumeration enumeration = users.elements();
-				while (enumeration.hasMoreElements()) {
-					User userObj = (User) enumeration.nextElement();
-					if (userObj.getNick().equalsIgnoreCase(nick))
-						if (userMode == OP_ADD)
-							if (userObj.hasVoice())
-								newUser = new User("@+", nick);
-							else
-								newUser = new User("@", nick);
-						else if (userMode == OP_REMOVE)
-							if (userObj.hasVoice())
-								newUser = new User("+", nick);
-							else
-								newUser = new User("", nick);
-						else if (userMode == VOICE_ADD)
-							if (userObj.isOp())
-								newUser = new User("@+", nick);
-							else
-								newUser = new User("+", nick);
-						else if (userMode == VOICE_REMOVE)
-							if (userObj.isOp())
-								newUser = new User("@", nick);
-							else
-								newUser = new User("", nick);
-				}
-			}
-			if (newUser != null)
-				users.put(newUser, newUser);
-			else {
-				// just in case ...
-				newUser = new User("", nick);
-				users.put(newUser, newUser);
-			}
+			_channels.clear();
 		}
 	}
 
