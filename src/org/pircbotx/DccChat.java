@@ -39,14 +39,14 @@ public class DccChat {
 	 * from somebody. It attempts to connect to the client that issued the
 	 * request.
 	 *
-	 * @param bot An instance of the underlying PircBot.
+	 * @param bot An instance of the underlying PircBotX.
 	 * @param sourceNick The nick of the sender.
 	 * @param address The address to connect to.
 	 * @param port The port number to connect to.
 	 *
 	 * @throws IOException If the connection cannot be made.
 	 */
-	DccChat(PircBot bot, String nick, String login, String hostname, long address, int port) {
+	DccChat(PircBotX bot, String nick, String login, String hostname, long address, int port) {
 		_bot = bot;
 		_address = address;
 		_port = port;
@@ -61,13 +61,13 @@ public class DccChat {
 	 * somebody. If the client accepts the chat request, then the socket we
 	 * obtain is passed to this constructor.
 	 *
-	 * @param bot An instance of the underlying PircBot.
+	 * @param bot An instance of the underlying PircBotX.
 	 * @param sourceNick The nick of the user we are sending the request to.
 	 * @param socket The socket which will be used for the DCC CHAT session.
 	 *
 	 * @throws IOException If the socket cannot be read from.
 	 */
-	DccChat(PircBot bot, String nick, Socket socket) throws IOException {
+	DccChat(PircBotX bot, String nick, Socket socket) throws IOException {
 		_bot = bot;
 		_nick = nick;
 		_socket = socket;
@@ -202,7 +202,7 @@ public class DccChat {
 	public long getNumericalAddress() {
 		return _address;
 	}
-	private PircBot _bot;
+	private PircBotX _bot;
 	private String _nick;
 	private String _login = null;
 	private String _hostname = null;

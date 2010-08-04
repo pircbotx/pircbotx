@@ -33,19 +33,19 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @version    2.0 Alpha
  */
 public class OutputThread extends Thread {
-	protected PircBot _bot = null;
+	protected PircBotX _bot = null;
 	protected LinkedBlockingQueue<String> _queue = new LinkedBlockingQueue<String>();
 	protected final BufferedWriter _bwriter;
 
 	/**
-	 * Constructs an OutputThread for the underlying PircBot.  All messages
+	 * Constructs an OutputThread for the underlying PircBotX.  All messages
 	 * sent to the IRC server are sent by this OutputThread to avoid hammering
 	 * the server.  Messages are sent immediately if possible.  If there are
 	 * multiple messages queued, then there is a delay imposed.
 	 *
-	 * @param bot The underlying PircBot instance.
+	 * @param bot The underlying PircBotX instance.
 	 */
-	public OutputThread(PircBot bot, BufferedWriter bwriter) {
+	public OutputThread(PircBotX bot, BufferedWriter bwriter) {
 		_bot = bot;
 		_bwriter = bwriter;
 		setName(this.getClass() + "-Thread");
@@ -53,9 +53,9 @@ public class OutputThread extends Thread {
 
 	/**
 	 * A static method to write a line to a BufferedOutputStream and then pass
-	 * the line to the log method of the supplied PircBot instance.
+	 * the line to the log method of the supplied PircBotX instance.
 	 *
-	 * @param bot The underlying PircBot instance.
+	 * @param bot The underlying PircBotX instance.
 	 * @param out The BufferedOutputStream to write to.
 	 * @param line The line to be written. "\r\n" is appended to the end.
 	 * @param encoding The charset to use when encoing this string into a

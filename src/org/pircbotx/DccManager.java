@@ -33,9 +33,9 @@ public class DccManager {
 	/**
 	 * Constructs a DccManager to look after all DCC SEND and CHAT events.
 	 *
-	 * @param bot The PircBot whose DCC events this class will handle.
+	 * @param bot The PircBotX whose DCC events this class will handle.
 	 */
-	DccManager(PircBot bot) {
+	DccManager(PircBotX bot) {
 		_bot = bot;
 	}
 
@@ -136,6 +136,6 @@ public class DccManager {
 	void removeAwaitingResume(DccFileTransfer transfer) {
 		_awaitingResume.removeElement(transfer);
 	}
-	private PircBot _bot;
+	private PircBotX _bot;
 	private Vector _awaitingResume = new Vector();
 }

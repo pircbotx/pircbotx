@@ -32,7 +32,7 @@ import java.net.Socket;
  * hosts in order to determine the user's identity.  A few IRC servers
  * will not allow you to connect unless this information is provided.
  *  <p>
- * So when a PircBot is run on a machine that does not run an ident server,
+ * So when a PircBotX is run on a machine that does not run an ident server,
  * it may be necessary to provide a "faked" response by starting up its
  * own ident server and sending out apparently correct responses.
  *  <p>
@@ -54,16 +54,16 @@ public class IdentServer extends Thread {
 	 * Constructs and starts an instance of an IdentServer that will
 	 * respond to a client with the provided login.  Rather than calling
 	 * this constructor explicitly from your code, it is recommended that
-	 * you use the startIdentServer method in the PircBot class.
+	 * you use the startIdentServer method in the PircBotX class.
 	 *  <p>
 	 * The ident server will wait for up to 60 seconds before shutting
 	 * down.  Otherwise, it will shut down as soon as it has responded
 	 * to an ident request.
 	 *
-	 * @param bot The PircBot instance that will be used to log to.
+	 * @param bot The PircBotX instance that will be used to log to.
 	 * @param login The login that the ident server will respond with.
 	 */
-	IdentServer(PircBot bot, String login) {
+	IdentServer(PircBotX bot, String login) {
 		_bot = bot;
 		_login = login;
 
@@ -114,7 +114,7 @@ public class IdentServer extends Thread {
 
 		_bot.log("*** The Ident server has been shut down.");
 	}
-	private PircBot _bot;
+	private PircBotX _bot;
 	private String _login;
 	private ServerSocket _ss = null;
 }

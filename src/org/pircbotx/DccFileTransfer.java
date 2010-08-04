@@ -45,7 +45,7 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for receiving files.
 	 */
-	DccFileTransfer(PircBot bot, DccManager manager, String nick, String login, String hostname, String type, String filename, long address, int port, long size) {
+	DccFileTransfer(PircBotX bot, DccManager manager, String nick, String login, String hostname, String type, String filename, long address, int port, long size) {
 		_bot = bot;
 		_manager = manager;
 		_nick = nick;
@@ -64,7 +64,7 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for sending files.
 	 */
-	DccFileTransfer(PircBot bot, DccManager manager, File file, String nick, int timeout) {
+	DccFileTransfer(PircBotX bot, DccManager manager, File file, String nick, int timeout) {
 		_bot = bot;
 		_manager = manager;
 		_nick = nick;
@@ -449,7 +449,7 @@ public class DccFileTransfer {
 	public long getNumericalAddress() {
 		return _address;
 	}
-	private PircBot _bot;
+	private PircBotX _bot;
 	private DccManager _manager;
 	private String _nick;
 	private String _login = null;
