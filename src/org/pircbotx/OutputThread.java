@@ -32,10 +32,15 @@ import java.util.concurrent.LinkedBlockingQueue;
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
  * @version    2.0 Alpha
  */
-public class OutputThread extends Thread {
+public class OutputThread implements Runnable {
 	protected PircBotX _bot = null;
 	protected LinkedBlockingQueue<String> _queue = new LinkedBlockingQueue<String>();
 	protected final BufferedWriter _bwriter;
+	public static ThreadFactory threadFactory = new ThreadFactory() {
+		public Thread newThread(Runnable r, PircBotX bot) {
+			return new Thread(r, bot.getServer() + "-" + bot.getNick() + "-OutputThread");
+		}
+	};
 
 	/**
 	 * Constructs an OutputThread for the underlying PircBotX.  All messages
@@ -48,7 +53,6 @@ public class OutputThread extends Thread {
 	public OutputThread(PircBotX bot, BufferedWriter bwriter) {
 		_bot = bot;
 		_bwriter = bwriter;
-		setName(this.getClass() + "-Thread");
 	}
 
 	/**
