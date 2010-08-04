@@ -8,3 +8,8 @@ This is a list of all the changes from PircBot. This list excludes any changes t
 -Minor: Removed InputThread.dispose(), replaced by simply closing the socket and letting the thread exit after the loop
 -Minor: All imports are now using full path vs wildcard matching
 -Basic utility class created, might be useful
+-Channel object created, holds users and other information
+-PircBot.getChannels() returns Channel objects in a list, while getChannelsNames returnes channel names in a list. Same for getUsers and getUsersNames
+-Removed redundant equals and hashCode methods
+-PircBot._channels is now a synchronized map
+-User object greatly extended
