@@ -16,6 +16,12 @@
  */
 package org.pircbotx;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * This class is used to represent a user on an IRC server.
  * Instances of this class are returned by the getUsers method
@@ -50,27 +56,17 @@ public class User implements Comparable<User> {
 	 * Weather or not the user represented by this object is an op in the channel
 	 * this object was fetched from
 	 */
-	private boolean _op = false;
+	private Map<String,Boolean> _op  = Collections.synchronizedMap(new HashMap<String,Boolean>());
 	/**
 	 * Weather or not the user represented by this object has voice in the channel
 	 * this object was fetched from
 	 */
-	private boolean _voice = false;
+	private Map<String,Boolean> _voice  = Collections.synchronizedMap(new HashMap<String,Boolean>());
 	/**
 	 * Weather or not the user represented by this object is away in the channel
 	 * this object was fetched from
 	 */
 	private boolean _away = false;
-	/**
-	 * Weather or not the user represented by this object is a zombie in the channel
-	 * this object was fetched from
-	 */
-	private boolean _zombie = false;
-	/**
-	 * Weather or not the user represented by this object is deaf in the channel
-	 * this object was fetched from
-	 */
-	private boolean _deaf = false;
 	/**
 	 * Weather or not the user represented by this object is an IRCop on the server
 	 */
@@ -93,30 +89,20 @@ public class User implements Comparable<User> {
 		_nick = nick;
 	}
 
-	public void parseStatus(String prefix) {
-		setOp(prefix.contains("@"));
-		setVoice(prefix.contains("+"));
-		setZombie(prefix.contains("+"));
-		setDeaf(prefix.contains("d"));
-		setZombie(prefix.contains("+"));
+	public void parseStatus(String channel, String prefix) {
+		setOp(channel, prefix.contains("@"));
+		setVoice(channel, prefix.contains("+"));;
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
 
 	/**
-	 * Returns the nick of the user complete with their prefix if they
-	 * have one, e.g. "@Dave".
 	 *
 	 * @return The user's prefix and nick.
 	 */
 	@Override
 	public String toString() {
-		String prefix = "";
-		if (isOp())
-			prefix = prefix + "@";
-		if (hasVoice())
-			prefix = prefix + "+";
-		return prefix + getNick();
+		return getNick();
 	}
 
 	/**
@@ -165,6 +151,11 @@ public class User implements Comparable<User> {
 	public int compareTo(User other) {
 		return other.getNick().compareToIgnoreCase(getNick());
 	}
+
+	 public void removeChannel(String chan) {
+		 _op.remove(chan);
+		 _voice.remove(chan);
+	 }
 
 	/**
 	 * The user represented by this object's nickname on the server.
@@ -219,8 +210,8 @@ public class User implements Comparable<User> {
 	 * this object was fetched from
 	 * @return the _op
 	 */
-	public boolean isOp() {
-		return _op;
+	public boolean isOp(String channel) {
+		return _op.containsKey(channel) && _op.get(channel);
 	}
 
 	/**
@@ -228,8 +219,8 @@ public class User implements Comparable<User> {
 	 * this object was fetched from
 	 * @param op the _op to set
 	 */
-	public void setOp(boolean op) {
-		_op = op;
+	public void setOp(String channel, boolean op) {
+		_op.put(channel,op);
 	}
 
 	/**
@@ -237,8 +228,8 @@ public class User implements Comparable<User> {
 	 * this object was fetched from
 	 * @return the _voice
 	 */
-	public boolean hasVoice() {
-		return _voice;
+	public boolean hasVoice(String channel) {
+		return _voice.containsKey(channel) && _voice.get(channel);
 	}
 
 	/**
@@ -246,8 +237,8 @@ public class User implements Comparable<User> {
 	 * this object was fetched from
 	 * @param voice the _voice to set
 	 */
-	public void setVoice(boolean voice) {
-		_voice = voice;
+	public void setVoice(String channel, boolean voice) {
+		_voice.put(channel, voice);
 	}
 
 	/**
@@ -266,42 +257,6 @@ public class User implements Comparable<User> {
 	 */
 	public void setAway(boolean away) {
 		_away = away;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is a zombie in the channel
-	 * this object was fetched from
-	 * @return the _zombie
-	 */
-	public boolean isZombie() {
-		return _zombie;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is a zombie in the channel
-	 * this object was fetched from
-	 * @param zombie the _zombie to set
-	 */
-	public void setZombie(boolean zombie) {
-		_zombie = zombie;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is deaf in the channel
-	 * this object was fetched from
-	 * @return the _deaf
-	 */
-	public boolean isDeaf() {
-		return _deaf;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is deaf in the channel
-	 * this object was fetched from
-	 * @param deaf the _deaf to set
-	 */
-	public void setDeaf(boolean deaf) {
-		_deaf = deaf;
 	}
 
 	/**
@@ -385,4 +340,6 @@ public class User implements Comparable<User> {
 	void setLogin(String login) {
 		this._login = login;
 	}
+
+	
 }

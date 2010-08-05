@@ -5,7 +5,9 @@
 package org.pircbotx;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -18,7 +20,7 @@ public class Channel {
 	private long _timestamp;
 	private long _topicTimestamp;
 	private String _topicSetter = "";
-	private HashMap<String, User> _users = new HashMap<String, User>();
+	private Map<String,User> _users = Collections.synchronizedMap(new HashMap<String,User>());
 
 	Channel(String name) {
 		this._name = name;
@@ -59,6 +61,24 @@ public class Channel {
 				_mode = _mode.replace(Character.toString(curChar), "");
 	}
 
+	public Collection<User> getUsers() {
+		return _users.values();
+	}
+
+	public User getUser(String nick) {
+		return _users.get(nick);
+	}
+
+	public void removeUser(String nick) {
+		User usr = _users.remove(nick);
+		if(usr != null)
+			usr.removeChannel(_name);
+	}
+
+	public void addUser(User usr) {
+		_users.put(usr.getNick(), usr);
+	}
+
 	/**
 	 * @return the topic
 	 */
@@ -71,49 +91,6 @@ public class Channel {
 	 */
 	public void setTopic(String topic) {
 		this._topic = topic;
-	}
-
-	/**
-	 * @return the users
-	 */
-	public Collection<User> getAllUsers() {
-		return _users.values();
-	}
-
-	/**
-	 * This will get the user object associated with this channel. If none exists,
-	 * one is created. Existence should only be determined by {@link #userExists(java.lang.String) }
-	 * @param nick
-	 * @return
-	 */
-	public User getUser(String nick) {
-		User usr = _users.get(nick);
-		if (usr == null) {
-			//User does not exist, create one
-			usr = new User(nick);
-			_users.put(nick, usr);
-		}
-		return usr;
-	}
-
-	public void removeUser(String nick) {
-		_users.remove(nick);
-	}
-
-	public boolean userExists(String nick) {
-		_users.containsKey(nick);
-		return false;
-	}
-
-	public void renameUser(String oldNick,String newNick) {
-		try {
-		User removed = _users.remove(oldNick);
-		removed.setNick(newNick);
-		_users.put(newNick, removed);
-		}
-		catch(Exception e) {
-			System.err.println("OldNick: "+oldNick+" | NewNick: "+newNick);
-		}
 	}
 
 	/**
@@ -150,8 +127,7 @@ public class Channel {
 				+ "Mode{" + _mode + "} "
 				+ "Topic{" + _topic + "} "
 				+ "Timestamp{" + _timestamp + "} "
-				+ "Topic Timestamp{" + _topicTimestamp + "} "
-				+ "Users{" + _users + '}';
+				+ "Topic Timestamp{" + _topicTimestamp + "} ";
 	}
 
 	/**
