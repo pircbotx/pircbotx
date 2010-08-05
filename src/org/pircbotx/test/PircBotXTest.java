@@ -27,20 +27,18 @@ public class PircBotXTest extends PircBotX {
 	@Override
 	protected void onConnect() {
 		sendRawLine("NICKSERV identify manganip");
-		joinChannel("#quackbot");
-		joinChannel("##c++");
-		joinChannel("##linux");
-		joinChannel("#archlinux");
-		joinChannel("#debian");
-		joinChannel("#gentoo");
-		joinChannel("#git");
-		joinChannel("#jquery");
-		joinChannel("#python");
-		joinChannel("#ubuntu");
-		joinChannel("#maemo");
-		joinChannel("#mysql");
-		joinChannel("#vim");
-		joinChannel("#perl");
+		joinChannel("#honcast");
+		joinChannel("#3on3.et");
+		joinChannel("#lemondogs");
+		joinChannel("#5on5");
+		joinChannel("#5on5.css");
+		joinChannel("#pracc");
+		joinChannel("#matsi");
+		joinChannel("#k1ck");
+		joinChannel("#honcast");
+		joinChannel("#cod4.wars");
+		joinChannel("#teamliquid");
+		joinChannel("#pcw");
 	}
 
 	@Override
@@ -53,7 +51,7 @@ public class PircBotXTest extends PircBotX {
 	public static void main(String[] args) {
 		try {
 			PircBotXTest test = new PircBotXTest();
-			test.connect("irc.freenode.net");
+			test.connect("irc.quakenet.org");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

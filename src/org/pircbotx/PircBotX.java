@@ -78,10 +78,10 @@ public abstract class PircBotX {
 	public static final String VERSION = "2.0 Alpha";
 	protected Socket _socket;
 	// Connection stuff.
-	private InputThread _inputThread = null;
-	private OutputThread _outputThread = null;
-	private Thread _actualInputThread;
-	private Thread _actualOutputThread;
+	protected InputThread _inputThread = null;
+	protected OutputThread _outputThread = null;
+	protected Thread _actualInputThread;
+	protected Thread _actualOutputThread;
 	private String _charset = null;
 	private InetAddress _inetAddress = null;
 	// Details about the last server that we connected to.
@@ -92,6 +92,7 @@ public abstract class PircBotX {
 	// A Hashtable of channels that points to a selfreferential Hashtable of
 	// User objects (used to remember which users are in which channels).
 	private final Map<String, Channel> _channels = Collections.synchronizedMap(new HashMap<String, Channel>());
+	private final Map<String, User> _users = Collections.synchronizedMap(new HashMap<String, User>());
 	// DccManager to process and handle all DCC events.
 	private DccManager _dccManager = new DccManager(this);
 	private int[] _dccPorts = null;
@@ -105,7 +106,7 @@ public abstract class PircBotX {
 	private String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
-	private final Object logLock = null;
+	private final Object logLock = new Object();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -982,22 +983,29 @@ public abstract class PircBotX {
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				String channel = target;
+				Channel chan = getChannel(channel);
 				if (sourceNick.equalsIgnoreCase(_nick)) {
 					//Its us, do some setup
-					_channels.put(channel, new Channel(channel));
 					sendRawLine("WHO " + channel);
 					sendRawLine("MODE " + channel);
 				}
 
-				User usr = _channels.get(channel).getUser(sourceNick);
-				usr.setLogin(sourceLogin);
-				usr.setHostmask(sourceHostname);
+				User usr = getUser(sourceNick);
+				//Only setup if nessesary
+				if (usr.getHostmask() == null) {
+					usr.setLogin(sourceLogin);
+					usr.setHostmask(sourceHostname);
+				}
+				chan.addUser(usr);
+
 				onJoin(channel, sourceNick, sourceLogin, sourceHostname);
 			} else if (command.equals("PART")) {
 				// Someone is parting from a channel.
-				removeUser(target, sourceNick);
 				if (sourceNick.equals(getNick()))
 					removeChannel(target);
+				else
+					//Just remove the user from memory
+					getChannel(target).removeUser(sourceNick);
 				onPart(target, sourceNick, sourceLogin, sourceHostname);
 			} else if (command.equals("NICK")) {
 				// Somebody is changing their nick.
@@ -1022,7 +1030,7 @@ public abstract class PircBotX {
 				String recipient = tokenizer.nextToken();
 				if (recipient.equals(getNick()))
 					removeChannel(target);
-				removeUser(target, recipient);
+				removeUser(recipient);
 				onKick(target, sourceNick, sourceLogin, sourceHostname, recipient, line.substring(line.indexOf(" :") + 2));
 			} else if (command.equals("MODE")) {
 				// Somebody is changing the mode on a channel or user.
@@ -1030,10 +1038,17 @@ public abstract class PircBotX {
 				if (mode.startsWith(":"))
 					mode = mode.substring(1);
 				processMode(target, sourceNick, sourceLogin, sourceHostname, mode);
-			} else if (command.equals("TOPIC"))
+			} else if (command.equals("TOPIC")) {
 				// Someone is changing the topic.
-				onTopic(target, line.substring(line.indexOf(" :") + 2), sourceNick, System.currentTimeMillis(), true);
-			else if (command.equals("INVITE"))
+				String topic = line.substring(line.indexOf(" :") + 2);
+				long currentTime = System.currentTimeMillis();
+				Channel chan = getChannel(target);
+				chan.setTopic(topic);
+				chan.setTopicSetter(sourceNick);
+				chan.setTopicTimestamp(currentTime);
+
+				onTopic(target, topic, sourceNick, currentTime, true);
+			} else if (command.equals("INVITE"))
 				// Somebody is inviting somebody else into a channel.
 				onInvite(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
 			else
@@ -1158,9 +1173,9 @@ public abstract class PircBotX {
 			Channel chan = _channels.get(parsed[2]);
 
 			for (String nick : parsed[3].substring(1).split(" ")) {
-				User curUser = chan.getUser(nick);
-				curUser.setOp(nick.contains("@"));
-				curUser.setVoice(nick.contains("+"));
+				User curUser = getUser(nick);
+				curUser.setOp(chan.getName(), nick.contains("@"));
+				curUser.setVoice(chan.getName(), nick.contains("+"));
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: PircBotX #aChannel :End of /NAMES list
@@ -1172,23 +1187,29 @@ public abstract class PircBotX {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
 			String[] parsed = response.split(" ", 9);
-			Channel chan = _channels.get(parsed[1]);
+			Channel chan = getChannel(parsed[1]);
 
-			User curUser = chan.getUser(parsed[5]);
-			curUser.setLogin(parsed[2]);
-			curUser.setIdentified(parsed[2].startsWith("~"));
-			curUser.setHostmask(parsed[3]);
-			curUser.setServer(parsed[4]);
-			curUser.setNick(parsed[5]);
-			curUser.parseStatus(parsed[6]);
-			curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
-			curUser.setRealname(parsed[8]);
+			User curUser = getUser(parsed[5]);
+			//Only setup when needed
+			if (Utils.isBlank(curUser.getLogin())) {
+				curUser.setLogin(parsed[2]);
+				curUser.setIdentified(parsed[2].startsWith("~"));
+				curUser.setHostmask(parsed[3]);
+				curUser.setServer(parsed[4]);
+				curUser.setNick(parsed[5]);
+				curUser.parseStatus(chan.getName(), parsed[6]);
+				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
+				curUser.setRealname(parsed[8]);
+			}
+			//Add to channels memory
+			chan.addUser(curUser);
+
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			String channel = response.split(" ")[1];
 			System.out.println("Who reply finished for " + channel);
-			onUserList(channel, this.getUsers(channel));
+			onUserList(channel, getUsers(channel));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -1491,9 +1512,7 @@ public abstract class PircBotX {
 			char pn = ' ';
 			int p = 1;
 
-			Channel channelInfo = _channels.get(channel);
-			//Get the user or create a dummy object to prevent NPE's
-			User user = channelInfo.getUser(sourceNick);
+			User user = getUser(sourceNick);
 
 			// All of this is very large and ugly, but it's the only way of providing
 			// what the users want :-/
@@ -1504,19 +1523,19 @@ public abstract class PircBotX {
 					pn = atPos;
 				else if (atPos == 'o') {
 					if (pn == '+') {
-						user.setOp(true);
+						user.setOp(channel, true);
 						onOp(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					} else {
-						user.setOp(false);
+						user.setOp(channel, false);
 						onDeop(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					}
 					p++;
 				} else if (atPos == 'v') {
 					if (pn == '+') {
-						user.setVoice(true);
+						user.setVoice(channel, true);
 						onVoice(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					} else {
-						user.setVoice(false);
+						user.setVoice(channel, false);
 						onDeVoice(channel, sourceNick, sourceLogin, sourceHostname, params[p]);
 					}
 					p++;
@@ -2752,7 +2771,19 @@ public abstract class PircBotX {
 	 * @see #onUserList(String,User[]) onUserList
 	 */
 	public final Collection<User> getUsers(String channel) {
-		return _channels.get(channel).getAllUsers();
+		return _users.values();
+	}
+
+	public User getUser(String nick) {
+		User usr = _users.get(nick);
+		if (usr == null) {
+			//User does not exist, create one
+			usr = new User(nick);
+			synchronized (_users) {
+				_users.put(nick, usr);
+			}
+		}
+		return usr;
 	}
 
 	/**
@@ -2807,22 +2838,11 @@ public abstract class PircBotX {
 	}
 
 	/**
-	 * Remove a user from the specified channel in our memory.
-	 */
-	private void removeUser(String channel, String nick) {
-		synchronized (_channels) {
-			_channels.get(channel.toLowerCase()).removeUser(nick);
-		}
-	}
-
-	/**
 	 * Remove a user from all channels in our memory.
 	 */
 	private void removeUser(String nick) {
-		synchronized (_channels) {
-			for (Channel curChannel : _channels.values())
-				//Can blindly call remove user since checking is going to be done anyway
-				curChannel.removeUser(nick);
+		synchronized (_users) {
+			_users.remove(nick);
 		}
 	}
 
@@ -2830,9 +2850,11 @@ public abstract class PircBotX {
 	 * Rename a user if they appear in any of the channels we know about.
 	 */
 	private void renameUser(String oldNick, String newNick) {
-		synchronized (_channels) {
-			for (Channel curChannel : _channels.values())
-				curChannel.renameUser(oldNick, newNick);
+		synchronized (_users) {
+			System.err.println("Renaming user "+oldNick+" to "+newNick);
+			User removed = _users.remove(oldNick);
+			removed.setNick(newNick);
+			_users.put(newNick, removed);
 		}
 	}
 
@@ -2875,5 +2897,17 @@ public abstract class PircBotX {
 	}
 
 	protected void onMotdFinished() {
+	}
+
+	public Channel getChannel(String name) {
+		Channel chan = _channels.get(name);
+		if (chan == null) {
+			//User does not exist, create one
+			chan = new Channel(name);
+			synchronized (_users) {
+				_channels.put(name, chan);
+			}
+		}
+		return chan;
 	}
 }
