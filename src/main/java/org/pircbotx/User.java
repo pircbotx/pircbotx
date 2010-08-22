@@ -16,10 +16,9 @@
  */
 package org.pircbotx;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,16 +52,6 @@ public class User implements Comparable<User> {
 	 */
 	private String _hostmask = "";
 	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 */
-	private Map<String,Boolean> _op  = Collections.synchronizedMap(new HashMap<String,Boolean>());
-	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 */
-	private Map<String,Boolean> _voice  = Collections.synchronizedMap(new HashMap<String,Boolean>());
-	/**
 	 * Weather or not the user represented by this object is away in the channel
 	 * this object was fetched from
 	 */
@@ -84,9 +73,11 @@ public class User implements Comparable<User> {
 	 * The number of hops it takes to the user represented by this object
 	 */
 	private int _hops = 0;
+	private final PircBotX _bot;
 
-	User(String nick) {
+	public User(PircBotX bot, String nick) {
 		_nick = nick;
+		_bot = bot;
 	}
 
 	public void parseStatus(String channel, String prefix) {
@@ -94,6 +85,10 @@ public class User implements Comparable<User> {
 		setVoice(channel, prefix.contains("+"));;
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
+	}
+
+	public Collection<Channel> getChannels() {
+		return null; //TODO
 	}
 
 	/**
@@ -152,11 +147,6 @@ public class User implements Comparable<User> {
 		return other.getNick().compareToIgnoreCase(getNick());
 	}
 
-	 public void removeChannel(String chan) {
-		 _op.remove(chan);
-		 _voice.remove(chan);
-	 }
-
 	/**
 	 * The user represented by this object's nickname on the server.
 	 * @return the _nick
@@ -203,42 +193,6 @@ public class User implements Comparable<User> {
 	 */
 	void setHostmask(String hostmask) {
 		_hostmask = hostmask;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @return the _op
-	 */
-	public boolean isOp(String channel) {
-		return _op.containsKey(channel) && _op.get(channel);
-	}
-
-	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @param op the _op to set
-	 */
-	public void setOp(String channel, boolean op) {
-		_op.put(channel,op);
-	}
-
-	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @return the _voice
-	 */
-	public boolean hasVoice(String channel) {
-		return _voice.containsKey(channel) && _voice.get(channel);
-	}
-
-	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @param voice the _voice to set
-	 */
-	public void setVoice(String channel, boolean voice) {
-		_voice.put(channel, voice);
 	}
 
 	/**
@@ -338,8 +292,42 @@ public class User implements Comparable<User> {
 	 * @param login the _login to set
 	 */
 	void setLogin(String login) {
-		this._login = login;
+		_login = login;
 	}
 
-	
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 * @return the _op
+	 */
+	public boolean isOp(String chan) {
+		return _bot.getChannel(chan).isOp(this);
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 * @param op the _op to set
+	 */
+	public void setOp(String chan, boolean op) {
+		_bot.getChannel(chan).setOp(this, op);
+	}
+
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 * @return the _voice
+	 */
+	public boolean hasVoice(String chan) {
+		return _bot.getChannel(chan).hasVoice(this);
+	}
+
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 * @param voice the _voice to set
+	 */
+	public void setVoice(String chan, boolean voice) {
+		_bot.getChannel(chan).setVoice(this, voice);
+	}
 }

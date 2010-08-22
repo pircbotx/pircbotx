@@ -6,24 +6,35 @@ package org.pircbotx;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author LordQuackstar
  */
 public class Channel {
-	private String _name;
+	private final String _name;
 	private String _mode = "";
 	private String _topic = "";
 	private long _timestamp;
 	private long _topicTimestamp;
 	private String _topicSetter = "";
-	private Map<String,User> _users = Collections.synchronizedMap(new HashMap<String,User>());
+	private final PircBotX _bot;
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 */
+	private Set<User> _op = Collections.synchronizedSet(new HashSet<User>());
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 */
+	private Set<User> _voice = Collections.synchronizedSet(new HashSet<User>());
 
-	Channel(String name) {
-		this._name = name;
+	public Channel(PircBotX bot, String name) {
+		_name = name;
+		_bot = bot;
 	}
 
 	/**
@@ -31,13 +42,6 @@ public class Channel {
 	 */
 	public String getName() {
 		return _name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this._name = name;
 	}
 
 	/**
@@ -61,22 +65,8 @@ public class Channel {
 				_mode = _mode.replace(Character.toString(curChar), "");
 	}
 
-	public Collection<User> getUsers() {
-		return _users.values();
-	}
-
-	public User getUser(String nick) {
-		return _users.get(nick);
-	}
-
-	public void removeUser(String nick) {
-		User usr = _users.remove(nick);
-		if(usr != null)
-			usr.removeChannel(_name);
-	}
-
-	public void addUser(User usr) {
-		_users.put(usr.getNick(), usr);
+	public Set<User> getUsers() {
+		return _bot.getUsers(_name);
 	}
 
 	/**
@@ -142,5 +132,51 @@ public class Channel {
 	 */
 	public void setTopicSetter(String topicSetter) {
 		this._topicSetter = topicSetter;
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 * @return the _op
+	 */
+	public boolean isOp(User user) {
+		return _op.contains(user);
+	}
+
+	/**
+	 * Weather or not the user represented by this object is an op in the channel
+	 * this object was fetched from
+	 * @param op the _op to set
+	 */
+	public void setOp(User user, boolean op) {
+		if (op)
+			_op.add(user);
+		else
+			_op.remove(user);
+	}
+
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 * @return the _voice
+	 */
+	public boolean hasVoice(User user) {
+		return _voice.contains(user);
+	}
+
+	/**
+	 * Weather or not the user represented by this object has voice in the channel
+	 * this object was fetched from
+	 * @param voice the _voice to set
+	 */
+	public void setVoice(User user, boolean voice) {
+		if (voice)
+			_voice.add(user);
+		else
+			_voice.remove(user);
+	}
+
+	public boolean removeUser(User user) {
+		return _op.remove(user) || _voice.remove(user);
 	}
 }
