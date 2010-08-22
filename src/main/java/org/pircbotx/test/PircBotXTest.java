@@ -5,7 +5,7 @@
 
 package org.pircbotx.test;
 
-import java.util.Collection;
+import java.util.Set;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
@@ -42,7 +42,7 @@ public class PircBotXTest extends PircBotX {
 	}
 
 	@Override
-	protected void onUserList(String channel, Collection<User> users) {
+	protected void onUserList(String channel, Set<User> users) {
 		log("INNEFFIENT CALLED");
 	}
 

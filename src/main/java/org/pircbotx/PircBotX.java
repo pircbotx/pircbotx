@@ -16,11 +16,9 @@
  */
 package org.pircbotx;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
-import java.util.Map;
-import java.util.Collections;
 import java.util.Set;
 import java.util.Collection;
 import java.io.PrintWriter;
@@ -91,8 +89,24 @@ public abstract class PircBotX {
 	private long _messageDelay = 1000;
 	// A Hashtable of channels that points to a selfreferential Hashtable of
 	// User objects (used to remember which users are in which channels).
-	private final Map<String, Channel> _channels = Collections.synchronizedMap(new HashMap<String, Channel>());
-	private final Map<String, User> _users = Collections.synchronizedMap(new HashMap<String, User>());
+	private ManyToManyMap<Channel, User> _userChanInfo = new ManyToManyMap<Channel, User>() {
+		@Override
+		public HashSet<Channel> removeB(User b) {
+			//Remove the Channels internal reference to the User
+			synchronized (lockObject) {
+				for (Channel curChan : BMap.get(b))
+					curChan.removeUser(b);
+			}
+			return super.removeB(b);
+		}
+
+		@Override
+		public boolean dissociate(Channel a, User b, boolean remove) {
+			//Remove the Channels internal reference to the User
+			a.removeUser(b);
+			return super.dissociate(a, b, remove);
+		}
+	};
 	// DccManager to process and handle all DCC events.
 	private DccManager _dccManager = new DccManager(this);
 	private int[] _dccPorts = null;
@@ -175,7 +189,7 @@ public abstract class PircBotX {
 		// Don't clear the outqueue - there might be something important in it!
 
 		// Clear everything we may have know about channels.
-		removeAllChannels();
+		_userChanInfo.clear();
 
 		// Connect to the server.
 		_socket = new Socket(hostname, port);
@@ -217,7 +231,7 @@ public abstract class PircBotX {
 			try {
 				handleLine(line);
 			} catch (Throwable ex) {
-				//Drop it, don't care
+				ex.printStackTrace();
 			}
 
 			int firstSpace = line.indexOf(" ");
@@ -947,6 +961,7 @@ public abstract class PircBotX {
 			if (target.startsWith(":"))
 				target = target.substring(1);
 
+
 			// Check for CTCP requests.
 			if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 				String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
@@ -996,21 +1011,21 @@ public abstract class PircBotX {
 					usr.setLogin(sourceLogin);
 					usr.setHostmask(sourceHostname);
 				}
-				chan.addUser(usr);
+				//user.addUser(usr);
 
 				onJoin(channel, sourceNick, sourceLogin, sourceHostname);
-			} else if (command.equals("PART")) {
+			} else if (command.equals("PART"))
 				// Someone is parting from a channel.
 				if (sourceNick.equals(getNick()))
-					removeChannel(target);
+					_userChanInfo.dissociate(getChannel(target), getUser(sourceNick), true);
 				else
 					//Just remove the user from memory
-					getChannel(target).removeUser(sourceNick);
-				onPart(target, sourceNick, sourceLogin, sourceHostname);
-			} else if (command.equals("NICK")) {
+					//getChannel(target).removeUser(sourceNick);
+					onPart(target, sourceNick, sourceLogin, sourceHostname);
+			else if (command.equals("NICK")) {
 				// Somebody is changing their nick.
 				String newNick = target;
-				renameUser(sourceNick, newNick);
+				getUser(sourceNick).setNick(newNick);
 				if (sourceNick.equals(getNick()))
 					// Update our nick if it was us that changed nick.
 					setNick(newNick);
@@ -1021,16 +1036,22 @@ public abstract class PircBotX {
 			else if (command.equals("QUIT")) {
 				// Someone has quit from the IRC server.
 				if (sourceNick.equals(getNick()))
-					removeAllChannels();
+					//We just quit the server
+					_userChanInfo.clear();
 				else
-					removeUser(sourceNick);
+					//Someone else
+					_userChanInfo.deleteB(getUser(sourceNick));
 				onQuit(sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
 			} else if (command.equals("KICK")) {
 				// Somebody has been kicked from a channel.
 				String recipient = tokenizer.nextToken();
+				User user = getUser(sourceNick);
 				if (recipient.equals(getNick()))
-					removeChannel(target);
-				removeUser(recipient);
+					//We were just kicked
+					_userChanInfo.deleteB(user);
+				else
+					//Someone else
+					_userChanInfo.dissociate(getChannel(target), user, true);
 				onKick(target, sourceNick, sourceLogin, sourceHostname, recipient, line.substring(line.indexOf(" :") + 2));
 			} else if (command.equals("MODE")) {
 				// Somebody is changing the mode on a channel or user.
@@ -1142,8 +1163,7 @@ public abstract class PircBotX {
 			String channel = parsed[1];
 			String topic = parsed[2].substring(1);
 
-			_channels.get(channel).setTopic(topic);
-
+			getChannel(channel).setTopic(topic);
 
 			// For backwards compatibility only - this onTopic method is deprecated.
 			onTopic(channel, topic);
@@ -1161,7 +1181,7 @@ public abstract class PircBotX {
 				// Stick with the default value of zero.
 			}
 
-			Channel chan = _channels.get(channel);
+			Channel chan = getChannel(channel);
 			chan.setTopicTimestamp(date);
 			chan.setTopicSetter(setBy);
 
@@ -1170,7 +1190,7 @@ public abstract class PircBotX {
 			//EXAMPLE: PircBotX = #aChannel :PircBotX @SuperOp
 			// This is a list of nicks in a channel that we've just joined.
 			String[] parsed = response.split(" ", 4);
-			Channel chan = _channels.get(parsed[2]);
+			Channel chan = getChannel(parsed[2]);
 
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
@@ -1201,9 +1221,6 @@ public abstract class PircBotX {
 				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
 				curUser.setRealname(parsed[8]);
 			}
-			//Add to channels memory
-			chan.addUser(curUser);
-
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
@@ -1215,13 +1232,13 @@ public abstract class PircBotX {
 			//Full channel mode (In response to MODE <channel>)
 			String[] parsed = response.split(" ");
 			System.out.println("Setting mode for channel " + parsed[1] + " to " + parsed[2]);
-			_channels.get(parsed[1]).parseMode(parsed[2]);
+			getChannel(parsed[1]).parseMode(parsed[2]);
 		} else if (code == 329) {
 			//EXAMPLE: PircBotX #aChannel 1237581422
 			//Timestamp of the channel
 			String[] parsed = response.split(" ");
 			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
-			_channels.get(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
+			getChannel(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
 		} else if (code == 376)
 			//EXAMPLE: PircBotX :End of /MOTD command.
 			onMotdFinished();
@@ -1286,7 +1303,7 @@ public abstract class PircBotX {
 	 *
 	 * @see User
 	 */
-	protected void onUserList(String channel, Collection<User> users) {
+	protected void onUserList(String channel, Set<User> users) {
 	}
 
 	/**
@@ -2741,72 +2758,6 @@ public abstract class PircBotX {
 	}
 
 	/**
-	 * Returns an array of all users in the specified channel.
-	 *  <p>
-	 * There are some important things to note about this method:-
-	 * <ul>
-	 *  <li>This method may not return a full list of users if you call it
-	 *      before the complete nick list has arrived from the IRC server.
-	 *  </li>
-	 *  <li>If you wish to find out which users are in a channel as soon
-	 *      as you join it, then you should override the onUserList method
-	 *      instead of calling this method, as the onUserList method is only
-	 *      called as soon as the full user list has been received.
-	 *  </li>
-	 *  <li>This method will return immediately, as it does not require any
-	 *      interaction with the IRC server.
-	 *  </li>
-	 *  <li>The bot must be in a channel to be able to know which users are
-	 *      in it.
-	 *  </li>
-	 * </ul>
-	 *
-	 * @since PircBotX 1.0.0
-	 *
-	 * @param channel The name of the channel to list.
-	 *
-	 * @return An array of User objects. This array is empty if we are not
-	 *         in the channel.
-	 *
-	 * @see #onUserList(String,User[]) onUserList
-	 */
-	public final Collection<User> getUsers(String channel) {
-		return _users.values();
-	}
-
-	public User getUser(String nick) {
-		User usr = _users.get(nick);
-		if (usr == null) {
-			//User does not exist, create one
-			usr = new User(nick);
-			synchronized (_users) {
-				_users.put(nick, usr);
-			}
-		}
-		return usr;
-	}
-
-	/**
-	 * Returns an array of all channels that we are in.  Note that if you
-	 * call this method immediately after joining a new channel, the new
-	 * channel may not appear in this array as it is not possible to tell
-	 * if the join was successful until a response is received from the
-	 * IRC server.
-	 *
-	 * @since PircBotX 1.0.0
-	 *
-	 * @return A String array containing the names of all channels that we
-	 *         are in.
-	 */
-	public final Collection<Channel> getChannels() {
-		return _channels.values();
-	}
-
-	public Set<String> getChannelsNames() {
-		return _channels.keySet();
-	}
-
-	/**
 	 * Disposes of all thread resources used by this PircBotX. This may be
 	 * useful when writing bots or clients that use multiple servers (and
 	 * therefore multiple PircBotX instances) or when integrating a PircBotX
@@ -2838,45 +2789,6 @@ public abstract class PircBotX {
 	}
 
 	/**
-	 * Remove a user from all channels in our memory.
-	 */
-	private void removeUser(String nick) {
-		synchronized (_users) {
-			_users.remove(nick);
-		}
-	}
-
-	/**
-	 * Rename a user if they appear in any of the channels we know about.
-	 */
-	private void renameUser(String oldNick, String newNick) {
-		synchronized (_users) {
-			System.err.println("Renaming user "+oldNick+" to "+newNick);
-			User removed = _users.remove(oldNick);
-			removed.setNick(newNick);
-			_users.put(newNick, removed);
-		}
-	}
-
-	/**
-	 * Removes an entire channel from our memory of users.
-	 */
-	private void removeChannel(String channel) {
-		synchronized (_channels) {
-			_channels.remove(channel.toLowerCase());
-		}
-	}
-
-	/**
-	 * Removes all channels from our memory of users.
-	 */
-	void removeAllChannels() {
-		synchronized (_channels) {
-			_channels.clear();
-		}
-	}
-
-	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
 	 * minutes
@@ -2899,15 +2811,109 @@ public abstract class PircBotX {
 	protected void onMotdFinished() {
 	}
 
+	/**
+	 * Returns an array of all channels that we are in.  Note that if you
+	 * call this method immediately after joining a new channel, the new
+	 * channel may not appear in this array as it is not possible to tell
+	 * if the join was successful until a response is received from the
+	 * IRC server.
+	 *
+	 * @since PircBotX 1.0.0
+	 *
+	 * @return A String array containing the names of all channels that we
+	 *         are in.
+	 */
+	public final Set<Channel> getChannels() {
+		return _userChanInfo.getBValues();
+	}
+
+	public Set<Channel> getChannels(User user) {
+		if (user == null)
+			throw new NullPointerException("Can't get a null user");
+		return _userChanInfo.getBValues(user);
+	}
+
+	/**
+	 * Gets a channel or creates a <u>new</u> one. Never returns null
+	 * @param name The name of the channel
+	 * @return The channel object requested, never null
+	 */
 	public Channel getChannel(String name) {
-		Channel chan = _channels.get(name);
-		if (chan == null) {
+		if (name == null)
+			throw new NullPointerException("Can't get a null channel");
+		Channel chan = null;
+		for (Channel curChan : _userChanInfo.getBValues())
+			if (curChan.getName().equals(name))
+				chan = curChan;
+
+
+		if (chan == null)
 			//User does not exist, create one
-			chan = new Channel(name);
-			synchronized (_users) {
-				_channels.put(name, chan);
-			}
-		}
+			_userChanInfo.putB(chan = new Channel(this, name));
 		return chan;
+	}
+
+	public Set<String> getChannelsNames() {
+		return new HashSet<String>() {
+			{
+				for (Channel curChan : _userChanInfo.getBValues())
+					add(curChan.getName());
+			}
+		};
+	}
+
+	/**
+	 * Returns an array of all users in the specified channel.
+	 *  <p>
+	 * There are some important things to note about this method:-
+	 * <ul>
+	 *  <li>This method may not return a full list of users if you call it
+	 *      before the complete nick list has arrived from the IRC server.
+	 *  </li>
+	 *  <li>If you wish to find out which users are in a channel as soon
+	 *      as you join it, then you should override the onUserList method
+	 *      instead of calling this method, as the onUserList method is only
+	 *      called as soon as the full user list has been received.
+	 *  </li>
+	 *  <li>This method will return immediately, as it does not require any
+	 *      interaction with the IRC server.
+	 *  </li>
+	 *  <li>The bot must be in a channel to be able to know which users are
+	 *      in it.
+	 *  </li>
+	 * </ul>
+	 *
+	 * @since PircBotX 1.0.0
+	 *
+	 * @param channel The name of the channel to list.
+	 *
+	 * @return An array of User objects. This array is empty if we are not
+	 *         in the channel.
+	 *
+	 * @see #onUserList(String,User[]) onUserList
+	 */
+	public final Set<User> getUsers(String channel) {
+		if (channel == null)
+			throw new NullPointerException("Can't get a null channel");
+		return _userChanInfo.getAValues(getChannel(channel));
+	}
+
+	/**
+	 * Gets an existing user or creates a new one. Never returns null
+	 * @param nick
+	 * @return
+	 */
+	public User getUser(String nick) {
+		if (nick == null)
+			throw new NullPointerException("Can't get a null user");
+		User user = null;
+		for (User curUser : _userChanInfo.getAValues())
+			if (curUser.getNick().equals(nick))
+				user = curUser;
+
+		if (user == null)
+			//User does not exist, create one
+			_userChanInfo.putA(user = new User(this, nick));
+		return user;
 	}
 }
