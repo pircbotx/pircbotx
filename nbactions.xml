@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
             <actionName>run</actionName>
@@ -23,5 +22,12 @@
                 <profiler.action>profile</profiler.action>
                 <exec.executable>${profiler.java}</exec.executable>
             </properties>
+        </action>
+        <action>
+            <actionName>javadoc</actionName>
+            <goals>
+                <goal>generate-sources</goal>
+                <goal>site</goal>
+            </goals>
         </action>
     </actions>
