@@ -757,16 +757,6 @@ public abstract class PircBotX {
 	}
 
 	/**
-	 * Receives a file that is being sent to us by a DCC SEND request.
-	 * Please use the onIncomingFileTransfer method to receive files.
-	 *
-	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
-	 */
-	protected final void dccReceiveFile(File file, long address, int port, int size) {
-		throw new RuntimeException("dccReceiveFile is deprecated, please use sendFile");
-	}
-
-	/**
 	 * Attempts to establish a DCC CHAT session with a client.  This method
 	 * issues the connection request to the client and then waits for the
 	 * client to respond.  If the connection is successfully made, then a
@@ -835,16 +825,6 @@ public abstract class PircBotX {
 			// Do nothing.
 		}
 		return chat;
-	}
-
-	/**
-	 * Attempts to accept a DCC CHAT request by a client.
-	 * Please use the onIncomingChatRequest method to receive files.
-	 *
-	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
-	 */
-	protected final DccChat dccAcceptChatRequest(String sourceNick, long address, int port) {
-		throw new RuntimeException("dccAcceptChatRequest is deprecated, please use onIncomingChatRequest");
 	}
 
 	/**
@@ -1167,9 +1147,6 @@ public abstract class PircBotX {
 			String topic = parsed[2].substring(1);
 
 			getChannel(channel).setTopic(topic);
-
-			// For backwards compatibility only - this onTopic method is deprecated.
-			onTopic(channel, topic);
 		} else if (code == RPL_TOPICINFO) {
 			//EXAMPLE: PircBotX #quackbot ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined
@@ -1447,20 +1424,6 @@ public abstract class PircBotX {
 	protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
 	}
 
-	/**
-	 * This method is called whenever a user sets the topic, or when
-	 * PircBotX joins a new channel and discovers its topic.
-	 *  <p>
-	 * The implementation of this method in the PircBotX abstract class
-	 * performs no actions and may be overridden as required.
-	 *
-	 * @param channel The channel that the topic belongs to.
-	 * @param topic The topic for the channel.
-	 *
-	 * @deprecated As of 1.2.0, replaced by {@link #onTopic(String,String,String,long,boolean)}
-	 */
-	protected void onTopic(String channel, String topic) {
-	}
 
 	/**
 	 * This method is called whenever a user sets the topic, or when
@@ -2114,25 +2077,6 @@ public abstract class PircBotX {
 	protected void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
 	}
 
-	/**
-	 * This method used to be called when a DCC SEND request was sent to the PircBotX.
-	 * Please use the onIncomingFileTransfer method to receive files, as it
-	 * has better functionality and supports resuming.
-	 *
-	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingFileTransfer(DccFileTransfer)}
-	 */
-	protected void onDccSendRequest(String sourceNick, String sourceLogin, String sourceHostname, String filename, long address, int port, int size) {
-	}
-
-	/**
-	 * This method used to be called when a DCC CHAT request was sent to the PircBotX.
-	 * Please use the onIncomingChatRequest method to accept chats, as it
-	 * has better functionality.
-	 *
-	 * @deprecated As of PircBotX 1.2.0, use {@link #onIncomingChatRequest(DccChat)}
-	 */
-	protected void onDccChatRequest(String sourceNick, String sourceLogin, String sourceHostname, long address, int port) {
-	}
 
 	/**
 	 * This method is called whenever a DCC SEND request is sent to the PircBotX.
