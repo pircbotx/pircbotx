@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import java.util.Collection;
@@ -85,7 +84,8 @@ public class User implements Comparable<User> {
 
 	public void parseStatus(String channel, String prefix) {
 		setOp(channel, prefix.contains("@"));
-		setVoice(channel, prefix.contains("+"));;
+		setVoice(channel, prefix.contains("+"));
+		;
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}

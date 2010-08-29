@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import java.io.BufferedReader;
@@ -25,7 +24,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
 import java.util.StringTokenizer;
-
 
 /**
  * A Thread which reads lines from the IRC server.  It then
@@ -89,36 +87,31 @@ public class InputThread implements Runnable {
 	 */
 	public void run() {
 		try {
-            boolean running = true;
-            while (running) {
-                try {
-                    String line = null;
-                    while ((line = _breader.readLine()) != null) {
-                        try {
-                            _bot.handleLine(line);
-                        }
-                        catch (Throwable t) {
-                            // Stick the whole stack trace into a String so we can output it nicely.
-                            _bot.logException(t);
-                        }
-                    }
-                    if (line == null) {
+			boolean running = true;
+			while (running)
+				try {
+					String line = null;
+					while ((line = _breader.readLine()) != null)
+						try {
+							_bot.handleLine(line);
+						} catch (Throwable t) {
+							// Stick the whole stack trace into a String so we can output it nicely.
+							_bot.logException(t);
+						}
+					if (line == null) {
 						System.err.println("Null line, socket closed");
-                        // The server must have disconnected us.
-                        running = false;
-                    }
-                }
-                catch (InterruptedIOException iioe) {
-                    // This will happen if we haven't received anything from the server for a while.
-                    // So we shall send it a ping to check that we are still connected.
-                    _bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
-                    // Now we go back to listening for stuff from the server...
-                }
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+						// The server must have disconnected us.
+						running = false;
+					}
+				} catch (InterruptedIOException iioe) {
+					// This will happen if we haven't received anything from the server for a while.
+					// So we shall send it a ping to check that we are still connected.
+					_bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
+					// Now we go back to listening for stuff from the server...
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		//Disconnected at this point
 		try {

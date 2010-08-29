@@ -21,7 +21,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.pircbotx.test;
 
 import java.util.Set;
@@ -64,8 +63,6 @@ public class PircBotXTest extends PircBotX {
 	protected void onUserList(String channel, Set<User> users) {
 		log("INNEFFIENT CALLED");
 	}
-
-
 
 	public static void main(String[] args) {
 		try {
