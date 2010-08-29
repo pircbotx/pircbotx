@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 /**
@@ -30,13 +29,13 @@ package org.pircbotx;
  */
 public class ServerInfo {
 	private PircBotX _bot;
+
 	public ServerInfo(PircBotX bot) {
 		_bot = bot;
 	}
+
 	public void parse(String input) {
-
 	}
-
 	//005 information
 	private String _prefixes = "";
 	private String _channelTypes = "";
@@ -70,15 +69,14 @@ public class ServerInfo {
 	private boolean _userIPExists;
 	private boolean _cPrivMsgExists;
 	private boolean _cNoticeExists;
-	private int _maxTargets ;
-	private boolean _knockExists ;
+	private int _maxTargets;
+	private boolean _knockExists;
 	private boolean _vChannels;
 	private int _watchMax;
 	private boolean _whoX;
 	private boolean _callerID;
 	private boolean _accept;
 	private String _language = "";
-
 	//Other information
 	private String _motd = "";
 	private int _highestConnections;
@@ -91,5 +89,4 @@ public class ServerInfo {
 	private int _totalChannelsFormed;
 	private int _serverUsers;
 	private int _connectedServers;
-
 }

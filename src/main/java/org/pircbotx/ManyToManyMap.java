@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import java.util.Collection;
@@ -220,12 +219,12 @@ public class ManyToManyMap<A, B> {
 
 			Set<?> values = AMap.get(a);
 			values.remove(b);
-			if(values.isEmpty())
+			if (values.isEmpty())
 				removeA(a);
 
 			values = BMap.get(b);
 			values.remove(a);
-			if(values.isEmpty())
+			if (values.isEmpty())
 				removeB(b);
 		}
 		return true;

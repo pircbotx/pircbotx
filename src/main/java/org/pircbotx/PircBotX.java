@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import java.util.HashSet;
@@ -1424,7 +1423,6 @@ public abstract class PircBotX {
 	protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
 	}
 
-
 	/**
 	 * This method is called whenever a user sets the topic, or when
 	 * PircBotX joins a new channel and discovers its topic.
@@ -2076,7 +2074,6 @@ public abstract class PircBotX {
 	 */
 	protected void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
 	}
-
 
 	/**
 	 * This method is called whenever a DCC SEND request is sent to the PircBotX.

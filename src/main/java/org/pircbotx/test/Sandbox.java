@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.test;
 
 import java.util.HashSet;
@@ -27,6 +26,5 @@ import java.util.HashSet;
  */
 public class Sandbox {
 	public static void main(String[] args) {
-		
 	}
 }
