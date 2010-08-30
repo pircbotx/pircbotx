@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -24,18 +23,42 @@ import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
 /**
- *
+ * This method is called whenever a user sets the topic, or when
+ * PircBotX joins a new channel and discovers its topic.
+ *  <p>
+ * The implementation of this method in the PircBotX abstract class
+ * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Topic {
+	/**
+	 * Simple listener that takes event parameters as parameters. See 
+	 * {@link Topic} for an explanation on use 
+	 * @see Topic 
+	 */
 	public static interface SimpleListener extends BaseSimpleListener {
 		public void onTopic(String channel, String topic, String setBy, boolean changed);
 	}
 
+	/**
+	 * Listener that receives an event. See {@link Topic} for an explanation 
+	 * on use and {@link Event} for an explanation on the event. 
+	 * @see Topic 
+	 * @see Event 
+	 */
 	public static interface Listener extends BaseListener {
 		public void onTopic(Event event);
 	}
 
+	/**
+	 * Event that is passed to all listeners that contains all the given
+	 * information. See {@link Topic} for an explanation on when this is created
+	 * <p>
+	 * <b>Note:<b> This class and all its subclasses are immutable since
+	 * data should not change after creation
+	 * @see Topic 
+	 * @see Listener
+	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
 		protected final String channel;
@@ -43,8 +66,18 @@ public class Topic {
 		protected final String setBy;
 		protected final boolean changed;
 
-		public Event(long timestamp, String channel, String topic, String setBy, boolean changed) {
-			this.timestamp = timestamp;
+		/**
+		 * Default constructor to setup object. Timestamp is automatically set
+		 * to current time as reported by {@link System#currentTimeMillis() }
+		 * @param channel The channel that the topic belongs to.
+		 * @param topic The topic for the channel.
+		 * @param setBy The nick of the user that set the topic.
+		 * @param date When the topic was set (milliseconds since the epoch).
+		 * @param changed True if the topic has just been changed, false if
+		 *                the topic was already there.
+		 */
+		public Event(String channel, String topic, String setBy, boolean changed) {
+			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
 			this.topic = topic;
 			this.setBy = setBy;

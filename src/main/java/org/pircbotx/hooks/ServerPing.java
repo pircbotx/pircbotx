@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -24,24 +23,53 @@ import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
 /**
- *
+ * The actions to perform when a PING request comes from the server.
+ *  <p>
+ * This sends back a correct response, so if you override this method,
+ * be sure to either mimic its functionality or to call
+ * super.onServerPing(response);
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ServerPing {
+	/**
+	 * Simple listener that takes event parameters as parameters. See 
+	 * {@link ServerPing} for an explanation on use 
+	 * @see ServerPing 
+	 */
 	public static interface SimpleListener extends BaseSimpleListener {
 		public void onServerPing(String response);
 	}
 
+	/**
+	 * Listener that receives an event. See {@link ServerPing} for an explanation 
+	 * on use and {@link Event} for an explanation on the event. 
+	 * @see ServerPing 
+	 * @see Event 
+	 */
 	public static interface Listener extends BaseListener {
 		public void onServerPing(Event event);
 	}
 
+	/**
+	 * Event that is passed to all listeners that contains all the given
+	 * information. See {@link ServerPing} for an explanation on when this is created
+	 * <p>
+	 * <b>Note:<b> This class and all its subclasses are immutable since
+	 * data should not change after creation
+	 * @see ServerPing 
+	 * @see Listener
+	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
 		protected final String response;
 
-		public Event(long timestamp, String response) {
-			this.timestamp = timestamp;
+		/**
+		 * Default constructor to setup object. Timestamp is automatically set
+		 * to current time as reported by {@link System#currentTimeMillis() }
+		 * @param response The response that should be given back in your PONG.
+		 */
+		public Event(String response) {
+			this.timestamp = System.currentTimeMillis();
 			this.response = response;
 		}
 
