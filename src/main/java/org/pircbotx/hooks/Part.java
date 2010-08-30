@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -24,18 +23,42 @@ import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
 /**
- *
+ * This method is called whenever someone (possibly us) parts a channel
+ * which we are on.
+ *  <p>
+ * The implementation of this method in the PircBotX abstract class
+ * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Part {
+	/**
+	 * Simple listener that takes event parameters as parameters. See 
+	 * {@link Part} for an explanation on use 
+	 * @see Part 
+	 */
 	public static interface SimpleListener extends BaseSimpleListener {
 		public void onPart(String channel, String sender, String login, String hostname);
 	}
 
+	/**
+	 * Listener that receives an event. See {@link Part} for an explanation 
+	 * on use and {@link Event} for an explanation on the event. 
+	 * @see Part 
+	 * @see Event 
+	 */
 	public static interface Listener extends BaseListener {
 		public void onPart(Event event);
 	}
 
+	/**
+	 * Event that is passed to all listeners that contains all the given
+	 * information. See {@link Part} for an explanation on when this is created
+	 * <p>
+	 * <b>Note:<b> This class and all its subclasses are immutable since
+	 * data should not change after creation
+	 * @see Part 
+	 * @see Listener
+	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
 		protected final String channel;
@@ -43,8 +66,16 @@ public class Part {
 		protected final String login;
 		protected final String hostname;
 
-		public Event(long timestamp, String channel, String sender, String login, String hostname) {
-			this.timestamp = timestamp;
+		/**
+		 * Default constructor to setup object. Timestamp is automatically set
+		 * to current time as reported by {@link System#currentTimeMillis() }
+		 * @param channel The channel which somebody parted from.
+		 * @param sender The nick of the user who parted from the channel.
+		 * @param login The login of the user who parted from the channel.
+		 * @param hostname The hostname of the user who parted from the channel.
+		 */
+		public Event(String channel, String sender, String login, String hostname) {
+			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
 			this.sender = sender;
 			this.login = login;
