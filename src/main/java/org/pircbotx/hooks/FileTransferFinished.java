@@ -78,7 +78,7 @@ public class FileTransferFinished {
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
 		protected final DccFileTransfer transfer;
-		protected final Exception e;
+		protected final Exception exception;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
@@ -90,11 +90,11 @@ public class FileTransferFinished {
 		public Event(DccFileTransfer transfer, Exception e) {
 			this.timestamp = System.currentTimeMillis();
 			this.transfer = transfer;
-			this.e = e;
+			this.exception = e;
 		}
 
-		public Exception getE() {
-			return e;
+		public Exception getException() {
+			return exception;
 		}
 
 		public DccFileTransfer getTransfer() {

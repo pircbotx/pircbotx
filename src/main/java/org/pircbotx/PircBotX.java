@@ -1939,6 +1939,13 @@ public abstract class PircBotX {
 		return user;
 	}
 
+	/**
+	 * ListenerManager based on normal Event system. All events are hardwired
+	 * to their respective listeners.
+	 * <p>
+	 * To add a new event, SubClass, override dispatchEvent,
+	 * call default implementation, then loop over the listeners yourself 
+	 */
 	public static class EventListenerManager implements  ListenerManager<BaseListener> {
 		protected Set<BaseListener> listeners = new HashSet<BaseListener>();
 
@@ -2056,6 +2063,8 @@ public abstract class PircBotX {
 					((Version.Listener) curListener).onVersion((Version.Event) event);
 				else if (event instanceof Voice.Event)
 					((Voice.Listener) curListener).onVoice((Voice.Event) event);
+				else
+					throw new RuntimeException("Unknown event "+event.getClass()+" has no listeners!");
 			}
 
 
