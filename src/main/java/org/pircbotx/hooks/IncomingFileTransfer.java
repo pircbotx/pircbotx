@@ -74,6 +74,12 @@ public class IncomingFileTransfer {
 	 * @see IncomingFileTransfer
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for IncomingFileTransfer Events. See {@link IncomingFileTransfer} for a complete description on when
+		 * this is called.
+		 * @see IncomingFileTransfer
+		 * @see SimpleListener
+		 */
 		public void onIncomingFileTransfer(DccFileTransfer transfer);
 	}
 
@@ -84,6 +90,12 @@ public class IncomingFileTransfer {
 	 * @see Event
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for IncomingFileTransfer Events. See {@link IncomingFileTransfer} for a complete description on when
+		 * this is called.
+		 * @see IncomingFileTransfer
+		 * @see Listener
+		 */
 		public void onIncomingFileTransfer(Event event);
 	}
 

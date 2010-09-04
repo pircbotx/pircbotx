@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.PircBotX;
@@ -46,6 +45,12 @@ public class ChannelInfo {
 	 * @see ChannelInfo 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for ChannelInfo Events. See {@link ChannelInfo} for a complete description on when
+		 * this is called.
+		 * @see ChannelInfo
+		 * @see SimpleListener
+		 */
 		public void onChannelInfo(String channel, int userCount, String topic);
 	}
 
@@ -56,6 +61,12 @@ public class ChannelInfo {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for ChannelInfo Events. See {@link ChannelInfo} for a complete description on when
+		 * this is called.
+		 * @see ChannelInfo
+		 * @see Listener
+		 */
 		public void onChannelInfo(Event event);
 	}
 

@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import java.util.Set;
@@ -51,6 +50,12 @@ public class UserList {
 	 * @see UserList 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for UserList Events. See {@link UserList} for a complete description on when
+		 * this is called.
+		 * @see UserList
+		 * @see SimpleListener
+		 */
 		public void onUserList(String channel, Set<User> users);
 	}
 
@@ -61,6 +66,12 @@ public class UserList {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for UserList Events. See {@link UserList} for a complete description on when
+		 * this is called.
+		 * @see UserList
+		 * @see Listener
+		 */
 		public void onUserList(Event event);
 	}
 

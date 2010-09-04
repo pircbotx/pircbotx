@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -41,6 +40,12 @@ public class SetChannelLimit {
 	 * @see SetChannelLimit 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for SetChannelLimit Events. See {@link SetChannelLimit} for a complete description on when
+		 * this is called.
+		 * @see SetChannelLimit
+		 * @see SimpleListener
+		 */
 		public void onSetChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname, int limit);
 	}
 
@@ -51,6 +56,12 @@ public class SetChannelLimit {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for SetChannelLimit Events. See {@link SetChannelLimit} for a complete description on when
+		 * this is called.
+		 * @see SetChannelLimit
+		 * @see Listener
+		 */
 		public void onSetChannelLimit(Event event);
 	}
 

@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -49,6 +48,12 @@ public class Disconnect {
 	 * @see Disconnect 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Disconnect Events. See {@link Disconnect} for a complete description on when
+		 * this is called.
+		 * @see Disconnect
+		 * @see SimpleListener
+		 */
 		public void onDisconnect();
 	}
 
@@ -59,6 +64,12 @@ public class Disconnect {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Disconnect Events. See {@link Disconnect} for a complete description on when
+		 * this is called.
+		 * @see Disconnect
+		 * @see Listener
+		 */
 		public void onDisconnect(Event event);
 	}
 

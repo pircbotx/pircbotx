@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -38,6 +37,12 @@ public class Action {
 	 * @see Action 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Action Events. See {@link Action} for a complete description on when
+		 * this is called.
+		 * @see Action
+		 * @see SimpleListener
+		 */
 		public void onAction(String sender, String login, String hostname, String target, String action);
 	}
 
@@ -48,6 +53,12 @@ public class Action {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Action Events. See {@link Action} for a complete description on when
+		 * this is called.
+		 * @see Action
+		 * @see Listener
+		 */
 		public void onAction(Event event);
 	}
 

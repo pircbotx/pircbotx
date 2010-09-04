@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -38,6 +37,12 @@ public class Unknown {
 	 * @see Unknown 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Unknown Events. See {@link Unknown} for a complete description on when
+		 * this is called.
+		 * @see Unknown
+		 * @see SimpleListener
+		 */
 		public void onUnknown(String line);
 	}
 
@@ -48,6 +53,12 @@ public class Unknown {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Unknown Events. See {@link Unknown} for a complete description on when
+		 * this is called.
+		 * @see Unknown
+		 * @see Listener
+		 */
 		public void onUnknown(Event event);
 	}
 

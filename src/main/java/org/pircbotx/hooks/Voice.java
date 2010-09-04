@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -40,6 +39,12 @@ public class Voice {
 	 * @see Voice 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Voice Events. See {@link Voice} for a complete description on when
+		 * this is called.
+		 * @see Voice
+		 * @see SimpleListener
+		 */
 		public void onVoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient);
 	}
 
@@ -50,6 +55,12 @@ public class Voice {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Voice Events. See {@link Voice} for a complete description on when
+		 * this is called.
+		 * @see Voice
+		 * @see Listener
+		 */
 		public void onVoice(Event event);
 	}
 

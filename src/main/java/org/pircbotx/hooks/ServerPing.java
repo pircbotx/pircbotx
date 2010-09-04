@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -38,6 +37,12 @@ public class ServerPing {
 	 * @see ServerPing 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for ServerPing Events. See {@link ServerPing} for a complete description on when
+		 * this is called.
+		 * @see ServerPing
+		 * @see SimpleListener
+		 */
 		public void onServerPing(String response);
 	}
 
@@ -48,6 +53,12 @@ public class ServerPing {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for ServerPing Events. See {@link ServerPing} for a complete description on when
+		 * this is called.
+		 * @see ServerPing
+		 * @see Listener
+		 */
 		public void onServerPing(Event event);
 	}
 
