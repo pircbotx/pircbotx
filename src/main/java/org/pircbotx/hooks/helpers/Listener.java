@@ -23,5 +23,6 @@ package org.pircbotx.hooks.helpers;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface BaseListener extends Listener {
+public interface Listener {
+
 }

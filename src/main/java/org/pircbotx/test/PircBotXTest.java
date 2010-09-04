@@ -42,7 +42,7 @@ public class PircBotXTest extends PircBotX {
 		setVerbose(true);
 	}
 
-	@Override
+	//@Override
 	protected void onConnect() {
 		sendRawLine("NICKSERV identify manganip");
 		joinChannel("#honcast");
@@ -59,7 +59,7 @@ public class PircBotXTest extends PircBotX {
 		joinChannel("#pcw");
 	}
 
-	@Override
+	//@Override
 	protected void onUserList(String channel, Set<User> users) {
 		log("INNEFFIENT CALLED");
 	}
