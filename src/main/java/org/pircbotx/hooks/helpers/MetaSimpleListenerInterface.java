@@ -5,7 +5,9 @@
  *
  * PircBotX is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * the Free Software Foundation, either
+version 3 of the License, or
+
  * (at your option) any later version.
  *
  * PircBotX is distributed in the hope that it will be useful,
@@ -14,9 +16,9 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
+ * along with PircBotX.  If not, see
+<http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks.helpers;
 
 import org.pircbotx.hooks.Action;
@@ -28,6 +30,7 @@ import org.pircbotx.hooks.Disconnect;
 import org.pircbotx.hooks.FileTransferFinished;
 import org.pircbotx.hooks.Finger;
 import org.pircbotx.hooks.IncomingChatRequest;
+import org.pircbotx.hooks.IncomingFileTransfer;
 import org.pircbotx.hooks.Invite;
 import org.pircbotx.hooks.Join;
 import org.pircbotx.hooks.Kick;
@@ -72,5 +75,5 @@ import org.pircbotx.hooks.Voice;
  * TODO
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface MetaSimpleListenerInterface extends Action.SimpleListener, ChannelInfo.SimpleListener, Connect.SimpleListener, Deop.SimpleListener, DeVoice.SimpleListener, Disconnect.SimpleListener, FileTransferFinished.SimpleListener, Finger.SimpleListener, IncomingChatRequest.SimpleListener, Invite.SimpleListener, Join.SimpleListener, Kick.SimpleListener, Message.SimpleListener, Mode.SimpleListener, NickChange.SimpleListener, Notice.SimpleListener, Op.SimpleListener, Part.SimpleListener, Ping.SimpleListener, PrivateMessage.SimpleListener, Quit.SimpleListener, RemoveChannelBan.SimpleListener, RemoveChannelKey.SimpleListener, RemoveChannelLimit.SimpleListener, RemoveInviteOnly.SimpleListener, RemoveModerated.SimpleListener, RemoveNoExternalMessages.SimpleListener, RemovePrivate.SimpleListener, RemoveSecret.SimpleListener, RemoveTopicProtection.SimpleListener, ServerPing.SimpleListener, ServerResponse.SimpleListener, SetChannelBan.SimpleListener, SetChannelKey.SimpleListener, SetChannelLimit.SimpleListener, SetInviteOnly.SimpleListener, SetModerated.SimpleListener, SetNoExternalMessages.SimpleListener, SetPrivate.SimpleListener, SetSecret.SimpleListener, SetTopicProtection.SimpleListener, Time.SimpleListener, Topic.SimpleListener, Unknown.SimpleListener, UserList.SimpleListener, UserMode.SimpleListener, Version.SimpleListener, Voice.SimpleListener {
+public interface MetaSimpleListenerInterface extends Action.SimpleListener, ChannelInfo.SimpleListener, Connect.SimpleListener, Deop.SimpleListener, DeVoice.SimpleListener, Disconnect.SimpleListener, FileTransferFinished.SimpleListener, Finger.SimpleListener, IncomingChatRequest.SimpleListener, IncomingFileTransfer.SimpleListener, Invite.SimpleListener, Join.SimpleListener, Kick.SimpleListener, Message.SimpleListener, Mode.SimpleListener, NickChange.SimpleListener, Notice.SimpleListener, Op.SimpleListener, Part.SimpleListener, Ping.SimpleListener, PrivateMessage.SimpleListener, Quit.SimpleListener, RemoveChannelBan.SimpleListener, RemoveChannelKey.SimpleListener, RemoveChannelLimit.SimpleListener, RemoveInviteOnly.SimpleListener, RemoveModerated.SimpleListener, RemoveNoExternalMessages.SimpleListener, RemovePrivate.SimpleListener, RemoveSecret.SimpleListener, RemoveTopicProtection.SimpleListener, ServerPing.SimpleListener, ServerResponse.SimpleListener, SetChannelBan.SimpleListener, SetChannelKey.SimpleListener, SetChannelLimit.SimpleListener, SetInviteOnly.SimpleListener, SetModerated.SimpleListener, SetNoExternalMessages.SimpleListener, SetPrivate.SimpleListener, SetSecret.SimpleListener, SetTopicProtection.SimpleListener, Time.SimpleListener, Topic.SimpleListener, Unknown.SimpleListener, UserList.SimpleListener, UserMode.SimpleListener, Version.SimpleListener, Voice.SimpleListener {
 }
