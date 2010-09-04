@@ -1,3 +1,4 @@
+
 /**
  * Copyright (C) 2010 Leon Blakey <lord.quackstar at gmail.com>
  *
@@ -17,11 +18,18 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.hooks.helpers;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.pircbotx;
+
+import org.pircbotx.hooks.ServerResponse;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface BaseListener extends Listener {
+public class SimplePircBotX extends PircBotX {
+
 }

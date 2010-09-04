@@ -68,7 +68,7 @@ public class Connect {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param timestamp
 		 */
-		public Event(long timestamp) {
+		public Event() {
 			this.timestamp = System.currentTimeMillis();
 		}
 
