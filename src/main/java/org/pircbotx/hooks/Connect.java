@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -38,6 +37,12 @@ public class Connect {
 	 * @see Connect 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Connect Events. See {@link Connect} for a complete description on when
+		 * this is called.
+		 * @see Connect
+		 * @see SimpleListener
+		 */
 		public void onConnect();
 	}
 
@@ -48,6 +53,12 @@ public class Connect {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Connect Events. See {@link Connect} for a complete description on when
+		 * this is called.
+		 * @see Connect
+		 * @see Listener
+		 */
 		public void onConnect(Event event);
 	}
 

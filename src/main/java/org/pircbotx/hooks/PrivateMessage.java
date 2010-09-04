@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -37,6 +36,12 @@ public class PrivateMessage {
 	 * @see PrivateMessage 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for PrivateMessage Events. See {@link PrivateMessage} for a complete description on when
+		 * this is called.
+		 * @see PrivateMessage
+		 * @see SimpleListener
+		 */
 		public void onPrivateMessage(String sender, String login, String hostname, String message);
 	}
 
@@ -47,6 +52,12 @@ public class PrivateMessage {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for PrivateMessage Events. See {@link PrivateMessage} for a complete description on when
+		 * this is called.
+		 * @see PrivateMessage
+		 * @see Listener
+		 */
 		public void onPrivateMessage(Event event);
 	}
 

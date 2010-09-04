@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.DccChat;
@@ -69,6 +68,12 @@ public class IncomingChatRequest {
 	 * @see IncomingChatRequest 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for IncomingChatRequest Events. See {@link IncomingChatRequest} for a complete description on when
+		 * this is called.
+		 * @see IncomingChatRequest
+		 * @see SimpleListener
+		 */
 		public void onIncomingChatRequest(DccChat chat);
 	}
 
@@ -79,6 +84,12 @@ public class IncomingChatRequest {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for IncomingChatRequest Events. See {@link IncomingChatRequest} for a complete description on when
+		 * this is called.
+		 * @see IncomingChatRequest
+		 * @see Listener
+		 */
 		public void onIncomingChatRequest(Event event);
 	}
 

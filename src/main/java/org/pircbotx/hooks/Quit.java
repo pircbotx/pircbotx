@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -39,6 +38,12 @@ public class Quit {
 	 * @see Quit 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Quit Events. See {@link Quit} for a complete description on when
+		 * this is called.
+		 * @see Quit
+		 * @see SimpleListener
+		 */
 		public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason);
 	}
 
@@ -49,6 +54,12 @@ public class Quit {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Quit Events. See {@link Quit} for a complete description on when
+		 * this is called.
+		 * @see Quit
+		 * @see Listener
+		 */
 		public void onQuit(Event event);
 	}
 

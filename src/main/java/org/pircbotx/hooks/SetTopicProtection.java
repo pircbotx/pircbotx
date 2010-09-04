@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -41,6 +40,12 @@ public class SetTopicProtection {
 	 * @see SetTopicProtection 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for SetTopicProtection Events. See {@link SetTopicProtection} for a complete description on when
+		 * this is called.
+		 * @see SetTopicProtection
+		 * @see SimpleListener
+		 */
 		public void onSetTopicProtection(String channel, String sourceNick, String sourceLogin, String sourceHostname);
 	}
 
@@ -51,6 +56,12 @@ public class SetTopicProtection {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for SetTopicProtection Events. See {@link SetTopicProtection} for a complete description on when
+		 * this is called.
+		 * @see SetTopicProtection
+		 * @see Listener
+		 */
 		public void onSetTopicProtection(Event event);
 	}
 

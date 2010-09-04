@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -40,6 +39,12 @@ public class RemoveChannelBan {
 	 * @see RemoveChannelBan 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for RemoveChannelBan Events. See {@link RemoveChannelBan} for a complete description on when
+		 * this is called.
+		 * @see RemoveChannelBan
+		 * @see SimpleListener
+		 */
 		public void onRemoveChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask);
 	}
 
@@ -50,6 +55,12 @@ public class RemoveChannelBan {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for RemoveChannelBan Events. See {@link RemoveChannelBan} for a complete description on when
+		 * this is called.
+		 * @see RemoveChannelBan
+		 * @see Listener
+		 */
 		public void onRemoveChannelBan(Event event);
 	}
 

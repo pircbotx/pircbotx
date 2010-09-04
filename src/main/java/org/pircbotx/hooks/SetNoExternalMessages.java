@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -41,6 +40,12 @@ public class SetNoExternalMessages {
 	 * @see SetNoExternalMessages 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for SetNoExternalMessages Events. See {@link SetNoExternalMessages} for a complete description on when
+		 * this is called.
+		 * @see SetNoExternalMessages
+		 * @see SimpleListener
+		 */
 		public void onSetNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname);
 	}
 
@@ -51,6 +56,12 @@ public class SetNoExternalMessages {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for SetNoExternalMessages Events. See {@link SetNoExternalMessages} for a complete description on when
+		 * this is called.
+		 * @see SetNoExternalMessages
+		 * @see Listener
+		 */
 		public void onSetNoExternalMessages(Event event);
 	}
 

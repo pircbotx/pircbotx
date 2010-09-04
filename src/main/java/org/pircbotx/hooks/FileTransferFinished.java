@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.DccFileTransfer;
@@ -42,6 +41,12 @@ public class FileTransferFinished {
 	 * @see FileTransferFinished 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for FileTransferFinished Events. See {@link FileTransferFinished} for a complete description on when
+		 * this is called.
+		 * @see FileTransferFinished
+		 * @see SimpleListener
+		 */
 		public void onFileTransferFinished(DccFileTransfer transfer, Exception e);
 	}
 
@@ -52,6 +57,12 @@ public class FileTransferFinished {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for FileTransferFinished Events. See {@link FileTransferFinished} for a complete description on when
+		 * this is called.
+		 * @see FileTransferFinished
+		 * @see Listener
+		 */
 		public void onFileTransferFinished(Event event);
 	}
 

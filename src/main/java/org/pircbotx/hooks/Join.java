@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -38,6 +37,12 @@ public class Join {
 	 * @see Join 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Join Events. See {@link Join} for a complete description on when
+		 * this is called.
+		 * @see Join
+		 * @see SimpleListener
+		 */
 		public void onJoin(String channel, String sender, String login, String hostname);
 	}
 
@@ -48,6 +53,12 @@ public class Join {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Join Events. See {@link Join} for a complete description on when
+		 * this is called.
+		 * @see Join
+		 * @see Listener
+		 */
 		public void onJoin(Event event);
 	}
 

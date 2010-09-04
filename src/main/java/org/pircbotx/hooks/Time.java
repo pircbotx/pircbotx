@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -38,6 +37,12 @@ public class Time {
 	 * @see Time 
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
+		/**
+		 * Simple Listener for Time Events. See {@link Time} for a complete description on when
+		 * this is called.
+		 * @see Time
+		 * @see SimpleListener
+		 */
 		public void onTime(String sourceNick, String sourceLogin, String sourceHostname, String target);
 	}
 
@@ -48,6 +53,12 @@ public class Time {
 	 * @see Event 
 	 */
 	public static interface Listener extends BaseListener {
+		/**
+		 * Listener for Time Events. See {@link Time} for a complete description on when
+		 * this is called.
+		 * @see Time
+		 * @see Listener
+		 */
 		public void onTime(Event event);
 	}
 
