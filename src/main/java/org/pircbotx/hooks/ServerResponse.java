@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -57,6 +58,8 @@ public class ServerResponse {
 		/**
 		 * Simple Listener for ServerResponse Events. See {@link ServerResponse} for a complete description on when
 		 * this is called.
+		 * @param code The three-digit numerical code for the response.
+		 * @param response The full response from the IRC server.
 		 * @see ServerResponse
 		 * @see SimpleListener
 		 */
@@ -118,7 +121,3 @@ public class ServerResponse {
 		}
 	}
 }
-/**
- * Listener that receives event. See {@link ServerResponse}
- * @see ServerResponse
- */

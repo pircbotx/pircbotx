@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -40,10 +43,16 @@ public class Topic {
 		/**
 		 * Simple Listener for Topic Events. See {@link Topic} for a complete description on when
 		 * this is called.
+		 * @param channel The channel that the topic belongs to.
+		 * @param topic The topic for the channel.
+		 * @param setBy The user that set the topic.
+		 * @param date When the topic was set (milliseconds since the epoch).
+		 * @param changed True if the topic has just been changed, false if
+		 *                the topic was already there.
 		 * @see Topic
 		 * @see SimpleListener
 		 */
-		public void onTopic(String channel, String topic, String setBy, boolean changed);
+		public void onTopic(Channel channel, String topic, User setBy, boolean changed);
 	}
 
 	/**
@@ -73,9 +82,9 @@ public class Topic {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
+		protected final Channel channel;
 		protected final String topic;
-		protected final String setBy;
+		protected final User setBy;
 		protected final boolean changed;
 
 		/**
@@ -83,12 +92,12 @@ public class Topic {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel that the topic belongs to.
 		 * @param topic The topic for the channel.
-		 * @param setBy The nick of the user that set the topic.
+		 * @param setBy The user that set the topic.
 		 * @param date When the topic was set (milliseconds since the epoch).
 		 * @param changed True if the topic has just been changed, false if
 		 *                the topic was already there.
 		 */
-		public Event(String channel, String topic, String setBy, boolean changed) {
+		public Event(Channel channel, String topic, User setBy, boolean changed) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
 			this.topic = topic;
@@ -100,11 +109,11 @@ public class Topic {
 			return changed;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
-		public String getSetBy() {
+		public User getSetBy() {
 			return setBy;
 		}
 

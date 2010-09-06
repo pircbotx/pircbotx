@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -40,10 +43,14 @@ public class Kick {
 		/**
 		 * Simple Listener for Kick Events. See {@link Kick} for a complete description on when
 		 * this is called.
+		 * @param channel The channel from which the recipient was kicked.
+		 * @param kicker The user who performed the kick.
+		 * @param recipient The unfortunate recipient of the kick.
+		 * @param reason The reason given by the user who performed the kick.
 		 * @see Kick
 		 * @see SimpleListener
 		 */
-		public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason);
+		public void onKick(Channel channel, User kicker, User recipient, String reason);
 	}
 
 	/**
@@ -73,55 +80,41 @@ public class Kick {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String kickerNick;
-		protected final String kickerLogin;
-		protected final String kickerHostname;
-		protected final String recipientNick;
+		protected final Channel channel;
+		protected final User kicker;
+		protected final User recipient;
 		protected final String reason;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel from which the recipient was kicked.
-		 * @param kickerNick The nick of the user who performed the kick.
-		 * @param kickerLogin The login of the user who performed the kick.
-		 * @param kickerHostname The hostname of the user who performed the kick.
-		 * @param recipientNick The unfortunate recipient of the kick.
+		 * @param kicker The user who performed the kick.
+		 * @param recipient The unfortunate recipient of the kick.
 		 * @param reason The reason given by the user who performed the kick.
 		 */
-		public Event(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+		public Event(Channel channel, User kicker, User recipient, String reason) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
-			this.kickerNick = kickerNick;
-			this.kickerLogin = kickerLogin;
-			this.kickerHostname = kickerHostname;
-			this.recipientNick = recipientNick;
+			this.kicker = kicker;
+			this.recipient = recipient;
 			this.reason = reason;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
-		public String getKickerHostname() {
-			return kickerHostname;
-		}
-
-		public String getKickerLogin() {
-			return kickerLogin;
-		}
-
-		public String getKickerNick() {
-			return kickerNick;
+		public User getKicker() {
+			return kicker;
 		}
 
 		public String getReason() {
 			return reason;
 		}
 
-		public String getRecipientNick() {
-			return recipientNick;
+		public User getRecipient() {
+			return recipient;
 		}
 
 		public long getTimestamp() {

@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -40,10 +42,13 @@ public class NickChange {
 		/**
 		 * Simple Listener for NickChange Events. See {@link NickChange} for a complete description on when
 		 * this is called.
+		 * @param oldNick The old nick.
+		 * @param newNick The new nick.
+		 * @param user The user that changed their nick
 		 * @see NickChange
 		 * @see SimpleListener
 		 */
-		public void onNickChange(String oldNick, String login, String hostname, String newNick);
+		public void onNickChange(String oldNick, String newNick, User user);
 	}
 
 	/**
@@ -74,32 +79,21 @@ public class NickChange {
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
 		protected final String oldNick;
-		protected final String login;
-		protected final String hostname;
 		protected final String newNick;
+		protected final User user;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param oldNick The old nick.
-		 * @param login The login of the user.
-		 * @param hostname The hostname of the user.
 		 * @param newNick The new nick.
+		 * @param user The user that changed their nick
 		 */
-		public Event(String oldNick, String login, String hostname, String newNick) {
+		public Event(String oldNick, String newNick, User user) {
 			this.timestamp = System.currentTimeMillis();
 			this.oldNick = oldNick;
-			this.login = login;
-			this.hostname = hostname;
 			this.newNick = newNick;
-		}
-
-		public String getHostname() {
-			return hostname;
-		}
-
-		public String getLogin() {
-			return login;
+			this.user = user;
 		}
 
 		public String getNewNick() {
@@ -108,6 +102,10 @@ public class NickChange {
 
 		public String getOldNick() {
 			return oldNick;
+		}
+
+		public User getUser() {
+			return user;
 		}
 
 		public long getTimestamp() {

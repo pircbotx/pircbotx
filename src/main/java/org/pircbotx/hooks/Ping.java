@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -41,10 +44,14 @@ public class Ping {
 		/**
 		 * Simple Listener for Ping Events. See {@link Ping} for a complete description on when
 		 * this is called.
+		 * @param source The user that sent the PING request.
+		 * @param target The channel that received the ping request. A value of <code>null</code>
+		 *               means the target was us.
+		 * @param pingValue The value that was supplied as an argument to the PING command.
 		 * @see Ping
 		 * @see SimpleListener
 		 */
-		public void onPing(String sourceNick, String sourceLogin, String sourceHostname, String target, String pingValue);
+		public void onPing(User source, Channel target, String pingValue);
 	}
 
 	/**
@@ -74,26 +81,21 @@ public class Ping {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
-		protected final String target;
+		protected final User source;
+		protected final Channel target;
 		protected final String pingValue;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sourceNick The nick of the user that sent the PING request.
-		 * @param sourceLogin The login of the user that sent the PING request.
-		 * @param sourceHostname The hostname of the user that sent the PING request.
-		 * @param target The target of the PING request, be it our nick or a channel name.
+		 * @param source The user that sent the PING request.
+		 * @param target The channel that received the ping request. A value of <code>null</code>
+		 *               means the target was us.
 		 * @param pingValue The value that was supplied as an argument to the PING command.
 		 */
-		public Event(String sourceNick, String sourceLogin, String sourceHostname, String target, String pingValue) {
+		public Event(User source, Channel target, String pingValue) {
 			this.timestamp = System.currentTimeMillis();
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.target = target;
 			this.pingValue = pingValue;
 		}
@@ -102,19 +104,11 @@ public class Ping {
 			return pingValue;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
+		public User getSource() {
+			return source;
 		}
 
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
-		}
-
-		public String getTarget() {
+		public Channel getTarget() {
 			return target;
 		}
 

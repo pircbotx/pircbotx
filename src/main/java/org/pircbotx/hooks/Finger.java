@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -38,12 +41,15 @@ public class Finger {
 	 */
 	public static interface SimpleListener extends BaseSimpleListener {
 		/**
-		 * Simple Listener for Finger Events. See {@link Finger} for a complete description on when
+		 * * Simple Listener for Finger Events. See {@link Finger} for a complete description on when
 		 * this is called.
 		 * @see Finger
 		 * @see SimpleListener
+		 * @param User The User object representing the user that sent the message
+		 * @param target The target channel of the FINGER request. If the value is <code>null</code>
+		 *               then the target is us
 		 */
-		public void onFinger(String sourceNick, String sourceLogin, String sourceHostname, String target);
+		public void onFinger(User source, Channel channel);
 	}
 
 	/**
@@ -73,41 +79,27 @@ public class Finger {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
-		protected final String target;
+		protected final User source;
+		protected final Channel channel;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sourceNick The nick of the user that sent the FINGER request.
-		 * @param sourceLogin The login of the user that sent the FINGER request.
-		 * @param sourceHostname The hostname of the user that sent the FINGER request.
-		 * @param target The target of the FINGER request, be it our nick or a channel name.
+		 * @param source The user that sent the FINGER request.
+		 * @param target 
 		 */
-		public Event(String sourceNick, String sourceLogin, String sourceHostname, String target) {
+		public Event(User source, Channel channel) {
 			this.timestamp = System.currentTimeMillis();
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
-			this.target = target;
+			this.source = source;
+			this.channel = channel;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
+		public User getSource() {
+			return source;
 		}
 
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
-		}
-
-		public String getTarget() {
-			return target;
+		public Channel getChannel() {
+			return channel;
 		}
 
 		public long getTimestamp() {

@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -40,10 +43,13 @@ public class Time {
 		/**
 		 * Simple Listener for Time Events. See {@link Time} for a complete description on when
 		 * this is called.
+		 * @param source The user that sent the TIME request.
+		 * @param target The target channel of the TIME request. A value of <code>null</code>
+		 *               means that target is us
 		 * @see Time
 		 * @see SimpleListener
 		 */
-		public void onTime(String sourceNick, String sourceLogin, String sourceHostname, String target);
+		public void onTime(User source, Channel target);
 	}
 
 	/**
@@ -73,40 +79,27 @@ public class Time {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
-		protected final String target;
+		protected final User source;
+		protected final Channel target;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sourceNick The nick of the user that sent the TIME request.
-		 * @param sourceLogin The login of the user that sent the TIME request.
-		 * @param sourceHostname The hostname of the user that sent the TIME request.
-		 * @param target The target of the TIME request, be it our nick or a channel name.
+		 * @param source The user that sent the TIME request.
+		 * @param target The target channel of the TIME request. A value of <code>null</code>
+		 *               means that target is us
 		 */
-		public Event(String sourceNick, String sourceLogin, String sourceHostname, String target) {
+		public Event(User source, Channel target) {
 			this.timestamp = System.currentTimeMillis();
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.target = target;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
+		public User getSource() {
+			return source;
 		}
 
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
-		}
-
-		public String getTarget() {
+		public Channel getTarget() {
 			return target;
 		}
 

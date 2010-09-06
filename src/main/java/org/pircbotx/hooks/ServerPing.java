@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -40,6 +41,7 @@ public class ServerPing {
 		/**
 		 * Simple Listener for ServerPing Events. See {@link ServerPing} for a complete description on when
 		 * this is called.
+		 * @param response The response that should be given back in your PONG.
 		 * @see ServerPing
 		 * @see SimpleListener
 		 */

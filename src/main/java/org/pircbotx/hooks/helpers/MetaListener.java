@@ -28,6 +28,7 @@ import org.pircbotx.hooks.Disconnect;
 import org.pircbotx.hooks.FileTransferFinished;
 import org.pircbotx.hooks.Finger;
 import org.pircbotx.hooks.IncomingChatRequest;
+import org.pircbotx.hooks.IncomingFileTransfer.Event;
 import org.pircbotx.hooks.Invite;
 import org.pircbotx.hooks.Join;
 import org.pircbotx.hooks.Kick;
@@ -215,5 +216,8 @@ public class MetaListener implements MetaListenerInterface {
 	}
 
 	public void onVoice(Voice.Event event) {
+	}
+
+	public void onIncomingFileTransfer(Event event) {
 	}
 }

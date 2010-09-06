@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -40,10 +43,12 @@ public class Part {
 		/**
 		 * Simple Listener for Part Events. See {@link Part} for a complete description on when
 		 * this is called.
+		 * @param channel The channel which somebody parted from.
+		 * @param sender The user who parted from the channel.
 		 * @see Part
 		 * @see SimpleListener
 		 */
-		public void onPart(String channel, String sender, String login, String hostname);
+		public void onPart(Channel channel, User sender);
 	}
 
 	/**
@@ -73,40 +78,26 @@ public class Part {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String sender;
-		protected final String login;
-		protected final String hostname;
+		protected final Channel channel;
+		protected final User sender;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel which somebody parted from.
-		 * @param sender The nick of the user who parted from the channel.
-		 * @param login The login of the user who parted from the channel.
-		 * @param hostname The hostname of the user who parted from the channel.
+		 * @param sender The user who parted from the channel.
 		 */
-		public Event(String channel, String sender, String login, String hostname) {
+		public Event(Channel channel, User sender) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
 			this.sender = sender;
-			this.login = login;
-			this.hostname = hostname;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
-		public String getHostname() {
-			return hostname;
-		}
-
-		public String getLogin() {
-			return login;
-		}
-
-		public String getSender() {
+		public User getSender() {
 			return sender;
 		}
 

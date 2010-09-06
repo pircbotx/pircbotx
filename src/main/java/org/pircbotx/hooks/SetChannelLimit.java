@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -43,10 +46,13 @@ public class SetChannelLimit {
 		/**
 		 * Simple Listener for SetChannelLimit Events. See {@link SetChannelLimit} for a complete description on when
 		 * this is called.
+		 * @param channel The channel in which the mode change took place.
+		 * @param source The user that performed the mode change.
+		 * @param limit The maximum number of users that may be in this channel at the same time.
 		 * @see SetChannelLimit
 		 * @see SimpleListener
 		 */
-		public void onSetChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname, int limit);
+		public void onSetChannelLimit(Channel channel, User source, int limit);
 	}
 
 	/**
@@ -76,31 +82,25 @@ public class SetChannelLimit {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
+		protected final Channel channel;
+		protected final User source;
 		protected final int limit;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel in which the mode change took place.
-		 * @param sourceNick The nick of the user that performed the mode change.
-		 * @param sourceLogin The login of the user that performed the mode change.
-		 * @param sourceHostname The hostname of the user that performed the mode change.
+		 * @param sourceNick The user that performed the mode change.
 		 * @param limit The maximum number of users that may be in this channel at the same time.
 		 */
-		public Event(String channel, String sourceNick, String sourceLogin, String sourceHostname, int limit) {
+		public Event(Channel channel, User source, int limit) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.limit = limit;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
@@ -108,16 +108,8 @@ public class SetChannelLimit {
 			return limit;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
-		}
-
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
+		public User getSource() {
+			return source;
 		}
 
 		public long getTimestamp() {

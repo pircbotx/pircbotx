@@ -84,9 +84,8 @@ public class User implements Comparable<User> {
 	}
 
 	public void parseStatus(String channel, String prefix) {
-		setOp(channel, prefix.contains("@"));
-		setVoice(channel, prefix.contains("+"));
-		;
+		setOp(_bot.getChannel(channel), prefix.contains("@"));
+		setVoice(_bot.getChannel(channel), prefix.contains("+"));
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
@@ -313,8 +312,8 @@ public class User implements Comparable<User> {
 	 * this object was fetched from
 	 * @param op the _op to set
 	 */
-	public void setOp(String chan, boolean op) {
-		_bot.getChannel(chan).setOp(this, op);
+	public void setOp(Channel chan, boolean op) {
+		chan.setOp(this, op);
 	}
 
 	/**
@@ -331,7 +330,7 @@ public class User implements Comparable<User> {
 	 * this object was fetched from
 	 * @param voice the _voice to set
 	 */
-	public void setVoice(String chan, boolean voice) {
-		_bot.getChannel(chan).setVoice(this, voice);
+	public void setVoice(Channel chan, boolean voice) {
+		chan.setVoice(this, voice);
 	}
 }

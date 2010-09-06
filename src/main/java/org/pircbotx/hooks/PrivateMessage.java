@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -39,10 +41,12 @@ public class PrivateMessage {
 		/**
 		 * Simple Listener for PrivateMessage Events. See {@link PrivateMessage} for a complete description on when
 		 * this is called.
+		 * @param sender The user who sent the private message.
+		 * @param message The actual message.
 		 * @see PrivateMessage
 		 * @see SimpleListener
 		 */
-		public void onPrivateMessage(String sender, String login, String hostname, String message);
+		public void onPrivateMessage(User sender, String message);
 	}
 
 	/**
@@ -72,40 +76,26 @@ public class PrivateMessage {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String sender;
-		protected final String login;
-		protected final String hostname;
+		protected final User sender;
 		protected final String message;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sender The nick of the person who sent the private message.
-		 * @param login The login of the person who sent the private message.
-		 * @param hostname The hostname of the person who sent the private message.
+		 * @param sender The user who sent the private message.
 		 * @param message The actual message.
 		 */
-		public Event(String sender, String login, String hostname, String message) {
+		public Event(User sender, String message) {
 			this.timestamp = System.currentTimeMillis();
 			this.sender = sender;
-			this.login = login;
-			this.hostname = hostname;
 			this.message = message;
-		}
-
-		public String getHostname() {
-			return hostname;
-		}
-
-		public String getLogin() {
-			return login;
 		}
 
 		public String getMessage() {
 			return message;
 		}
 
-		public String getSender() {
+		public User getSender() {
 			return sender;
 		}
 

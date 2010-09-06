@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -42,10 +45,13 @@ public class DeVoice {
 		/**
 		 * Simple Listener for DeVoice Events. See {@link DeVoice} for a complete description on when
 		 * this is called.
+		 * @param channel The channel in which the mode change took place.
+		 * @param source The user that performed the mode change.
+		 * @param recipient The user that got 'devoiced'.
 		 * @see DeVoice
 		 * @see SimpleListener
 		 */
-		public void onDeVoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient);
+		public void onDeVoice(Channel channel, User source, User recipient);
 	}
 
 	/**
@@ -75,48 +81,34 @@ public class DeVoice {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
-		protected final String recipient;
+		protected final Channel channel;
+		protected final User source;
+		protected final User recipient;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel in which the mode change took place.
-		 * @param sourceNick The nick of the user that performed the mode change.
-		 * @param sourceLogin The login of the user that performed the mode change.
-		 * @param sourceHostname The hostname of the user that performed the mode change.
-		 * @param recipient The nick of the user that got 'devoiced'.
+		 * @param source The user that performed the mode change.
+		 * @param recipient The user that got 'devoiced'.
 		 */
-		public Event(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
+		public Event(Channel channel, User source, User recipient) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.recipient = recipient;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
-		public String getRecipient() {
+		public User getRecipient() {
 			return recipient;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
-		}
-
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
+		public User getSource() {
+			return source;
 		}
 
 		public long getTimestamp() {
