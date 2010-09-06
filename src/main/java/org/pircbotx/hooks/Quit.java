@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -41,10 +43,12 @@ public class Quit {
 		/**
 		 * Simple Listener for Quit Events. See {@link Quit} for a complete description on when
 		 * this is called.
+		 * @param source The user that quit from the server.
+		 * @param reason The reason given for quitting the server.
 		 * @see Quit
 		 * @see SimpleListener
 		 */
-		public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason);
+		public void onQuit(User source, String reason);
 	}
 
 	/**
@@ -74,24 +78,18 @@ public class Quit {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
+		protected final User source;
 		protected final String reason;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sourceNick The nick of the user that quit from the server.
-		 * @param sourceLogin The login of the user that quit from the server.
-		 * @param sourceHostname The hostname of the user that quit from the server.
+		 * @param source The user that quit from the server.
 		 * @param reason The reason given for quitting the server.
 		 */
-		public Event(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+		public Event(User source, String reason) {
 			this.timestamp = System.currentTimeMillis();
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.reason = reason;
 		}
 
@@ -99,16 +97,8 @@ public class Quit {
 			return reason;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
-		}
-
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
+		public User getSource() {
+			return source;
 		}
 
 		public long getTimestamp() {

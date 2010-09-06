@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -42,10 +45,13 @@ public class RemoveChannelKey {
 		/**
 		 * Simple Listener for RemoveChannelKey Events. See {@link RemoveChannelKey} for a complete description on when
 		 * this is called.
+		 * @param channel The channel in which the mode change took place.
+		 * @param source The user that performed the mode change.
+		 * @param key The key that was in use before the channel key was removed.
 		 * @see RemoveChannelKey
 		 * @see SimpleListener
 		 */
-		public void onRemoveChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key);
+		public void onRemoveChannelKey(Channel channel, User source, String key);
 	}
 
 	/**
@@ -75,31 +81,25 @@ public class RemoveChannelKey {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
+		protected final Channel channel;
+		protected final User source;
 		protected final String key;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel in which the mode change took place.
-		 * @param sourceNick The nick of the user that performed the mode change.
-		 * @param sourceLogin The login of the user that performed the mode change.
-		 * @param sourceHostname The hostname of the user that performed the mode change.
+		 * @param source The user that performed the mode change.
 		 * @param key The key that was in use before the channel key was removed.
 		 */
-		public Event(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
+		public Event(Channel channel, User source, String key) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.key = key;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
@@ -107,16 +107,8 @@ public class RemoveChannelKey {
 			return key;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
-		}
-
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
+		public User getSource() {
+			return source;
 		}
 
 		public long getTimestamp() {

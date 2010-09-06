@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -40,10 +43,12 @@ public class Join {
 		/**
 		 * Simple Listener for Join Events. See {@link Join} for a complete description on when
 		 * this is called.
+		 * @param channel The channel which somebody joined.
+		 * @param user The user who joined the channel.
 		 * @see Join
 		 * @see SimpleListener
 		 */
-		public void onJoin(String channel, String sender, String login, String hostname);
+		public void onJoin(Channel channel, User user);
 	}
 
 	/**
@@ -73,41 +78,27 @@ public class Join {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String sender;
-		protected final String login;
-		protected final String hostname;
+		protected final Channel channel;
+		protected final User source;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel which somebody joined.
-		 * @param sender The nick of the user who joined the channel.
-		 * @param login The login of the user who joined the channel.
-		 * @param hostname The hostname of the user who joined the channel.
+		 * @param user The user who joined the channel.
 		 */
-		public Event(String channel, String sender, String login, String hostname) {
+		public Event(Channel channel, User source) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
-			this.sender = sender;
-			this.login = login;
-			this.hostname = hostname;
+			this.source = source;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
-		public String getHostname() {
-			return hostname;
-		}
-
-		public String getLogin() {
-			return login;
-		}
-
-		public String getSender() {
-			return sender;
+		public User getSource() {
+			return source;
 		}
 
 		public long getTimestamp() {

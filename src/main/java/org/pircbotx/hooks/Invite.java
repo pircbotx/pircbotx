@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -39,10 +42,12 @@ public class Invite {
 		/**
 		 * Simple Listener for Invite Events. See {@link Invite} for a complete description on when
 		 * this is called.
+		 * @param source The user that sent the invitation.
+		 * @param channel The channel that we're being invited to.
 		 * @see Invite
 		 * @see SimpleListener
 		 */
-		public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel);
+		public void onInvite(User source, Channel channel);
 	}
 
 	/**
@@ -72,48 +77,27 @@ public class Invite {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String targetNick;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
-		protected final String channel;
+		protected final User source;
+		protected final Channel channel;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param targetNick The nick of the user being invited - should be us!
-		 * @param sourceNick The nick of the user that sent the invitation.
-		 * @param sourceLogin The login of the user that sent the invitation.
-		 * @param sourceHostname The hostname of the user that sent the invitation.
+		 * @param source The user that sent the invitation.
 		 * @param channel The channel that we're being invited to.
 		 */
-		public Event(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
+		public Event(User source, Channel channel) {
 			this.timestamp = System.currentTimeMillis();
-			this.targetNick = targetNick;
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.channel = channel;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
-		}
-
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
-		}
-
-		public String getTargetNick() {
-			return targetNick;
+		public User getSource() {
+			return source;
 		}
 
 		public long getTimestamp() {

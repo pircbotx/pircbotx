@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -39,10 +42,13 @@ public class Notice {
 		/**
 		 * Simple Listener for Notice Events. See {@link Notice} for a complete description on when
 		 * this is called.
+		 * @param source The nick of the user that sent the notice.
+		 * @param target The target of the notice, be it our nick or a channel name.
+		 * @param notice The notice message.
 		 * @see Notice
 		 * @see SimpleListener
 		 */
-		public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice);
+		public void onNotice(User source, Channel target, String notice);
 	}
 
 	/**
@@ -72,26 +78,21 @@ public class Notice {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
-		protected final String target;
+		protected final User source;
+		protected final Channel target;
 		protected final String notice;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sourceNick The nick of the user that sent the notice.
-		 * @param sourceLogin The login of the user that sent the notice.
-		 * @param sourceHostname The hostname of the user that sent the notice.
-		 * @param target The target of the notice, be it our nick or a channel name.
+		 * @param source The nick of the user that sent the notice.
+		 * @param target The target channel of the notice. A value of <code>null</code>
+		 *               means that the target is us
 		 * @param notice The notice message.
 		 */
-		public Event(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+		public Event(User source, Channel target, String notice) {
 			this.timestamp = System.currentTimeMillis();
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.source = source;
 			this.target = target;
 			this.notice = notice;
 		}
@@ -100,19 +101,11 @@ public class Notice {
 			return notice;
 		}
 
-		public String getSourceHostname() {
-			return sourceHostname;
+		public User getSource() {
+			return source;
 		}
 
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
-		}
-
-		public String getTarget() {
+		public Channel getTarget() {
 			return target;
 		}
 

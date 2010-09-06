@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -39,10 +41,13 @@ public class UserMode {
 		/**
 		 * Simple Listener for UserMode Events. See {@link UserMode} for a complete description on when
 		 * this is called.
+		 * @param target The user that the mode operation applies to.
+		 * @param source The user that set the mode.
+		 * @param mode The mode that has been set.
 		 * @see UserMode
 		 * @see SimpleListener
 		 */
-		public void onUserMode(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode);
+		public void onUserMode(User target, User source, String mode);
 	}
 
 	/**
@@ -72,48 +77,34 @@ public class UserMode {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String targetNick;
-		protected final String sourceNick;
-		protected final String sourceLogin;
-		protected final String sourceHostname;
+		protected final User target;
+		protected final User source;
 		protected final String mode;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param targetNick The nick that the mode operation applies to.
-		 * @param sourceNick The nick of the user that set the mode.
-		 * @param sourceLogin The login of the user that set the mode.
-		 * @param sourceHostname The hostname of the user that set the mode.
+		 * @param target The user that the mode operation applies to.
+		 * @param source The user that set the mode.
 		 * @param mode The mode that has been set.
 		 */
-		public Event(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
+		public Event(User target, User source, String mode) {
 			this.timestamp = System.currentTimeMillis();
-			this.targetNick = targetNick;
-			this.sourceNick = sourceNick;
-			this.sourceLogin = sourceLogin;
-			this.sourceHostname = sourceHostname;
+			this.target = target;
+			this.source = source;
 			this.mode = mode;
+		}
+
+		public User getSource() {
+			return source;
+		}
+
+		public User getTarget() {
+			return target;
 		}
 
 		public String getMode() {
 			return mode;
-		}
-
-		public String getSourceHostname() {
-			return sourceHostname;
-		}
-
-		public String getSourceLogin() {
-			return sourceLogin;
-		}
-
-		public String getSourceNick() {
-			return sourceNick;
-		}
-
-		public String getTargetNick() {
-			return targetNick;
 		}
 
 		public long getTimestamp() {

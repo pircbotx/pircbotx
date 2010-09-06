@@ -20,6 +20,7 @@
 package org.pircbotx.hooks.helpers;
 
 import java.util.Set;
+import org.pircbotx.Channel;
 import org.pircbotx.DccChat;
 import org.pircbotx.DccFileTransfer;
 import org.pircbotx.User;
@@ -29,19 +30,19 @@ import org.pircbotx.User;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MetaSimpleListener implements MetaSimpleListenerInterface {
-	public void onAction(String sender, String login, String hostname, String target, String action) {
+	public void onAction(User source, User userTarget, Channel chanTarget, String action) {
 	}
 
-	public void onChannelInfo(String channel, int userCount, String topic) {
+	public void onChannelInfo(Channel channel, int userCount, String topic) {
 	}
 
 	public void onConnect() {
 	}
 
-	public void onDeop(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
+	public void onDeop(Channel channel, User source, User recipient) {
 	}
 
-	public void onDeVoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
+	public void onDeVoice(Channel channel, User source, User recipient) {
 	}
 
 	public void onDisconnect() {
@@ -50,73 +51,76 @@ public class MetaSimpleListener implements MetaSimpleListenerInterface {
 	public void onFileTransferFinished(DccFileTransfer transfer, Exception e) {
 	}
 
-	public void onFinger(String sourceNick, String sourceLogin, String sourceHostname, String target) {
+	public void onFinger(User source, Channel channel) {
 	}
 
 	public void onIncomingChatRequest(DccChat chat) {
 	}
 
-	public void onInvite(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String channel) {
+	public void onIncomingFileTransfer(DccFileTransfer transfer) {
 	}
 
-	public void onJoin(String channel, String sender, String login, String hostname) {
+	public void onInvite(User source, Channel channel) {
 	}
 
-	public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+	public void onJoin(Channel channel, User user) {
 	}
 
-	public void onMessage(String channel, String sender, String login, String hostname, String message) {
+	public void onKick(Channel channel, User kicker, User recipient, String reason) {
 	}
 
-	public void onMode(String channel, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
+	public void onMessage(Channel channel, User user, String message) {
 	}
 
-	public void onNickChange(String oldNick, String login, String hostname, String newNick) {
+	public void onMode(Channel channel, User source, String mode) {
 	}
 
-	public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+	public void onNickChange(String oldNick, String newNick, User user) {
 	}
 
-	public void onOp(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
+	public void onNotice(User source, Channel target, String notice) {
 	}
 
-	public void onPart(String channel, String sender, String login, String hostname) {
+	public void onOp(Channel channel, User source, User recipient) {
 	}
 
-	public void onPing(String sourceNick, String sourceLogin, String sourceHostname, String target, String pingValue) {
+	public void onPart(Channel channel, User sender) {
 	}
 
-	public void onPrivateMessage(String sender, String login, String hostname, String message) {
+	public void onPing(User source, Channel target, String pingValue) {
 	}
 
-	public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+	public void onPrivateMessage(User sender, String message) {
 	}
 
-	public void onRemoveChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
+	public void onQuit(User source, String reason) {
 	}
 
-	public void onRemoveChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
+	public void onRemoveChannelBan(Channel channel, User source, String hostmask) {
 	}
 
-	public void onRemoveChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemoveChannelKey(Channel channel, User source, String key) {
 	}
 
-	public void onRemoveInviteOnly(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemoveChannelLimit(Channel channel, User user) {
 	}
 
-	public void onRemoveModerated(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemoveInviteOnly(Channel channel, User user) {
 	}
 
-	public void onRemoveNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemoveModerated(Channel channel, User user) {
 	}
 
-	public void onRemovePrivate(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemoveNoExternalMessages(Channel channel, User user) {
 	}
 
-	public void onRemoveSecret(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemovePrivate(Channel channel, User user) {
 	}
 
-	public void onRemoveTopicProtection(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onRemoveSecret(Channel channel, User user) {
+	}
+
+	public void onRemoveTopicProtection(Channel channel, User user) {
 	}
 
 	public void onServerPing(String response) {
@@ -125,51 +129,51 @@ public class MetaSimpleListener implements MetaSimpleListenerInterface {
 	public void onServerResponse(int code, String response) {
 	}
 
-	public void onSetChannelBan(String channel, String sourceNick, String sourceLogin, String sourceHostname, String hostmask) {
+	public void onSetChannelBan(Channel channel, User source, String hostmask) {
 	}
 
-	public void onSetChannelKey(String channel, String sourceNick, String sourceLogin, String sourceHostname, String key) {
+	public void onSetChannelKey(Channel channel, User source, String key) {
 	}
 
-	public void onSetChannelLimit(String channel, String sourceNick, String sourceLogin, String sourceHostname, int limit) {
+	public void onSetChannelLimit(Channel channel, User source, int limit) {
 	}
 
-	public void onSetInviteOnly(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onSetInviteOnly(Channel channel, User user) {
 	}
 
-	public void onSetModerated(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onSetModerated(Channel channel, User user) {
 	}
 
-	public void onSetNoExternalMessages(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onSetNoExternalMessages(Channel channel, User user) {
 	}
 
-	public void onSetPrivate(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onSetPrivate(Channel channel, User user) {
 	}
 
-	public void onSetSecret(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onSetSecret(Channel channel, User source) {
 	}
 
-	public void onSetTopicProtection(String channel, String sourceNick, String sourceLogin, String sourceHostname) {
+	public void onSetTopicProtection(Channel channel, User source) {
 	}
 
-	public void onTime(String sourceNick, String sourceLogin, String sourceHostname, String target) {
+	public void onTime(User source, Channel target) {
 	}
 
-	public void onTopic(String channel, String topic, String setBy, boolean changed) {
+	public void onTopic(Channel channel, String topic, User setBy, boolean changed) {
 	}
 
 	public void onUnknown(String line) {
 	}
 
-	public void onUserList(String channel, Set<User> users) {
+	public void onUserList(Channel channel, Set<User> users) {
 	}
 
-	public void onUserMode(String targetNick, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
+	public void onUserMode(User target, User source, String mode) {
 	}
 
-	public void onVersion(String sourceNick, String sourceLogin, String sourceHostname, String target) {
+	public void onVersion(User source, Channel target) {
 	}
 
-	public void onVoice(String channel, String sourceNick, String sourceLogin, String sourceHostname, String recipient) {
+	public void onVoice(Channel channel, User source, User recipient) {
 	}
 }

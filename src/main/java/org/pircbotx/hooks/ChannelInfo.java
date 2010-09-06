@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -48,10 +50,13 @@ public class ChannelInfo {
 		/**
 		 * Simple Listener for ChannelInfo Events. See {@link ChannelInfo} for a complete description on when
 		 * this is called.
+		 * @param channel The channel.
+		 * @param userCount The number of users visible in this channel.
+		 * @param topic The topic for this channel.
 		 * @see ChannelInfo
 		 * @see SimpleListener
 		 */
-		public void onChannelInfo(String channel, int userCount, String topic);
+		public void onChannelInfo(Channel channel, int userCount, String topic);
 	}
 
 	/**
@@ -64,6 +69,7 @@ public class ChannelInfo {
 		/**
 		 * Listener for ChannelInfo Events. See {@link ChannelInfo} for a complete description on when
 		 * this is called.
+		
 		 * @see ChannelInfo
 		 * @see Listener
 		 */
@@ -81,18 +87,18 @@ public class ChannelInfo {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
+		protected final Channel channel;
 		protected final int userCount;
 		protected final String topic;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param channel The name of the channel.
+		 * @param channel The channel
 		 * @param userCount The number of users visible in this channel.
 		 * @param topic The topic for this channel.
 		 */
-		public Event(String channel, int userCount, String topic) {
+		public Event(Channel channel, int userCount, String topic) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
 			this.userCount = userCount;
@@ -103,7 +109,7 @@ public class ChannelInfo {
 			return timestamp;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
 		}
 

@@ -16,8 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -39,10 +42,13 @@ public class Message {
 		/**
 		 * Simple Listener for Message Events. See {@link Message} for a complete description on when
 		 * this is called.
+		 * @param channel The channel to which the message was sent.
+		 * @param user The user who sent the message.
+		 * @param message The actual message sent to the channel.
 		 * @see Message
 		 * @see SimpleListener
 		 */
-		public void onMessage(String channel, String sender, String login, String hostname, String message);
+		public void onMessage(Channel channel, User user, String message);
 	}
 
 	/**
@@ -72,48 +78,34 @@ public class Message {
 	 */
 	public static class Event implements BaseEvent {
 		protected final long timestamp;
-		protected final String channel;
-		protected final String sender;
-		protected final String login;
-		protected final String hostname;
+		protected final Channel channel;
+		protected final User user;
 		protected final String message;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel to which the message was sent.
-		 * @param sender The nick of the person who sent the message.
-		 * @param login The login of the person who sent the message.
-		 * @param hostname The hostname of the person who sent the message.
+		 * @param user The user who sent the message.
 		 * @param message The actual message sent to the channel.
 		 */
-		public Event(String channel, String sender, String login, String hostname, String message) {
+		public Event(Channel channel, User user, String message) {
 			this.timestamp = System.currentTimeMillis();
 			this.channel = channel;
-			this.sender = sender;
-			this.login = login;
-			this.hostname = hostname;
+			this.user = user;
 			this.message = message;
 		}
 
-		public String getChannel() {
+		public Channel getChannel() {
 			return channel;
-		}
-
-		public String getHostname() {
-			return hostname;
-		}
-
-		public String getLogin() {
-			return login;
 		}
 
 		public String getMessage() {
 			return message;
 		}
 
-		public String getSender() {
-			return sender;
+		public User getUser() {
+			return user;
 		}
 
 		public long getTimestamp() {
