@@ -87,6 +87,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
+import org.pircbotx.hooks.Motd;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.ListenerManager;
@@ -183,6 +184,7 @@ public abstract class PircBotX {
 	 * minutes
 	 */
 	private int socketTimeout = 1000 * 60 * 5;
+	public final ServerInfo serverInfo = new ServerInfo(this);
 
 	/**
 	 * Constructs a PircBotX with the default settings.  Your own constructors
@@ -1241,6 +1243,18 @@ public abstract class PircBotX {
 			String[] parsed = response.split(" ");
 			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
 			getChannel(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
+		} else if (code == RPL_MOTDSTART) {
+			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
+			//Motd is starting, reset the StringBuilder
+			serverInfo.setMotd("");
+		} else if(code == RPL_MOTD) {
+			//Example: PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
+			//This is part of the MOTD, add a new line
+			serverInfo.setMotd(serverInfo.getMotd()+response.split(" ",3)+"\n");
+		} else if(code == RPL_ENDOFMOTD) {
+			//Example: PircBotX :End of /MOTD command.
+			//End of MOTD, dispatch event
+			listeners.dispatchEvent(new Motd.Event((serverInfo.getMotd())));
 		}
 		listeners.dispatchEvent(new ServerResponse.Event(code, response));
 	}
