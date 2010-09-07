@@ -184,7 +184,7 @@ public abstract class PircBotX {
 	 * minutes
 	 */
 	private int socketTimeout = 1000 * 60 * 5;
-	public final ServerInfo serverInfo = new ServerInfo(this);
+	private final ServerInfo serverInfo = new ServerInfo(this);
 
 	/**
 	 * Constructs a PircBotX with the default settings.  Your own constructors
@@ -1246,15 +1246,15 @@ public abstract class PircBotX {
 		} else if (code == RPL_MOTDSTART) {
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
-			serverInfo.setMotd("");
+			getServerInfo().setMotd("");
 		} else if(code == RPL_MOTD) {
 			//Example: PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
 			//This is part of the MOTD, add a new line
-			serverInfo.setMotd(serverInfo.getMotd()+response.split(" ",3)+"\n");
+			getServerInfo().setMotd(getServerInfo().getMotd()+response.split(" ",3)+"\n");
 		} else if(code == RPL_ENDOFMOTD) {
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, dispatch event
-			listeners.dispatchEvent(new Motd.Event((serverInfo.getMotd())));
+			listeners.dispatchEvent(new Motd.Event((getServerInfo().getMotd())));
 		}
 		listeners.dispatchEvent(new ServerResponse.Event(code, response));
 	}
@@ -1961,6 +1961,12 @@ public abstract class PircBotX {
 			//User does not exist, create one
 			_userChanInfo.putA(user = new User(this, nick));
 		return user;
+	}
+
+	/**
+	 * @return the serverInfo
+	 */ public ServerInfo getServerInfo() {
+		return serverInfo;
 	}
 
 	/**
