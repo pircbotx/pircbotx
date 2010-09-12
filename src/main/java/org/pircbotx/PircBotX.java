@@ -1243,19 +1243,18 @@ public abstract class PircBotX {
 			String[] parsed = response.split(" ");
 			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
 			getChannel(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
-		} else if (code == RPL_MOTDSTART) {
+		} else if (code == RPL_MOTDSTART)
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
 			getServerInfo().setMotd("");
-		} else if(code == RPL_MOTD) {
+		else if (code == RPL_MOTD)
 			//Example: PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
 			//This is part of the MOTD, add a new line
-			getServerInfo().setMotd(getServerInfo().getMotd()+response.split(" ",3)+"\n");
-		} else if(code == RPL_ENDOFMOTD) {
+			getServerInfo().setMotd(getServerInfo().getMotd() + response.split(" ", 3) + "\n");
+		else if (code == RPL_ENDOFMOTD)
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, dispatch event
 			listeners.dispatchEvent(new Motd.Event((getServerInfo().getMotd())));
-		}
 		listeners.dispatchEvent(new ServerResponse.Event(code, response));
 	}
 
@@ -1965,7 +1964,8 @@ public abstract class PircBotX {
 
 	/**
 	 * @return the serverInfo
-	 */ public ServerInfo getServerInfo() {
+	 */
+	public ServerInfo getServerInfo() {
 		return serverInfo;
 	}
 
@@ -2095,8 +2095,6 @@ public abstract class PircBotX {
 					((Voice.Listener) curListener).onVoice((Voice.Event) event);
 				else
 					throw new RuntimeException("Unknown event " + event.getClass() + " has no listeners!");
-
-
 		}
 	}
 }
