@@ -47,7 +47,7 @@ public class Action {
 		 * @see Action
 		 * @see SimpleListener
 		 */
-		public void onAction(User source, User userTarget, Channel chanTarget, String action);
+		public void onAction(User source, Channel chanTarget, String action);
 	}
 
 	/**
