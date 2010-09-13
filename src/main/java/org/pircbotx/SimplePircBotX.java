@@ -85,7 +85,7 @@ import org.pircbotx.hooks.Voice;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterface {
-	public void onAction(User source, User userTarget, Channel chanTarget, String action) {
+	public void onAction(User source, Channel chanTarget, String action) {
 	}
 
 	public void onChannelInfo(Channel channel, int userCount, String topic) {
