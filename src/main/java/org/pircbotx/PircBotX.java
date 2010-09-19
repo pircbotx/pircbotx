@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx;
 
 import org.pircbotx.hooks.Action;
@@ -1979,7 +1980,7 @@ public abstract class PircBotX {
 	 * @param listeners the listeners to set
 	 */
 	public void setListeners(ListenerManager listeners) {
-			this.listeners = listeners;
+		this.listeners = listeners;
 	}
 
 	/**
@@ -2008,106 +2009,104 @@ public abstract class PircBotX {
 			//Yea, this is ugly. But it does get the job done
 			//Loop through all listeners, and call appropiate one based on Event type
 			for (BaseListener curListener : listeners)
-				if (event instanceof Action.Event)
+				if (event instanceof Action.Event && curListener instanceof Action.Listener)
 					((Action.Listener) curListener).onAction((Action.Event) event);
-				else if (event instanceof ChannelInfo.Event)
+				else if (event instanceof ChannelInfo.Event && curListener instanceof ChannelInfo.Listener)
 					((ChannelInfo.Listener) curListener).onChannelInfo((ChannelInfo.Event) event);
-				else if (event instanceof Connect.Event)
+				else if (event instanceof Connect.Event && curListener instanceof Connect.Listener)
 					((Connect.Listener) curListener).onConnect((Connect.Event) event);
-				else if (event instanceof Deop.Event)
+				else if (event instanceof Deop.Event && curListener instanceof Deop.Listener)
 					((Deop.Listener) curListener).onDeop((Deop.Event) event);
-				else if (event instanceof DeVoice.Event)
+				else if (event instanceof DeVoice.Event && curListener instanceof DeVoice.Listener)
 					((DeVoice.Listener) curListener).onDeVoice((DeVoice.Event) event);
-				else if (event instanceof Disconnect.Event)
+				else if (event instanceof Disconnect.Event && curListener instanceof Disconnect.Listener)
 					((Disconnect.Listener) curListener).onDisconnect((Disconnect.Event) event);
-				else if (event instanceof FileTransferFinished.Event)
+				else if (event instanceof FileTransferFinished.Event && curListener instanceof FileTransferFinished.Listener)
 					((FileTransferFinished.Listener) curListener).onFileTransferFinished((FileTransferFinished.Event) event);
-				else if (event instanceof Finger.Event)
+				else if (event instanceof Finger.Event && curListener instanceof Finger.Listener)
 					((Finger.Listener) curListener).onFinger((Finger.Event) event);
-				else if (event instanceof IncomingChatRequest.Event)
+				else if (event instanceof IncomingChatRequest.Event && curListener instanceof IncomingChatRequest.Listener)
 					((IncomingChatRequest.Listener) curListener).onIncomingChatRequest((IncomingChatRequest.Event) event);
-				else if (event instanceof IncomingFileTransfer.Event)
+				else if (event instanceof IncomingFileTransfer.Event && curListener instanceof IncomingFileTransfer.Listener)
 					((IncomingFileTransfer.Listener) curListener).onIncomingFileTransfer((IncomingFileTransfer.Event) event);
-				else if (event instanceof Invite.Event)
+				else if (event instanceof Invite.Event && curListener instanceof Invite.Listener)
 					((Invite.Listener) curListener).onInvite((Invite.Event) event);
-				else if (event instanceof Join.Event)
+				else if (event instanceof Join.Event && curListener instanceof Join.Listener)
 					((Join.Listener) curListener).onJoin((Join.Event) event);
-				else if (event instanceof Kick.Event)
+				else if (event instanceof Kick.Event && curListener instanceof Kick.Listener)
 					((Kick.Listener) curListener).onKick((Kick.Event) event);
-				else if (event instanceof Message.Event)
+				else if (event instanceof Message.Event && curListener instanceof Message.Listener)
 					((Message.Listener) curListener).onMessage((Message.Event) event);
-				else if (event instanceof Mode.Event)
+				else if (event instanceof Mode.Event && curListener instanceof Mode.Listener)
 					((Mode.Listener) curListener).onMode((Mode.Event) event);
-				else if (event instanceof NickChange.Event)
+				else if (event instanceof NickChange.Event && curListener instanceof NickChange.Listener)
 					((NickChange.Listener) curListener).onNickChange((NickChange.Event) event);
-				else if (event instanceof Notice.Event)
+				else if (event instanceof Notice.Event && curListener instanceof Notice.Listener)
 					((Notice.Listener) curListener).onNotice((Notice.Event) event);
-				else if (event instanceof Op.Event)
+				else if (event instanceof Op.Event && curListener instanceof Op.Listener)
 					((Op.Listener) curListener).onOp((Op.Event) event);
-				else if (event instanceof Part.Event)
+				else if (event instanceof Part.Event && curListener instanceof Part.Listener)
 					((Part.Listener) curListener).onPart((Part.Event) event);
-				else if (event instanceof Ping.Event)
+				else if (event instanceof Ping.Event && curListener instanceof Ping.Listener)
 					((Ping.Listener) curListener).onPing((Ping.Event) event);
-				else if (event instanceof PrivateMessage.Event)
+				else if (event instanceof PrivateMessage.Event && curListener instanceof PrivateMessage.Listener)
 					((PrivateMessage.Listener) curListener).onPrivateMessage((PrivateMessage.Event) event);
-				else if (event instanceof Quit.Event)
+				else if (event instanceof Quit.Event && curListener instanceof Quit.Listener)
 					((Quit.Listener) curListener).onQuit((Quit.Event) event);
-				else if (event instanceof RemoveChannelBan.Event)
+				else if (event instanceof RemoveChannelBan.Event && curListener instanceof RemoveChannelBan.Listener)
 					((RemoveChannelBan.Listener) curListener).onRemoveChannelBan((RemoveChannelBan.Event) event);
-				else if (event instanceof RemoveChannelKey.Event)
+				else if (event instanceof RemoveChannelKey.Event && curListener instanceof RemoveChannelKey.Listener)
 					((RemoveChannelKey.Listener) curListener).onRemoveChannelKey((RemoveChannelKey.Event) event);
-				else if (event instanceof RemoveChannelLimit.Event)
+				else if (event instanceof RemoveChannelLimit.Event && curListener instanceof RemoveChannelLimit.Listener)
 					((RemoveChannelLimit.Listener) curListener).onRemoveChannelLimit((RemoveChannelLimit.Event) event);
-				else if (event instanceof RemoveInviteOnly.Event)
+				else if (event instanceof RemoveInviteOnly.Event && curListener instanceof RemoveInviteOnly.Listener)
 					((RemoveInviteOnly.Listener) curListener).onRemoveInviteOnly((RemoveInviteOnly.Event) event);
-				else if (event instanceof RemoveModerated.Event)
+				else if (event instanceof RemoveModerated.Event && curListener instanceof RemoveModerated.Listener)
 					((RemoveModerated.Listener) curListener).onRemoveModerated((RemoveModerated.Event) event);
-				else if (event instanceof RemoveNoExternalMessages.Event)
+				else if (event instanceof RemoveNoExternalMessages.Event && curListener instanceof RemoveNoExternalMessages.Listener)
 					((RemoveNoExternalMessages.Listener) curListener).onRemoveNoExternalMessages((RemoveNoExternalMessages.Event) event);
-				else if (event instanceof RemovePrivate.Event)
+				else if (event instanceof RemovePrivate.Event && curListener instanceof RemovePrivate.Listener)
 					((RemovePrivate.Listener) curListener).onRemovePrivate((RemovePrivate.Event) event);
-				else if (event instanceof RemoveSecret.Event)
+				else if (event instanceof RemoveSecret.Event && curListener instanceof RemoveSecret.Listener)
 					((RemoveSecret.Listener) curListener).onRemoveSecret((RemoveSecret.Event) event);
-				else if (event instanceof RemoveTopicProtection.Event)
+				else if (event instanceof RemoveTopicProtection.Event && curListener instanceof RemoveTopicProtection.Listener)
 					((RemoveTopicProtection.Listener) curListener).onRemoveTopicProtection((RemoveTopicProtection.Event) event);
-				else if (event instanceof ServerPing.Event)
+				else if (event instanceof ServerPing.Event && curListener instanceof ServerPing.Listener)
 					((ServerPing.Listener) curListener).onServerPing((ServerPing.Event) event);
-				else if (event instanceof ServerResponse.Event)
+				else if (event instanceof ServerResponse.Event && curListener instanceof ServerResponse.Listener)
 					((ServerResponse.Listener) curListener).onServerResponse((ServerResponse.Event) event);
-				else if (event instanceof SetChannelBan.Event)
+				else if (event instanceof SetChannelBan.Event && curListener instanceof SetChannelBan.Listener)
 					((SetChannelBan.Listener) curListener).onSetChannelBan((SetChannelBan.Event) event);
-				else if (event instanceof SetChannelKey.Event)
+				else if (event instanceof SetChannelKey.Event && curListener instanceof SetChannelKey.Listener)
 					((SetChannelKey.Listener) curListener).onSetChannelKey((SetChannelKey.Event) event);
-				else if (event instanceof SetChannelLimit.Event)
+				else if (event instanceof SetChannelLimit.Event && curListener instanceof SetChannelLimit.Listener)
 					((SetChannelLimit.Listener) curListener).onSetChannelLimit((SetChannelLimit.Event) event);
-				else if (event instanceof SetInviteOnly.Event)
+				else if (event instanceof SetInviteOnly.Event && curListener instanceof SetInviteOnly.Listener)
 					((SetInviteOnly.Listener) curListener).onSetInviteOnly((SetInviteOnly.Event) event);
-				else if (event instanceof SetModerated.Event)
+				else if (event instanceof SetModerated.Event && curListener instanceof SetModerated.Listener)
 					((SetModerated.Listener) curListener).onSetModerated((SetModerated.Event) event);
-				else if (event instanceof SetNoExternalMessages.Event)
+				else if (event instanceof SetNoExternalMessages.Event && curListener instanceof SetNoExternalMessages.Listener)
 					((SetNoExternalMessages.Listener) curListener).onSetNoExternalMessages((SetNoExternalMessages.Event) event);
-				else if (event instanceof SetPrivate.Event)
+				else if (event instanceof SetPrivate.Event && curListener instanceof SetPrivate.Listener)
 					((SetPrivate.Listener) curListener).onSetPrivate((SetPrivate.Event) event);
-				else if (event instanceof SetSecret.Event)
+				else if (event instanceof SetSecret.Event && curListener instanceof SetSecret.Listener)
 					((SetSecret.Listener) curListener).onSetSecret((SetSecret.Event) event);
-				else if (event instanceof SetTopicProtection.Event)
+				else if (event instanceof SetTopicProtection.Event && curListener instanceof SetTopicProtection.Listener)
 					((SetTopicProtection.Listener) curListener).onSetTopicProtection((SetTopicProtection.Event) event);
-				else if (event instanceof Time.Event)
+				else if (event instanceof Time.Event && curListener instanceof Time.Listener)
 					((Time.Listener) curListener).onTime((Time.Event) event);
-				else if (event instanceof Topic.Event)
+				else if (event instanceof Topic.Event && curListener instanceof Topic.Listener)
 					((Topic.Listener) curListener).onTopic((Topic.Event) event);
-				else if (event instanceof Unknown.Event)
+				else if (event instanceof Unknown.Event && curListener instanceof Unknown.Listener)
 					((Unknown.Listener) curListener).onUnknown((Unknown.Event) event);
-				else if (event instanceof UserList.Event)
+				else if (event instanceof UserList.Event && curListener instanceof UserList.Listener)
 					((UserList.Listener) curListener).onUserList((UserList.Event) event);
-				else if (event instanceof UserMode.Event)
+				else if (event instanceof UserMode.Event && curListener instanceof UserMode.Listener)
 					((UserMode.Listener) curListener).onUserMode((UserMode.Event) event);
-				else if (event instanceof Version.Event)
+				else if (event instanceof Version.Event && curListener instanceof Version.Listener)
 					((Version.Listener) curListener).onVersion((Version.Event) event);
-				else if (event instanceof Voice.Event)
+				else if (event instanceof Voice.Event && curListener instanceof Voice.Listener)
 					((Voice.Listener) curListener).onVoice((Voice.Event) event);
-				else
-					throw new RuntimeException("Unknown event " + event.getClass() + " has no listeners!");
 		}
 	}
 }

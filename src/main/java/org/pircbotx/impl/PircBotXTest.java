@@ -26,12 +26,14 @@ package org.pircbotx.impl;
 import java.util.Set;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.hooks.Connect;
+import org.pircbotx.hooks.UserList;
 
 /**
  *
  * @author LordQuackstar
  */
-public class PircBotXTest extends PircBotX {
+public class PircBotXTest extends PircBotX implements Connect.Listener, UserList.Listener {
 	public PircBotXTest() {
 		setName("TheLQ");
 		setLogin("LQ");
@@ -40,10 +42,11 @@ public class PircBotXTest extends PircBotX {
 		setMessageDelay(0);
 		setVersion("Quackbot 3.3");
 		setVerbose(true);
+		getListeners().addListener(this);
 	}
 
-	//@Override
-	protected void onConnect() {
+	@Override
+	public void onConnect(Connect.Event event) {
 		sendRawLine("NICKSERV identify manganip");
 		joinChannel("#honcast");
 		joinChannel("#3on3.et");
@@ -59,8 +62,8 @@ public class PircBotXTest extends PircBotX {
 		joinChannel("#pcw");
 	}
 
-	//@Override
-	protected void onUserList(String channel, Set<User> users) {
+	@Override
+	public void onUserList(UserList.Event event) {
 		log("INNEFFIENT CALLED");
 	}
 

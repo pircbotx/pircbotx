@@ -22,6 +22,7 @@
 	</properties>
 
 	<dependencies>
+		<!--Use TestNG as testing framework-->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
@@ -34,6 +35,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -44,6 +46,7 @@
 	
 	<build>
 		<plugins>
+			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
@@ -71,6 +74,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--Specifically target Java 1.5-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -84,6 +88,7 @@
 
 	<reporting>
 		<plugins>
+			<!--JavaDoc setup-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
