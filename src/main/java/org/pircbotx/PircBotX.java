@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import org.pircbotx.hooks.Action;
@@ -177,7 +176,7 @@ public abstract class PircBotX {
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
 	private final Object logLock = new Object();
-	protected final EventListenerManager listeners = new EventListenerManager();
+	protected ListenerManager listeners = new EventListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -336,7 +335,7 @@ public abstract class PircBotX {
 		_actualInputThread.start();
 		_actualOutputThread.start();
 
-		listeners.dispatchEvent(new Connect.Event());
+		getListeners().dispatchEvent(new Connect.Event());
 	}
 
 	/**
@@ -941,7 +940,7 @@ public abstract class PircBotX {
 			// Check for server pings.
 			if (line.startsWith("PING ")) {
 				// Respond to the ping and return immediately.
-				listeners.dispatchEvent(new ServerPing.Event(line.substring(5)));
+				getListeners().dispatchEvent(new ServerPing.Event(line.substring(5)));
 				return;
 			}
 
@@ -986,7 +985,7 @@ public abstract class PircBotX {
 					}
 				} else {
 					// We don't know what this line means.
-					listeners.dispatchEvent(new Unknown.Event(line));
+					getListeners().dispatchEvent(new Unknown.Event(line));
 					// Return from the method;
 					return;
 				}
@@ -1008,34 +1007,34 @@ public abstract class PircBotX {
 				String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
 				if (request.equals("VERSION"))
 					// VERSION request
-					listeners.dispatchEvent(new Version.Event(source, channel));
+					getListeners().dispatchEvent(new Version.Event(source, channel));
 				else if (request.startsWith("ACTION "))
 					// ACTION request
-					listeners.dispatchEvent(new Action.Event(source, channel, request.substring(7)));
+					getListeners().dispatchEvent(new Action.Event(source, channel, request.substring(7)));
 				else if (request.startsWith("PING "))
 					// PING request
-					listeners.dispatchEvent(new Ping.Event(source, channel, request.substring(5)));
+					getListeners().dispatchEvent(new Ping.Event(source, channel, request.substring(5)));
 				else if (request.equals("TIME"))
 					// TIME request
-					listeners.dispatchEvent(new Time.Event(source, channel));
+					getListeners().dispatchEvent(new Time.Event(source, channel));
 				else if (request.equals("FINGER"))
 					// FINGER request
-					listeners.dispatchEvent(new Finger.Event(source, channel));
+					getListeners().dispatchEvent(new Finger.Event(source, channel));
 				else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 					// This is a DCC request.
 					boolean success = _dccManager.processRequest(sourceNick, sourceLogin, sourceHostname, request);
 					if (!success)
 						// The DccManager didn't know what to do with the line.
-						listeners.dispatchEvent(new Unknown.Event(line));
+						getListeners().dispatchEvent(new Unknown.Event(line));
 				} else
 					// An unknown CTCP message - ignore it.
-					listeners.dispatchEvent(new Unknown.Event(line));
+					getListeners().dispatchEvent(new Unknown.Event(line));
 			} else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0)
 				// This is a normal message to a channel.
-				listeners.dispatchEvent(new Message.Event(channel, source, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new Message.Event(channel, source, line.substring(line.indexOf(" :") + 2)));
 			else if (command.equals("PRIVMSG"))
 				// This is a private message to us.
-				listeners.dispatchEvent(new PrivateMessage.Event(source, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new PrivateMessage.Event(source, line.substring(line.indexOf(" :") + 2)));
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				if (sourceNick.equalsIgnoreCase(_nick)) {
@@ -1052,7 +1051,7 @@ public abstract class PircBotX {
 				}
 				//user.addUser(usr);
 
-				listeners.dispatchEvent(new Join.Event(channel, source));
+				getListeners().dispatchEvent(new Join.Event(channel, source));
 			} else if (command.equals("PART"))
 				// Someone is parting from a channel.
 				if (sourceNick.equals(getNick()))
@@ -1060,7 +1059,7 @@ public abstract class PircBotX {
 				else
 					//Just remove the user from memory
 					//getChannel(target).removeUser(sourceNick);
-					listeners.dispatchEvent(new Part.Event(channel, source));
+					getListeners().dispatchEvent(new Part.Event(channel, source));
 			else if (command.equals("NICK")) {
 				// Somebody is changing their nick.
 				String newNick = target;
@@ -1068,10 +1067,10 @@ public abstract class PircBotX {
 				if (sourceNick.equals(getNick()))
 					// Update our nick if it was us that changed nick.
 					setNick(newNick);
-				listeners.dispatchEvent(new NickChange.Event(sourceNick, newNick, source));
+				getListeners().dispatchEvent(new NickChange.Event(sourceNick, newNick, source));
 			} else if (command.equals("NOTICE"))
 				// Someone is sending a notice.
-				listeners.dispatchEvent(new Notice.Event(source, channel, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new Notice.Event(source, channel, line.substring(line.indexOf(" :") + 2)));
 			else if (command.equals("QUIT")) {
 				// Someone has quit from the IRC server.
 				if (sourceNick.equals(getNick()))
@@ -1080,7 +1079,7 @@ public abstract class PircBotX {
 				else
 					//Someone else
 					_userChanInfo.deleteB(getUser(sourceNick));
-				listeners.dispatchEvent(new Quit.Event(source, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new Quit.Event(source, line.substring(line.indexOf(" :") + 2)));
 			} else if (command.equals("KICK")) {
 				// Somebody has been kicked from a channel.
 				String recipient = tokenizer.nextToken();
@@ -1091,7 +1090,7 @@ public abstract class PircBotX {
 				else
 					//Someone else
 					_userChanInfo.dissociate(getChannel(target), user, true);
-				listeners.dispatchEvent(new Kick.Event(channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new Kick.Event(channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
 			} else if (command.equals("MODE")) {
 				// Somebody is changing the mode on a channel or user.
 				String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -1107,14 +1106,14 @@ public abstract class PircBotX {
 				chan.setTopicSetter(sourceNick);
 				chan.setTopicTimestamp(currentTime);
 
-				listeners.dispatchEvent(new Topic.Event(channel, topic, source, true));
+				getListeners().dispatchEvent(new Topic.Event(channel, topic, source, true));
 			} else if (command.equals("INVITE"))
 				// Somebody is inviting somebody else into a channel.
-				listeners.dispatchEvent(new Invite.Event(source, channel));
+				getListeners().dispatchEvent(new Invite.Event(source, channel));
 			else
 				// If we reach this point, then we've found something that the PircBotX
 				// Doesn't currently deal with.
-				listeners.dispatchEvent(new Unknown.Event(line));
+				getListeners().dispatchEvent(new Unknown.Event(line));
 		} catch (Throwable t) {
 			// Stick the whole stack trace into a String so we can output it nicely.
 			StringWriter sw = new StringWriter();
@@ -1162,7 +1161,7 @@ public abstract class PircBotX {
 				// Stick with the value of zero.
 			}
 			String topic = response.substring(colon + 1);
-			listeners.dispatchEvent(new ChannelInfo.Event(chan, userCount, topic));
+			getListeners().dispatchEvent(new ChannelInfo.Event(chan, userCount, topic));
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined.
@@ -1189,7 +1188,7 @@ public abstract class PircBotX {
 			chan.setTopicTimestamp(date);
 			chan.setTopicSetter(setBy.getNick());
 
-			listeners.dispatchEvent(new Topic.Event(chan, chan.getTopic(), setBy, false));
+			getListeners().dispatchEvent(new Topic.Event(chan, chan.getTopic(), setBy, false));
 		} else if (code == RPL_NAMREPLY) {
 			//EXAMPLE: PircBotX = #aChannel :PircBotX @SuperOp
 			// This is a list of nicks in a channel that we've just joined.
@@ -1206,7 +1205,7 @@ public abstract class PircBotX {
 			// This is the end of a NAMES list, so we know that we've got
 			// the full list of users in the channel that we just joined.
 			Channel channel = getChannel(response.split(" ", 3)[1]);
-			listeners.dispatchEvent(new UserList.Event(channel, getUsers(channel)));
+			getListeners().dispatchEvent(new UserList.Event(channel, getUsers(channel)));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
@@ -1230,7 +1229,7 @@ public abstract class PircBotX {
 			//End of the WHO reply
 			Channel channel = getChannel(response.split(" ")[1]);
 			System.out.println("Who reply finished for " + channel);
-			listeners.dispatchEvent(new UserList.Event(channel, getUsers(channel)));
+			getListeners().dispatchEvent(new UserList.Event(channel, getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -1254,8 +1253,8 @@ public abstract class PircBotX {
 		else if (code == RPL_ENDOFMOTD)
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, dispatch event
-			listeners.dispatchEvent(new Motd.Event((getServerInfo().getMotd())));
-		listeners.dispatchEvent(new ServerResponse.Event(code, response));
+			getListeners().dispatchEvent(new Motd.Event((getServerInfo().getMotd())));
+		getListeners().dispatchEvent(new ServerResponse.Event(code, response));
 	}
 
 	/**
@@ -1300,77 +1299,77 @@ public abstract class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						source.setOp(channel, true);
-						listeners.dispatchEvent(new Op.Event(channel, source, reciepeint));
+						getListeners().dispatchEvent(new Op.Event(channel, source, reciepeint));
 					} else {
 						source.setOp(channel, false);
-						listeners.dispatchEvent(new Deop.Event(channel, source, reciepeint));
+						getListeners().dispatchEvent(new Deop.Event(channel, source, reciepeint));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						source.setVoice(channel, true);
-						listeners.dispatchEvent(new Voice.Event(channel, source, reciepeint));
+						getListeners().dispatchEvent(new Voice.Event(channel, source, reciepeint));
 					} else {
 						source.setVoice(channel, false);
-						listeners.dispatchEvent(new DeVoice.Event(channel, source, reciepeint));
+						getListeners().dispatchEvent(new DeVoice.Event(channel, source, reciepeint));
 					}
 					p++;
 				} else if (atPos == 'k') {
 					if (pn == '+')
-						listeners.dispatchEvent(new SetChannelKey.Event(channel, source, params[p]));
+						getListeners().dispatchEvent(new SetChannelKey.Event(channel, source, params[p]));
 					else
-						listeners.dispatchEvent(new RemoveChannelKey.Event(channel, source, params[p]));
+						getListeners().dispatchEvent(new RemoveChannelKey.Event(channel, source, params[p]));
 					p++;
 				} else if (atPos == 'l')
 					if (pn == '+') {
-						listeners.dispatchEvent(new SetChannelLimit.Event(channel, source, Integer.parseInt(params[p])));
+						getListeners().dispatchEvent(new SetChannelLimit.Event(channel, source, Integer.parseInt(params[p])));
 						p++;
 					} else
-						listeners.dispatchEvent(new RemoveChannelLimit.Event(channel, source));
+						getListeners().dispatchEvent(new RemoveChannelLimit.Event(channel, source));
 				else if (atPos == 'b') {
 					if (pn == '+')
-						listeners.dispatchEvent(new SetChannelBan.Event(channel, source, params[p]));
+						getListeners().dispatchEvent(new SetChannelBan.Event(channel, source, params[p]));
 					else
-						listeners.dispatchEvent(new RemoveChannelBan.Event(channel, source, params[p]));
+						getListeners().dispatchEvent(new RemoveChannelBan.Event(channel, source, params[p]));
 					p++;
 				} else if (atPos == 't')
 					if (pn == '+')
-						listeners.dispatchEvent(new SetTopicProtection.Event(channel, source));
+						getListeners().dispatchEvent(new SetTopicProtection.Event(channel, source));
 					else
-						listeners.dispatchEvent(new RemoveTopicProtection.Event(channel, source));
+						getListeners().dispatchEvent(new RemoveTopicProtection.Event(channel, source));
 				else if (atPos == 'n')
 					if (pn == '+')
-						listeners.dispatchEvent(new SetNoExternalMessages.Event(channel, source));
+						getListeners().dispatchEvent(new SetNoExternalMessages.Event(channel, source));
 					else
-						listeners.dispatchEvent(new RemoveNoExternalMessages.Event(channel, source));
+						getListeners().dispatchEvent(new RemoveNoExternalMessages.Event(channel, source));
 				else if (atPos == 'i')
 					if (pn == '+')
-						listeners.dispatchEvent(new SetInviteOnly.Event(channel, source));
+						getListeners().dispatchEvent(new SetInviteOnly.Event(channel, source));
 					else
-						listeners.dispatchEvent(new RemoveInviteOnly.Event(channel, source));
+						getListeners().dispatchEvent(new RemoveInviteOnly.Event(channel, source));
 				else if (atPos == 'm')
 					if (pn == '+')
-						listeners.dispatchEvent(new SetModerated.Event(channel, source));
+						getListeners().dispatchEvent(new SetModerated.Event(channel, source));
 					else
-						listeners.dispatchEvent(new RemoveModerated.Event(channel, source));
+						getListeners().dispatchEvent(new RemoveModerated.Event(channel, source));
 				else if (atPos == 'p')
 					if (pn == '+')
-						listeners.dispatchEvent(new SetPrivate.Event(channel, source));
+						getListeners().dispatchEvent(new SetPrivate.Event(channel, source));
 					else
-						listeners.dispatchEvent(new RemovePrivate.Event(channel, source));
+						getListeners().dispatchEvent(new RemovePrivate.Event(channel, source));
 				else if (atPos == 's')
 					if (pn == '+')
-						listeners.dispatchEvent(new SetSecret.Event(channel, source));
+						getListeners().dispatchEvent(new SetSecret.Event(channel, source));
 					else
-						listeners.dispatchEvent(new RemoveSecret.Event(channel, source));
+						getListeners().dispatchEvent(new RemoveSecret.Event(channel, source));
 			}
 
-			listeners.dispatchEvent(new Mode.Event(channel, source, mode));
+			getListeners().dispatchEvent(new Mode.Event(channel, source, mode));
 		} else {
 			// The mode of a user is being changed.
 			String nick = target;
-			listeners.dispatchEvent(new UserMode.Event(getUser(nick), source, mode));
+			getListeners().dispatchEvent(new UserMode.Event(getUser(nick), source, mode));
 		}
 	}
 
@@ -1967,6 +1966,20 @@ public abstract class PircBotX {
 	 */
 	public ServerInfo getServerInfo() {
 		return serverInfo;
+	}
+
+	/**
+	 * @return the listeners
+	 */
+	public ListenerManager getListeners() {
+		return listeners;
+	}
+
+	/**
+	 * @param listeners the listeners to set
+	 */
+	public void setListeners(ListenerManager listeners) {
+			this.listeners = listeners;
 	}
 
 	/**
