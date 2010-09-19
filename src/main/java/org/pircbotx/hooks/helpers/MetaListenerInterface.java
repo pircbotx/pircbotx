@@ -34,6 +34,7 @@ import org.pircbotx.hooks.Join;
 import org.pircbotx.hooks.Kick;
 import org.pircbotx.hooks.Message;
 import org.pircbotx.hooks.Mode;
+import org.pircbotx.hooks.Motd;
 import org.pircbotx.hooks.NickChange;
 import org.pircbotx.hooks.Notice;
 import org.pircbotx.hooks.Op;
@@ -73,5 +74,5 @@ import org.pircbotx.hooks.Voice;
  * TODO
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface MetaListenerInterface extends Action.Listener, ChannelInfo.Listener, Connect.Listener, Deop.Listener, DeVoice.Listener, Disconnect.Listener, FileTransferFinished.Listener, Finger.Listener, IncomingChatRequest.Listener, IncomingFileTransfer.Listener, Invite.Listener, Join.Listener, Kick.Listener, Message.Listener, Mode.Listener, NickChange.Listener, Notice.Listener, Op.Listener, Part.Listener, Ping.Listener, PrivateMessage.Listener, Quit.Listener, RemoveChannelBan.Listener, RemoveChannelKey.Listener, RemoveChannelLimit.Listener, RemoveInviteOnly.Listener, RemoveModerated.Listener, RemoveNoExternalMessages.Listener, RemovePrivate.Listener, RemoveSecret.Listener, RemoveTopicProtection.Listener, ServerPing.Listener, ServerResponse.Listener, SetChannelBan.Listener, SetChannelKey.Listener, SetChannelLimit.Listener, SetInviteOnly.Listener, SetModerated.Listener, SetNoExternalMessages.Listener, SetPrivate.Listener, SetSecret.Listener, SetTopicProtection.Listener, Time.Listener, Topic.Listener, Unknown.Listener, UserList.Listener, UserMode.Listener, Version.Listener, Voice.Listener {
+public interface MetaListenerInterface extends Action.Listener, ChannelInfo.Listener, Connect.Listener, Deop.Listener, DeVoice.Listener, Disconnect.Listener, FileTransferFinished.Listener, Finger.Listener, IncomingChatRequest.Listener, IncomingFileTransfer.Listener, Invite.Listener, Join.Listener, Kick.Listener, Message.Listener, Mode.Listener, Motd.Listener, NickChange.Listener, Notice.Listener, Op.Listener, Part.Listener, Ping.Listener, PrivateMessage.Listener, Quit.Listener, RemoveChannelBan.Listener, RemoveChannelKey.Listener, RemoveChannelLimit.Listener, RemoveInviteOnly.Listener, RemoveModerated.Listener, RemoveNoExternalMessages.Listener, RemovePrivate.Listener, RemoveSecret.Listener, RemoveTopicProtection.Listener, ServerPing.Listener, ServerResponse.Listener, SetChannelBan.Listener, SetChannelKey.Listener, SetChannelLimit.Listener, SetInviteOnly.Listener, SetModerated.Listener, SetNoExternalMessages.Listener, SetPrivate.Listener, SetSecret.Listener, SetTopicProtection.Listener, Time.Listener, Topic.Listener, Unknown.Listener, UserList.Listener, UserMode.Listener, Version.Listener, Voice.Listener {
 }

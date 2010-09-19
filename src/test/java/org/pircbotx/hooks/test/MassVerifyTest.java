@@ -65,7 +65,7 @@ public class MassVerifyTest {
 	public void verifyNestedClasses() throws Exception {
 		for (Class<?> clazz : allParents)
 			try {
-				assertEquals(clazz.getDeclaredClasses().length,3);
+				assertEquals(clazz.getDeclaredClasses().length, 3);
 			} catch (Throwable e) {
 				throw new ClassFailureException(e, clazz);
 			}
@@ -127,7 +127,7 @@ public class MassVerifyTest {
 
 				//Are the number of fields and constructor parameters equal?
 				//(subtract one field to account for timestamp)
-				assertEquals(constructor.getParameterTypes().length, clazz.getDeclaredFields().length-1);
+				assertEquals(constructor.getParameterTypes().length, clazz.getDeclaredFields().length - 1);
 			} catch (Throwable e) {
 				throw new ClassFailureException(e, clazz);
 			}
@@ -144,10 +144,9 @@ public class MassVerifyTest {
 				//While we can't get parameter names, we can check if the param classes are in order
 				Class[] methodParams = eventMethod.getParameterTypes();
 				Class[] constrParams = constr.getParameterTypes();
-				assertEquals(methodParams.length,constrParams.length);
-				for(int i = 0; i < methodParams.length; i++) {
-					assertEquals(methodParams[i],constrParams[i]);
-				}
+				assertEquals(methodParams.length, constrParams.length);
+				for (int i = 0; i < methodParams.length; i++)
+					assertEquals(methodParams[i], constrParams[i]);
 			} catch (Throwable e) {
 				throw new ClassFailureException(e, clazz);
 			}

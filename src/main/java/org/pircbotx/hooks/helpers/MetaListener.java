@@ -34,6 +34,7 @@ import org.pircbotx.hooks.Join;
 import org.pircbotx.hooks.Kick;
 import org.pircbotx.hooks.Message;
 import org.pircbotx.hooks.Mode;
+import org.pircbotx.hooks.Motd;
 import org.pircbotx.hooks.NickChange;
 import org.pircbotx.hooks.Notice;
 import org.pircbotx.hooks.Op;
@@ -219,5 +220,8 @@ public class MetaListener implements MetaListenerInterface {
 	}
 
 	public void onIncomingFileTransfer(Event event) {
+	}
+
+	public void onMotd(Motd.Event event) {
 	}
 }

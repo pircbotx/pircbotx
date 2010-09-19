@@ -232,6 +232,14 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 	public void onVoice(Channel channel, User source, User recipient) {
 	}
 
+	public void onNickChange(String motd) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void onMotd(String motd) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
 	public class SimpleListenerManager implements ListenerManager<BaseSimpleListener> {
 		protected Set<BaseSimpleListener> listeners = new HashSet<BaseSimpleListener>();
 

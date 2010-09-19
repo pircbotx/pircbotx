@@ -46,7 +46,7 @@ public class Motd {
 		 * @see Motd
 		 * @see SimpleListener
 		 */
-		public void onNickChange(String motd);
+		public void onMotd(String motd);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class Motd {
 		 * @see Motd
 		 * @see Listener
 		 */
-		public void onNickChange(Event event);
+		public void onMotd(Event event);
 	}
 
 	/**

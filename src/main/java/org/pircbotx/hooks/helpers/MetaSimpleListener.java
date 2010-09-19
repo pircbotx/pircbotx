@@ -176,4 +176,7 @@ public class MetaSimpleListener implements MetaSimpleListenerInterface {
 
 	public void onVoice(Channel channel, User source, User recipient) {
 	}
+
+	public void onMotd(String motd) {
+	}
 }
