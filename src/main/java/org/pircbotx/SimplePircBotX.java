@@ -23,7 +23,6 @@
  */
 package org.pircbotx;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.pircbotx.hooks.helpers.BaseEvent;
@@ -81,10 +80,15 @@ import org.pircbotx.hooks.Version;
 import org.pircbotx.hooks.Voice;
 
 /**
- *
+ * This a simple extendable version of {@link PircBotX } that doesn't require
+ * separate listeners. All methods are mapped to a respective listener
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterface {
+	public SimplePircBotX() {
+		setListeners(new SimpleListenerManager());
+	}
+
 	public void onAction(User source, Channel chanTarget, String action) {
 	}
 
@@ -232,10 +236,6 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 	public void onVoice(Channel channel, User source, User recipient) {
 	}
 
-	public void onNickChange(String motd) {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
-
 	public void onMotd(String motd) {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
@@ -258,153 +258,153 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 		public void dispatchEvent(BaseEvent baseEvent) {
 			//Yes, this is once again ugly. However it gets the job done
 			//Call appropiate method based on incomming Event
-			/**
+
 			if (baseEvent instanceof Action.Event) {
-			Action.Event e = (Action.Event) baseEvent;
-			onAction(e.getSender(), e.getLogin(), e.getHostname(), e.getTarget(), e.getAction());
+				Action.Event e = (Action.Event) baseEvent;
+				onAction(e.getSource(), e.getTarget(), e.getAction());
 			} else if (baseEvent instanceof ChannelInfo.Event) {
-			ChannelInfo.Event e = (ChannelInfo.Event) baseEvent;
-			onChannelInfo(e.getChannel(), e.getUserCount(), e.getTopic());
+				ChannelInfo.Event e = (ChannelInfo.Event) baseEvent;
+				onChannelInfo(e.getChannel(), e.getUserCount(), e.getTopic());
 			} else if (baseEvent instanceof Connect.Event)
-			onConnect();
+				onConnect();
 			else if (baseEvent instanceof Deop.Event) {
-			Deop.Event e = (Deop.Event) baseEvent;
-			onDeop(e.getChannel(), e.getSourceNick(), e.getSourceLogin(), e.getSourceHostname(), e.getRecipient());
+				Deop.Event e = (Deop.Event) baseEvent;
+				onDeop(e.getChannel(), e.getSource(), e.getRecipient());
 			} else if (baseEvent instanceof DeVoice.Event) {
-			DeVoice.Event e = (DeVoice.Event) baseEvent;
-			onDeVoice(e.getChannel(), e.getSourceNick(), e.getSourceLogin(), e.getSourceHostname(), e.getRecipient());
+				DeVoice.Event e = (DeVoice.Event) baseEvent;
+				onDeVoice(e.getChannel(), e.getSource(), e.getRecipient());
 			} else if (baseEvent instanceof Disconnect.Event)
-			onDisconnect();
+				onDisconnect();
 			else if (baseEvent instanceof FileTransferFinished.Event) {
-			FileTransferFinished.Event e = (FileTransferFinished.Event) baseEvent;
-			onFileTransferFinished(e.getTransfer(), e.getException());
+				FileTransferFinished.Event e = (FileTransferFinished.Event) baseEvent;
+				onFileTransferFinished(e.getTransfer(), e.getException());
 			} else if (baseEvent instanceof Finger.Event) {
-			Finger.Event e = (Finger.Event) baseEvent;
-			onFinger(e.getSourceNick(), e.getSourceLogin(), e.getSourceHostname(), e.getTarget());
+				Finger.Event e = (Finger.Event) baseEvent;
+				onFinger(e.getSource(), e.getChannel());
 			} else if (baseEvent instanceof IncomingChatRequest.Event) {
-			IncomingChatRequest.Event e = (IncomingChatRequest.Event) baseEvent;
-			onIncomingChatRequest(e.getChat());
+				IncomingChatRequest.Event e = (IncomingChatRequest.Event) baseEvent;
+				onIncomingChatRequest(e.getChat());
 			} else if (baseEvent instanceof IncomingFileTransfer.Event) {
-			IncomingFileTransfer.Event e = (IncomingFileTransfer.Event) baseEvent;
-			onIncomingFileTransfer(e.getTransfer());
+				IncomingFileTransfer.Event e = (IncomingFileTransfer.Event) baseEvent;
+				onIncomingFileTransfer(e.getTransfer());
 			} else if (baseEvent instanceof Invite.Event) {
-			Invite.Event e = (Invite.Event) baseEvent;
-			onInvite(e.getTargetNick(), e.getSourceNick(), e.getSourceLogin(), e.getSourceHostname(), e.getChannel());
+				Invite.Event e = (Invite.Event) baseEvent;
+				onInvite(e.getSource(), e.getChannel());
 			} else if (baseEvent instanceof Join.Event) {
-			Join.Event e = (Join.Event) baseEvent;
-			onJoin(e.getChannel(), e.getSender(), e.getLogin(), e.getHostname());
+				Join.Event e = (Join.Event) baseEvent;
+				onJoin(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof Kick.Event) {
-			Kick.Event e = (Kick.Event) baseEvent;
-			onKick(e.getChannel(), e.getKickerNick(), e.getKickerLogin(), e.getKickerHostname(), e.getRecipientNick(), e.getReason());
+				Kick.Event e = (Kick.Event) baseEvent;
+				onKick(e.getChannel(), e.getKicker(), e.getRecipient(), e.getReason());
 			} else if (baseEvent instanceof Message.Event) {
-			Message.Event e = (Message.Event) baseEvent;
-			onMessage(e.getChannel(), e.getSender(), e.getLogin(), e.getHostname(), e.getMessage());
+				Message.Event e = (Message.Event) baseEvent;
+				onMessage(e.getChannel(), e.getUser(), e.getMessage());
 			} else if (baseEvent instanceof Mode.Event) {
-			Mode.Event e = (Mode.Event) baseEvent;
-			onMode(e.getChannel(), e.getSourceNick(), e.getSourceHostname(), e.getSourceHostname(), e.getMode());
+				Mode.Event e = (Mode.Event) baseEvent;
+				onMode(e.getChannel(), e.getSource(), e.getMode());
 			} else if (baseEvent instanceof NickChange.Event) {
-			NickChange.Event e = (NickChange.Event) baseEvent;
-			onNickChange(e.getOldNick(), e.getLogin(), e.getHostname(), e.getNewNick());
+				NickChange.Event e = (NickChange.Event) baseEvent;
+				onNickChange(e.getOldNick(), e.getNewNick(), e.getUser());
 			} else if (baseEvent instanceof Notice.Event) {
-			Notice.Event e = (Notice.Event) baseEvent;
-			onNotice;
+				Notice.Event e = (Notice.Event) baseEvent;
+				onNotice(e.getSource(), e.getTarget(), e.getNotice());
 			} else if (baseEvent instanceof Op.Event) {
-			Op.Event e = (Op.Event) baseEvent;
-			onOp;
+				Op.Event e = (Op.Event) baseEvent;
+				onOp(e.getChannel(), e.getSource(), e.getRecipient());
 			} else if (baseEvent instanceof Part.Event) {
-			Part.Event e = (Part.Event) baseEvent;
-			onPart;
+				Part.Event e = (Part.Event) baseEvent;
+				onPart(e.getChannel(), e.getSender());
 			} else if (baseEvent instanceof Ping.Event) {
-			Ping.Event e = (Ping.Event) baseEvent;
-			onPing;
+				Ping.Event e = (Ping.Event) baseEvent;
+				onPing(e.getSource(), e.getTarget(), e.getPingValue());
 			} else if (baseEvent instanceof PrivateMessage.Event) {
-			PrivateMessage.Event e = (PrivateMessage.Event) baseEvent;
-			onPrivateMessage;
+				PrivateMessage.Event e = (PrivateMessage.Event) baseEvent;
+				onPrivateMessage(e.getSender(), e.getMessage());
 			} else if (baseEvent instanceof Quit.Event) {
-			Quit.Event e = (Quit.Event) baseEvent;
-			onQuit;
+				Quit.Event e = (Quit.Event) baseEvent;
+				onQuit(e.getSource(), e.getReason());
 			} else if (baseEvent instanceof RemoveChannelBan.Event) {
-			RemoveChannelBan.Event e = (RemoveChannelBan.Event) baseEvent;
-			onRemoveChannelBan;
+				RemoveChannelBan.Event e = (RemoveChannelBan.Event) baseEvent;
+				onRemoveChannelBan(e.getChannel(), e.getSource(), e.getHostmask());
 			} else if (baseEvent instanceof RemoveChannelKey.Event) {
-			RemoveChannelKey.Event e = (RemoveChannelKey.Event) baseEvent;
-			onRemoveChannelKey;
+				RemoveChannelKey.Event e = (RemoveChannelKey.Event) baseEvent;
+				onRemoveChannelKey(e.getChannel(), e.getSource(), e.getKey());
 			} else if (baseEvent instanceof RemoveChannelLimit.Event) {
-			RemoveChannelLimit.Event e = (RemoveChannelLimit.Event) baseEvent;
-			onRemoveChannelLimit;
+				RemoveChannelLimit.Event e = (RemoveChannelLimit.Event) baseEvent;
+				onRemoveChannelLimit(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof RemoveInviteOnly.Event) {
-			RemoveInviteOnly.Event e = (RemoveInviteOnly.Event) baseEvent;
-			onRemoveInviteOnly;
+				RemoveInviteOnly.Event e = (RemoveInviteOnly.Event) baseEvent;
+				onRemoveInviteOnly(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof RemoveModerated.Event) {
-			RemoveModerated.Event e = (RemoveModerated.Event) baseEvent;
-			onRemoveModerated;
+				RemoveModerated.Event e = (RemoveModerated.Event) baseEvent;
+				onRemoveModerated(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof RemoveNoExternalMessages.Event) {
-			RemoveNoExternalMessages.Event e = (RemoveNoExternalMessages.Event) baseEvent;
-			onRemoveNoExternalMessages;
+				RemoveNoExternalMessages.Event e = (RemoveNoExternalMessages.Event) baseEvent;
+				onRemoveNoExternalMessages(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof RemovePrivate.Event) {
-			RemovePrivate.Event e = (RemovePrivate.Event) baseEvent;
-			onRemovePrivate;
+				RemovePrivate.Event e = (RemovePrivate.Event) baseEvent;
+				onRemovePrivate(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof RemoveSecret.Event) {
-			RemoveSecret.Event e = (RemoveSecret.Event) baseEvent;
-			onRemoveSecret;
+				RemoveSecret.Event e = (RemoveSecret.Event) baseEvent;
+				onRemoveSecret(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof RemoveTopicProtection.Event) {
-			RemoveTopicProtection.Event e = (RemoveTopicProtection.Event) baseEvent;
-			onRemoveTopicProtection;
+				RemoveTopicProtection.Event e = (RemoveTopicProtection.Event) baseEvent;
+				onRemoveTopicProtection(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof ServerPing.Event) {
-			ServerPing.Event e = (ServerPing.Event) baseEvent;
-			onServerPing;
+				ServerPing.Event e = (ServerPing.Event) baseEvent;
+				onServerPing(e.getResponse());
 			} else if (baseEvent instanceof ServerResponse.Event) {
-			ServerResponse.Event e = (ServerResponse.Event) baseEvent;
-			onServerResponse;
+				ServerResponse.Event e = (ServerResponse.Event) baseEvent;
+				onServerResponse(e.getCode(), e.getResponse());
 			} else if (baseEvent instanceof SetChannelBan.Event) {
-			SetChannelBan.Event e = (SetChannelBan.Event) baseEvent;
-			onSetChannelBan;
+				SetChannelBan.Event e = (SetChannelBan.Event) baseEvent;
+				onSetChannelBan(e.getChannel(), e.getSource(), e.getHostmask());
 			} else if (baseEvent instanceof SetChannelKey.Event) {
-			SetChannelKey.Event e = (SetChannelKey.Event) baseEvent;
-			onSetChannelKey;
+				SetChannelKey.Event e = (SetChannelKey.Event) baseEvent;
+				onSetChannelKey(e.getChannel(), e.getSource(), e.getKey());
 			} else if (baseEvent instanceof SetChannelLimit.Event) {
-			SetChannelLimit.Event e = (SetChannelLimit.Event) baseEvent;
-			onSetChannelLimit;
+				SetChannelLimit.Event e = (SetChannelLimit.Event) baseEvent;
+				onSetChannelLimit(e.getChannel(), e.getSource(), e.getLimit());
 			} else if (baseEvent instanceof SetInviteOnly.Event) {
-			SetInviteOnly.Event e = (SetInviteOnly.Event) baseEvent;
-			onSetInviteOnly;
+				SetInviteOnly.Event e = (SetInviteOnly.Event) baseEvent;
+				onSetInviteOnly(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof SetModerated.Event) {
-			SetModerated.Event e = (SetModerated.Event) baseEvent;
-			onSetModerated;
+				SetModerated.Event e = (SetModerated.Event) baseEvent;
+				onSetModerated(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof SetNoExternalMessages.Event) {
-			SetNoExternalMessages.Event e = (SetNoExternalMessages.Event) baseEvent;
-			onSetNoExternalMessages;
+				SetNoExternalMessages.Event e = (SetNoExternalMessages.Event) baseEvent;
+				onSetNoExternalMessages(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof SetPrivate.Event) {
-			SetPrivate.Event e = (SetPrivate.Event) baseEvent;
-			onSetPrivate;
+				SetPrivate.Event e = (SetPrivate.Event) baseEvent;
+				onSetPrivate(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof SetSecret.Event) {
-			SetSecret.Event e = (SetSecret.Event) baseEvent;
-			onSetSecret;
+				SetSecret.Event e = (SetSecret.Event) baseEvent;
+				onSetSecret(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof SetTopicProtection.Event) {
-			SetTopicProtection.Event e = (SetTopicProtection.Event) baseEvent;
-			onSetTopicProtection;
+				SetTopicProtection.Event e = (SetTopicProtection.Event) baseEvent;
+				onSetTopicProtection(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof Time.Event) {
-			Time.Event e = (Time.Event) baseEvent;
-			onTime;
+				Time.Event e = (Time.Event) baseEvent;
+				onTime(e.getSource(), e.getTarget());
 			} else if (baseEvent instanceof Topic.Event) {
-			Topic.Event e = (Topic.Event) baseEvent;
-			onTopic;
+				Topic.Event e = (Topic.Event) baseEvent;
+				onTopic(e.getChannel(), e.getTopic(), e.getSetBy(), e.isChanged());
 			} else if (baseEvent instanceof Unknown.Event) {
-			Unknown.Event e = (Unknown.Event) baseEvent;
-			onUnknown;
+				Unknown.Event e = (Unknown.Event) baseEvent;
+				onUnknown(e.getLine());
 			} else if (baseEvent instanceof UserList.Event) {
-			UserList.Event e = (UserList.Event) baseEvent;
-			onUserList;
+				UserList.Event e = (UserList.Event) baseEvent;
+				onUserList(e.getChannel(), e.getUsers());
 			} else if (baseEvent instanceof UserMode.Event) {
-			UserMode.Event e = (UserMode.Event) baseEvent;
-			onUserMode;
+				UserMode.Event e = (UserMode.Event) baseEvent;
+				onUserMode(e.getTarget(), e.getSource(), e.getMode());
 			} else if (baseEvent instanceof Version.Event) {
-			Version.Event e = (Version.Event) baseEvent;
-			onVersion;
+				Version.Event e = (Version.Event) baseEvent;
+				onVersion(e.getSource(), e.getTarget());
 			} else if (baseEvent instanceof Voice.Event) {
-			Voice.Event e = (Voice.Event) baseEvent;
-			onVoice;
-			}*/
+				Voice.Event e = (Voice.Event) baseEvent;
+				onVoice(e.getChannel(), e.getSource(), e.getRecipient());
+			}
 		}
 	}
 }

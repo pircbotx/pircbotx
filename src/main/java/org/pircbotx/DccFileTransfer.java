@@ -167,7 +167,7 @@ public class DccFileTransfer {
 					}
 				}
 
-				_bot.listeners.dispatchEvent(new FileTransferFinished.Event(DccFileTransfer.this, exception));
+				_bot.getListeners().dispatchEvent(new FileTransferFinished.Event(DccFileTransfer.this, exception));
 			}
 		}.start();
 	}
@@ -267,7 +267,7 @@ public class DccFileTransfer {
 					}
 				}
 
-				_bot.listeners.dispatchEvent(new FileTransferFinished.Event(DccFileTransfer.this, exception));
+				_bot.getListeners().dispatchEvent(new FileTransferFinished.Event(DccFileTransfer.this, exception));
 			}
 		}.start();
 	}
