@@ -27,12 +27,18 @@
 			<artifactId>testng</artifactId>
 			<version>5.14</version>
 			<scope>test</scope>
-		 <exclusions>
-		  <exclusion>
-		   <artifactId>junit</artifactId>
-		   <groupId>junit</groupId>
-		  </exclusion>
-		 </exclusions>
+			<exclusions>
+				<exclusion>
+					<artifactId>junit</artifactId>
+					<groupId>junit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.5</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
