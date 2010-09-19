@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <actions>
         <action>
             <actionName>run</actionName>
@@ -7,7 +8,7 @@
             </goals>
             <properties>
                 <exec.classpathScope>runtime</exec.classpathScope>
-                <exec.args>-classpath %classpath org.pircbotx.test.PircBotXTest</exec.args>
+                <exec.args>-classpath %classpath org.pircbotx.impl.PircBotXTest</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -18,7 +19,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.1.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>${profiler.args} -classpath %classpath org.pircbotx.test.PircBotXTest</exec.args>
+                <exec.args>${profiler.args} -classpath %classpath org.pircbotx.impl.PircBotXTest</exec.args>
                 <profiler.action>profile</profiler.action>
                 <exec.executable>${profiler.java}</exec.executable>
             </properties>
@@ -29,5 +30,18 @@
                 <goal>generate-sources</goal>
                 <goal>site</goal>
             </goals>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.1.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.classpathScope>runtime</exec.classpathScope>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath org.pircbotx.impl.PircBotXTest</exec.args>
+                <jpda.listen>true</jpda.listen>
+                <exec.executable>java</exec.executable>
+            </properties>
         </action>
     </actions>
