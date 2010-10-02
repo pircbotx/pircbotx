@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -79,8 +79,7 @@ public class RemoveChannelKey {
 	 * @see RemoveChannelKey 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
 		protected final String key;
@@ -92,8 +91,8 @@ public class RemoveChannelKey {
 		 * @param source The user that performed the mode change.
 		 * @param key The key that was in use before the channel key was removed.
 		 */
-		public Event(Channel channel, User source, String key) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, User source, String key) {
+			super(bot);
 			this.channel = channel;
 			this.source = source;
 			this.key = key;
@@ -109,10 +108,6 @@ public class RemoveChannelKey {
 
 		public User getSource() {
 			return source;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

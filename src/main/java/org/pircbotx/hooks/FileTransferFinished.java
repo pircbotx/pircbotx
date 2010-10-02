@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.DccFileTransfer;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -76,8 +76,7 @@ public class FileTransferFinished {
 	 * @see FileTransferFinished 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final DccFileTransfer transfer;
 		protected final Exception exception;
 
@@ -88,8 +87,8 @@ public class FileTransferFinished {
 		 * @param e null if the file was transfered successfully, otherwise this
 		 *          will report what went wrong.
 		 */
-		public Event(DccFileTransfer transfer, Exception e) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, DccFileTransfer transfer, Exception e) {
+			super(bot);
 			this.transfer = transfer;
 			this.exception = e;
 		}
@@ -100,10 +99,6 @@ public class FileTransferFinished {
 
 		public DccFileTransfer getTransfer() {
 			return transfer;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

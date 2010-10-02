@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -76,8 +76,7 @@ public class NickChange {
 	 * @see NickChange 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final String oldNick;
 		protected final String newNick;
 		protected final User user;
@@ -89,8 +88,8 @@ public class NickChange {
 		 * @param newNick The new nick.
 		 * @param user The user that changed their nick
 		 */
-		public Event(String oldNick, String newNick, User user) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, String oldNick, String newNick, User user) {
+			super(bot);
 			this.oldNick = oldNick;
 			this.newNick = newNick;
 			this.user = user;
@@ -106,10 +105,6 @@ public class NickChange {
 
 		public User getUser() {
 			return user;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

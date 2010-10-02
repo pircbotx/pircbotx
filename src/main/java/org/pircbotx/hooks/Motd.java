@@ -25,6 +25,7 @@ package org.pircbotx.hooks;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -74,8 +75,7 @@ public class Motd {
 	 * @see Motd
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final String motd;
 
 		/**
@@ -83,17 +83,13 @@ public class Motd {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param motd The full motd separated by newlines (<code>\n</code>)
 		 */
-		public Event(String motd) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, String motd) {
+			super(bot);
 			this.motd = motd;
 		}
 
 		public String getMotd() {
 			return motd;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

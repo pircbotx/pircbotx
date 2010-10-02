@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -76,8 +76,7 @@ public class Part {
 	 * @see Part 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User sender;
 
@@ -87,8 +86,8 @@ public class Part {
 		 * @param channel The channel which somebody parted from.
 		 * @param sender The user who parted from the channel.
 		 */
-		public Event(Channel channel, User sender) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, User sender) {
+			super(bot);
 			this.channel = channel;
 			this.sender = sender;
 		}
@@ -99,10 +98,6 @@ public class Part {
 
 		public User getSender() {
 			return sender;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

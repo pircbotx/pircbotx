@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -77,8 +77,7 @@ public class Time {
 	 * @see Time 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final Channel target;
 
@@ -89,8 +88,8 @@ public class Time {
 		 * @param target The target channel of the TIME request. A value of <code>null</code>
 		 *               means that target is us
 		 */
-		public Event(User source, Channel target) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, User source, Channel target) {
+			super(bot);
 			this.source = source;
 			this.target = target;
 		}
@@ -101,10 +100,6 @@ public class Time {
 
 		public Channel getTarget() {
 			return target;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

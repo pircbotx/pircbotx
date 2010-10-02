@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -76,8 +76,7 @@ public class Notice {
 	 * @see Notice 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final Channel target;
 		protected final String notice;
@@ -90,8 +89,8 @@ public class Notice {
 		 *               means that the target is us
 		 * @param notice The notice message.
 		 */
-		public Event(User source, Channel target, String notice) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, User source, Channel target, String notice) {
+			super(bot);
 			this.source = source;
 			this.target = target;
 			this.notice = notice;
@@ -107,10 +106,6 @@ public class Notice {
 
 		public Channel getTarget() {
 			return target;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

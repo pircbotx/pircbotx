@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -78,8 +78,7 @@ public class Kick {
 	 * @see Kick 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User kicker;
 		protected final User recipient;
@@ -93,8 +92,8 @@ public class Kick {
 		 * @param recipient The unfortunate recipient of the kick.
 		 * @param reason The reason given by the user who performed the kick.
 		 */
-		public Event(Channel channel, User kicker, User recipient, String reason) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, User kicker, User recipient, String reason) {
+			super(bot);
 			this.channel = channel;
 			this.kicker = kicker;
 			this.recipient = recipient;
@@ -115,10 +114,6 @@ public class Kick {
 
 		public User getRecipient() {
 			return recipient;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

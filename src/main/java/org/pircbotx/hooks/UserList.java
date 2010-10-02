@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import java.util.Set;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -88,8 +88,7 @@ public class UserList {
 	 * @see UserList 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final Set<User> users;
 
@@ -99,8 +98,8 @@ public class UserList {
 		 * @param channel The channel that the user list is from.
 		 * @param users An <b>immutable</b> Set of Users belonging to this channel.
 		 */
-		public Event(Channel channel, Set<User> users) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, Set<User> users) {
+			super(bot);
 			this.channel = channel;
 			this.users = users;
 		}
@@ -111,10 +110,6 @@ public class UserList {
 
 		public Set<User> getUsers() {
 			return users;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

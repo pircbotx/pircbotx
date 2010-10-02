@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -76,8 +76,7 @@ public class Quit {
 	 * @see Quit 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final String reason;
 
@@ -87,8 +86,8 @@ public class Quit {
 		 * @param source The user that quit from the server.
 		 * @param reason The reason given for quitting the server.
 		 */
-		public Event(User source, String reason) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, User source, String reason) {
+			super(bot);
 			this.source = source;
 			this.reason = reason;
 		}
@@ -99,10 +98,6 @@ public class Quit {
 
 		public User getSource() {
 			return source;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

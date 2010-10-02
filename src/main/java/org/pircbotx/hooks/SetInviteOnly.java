@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -80,8 +80,7 @@ public class SetInviteOnly {
 	 * @see SetInviteOnly 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
 
@@ -91,8 +90,8 @@ public class SetInviteOnly {
 		 * @param channel The channel in which the mode change took place.
 		 * @param sourceNick The user that performed the mode change.
 		 */
-		public Event(Channel channel, User source) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, User source) {
+			super(bot);
 			this.channel = channel;
 			this.source = source;
 		}
@@ -103,10 +102,6 @@ public class SetInviteOnly {
 
 		public User getSource() {
 			return source;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }
