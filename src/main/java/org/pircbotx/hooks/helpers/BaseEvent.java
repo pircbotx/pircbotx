@@ -19,10 +19,34 @@
 
 package org.pircbotx.hooks.helpers;
 
+import org.pircbotx.PircBotX;
+
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface BaseEvent {
-	public long getTimestamp();
+public class BaseEvent<T extends PircBotX> {
+	protected final long timestamp;
+	protected final T bot;
+	
+	public BaseEvent(T bot) {
+		this.timestamp = System.currentTimeMillis();
+		this.bot = bot;
+	}
+
+	/**
+	 * Returns the {@link PircBotX} instance that this event originally came from
+	 * @return A {@link PircBotX} instance
+	 */
+	protected final T getBot() {
+		return bot;
+	}
+
+	/**
+	 * Returns the timestamp of when the event was created
+	 * @return A timestamp as a long
+	 */
+	public long getTimestamp() {
+		return timestamp;
+	}
 }

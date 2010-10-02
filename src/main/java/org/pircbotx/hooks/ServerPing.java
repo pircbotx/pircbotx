@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -73,8 +73,7 @@ public class ServerPing {
 	 * @see ServerPing 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final String response;
 
 		/**
@@ -82,17 +81,13 @@ public class ServerPing {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param response The response that should be given back in your PONG.
 		 */
-		public Event(String response) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, String response) {
+			super(bot);
 			this.response = response;
 		}
 
 		public String getResponse() {
 			return response;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

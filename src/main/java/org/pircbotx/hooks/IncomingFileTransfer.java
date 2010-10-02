@@ -25,6 +25,7 @@ package org.pircbotx.hooks;
 
 import org.pircbotx.DccFileTransfer;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -108,8 +109,7 @@ public class IncomingFileTransfer {
 	 * @see IncomingFileTransfer
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final DccFileTransfer transfer;
 
 		/**
@@ -117,17 +117,13 @@ public class IncomingFileTransfer {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param transfer The DcccFileTransfer that you may accept.
 		 */
-		public Event(DccFileTransfer transfer) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, DccFileTransfer transfer) {
+			super(bot);
 			this.transfer = transfer;
 		}
 
 		public DccFileTransfer getTransfer() {
 			return transfer;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

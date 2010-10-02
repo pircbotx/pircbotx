@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -75,8 +75,7 @@ public class UserMode {
 	 * @see UserMode 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final User target;
 		protected final User source;
 		protected final String mode;
@@ -88,8 +87,8 @@ public class UserMode {
 		 * @param source The user that set the mode.
 		 * @param mode The mode that has been set.
 		 */
-		public Event(User target, User source, String mode) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, User target, User source, String mode) {
+			super(bot);
 			this.target = target;
 			this.source = source;
 			this.mode = mode;
@@ -105,10 +104,6 @@ public class UserMode {
 
 		public String getMode() {
 			return mode;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -83,20 +83,14 @@ public class Disconnect {
 	 * @see Disconnect 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
-
+	public static class Event extends BaseEvent {
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param timestamp
 		 */
-		public Event() {
-			this.timestamp = System.currentTimeMillis();
-		}
-
-		public long getTimestamp() {
-			return timestamp;
+		public <T extends PircBotX> Event(T bot) {
+			super(bot);
 		}
 	}
 }

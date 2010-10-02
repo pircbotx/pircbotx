@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -80,8 +80,7 @@ public class Topic {
 	 * @see Topic 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final String topic;
 		protected final User setBy;
@@ -97,8 +96,8 @@ public class Topic {
 		 * @param changed True if the topic has just been changed, false if
 		 *                the topic was already there.
 		 */
-		public Event(Channel channel, String topic, User setBy, boolean changed) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, String topic, User setBy, boolean changed) {
+			super(bot);
 			this.channel = channel;
 			this.topic = topic;
 			this.setBy = setBy;
@@ -119,10 +118,6 @@ public class Topic {
 
 		public String getTopic() {
 			return topic;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

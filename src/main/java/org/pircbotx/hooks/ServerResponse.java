@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -91,8 +91,7 @@ public class ServerResponse {
 	 * @see ServerResponse 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final int code;
 		protected final String response;
 
@@ -102,8 +101,8 @@ public class ServerResponse {
 		 * @param code The three-digit numerical code for the response.
 		 * @param response The full response from the IRC server.
 		 */
-		public Event(int code, String response) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, int code, String response) {
+			super(bot);
 			this.code = code;
 			this.response = response;
 		}
@@ -114,10 +113,6 @@ public class ServerResponse {
 
 		public String getResponse() {
 			return response;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

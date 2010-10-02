@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.DccChat;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -103,8 +103,7 @@ public class IncomingChatRequest {
 	 * @see IncomingChatRequest 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final DccChat chat;
 
 		/**
@@ -112,17 +111,13 @@ public class IncomingChatRequest {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param chat A DccChat object that represents the incoming chat request.
 		 */
-		public Event(DccChat chat) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, DccChat chat) {
+			super(bot);
 			this.chat = chat;
 		}
 
 		public DccChat getChat() {
 			return chat;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -81,8 +81,7 @@ public class SetChannelBan {
 	 * @see SetChannelBan 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
 		protected final String hostmask;
@@ -94,8 +93,8 @@ public class SetChannelBan {
 		 * @param sourceNick The user that performed the mode change.
 		 * @param hostmask The hostmask of the user that has been banned.
 		 */
-		public Event(Channel channel, User source, String hostmask) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, Channel channel, User source, String hostmask) {
+			super(bot);
 			this.channel = channel;
 			this.source = source;
 			this.hostmask = hostmask;
@@ -111,10 +110,6 @@ public class SetChannelBan {
 
 		public User getSource() {
 			return source;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

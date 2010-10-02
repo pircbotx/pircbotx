@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.impl;
 
 import java.lang.reflect.Field;
@@ -27,12 +26,15 @@ import org.pircbotx.hooks.Action;
  * @author Owner
  */
 public class Sandbox {
-	public static void main(String[] args) {
-		Class<?> listener = Action.Listener.class;
-		Class<?> event = Action.Event.class;
+	public abstract class Foo<T extends Foo<T>> // see ColinD's comment
+	{
+		public T eat(String eatCake) {
+			return (T) this;
+		}
+	}
 
-		for(Class<?> clazz : Action.class.getDeclaredClasses()) {
-			System.out.println("Field: "+clazz);
+	public class CakeEater extends Foo<CakeEater> {
+		public void f() {
 		}
 	}
 }

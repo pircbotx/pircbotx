@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -79,8 +79,7 @@ public class Ping {
 	 * @see Ping 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final Channel target;
 		protected final String pingValue;
@@ -93,8 +92,8 @@ public class Ping {
 		 *               means the target was us.
 		 * @param pingValue The value that was supplied as an argument to the PING command.
 		 */
-		public Event(User source, Channel target, String pingValue) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, User source, Channel target, String pingValue) {
+			super(bot);
 			this.source = source;
 			this.target = target;
 			this.pingValue = pingValue;
@@ -110,10 +109,6 @@ public class Ping {
 
 		public Channel getTarget() {
 			return target;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }

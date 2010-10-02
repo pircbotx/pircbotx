@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -75,8 +75,7 @@ public class Action {
 	 * @see Action 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final Channel target;
 		protected final String action;
@@ -89,15 +88,11 @@ public class Action {
 		 *               means the target is us.
 		 * @param action The action carried out by the user.
 		 */
-		public Event(User source, Channel target, String action) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, User source, Channel target, String action) {
+			super(bot);
 			this.source = source;
 			this.target = target;
 			this.action = action;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 
 		/**

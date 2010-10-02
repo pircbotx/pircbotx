@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 
@@ -72,8 +72,7 @@ public class Unknown {
 	 * @see Unknown 
 	 * @see Listener
 	 */
-	public static class Event implements BaseEvent {
-		protected final long timestamp;
+	public static class Event extends BaseEvent {
 		protected final String line;
 
 		/**
@@ -81,17 +80,13 @@ public class Unknown {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param line The raw line that was received from the server.
 		 */
-		public Event(String line) {
-			this.timestamp = System.currentTimeMillis();
+		public <T extends PircBotX> Event(T bot, String line) {
+			super(bot);
 			this.line = line;
 		}
 
 		public String getLine() {
 			return line;
-		}
-
-		public long getTimestamp() {
-			return timestamp;
 		}
 	}
 }
