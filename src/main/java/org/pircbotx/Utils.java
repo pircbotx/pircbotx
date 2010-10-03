@@ -19,11 +19,8 @@
 package org.pircbotx;
 
 import org.pircbotx.hooks.Action;
-import org.pircbotx.hooks.ChannelInfo;
-import org.pircbotx.hooks.Connect;
 import org.pircbotx.hooks.DeVoice;
 import org.pircbotx.hooks.Deop;
-import org.pircbotx.hooks.Disconnect;
 import org.pircbotx.hooks.FileTransferFinished;
 import org.pircbotx.hooks.Finger;
 import org.pircbotx.hooks.IncomingChatRequest;
@@ -49,8 +46,6 @@ import org.pircbotx.hooks.RemoveNoExternalMessages;
 import org.pircbotx.hooks.RemovePrivate;
 import org.pircbotx.hooks.RemoveSecret;
 import org.pircbotx.hooks.RemoveTopicProtection;
-import org.pircbotx.hooks.ServerPing;
-import org.pircbotx.hooks.ServerResponse;
 import org.pircbotx.hooks.SetChannelBan;
 import org.pircbotx.hooks.SetChannelKey;
 import org.pircbotx.hooks.SetChannelLimit;
@@ -62,8 +57,6 @@ import org.pircbotx.hooks.SetSecret;
 import org.pircbotx.hooks.SetTopicProtection;
 import org.pircbotx.hooks.Time;
 import org.pircbotx.hooks.Topic;
-import org.pircbotx.hooks.Unknown;
-import org.pircbotx.hooks.UserList;
 import org.pircbotx.hooks.UserMode;
 import org.pircbotx.hooks.Version;
 import org.pircbotx.hooks.Voice;
@@ -102,23 +95,23 @@ public class Utils {
 		else if (event instanceof Join.Event)
 			return ((Join.Event) event).getSource();
 		else if (event instanceof Kick.Event)
-			return ((Kick.Event) event).getKicker();
+			return ((Kick.Event) event).getSource();
 		else if (event instanceof Message.Event)
-			return ((Message.Event) event).getUser();
+			return ((Message.Event) event).getSource();
 		else if (event instanceof Mode.Event)
 			return ((Mode.Event) event).getSource();
 		else if (event instanceof NickChange.Event)
-			return ((NickChange.Event) event).getUser();
+			return ((NickChange.Event) event).getSource();
 		else if (event instanceof Notice.Event)
 			return ((Notice.Event) event).getSource();
 		else if (event instanceof Op.Event)
 			return ((Op.Event) event).getSource();
 		else if (event instanceof Part.Event)
-			return ((Part.Event) event).getSender();
+			return ((Part.Event) event).getSource();
 		else if (event instanceof Ping.Event)
 			return ((Ping.Event) event).getSource();
 		else if (event instanceof PrivateMessage.Event)
-			return ((PrivateMessage.Event) event).getSender();
+			return ((PrivateMessage.Event) event).getSource();
 		else if (event instanceof Quit.Event)
 			return ((Quit.Event) event).getSource();
 		else if (event instanceof RemoveChannelBan.Event)
@@ -160,7 +153,7 @@ public class Utils {
 		else if (event instanceof Time.Event)
 			return ((Time.Event) event).getSource();
 		else if (event instanceof Topic.Event)
-			return ((Topic.Event) event).getSetBy();
+			return ((Topic.Event) event).getSource();
 		else if (event instanceof UserMode.Event)
 			return ((UserMode.Event) event).getSource();
 		else if (event instanceof Version.Event)

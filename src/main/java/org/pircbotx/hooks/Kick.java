@@ -44,13 +44,13 @@ public class Kick {
 		 * Simple Listener for Kick Events. See {@link Kick} for a complete description on when
 		 * this is called.
 		 * @param channel The channel from which the recipient was kicked.
-		 * @param kicker The user who performed the kick.
+		 * @param source The user who performed the kick.
 		 * @param recipient The unfortunate recipient of the kick.
 		 * @param reason The reason given by the user who performed the kick.
 		 * @see Kick
 		 * @see SimpleListener
 		 */
-		public void onKick(Channel channel, User kicker, User recipient, String reason);
+		public void onKick(Channel channel, User source, User recipient, String reason);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class Kick {
 	 */
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
-		protected final User kicker;
+		protected final User source;
 		protected final User recipient;
 		protected final String reason;
 
@@ -88,14 +88,14 @@ public class Kick {
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel from which the recipient was kicked.
-		 * @param kicker The user who performed the kick.
+		 * @param source The user who performed the kick.
 		 * @param recipient The unfortunate recipient of the kick.
 		 * @param reason The reason given by the user who performed the kick.
 		 */
-		public <T extends PircBotX> Event(T bot, Channel channel, User kicker, User recipient, String reason) {
+		public <T extends PircBotX> Event(T bot, Channel channel, User source, User recipient, String reason) {
 			super(bot);
 			this.channel = channel;
-			this.kicker = kicker;
+			this.source = source;
 			this.recipient = recipient;
 			this.reason = reason;
 		}
@@ -104,8 +104,8 @@ public class Kick {
 			return channel;
 		}
 
-		public User getKicker() {
-			return kicker;
+		public User getSource() {
+			return source;
 		}
 
 		public String getReason() {

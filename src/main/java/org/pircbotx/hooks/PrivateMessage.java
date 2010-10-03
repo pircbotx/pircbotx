@@ -41,12 +41,12 @@ public class PrivateMessage {
 		/**
 		 * Simple Listener for PrivateMessage Events. See {@link PrivateMessage} for a complete description on when
 		 * this is called.
-		 * @param sender The user who sent the private message.
+		 * @param source The user who sent the private message.
 		 * @param message The actual message.
 		 * @see PrivateMessage
 		 * @see SimpleListener
 		 */
-		public void onPrivateMessage(User sender, String message);
+		public void onPrivateMessage(User source, String message);
 	}
 
 	/**
@@ -75,18 +75,18 @@ public class PrivateMessage {
 	 * @see Listener
 	 */
 	public static class Event extends BaseEvent {
-		protected final User sender;
+		protected final User source;
 		protected final String message;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param sender The user who sent the private message.
+		 * @param source The user who sent the private message.
 		 * @param message The actual message.
 		 */
-		public <T extends PircBotX> Event(T bot, User sender, String message) {
+		public <T extends PircBotX> Event(T bot, User source, String message) {
 			super(bot);
-			this.sender = sender;
+			this.source = source;
 			this.message = message;
 		}
 
@@ -94,8 +94,8 @@ public class PrivateMessage {
 			return message;
 		}
 
-		public User getSender() {
-			return sender;
+		public User getSource() {
+			return source;
 		}
 	}
 }
