@@ -192,6 +192,9 @@ public class PircBotXTest {
 		signal.compare("AChannel", string);
 	}
 
+
+
+
 	public class Signal {
 		public String target = null;
 		public String message = null;

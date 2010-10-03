@@ -74,7 +74,14 @@ public class Utils {
 		return (str != null) && (str.trim().equals(""));
 	}
 
-	public static User getUser(BaseEvent event) {
+
+
+	/**
+	 * Extract the source user from any Event
+	 * @param event An event to get information from
+	 * @return The object of the user or null if the event doesn't have a source
+	 */
+	public static User getSource(BaseEvent event) {
 		if (event == null)
 			return null;
 		else if (event instanceof Action.Event)

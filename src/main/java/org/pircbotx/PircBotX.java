@@ -524,7 +524,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendMessage(BaseEvent event, String message) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && message != null)
 			sendMessage(target, message);
 	}
@@ -552,7 +552,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendAction(BaseEvent event, String message) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && message != null)
 			sendAction(target, message);
 	}
@@ -578,7 +578,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendNotice(BaseEvent event, String notice) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && notice != null)
 			sendNotice(target, notice);
 	}
@@ -611,7 +611,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendCTCPCommand(BaseEvent event, String command) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && command != null)
 			sendCTCPCommand(target, command);
 	}
@@ -626,7 +626,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendCTCPResponse(BaseEvent event, String message) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && message != null)
 			sendCTCPResponse(target, message);
 	}
@@ -709,7 +709,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendInvite(BaseEvent event, String channel) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && channel != null)
 			sendInvite(target, channel);
 	}
@@ -720,7 +720,7 @@ public abstract class PircBotX {
 	}
 
 	public void sendInvite(BaseEvent event, Channel channel) {
-		User target = Utils.getUser(event);
+		User target = Utils.getSource(event);
 		if (target != null && channel != null)
 			sendInvite(target, channel);
 	}
@@ -1222,20 +1222,7 @@ public abstract class PircBotX {
 				// Doesn't currently deal with.
 				getListeners().dispatchEvent(new Unknown.Event(this, line));
 		} catch (Throwable t) {
-			// Stick the whole stack trace into a String so we can output it nicely.
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			t.printStackTrace(pw);
-			pw.flush();
-			synchronized (logLock) {
-				log("### Your implementation of PircBotXis faulty and you have");
-				log("### allowed an uncaught Exception or Error to propagate in your");
-				log("### code. It may be possible for PircBotXto continue operating");
-				log("### normally. Here is the stack trace that was produced: -");
-				log("### ");
-				for (String curLine : sw.toString().split("\r\n"))
-					log("### " + curLine);
-			}
+			logException(t);
 		}
 	}
 
