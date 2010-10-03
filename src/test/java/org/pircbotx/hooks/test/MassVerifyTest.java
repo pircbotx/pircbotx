@@ -16,12 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks.test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.ArrayUtils;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.MetaSimpleListenerInterface;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
@@ -108,9 +111,13 @@ public class MassVerifyTest {
 
 			Constructor constructor = constructors[0];
 
+			//Is the first parameter a bot refrence?
+			Class[] constParams = constructor.getParameterTypes();
+			assertEquals(constParams[0],PircBotX.class,"First parameter in constructor of "+genClass("Event",clazz)+ " isn't of PircBotX type");
+
 			//Are the number of fields and constructor parameters equal?
-			//(subtract one field to account for timestamp)
-			assertEquals(constructor.getParameterTypes().length, clazz.getDeclaredFields().length, "Number of Contructor paramenters in " + genClass("Event", clazz) + " don't match number of fields");
+			//(subtract one parameter to account for bot)
+			assertEquals(constParams.length -1, clazz.getDeclaredFields().length, "Number of Contructor paramenters in " + genClass("Event", clazz) + " don't match number of fields");
 		}
 		System.out.println("Success: Event classes is good");
 	}
@@ -123,8 +130,11 @@ public class MassVerifyTest {
 
 			//While we can't get parameter names, we can check if the param classes are in order
 			Class[] methodParams = eventMethod.getParameterTypes();
-			Class[] constrParams = constr.getParameterTypes();
+			//(remove first constructor parameter to account for Bot refrence)
+			Class[] constrParams = (Class[])ArrayUtils.remove(constr.getParameterTypes(), 0);
+
 			assertEquals(methodParams.length, constrParams.length, "Number of parameters in " + genClass("SimpleListener", clazz) + " don't match number of parameters in Event constructor");
+
 			for (int i = 0; i < methodParams.length; i++)
 				assertEquals(methodParams[i], constrParams[i], "Parameter type mismatch of " + genClass("SimpleListener", clazz) + " and Event constructor");
 
@@ -133,10 +143,12 @@ public class MassVerifyTest {
 	}
 
 	protected String genClass(String prefix, Class clazz) {
-		return prefix + "" + clazz.getSimpleName();
+		if(clazz.getEnclosingClass() != null)
+			clazz = clazz.getEnclosingClass();
+		return prefix + " " + clazz.getSimpleName();
 	}
 
 	protected String genMethod(Method method, String prefix, Class clazz) {
-		return "Method " + method.toString() + " of " + prefix + " " + clazz.getSimpleName();
+		return "Method " + method.toString() + " of " + prefix + " " + clazz.getEnclosingClass().getSimpleName();
 	}
 }
