@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks.helpers.test;
 
 import java.io.File;
@@ -108,11 +107,8 @@ public class MetaTest {
 			assertEquals(curMethod.getExceptionTypes().length, 0, "Method " + curMethod + "Cannot throw any checked exceptions");
 
 			//Execute and throw any exceptions upstream
-			try {
-				curMethod.invoke(testInst, paramList.toArray());
-			} catch (Throwable e) {
-				throw new Exception("Method " + curMethod + " cannot throw any exceptions", e);
-			}
+			curMethod.invoke(testInst, paramList.toArray(), "Method " + curMethod + " cannot throw any exceptions");
+
 		}
 		System.out.println("Success: " + testClazz + " methods don't throw any exceptions");
 	}
