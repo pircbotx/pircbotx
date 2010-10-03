@@ -49,12 +49,10 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for receiving files.
 	 */
-	DccFileTransfer(PircBotX bot, DccManager manager, String nick, String login, String hostname, String type, String filename, long address, int port, long size) {
+	DccFileTransfer(PircBotX bot, DccManager manager, User user, String type, String filename, long address, int port, long size) {
 		_bot = bot;
 		_manager = manager;
-		_nick = nick;
-		_login = login;
-		_hostname = hostname;
+		_user = user;
 		_type = type;
 		_file = new File(filename);
 		_address = address;
@@ -68,10 +66,10 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for sending files.
 	 */
-	DccFileTransfer(PircBotX bot, DccManager manager, File file, String nick, int timeout) {
+	DccFileTransfer(PircBotX bot, DccManager manager, File file, User user, int timeout) {
 		_bot = bot;
 		_manager = manager;
-		_nick = nick;
+		_user = user;
 		_file = file;
 		_size = file.length();
 		_timeout = timeout;
@@ -100,7 +98,7 @@ public class DccFileTransfer {
 				if (_progress == 0)
 					doReceive(file, false);
 				else {
-					_bot.sendCTCPCommand(_nick, "DCC RESUME file.ext " + _port + " " + _progress);
+					_bot.sendCTCPCommand(_user.getNick(), "DCC RESUME file.ext " + _port + " " + _progress);
 					_manager.addAwaitingResume(this);
 				}
 			} else {
@@ -221,7 +219,7 @@ public class DccFileTransfer {
 						_manager.addAwaitingResume(DccFileTransfer.this);
 
 					// Send the message to the user, telling them where to connect to in order to get the file.
-					_bot.sendCTCPCommand(_nick, "DCC SEND " + safeFilename + " " + ipNum + " " + _port + " " + _file.length());
+					_bot.sendCTCPCommand(_user.getNick(), "DCC SEND " + safeFilename + " " + ipNum + " " + _port + " " + _file.length());
 
 					// The client may now connect to us and download the file.
 					_socket = ss.accept();
@@ -291,34 +289,8 @@ public class DccFileTransfer {
 			}
 	}
 
-	/**
-	 * Returns the nick of the other user taking part in this file transfer.
-	 *
-	 * @return the nick of the other user.
-	 *
-	 */
-	public String getNick() {
-		return _nick;
-	}
-
-	/**
-	 * Returns the login of the file sender.
-	 *
-	 * @return the login of the file sender. null if we are sending.
-	 *
-	 */
-	public String getLogin() {
-		return _login;
-	}
-
-	/**
-	 * Returns the hostname of the file sender.
-	 *
-	 * @return the hostname of the file sender. null if we are sending.
-	 *
-	 */
-	public String getHostname() {
-		return _hostname;
+	public User getSource() {
+		return _user;
 	}
 
 	/**
@@ -455,9 +427,7 @@ public class DccFileTransfer {
 	}
 	private PircBotX _bot;
 	private DccManager _manager;
-	private String _nick;
-	private String _login = null;
-	private String _hostname = null;
+	private User _user;
 	private String _type;
 	private long _address;
 	private int _port;

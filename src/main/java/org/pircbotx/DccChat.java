@@ -49,13 +49,11 @@ public class DccChat {
 	 *
 	 * @throws IOException If the connection cannot be made.
 	 */
-	DccChat(PircBotX bot, String nick, String login, String hostname, long address, int port) {
+	DccChat(PircBotX bot, User source, long address, int port) {
 		_bot = bot;
 		_address = address;
 		_port = port;
-		_nick = nick;
-		_login = login;
-		_hostname = hostname;
+		_source = source;
 		_acceptable = true;
 	}
 
@@ -70,9 +68,9 @@ public class DccChat {
 	 *
 	 * @throws IOException If the socket cannot be read from.
 	 */
-	DccChat(PircBotX bot, String nick, Socket socket) throws IOException {
+	DccChat(PircBotX bot, User source, Socket socket) throws IOException {
 		_bot = bot;
-		_nick = nick;
+		_source = source;
 		_socket = socket;
 		_reader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
 		_writer = new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream()));
@@ -140,34 +138,8 @@ public class DccChat {
 		_socket.close();
 	}
 
-	/**
-	 * Returns the nick of the other user taking part in this file transfer.
-	 *
-	 * @return the nick of the other user.
-	 *
-	 */
-	public String getNick() {
-		return _nick;
-	}
-
-	/**
-	 * Returns the login of the DCC Chat initiator.
-	 *
-	 * @return the login of the DCC Chat initiator. null if we sent it.
-	 *
-	 */
-	public String getLogin() {
-		return _login;
-	}
-
-	/**
-	 * Returns the hostname of the DCC Chat initiator.
-	 *
-	 * @return the hostname of the DCC Chat initiator. null if we sent it.
-	 *
-	 */
-	public String getHostname() {
-		return _hostname;
+	public User getSource() {
+		return _source;
 	}
 
 	/**
@@ -206,9 +178,7 @@ public class DccChat {
 		return _address;
 	}
 	private PircBotX _bot;
-	private String _nick;
-	private String _login = null;
-	private String _hostname = null;
+	private User _source;
 	private BufferedReader _reader;
 	private BufferedWriter _writer;
 	private Socket _socket;

@@ -5,8 +5,8 @@
 
 package org.pircbotx.hooks.helpers;
 
+import java.util.Date;
 import org.pircbotx.hooks.Finger;
-import org.pircbotx.hooks.Finger.Event;
 import org.pircbotx.hooks.Ping;
 import org.pircbotx.hooks.ServerPing;
 import org.pircbotx.hooks.Time;
@@ -18,24 +18,23 @@ import org.pircbotx.hooks.Version;
  */
 public class CoreHooks implements Finger.Listener, Ping.Listener, ServerPing.Listener, Time.Listener, Version.Listener {
 
-	public void onFinger(Event event) {
-		getBot().sendRawLine("NOTICE " + sourceNick + " :\u0001FINGER " + getBot().getFinger() + "\u0001");
+	public void onFinger(Finger.Event event) {
+		event.getBot().sendCTCPResponse(event, "FINGER " + event.getBot().getFinger());
 	}
 
 	public void onPing(Ping.Event event) {
-		getBot().sendRawLine("NOTICE " + sourceNick + " :\u0001PING " + pingValue + "\u0001");
+		event.getBot().sendCTCPResponse(event, "PING " + event.getPingValue());
 	}
 
 	public void onServerPing(ServerPing.Event event) {
-		getBot().sendRawLine("PONG " + response);
+		event.getBot().sendRawLine("PONG " + event.getResponse());
 	}
 
 	public void onTime(Time.Event event) {
-		getBot().sendRawLine("NOTICE " + sourceNick + " :\u0001TIME " + new Date().toString() + "\u0001");
+		event.getBot().sendCTCPResponse(event, "TIME " + new Date().toString());
 	}
 
 	public void onVersion(Version.Event event) {
-		getBot().sendRawLine("NOTICE " + sourceNick + " :\u0001VERSION " + getBot().getVersion() + "\u0001");
+		event.getBot().sendCTCPResponse(event, "VERSION " + event.getBot().getVersion());
 	}
-
 }
