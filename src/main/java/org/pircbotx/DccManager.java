@@ -49,7 +49,7 @@ public class DccManager {
 	 *
 	 * @return True if the type of request was handled successfully.
 	 */
-	boolean processRequest(String nick, String login, String hostname, String request) {
+	boolean processRequest(User source, String request) {
 		StringTokenizer tokenizer = new StringTokenizer(request);
 		tokenizer.nextToken();
 		String type = tokenizer.nextToken();
@@ -65,7 +65,7 @@ public class DccManager {
 				// Stick with the old value.
 			}
 
-			_bot.getListeners().dispatchEvent(new IncomingFileTransfer.Event(_bot, new DccFileTransfer(_bot, this, nick, login, hostname, type, filename, address, port, size)));
+			_bot.getListeners().dispatchEvent(new IncomingFileTransfer.Event(_bot, new DccFileTransfer(_bot, this, source, type, filename, address, port, size)));
 
 		} else if (type.equals("RESUME")) {
 			int port = Integer.parseInt(tokenizer.nextToken());
@@ -75,7 +75,7 @@ public class DccManager {
 			synchronized (_awaitingResume) {
 				for (int i = 0; i < _awaitingResume.size(); i++) {
 					transfer = (DccFileTransfer) _awaitingResume.elementAt(i);
-					if (transfer.getNick().equals(nick) && transfer.getPort() == port) {
+					if (transfer.getSource().equals(source) && transfer.getPort() == port) {
 						_awaitingResume.removeElementAt(i);
 						break;
 					}
@@ -84,7 +84,7 @@ public class DccManager {
 
 			if (transfer != null) {
 				transfer.setProgress(progress);
-				_bot.sendCTCPCommand(nick, "DCC ACCEPT file.ext " + port + " " + progress);
+				_bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
 			}
 
 		} else if (type.equals("ACCEPT")) {
@@ -95,7 +95,7 @@ public class DccManager {
 			synchronized (_awaitingResume) {
 				for (int i = 0; i < _awaitingResume.size(); i++) {
 					transfer = (DccFileTransfer) _awaitingResume.elementAt(i);
-					if (transfer.getNick().equals(nick) && transfer.getPort() == port) {
+					if (transfer.getSource().equals(source) && transfer.getPort() == port) {
 						_awaitingResume.removeElementAt(i);
 						break;
 					}
@@ -109,7 +109,7 @@ public class DccManager {
 			long address = Long.parseLong(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 
-			final DccChat chat = new DccChat(_bot, nick, login, hostname, address, port);
+			final DccChat chat = new DccChat(_bot, source, address, port);
 
 			new Thread() {
 				public void run() {

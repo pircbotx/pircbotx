@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import org.pircbotx.hooks.Action;
@@ -519,9 +518,21 @@ public abstract class PircBotX {
 	 *
 	 * @see Colors
 	 */
-	public final void sendMessage(String target, String message) {
+	public void sendMessage(String target, String message) {
 		_outputThread.send("PRIVMSG " + target + " :" + message);
 	}
+
+	public void sendMessage(BaseEvent event, String message) {
+		User target = Utils.getUser(event);
+		if (target != null && message != null)
+			sendMessage(target, message);
+	}
+
+	public void sendMessage(User target, String message) {
+		if (target != null && message != null)
+			sendMessage(target.getNick(), message);
+	}
+
 
 	/**
 	 * Sends an action to the channel or to a user.
@@ -531,8 +542,19 @@ public abstract class PircBotX {
 	 *
 	 * @see Colors
 	 */
-	public final void sendAction(String target, String action) {
+	public void sendAction(String target, String action) {
 		sendCTCPCommand(target, "ACTION " + action);
+	}
+
+	public void sendAction(BaseEvent event, String message) {
+		User target = Utils.getUser(event);
+		if (target != null && message != null)
+			sendAction(target, message);
+	}
+
+	public void sendAction(User target, String message) {
+		if (target != null && message != null)
+			sendAction(target.getNick(), message);
 	}
 
 	/**
@@ -543,6 +565,17 @@ public abstract class PircBotX {
 	 */
 	public final void sendNotice(String target, String notice) {
 		_outputThread.send("NOTICE " + target + " :" + notice);
+	}
+
+	public void sendNotice(BaseEvent event, String notice) {
+		User target = Utils.getUser(event);
+		if (target != null && notice != null)
+			sendNotice(target, notice);
+	}
+
+	public void sendNotice(User target, String notice) {
+		if (target != null && notice != null)
+			sendNotice(target.getNick(), notice);
 	}
 
 	/**
@@ -558,8 +591,34 @@ public abstract class PircBotX {
 	 * @param target The name of the channel or user to send the CTCP message to.
 	 * @param command The CTCP command to send.
 	 */
-	public final void sendCTCPCommand(String target, String command) {
+	public void sendCTCPCommand(String target, String command) {
 		_outputThread.send("PRIVMSG " + target + " :\u0001" + command + "\u0001");
+	}
+
+	public void sendCTCPCommand(BaseEvent event, String command) {
+		User target = Utils.getUser(event);
+		if (target != null && command != null)
+			sendCTCPCommand(target, command);
+	}
+
+	public void sendCTCPCommand(User target, String command) {
+		if (target != null && command != null)
+			sendCTCPCommand(target.getNick(), command);
+	}
+
+	public void sendCTCPResponse(String target, String message) {
+		_outputThread.send("NOTICE " + target + " :\u0001" + message + "\u0001");
+	}
+
+	public void sendCTCPResponse(BaseEvent event, String message) {
+		User target = Utils.getUser(event);
+		if (target != null && message != null)
+			sendCTCPResponse(target, message);
+	}
+
+	public void sendCTCPResponse(User target, String message) {
+		if (target != null && message != null)
+			sendCTCPResponse(target.getNick(), message);
 	}
 
 	/**
@@ -805,8 +864,8 @@ public abstract class PircBotX {
 	 * @see DccFileTransfer
 	 *
 	 */
-	public final DccFileTransfer dccSendFile(File file, String nick, int timeout) {
-		DccFileTransfer transfer = new DccFileTransfer(this, _dccManager, file, nick, timeout);
+	public final DccFileTransfer dccSendFile(File file, User reciever, int timeout) {
+		DccFileTransfer transfer = new DccFileTransfer(this, _dccManager, file, reciever, timeout);
 		transfer.doSend(true);
 		return transfer;
 	}
@@ -835,7 +894,7 @@ public abstract class PircBotX {
 	 *
 	 * @see DccChat
 	 */
-	public final DccChat dccSendChatRequest(String nick, int timeout) {
+	public final DccChat dccSendChatRequest(User sender, int timeout) {
 		DccChat chat = null;
 		try {
 			ServerSocket ss = null;
@@ -867,7 +926,7 @@ public abstract class PircBotX {
 			byte[] ip = inetAddress.getAddress();
 			long ipNum = ipToLong(ip);
 
-			sendCTCPCommand(nick, "DCC CHAT chat " + ipNum + " " + port);
+			sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
 
 			// The client may now connect to us to chat.
 			Socket socket = ss.accept();
@@ -875,7 +934,7 @@ public abstract class PircBotX {
 			// Close the server socket now that we've finished with it.
 			ss.close();
 
-			chat = new DccChat(this, nick, socket);
+			chat = new DccChat(this, sender, socket);
 		} catch (Exception e) {
 			// Do nothing.
 		}
@@ -1023,7 +1082,7 @@ public abstract class PircBotX {
 					getListeners().dispatchEvent(new Finger.Event(this, source, channel));
 				else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 					// This is a DCC request.
-					boolean success = _dccManager.processRequest(sourceNick, sourceLogin, sourceHostname, request);
+					boolean success = _dccManager.processRequest(source, request);
 					if (!success)
 						// The DccManager didn't know what to do with the line.
 						getListeners().dispatchEvent(new Unknown.Event(this, line));
