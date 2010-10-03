@@ -43,12 +43,12 @@ public class Message {
 		 * Simple Listener for Message Events. See {@link Message} for a complete description on when
 		 * this is called.
 		 * @param channel The channel to which the message was sent.
-		 * @param user The user who sent the message.
+		 * @param source The user who sent the message.
 		 * @param message The actual message sent to the channel.
 		 * @see Message
 		 * @see SimpleListener
 		 */
-		public void onMessage(Channel channel, User user, String message);
+		public void onMessage(Channel channel, User source, String message);
 	}
 
 	/**
@@ -78,20 +78,20 @@ public class Message {
 	 */
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
-		protected final User user;
+		protected final User source;
 		protected final String message;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel to which the message was sent.
-		 * @param user The user who sent the message.
+		 * @param source The user who sent the message.
 		 * @param message The actual message sent to the channel.
 		 */
-		public <T extends PircBotX> Event(T bot, Channel channel, User user, String message) {
+		public <T extends PircBotX> Event(T bot, Channel channel, User source, String message) {
 			super(bot);
 			this.channel = channel;
-			this.user = user;
+			this.source = source;
 			this.message = message;
 		}
 
@@ -103,8 +103,8 @@ public class Message {
 			return message;
 		}
 
-		public User getUser() {
-			return user;
+		public User getSource() {
+			return source;
 		}
 	}
 }

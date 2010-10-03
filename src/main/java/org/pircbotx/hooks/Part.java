@@ -44,11 +44,11 @@ public class Part {
 		 * Simple Listener for Part Events. See {@link Part} for a complete description on when
 		 * this is called.
 		 * @param channel The channel which somebody parted from.
-		 * @param sender The user who parted from the channel.
+		 * @param source The user who parted from the channel.
 		 * @see Part
 		 * @see SimpleListener
 		 */
-		public void onPart(Channel channel, User sender);
+		public void onPart(Channel channel, User source);
 	}
 
 	/**
@@ -78,26 +78,26 @@ public class Part {
 	 */
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
-		protected final User sender;
+		protected final User source;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel which somebody parted from.
-		 * @param sender The user who parted from the channel.
+		 * @param source The user who parted from the channel.
 		 */
-		public <T extends PircBotX> Event(T bot, Channel channel, User sender) {
+		public <T extends PircBotX> Event(T bot, Channel channel, User source) {
 			super(bot);
 			this.channel = channel;
-			this.sender = sender;
+			this.source = source;
 		}
 
 		public Channel getChannel() {
 			return channel;
 		}
 
-		public User getSender() {
-			return sender;
+		public User getSource() {
+			return source;
 		}
 	}
 }

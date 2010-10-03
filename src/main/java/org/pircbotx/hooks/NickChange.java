@@ -44,11 +44,11 @@ public class NickChange {
 		 * this is called.
 		 * @param oldNick The old nick.
 		 * @param newNick The new nick.
-		 * @param user The user that changed their nick
+		 * @param source The user that changed their nick
 		 * @see NickChange
 		 * @see SimpleListener
 		 */
-		public void onNickChange(String oldNick, String newNick, User user);
+		public void onNickChange(String oldNick, String newNick, User source);
 	}
 
 	/**
@@ -79,20 +79,20 @@ public class NickChange {
 	public static class Event extends BaseEvent {
 		protected final String oldNick;
 		protected final String newNick;
-		protected final User user;
+		protected final User source;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param oldNick The old nick.
 		 * @param newNick The new nick.
-		 * @param user The user that changed their nick
+		 * @param source The user that changed their nick
 		 */
-		public <T extends PircBotX> Event(T bot, String oldNick, String newNick, User user) {
+		public <T extends PircBotX> Event(T bot, String oldNick, String newNick, User source) {
 			super(bot);
 			this.oldNick = oldNick;
 			this.newNick = newNick;
-			this.user = user;
+			this.source = source;
 		}
 
 		public String getNewNick() {
@@ -103,8 +103,8 @@ public class NickChange {
 			return oldNick;
 		}
 
-		public User getUser() {
-			return user;
+		public User getSource() {
+			return source;
 		}
 	}
 }

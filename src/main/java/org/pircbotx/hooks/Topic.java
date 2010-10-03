@@ -45,14 +45,14 @@ public class Topic {
 		 * this is called.
 		 * @param channel The channel that the topic belongs to.
 		 * @param topic The topic for the channel.
-		 * @param setBy The user that set the topic.
+		 * @param source The user that set the topic.
 		 * @param date When the topic was set (milliseconds since the epoch).
 		 * @param changed True if the topic has just been changed, false if
 		 *                the topic was already there.
 		 * @see Topic
 		 * @see SimpleListener
 		 */
-		public void onTopic(Channel channel, String topic, User setBy, boolean changed);
+		public void onTopic(Channel channel, String source, User setBy, boolean changed);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class Topic {
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final String topic;
-		protected final User setBy;
+		protected final User source;
 		protected final boolean changed;
 
 		/**
@@ -91,16 +91,16 @@ public class Topic {
 		 * to current time as reported by {@link System#currentTimeMillis() }
 		 * @param channel The channel that the topic belongs to.
 		 * @param topic The topic for the channel.
-		 * @param setBy The user that set the topic.
+		 * @param source The user that set the topic.
 		 * @param date When the topic was set (milliseconds since the epoch).
 		 * @param changed True if the topic has just been changed, false if
 		 *                the topic was already there.
 		 */
-		public <T extends PircBotX> Event(T bot, Channel channel, String topic, User setBy, boolean changed) {
+		public <T extends PircBotX> Event(T bot, Channel channel, String topic, User source, boolean changed) {
 			super(bot);
 			this.channel = channel;
 			this.topic = topic;
-			this.setBy = setBy;
+			this.source = source;
 			this.changed = changed;
 		}
 
@@ -112,8 +112,8 @@ public class Topic {
 			return channel;
 		}
 
-		public User getSetBy() {
-			return setBy;
+		public User getSource() {
+			return source;
 		}
 
 		public String getTopic() {
