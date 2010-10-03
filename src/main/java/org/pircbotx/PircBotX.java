@@ -534,6 +534,10 @@ public abstract class PircBotX {
 			sendMessage(target.getNick(), message);
 	}
 
+	public void sendMessage(Channel target, String message) {
+		if (target != null && message != null)
+			sendMessage(target.getName(), message);
+	}
 
 	/**
 	 * Sends an action to the channel or to a user.
@@ -558,13 +562,18 @@ public abstract class PircBotX {
 			sendAction(target.getNick(), message);
 	}
 
+	public void sendAction(Channel target, String message) {
+		if (target != null && message != null)
+			sendAction(target.getName(), message);
+	}
+
 	/**
 	 * Sends a notice to the channel or to a user.
 	 *
 	 * @param target The name of the channel or user nick to send to.
 	 * @param notice The notice to send.
 	 */
-	public final void sendNotice(String target, String notice) {
+	public void sendNotice(String target, String notice) {
 		_outputThread.send("NOTICE " + target + " :" + notice);
 	}
 
@@ -577,6 +586,11 @@ public abstract class PircBotX {
 	public void sendNotice(User target, String notice) {
 		if (target != null && notice != null)
 			sendNotice(target.getNick(), notice);
+	}
+
+	public void sendNotice(Channel target, String notice) {
+		if (target != null && notice != null)
+			sendNotice(target.getName(), notice);
 	}
 
 	/**
@@ -690,8 +704,40 @@ public abstract class PircBotX {
 	 * @param channel The channel you are inviting the user to join.
 	 *
 	 */
-	public final void sendInvite(String nick, String channel) {
+	public void sendInvite(String nick, String channel) {
 		sendRawLine("INVITE " + nick + " :" + channel);
+	}
+
+	public void sendInvite(BaseEvent event, String channel) {
+		User target = Utils.getUser(event);
+		if (target != null && channel != null)
+			sendInvite(target, channel);
+	}
+
+	public void sendInvite(User target, String channel) {
+		if (target != null && channel != null)
+			sendInvite(target.getNick(), channel);
+	}
+
+	public void sendInvite(BaseEvent event, Channel channel) {
+		User target = Utils.getUser(event);
+		if (target != null && channel != null)
+			sendInvite(target, channel);
+	}
+
+	public void sendInvite(User target, Channel channel) {
+		if (target != null && channel != null)
+			sendInvite(target.getNick(), channel);
+	}
+
+	public void sendInvite(Channel target, Channel channel) {
+		if (target != null && channel != null)
+			sendInvite(target.getName(), channel);
+	}
+
+	public void sendInvite(String nick, Channel channel) {
+		if (nick != null && channel != null)
+			sendInvite(nick, channel.getName());
 	}
 
 	/**
