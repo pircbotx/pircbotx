@@ -1239,9 +1239,13 @@ public abstract class PircBotX {
 	 * @param response The full response from the IRC server.
 	 */
 	private void processServerResponse(int code, String response) {
-
+		//NOTE: Update tests if adding support for a new code
+		String[] parsed = response.split(" ");
 		if (code == RPL_LIST) {
+			//This is part of a full channel listing as part of /LIST
+			//EXAMPLE: 322 lordquackstar #xomb 12 :xomb exokernel project @ www.xomb.org
 			// This is a bit of information about a channel.
+			//NOTE: 321 demotes beggining of list, 323 demotes end of list
 			int firstSpace = response.indexOf(' ');
 			int secondSpace = response.indexOf(' ', firstSpace + 1);
 			int thirdSpace = response.indexOf(' ', secondSpace + 1);
@@ -1257,16 +1261,16 @@ public abstract class PircBotX {
 			String topic = response.substring(colon + 1);
 			getListeners().dispatchEvent(new ChannelInfo.Event(this, chan, userCount, topic));
 		} else if (code == RPL_TOPIC) {
-			//EXAMPLE: PircBotX #aChannel :I'm some random topic
-			//This is topic about a channel we've just joined.
-			String[] parsed = response.split(" ", 3);
+			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
+			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
+			parsed = response.split(" ", 3);
 			String channel = parsed[1];
 			String topic = parsed[2].substring(1);
 
 			getChannel(channel).setTopic(topic);
 		} else if (code == RPL_TOPICINFO) {
-			//EXAMPLE: PircBotX #quackbot ISetTopic 1564842512
-			//This is information on the topic of the channel we've just joined
+			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
+			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
 			StringTokenizer tokenizer = new StringTokenizer(response);
 			tokenizer.nextToken();
 			String channel = tokenizer.nextToken();
@@ -1284,9 +1288,9 @@ public abstract class PircBotX {
 
 			getListeners().dispatchEvent(new Topic.Event(this, chan, chan.getTopic(), setBy, false));
 		} else if (code == RPL_NAMREPLY) {
-			//EXAMPLE: PircBotX = #aChannel :PircBotX @SuperOp
-			// This is a list of nicks in a channel that we've just joined.
-			String[] parsed = response.split(" ", 4);
+			//EXAMPLE: 353 PircBotX = #aChannel :PircBotX @SuperOp someoneElse
+			// This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
+			parsed = response.split(" ", 4);
 			Channel chan = getChannel(parsed[2]);
 
 			for (String nick : parsed[3].substring(1).split(" ")) {
@@ -1297,13 +1301,13 @@ public abstract class PircBotX {
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: PircBotX #aChannel :End of /NAMES list
 			// This is the end of a NAMES list, so we know that we've got
-			// the full list of users in the channel that we just joined.
+			// the full list of users in the channel that we just joined. From /NAMES and /JOIN
 			Channel channel = getChannel(response.split(" ", 3)[1]);
 			getListeners().dispatchEvent(new UserList.Event(this, channel, getUsers(channel)));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
-			String[] parsed = response.split(" ", 9);
+			parsed = response.split(" ", 9);
 			Channel chan = getChannel(parsed[1]);
 
 			User curUser = getUser(parsed[5]);
@@ -1327,15 +1331,28 @@ public abstract class PircBotX {
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			String[] parsed = response.split(" ");
 			System.out.println("Setting mode for channel " + parsed[1] + " to " + parsed[2]);
 			getChannel(parsed[1]).parseMode(parsed[2]);
 		} else if (code == 329) {
-			//EXAMPLE: PircBotX #aChannel 1237581422
-			//Timestamp of the channel
-			String[] parsed = response.split(" ");
-			System.out.println("Setting timestamp for channel " + parsed[1] + " to " + parsed[2]);
-			getChannel(parsed[1]).setTimestamp(Long.parseLong(parsed[2]));
+			//EXAMPLE: 329 lordquackstar #botters 1199140245
+			//Tells when channel was created. Note mIRC says lordquackstar shouldn't be there while Freenode
+			//displays it. From /JOIN(?)
+			int createDate = -1;
+			String channel = "";
+
+			//Freenode version
+			try {
+				createDate = Integer.parseInt(parsed[2]);
+				channel = parsed[1];
+			}
+			catch(NumberFormatException e) {
+				//mIRC version
+				createDate = Integer.parseInt(parsed[1]);
+				channel = parsed[0];
+			}
+
+			//Set in channel
+			getChannel(channel).setTimestamp(createDate);
 		} else if (code == RPL_MOTDSTART)
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
@@ -1348,6 +1365,8 @@ public abstract class PircBotX {
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, dispatch event
 			getListeners().dispatchEvent(new Motd.Event(this, (getServerInfo().getMotd())));
+
+		//WARNING: Parsed array might be modified, recreate if you're going to use down here
 		getListeners().dispatchEvent(new ServerResponse.Event(this, code, response));
 	}
 
