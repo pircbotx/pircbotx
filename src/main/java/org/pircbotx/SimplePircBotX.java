@@ -295,16 +295,16 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 				onJoin(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof Kick.Event) {
 				Kick.Event e = (Kick.Event) baseEvent;
-				onKick(e.getChannel(), e.getKicker(), e.getRecipient(), e.getReason());
+				onKick(e.getChannel(), e.getSource(), e.getRecipient(), e.getReason());
 			} else if (baseEvent instanceof Message.Event) {
 				Message.Event e = (Message.Event) baseEvent;
-				onMessage(e.getChannel(), e.getUser(), e.getMessage());
+				onMessage(e.getChannel(), e.getSource(), e.getMessage());
 			} else if (baseEvent instanceof Mode.Event) {
 				Mode.Event e = (Mode.Event) baseEvent;
 				onMode(e.getChannel(), e.getSource(), e.getMode());
 			} else if (baseEvent instanceof NickChange.Event) {
 				NickChange.Event e = (NickChange.Event) baseEvent;
-				onNickChange(e.getOldNick(), e.getNewNick(), e.getUser());
+				onNickChange(e.getOldNick(), e.getNewNick(), e.getSource());
 			} else if (baseEvent instanceof Notice.Event) {
 				Notice.Event e = (Notice.Event) baseEvent;
 				onNotice(e.getSource(), e.getTarget(), e.getNotice());
@@ -313,13 +313,13 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 				onOp(e.getChannel(), e.getSource(), e.getRecipient());
 			} else if (baseEvent instanceof Part.Event) {
 				Part.Event e = (Part.Event) baseEvent;
-				onPart(e.getChannel(), e.getSender());
+				onPart(e.getChannel(), e.getSource());
 			} else if (baseEvent instanceof Ping.Event) {
 				Ping.Event e = (Ping.Event) baseEvent;
 				onPing(e.getSource(), e.getTarget(), e.getPingValue());
 			} else if (baseEvent instanceof PrivateMessage.Event) {
 				PrivateMessage.Event e = (PrivateMessage.Event) baseEvent;
-				onPrivateMessage(e.getSender(), e.getMessage());
+				onPrivateMessage(e.getSource(), e.getMessage());
 			} else if (baseEvent instanceof Quit.Event) {
 				Quit.Event e = (Quit.Event) baseEvent;
 				onQuit(e.getSource(), e.getReason());
@@ -388,7 +388,7 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 				onTime(e.getSource(), e.getTarget());
 			} else if (baseEvent instanceof Topic.Event) {
 				Topic.Event e = (Topic.Event) baseEvent;
-				onTopic(e.getChannel(), e.getTopic(), e.getSetBy(), e.isChanged());
+				onTopic(e.getChannel(), e.getTopic(), e.getSource(), e.isChanged());
 			} else if (baseEvent instanceof Unknown.Event) {
 				Unknown.Event e = (Unknown.Event) baseEvent;
 				onUnknown(e.getLine());
