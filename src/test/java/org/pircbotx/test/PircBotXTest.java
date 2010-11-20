@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.test;
 
 import org.pircbotx.User;
@@ -104,7 +105,8 @@ public class PircBotXTest {
 			//If something is left, then something is wrong!
 			assertTrue(requiredClasses.isEmpty(), "Method group " + key + " doesn't have a method(s) for " + StringUtils.join(requiredClasses, ", "));
 		}
-		System.out.println("Success: PircBotX.send* methods work ");
+
+		System.out.println("Success: PircBotX.send* methods have appropiate variations ");
 	}
 
 	@Test
@@ -118,6 +120,8 @@ public class PircBotXTest {
 
 		bot.sendAction(chan, string);
 		signal.compare("AChannel", string);
+
+		System.out.println("Success: sendAction variations get same result");
 	}
 
 	@Test
@@ -128,6 +132,8 @@ public class PircBotXTest {
 
 		bot.sendCTCPCommand(user, string);
 		signal.compare("AUser", string);
+
+		System.out.println("Success: sendCTCPCommand variations get same result");
 	}
 
 	@Test
@@ -138,6 +144,8 @@ public class PircBotXTest {
 
 		bot.sendCTCPResponse(user, string);
 		signal.compare("AUser", string);
+
+		System.out.println("Success: sendCTCPResponse variations get same result");
 	}
 
 	@Test
@@ -157,6 +165,8 @@ public class PircBotXTest {
 
 		bot.sendInvite(chan, chan);
 		signal.compare("AChannel", "AChannel");
+
+		System.out.println("Success: sendInvite variations get same result");
 	}
 
 	@Test
@@ -170,6 +180,8 @@ public class PircBotXTest {
 
 		bot.sendMessage(chan, string);
 		signal.compare("AChannel", string);
+
+		System.out.println("Success: sendMessage variations get same result");
 	}
 
 	@Test
@@ -183,6 +195,8 @@ public class PircBotXTest {
 
 		bot.sendNotice(chan, string);
 		signal.compare("AChannel", string);
+
+		System.out.println("Success: sendNotice variations get same result");
 	}
 
 	@Test
@@ -204,6 +218,8 @@ public class PircBotXTest {
 				channelParsed = true;
 			}
 		assertTrue(channelParsed, "Channel #PircBotXChannel1 not found in /LIST results!");
+
+		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 
 	@Test
@@ -212,6 +228,8 @@ public class PircBotXTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.processServerResponse(332, "PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
+
+		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
 	}
 
 	@Test
@@ -221,6 +239,8 @@ public class PircBotXTest {
 		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
+
+		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
 
 	/**
