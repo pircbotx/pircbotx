@@ -188,7 +188,6 @@ public abstract class PircBotX {
 	private int socketTimeout = 1000 * 60 * 5;
 	private final ServerInfo serverInfo = new ServerInfo(this);
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
-	protected final ListBuilder<String> channelListBuilder = new ListBuilder();
 
 	/**
 	 * Constructs a PircBotX with the default settings.  Your own constructors
@@ -1284,13 +1283,11 @@ public abstract class PircBotX {
 		} else if (code == RPL_TOPICINFO) {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
-			StringTokenizer tokenizer = new StringTokenizer(response);
-			tokenizer.nextToken();
-			String channel = tokenizer.nextToken();
-			User setBy = getUser(tokenizer.nextToken());
+			String channel = parsed[1];
+			User setBy = getUser(parsed[2]);
 			long date = 0;
 			try {
-				date = Long.parseLong(tokenizer.nextToken()) * 1000;
+				date = Long.parseLong(parsed[3]) * 1000;
 			} catch (NumberFormatException e) {
 				// Stick with the default value of zero.
 			}
