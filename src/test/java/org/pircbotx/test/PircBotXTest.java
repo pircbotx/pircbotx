@@ -20,17 +20,26 @@
 package org.pircbotx.test;
 
 import org.pircbotx.User;
+import org.pircbotx.hooks.ChannelInfo.Event;
+import org.pircbotx.hooks.Motd;
+import org.pircbotx.hooks.Topic;
+import org.pircbotx.hooks.UserList;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.Channel;
+import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Action;
+import org.pircbotx.hooks.ChannelInfo;
+import org.pircbotx.hooks.helpers.MetaListener;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -86,7 +95,7 @@ public class PircBotXTest {
 			//If something is left, then something is wrong!
 			assertTrue(requiredClasses.isEmpty(), "Method group " + key + " doesn't have a method(s) for " + StringUtils.join(requiredClasses, ", "));
 		}
-		System.out.println("Sucess: PircBotX.send* methods work ");
+		System.out.println("Success: PircBotX.send* methods work ");
 	}
 
 	@Test
@@ -127,8 +136,8 @@ public class PircBotXTest {
 
 		//Make sure all methods call each other appropiatly
 		final String string = "AString";
-		final User user = new User(bot,"AUser");
-		final Channel chan = new Channel(bot,"AChannel");
+		final User user = new User(bot, "AUser");
+		final Channel chan = new Channel(bot, "AChannel");
 		final BaseEvent event = new Action.Event(bot, user, chan, string);
 
 
@@ -192,13 +201,75 @@ public class PircBotXTest {
 		signal.compare("AChannel", string);
 	}
 
+	@Test
+	public void processServerResponseTest() {
+		PircBotXVisible bot = new PircBotXVisible() {
+		};
+		final Signal signal = new Signal();
+		bot.getListeners().addListener(new MetaListener() {
+			@Override
+			public void onChannelInfo(Event event) {
+				signal.event = event;
+			}
 
+			@Override
+			public void onMotd(Motd.Event event) {
+				signal.event = event;
+			}
 
+			@Override
+			public void onTopic(Topic.Event event) {
+				signal.event = event;
+			}
+
+			@Override
+			public void onUserList(UserList.Event event) {
+				signal.event = event;
+			}
+		});
+
+		String aString = "I'm some super long string that has multiple words";
+
+		//Simulate /LIST response
+		bot.processServerResponse(321, "Channel :Users Name");
+		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel 99 :" + aString);
+		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
+		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
+		bot.processServerResponse(323, ":End of /LIST");
+		Set<ChannelListEntry> channels = ((ChannelInfo.Event) signal.event).getList();
+		assertEquals(channels.size(), 3);
+		boolean channelParsed = false;
+		for (ChannelListEntry entry : channels)
+			if (entry.getName().equals("#PircBotXChannel1")) {
+				assertEquals(entry.getName(), "#PircBotXChannel1");
+				assertEquals(entry.getTopic(), aString + aString);
+				assertEquals(entry.getUsers(), 100);
+				channelParsed = true;
+			}
+		assertEquals(channelParsed, true, "Channel #PircBotXChannel1 not found in /LIST results!");
+
+		//From a /TOPIC or /JOIN
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.processServerResponse(332, "PircBotXUser #aChannel :" + aString + aString);
+		assertEquals(aChannel.getTopic(), aString + aString);
+
+		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
+		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
+		assertEquals(aChannel.getTopicTimestamp(), (long)1564842512*1000);
+	}
+
+	public class PircBotXVisible extends PircBotX {
+		@Override
+		public void processServerResponse(int code, String response) {
+			super.processServerResponse(code, response);
+		}
+	}
 
 	public class Signal {
 		public String target = null;
 		public String message = null;
 		public Channel chan = null;
+		public BaseEvent event = null;
 
 		public void set(String target, String message) {
 			this.target = target;
