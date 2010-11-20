@@ -20,6 +20,7 @@
 package org.pircbotx;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -88,7 +89,7 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 	public void onAction(User source, Channel chanTarget, String action) {
 	}
 
-	public void onChannelInfo(Channel channel, int userCount, String topic) {
+	public void onChannelInfo(Set<ChannelListEntry> list) {
 	}
 
 	public void onConnect() {
@@ -260,7 +261,7 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 				onAction(e.getSource(), e.getTarget(), e.getAction());
 			} else if (baseEvent instanceof ChannelInfo.Event) {
 				ChannelInfo.Event e = (ChannelInfo.Event) baseEvent;
-				onChannelInfo(e.getChannel(), e.getUserCount(), e.getTopic());
+				onChannelInfo(e.getList());
 			} else if (baseEvent instanceof Connect.Event)
 				onConnect();
 			else if (baseEvent instanceof Deop.Event) {

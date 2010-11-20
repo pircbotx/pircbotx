@@ -19,8 +19,10 @@
 
 package org.pircbotx.hooks.helpers;
 
+import java.util.List;
 import java.util.Set;
 import org.pircbotx.Channel;
+import org.pircbotx.ChannelListEntry;
 import org.pircbotx.DccChat;
 import org.pircbotx.DccFileTransfer;
 import org.pircbotx.User;
@@ -31,9 +33,6 @@ import org.pircbotx.User;
  */
 public class MetaSimpleListener implements MetaSimpleListenerInterface {
 	public void onAction(User source, Channel chanTarget, String action) {
-	}
-
-	public void onChannelInfo(Channel channel, int userCount, String topic) {
 	}
 
 	public void onConnect() {
@@ -178,5 +177,8 @@ public class MetaSimpleListener implements MetaSimpleListenerInterface {
 	}
 
 	public void onMotd(String motd) {
+	}
+
+	public void onChannelInfo(Set<ChannelListEntry> list) {
 	}
 }

@@ -19,6 +19,9 @@
 
 package org.pircbotx;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
 import org.pircbotx.hooks.Action;
 import org.pircbotx.hooks.ChannelInfo;
 import org.pircbotx.hooks.Connect;
@@ -68,7 +71,6 @@ import org.pircbotx.hooks.UserList;
 import org.pircbotx.hooks.UserMode;
 import org.pircbotx.hooks.Version;
 import org.pircbotx.hooks.Voice;
-import org.pircbotx.hooks.helpers.Listener;
 import java.util.HashSet;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
@@ -185,6 +187,8 @@ public abstract class PircBotX {
 	 */
 	private int socketTimeout = 1000 * 60 * 5;
 	private final ServerInfo serverInfo = new ServerInfo(this);
+	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
+	protected final ListBuilder<String> channelListBuilder = new ListBuilder();
 
 	/**
 	 * Constructs a PircBotX with the default settings.  Your own constructors
@@ -859,6 +863,8 @@ public abstract class PircBotX {
 	 * When the PircBotX receives information for each channel, it will
 	 * call the onChannelInfo method, which you will need to override
 	 * if you want it to do anything useful.
+	 * <p>
+	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 *
 	 * @see #onChannelInfo(String,int,String) onChannelInfo
 	 */
@@ -876,17 +882,19 @@ public abstract class PircBotX {
 	 * One example is a parameter of ">10" to list only those channels
 	 * that have more than 10 users in them.  Whether these parameters
 	 * are supported or not will depend on the IRC server software.
-	 *
+	 * <p>
+	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 * @param parameters The parameters to supply when requesting the
 	 *                   list.
 	 *
 	 * @see #onChannelInfo(String,int,String) onChannelInfo
 	 */
 	public final void listChannels(String parameters) {
-		if (parameters == null)
-			sendRawLine("LIST");
-		else
-			sendRawLine("LIST " + parameters);
+		if (!channelListBuilder.isRunning)
+			if (parameters == null)
+				sendRawLine("LIST");
+			else
+				sendRawLine("LIST " + parameters);
 	}
 
 	/**
@@ -1238,20 +1246,21 @@ public abstract class PircBotX {
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
-	private void processServerResponse(int code, String response) {
+	protected void processServerResponse(int code, String response) {
 		//NOTE: Update tests if adding support for a new code
 		String[] parsed = response.split(" ");
-		if (code == RPL_LIST) {
+		if (code == RPL_LISTSTART)
+			//EXAMPLE: 321 Channel :Users Name (actual text)
+			//A channel list is about to be sent
+			channelListBuilder.isRunning = true;
+		else if(code == RPL_LIST) {
 			//This is part of a full channel listing as part of /LIST
 			//EXAMPLE: 322 lordquackstar #xomb 12 :xomb exokernel project @ www.xomb.org
-			// This is a bit of information about a channel.
-			//NOTE: 321 demotes beggining of list, 323 demotes end of list
 			int firstSpace = response.indexOf(' ');
 			int secondSpace = response.indexOf(' ', firstSpace + 1);
 			int thirdSpace = response.indexOf(' ', secondSpace + 1);
 			int colon = response.indexOf(':');
 			String channel = response.substring(firstSpace + 1, secondSpace);
-			Channel chan = channelExists(channel) ? getChannel(channel) : null;
 			int userCount = 0;
 			try {
 				userCount = Integer.parseInt(response.substring(secondSpace + 1, thirdSpace));
@@ -1259,8 +1268,12 @@ public abstract class PircBotX {
 				// Stick with the value of zero.
 			}
 			String topic = response.substring(colon + 1);
-			getListeners().dispatchEvent(new ChannelInfo.Event(this, chan, userCount, topic));
-		} else if (code == RPL_TOPIC) {
+			channelListBuilder.add(new ChannelListEntry(channel, userCount, topic));
+		} else if (code == RPL_LISTEND) {
+			//EXAMPLE: 323 :End of /LIST
+			//End of channel list, dispatch event
+			getListeners().dispatchEvent(new ChannelInfo.Event(this, channelListBuilder.finish()));
+		}  else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
 			parsed = response.split(" ", 3);
@@ -1289,20 +1302,22 @@ public abstract class PircBotX {
 			getListeners().dispatchEvent(new Topic.Event(this, chan, chan.getTopic(), setBy, false));
 		} else if (code == RPL_NAMREPLY) {
 			//EXAMPLE: 353 PircBotX = #aChannel :PircBotX @SuperOp someoneElse
-			// This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
+			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
 			parsed = response.split(" ", 4);
 			Channel chan = getChannel(parsed[2]);
-
+			//TODO: If were part of the channel
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
 				curUser.setOp(chan, nick.contains("@"));
 				curUser.setVoice(chan, nick.contains("+"));
 			}
+
 		} else if (code == RPL_ENDOFNAMES) {
-			//EXAMPLE: PircBotX #aChannel :End of /NAMES list
+			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
 			// This is the end of a NAMES list, so we know that we've got
 			// the full list of users in the channel that we just joined. From /NAMES and /JOIN
-			Channel channel = getChannel(response.split(" ", 3)[1]);
+			String channelName = response.split(" ", 3)[1];
+			Channel channel = channelExists(channelName) ? getChannel(channelName) : null;
 			getListeners().dispatchEvent(new UserList.Event(this, channel, getUsers(channel)));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
@@ -1344,8 +1359,7 @@ public abstract class PircBotX {
 			try {
 				createDate = Integer.parseInt(parsed[2]);
 				channel = parsed[1];
-			}
-			catch(NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				//mIRC version
 				createDate = Integer.parseInt(parsed[1]);
 				channel = parsed[0];
@@ -2219,6 +2233,23 @@ public abstract class PircBotX {
 					((Version.Listener) curListener).onVersion((Version.Event) event);
 				else if (event instanceof Voice.Event && curListener instanceof Voice.Listener)
 					((Voice.Listener) curListener).onVoice((Voice.Event) event);
+		}
+	}
+
+	protected class ListBuilder<A> {
+		protected boolean isRunning = false;
+		protected Set<A> channels = new HashSet();
+
+		public Set<A> finish() {
+			isRunning = false;
+			Set<A> copy = new HashSet(channels);
+			channels.clear();
+			return copy;
+		}
+
+		public void add(A entry) {
+			isRunning = true;
+			channels.add(entry);
 		}
 	}
 }
