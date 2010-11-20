@@ -49,11 +49,7 @@ import static org.testng.Assert.*;
 public class PircBotXTest {
 	public Class<PircBotX> botClass = PircBotX.class;
 	final Signal signal = new Signal();
-	PircBotXVisible bot = new PircBotXVisible() {
-		{
-			getListeners().addListener(new Listener());
-		}
-	};
+	PircBotXMod bot = new PircBotXMod();
 
 	@Test
 	public void sendNamingTests() {
@@ -105,39 +101,6 @@ public class PircBotXTest {
 
 	@Test
 	public void sendTest() {
-		//Setup
-		PircBotX bot = new PircBotX() {
-			@Override
-			public void sendAction(String target, String action) {
-				signal.set(target, action);
-			}
-
-			@Override
-			public void sendCTCPCommand(String target, String command) {
-				signal.set(target, command);
-			}
-
-			@Override
-			public void sendCTCPResponse(String target, String message) {
-				signal.set(target, message);
-			}
-
-			@Override
-			public void sendInvite(String nick, String channel) {
-				signal.set(nick, channel);
-			}
-
-			@Override
-			public void sendMessage(String target, String message) {
-				signal.set(target, message);
-			}
-
-			@Override
-			public void sendNotice(String target, String notice) {
-				signal.set(target, notice);
-			}
-		};
-
 		//Make sure all methods call each other appropiatly
 		final String string = "AString";
 		final User user = new User(bot, "AUser");
@@ -237,10 +200,44 @@ public class PircBotXTest {
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
 	}
 
-	public class PircBotXVisible extends PircBotX {
+	public class PircBotXMod extends PircBotX {
+		public PircBotXMod() {
+			getListeners().addListener(new Listener());
+		}
+
 		@Override
 		public void processServerResponse(int code, String response) {
 			super.processServerResponse(code, response);
+		}
+
+		@Override
+		public void sendAction(String target, String action) {
+			signal.set(target, action);
+		}
+
+		@Override
+		public void sendCTCPCommand(String target, String command) {
+			signal.set(target, command);
+		}
+
+		@Override
+		public void sendCTCPResponse(String target, String message) {
+			signal.set(target, message);
+		}
+
+		@Override
+		public void sendInvite(String nick, String channel) {
+			signal.set(nick, channel);
+		}
+
+		@Override
+		public void sendMessage(String target, String message) {
+			signal.set(target, message);
+		}
+
+		@Override
+		public void sendNotice(String target, String notice) {
+			signal.set(target, notice);
 		}
 	}
 
