@@ -19,8 +19,10 @@
 
 package org.pircbotx.hooks;
 
+import java.util.List;
+import java.util.Set;
 import org.pircbotx.PircBotX;
-import org.pircbotx.Channel;
+import org.pircbotx.ChannelListEntry;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -56,7 +58,7 @@ public class ChannelInfo {
 		 * @see ChannelInfo
 		 * @see SimpleListener
 		 */
-		public void onChannelInfo(Channel channel, int userCount, String topic);
+		public void onChannelInfo(Set<ChannelListEntry> list);
 	}
 
 	/**
@@ -86,9 +88,7 @@ public class ChannelInfo {
 	 * @see Listener
 	 */
 	public static class Event extends BaseEvent {
-		protected final Channel channel;
-		protected final int userCount;
-		protected final String topic;
+		protected final Set<ChannelListEntry> list;
 
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set
@@ -97,23 +97,13 @@ public class ChannelInfo {
 		 * @param userCount The number of users visible in this channel.
 		 * @param topic The topic for this channel.
 		 */
-		public <T extends PircBotX> Event(T bot, Channel channel, int userCount, String topic) {
+		public <T extends PircBotX> Event(T bot, Set<ChannelListEntry> list) {
 			super(bot);
-			this.channel = channel;
-			this.userCount = userCount;
-			this.topic = topic;
+			this.list = list;
 		}
 
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public String getTopic() {
-			return topic;
-		}
-
-		public int getUserCount() {
-			return userCount;
+		public Set<ChannelListEntry> getList() {
+			return list;
 		}
 	}
 }
