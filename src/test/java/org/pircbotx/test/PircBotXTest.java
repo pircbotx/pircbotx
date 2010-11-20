@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.test;
 
 import org.pircbotx.User;
@@ -48,10 +47,16 @@ import static org.testng.Assert.*;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXTest {
-	public Class<PircBotX> botClass = PircBotX.class;
+	public final Class<PircBotX> botClass = PircBotX.class;
 	final Signal signal = new Signal();
-	PircBotXMod bot = new PircBotXMod();
-	String aString = "I'm some super long string that has multiple words";
+	final PircBotXMod bot = new PircBotXMod();
+
+	//Various useful variables for comparing
+	final String aString = "I'm some super long string that has multiple words";
+	final String string = "AString";
+	final User user = new User(bot, "AUser");
+	final Channel chan = new Channel(bot, "AChannel");
+	final BaseEvent event = new Action.Event(bot, user, chan, string);
 
 	@Test
 	public void sendNamingTests() {
@@ -104,10 +109,7 @@ public class PircBotXTest {
 	@Test
 	public void sendTest() {
 		//Make sure all methods call each other appropiatly
-		final String string = "AString";
-		final User user = new User(bot, "AUser");
-		final Channel chan = new Channel(bot, "AChannel");
-		final BaseEvent event = new Action.Event(bot, user, chan, string);
+
 
 
 		bot.sendAction(event, string);
