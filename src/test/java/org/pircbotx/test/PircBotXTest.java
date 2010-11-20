@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.test;
 
 import org.pircbotx.User;
@@ -50,6 +51,7 @@ public class PircBotXTest {
 	public Class<PircBotX> botClass = PircBotX.class;
 	final Signal signal = new Signal();
 	PircBotXMod bot = new PircBotXMod();
+	String aString = "I'm some super long string that has multiple words";
 
 	@Test
 	public void sendNamingTests() {
@@ -169,9 +171,7 @@ public class PircBotXTest {
 	}
 
 	@Test
-	public void processServerResponseTest() {
-		String aString = "I'm some super long string that has multiple words";
-
+	public void listResponseTest() {
 		//Simulate /LIST response
 		bot.processServerResponse(321, "Channel :Users Name");
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel 99 :" + aString);
@@ -189,12 +189,19 @@ public class PircBotXTest {
 				channelParsed = true;
 			}
 		assertEquals(channelParsed, true, "Channel #PircBotXChannel1 not found in /LIST results!");
+	}
 
+	@Test
+	public void topicResponseTest() {
 		//From a /TOPIC or /JOIN
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.processServerResponse(332, "PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
+	}
 
+	@Test
+	public void topicInfoResponseTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
 		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
