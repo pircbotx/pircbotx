@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.test;
 
 import org.pircbotx.User;
@@ -44,6 +43,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 /**
+ * Test PircBotX class
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -108,7 +108,7 @@ public class PircBotXTest {
 
 	@Test
 	public void sendActionTest() {
-		//Make sure all methods call each other appropiatly
+		//Make sure the same result is given no matter which method we call
 		bot.sendAction(event, string);
 		signal.compare("AUser", string);
 
@@ -121,27 +121,27 @@ public class PircBotXTest {
 
 	@Test
 	public void sendCTCPCommandTest() {
-
+		//Make sure the same result is given no matter which method we call
 		bot.sendCTCPCommand(event, string);
 		signal.compare("AUser", string);
 
 		bot.sendCTCPCommand(user, string);
 		signal.compare("AUser", string);
-
 	}
 
 	@Test
-	public void sendCTCPResponse() {
+	public void sendCTCPResponseTest() {
+		//Make sure the same result is given no matter which method we call
 		bot.sendCTCPResponse(event, string);
 		signal.compare("AUser", string);
 
 		bot.sendCTCPResponse(user, string);
 		signal.compare("AUser", string);
-
 	}
 
 	@Test
-	public void sendInvite() {
+	public void sendInviteTest() {
+		//Make sure the same result is given no matter which method we call
 		bot.sendInvite(event, string);
 		signal.compare("AUser", string);
 
@@ -156,11 +156,11 @@ public class PircBotXTest {
 
 		bot.sendInvite(chan, chan);
 		signal.compare("AChannel", "AChannel");
-
 	}
 
 	@Test
-	public void sendMessage() {
+	public void sendMessageTest() {
+		//Make sure the same result is given no matter which method we call
 		bot.sendMessage(event, string);
 		signal.compare("AUser", string);
 
@@ -169,11 +169,11 @@ public class PircBotXTest {
 
 		bot.sendMessage(chan, string);
 		signal.compare("AChannel", string);
-
 	}
 
 	@Test
-	public void sendNoice() {
+	public void sendNoiceTest() {
+		//Make sure the same result is given no matter which method we call
 		bot.sendNotice(event, string);
 		signal.compare("AUser", string);
 
@@ -186,7 +186,7 @@ public class PircBotXTest {
 
 	@Test
 	public void listResponseTest() {
-		//Simulate /LIST response
+		//Simulate /LIST response, verify results
 		bot.processServerResponse(321, "Channel :Users Name");
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel 99 :" + aString);
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
@@ -207,7 +207,7 @@ public class PircBotXTest {
 
 	@Test
 	public void topicResponseTest() {
-		//From a /TOPIC or /JOIN
+		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.processServerResponse(332, "PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
@@ -215,12 +215,19 @@ public class PircBotXTest {
 
 	@Test
 	public void topicInfoResponseTest() {
+		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
 	}
 
+	/**
+	 * Modified PircBotX for this testing
+	 * -Adds testing listeners
+	 * -Makes processServerResponse more visible
+	 * -Makes send* methods signal result
+	 */
 	public class PircBotXMod extends PircBotX {
 		public PircBotXMod() {
 			getListeners().addListener(new Listener());
