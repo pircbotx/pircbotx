@@ -47,6 +47,7 @@ import static org.testng.Assert.*;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Test(singleThreaded=true)
 public class PircBotXTest {
 	public final Class<PircBotX> botClass = PircBotX.class;
 	final Signal signal = new Signal();
