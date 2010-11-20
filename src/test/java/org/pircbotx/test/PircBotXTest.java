@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.test;
 
 import org.pircbotx.User;
@@ -49,6 +48,12 @@ import static org.testng.Assert.*;
  */
 public class PircBotXTest {
 	public Class<PircBotX> botClass = PircBotX.class;
+	final Signal signal = new Signal();
+	PircBotXVisible bot = new PircBotXVisible() {
+		{
+			getListeners().addListener(new Listener());
+		}
+	};
 
 	@Test
 	public void sendNamingTests() {
@@ -101,7 +106,6 @@ public class PircBotXTest {
 	@Test
 	public void sendTest() {
 		//Setup
-		final Signal signal = new Signal();
 		PircBotX bot = new PircBotX() {
 			@Override
 			public void sendAction(String target, String action) {
@@ -203,31 +207,6 @@ public class PircBotXTest {
 
 	@Test
 	public void processServerResponseTest() {
-		PircBotXVisible bot = new PircBotXVisible() {
-		};
-		final Signal signal = new Signal();
-		bot.getListeners().addListener(new MetaListener() {
-			@Override
-			public void onChannelInfo(Event event) {
-				signal.event = event;
-			}
-
-			@Override
-			public void onMotd(Motd.Event event) {
-				signal.event = event;
-			}
-
-			@Override
-			public void onTopic(Topic.Event event) {
-				signal.event = event;
-			}
-
-			@Override
-			public void onUserList(UserList.Event event) {
-				signal.event = event;
-			}
-		});
-
 		String aString = "I'm some super long string that has multiple words";
 
 		//Simulate /LIST response
@@ -255,13 +234,35 @@ public class PircBotXTest {
 
 		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
-		assertEquals(aChannel.getTopicTimestamp(), (long)1564842512*1000);
+		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
 	}
 
 	public class PircBotXVisible extends PircBotX {
 		@Override
 		public void processServerResponse(int code, String response) {
 			super.processServerResponse(code, response);
+		}
+	}
+
+	public class Listener extends MetaListener {
+		@Override
+		public void onChannelInfo(Event event) {
+			signal.event = event;
+		}
+
+		@Override
+		public void onMotd(Motd.Event event) {
+			signal.event = event;
+		}
+
+		@Override
+		public void onTopic(Topic.Event event) {
+			signal.event = event;
+		}
+
+		@Override
+		public void onUserList(UserList.Event event) {
+			signal.event = event;
 		}
 	}
 
