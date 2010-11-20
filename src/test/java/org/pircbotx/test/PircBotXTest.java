@@ -203,7 +203,7 @@ public class PircBotXTest {
 
 	@Test
 	public void processServerResponseTest() {
-		PircBotX bot = new PircBotX() {
+		PircBotXVisible bot = new PircBotXVisible() {
 		};
 		final Signal signal = new Signal();
 		bot.getListeners().addListener(new MetaListener() {
@@ -256,6 +256,13 @@ public class PircBotXTest {
 		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
 		assertEquals(aChannel.getTopicTimestamp(), (long)1564842512*1000);
+	}
+
+	public class PircBotXVisible extends PircBotX {
+		@Override
+		public void processServerResponse(int code, String response) {
+			super.processServerResponse(code, response);
+		}
 	}
 
 	public class Signal {
