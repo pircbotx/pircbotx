@@ -203,7 +203,7 @@ public class PircBotXTest {
 				assertEquals(entry.getUsers(), 100);
 				channelParsed = true;
 			}
-		assertEquals(channelParsed, true, "Channel #PircBotXChannel1 not found in /LIST results!");
+		assertTrue(channelParsed, "Channel #PircBotXChannel1 not found in /LIST results!");
 	}
 
 	@Test
