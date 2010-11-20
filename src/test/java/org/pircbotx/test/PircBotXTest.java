@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.test;
 
 import org.pircbotx.User;
@@ -50,7 +51,6 @@ public class PircBotXTest {
 	public final Class<PircBotX> botClass = PircBotX.class;
 	final Signal signal = new Signal();
 	final PircBotXMod bot = new PircBotXMod();
-
 	//Various useful variables for comparing
 	final String aString = "I'm some super long string that has multiple words";
 	final String string = "AString";
@@ -107,11 +107,8 @@ public class PircBotXTest {
 	}
 
 	@Test
-	public void sendTest() {
+	public void sendActionTest() {
 		//Make sure all methods call each other appropiatly
-
-
-
 		bot.sendAction(event, string);
 		signal.compare("AUser", string);
 
@@ -120,7 +117,10 @@ public class PircBotXTest {
 
 		bot.sendAction(chan, string);
 		signal.compare("AChannel", string);
+	}
 
+	@Test
+	public void sendCTCPCommandTest() {
 
 		bot.sendCTCPCommand(event, string);
 		signal.compare("AUser", string);
@@ -128,14 +128,20 @@ public class PircBotXTest {
 		bot.sendCTCPCommand(user, string);
 		signal.compare("AUser", string);
 
+	}
 
+	@Test
+	public void sendCTCPResponse() {
 		bot.sendCTCPResponse(event, string);
 		signal.compare("AUser", string);
 
 		bot.sendCTCPResponse(user, string);
 		signal.compare("AUser", string);
 
+	}
 
+	@Test
+	public void sendInvite() {
 		bot.sendInvite(event, string);
 		signal.compare("AUser", string);
 
@@ -151,7 +157,10 @@ public class PircBotXTest {
 		bot.sendInvite(chan, chan);
 		signal.compare("AChannel", "AChannel");
 
+	}
 
+	@Test
+	public void sendMessage() {
 		bot.sendMessage(event, string);
 		signal.compare("AUser", string);
 
@@ -161,7 +170,10 @@ public class PircBotXTest {
 		bot.sendMessage(chan, string);
 		signal.compare("AChannel", string);
 
+	}
 
+	@Test
+	public void sendNoice() {
 		bot.sendNotice(event, string);
 		signal.compare("AUser", string);
 
