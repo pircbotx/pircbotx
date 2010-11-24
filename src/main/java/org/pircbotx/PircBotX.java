@@ -2084,6 +2084,14 @@ public abstract class PircBotX {
 			_userChanInfo.putA(user = new User(this, nick));
 		return user;
 	}
+	
+	
+	public boolean userExists(String nick) {
+		for (User curUser : _userChanInfo.getAValues())
+			if (curUser.getNick().equals(nick))
+				return true;
+		return false;
+	}
 
 	/**
 	 * @return the serverInfo
