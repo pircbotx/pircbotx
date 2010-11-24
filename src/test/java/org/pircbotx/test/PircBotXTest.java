@@ -19,7 +19,6 @@
 
 package org.pircbotx.test;
 
-import org.pircbotx.impl.TestEvent;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ChannelInfo.Event;
 import org.pircbotx.hooks.Motd;
@@ -30,6 +29,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -241,25 +241,6 @@ public class PircBotXTest {
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
 
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
-	}
-
-	@Test
-	public void whoResponseTest() {
-		//Simulate /WHO response, verify results
-		bot.processServerResponse(354, "PircBotXUser #aChannel aLogin a.host.74.131-22.mask some.server.net someUser H :0 Some real Name");
-		bot.processServerResponse(354, "PircBotXUser #aChannel aLogin2 like.a.74.mask some.servers.net someGoneUser G+ :0 Some real Name #2");
-		bot.processServerResponse(354, "PircBotXUser #aChannel aLogin2 33.44.mask.55 some.server1.net someVoiceOp @+H :0 Some real Name #2");
-		bot.processServerResponse(354, "PircBotXUser #aChannel aLogin3 mask some.server.bdska someircop H* :0 Some real Name h;kj;j");
-		bot.processServerResponse(315, "PircBotXUser #aChannel :End of /WHO list.");
-		
-		//Normal user
-		assertTrue(bot.)
-		User user = bot.getUser("someUser");
-		assertEquals(user.getLogin(),"aLogin");
-		assertEquals(user.getHostmask(),"a.host.74.131-22.mask");
-		assertFalse(user.isAway());
-		assertFalse(user.isIdentified());
-		
 	}
 
 	/**
