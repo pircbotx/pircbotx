@@ -19,10 +19,13 @@
 
 package org.pircbotx.hooks;
 
-import java.util.List;
 import java.util.Set;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.PircBotX;
 import org.pircbotx.ChannelListEntry;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -87,6 +90,8 @@ public class ChannelInfo {
 	 * @see ChannelInfo 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final Set<ChannelListEntry> list;
 
@@ -100,10 +105,6 @@ public class ChannelInfo {
 		public <T extends PircBotX> Event(T bot, Set<ChannelListEntry> list) {
 			super(bot);
 			this.list = list;
-		}
-
-		public Set<ChannelListEntry> getList() {
-			return list;
 		}
 	}
 }

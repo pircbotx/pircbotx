@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -77,6 +78,8 @@ public class Part {
 	 * @see Part 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper = false)
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
@@ -91,14 +94,6 @@ public class Part {
 			super(bot);
 			this.channel = channel;
 			this.source = source;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

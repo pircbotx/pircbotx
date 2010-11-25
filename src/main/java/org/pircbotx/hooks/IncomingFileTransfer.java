@@ -19,7 +19,11 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.DccFileTransfer;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -105,6 +109,8 @@ public class IncomingFileTransfer {
 	 * @see IncomingFileTransfer
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final DccFileTransfer transfer;
 
@@ -116,10 +122,6 @@ public class IncomingFileTransfer {
 		public <T extends PircBotX> Event(T bot, DccFileTransfer transfer) {
 			super(bot);
 			this.transfer = transfer;
-		}
-
-		public DccFileTransfer getTransfer() {
-			return transfer;
 		}
 	}
 }

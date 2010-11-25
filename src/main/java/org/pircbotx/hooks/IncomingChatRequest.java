@@ -19,7 +19,11 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.DccChat;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -104,6 +108,8 @@ public class IncomingChatRequest {
 	 * @see IncomingChatRequest 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final DccChat chat;
 
@@ -115,10 +121,6 @@ public class IncomingChatRequest {
 		public <T extends PircBotX> Event(T bot, DccChat chat) {
 			super(bot);
 			this.chat = chat;
-		}
-
-		public DccChat getChat() {
-			return chat;
 		}
 	}
 }
