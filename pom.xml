@@ -29,7 +29,7 @@
 			<roles>
 				<role>developer</role>
 			</roles>
-			<timezone>-5</timezone>>
+			<timezone>-5</timezone>
 		</developer>
 	</developers>
 
@@ -127,12 +127,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
-	<build>
-	 
-	</build>
-
 
 	<reporting>
 		<plugins>
