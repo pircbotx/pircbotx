@@ -80,6 +80,13 @@
 	</dependencies>
 	
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
@@ -121,6 +128,12 @@
 		</plugins>
 	</build>
 
+
+	<build>
+	 
+	</build>
+
+
 	<reporting>
 		<plugins>
 			<!--JavaDoc setup-->
@@ -151,12 +164,12 @@
 		<repository>
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
-			<url>http://general-maven-repo/maven2/releases</url>
+			<url>dav:http://general-maven-repo/maven2/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
-			<url>http://general-maven-repo/maven2/snapshots</url>
+			<url>dav:http://general-maven-repo/maven2/snapshots</url>
 			<uniqueVersion>true</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
