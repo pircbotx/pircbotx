@@ -19,7 +19,11 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -75,6 +79,8 @@ public class PrivateMessage {
 	 * @see PrivateMessage 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final String message;
@@ -89,14 +95,6 @@ public class PrivateMessage {
 			super(bot);
 			this.source = source;
 			this.message = message;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

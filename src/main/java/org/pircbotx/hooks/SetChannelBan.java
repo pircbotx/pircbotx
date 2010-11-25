@@ -21,6 +21,8 @@ package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -81,7 +83,9 @@ public class SetChannelBan {
 	 * data should not change after creation
 	 * @see SetChannelBan 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
@@ -99,18 +103,6 @@ public class SetChannelBan {
 			this.channel = channel;
 			this.source = source;
 			this.hostmask = hostmask;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public String getHostmask() {
-			return hostmask;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

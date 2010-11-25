@@ -20,6 +20,8 @@
 package org.pircbotx.hooks;
 
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -70,7 +72,9 @@ public class Motd {
 	 * data should not change after creation
 	 * @see Motd
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final String motd;
 
@@ -82,10 +86,6 @@ public class Motd {
 		public <T extends PircBotX> Event(T bot, String motd) {
 			super(bot);
 			this.motd = motd;
-		}
-
-		public String getMotd() {
-			return motd;
 		}
 	}
 }

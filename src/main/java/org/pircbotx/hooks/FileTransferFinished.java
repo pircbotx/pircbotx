@@ -19,7 +19,11 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.DccFileTransfer;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -77,6 +81,8 @@ public class FileTransferFinished {
 	 * @see FileTransferFinished 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final DccFileTransfer transfer;
 		protected final Exception exception;
@@ -92,14 +98,6 @@ public class FileTransferFinished {
 			super(bot);
 			this.transfer = transfer;
 			this.exception = e;
-		}
-
-		public Exception getException() {
-			return exception;
-		}
-
-		public DccFileTransfer getTransfer() {
-			return transfer;
 		}
 	}
 }

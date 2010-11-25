@@ -20,6 +20,8 @@
 package org.pircbotx.hooks;
 
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -75,7 +77,9 @@ public class UserMode {
 	 * data should not change after creation
 	 * @see UserMode 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final User target;
 		protected final User source;
@@ -93,18 +97,6 @@ public class UserMode {
 			this.target = target;
 			this.source = source;
 			this.mode = mode;
-		}
-
-		public User getSource() {
-			return source;
-		}
-
-		public User getTarget() {
-			return target;
-		}
-
-		public String getMode() {
-			return mode;
 		}
 	}
 }

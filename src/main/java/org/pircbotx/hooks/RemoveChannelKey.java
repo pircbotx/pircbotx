@@ -19,8 +19,12 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -80,6 +84,8 @@ public class RemoveChannelKey {
 	 * @see RemoveChannelKey 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
@@ -97,18 +103,6 @@ public class RemoveChannelKey {
 			this.channel = channel;
 			this.source = source;
 			this.key = key;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

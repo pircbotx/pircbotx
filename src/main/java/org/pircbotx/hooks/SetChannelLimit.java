@@ -21,6 +21,8 @@ package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -80,7 +82,9 @@ public class SetChannelLimit {
 	 * data should not change after creation
 	 * @see SetChannelLimit 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final User source;
@@ -98,18 +102,6 @@ public class SetChannelLimit {
 			this.channel = channel;
 			this.source = source;
 			this.limit = limit;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public int getLimit() {
-			return limit;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

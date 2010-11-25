@@ -19,6 +19,8 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -72,7 +74,9 @@ public class Connect {
 	 * data should not change after creation
 	 * @see Connect 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		/**
 		 * Default constructor to setup object. Timestamp is automatically set

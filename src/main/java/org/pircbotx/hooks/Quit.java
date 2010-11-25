@@ -19,7 +19,11 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -77,6 +81,8 @@ public class Quit {
 	 * @see Quit 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final String reason;
@@ -91,14 +97,6 @@ public class Quit {
 			super(bot);
 			this.source = source;
 			this.reason = reason;
-		}
-
-		public String getReason() {
-			return reason;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

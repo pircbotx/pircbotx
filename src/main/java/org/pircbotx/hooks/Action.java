@@ -19,9 +19,11 @@
 
 package org.pircbotx.hooks;
 
+import lombok.EqualsAndHashCode;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import lombok.Data; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
@@ -76,6 +78,8 @@ public class Action {
 	 * @see Action 
 	 * @see Listener
 	 */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final User source;
 		protected final Channel target;
@@ -94,28 +98,6 @@ public class Action {
 			this.source = source;
 			this.target = target;
 			this.action = action;
-		}
-
-		/**
-		 * Get the value of target
-		 *
-		 * @return the value of target
-		 */
-		public Channel getTarget() {
-			return target;
-		}
-
-		/**
-		 * Get the value of action
-		 *
-		 * @return the value of action
-		 */
-		public String getAction() {
-			return action;
-		}
-
-		public User getSource() {
-			return source;
 		}
 	}
 }

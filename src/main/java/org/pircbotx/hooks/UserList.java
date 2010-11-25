@@ -22,6 +22,8 @@ package org.pircbotx.hooks;
 import java.util.Set;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -88,7 +90,9 @@ public class UserList {
 	 * data should not change after creation
 	 * @see UserList 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final Set<User> users;
@@ -103,14 +107,6 @@ public class UserList {
 			super(bot);
 			this.channel = channel;
 			this.users = users;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public Set<User> getUsers() {
-			return users;
 		}
 	}
 }

@@ -21,6 +21,8 @@ package org.pircbotx.hooks;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -80,7 +82,9 @@ public class Topic {
 	 * data should not change after creation
 	 * @see Topic 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final Channel channel;
 		protected final String topic;
@@ -103,22 +107,6 @@ public class Topic {
 			this.topic = topic;
 			this.source = source;
 			this.changed = changed;
-		}
-
-		public boolean isChanged() {
-			return changed;
-		}
-
-		public Channel getChannel() {
-			return channel;
-		}
-
-		public User getSource() {
-			return source;
-		}
-
-		public String getTopic() {
-			return topic;
 		}
 	}
 }

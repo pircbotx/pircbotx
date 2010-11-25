@@ -19,6 +19,8 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -72,7 +74,9 @@ public class Unknown {
 	 * data should not change after creation
 	 * @see Unknown 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final String line;
 
@@ -84,10 +88,6 @@ public class Unknown {
 		public <T extends PircBotX> Event(T bot, String line) {
 			super(bot);
 			this.line = line;
-		}
-
-		public String getLine() {
-			return line;
 		}
 	}
 }

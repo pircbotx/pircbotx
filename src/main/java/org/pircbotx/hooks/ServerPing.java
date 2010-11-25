@@ -19,6 +19,8 @@
 
 package org.pircbotx.hooks;
 
+import lombok.Data; 
+import lombok.EqualsAndHashCode; 
 import org.pircbotx.hooks.helpers.BaseEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.helpers.BaseListener;
@@ -73,7 +75,9 @@ public class ServerPing {
 	 * data should not change after creation
 	 * @see ServerPing 
 	 * @see Listener
-	 */
+	  */
+	@Data
+	@EqualsAndHashCode(callSuper=false)
 	public static class Event extends BaseEvent {
 		protected final String response;
 
@@ -85,10 +89,6 @@ public class ServerPing {
 		public <T extends PircBotX> Event(T bot, String response) {
 			super(bot);
 			this.response = response;
-		}
-
-		public String getResponse() {
-			return response;
 		}
 	}
 }
