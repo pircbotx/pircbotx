@@ -38,6 +38,13 @@
 		<url>http://code.google.com/p/pircbotx/issues</url>
 	</issueManagement>
 
+	<scm>
+		<connection>scm:svn:http://pircbotx.googlecode.com</connection>
+		<developerConnection>scm:svn:https://pircbot.googlecode.com/svn</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://code.google.com/p/pircbotx/source/browse/</url>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
