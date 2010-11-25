@@ -158,12 +158,12 @@
 		<repository>
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
-			<url>dav:http://general-maven-repo/maven2/releases</url>
+			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
-			<url>dav:http://general-maven-repo/maven2/snapshots</url>
+			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/snapshots</url>
 			<uniqueVersion>true</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
