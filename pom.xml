@@ -1,11 +1,10 @@
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>PircBotX</groupId>
 	<artifactId>PircBotX</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0-Alpha</version>
+	<version>0</version>
 	<name>PircBotX</name>
 	<url>http://pircbotx.googlecode.com/</url>
 
@@ -39,10 +38,10 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://pircbotx.googlecode.com</connection>
-		<developerConnection>scm:svn:https://pircbot.googlecode.com/svn</developerConnection>
+		<connection>scm:svn:http://pircbotx.googlecode.com/tags/PircBotX-0</connection>
+		<developerConnection>scm:svn:https://pircbot.googlecode.com/svn/tags/PircBotX-0</developerConnection>
 		<tag>HEAD</tag>
-		<url>http://code.google.com/p/pircbotx/source/browse/</url>
+		<url>http://code.google.com/p/pircbotx/source/browse/tags/PircBotX-0</url>
 	</scm>
 
 	<properties>
