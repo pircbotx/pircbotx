@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import java.util.Collection;
@@ -76,13 +75,13 @@ public class ManyToManyMap<A, B> {
 
 	public HashSet<B> removeA(A a) {
 		synchronized (lockObject) {
-		return AMap.remove(a);
+			return AMap.remove(a);
 		}
 	}
 
 	public HashSet<A> removeB(B b) {
 		synchronized (lockObject) {
-		return BMap.remove(b);
+			return BMap.remove(b);
 		}
 	}
 
@@ -158,9 +157,7 @@ public class ManyToManyMap<A, B> {
 	 * @return False as per {@link #put(java.lang.Object, java.lang.Object) }, since this adds an orphaned entry
 	 */
 	public boolean putA(B b) {
-		synchronized (lockObject) {
-			return put(null, b);
-		}
+		return put(null, b);
 	}
 
 	/**
@@ -169,9 +166,7 @@ public class ManyToManyMap<A, B> {
 	 * @return False as per {@link #put(java.lang.Object, java.lang.Object) }, since this adds an orphaned entry
 	 */
 	public boolean putB(A a) {
-		synchronized (lockObject) {
-			return put(a, null);
-		}
+		return put(a, null);
 	}
 
 	/**
