@@ -21,6 +21,19 @@
 		<name>Leon Blakey</name>
 	</organization>
 
+	<developers>
+		<developer>
+			<id>TheLQ</id>
+			<name>Leon Blakey</name>
+			<email>lord.quackstar@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>>
+		</developer>
+	</developers>
+
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
