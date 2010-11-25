@@ -75,11 +75,15 @@ public class ManyToManyMap<A, B> {
 	}
 
 	public HashSet<B> removeA(A a) {
+		synchronized (lockObject) {
 		return AMap.remove(a);
+		}
 	}
 
 	public HashSet<A> removeB(B b) {
+		synchronized (lockObject) {
 		return BMap.remove(b);
+		}
 	}
 
 	/**
