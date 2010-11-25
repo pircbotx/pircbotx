@@ -146,4 +146,18 @@
 			<url>http://projectlombok.org/mavenrepo</url>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>maven-general-repo.googlecode.com</id>
+			<name>General Maven Repo on Google Code</name>
+			<url>http://general-maven-repo/maven2/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>maven-general-repo.googlecode.com</id>
+			<name>General Maven Repo on Google Code</name>
+			<url>http://general-maven-repo/maven2/snapshots</url>
+			<uniqueVersion>true</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
