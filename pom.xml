@@ -4,7 +4,7 @@
 	<groupId>PircBotX</groupId>
 	<artifactId>PircBotX</artifactId>
 	<packaging>jar</packaging>
-	<version>3.0</version>
+	<version>3.1-SNAPSHOT</version>
 	<name>PircBotX</name>
 	<url>http://pircbotx.googlecode.com/</url>
 
@@ -38,10 +38,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://pircbotx.googlecode.com/tags/PircBotX-3.0</connection>
-		<developerConnection>scm:svn:https://pircbotx.googlecode.com/svn/tags/PircBotX-3.0</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://code.google.com/p/pircbotx/source/browse/tags/PircBotX-3.0</url>
+		<connection>scm:svn:http://pircbotx.googlecode.com</connection>
+		<developerConnection>scm:svn:https://pircbotx.googlecode.com/svn</developerConnection>
+		<url>http://code.google.com/p/pircbotx/source/browse/</url>
 	</scm>
 
 	<properties>
