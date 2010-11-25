@@ -33,6 +33,10 @@
 		</developer>
 	</developers>
 
+	<issueManagement>
+		<system>Google Code Issue Tracker</system>
+		<url>http://code.google.com/p/pircbotx/issues</url>
+	</issueManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
