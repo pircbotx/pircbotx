@@ -162,7 +162,7 @@
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
 			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/snapshots</url>
-			<uniqueVersion>true</uniqueVersion>
+			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
