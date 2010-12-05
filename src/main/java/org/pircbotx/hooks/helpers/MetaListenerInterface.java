@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2010 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of pircbotx.
