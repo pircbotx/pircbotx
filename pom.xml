@@ -96,7 +96,7 @@
 						<email>lord.quackstar at gmail.com</email>
 						<name>Leon Blakey</name>
 						<year>2010</year>
-						<projectname>${project.name}</projectname>
+						<projectname>PircBotX</projectname>
 					</properties>
 					<excludes>
 						<exclude>**/*.txt</exclude>
