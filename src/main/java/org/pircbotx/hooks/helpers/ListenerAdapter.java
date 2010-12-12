@@ -74,7 +74,7 @@ import org.pircbotx.hooks.Voice;
  * TODO
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class MetaListener implements MetaListenerInterface {
+public class ListenerAdapter implements ListenerAdapterInterface {
 	public void onAction(Action.Event event) {
 	}
 
