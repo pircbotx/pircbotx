@@ -20,7 +20,7 @@ package org.pircbotx.events;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -29,7 +29,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MotdEvent extends BaseEvent {
+public class MotdEvent extends Event {
 	protected final String motd;
 
 	/**

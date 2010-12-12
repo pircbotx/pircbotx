@@ -22,7 +22,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -36,7 +36,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PingEvent extends BaseEvent {
+public class PingEvent extends Event {
 	protected final User source;
 	protected final Channel target;
 	protected final String pingValue;

@@ -20,7 +20,7 @@ package org.pircbotx.events;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -33,7 +33,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ConnectEvent extends BaseEvent {
+public class ConnectEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }

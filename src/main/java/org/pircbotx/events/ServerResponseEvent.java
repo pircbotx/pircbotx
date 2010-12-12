@@ -20,7 +20,7 @@ package org.pircbotx.events;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.ReplyConstants;
 
@@ -51,7 +51,7 @@ import org.pircbotx.ReplyConstants;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ServerResponseEvent extends BaseEvent {
+public class ServerResponseEvent extends Event {
 	protected final int code;
 	protected final String response;
 

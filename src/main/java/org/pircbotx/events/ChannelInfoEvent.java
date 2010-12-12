@@ -23,7 +23,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.ChannelListEntry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 
 /**
  * After calling the listChannels() method in PircBotX, the server
@@ -42,7 +42,7 @@ import org.pircbotx.hooks.helpers.BaseEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ChannelInfoEvent extends BaseEvent {
+public class ChannelInfoEvent extends Event {
 	protected final Set<ChannelListEntry> list;
 
 	/**

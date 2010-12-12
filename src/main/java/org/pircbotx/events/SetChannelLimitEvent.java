@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -38,7 +38,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelLimitEvent extends BaseEvent {
+public class SetChannelLimitEvent extends Event {
 	protected final Channel channel;
 	protected final User source;
 	protected final int limit;

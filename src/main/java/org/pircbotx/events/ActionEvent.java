@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 
 /**
  * Called whenever an ACTION is sent from a user.  E.g.
@@ -32,7 +32,7 @@ import org.pircbotx.hooks.helpers.BaseEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ActionEvent extends BaseEvent {
+public class ActionEvent extends Event {
 	protected final User source;
 	protected final Channel target;
 	protected final String action;

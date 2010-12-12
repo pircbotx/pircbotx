@@ -24,7 +24,7 @@ import org.pircbotx.hooks.ChannelInfo.Event;
 import org.pircbotx.hooks.Motd;
 import org.pircbotx.hooks.Topic;
 import org.pircbotx.hooks.UserList;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +58,7 @@ public class PircBotXTest {
 	final String string = "AString";
 	final User user = new User(bot, "AUser");
 	final Channel chan = new Channel(bot, "AChannel");
-	final BaseEvent event = new Action.Event(bot, user, chan, string);
+	final Event event = new Action.Event(bot, user, chan, string);
 
 	@Test
 	public void sendNamingTests() {
@@ -86,7 +86,7 @@ public class PircBotXTest {
 				{
 					add(String.class);
 					add(User.class);
-					add(BaseEvent.class);
+					add(Event.class);
 					//sendCTCP* and sendInvite shouldn't be sent to a channel
 					if (!key.startsWith("sendCTCP"))
 						add(Channel.class);
@@ -316,7 +316,7 @@ public class PircBotXTest {
 		public String target = null;
 		public String message = null;
 		public Channel chan = null;
-		public BaseEvent event = null;
+		public Event event = null;
 
 		public void set(String target, String message) {
 			this.target = target;

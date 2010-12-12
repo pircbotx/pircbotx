@@ -21,7 +21,7 @@ package org.pircbotx.events;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -34,7 +34,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NickChangeEvent extends BaseEvent {
+public class NickChangeEvent extends Event {
 	protected final String oldNick;
 	protected final String newNick;
 	protected final User source;

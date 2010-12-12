@@ -21,7 +21,7 @@ package org.pircbotx.events;
 import org.pircbotx.DccFileTransfer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -65,7 +65,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingFileTransferEvent extends BaseEvent {
+public class IncomingFileTransferEvent extends Event {
 	protected final DccFileTransfer transfer;
 
 	/**

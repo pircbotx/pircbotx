@@ -31,7 +31,7 @@ public interface ListenerManager<I extends Listener> {
 	 * Sends event to all appropriate listeners.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(BaseEvent event) throws UnknownHookException;
+	public void dispatchEvent(Event event) throws UnknownHookException;
 
 	/**
 	 * Adds an I listener to the list of
