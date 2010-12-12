@@ -27,8 +27,8 @@ import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Voice;
-import org.pircbotx.hooks.helpers.MetaListener;
-import org.pircbotx.hooks.helpers.MetaListenerInterface;
+import org.pircbotx.hooks.helpers.ListenerAdapter;
+import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
 import org.pircbotx.hooks.helpers.MetaSimpleListener;
 import org.pircbotx.hooks.helpers.MetaSimpleListenerInterface;
 import static org.testng.Assert.*;
@@ -44,7 +44,7 @@ public class MetaTest {
 	 */
 	@Test
 	public void methodTest() throws Exception {
-		methodCheck(MetaListener.class, MetaListenerInterface.class);
+		methodCheck(ListenerAdapter.class, ListenerAdapterInterface.class);
 		methodCheck(MetaSimpleListener.class, MetaSimpleListenerInterface.class);
 	}
 
@@ -85,7 +85,7 @@ public class MetaTest {
 	@Test
 	public void methodThrowTest() throws Exception {
 		methodThrowCheck(MetaSimpleListener.class);
-		methodThrowCheck(MetaListener.class);
+		methodThrowCheck(ListenerAdapter.class);
 	}
 
 	/**

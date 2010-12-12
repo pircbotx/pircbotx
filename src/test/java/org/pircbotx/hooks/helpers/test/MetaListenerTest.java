@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import org.pircbotx.hooks.Voice;
-import org.pircbotx.hooks.helpers.MetaListenerInterface;
+import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
 import org.pircbotx.hooks.helpers.MetaSimpleListenerInterface;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -65,7 +65,7 @@ public class MetaListenerTest {
 				clazzes.add(clazzFile.getName().split("\\.")[0]);
 
 		subtract(MetaSimpleListenerInterface.class, clazzes);
-		subtract(MetaListenerInterface.class, clazzes);
+		subtract(ListenerAdapterInterface.class, clazzes);
 
 		System.out.println("Success: Meta Interfaces implment all hooks");
 	}

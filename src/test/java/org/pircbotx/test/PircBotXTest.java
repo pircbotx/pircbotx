@@ -39,7 +39,7 @@ import org.pircbotx.ChannelListEntry;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Action;
 import org.pircbotx.hooks.ChannelInfo;
-import org.pircbotx.hooks.helpers.MetaListener;
+import org.pircbotx.hooks.helpers.ListenerAdapter;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -290,7 +290,7 @@ public class PircBotXTest {
 		}
 	}
 
-	public class Listener extends MetaListener {
+	public class Listener extends ListenerAdapter {
 		@Override
 		public void onChannelInfo(Event event) {
 			signal.event = event;
