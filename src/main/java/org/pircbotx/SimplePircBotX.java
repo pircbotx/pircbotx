@@ -22,7 +22,7 @@ package org.pircbotx;
 import java.util.HashSet;
 import java.util.Set;
 import org.pircbotx.exception.UnknownHookException;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.hooks.helpers.BaseSimpleListener;
 import org.pircbotx.hooks.helpers.HookUtils;
 import org.pircbotx.hooks.helpers.ListenerManager;
@@ -204,7 +204,7 @@ public class SimplePircBotX extends PircBotX implements MetaSimpleListenerInterf
 			throw new UnsupportedOperationException("SimplePircBotX uses built in methods as listeners, not seperate ones");
 		}
 
-		public void dispatchEvent(BaseEvent baseEvent) throws UnknownHookException {
+		public void dispatchEvent(Event baseEvent) throws UnknownHookException {
 			HookUtils.callSimpleListener(baseEvent, this);
 		}
 	}

@@ -79,7 +79,7 @@ import org.pircbotx.hooks.Voice;
  */
 public class HookUtils {
 	@Getter public static final List<Class<? extends BaseListener>> allListeners = new ArrayList();
-	@Getter public static final List<Class <? extends BaseEvent>> allEvents = new ArrayList();
+	@Getter public static final List<Class <? extends Event>> allEvents = new ArrayList();
 	
 	static {
 	allEvents.add(Action.Event.class);
@@ -150,7 +150,7 @@ allEvents.add(Voice.Event.class);
 	 * @param baseEvent
 	 * @param targetObj 
 	 */
-	public static void callSimpleListener(BaseEvent baseEvent, Object targetObj) throws UnknownHookException {
+	public static void callSimpleListener(Event baseEvent, Object targetObj) throws UnknownHookException {
 		
 		
 		//Yes, this is ugly and makes me ashamed. But its whats nessesary to get the job done

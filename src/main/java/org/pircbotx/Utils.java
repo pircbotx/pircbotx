@@ -61,7 +61,7 @@ import org.pircbotx.hooks.Topic;
 import org.pircbotx.hooks.UserMode;
 import org.pircbotx.hooks.Version;
 import org.pircbotx.hooks.Voice;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 
 /**
  *
@@ -81,7 +81,7 @@ public class Utils {
 	 * @param event An event to get information from
 	 * @return The object of the user or null if the event doesn't have a source
 	 */
-	public static User getSource(BaseEvent event) {
+	public static User getSource(Event event) {
 		if (event == null)
 			return null;
 		else if (event instanceof Action.Event)

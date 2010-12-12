@@ -21,7 +21,7 @@ package org.pircbotx.events;
 import org.pircbotx.DccChat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.PircBotX;
 
 /**
@@ -64,7 +64,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingChatRequestEvent extends BaseEvent {
+public class IncomingChatRequestEvent extends Event {
 	protected final DccChat chat;
 
 	/**

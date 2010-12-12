@@ -90,7 +90,7 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
 import org.pircbotx.hooks.Motd;
-import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.hooks.helpers.Event;
 import org.pircbotx.hooks.helpers.BaseListener;
 import org.pircbotx.hooks.helpers.ListenerManager;
 import static org.pircbotx.ReplyConstants.*;
@@ -526,7 +526,7 @@ public abstract class PircBotX {
 		_outputThread.send("PRIVMSG " + target + " :" + message);
 	}
 
-	public void sendMessage(BaseEvent event, String message) {
+	public void sendMessage(Event event, String message) {
 		User target = Utils.getSource(event);
 		if (target != null && message != null)
 			sendMessage(target, message);
@@ -554,7 +554,7 @@ public abstract class PircBotX {
 		sendCTCPCommand(target, "ACTION " + action);
 	}
 
-	public void sendAction(BaseEvent event, String message) {
+	public void sendAction(Event event, String message) {
 		User target = Utils.getSource(event);
 		if (target != null && message != null)
 			sendAction(target, message);
@@ -580,7 +580,7 @@ public abstract class PircBotX {
 		_outputThread.send("NOTICE " + target + " :" + notice);
 	}
 
-	public void sendNotice(BaseEvent event, String notice) {
+	public void sendNotice(Event event, String notice) {
 		User target = Utils.getSource(event);
 		if (target != null && notice != null)
 			sendNotice(target, notice);
@@ -613,7 +613,7 @@ public abstract class PircBotX {
 		_outputThread.send("PRIVMSG " + target + " :\u0001" + command + "\u0001");
 	}
 
-	public void sendCTCPCommand(BaseEvent event, String command) {
+	public void sendCTCPCommand(Event event, String command) {
 		User target = Utils.getSource(event);
 		if (target != null && command != null)
 			sendCTCPCommand(target, command);
@@ -628,7 +628,7 @@ public abstract class PircBotX {
 		_outputThread.send("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
 
-	public void sendCTCPResponse(BaseEvent event, String message) {
+	public void sendCTCPResponse(Event event, String message) {
 		User target = Utils.getSource(event);
 		if (target != null && message != null)
 			sendCTCPResponse(target, message);
@@ -711,7 +711,7 @@ public abstract class PircBotX {
 		sendRawLine("INVITE " + nick + " :" + channel);
 	}
 
-	public void sendInvite(BaseEvent event, String channel) {
+	public void sendInvite(Event event, String channel) {
 		User target = Utils.getSource(event);
 		if (target != null && channel != null)
 			sendInvite(target, channel);
@@ -722,7 +722,7 @@ public abstract class PircBotX {
 			sendInvite(target.getNick(), channel);
 	}
 
-	public void sendInvite(BaseEvent event, Channel channel) {
+	public void sendInvite(Event event, Channel channel) {
 		User target = Utils.getSource(event);
 		if (target != null && channel != null)
 			sendInvite(target, channel);
@@ -2136,7 +2136,7 @@ public abstract class PircBotX {
 			return Collections.unmodifiableSet(listeners);
 		}
 
-		public void dispatchEvent(BaseEvent event) {
+		public void dispatchEvent(Event event) {
 			//Yea, this is ugly. But it does get the job done
 			//Loop through all listeners, and call appropiate one based on Event type
 			for (BaseListener curListener : listeners)
