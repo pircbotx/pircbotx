@@ -1,0 +1,58 @@
+/**
+ * Copyright (C) 2010 Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PircBotX is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.pircbotx.events;
+
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
+
+/**
+ * Called when a channel key is removed.
+ *  <p>
+ * This is a type of mode change and is also passed to the onMode
+ * method in the PircBotX class.
+ *  <p>
+ * The implementation of this method in the PircBotX abstract class
+ * performs no actions and may be overridden as required.
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class RemoveChannelKeyEvent extends BaseEvent {
+	protected final Channel channel;
+	protected final User source;
+	protected final String key;
+
+	/**
+	 * Default constructor to setup object. Timestamp is automatically set
+	 * to current time as reported by {@link System#currentTimeMillis() }
+	 * @param channel The channel in which the mode change took place.
+	 * @param source The user that performed the mode change.
+	 * @param key The key that was in use before the channel key was removed.
+	 */
+	public <T extends PircBotX> RemoveChannelKeyEvent(T bot, Channel channel, User source, String key) {
+		super(bot);
+		this.channel = channel;
+		this.source = source;
+		this.key = key;
+	}
+}

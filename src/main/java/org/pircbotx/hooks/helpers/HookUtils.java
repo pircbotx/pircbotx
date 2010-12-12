@@ -19,6 +19,9 @@
 
 package org.pircbotx.hooks.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
 import org.pircbotx.exception.UnknownHookException;
 import org.pircbotx.hooks.Action;
 import org.pircbotx.hooks.ChannelInfo;
@@ -75,12 +78,81 @@ import org.pircbotx.hooks.Voice;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class HookUtils {
+	@Getter public static final List<Class<? extends BaseListener>> allListeners = new ArrayList();
+	@Getter public static final List<Class <? extends BaseEvent>> allEvents = new ArrayList();
+	
+	static {
+	allEvents.add(Action.Event.class);
+allEvents.add(ChannelInfo.Event.class);
+allEvents.add(Connect.Event.class);
+allEvents.add(Deop.Event.class);
+allEvents.add(DeVoice.Event.class);
+allEvents.add(Disconnect.Event.class);
+allEvents.add(FileTransferFinished.Event.class);
+allEvents.add(Finger.Event.class);
+allEvents.add(IncomingChatRequest.Event.class);
+allEvents.add(IncomingFileTransfer.Event.class);
+allEvents.add(Invite.Event.class);
+allEvents.add(Join.Event.class);
+allEvents.add(Kick.Event.class);
+allEvents.add(Message.Event.class);
+allEvents.add(Mode.Event.class);
+allEvents.add(Motd.Event.class);
+allEvents.add(NickChange.Event.class);
+allEvents.add(Notice.Event.class);
+allEvents.add(Op.Event.class);
+allEvents.add(Part.Event.class);
+allEvents.add(Ping.Event.class);
+allEvents.add(PrivateMessage.Event.class);
+allEvents.add(Quit.Event.class);
+allEvents.add(RemoveChannelBan.Event.class);
+allEvents.add(RemoveChannelKey.Event.class);
+allEvents.add(RemoveChannelLimit.Event.class);
+allEvents.add(RemoveInviteOnly.Event.class);
+allEvents.add(RemoveModerated.Event.class);
+allEvents.add(RemoveNoExternalMessages.Event.class);
+allEvents.add(RemovePrivate.Event.class);
+allEvents.add(RemoveSecret.Event.class);
+allEvents.add(RemoveTopicProtection.Event.class);
+allEvents.add(ServerPing.Event.class);
+allEvents.add(ServerResponse.Event.class);
+allEvents.add(SetChannelBan.Event.class);
+allEvents.add(SetChannelKey.Event.class);
+allEvents.add(SetChannelLimit.Event.class);
+allEvents.add(SetInviteOnly.Event.class);
+allEvents.add(SetModerated.Event.class);
+allEvents.add(SetNoExternalMessages.Event.class);
+allEvents.add(SetPrivate.Event.class);
+allEvents.add(SetSecret.Event.class);
+allEvents.add(SetTopicProtection.Event.class);
+allEvents.add(Time.Event.class);
+allEvents.add(Topic.Event.class);
+allEvents.add(Unknown.Event.class);
+allEvents.add(UserList.Event.class);
+allEvents.add(UserMode.Event.class);
+allEvents.add(Version.Event.class);
+allEvents.add(Voice.Event.class);
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Using the provided event, call the appropriate method on the target object
 	 * @param baseEvent
 	 * @param targetObj 
 	 */
 	public static void callSimpleListener(BaseEvent baseEvent, Object targetObj) throws UnknownHookException {
+		
+		
 		//Yes, this is ugly and makes me ashamed. But its whats nessesary to get the job done
 		if (baseEvent instanceof Action.Event && targetObj instanceof Action.SimpleListener) {
 			Action.Event e = (Action.Event) baseEvent;
