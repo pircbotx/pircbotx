@@ -20,6 +20,7 @@
 package org.pircbotx.impl;
 
 import java.lang.reflect.Constructor;
+import lombok.Data;
 import org.pircbotx.hooks.Action;
 
 /**
@@ -27,11 +28,26 @@ import org.pircbotx.hooks.Action;
  * @author Owner
  */
 public class Sandbox {
-	public static void main(String[] args) {
-			Constructor constructor = Action.Event.class.getDeclaredConstructors()[0];
-
-			for(Class clazz : constructor.getParameterTypes()) {
-				System.out.println(clazz);
-			}
+	public interface Event {
+		
 	}
+	
+	@Data
+	public class Action implements Event {
+		public final String message;
+		public final String action;
+	}
+	
+	public interface Listener<T extends Event> {
+		public void onEvent(T event);
+	}
+	
+	public class someListener implements Listener<Action> {
+
+		public void onEvent(Action event) {
+			throw new UnsupportedOperationException("Not supported yet.");
+		}
+		
+	}
+	
 }

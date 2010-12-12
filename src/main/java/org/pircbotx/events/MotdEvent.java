@@ -16,13 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.pircbotx.events;
 
-package org.pircbotx.hooks.helpers;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface BaseListener<T extends BaseEvent> extends Listener {
-	public void onEvent(T event);
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class MotdEvent extends BaseEvent {
+	protected final String motd;
+
+	/**
+	 * Default constructor to setup object. Timestamp is automatically set
+	 * to current time as reported by {@link System#currentTimeMillis() }
+	 * @param motd The full motd separated by newlines (<code>\n</code>)
+	 */
+	public <T extends PircBotX> MotdEvent(T bot, String motd) {
+		super(bot);
+		this.motd = motd;
+	}
 }

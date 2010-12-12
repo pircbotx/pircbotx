@@ -16,13 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.pircbotx.events;
 
-package org.pircbotx.hooks.helpers;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.pircbotx.hooks.helpers.BaseEvent;
+import org.pircbotx.PircBotX;
 
 /**
- *
+ * This method is called once the PircBotX has successfully connected to
+ * the IRC server.
+ *  <p>
+ * The implementation of this method in the PircBotX abstract class
+ * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface BaseListener<T extends BaseEvent> extends Listener {
-	public void onEvent(T event);
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ConnectEvent extends BaseEvent {
+	/**
+	 * Default constructor to setup object. Timestamp is automatically set
+	 * to current time as reported by {@link System#currentTimeMillis() }
+	 * @param timestamp
+	 */
+	public <T extends PircBotX> ConnectEvent(T bot) {
+		super(bot);
+	}
 }
