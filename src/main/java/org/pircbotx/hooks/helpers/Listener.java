@@ -23,6 +23,5 @@ package org.pircbotx.hooks.helpers;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface Listener<T extends Event> {
-	public void onEvent(T event);
+public interface Listener {
 }
