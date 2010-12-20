@@ -19,49 +19,50 @@
 
 package org.pircbotx;
 
-import org.pircbotx.hooks.Action;
-import org.pircbotx.hooks.DeVoice;
-import org.pircbotx.hooks.Deop;
-import org.pircbotx.hooks.FileTransferFinished;
-import org.pircbotx.hooks.Finger;
-import org.pircbotx.hooks.IncomingChatRequest;
-import org.pircbotx.hooks.IncomingFileTransfer;
-import org.pircbotx.hooks.Invite;
-import org.pircbotx.hooks.Join;
-import org.pircbotx.hooks.Kick;
-import org.pircbotx.hooks.Message;
-import org.pircbotx.hooks.Mode;
-import org.pircbotx.hooks.NickChange;
-import org.pircbotx.hooks.Notice;
-import org.pircbotx.hooks.Op;
-import org.pircbotx.hooks.Part;
-import org.pircbotx.hooks.Ping;
-import org.pircbotx.hooks.PrivateMessage;
-import org.pircbotx.hooks.Quit;
-import org.pircbotx.hooks.RemoveChannelBan;
-import org.pircbotx.hooks.RemoveChannelKey;
-import org.pircbotx.hooks.RemoveChannelLimit;
-import org.pircbotx.hooks.RemoveInviteOnly;
-import org.pircbotx.hooks.RemoveModerated;
-import org.pircbotx.hooks.RemoveNoExternalMessages;
-import org.pircbotx.hooks.RemovePrivate;
-import org.pircbotx.hooks.RemoveSecret;
-import org.pircbotx.hooks.RemoveTopicProtection;
-import org.pircbotx.hooks.SetChannelBan;
-import org.pircbotx.hooks.SetChannelKey;
-import org.pircbotx.hooks.SetChannelLimit;
-import org.pircbotx.hooks.SetInviteOnly;
-import org.pircbotx.hooks.SetModerated;
-import org.pircbotx.hooks.SetNoExternalMessages;
-import org.pircbotx.hooks.SetPrivate;
-import org.pircbotx.hooks.SetSecret;
-import org.pircbotx.hooks.SetTopicProtection;
-import org.pircbotx.hooks.Time;
-import org.pircbotx.hooks.Topic;
-import org.pircbotx.hooks.UserMode;
-import org.pircbotx.hooks.Version;
-import org.pircbotx.hooks.Voice;
+import org.pircbotx.events.ActionEvent;
+import org.pircbotx.events.DeVoiceEvent;
+import org.pircbotx.events.DeopEvent;
+import org.pircbotx.events.FileTransferFinishedEvent;
+import org.pircbotx.events.FingerEvent;
+import org.pircbotx.events.IncomingChatRequestEvent;
+import org.pircbotx.events.IncomingFileTransferEvent;
+import org.pircbotx.events.InviteEvent;
+import org.pircbotx.events.JoinEvent;
+import org.pircbotx.events.KickEvent;
+import org.pircbotx.events.MessageEvent;
+import org.pircbotx.events.ModeEvent;
+import org.pircbotx.events.NickChangeEvent;
+import org.pircbotx.events.NoticeEvent;
+import org.pircbotx.events.OpEvent;
+import org.pircbotx.events.PartEvent;
+import org.pircbotx.events.PingEvent;
+import org.pircbotx.events.PrivateMessageEvent;
+import org.pircbotx.events.QuitEvent;
+import org.pircbotx.events.RemoveChannelBanEvent;
+import org.pircbotx.events.RemoveChannelKeyEvent;
+import org.pircbotx.events.RemoveChannelLimitEvent;
+import org.pircbotx.events.RemoveInviteOnlyEvent;
+import org.pircbotx.events.RemoveModeratedEvent;
+import org.pircbotx.events.RemoveNoExternalMessagesEvent;
+import org.pircbotx.events.RemovePrivateEvent;
+import org.pircbotx.events.RemoveSecretEvent;
+import org.pircbotx.events.RemoveTopicProtectionEvent;
+import org.pircbotx.events.SetChannelBanEvent;
+import org.pircbotx.events.SetChannelKeyEvent;
+import org.pircbotx.events.SetChannelLimitEvent;
+import org.pircbotx.events.SetInviteOnlyEvent;
+import org.pircbotx.events.SetModeratedEvent;
+import org.pircbotx.events.SetNoExternalMessagesEvent;
+import org.pircbotx.events.SetPrivateEvent;
+import org.pircbotx.events.SetSecretEvent;
+import org.pircbotx.events.SetTopicProtectionEvent;
+import org.pircbotx.events.TimeEvent;
+import org.pircbotx.events.TopicEvent;
+import org.pircbotx.events.UserModeEvent;
+import org.pircbotx.events.VersionEvent;
+import org.pircbotx.events.VoiceEvent;
 import org.pircbotx.hooks.helpers.Event;
+
 
 /**
  *
@@ -84,90 +85,90 @@ public class Utils {
 	public static User getSource(Event event) {
 		if (event == null)
 			return null;
-		else if (event instanceof Action.Event)
-			return ((Action.Event) event).getSource();
-		else if (event instanceof Deop.Event)
-			return ((Deop.Event) event).getSource();
-		else if (event instanceof DeVoice.Event)
-			return ((DeVoice.Event) event).getSource();
-		else if (event instanceof FileTransferFinished.Event)
-			return ((FileTransferFinished.Event) event).getTransfer().getSource();
-		else if (event instanceof Finger.Event)
-			return ((Finger.Event) event).getSource();
-		else if (event instanceof IncomingChatRequest.Event)
-			return ((IncomingChatRequest.Event) event).getChat().getSource();
-		else if (event instanceof IncomingFileTransfer.Event)
-			return ((IncomingFileTransfer.Event) event).getTransfer().getSource();
-		else if (event instanceof Invite.Event)
-			return ((Invite.Event) event).getSource();
-		else if (event instanceof Join.Event)
-			return ((Join.Event) event).getSource();
-		else if (event instanceof Kick.Event)
-			return ((Kick.Event) event).getSource();
-		else if (event instanceof Message.Event)
-			return ((Message.Event) event).getSource();
-		else if (event instanceof Mode.Event)
-			return ((Mode.Event) event).getSource();
-		else if (event instanceof NickChange.Event)
-			return ((NickChange.Event) event).getSource();
-		else if (event instanceof Notice.Event)
-			return ((Notice.Event) event).getSource();
-		else if (event instanceof Op.Event)
-			return ((Op.Event) event).getSource();
-		else if (event instanceof Part.Event)
-			return ((Part.Event) event).getSource();
-		else if (event instanceof Ping.Event)
-			return ((Ping.Event) event).getSource();
-		else if (event instanceof PrivateMessage.Event)
-			return ((PrivateMessage.Event) event).getSource();
-		else if (event instanceof Quit.Event)
-			return ((Quit.Event) event).getSource();
-		else if (event instanceof RemoveChannelBan.Event)
-			return ((RemoveChannelBan.Event) event).getSource();
-		else if (event instanceof RemoveChannelKey.Event)
-			return ((RemoveChannelKey.Event) event).getSource();
-		else if (event instanceof RemoveChannelLimit.Event)
-			return ((RemoveChannelLimit.Event) event).getSource();
-		else if (event instanceof RemoveInviteOnly.Event)
-			return ((RemoveInviteOnly.Event) event).getSource();
-		else if (event instanceof RemoveModerated.Event)
-			return ((RemoveModerated.Event) event).getSource();
-		else if (event instanceof RemoveNoExternalMessages.Event)
-			return ((RemoveNoExternalMessages.Event) event).getSource();
-		else if (event instanceof RemovePrivate.Event)
-			return ((RemovePrivate.Event) event).getSource();
-		else if (event instanceof RemoveSecret.Event)
-			return ((RemoveSecret.Event) event).getSource();
-		else if (event instanceof RemoveTopicProtection.Event)
-			return ((RemoveTopicProtection.Event) event).getSource();
-		else if (event instanceof SetChannelBan.Event)
-			return ((SetChannelBan.Event) event).getSource();
-		else if (event instanceof SetChannelKey.Event)
-			return ((SetChannelKey.Event) event).getSource();
-		else if (event instanceof SetChannelLimit.Event)
-			return ((SetChannelLimit.Event) event).getSource();
-		else if (event instanceof SetInviteOnly.Event)
-			return ((SetInviteOnly.Event) event).getSource();
-		else if (event instanceof SetModerated.Event)
-			return ((SetModerated.Event) event).getSource();
-		else if (event instanceof SetNoExternalMessages.Event)
-			return ((SetNoExternalMessages.Event) event).getSource();
-		else if (event instanceof SetPrivate.Event)
-			return ((SetPrivate.Event) event).getSource();
-		else if (event instanceof SetSecret.Event)
-			return ((SetSecret.Event) event).getSource();
-		else if (event instanceof SetTopicProtection.Event)
-			return ((SetTopicProtection.Event) event).getSource();
-		else if (event instanceof Time.Event)
-			return ((Time.Event) event).getSource();
-		else if (event instanceof Topic.Event)
-			return ((Topic.Event) event).getSource();
-		else if (event instanceof UserMode.Event)
-			return ((UserMode.Event) event).getSource();
-		else if (event instanceof Version.Event)
-			return ((Version.Event) event).getSource();
-		else if (event instanceof Voice.Event)
-			return ((Voice.Event) event).getSource();
+		else if (event instanceof ActionEvent)
+			return ((ActionEvent) event).getSource();
+		else if (event instanceof DeopEvent)
+			return ((DeopEvent) event).getSource();
+		else if (event instanceof DeVoiceEvent)
+			return ((DeVoiceEvent) event).getSource();
+		else if (event instanceof FileTransferFinishedEvent)
+			return ((FileTransferFinishedEvent) event).getTransfer().getSource();
+		else if (event instanceof FingerEvent)
+			return ((FingerEvent) event).getSource();
+		else if (event instanceof IncomingChatRequestEvent)
+			return ((IncomingChatRequestEvent) event).getChat().getSource();
+		else if (event instanceof IncomingFileTransferEvent)
+			return ((IncomingFileTransferEvent) event).getTransfer().getSource();
+		else if (event instanceof InviteEvent)
+			return ((InviteEvent) event).getSource();
+		else if (event instanceof JoinEvent)
+			return ((JoinEvent) event).getSource();
+		else if (event instanceof KickEvent)
+			return ((KickEvent) event).getSource();
+		else if (event instanceof MessageEvent)
+			return ((MessageEvent) event).getSource();
+		else if (event instanceof ModeEvent)
+			return ((ModeEvent) event).getSource();
+		else if (event instanceof NickChangeEvent)
+			return ((NickChangeEvent) event).getSource();
+		else if (event instanceof NoticeEvent)
+			return ((NoticeEvent) event).getSource();
+		else if (event instanceof OpEvent)
+			return ((OpEvent) event).getSource();
+		else if (event instanceof PartEvent)
+			return ((PartEvent) event).getSource();
+		else if (event instanceof PingEvent)
+			return ((PingEvent) event).getSource();
+		else if (event instanceof PrivateMessageEvent)
+			return ((PrivateMessageEvent) event).getSource();
+		else if (event instanceof QuitEvent)
+			return ((QuitEvent) event).getSource();
+		else if (event instanceof RemoveChannelBanEvent)
+			return ((RemoveChannelBanEvent) event).getSource();
+		else if (event instanceof RemoveChannelKeyEvent)
+			return ((RemoveChannelKeyEvent) event).getSource();
+		else if (event instanceof RemoveChannelLimitEvent)
+			return ((RemoveChannelLimitEvent) event).getSource();
+		else if (event instanceof RemoveInviteOnlyEvent)
+			return ((RemoveInviteOnlyEvent) event).getSource();
+		else if (event instanceof RemoveModeratedEvent)
+			return ((RemoveModeratedEvent) event).getSource();
+		else if (event instanceof RemoveNoExternalMessagesEvent)
+			return ((RemoveNoExternalMessagesEvent) event).getSource();
+		else if (event instanceof RemovePrivateEvent)
+			return ((RemovePrivateEvent) event).getSource();
+		else if (event instanceof RemoveSecretEvent)
+			return ((RemoveSecretEvent) event).getSource();
+		else if (event instanceof RemoveTopicProtectionEvent)
+			return ((RemoveTopicProtectionEvent) event).getSource();
+		else if (event instanceof SetChannelBanEvent)
+			return ((SetChannelBanEvent) event).getSource();
+		else if (event instanceof SetChannelKeyEvent)
+			return ((SetChannelKeyEvent) event).getSource();
+		else if (event instanceof SetChannelLimitEvent)
+			return ((SetChannelLimitEvent) event).getSource();
+		else if (event instanceof SetInviteOnlyEvent)
+			return ((SetInviteOnlyEvent) event).getSource();
+		else if (event instanceof SetModeratedEvent)
+			return ((SetModeratedEvent) event).getSource();
+		else if (event instanceof SetNoExternalMessagesEvent)
+			return ((SetNoExternalMessagesEvent) event).getSource();
+		else if (event instanceof SetPrivateEvent)
+			return ((SetPrivateEvent) event).getSource();
+		else if (event instanceof SetSecretEvent)
+			return ((SetSecretEvent) event).getSource();
+		else if (event instanceof SetTopicProtectionEvent)
+			return ((SetTopicProtectionEvent) event).getSource();
+		else if (event instanceof TimeEvent)
+			return ((TimeEvent) event).getSource();
+		else if (event instanceof TopicEvent)
+			return ((TopicEvent) event).getSource();
+		else if (event instanceof UserModeEvent)
+			return ((UserModeEvent) event).getSource();
+		else if (event instanceof VersionEvent)
+			return ((VersionEvent) event).getSource();
+		else if (event instanceof VoiceEvent)
+			return ((VoiceEvent) event).getSource();
 		return null;
 	}
 }
