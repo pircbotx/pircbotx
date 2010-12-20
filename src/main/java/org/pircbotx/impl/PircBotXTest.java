@@ -19,17 +19,17 @@
 
 package org.pircbotx.impl;
 
-import java.util.Set;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.hooks.Connect;
-import org.pircbotx.hooks.UserList;
+import org.pircbotx.events.ConnectEvent;
+import org.pircbotx.events.UserListEvent;
+import org.pircbotx.listeners.ConnectListener;
+import org.pircbotx.listeners.UserListListener;
 
 /**
  *
  * @author LordQuackstar
  */
-public class PircBotXTest extends PircBotX implements Connect.Listener, UserList.Listener {
+public class PircBotXTest extends PircBotX implements ConnectListener, UserListListener {
 	public PircBotXTest() {
 		setName("TheLQ");
 		setLogin("LQ");
@@ -42,7 +42,7 @@ public class PircBotXTest extends PircBotX implements Connect.Listener, UserList
 	}
 
 	@Override
-	public void onConnect(Connect.Event event) {
+	public void onConnect(ConnectEvent event) {
 		sendRawLine("NICKSERV identify manganip");
 		joinChannel("#honcast");
 		joinChannel("#3on3.et");
@@ -59,7 +59,7 @@ public class PircBotXTest extends PircBotX implements Connect.Listener, UserList
 	}
 
 	@Override
-	public void onUserList(UserList.Event event) {
+	public void onUserList(UserListEvent event) {
 		log("INNEFFIENT CALLED");
 	}
 
