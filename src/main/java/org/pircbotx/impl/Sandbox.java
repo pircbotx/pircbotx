@@ -21,7 +21,6 @@ package org.pircbotx.impl;
 
 import java.lang.reflect.Constructor;
 import lombok.Data;
-import org.pircbotx.hooks.Action;
 
 /**
  *
