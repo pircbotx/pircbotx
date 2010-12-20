@@ -20,35 +20,39 @@
 package org.pircbotx.hooks.helpers;
 
 import java.util.Date;
-import org.pircbotx.hooks.Finger;
-import org.pircbotx.hooks.Ping;
-import org.pircbotx.hooks.ServerPing;
-import org.pircbotx.hooks.Time;
-import org.pircbotx.hooks.Version;
-
+import org.pircbotx.events.FingerEvent;
+import org.pircbotx.events.PingEvent;
+import org.pircbotx.events.ServerPingEvent;
+import org.pircbotx.events.TimeEvent;
+import org.pircbotx.events.VersionEvent;
+import org.pircbotx.listeners.FingerListener;
+import org.pircbotx.listeners.PingListener;
+import org.pircbotx.listeners.ServerPingListener;
+import org.pircbotx.listeners.TimeListener;
+import org.pircbotx.listeners.VersionListener;
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class CoreHooks implements Finger.Listener, Ping.Listener, ServerPing.Listener, Time.Listener, Version.Listener {
+public class CoreHooks implements FingerListener, PingListener, ServerPingListener, TimeListener, VersionListener {
 
-	public void onFinger(Finger.Event event) {
+	public void onFinger(FingerEvent event) {
 		event.getBot().sendCTCPResponse(event, "FINGER " + event.getBot().getFinger());
 	}
 
-	public void onPing(Ping.Event event) {
+	public void onPing(PingEvent event) {
 		event.getBot().sendCTCPResponse(event, "PING " + event.getPingValue());
 	}
 
-	public void onServerPing(ServerPing.Event event) {
+	public void onServerPing(ServerPingEvent event) {
 		event.getBot().sendRawLine("PONG " + event.getResponse());
 	}
 
-	public void onTime(Time.Event event) {
+	public void onTime(TimeEvent event) {
 		event.getBot().sendCTCPResponse(event, "TIME " + new Date().toString());
 	}
 
-	public void onVersion(Version.Event event) {
+	public void onVersion(VersionEvent event) {
 		event.getBot().sendCTCPResponse(event, "VERSION " + event.getBot().getVersion());
 	}
 }
