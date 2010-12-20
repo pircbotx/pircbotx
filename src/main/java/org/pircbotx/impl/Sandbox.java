@@ -28,26 +28,4 @@ import org.pircbotx.hooks.Action;
  * @author Owner
  */
 public class Sandbox {
-	public interface Event {
-		
-	}
-	
-	@Data
-	public class Action implements Event {
-		public final String message;
-		public final String action;
-	}
-	
-	public interface Listener<T extends Event> {
-		public void onEvent(T event);
-	}
-	
-	public class someListener implements Listener<Action> {
-
-		public void onEvent(Action event) {
-			throw new UnsupportedOperationException("Not supported yet.");
-		}
-		
-	}
-	
 }

@@ -134,6 +134,5 @@ public class HookUtils {
 		allEvents.add(UserModeEvent.class);
 		allEvents.add(VersionEvent.class);
 		allEvents.add(VoiceEvent.class);
-
 	}
 }
