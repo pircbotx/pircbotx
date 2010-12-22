@@ -22,7 +22,7 @@ package org.pircbotx;
 import java.io.BufferedReader;
 import java.io.InterruptedIOException;
 import java.net.Socket;
-import org.pircbotx.hooks.Disconnect;
+import org.pircbotx.events.DisconnectEvent;
 
 /**
  * A Thread which reads lines from the IRC server.  It then
@@ -121,7 +121,7 @@ public class InputThread implements Runnable {
 
 		//Now that the socket is definatly closed, call event and log
 		//_bot.removeAllChannels();
-		_bot.getListeners().dispatchEvent(new Disconnect.Event(_bot));
+		_bot.getListeners().dispatchEvent(new DisconnectEvent(_bot));
 		_bot.log("*** Disconnected.");
 	}
 }

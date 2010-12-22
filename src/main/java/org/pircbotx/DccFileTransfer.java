@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import org.pircbotx.hooks.FileTransferFinished;
+import org.pircbotx.events.FileTransferFinishedEvent;
 
 /**
  * This class is used to administer a DCC file transfer.
@@ -165,7 +165,7 @@ public class DccFileTransfer {
 					}
 				}
 
-				_bot.getListeners().dispatchEvent(new FileTransferFinished.Event(_bot, DccFileTransfer.this, exception));
+				_bot.getListeners().dispatchEvent(new FileTransferFinishedEvent(_bot, DccFileTransfer.this, exception));
 			}
 		}.start();
 	}
@@ -265,7 +265,7 @@ public class DccFileTransfer {
 					}
 				}
 
-				_bot.getListeners().dispatchEvent(new FileTransferFinished.Event(_bot, DccFileTransfer.this, exception));
+				_bot.getListeners().dispatchEvent(new FileTransferFinishedEvent(_bot, DccFileTransfer.this, exception));
 			}
 		}.start();
 	}

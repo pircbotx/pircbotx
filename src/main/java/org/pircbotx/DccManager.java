@@ -21,8 +21,8 @@ package org.pircbotx;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.pircbotx.hooks.IncomingChatRequest;
-import org.pircbotx.hooks.IncomingFileTransfer;
+import org.pircbotx.events.IncomingChatRequestEvent;
+import org.pircbotx.events.IncomingFileTransferEvent;
 
 /**
  * This class is used to process DCC events from the server.
@@ -65,7 +65,7 @@ public class DccManager {
 				// Stick with the old value.
 			}
 
-			_bot.getListeners().dispatchEvent(new IncomingFileTransfer.Event(_bot, new DccFileTransfer(_bot, this, source, type, filename, address, port, size)));
+			_bot.getListeners().dispatchEvent(new IncomingFileTransferEvent(_bot, new DccFileTransfer(_bot, this, source, type, filename, address, port, size)));
 
 		} else if (type.equals("RESUME")) {
 			int port = Integer.parseInt(tokenizer.nextToken());
@@ -113,7 +113,7 @@ public class DccManager {
 
 			new Thread() {
 				public void run() {
-					_bot.getListeners().dispatchEvent(new IncomingChatRequest.Event(_bot, chat));
+					_bot.getListeners().dispatchEvent(new IncomingChatRequestEvent(_bot, chat));
 				}
 			}.start();
 		} else
