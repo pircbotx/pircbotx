@@ -19,18 +19,18 @@
 
 package org.pircbotx.exception;
 
+import org.pircbotx.hooks.helpers.Event;
+
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class UnknownEventException extends RuntimeException {
-
-	public UnknownEventException(String message, Throwable cause) {
-		super(message, cause);
+	public UnknownEventException(Event event, Throwable cause) {
+		super("Unknown Event " + event.getClass().toString(), cause);
 	}
 
-	public UnknownEventException(String message) {
-		super(message);
+	public UnknownEventException(Event event) {
+		this(event,null);
 	}
-	
 }
