@@ -78,10 +78,8 @@ import org.pircbotx.events.VoiceEvent;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class HookUtils {
-	@Getter
-	public static final List<Class<? extends Listener>> allListeners = new ArrayList();
-	@Getter
-	public static final List<Class<? extends Event>> allEvents = new ArrayList();
+	private static final List<Class<? extends Listener>> allListeners = new ArrayList();
+	private static final List<Class<? extends Event>> allEvents = new ArrayList();
 
 	static {
 		//Add all Event classes
@@ -136,4 +134,19 @@ public class HookUtils {
 		allEvents.add(VersionEvent.class);
 		allEvents.add(VoiceEvent.class);
 	}
+
+	/**
+	 * @return the allListeners
+	 */
+	public static List<Class<? extends Listener>> getAllListeners() {
+		return allListeners;
+	}
+
+	/**
+	 * @return the allEvents
+	 */
+	public static List<Class<? extends Event>> getAllEvents() {
+		return allEvents;
+	}
+
 }
