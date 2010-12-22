@@ -139,6 +139,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
+import org.pircbotx.exception.UnknownEventException;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -1298,7 +1299,7 @@ public abstract class PircBotX {
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
 			channelListBuilder.isRunning = true;
-		else if(code == RPL_LIST) {
+		else if (code == RPL_LIST) {
 			//This is part of a full channel listing as part of /LIST
 			//EXAMPLE: 322 lordquackstar #xomb 12 :xomb exokernel project @ www.xomb.org
 			int firstSpace = response.indexOf(' ');
@@ -1314,11 +1315,11 @@ public abstract class PircBotX {
 			}
 			String topic = response.substring(colon + 1);
 			channelListBuilder.add(new ChannelListEntry(channel, userCount, topic));
-		} else if (code == RPL_LISTEND) {
+		} else if (code == RPL_LISTEND)
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
 			getListeners().dispatchEvent(new ChannelInfoEvent(this, channelListBuilder.finish()));
-		}  else if (code == RPL_TOPIC) {
+		else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
 			parsed = response.split(" ", 3);
@@ -2130,8 +2131,7 @@ public abstract class PircBotX {
 			_userChanInfo.putA(user = new User(this, nick));
 		return user;
 	}
-	
-	
+
 	public boolean userExists(String nick) {
 		for (User curUser : _userChanInfo.getAValues())
 			if (curUser.getNick().equals(nick))
@@ -2284,6 +2284,8 @@ public abstract class PircBotX {
 					((VersionListener) curListener).onVersion((VersionEvent) event);
 				else if (event instanceof VoiceEvent && curListener instanceof VoiceListener)
 					((VoiceListener) curListener).onVoice((VoiceEvent) event);
+				else
+					throw new UnknownEventException(event);
 		}
 	}
 
