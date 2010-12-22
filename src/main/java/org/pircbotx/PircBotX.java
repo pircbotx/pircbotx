@@ -19,58 +19,108 @@
 
 package org.pircbotx;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import org.pircbotx.hooks.Action;
-import org.pircbotx.hooks.ChannelInfo;
-import org.pircbotx.hooks.Connect;
-import org.pircbotx.hooks.DeVoice;
-import org.pircbotx.hooks.Deop;
-import org.pircbotx.hooks.Disconnect;
-import org.pircbotx.hooks.FileTransferFinished;
-import org.pircbotx.hooks.Finger;
-import org.pircbotx.hooks.IncomingChatRequest;
-import org.pircbotx.hooks.IncomingFileTransfer;
-import org.pircbotx.hooks.Invite;
-import org.pircbotx.hooks.Join;
-import org.pircbotx.hooks.Kick;
-import org.pircbotx.hooks.Message;
-import org.pircbotx.hooks.Mode;
-import org.pircbotx.hooks.NickChange;
-import org.pircbotx.hooks.Notice;
-import org.pircbotx.hooks.Op;
-import org.pircbotx.hooks.Part;
-import org.pircbotx.hooks.Ping;
-import org.pircbotx.hooks.PrivateMessage;
-import org.pircbotx.hooks.Quit;
-import org.pircbotx.hooks.RemoveChannelBan;
-import org.pircbotx.hooks.RemoveChannelKey;
-import org.pircbotx.hooks.RemoveChannelLimit;
-import org.pircbotx.hooks.RemoveInviteOnly;
-import org.pircbotx.hooks.RemoveModerated;
-import org.pircbotx.hooks.RemoveNoExternalMessages;
-import org.pircbotx.hooks.RemovePrivate;
-import org.pircbotx.hooks.RemoveSecret;
-import org.pircbotx.hooks.RemoveTopicProtection;
-import org.pircbotx.hooks.ServerPing;
-import org.pircbotx.hooks.ServerResponse;
-import org.pircbotx.hooks.SetChannelBan;
-import org.pircbotx.hooks.SetChannelKey;
-import org.pircbotx.hooks.SetChannelLimit;
-import org.pircbotx.hooks.SetInviteOnly;
-import org.pircbotx.hooks.SetModerated;
-import org.pircbotx.hooks.SetNoExternalMessages;
-import org.pircbotx.hooks.SetPrivate;
-import org.pircbotx.hooks.SetSecret;
-import org.pircbotx.hooks.SetTopicProtection;
-import org.pircbotx.hooks.Time;
-import org.pircbotx.hooks.Topic;
-import org.pircbotx.hooks.Unknown;
-import org.pircbotx.hooks.UserList;
-import org.pircbotx.hooks.UserMode;
-import org.pircbotx.hooks.Version;
-import org.pircbotx.hooks.Voice;
+import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.events.ActionEvent;
+import org.pircbotx.events.ChannelInfoEvent;
+import org.pircbotx.events.ConnectEvent;
+import org.pircbotx.events.DeVoiceEvent;
+import org.pircbotx.events.DeopEvent;
+import org.pircbotx.events.DisconnectEvent;
+import org.pircbotx.events.FileTransferFinishedEvent;
+import org.pircbotx.events.FingerEvent;
+import org.pircbotx.events.IncomingChatRequestEvent;
+import org.pircbotx.events.IncomingFileTransferEvent;
+import org.pircbotx.events.InviteEvent;
+import org.pircbotx.events.JoinEvent;
+import org.pircbotx.events.KickEvent;
+import org.pircbotx.events.MessageEvent;
+import org.pircbotx.events.ModeEvent;
+import org.pircbotx.events.MotdEvent;
+import org.pircbotx.events.NickChangeEvent;
+import org.pircbotx.events.NoticeEvent;
+import org.pircbotx.events.OpEvent;
+import org.pircbotx.events.PartEvent;
+import org.pircbotx.events.PingEvent;
+import org.pircbotx.events.PrivateMessageEvent;
+import org.pircbotx.events.QuitEvent;
+import org.pircbotx.events.RemoveChannelBanEvent;
+import org.pircbotx.events.RemoveChannelKeyEvent;
+import org.pircbotx.events.RemoveChannelLimitEvent;
+import org.pircbotx.events.RemoveInviteOnlyEvent;
+import org.pircbotx.events.RemoveModeratedEvent;
+import org.pircbotx.events.RemoveNoExternalMessagesEvent;
+import org.pircbotx.events.RemovePrivateEvent;
+import org.pircbotx.events.RemoveSecretEvent;
+import org.pircbotx.events.RemoveTopicProtectionEvent;
+import org.pircbotx.events.ServerPingEvent;
+import org.pircbotx.events.ServerResponseEvent;
+import org.pircbotx.events.SetChannelBanEvent;
+import org.pircbotx.events.SetChannelKeyEvent;
+import org.pircbotx.events.SetChannelLimitEvent;
+import org.pircbotx.events.SetInviteOnlyEvent;
+import org.pircbotx.events.SetModeratedEvent;
+import org.pircbotx.events.SetNoExternalMessagesEvent;
+import org.pircbotx.events.SetPrivateEvent;
+import org.pircbotx.events.SetSecretEvent;
+import org.pircbotx.events.SetTopicProtectionEvent;
+import org.pircbotx.events.TimeEvent;
+import org.pircbotx.events.TopicEvent;
+import org.pircbotx.events.UnknownEvent;
+import org.pircbotx.events.UserListEvent;
+import org.pircbotx.events.UserModeEvent;
+import org.pircbotx.events.VersionEvent;
+import org.pircbotx.events.VoiceEvent;
+import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.helpers.ListenerManager;
+import org.pircbotx.listeners.ActionListener;
+import org.pircbotx.listeners.ChannelInfoListener;
+import org.pircbotx.listeners.ConnectListener;
+import org.pircbotx.listeners.DeVoiceListener;
+import org.pircbotx.listeners.DeopListener;
+import org.pircbotx.listeners.DisconnectListener;
+import org.pircbotx.listeners.FileTransferFinishedListener;
+import org.pircbotx.listeners.FingerListener;
+import org.pircbotx.listeners.IncomingChatRequestListener;
+import org.pircbotx.listeners.IncomingFileTransferListener;
+import org.pircbotx.listeners.InviteListener;
+import org.pircbotx.listeners.JoinListener;
+import org.pircbotx.listeners.KickListener;
+import org.pircbotx.listeners.MessageListener;
+import org.pircbotx.listeners.ModeListener;
+import org.pircbotx.listeners.NickChangeListener;
+import org.pircbotx.listeners.NoticeListener;
+import org.pircbotx.listeners.OpListener;
+import org.pircbotx.listeners.PartListener;
+import org.pircbotx.listeners.PingListener;
+import org.pircbotx.listeners.PrivateMessageListener;
+import org.pircbotx.listeners.QuitListener;
+import org.pircbotx.listeners.RemoveChannelBanListener;
+import org.pircbotx.listeners.RemoveChannelKeyListener;
+import org.pircbotx.listeners.RemoveChannelLimitListener;
+import org.pircbotx.listeners.RemoveInviteOnlyListener;
+import org.pircbotx.listeners.RemoveModeratedListener;
+import org.pircbotx.listeners.RemoveNoExternalMessagesListener;
+import org.pircbotx.listeners.RemovePrivateListener;
+import org.pircbotx.listeners.RemoveSecretListener;
+import org.pircbotx.listeners.RemoveTopicProtectionListener;
+import org.pircbotx.listeners.ServerPingListener;
+import org.pircbotx.listeners.ServerResponseListener;
+import org.pircbotx.listeners.SetChannelBanListener;
+import org.pircbotx.listeners.SetChannelKeyListener;
+import org.pircbotx.listeners.SetChannelLimitListener;
+import org.pircbotx.listeners.SetInviteOnlyListener;
+import org.pircbotx.listeners.SetModeratedListener;
+import org.pircbotx.listeners.SetNoExternalMessagesListener;
+import org.pircbotx.listeners.SetPrivateListener;
+import org.pircbotx.listeners.SetSecretListener;
+import org.pircbotx.listeners.SetTopicProtectionListener;
+import org.pircbotx.listeners.TimeListener;
+import org.pircbotx.listeners.TopicListener;
+import org.pircbotx.listeners.UnknownListener;
+import org.pircbotx.listeners.UserListListener;
+import org.pircbotx.listeners.UserModeListener;
+import org.pircbotx.listeners.VersionListener;
+import org.pircbotx.listeners.VoiceListener;
 import java.util.HashSet;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
@@ -89,10 +139,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
-import org.pircbotx.hooks.Motd;
-import org.pircbotx.hooks.helpers.Event;
-import org.pircbotx.hooks.helpers.BaseListener;
-import org.pircbotx.hooks.helpers.ListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -339,7 +385,7 @@ public abstract class PircBotX {
 		_actualInputThread.start();
 		_actualOutputThread.start();
 
-		getListeners().dispatchEvent(new Connect.Event(this));
+		getListeners().dispatchEvent(new ConnectEvent(this));
 	}
 
 	/**
@@ -1054,7 +1100,7 @@ public abstract class PircBotX {
 			// Check for server pings.
 			if (line.startsWith("PING ")) {
 				// Respond to the ping and return immediately.
-				getListeners().dispatchEvent(new ServerPing.Event(this, line.substring(5)));
+				getListeners().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
 				return;
 			}
 
@@ -1099,7 +1145,7 @@ public abstract class PircBotX {
 					}
 				} else {
 					// We don't know what this line means.
-					getListeners().dispatchEvent(new Unknown.Event(this, line));
+					getListeners().dispatchEvent(new UnknownEvent(this, line));
 					// Return from the method;
 					return;
 				}
@@ -1121,34 +1167,34 @@ public abstract class PircBotX {
 				String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
 				if (request.equals("VERSION"))
 					// VERSION request
-					getListeners().dispatchEvent(new Version.Event(this, source, channel));
+					getListeners().dispatchEvent(new VersionEvent(this, source, channel));
 				else if (request.startsWith("ACTION "))
 					// ACTION request
-					getListeners().dispatchEvent(new Action.Event(this, source, channel, request.substring(7)));
+					getListeners().dispatchEvent(new ActionEvent(this, source, channel, request.substring(7)));
 				else if (request.startsWith("PING "))
 					// PING request
-					getListeners().dispatchEvent(new Ping.Event(this, source, channel, request.substring(5)));
+					getListeners().dispatchEvent(new PingEvent(this, source, channel, request.substring(5)));
 				else if (request.equals("TIME"))
 					// TIME request
-					getListeners().dispatchEvent(new Time.Event(this, source, channel));
+					getListeners().dispatchEvent(new TimeEvent(this, source, channel));
 				else if (request.equals("FINGER"))
 					// FINGER request
-					getListeners().dispatchEvent(new Finger.Event(this, source, channel));
+					getListeners().dispatchEvent(new FingerEvent(this, source, channel));
 				else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 					// This is a DCC request.
 					boolean success = _dccManager.processRequest(source, request);
 					if (!success)
 						// The DccManager didn't know what to do with the line.
-						getListeners().dispatchEvent(new Unknown.Event(this, line));
+						getListeners().dispatchEvent(new UnknownEvent(this, line));
 				} else
 					// An unknown CTCP message - ignore it.
-					getListeners().dispatchEvent(new Unknown.Event(this, line));
+					getListeners().dispatchEvent(new UnknownEvent(this, line));
 			} else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0)
 				// This is a normal message to a channel.
-				getListeners().dispatchEvent(new Message.Event(this, channel, source, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new MessageEvent(this, channel, source, line.substring(line.indexOf(" :") + 2)));
 			else if (command.equals("PRIVMSG"))
 				// This is a private message to us.
-				getListeners().dispatchEvent(new PrivateMessage.Event(this, source, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new PrivateMessageEvent(this, source, line.substring(line.indexOf(" :") + 2)));
 			else if (command.equals("JOIN")) {
 				// Someone is joining a channel.
 				if (sourceNick.equalsIgnoreCase(_nick)) {
@@ -1165,7 +1211,7 @@ public abstract class PircBotX {
 				}
 				//user.addUser(usr);
 
-				getListeners().dispatchEvent(new Join.Event(this, channel, source));
+				getListeners().dispatchEvent(new JoinEvent(this, channel, source));
 			} else if (command.equals("PART"))
 				// Someone is parting from a channel.
 				if (sourceNick.equals(getNick()))
@@ -1173,7 +1219,7 @@ public abstract class PircBotX {
 				else
 					//Just remove the user from memory
 					//getChannel(target).removeUser(sourceNick);
-					getListeners().dispatchEvent(new Part.Event(this, channel, source));
+					getListeners().dispatchEvent(new PartEvent(this, channel, source));
 			else if (command.equals("NICK")) {
 				// Somebody is changing their nick.
 				String newNick = target;
@@ -1181,10 +1227,10 @@ public abstract class PircBotX {
 				if (sourceNick.equals(getNick()))
 					// Update our nick if it was us that changed nick.
 					setNick(newNick);
-				getListeners().dispatchEvent(new NickChange.Event(this, sourceNick, newNick, source));
+				getListeners().dispatchEvent(new NickChangeEvent(this, sourceNick, newNick, source));
 			} else if (command.equals("NOTICE"))
 				// Someone is sending a notice.
-				getListeners().dispatchEvent(new Notice.Event(this, source, channel, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new NoticeEvent(this, source, channel, line.substring(line.indexOf(" :") + 2)));
 			else if (command.equals("QUIT")) {
 				// Someone has quit from the IRC server.
 				if (sourceNick.equals(getNick()))
@@ -1193,7 +1239,7 @@ public abstract class PircBotX {
 				else
 					//Someone else
 					_userChanInfo.deleteB(getUser(sourceNick));
-				getListeners().dispatchEvent(new Quit.Event(this, source, line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new QuitEvent(this, source, line.substring(line.indexOf(" :") + 2)));
 			} else if (command.equals("KICK")) {
 				// Somebody has been kicked from a channel.
 				String recipient = tokenizer.nextToken();
@@ -1204,7 +1250,7 @@ public abstract class PircBotX {
 				else
 					//Someone else
 					_userChanInfo.dissociate(getChannel(target), user, true);
-				getListeners().dispatchEvent(new Kick.Event(this, channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
+				getListeners().dispatchEvent(new KickEvent(this, channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
 			} else if (command.equals("MODE")) {
 				// Somebody is changing the mode on a channel or user.
 				String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -1220,14 +1266,14 @@ public abstract class PircBotX {
 				chan.setTopicSetter(sourceNick);
 				chan.setTopicTimestamp(currentTime);
 
-				getListeners().dispatchEvent(new Topic.Event(this, channel, topic, source, true));
+				getListeners().dispatchEvent(new TopicEvent(this, channel, topic, source, true));
 			} else if (command.equals("INVITE"))
 				// Somebody is inviting somebody else into a channel.
-				getListeners().dispatchEvent(new Invite.Event(this, source, channel));
+				getListeners().dispatchEvent(new InviteEvent(this, source, channel));
 			else
 				// If we reach this point, then we've found something that the PircBotX
 				// Doesn't currently deal with.
-				getListeners().dispatchEvent(new Unknown.Event(this, line));
+				getListeners().dispatchEvent(new UnknownEvent(this, line));
 		} catch (Throwable t) {
 			logException(t);
 		}
@@ -1271,7 +1317,7 @@ public abstract class PircBotX {
 		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
-			getListeners().dispatchEvent(new ChannelInfo.Event(this, channelListBuilder.finish()));
+			getListeners().dispatchEvent(new ChannelInfoEvent(this, channelListBuilder.finish()));
 		}  else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
@@ -1296,7 +1342,7 @@ public abstract class PircBotX {
 			chan.setTopicTimestamp(date);
 			chan.setTopicSetter(setBy.getNick());
 
-			getListeners().dispatchEvent(new Topic.Event(this, chan, chan.getTopic(), setBy, false));
+			getListeners().dispatchEvent(new TopicEvent(this, chan, chan.getTopic(), setBy, false));
 		} else if (code == RPL_NAMREPLY) {
 			//EXAMPLE: 353 PircBotX = #aChannel :PircBotX @SuperOp someoneElse
 			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
@@ -1315,7 +1361,7 @@ public abstract class PircBotX {
 			// the full list of users in the channel that we just joined. From /NAMES and /JOIN
 			String channelName = response.split(" ", 3)[1];
 			Channel channel = channelExists(channelName) ? getChannel(channelName) : null;
-			getListeners().dispatchEvent(new UserList.Event(this, channel, getUsers(channel)));
+			getListeners().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
@@ -1339,7 +1385,7 @@ public abstract class PircBotX {
 			//End of the WHO reply
 			Channel channel = getChannel(response.split(" ")[1]);
 			System.out.println("Who reply finished for " + channel);
-			getListeners().dispatchEvent(new UserList.Event(this, channel, getUsers(channel)));
+			getListeners().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -1375,10 +1421,10 @@ public abstract class PircBotX {
 		else if (code == RPL_ENDOFMOTD)
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, dispatch event
-			getListeners().dispatchEvent(new Motd.Event(this, (getServerInfo().getMotd())));
+			getListeners().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
 
 		//WARNING: Parsed array might be modified, recreate if you're going to use down here
-		getListeners().dispatchEvent(new ServerResponse.Event(this, code, response));
+		getListeners().dispatchEvent(new ServerResponseEvent(this, code, response));
 	}
 
 	/**
@@ -1423,77 +1469,77 @@ public abstract class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						source.setOp(channel, true);
-						getListeners().dispatchEvent(new Op.Event(this, channel, source, reciepeint));
+						getListeners().dispatchEvent(new OpEvent(this, channel, source, reciepeint));
 					} else {
 						source.setOp(channel, false);
-						getListeners().dispatchEvent(new Deop.Event(this, channel, source, reciepeint));
+						getListeners().dispatchEvent(new DeopEvent(this, channel, source, reciepeint));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						source.setVoice(channel, true);
-						getListeners().dispatchEvent(new Voice.Event(this, channel, source, reciepeint));
+						getListeners().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint));
 					} else {
 						source.setVoice(channel, false);
-						getListeners().dispatchEvent(new DeVoice.Event(this, channel, source, reciepeint));
+						getListeners().dispatchEvent(new DeVoiceEvent(this, channel, source, reciepeint));
 					}
 					p++;
 				} else if (atPos == 'k') {
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetChannelKey.Event(this, channel, source, params[p]));
+						getListeners().dispatchEvent(new SetChannelKeyEvent(this, channel, source, params[p]));
 					else
-						getListeners().dispatchEvent(new RemoveChannelKey.Event(this, channel, source, params[p]));
+						getListeners().dispatchEvent(new RemoveChannelKeyEvent(this, channel, source, params[p]));
 					p++;
 				} else if (atPos == 'l')
 					if (pn == '+') {
-						getListeners().dispatchEvent(new SetChannelLimit.Event(this, channel, source, Integer.parseInt(params[p])));
+						getListeners().dispatchEvent(new SetChannelLimitEvent(this, channel, source, Integer.parseInt(params[p])));
 						p++;
 					} else
-						getListeners().dispatchEvent(new RemoveChannelLimit.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemoveChannelLimitEvent(this, channel, source));
 				else if (atPos == 'b') {
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetChannelBan.Event(this, channel, source, params[p]));
+						getListeners().dispatchEvent(new SetChannelBanEvent(this, channel, source, params[p]));
 					else
-						getListeners().dispatchEvent(new RemoveChannelBan.Event(this, channel, source, params[p]));
+						getListeners().dispatchEvent(new RemoveChannelBanEvent(this, channel, source, params[p]));
 					p++;
 				} else if (atPos == 't')
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetTopicProtection.Event(this, channel, source));
+						getListeners().dispatchEvent(new SetTopicProtectionEvent(this, channel, source));
 					else
-						getListeners().dispatchEvent(new RemoveTopicProtection.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemoveTopicProtectionEvent(this, channel, source));
 				else if (atPos == 'n')
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetNoExternalMessages.Event(this, channel, source));
+						getListeners().dispatchEvent(new SetNoExternalMessagesEvent(this, channel, source));
 					else
-						getListeners().dispatchEvent(new RemoveNoExternalMessages.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemoveNoExternalMessagesEvent(this, channel, source));
 				else if (atPos == 'i')
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetInviteOnly.Event(this, channel, source));
+						getListeners().dispatchEvent(new SetInviteOnlyEvent(this, channel, source));
 					else
-						getListeners().dispatchEvent(new RemoveInviteOnly.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemoveInviteOnlyEvent(this, channel, source));
 				else if (atPos == 'm')
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetModerated.Event(this, channel, source));
+						getListeners().dispatchEvent(new SetModeratedEvent(this, channel, source));
 					else
-						getListeners().dispatchEvent(new RemoveModerated.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemoveModeratedEvent(this, channel, source));
 				else if (atPos == 'p')
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetPrivate.Event(this, channel, source));
+						getListeners().dispatchEvent(new SetPrivateEvent(this, channel, source));
 					else
-						getListeners().dispatchEvent(new RemovePrivate.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemovePrivateEvent(this, channel, source));
 				else if (atPos == 's')
 					if (pn == '+')
-						getListeners().dispatchEvent(new SetSecret.Event(this, channel, source));
+						getListeners().dispatchEvent(new SetSecretEvent(this, channel, source));
 					else
-						getListeners().dispatchEvent(new RemoveSecret.Event(this, channel, source));
+						getListeners().dispatchEvent(new RemoveSecretEvent(this, channel, source));
 			}
 
-			getListeners().dispatchEvent(new Mode.Event(this, channel, source, mode));
+			getListeners().dispatchEvent(new ModeEvent(this, channel, source, mode));
 		} else {
 			// The mode of a user is being changed.
 			String nick = target;
-			getListeners().dispatchEvent(new UserMode.Event(this, getUser(nick), source, mode));
+			getListeners().dispatchEvent(new UserModeEvent(this, getUser(nick), source, mode));
 		}
 	}
 
@@ -2121,123 +2167,123 @@ public abstract class PircBotX {
 	 * To add a new event, SubClass, override dispatchEvent,
 	 * call default implementation, then loop over the listeners yourself 
 	 */
-	public static class EventListenerManager implements ListenerManager<BaseListener> {
-		protected Set<BaseListener> listeners = new HashSet<BaseListener>();
+	public static class EventListenerManager implements ListenerManager<Listener> {
+		protected Set<Listener> listeners = new HashSet<Listener>();
 
-		public void addListener(BaseListener listener) {
+		public void addListener(Listener listener) {
 			listeners.add(listener);
 		}
 
-		public void removeListener(BaseListener listener) {
+		public void removeListener(Listener listener) {
 			listeners.remove(listener);
 		}
 
-		public Set<BaseListener> getListeners() {
+		public Set<Listener> getListeners() {
 			return Collections.unmodifiableSet(listeners);
 		}
 
 		public void dispatchEvent(Event event) {
 			//Yea, this is ugly. But it does get the job done
 			//Loop through all listeners, and call appropiate one based on Event type
-			for (BaseListener curListener : listeners)
-				if (event instanceof Action.Event && curListener instanceof Action.Listener)
-					((Action.Listener) curListener).onAction((Action.Event) event);
-				else if (event instanceof ChannelInfo.Event && curListener instanceof ChannelInfo.Listener)
-					((ChannelInfo.Listener) curListener).onChannelInfo((ChannelInfo.Event) event);
-				else if (event instanceof Connect.Event && curListener instanceof Connect.Listener)
-					((Connect.Listener) curListener).onConnect((Connect.Event) event);
-				else if (event instanceof Deop.Event && curListener instanceof Deop.Listener)
-					((Deop.Listener) curListener).onDeop((Deop.Event) event);
-				else if (event instanceof DeVoice.Event && curListener instanceof DeVoice.Listener)
-					((DeVoice.Listener) curListener).onDeVoice((DeVoice.Event) event);
-				else if (event instanceof Disconnect.Event && curListener instanceof Disconnect.Listener)
-					((Disconnect.Listener) curListener).onDisconnect((Disconnect.Event) event);
-				else if (event instanceof FileTransferFinished.Event && curListener instanceof FileTransferFinished.Listener)
-					((FileTransferFinished.Listener) curListener).onFileTransferFinished((FileTransferFinished.Event) event);
-				else if (event instanceof Finger.Event && curListener instanceof Finger.Listener)
-					((Finger.Listener) curListener).onFinger((Finger.Event) event);
-				else if (event instanceof IncomingChatRequest.Event && curListener instanceof IncomingChatRequest.Listener)
-					((IncomingChatRequest.Listener) curListener).onIncomingChatRequest((IncomingChatRequest.Event) event);
-				else if (event instanceof IncomingFileTransfer.Event && curListener instanceof IncomingFileTransfer.Listener)
-					((IncomingFileTransfer.Listener) curListener).onIncomingFileTransfer((IncomingFileTransfer.Event) event);
-				else if (event instanceof Invite.Event && curListener instanceof Invite.Listener)
-					((Invite.Listener) curListener).onInvite((Invite.Event) event);
-				else if (event instanceof Join.Event && curListener instanceof Join.Listener)
-					((Join.Listener) curListener).onJoin((Join.Event) event);
-				else if (event instanceof Kick.Event && curListener instanceof Kick.Listener)
-					((Kick.Listener) curListener).onKick((Kick.Event) event);
-				else if (event instanceof Message.Event && curListener instanceof Message.Listener)
-					((Message.Listener) curListener).onMessage((Message.Event) event);
-				else if (event instanceof Mode.Event && curListener instanceof Mode.Listener)
-					((Mode.Listener) curListener).onMode((Mode.Event) event);
-				else if (event instanceof NickChange.Event && curListener instanceof NickChange.Listener)
-					((NickChange.Listener) curListener).onNickChange((NickChange.Event) event);
-				else if (event instanceof Notice.Event && curListener instanceof Notice.Listener)
-					((Notice.Listener) curListener).onNotice((Notice.Event) event);
-				else if (event instanceof Op.Event && curListener instanceof Op.Listener)
-					((Op.Listener) curListener).onOp((Op.Event) event);
-				else if (event instanceof Part.Event && curListener instanceof Part.Listener)
-					((Part.Listener) curListener).onPart((Part.Event) event);
-				else if (event instanceof Ping.Event && curListener instanceof Ping.Listener)
-					((Ping.Listener) curListener).onPing((Ping.Event) event);
-				else if (event instanceof PrivateMessage.Event && curListener instanceof PrivateMessage.Listener)
-					((PrivateMessage.Listener) curListener).onPrivateMessage((PrivateMessage.Event) event);
-				else if (event instanceof Quit.Event && curListener instanceof Quit.Listener)
-					((Quit.Listener) curListener).onQuit((Quit.Event) event);
-				else if (event instanceof RemoveChannelBan.Event && curListener instanceof RemoveChannelBan.Listener)
-					((RemoveChannelBan.Listener) curListener).onRemoveChannelBan((RemoveChannelBan.Event) event);
-				else if (event instanceof RemoveChannelKey.Event && curListener instanceof RemoveChannelKey.Listener)
-					((RemoveChannelKey.Listener) curListener).onRemoveChannelKey((RemoveChannelKey.Event) event);
-				else if (event instanceof RemoveChannelLimit.Event && curListener instanceof RemoveChannelLimit.Listener)
-					((RemoveChannelLimit.Listener) curListener).onRemoveChannelLimit((RemoveChannelLimit.Event) event);
-				else if (event instanceof RemoveInviteOnly.Event && curListener instanceof RemoveInviteOnly.Listener)
-					((RemoveInviteOnly.Listener) curListener).onRemoveInviteOnly((RemoveInviteOnly.Event) event);
-				else if (event instanceof RemoveModerated.Event && curListener instanceof RemoveModerated.Listener)
-					((RemoveModerated.Listener) curListener).onRemoveModerated((RemoveModerated.Event) event);
-				else if (event instanceof RemoveNoExternalMessages.Event && curListener instanceof RemoveNoExternalMessages.Listener)
-					((RemoveNoExternalMessages.Listener) curListener).onRemoveNoExternalMessages((RemoveNoExternalMessages.Event) event);
-				else if (event instanceof RemovePrivate.Event && curListener instanceof RemovePrivate.Listener)
-					((RemovePrivate.Listener) curListener).onRemovePrivate((RemovePrivate.Event) event);
-				else if (event instanceof RemoveSecret.Event && curListener instanceof RemoveSecret.Listener)
-					((RemoveSecret.Listener) curListener).onRemoveSecret((RemoveSecret.Event) event);
-				else if (event instanceof RemoveTopicProtection.Event && curListener instanceof RemoveTopicProtection.Listener)
-					((RemoveTopicProtection.Listener) curListener).onRemoveTopicProtection((RemoveTopicProtection.Event) event);
-				else if (event instanceof ServerPing.Event && curListener instanceof ServerPing.Listener)
-					((ServerPing.Listener) curListener).onServerPing((ServerPing.Event) event);
-				else if (event instanceof ServerResponse.Event && curListener instanceof ServerResponse.Listener)
-					((ServerResponse.Listener) curListener).onServerResponse((ServerResponse.Event) event);
-				else if (event instanceof SetChannelBan.Event && curListener instanceof SetChannelBan.Listener)
-					((SetChannelBan.Listener) curListener).onSetChannelBan((SetChannelBan.Event) event);
-				else if (event instanceof SetChannelKey.Event && curListener instanceof SetChannelKey.Listener)
-					((SetChannelKey.Listener) curListener).onSetChannelKey((SetChannelKey.Event) event);
-				else if (event instanceof SetChannelLimit.Event && curListener instanceof SetChannelLimit.Listener)
-					((SetChannelLimit.Listener) curListener).onSetChannelLimit((SetChannelLimit.Event) event);
-				else if (event instanceof SetInviteOnly.Event && curListener instanceof SetInviteOnly.Listener)
-					((SetInviteOnly.Listener) curListener).onSetInviteOnly((SetInviteOnly.Event) event);
-				else if (event instanceof SetModerated.Event && curListener instanceof SetModerated.Listener)
-					((SetModerated.Listener) curListener).onSetModerated((SetModerated.Event) event);
-				else if (event instanceof SetNoExternalMessages.Event && curListener instanceof SetNoExternalMessages.Listener)
-					((SetNoExternalMessages.Listener) curListener).onSetNoExternalMessages((SetNoExternalMessages.Event) event);
-				else if (event instanceof SetPrivate.Event && curListener instanceof SetPrivate.Listener)
-					((SetPrivate.Listener) curListener).onSetPrivate((SetPrivate.Event) event);
-				else if (event instanceof SetSecret.Event && curListener instanceof SetSecret.Listener)
-					((SetSecret.Listener) curListener).onSetSecret((SetSecret.Event) event);
-				else if (event instanceof SetTopicProtection.Event && curListener instanceof SetTopicProtection.Listener)
-					((SetTopicProtection.Listener) curListener).onSetTopicProtection((SetTopicProtection.Event) event);
-				else if (event instanceof Time.Event && curListener instanceof Time.Listener)
-					((Time.Listener) curListener).onTime((Time.Event) event);
-				else if (event instanceof Topic.Event && curListener instanceof Topic.Listener)
-					((Topic.Listener) curListener).onTopic((Topic.Event) event);
-				else if (event instanceof Unknown.Event && curListener instanceof Unknown.Listener)
-					((Unknown.Listener) curListener).onUnknown((Unknown.Event) event);
-				else if (event instanceof UserList.Event && curListener instanceof UserList.Listener)
-					((UserList.Listener) curListener).onUserList((UserList.Event) event);
-				else if (event instanceof UserMode.Event && curListener instanceof UserMode.Listener)
-					((UserMode.Listener) curListener).onUserMode((UserMode.Event) event);
-				else if (event instanceof Version.Event && curListener instanceof Version.Listener)
-					((Version.Listener) curListener).onVersion((Version.Event) event);
-				else if (event instanceof Voice.Event && curListener instanceof Voice.Listener)
-					((Voice.Listener) curListener).onVoice((Voice.Event) event);
+			for (Listener curListener : listeners)
+				if (event instanceof ActionEvent && curListener instanceof ActionListener)
+					((ActionListener) curListener).onAction((ActionEvent) event);
+				else if (event instanceof ChannelInfoEvent && curListener instanceof ChannelInfoListener)
+					((ChannelInfoListener) curListener).onChannelInfo((ChannelInfoEvent) event);
+				else if (event instanceof ConnectEvent && curListener instanceof ConnectListener)
+					((ConnectListener) curListener).onConnect((ConnectEvent) event);
+				else if (event instanceof DeopEvent && curListener instanceof DeopListener)
+					((DeopListener) curListener).onDeop((DeopEvent) event);
+				else if (event instanceof DeVoiceEvent && curListener instanceof DeVoiceListener)
+					((DeVoiceListener) curListener).onDeVoice((DeVoiceEvent) event);
+				else if (event instanceof DisconnectEvent && curListener instanceof DisconnectListener)
+					((DisconnectListener) curListener).onDisconnect((DisconnectEvent) event);
+				else if (event instanceof FileTransferFinishedEvent && curListener instanceof FileTransferFinishedListener)
+					((FileTransferFinishedListener) curListener).onFileTransferFinished((FileTransferFinishedEvent) event);
+				else if (event instanceof FingerEvent && curListener instanceof FingerListener)
+					((FingerListener) curListener).onFinger((FingerEvent) event);
+				else if (event instanceof IncomingChatRequestEvent && curListener instanceof IncomingChatRequestListener)
+					((IncomingChatRequestListener) curListener).onIncomingChatRequest((IncomingChatRequestEvent) event);
+				else if (event instanceof IncomingFileTransferEvent && curListener instanceof IncomingFileTransferListener)
+					((IncomingFileTransferListener) curListener).onIncomingFileTransfer((IncomingFileTransferEvent) event);
+				else if (event instanceof InviteEvent && curListener instanceof InviteListener)
+					((InviteListener) curListener).onInvite((InviteEvent) event);
+				else if (event instanceof JoinEvent && curListener instanceof JoinListener)
+					((JoinListener) curListener).onJoin((JoinEvent) event);
+				else if (event instanceof KickEvent && curListener instanceof KickListener)
+					((KickListener) curListener).onKick((KickEvent) event);
+				else if (event instanceof MessageEvent && curListener instanceof MessageListener)
+					((MessageListener) curListener).onMessage((MessageEvent) event);
+				else if (event instanceof ModeEvent && curListener instanceof ModeListener)
+					((ModeListener) curListener).onMode((ModeEvent) event);
+				else if (event instanceof NickChangeEvent && curListener instanceof NickChangeListener)
+					((NickChangeListener) curListener).onNickChange((NickChangeEvent) event);
+				else if (event instanceof NoticeEvent && curListener instanceof NoticeListener)
+					((NoticeListener) curListener).onNotice((NoticeEvent) event);
+				else if (event instanceof OpEvent && curListener instanceof OpListener)
+					((OpListener) curListener).onOp((OpEvent) event);
+				else if (event instanceof PartEvent && curListener instanceof PartListener)
+					((PartListener) curListener).onPart((PartEvent) event);
+				else if (event instanceof PingEvent && curListener instanceof PingListener)
+					((PingListener) curListener).onPing((PingEvent) event);
+				else if (event instanceof PrivateMessageEvent && curListener instanceof PrivateMessageListener)
+					((PrivateMessageListener) curListener).onPrivateMessage((PrivateMessageEvent) event);
+				else if (event instanceof QuitEvent && curListener instanceof QuitListener)
+					((QuitListener) curListener).onQuit((QuitEvent) event);
+				else if (event instanceof RemoveChannelBanEvent && curListener instanceof RemoveChannelBanListener)
+					((RemoveChannelBanListener) curListener).onRemoveChannelBan((RemoveChannelBanEvent) event);
+				else if (event instanceof RemoveChannelKeyEvent && curListener instanceof RemoveChannelKeyListener)
+					((RemoveChannelKeyListener) curListener).onRemoveChannelKey((RemoveChannelKeyEvent) event);
+				else if (event instanceof RemoveChannelLimitEvent && curListener instanceof RemoveChannelLimitListener)
+					((RemoveChannelLimitListener) curListener).onRemoveChannelLimit((RemoveChannelLimitEvent) event);
+				else if (event instanceof RemoveInviteOnlyEvent && curListener instanceof RemoveInviteOnlyListener)
+					((RemoveInviteOnlyListener) curListener).onRemoveInviteOnly((RemoveInviteOnlyEvent) event);
+				else if (event instanceof RemoveModeratedEvent && curListener instanceof RemoveModeratedListener)
+					((RemoveModeratedListener) curListener).onRemoveModerated((RemoveModeratedEvent) event);
+				else if (event instanceof RemoveNoExternalMessagesEvent && curListener instanceof RemoveNoExternalMessagesListener)
+					((RemoveNoExternalMessagesListener) curListener).onRemoveNoExternalMessages((RemoveNoExternalMessagesEvent) event);
+				else if (event instanceof RemovePrivateEvent && curListener instanceof RemovePrivateListener)
+					((RemovePrivateListener) curListener).onRemovePrivate((RemovePrivateEvent) event);
+				else if (event instanceof RemoveSecretEvent && curListener instanceof RemoveSecretListener)
+					((RemoveSecretListener) curListener).onRemoveSecret((RemoveSecretEvent) event);
+				else if (event instanceof RemoveTopicProtectionEvent && curListener instanceof RemoveTopicProtectionListener)
+					((RemoveTopicProtectionListener) curListener).onRemoveTopicProtection((RemoveTopicProtectionEvent) event);
+				else if (event instanceof ServerPingEvent && curListener instanceof ServerPingListener)
+					((ServerPingListener) curListener).onServerPing((ServerPingEvent) event);
+				else if (event instanceof ServerResponseEvent && curListener instanceof ServerResponseListener)
+					((ServerResponseListener) curListener).onServerResponse((ServerResponseEvent) event);
+				else if (event instanceof SetChannelBanEvent && curListener instanceof SetChannelBanListener)
+					((SetChannelBanListener) curListener).onSetChannelBan((SetChannelBanEvent) event);
+				else if (event instanceof SetChannelKeyEvent && curListener instanceof SetChannelKeyListener)
+					((SetChannelKeyListener) curListener).onSetChannelKey((SetChannelKeyEvent) event);
+				else if (event instanceof SetChannelLimitEvent && curListener instanceof SetChannelLimitListener)
+					((SetChannelLimitListener) curListener).onSetChannelLimit((SetChannelLimitEvent) event);
+				else if (event instanceof SetInviteOnlyEvent && curListener instanceof SetInviteOnlyListener)
+					((SetInviteOnlyListener) curListener).onSetInviteOnly((SetInviteOnlyEvent) event);
+				else if (event instanceof SetModeratedEvent && curListener instanceof SetModeratedListener)
+					((SetModeratedListener) curListener).onSetModerated((SetModeratedEvent) event);
+				else if (event instanceof SetNoExternalMessagesEvent && curListener instanceof SetNoExternalMessagesListener)
+					((SetNoExternalMessagesListener) curListener).onSetNoExternalMessages((SetNoExternalMessagesEvent) event);
+				else if (event instanceof SetPrivateEvent && curListener instanceof SetPrivateListener)
+					((SetPrivateListener) curListener).onSetPrivate((SetPrivateEvent) event);
+				else if (event instanceof SetSecretEvent && curListener instanceof SetSecretListener)
+					((SetSecretListener) curListener).onSetSecret((SetSecretEvent) event);
+				else if (event instanceof SetTopicProtectionEvent && curListener instanceof SetTopicProtectionListener)
+					((SetTopicProtectionListener) curListener).onSetTopicProtection((SetTopicProtectionEvent) event);
+				else if (event instanceof TimeEvent && curListener instanceof TimeListener)
+					((TimeListener) curListener).onTime((TimeEvent) event);
+				else if (event instanceof TopicEvent && curListener instanceof TopicListener)
+					((TopicListener) curListener).onTopic((TopicEvent) event);
+				else if (event instanceof UnknownEvent && curListener instanceof UnknownListener)
+					((UnknownListener) curListener).onUnknown((UnknownEvent) event);
+				else if (event instanceof UserListEvent && curListener instanceof UserListListener)
+					((UserListListener) curListener).onUserList((UserListEvent) event);
+				else if (event instanceof UserModeEvent && curListener instanceof UserModeListener)
+					((UserModeListener) curListener).onUserMode((UserModeEvent) event);
+				else if (event instanceof VersionEvent && curListener instanceof VersionListener)
+					((VersionListener) curListener).onVersion((VersionEvent) event);
+				else if (event instanceof VoiceEvent && curListener instanceof VoiceListener)
+					((VoiceListener) curListener).onVoice((VoiceEvent) event);
 		}
 	}
 
