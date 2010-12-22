@@ -20,7 +20,7 @@
 package org.pircbotx.hooks.helpers;
 
 import java.util.Set;
-import org.pircbotx.exception.UnknownHookException;
+import org.pircbotx.exception.UnknownEventException;
 
 /**
  *
@@ -31,7 +31,7 @@ public interface ListenerManager<I extends Listener> {
 	 * Sends event to all appropriate listeners.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(Event event) throws UnknownHookException;
+	public void dispatchEvent(Event event) throws UnknownEventException;
 
 	/**
 	 * Adds an I listener to the list of

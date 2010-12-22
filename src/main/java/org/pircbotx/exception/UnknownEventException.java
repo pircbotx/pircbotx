@@ -23,13 +23,13 @@ package org.pircbotx.exception;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class UnknownHookException extends RuntimeException {
+public class UnknownEventException extends RuntimeException {
 
-	public UnknownHookException(String message, Throwable cause) {
+	public UnknownEventException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
-	public UnknownHookException(String message) {
+	public UnknownEventException(String message) {
 		super(message);
 	}
 	
