@@ -27,6 +27,9 @@ public class MassListenerTest {
 			Method method = methods[0];
 			Class<?>[] params = method.getParameterTypes();
 
+			//Should follow naming convention
+			assertEquals(method.getName(), "on" + listenerClass.getSimpleName());
+
 			//Should only have 1 parameter
 			assertEquals(params.length, 1, wrapClass(listenerClass, "More than one method parameter found"));
 
