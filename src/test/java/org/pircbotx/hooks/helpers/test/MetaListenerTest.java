@@ -24,9 +24,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import org.pircbotx.hooks.Voice;
 import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
-import org.pircbotx.hooks.helpers.MetaSimpleListenerInterface;
+import org.pircbotx.listeners.VoiceListener;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -42,7 +41,7 @@ public class MetaListenerTest {
 	@Test
 	public void interfaceImplmentTest() throws Exception {
 		String sep = System.getProperty("file.separator");
-		Class testClazz = Voice.class;
+		Class testClazz = VoiceListener.class;
 
 		//Since dumping path in getResources() fails, extract path from root
 		Enumeration<URL> rootResources = testClazz.getClassLoader().getResources("");
@@ -51,7 +50,7 @@ public class MetaListenerTest {
 		String root = new File(rootResources.nextElement().getFile()).getParent();
 
 		//Get root directory as a file
-		File hookDir = new File(root + sep + "classes" + sep + (Voice.class.getPackage().getName().replace(".", sep)) + sep);
+		File hookDir = new File(root + sep + "classes" + sep + (testClazz.getPackage().getName().replace(".", sep)) + sep);
 		assertNotNull(hookDir, "Fetched Hook directory is null");
 		assertTrue(hookDir.exists(), "Hook directory doesn't exist");
 		assertTrue(hookDir.isDirectory(), "Hook directory isn't a directory");
@@ -64,10 +63,9 @@ public class MetaListenerTest {
 			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
 				clazzes.add(clazzFile.getName().split("\\.")[0]);
 
-		subtract(MetaSimpleListenerInterface.class, clazzes);
 		subtract(ListenerAdapterInterface.class, clazzes);
 
-		System.out.println("Success: Meta Interfaces implment all hooks");
+		System.out.println("Success: Meta Interface implment all hooks");
 	}
 
 	/**
