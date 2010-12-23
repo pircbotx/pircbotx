@@ -33,7 +33,7 @@ import static org.testng.Assert.*;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class MetaListenerTest {
+public class AdapterListenerTest {
 	/**
 	 * Makes sure meta interfaces implment all the hooks
 	 * @throws Exception
