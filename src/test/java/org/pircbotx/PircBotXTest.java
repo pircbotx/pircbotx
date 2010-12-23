@@ -17,7 +17,7 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.test;
+package org.pircbotx;
 
 import org.pircbotx.User;
 import org.pircbotx.hooks.ChannelInfo.Event;

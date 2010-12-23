@@ -17,7 +17,7 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.hooks.helpers.test;
+package org.pircbotx.hooks.helpers;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
