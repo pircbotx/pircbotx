@@ -16,12 +16,6 @@ import org.testng.annotations.Test;
 public class MassListenerTest {
 	private final List<Class<?>> listenerClasses = new ArrayList(Arrays.asList(ListenerAdapterInterface.class.getInterfaces()));
 
-	;
-	
-	@BeforeClass
-	public void getInterfaces() {
-	}
-
 	@Test
 	public void methodCheck() {
 		for (Class<?> listenerClass : listenerClasses) {
