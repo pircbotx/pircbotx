@@ -19,18 +19,12 @@
 
 package org.pircbotx.hooks.helpers.test;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.hooks.Voice;
 import org.pircbotx.hooks.helpers.ListenerAdapter;
 import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
-import org.pircbotx.hooks.helpers.MetaSimpleListener;
-import org.pircbotx.hooks.helpers.MetaSimpleListenerInterface;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -44,11 +38,8 @@ public class MetaTest {
 	 */
 	@Test
 	public void methodTest() throws Exception {
-		methodCheck(ListenerAdapter.class, ListenerAdapterInterface.class);
-		methodCheck(MetaSimpleListener.class, MetaSimpleListenerInterface.class);
-	}
-
-	protected void methodCheck(final Class testClazz, final Class metaClazz) throws Exception {
+		final Class testClazz = ListenerAdapter.class;
+		final Class metaClazz = ListenerAdapterInterface.class;
 		//Get number of implmented interfaces
 		int interfaces = metaClazz.getInterfaces().length;
 		int methods = testClazz.getDeclaredMethods().length;
@@ -78,20 +69,13 @@ public class MetaTest {
 		}
 		System.out.println("Success: " + metaClazz + " implments all methods in " + testClazz);
 	}
-
+	
 	/**
 	 *  Makes sure methods don't throw any exceptions
 	 */
 	@Test
 	public void methodThrowTest() throws Exception {
-		methodThrowCheck(MetaSimpleListener.class);
-		methodThrowCheck(ListenerAdapter.class);
-	}
-
-	/**
-	 * Actual code to check that abstract class methods don't throw any exceptions
-	 */
-	protected void methodThrowCheck(Class testClazz) throws Exception {
+		Class testClazz = ListenerAdapter.class;
 		Object testInst = testClazz.newInstance();
 		for (Method curMethod : testClazz.getDeclaredMethods()) {
 			//Generate appropiate number of nulls for method parameters
