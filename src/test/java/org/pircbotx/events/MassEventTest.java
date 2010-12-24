@@ -1,8 +1,12 @@
 package org.pircbotx.events;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
 import static org.testng.Assert.*;
@@ -42,5 +46,13 @@ public class MassEventTest {
 			assertEquals(constParams.length - 1, clazz.getDeclaredFields().length, TestUtils.wrapClass(clazz, "Number of constructor parameters don't match number of fields"));
 		}
 		System.out.println("Success: Event constructor is good");
+	}
+	
+	public void annotationTest() {
+		for(Class<?> clazz : eventClasses) {
+			//Make sure @Data and @EqualsAndHashCode are present
+			assertNotNull(clazz.getAnnotation(Data.class));
+			assertNotNull(clazz.getAnnotation(EqualsAndHashCode.class));
+		}
 	}
 }
