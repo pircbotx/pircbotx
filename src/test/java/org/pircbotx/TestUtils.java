@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class Utils {
+public class TestUtils {
 	public static String genClass(String prefix, Class clazz) {
 		if(clazz.getEnclosingClass() != null)
 			clazz = clazz.getEnclosingClass();
