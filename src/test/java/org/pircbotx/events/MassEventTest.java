@@ -29,17 +29,17 @@ public class MassEventTest {
 		for (Class<?> clazz : eventClasses) {
 			//Is there only one constructor?
 			Constructor[] constructors = clazz.getDeclaredConstructors();
-			assertEquals(constructors.length, 1, TestUtils.genClass("Event", clazz) + " doesn't have a constructor or has an extra one");
+			assertEquals(constructors.length, 1, TestUtils.wrapClass(clazz, "No constructor or extra constructor found"));
 
 			Constructor constructor = constructors[0];
 
 			//Is the first parameter a bot refrence?
 			Class[] constParams = constructor.getParameterTypes();
-			assertEquals(constParams[0], PircBotX.class, "First parameter in constructor of " + TestUtils.genClass("Event", clazz) + " isn't of PircBotX type");
+			assertEquals(constParams[0], PircBotX.class, TestUtils.wrapClass(clazz, "First parameter of constructor isn't of PircBotX type"));
 
 			//Are the number of fields and constructor parameters equal?
 			//(subtract one parameter to account for bot)
-			assertEquals(constParams.length - 1, clazz.getDeclaredFields().length, "Number of Contructor paramenters in " + TestUtils.genClass("Event", clazz) + " don't match number of fields");
+			assertEquals(constParams.length - 1, clazz.getDeclaredFields().length, TestUtils.wrapClass(clazz, "Number of constructor parameters don't match number of fields"));
 		}
 		System.out.println("Success: Event constructor is good");
 	}
