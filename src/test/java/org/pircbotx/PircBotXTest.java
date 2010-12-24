@@ -19,26 +19,20 @@
 
 package org.pircbotx;
 
-import org.pircbotx.User;
-import org.pircbotx.hooks.ChannelInfo.Event;
-import org.pircbotx.hooks.Motd;
-import org.pircbotx.hooks.Topic;
-import org.pircbotx.hooks.UserList;
+import org.pircbotx.events.ActionEvent;
+import org.pircbotx.events.ChannelInfoEvent;
+import org.pircbotx.events.MotdEvent;
+import org.pircbotx.events.TopicEvent;
+import org.pircbotx.events.UserListEvent;
 import org.pircbotx.hooks.helpers.Event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.Channel;
-import org.pircbotx.ChannelListEntry;
-import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.Action;
-import org.pircbotx.hooks.ChannelInfo;
 import org.pircbotx.hooks.helpers.ListenerAdapter;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -58,7 +52,7 @@ public class PircBotXTest {
 	final String string = "AString";
 	final User user = new User(bot, "AUser");
 	final Channel chan = new Channel(bot, "AChannel");
-	final Event event = new Action.Event(bot, user, chan, string);
+	final Event event = new ActionEvent(bot, user, chan, string);
 
 	@Test
 	public void sendNamingTests() {
@@ -207,7 +201,7 @@ public class PircBotXTest {
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
 		bot.processServerResponse(323, ":End of /LIST");
-		Set<ChannelListEntry> channels = ((ChannelInfo.Event) signal.event).getList();
+		Set<ChannelListEntry> channels = ((ChannelInfoEvent) signal.event).getList();
 		assertEquals(channels.size(), 3);
 		boolean channelParsed = false;
 		for (ChannelListEntry entry : channels)
@@ -291,23 +285,24 @@ public class PircBotXTest {
 	}
 
 	public class Listener extends ListenerAdapter {
+
 		@Override
-		public void onChannelInfo(Event event) {
+		public void onChannelInfo(ChannelInfoEvent event) {
 			signal.event = event;
 		}
 
 		@Override
-		public void onMotd(Motd.Event event) {
+		public void onMotd(MotdEvent event) {
 			signal.event = event;
 		}
 
 		@Override
-		public void onTopic(Topic.Event event) {
+		public void onTopic(TopicEvent event) {
 			signal.event = event;
 		}
 
 		@Override
-		public void onUserList(UserList.Event event) {
+		public void onUserList(UserListEvent event) {
 			signal.event = event;
 		}
 	}
