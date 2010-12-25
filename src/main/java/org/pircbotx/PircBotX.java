@@ -19,7 +19,7 @@
 
 package org.pircbotx;
 
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 import org.pircbotx.events.ActionEvent;
 import org.pircbotx.events.ChannelInfoEvent;
 import org.pircbotx.events.ConnectEvent;
@@ -70,8 +70,8 @@ import org.pircbotx.events.UserListEvent;
 import org.pircbotx.events.UserModeEvent;
 import org.pircbotx.events.VersionEvent;
 import org.pircbotx.events.VoiceEvent;
-import org.pircbotx.hooks.helpers.Event;
-import org.pircbotx.hooks.helpers.ListenerManager;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.ListenerManager;
 import org.pircbotx.listeners.ActionListener;
 import org.pircbotx.listeners.ChannelInfoListener;
 import org.pircbotx.listeners.ConnectListener;

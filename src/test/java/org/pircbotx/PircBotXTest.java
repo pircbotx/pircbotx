@@ -24,7 +24,7 @@ import org.pircbotx.events.ChannelInfoEvent;
 import org.pircbotx.events.MotdEvent;
 import org.pircbotx.events.TopicEvent;
 import org.pircbotx.events.UserListEvent;
-import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.Event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.hooks.helpers.ListenerAdapter;
+import org.pircbotx.hooks.ListenerAdapter;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 

@@ -20,7 +20,7 @@
 package org.pircbotx.listeners;
 
 import org.pircbotx.events.SetChannelLimitEvent;
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 
 public interface SetChannelLimitListener extends Listener {
 	public void onSetChannelLimit(SetChannelLimitEvent event);

@@ -17,39 +17,11 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.hooks.helpers;
-
-import java.util.Set;
-import org.pircbotx.exception.UnknownEventException;
+package org.pircbotx.hooks;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface ListenerManager<I extends Listener> {
-	/**
-	 * Sends event to all appropriate listeners.
-	 * @param event The event to send
-	 */
-	public void dispatchEvent(Event event) throws UnknownEventException;
-
-	/**
-	 * Adds an I listener to the list of
-	 * listeners for an event.
-	 * @param listener The listener to add
-	 */
-	public void addListener(I listener);
-
-	/**
-	 * Removes an I Listener from the list
-	 * listeners for an event
-	 * @param listener
-	 */
-	public void removeListener(I listener);
-
-	/**
-	 * Gets all the listeners to an event
-	 * @return An <b>Immutable set</b> of I listeners
-	 */
-	public Set<I> getListeners();
+public interface Listener {
 }

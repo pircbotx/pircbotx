@@ -61,7 +61,7 @@ import org.pircbotx.events.TopicEvent;
 import org.pircbotx.events.UserModeEvent;
 import org.pircbotx.events.VersionEvent;
 import org.pircbotx.events.VoiceEvent;
-import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.Event;
 
 
 /**

@@ -20,7 +20,7 @@
 package org.pircbotx.listeners;
 
 import org.pircbotx.events.SetInviteOnlyEvent;
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 
 public interface SetInviteOnlyListener extends Listener {
 	public void onSetInviteOnly(SetInviteOnlyEvent event);

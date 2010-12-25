@@ -20,7 +20,7 @@
 package org.pircbotx.listeners;
 
 import org.pircbotx.events.InviteEvent;
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 
 public interface InviteListener extends Listener {
 	public void onInvite(InviteEvent event);

@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
-import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
