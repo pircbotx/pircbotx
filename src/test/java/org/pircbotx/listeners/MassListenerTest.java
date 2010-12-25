@@ -66,22 +66,4 @@ public class MassListenerTest {
 			assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
 		}
 	}
-
-	@Test(dependsOnMethods={"methodNumTest"})
-	public void parameterCheck() {
-		//Get all the Listeners that are part of ListenerAdapterInterface
-		for (Class<?> listenerClass : listenerClasses) {
-			Method method = listenerClass.getMethods()[0];
-			Class<?>[] params = method.getParameterTypes();
-
-			//Should only have 1 parameter
-			assertEquals(params.length, 1, TestUtils.wrapClass(listenerClass, "More than one method parameter found"));
-
-			//Should be using the correct class correctly
-			String paramName = params[0].getSimpleName();
-			String listenerName = listenerClass.getSimpleName();
-			//Strip out suffixes and make sure the root is equal
-			assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
-		}
-	}
 }
