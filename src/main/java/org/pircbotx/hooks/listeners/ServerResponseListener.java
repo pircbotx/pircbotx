@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface ServerResponseListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.ServerResponse} events
+ * @see org.pircbotx.hooks.events.ServerResponse
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface ServerResponseListener extends Listener {
 	public void onServerResponse(ServerResponseEvent event);
 }

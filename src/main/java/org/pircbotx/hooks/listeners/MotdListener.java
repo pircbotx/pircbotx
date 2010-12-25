@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface MotdListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Motd} events
+ * @see org.pircbotx.hooks.events.Motd
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface MotdListener extends Listener {
 	public void onMotd(MotdEvent event);
 }

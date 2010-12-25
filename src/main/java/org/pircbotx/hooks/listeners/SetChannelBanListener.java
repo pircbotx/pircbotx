@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.SetChannelBanEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface SetChannelBanListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.SetChannelBan} events
+ * @see org.pircbotx.hooks.events.SetChannelBan
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface SetChannelBanListener extends Listener {
 	public void onSetChannelBan(SetChannelBanEvent event);
 }

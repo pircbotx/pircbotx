@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface ServerPingListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.ServerPing} events
+ * @see org.pircbotx.hooks.events.ServerPing
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface ServerPingListener extends Listener {
 	public void onServerPing(ServerPingEvent event);
 }

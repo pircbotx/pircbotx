@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface DeopListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Deop} events
+ * @see org.pircbotx.hooks.events.Deop
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface DeopListener extends Listener {
 	public void onDeop(DeopEvent event);
 }

@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface ConnectListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Connect} events
+ * @see org.pircbotx.hooks.events.Connect
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface ConnectListener extends Listener {
 	public void onConnect(ConnectEvent event);
 }

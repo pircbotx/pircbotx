@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface SetChannelKeyListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.SetChannelKey} events
+ * @see org.pircbotx.hooks.events.SetChannelKey
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface SetChannelKeyListener extends Listener {
 	public void onSetChannelKey(SetChannelKeyEvent event);
 }

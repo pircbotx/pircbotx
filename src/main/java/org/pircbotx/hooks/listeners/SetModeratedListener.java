@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.SetModeratedEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface SetModeratedListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.SetModerated} events
+ * @see org.pircbotx.hooks.events.SetModerated
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface SetModeratedListener extends Listener {
 	public void onSetModerated(SetModeratedEvent event);
 }

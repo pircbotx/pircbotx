@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.UnknownEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface UnknownListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Unknown} events
+ * @see org.pircbotx.hooks.events.Unknown
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface UnknownListener extends Listener {
 	public void onUnknown(UnknownEvent event);
 }

@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface IncomingChatRequestListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.IncomingChatRequest} events
+ * @see org.pircbotx.hooks.events.IncomingChatRequest
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface IncomingChatRequestListener extends Listener {
 	public void onIncomingChatRequest(IncomingChatRequestEvent event);
 }

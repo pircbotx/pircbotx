@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface IncomingFileTransferListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.IncomingFileTransfer} events
+ * @see org.pircbotx.hooks.events.IncomingFileTransfer
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface IncomingFileTransferListener extends Listener {
 	public void onIncomingFileTransfer(IncomingFileTransferEvent event);
 }

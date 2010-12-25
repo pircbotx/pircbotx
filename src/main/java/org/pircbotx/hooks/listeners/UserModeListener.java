@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface UserModeListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.UserMode} events
+ * @see org.pircbotx.hooks.events.UserMode
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface UserModeListener extends Listener {
 	public void onUserMode(UserModeEvent event);
 }
