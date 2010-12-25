@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.events;
 
 import java.lang.annotation.Annotation;
@@ -48,22 +47,26 @@ public class MassEventTest {
 			eventClasses.add(listenerClass.getDeclaredMethods()[0].getParameterTypes()[0]);
 	}
 
-	public void constructorTest() {
-		for (Class<?> clazz : eventClasses) {
+	@Test
+	public void constructorNumTest() {
+		for (Class<?> clazz : eventClasses)
 			//Is there only one constructor?
-			Constructor[] constructors = clazz.getDeclaredConstructors();
-			assertEquals(constructors.length, 1, TestUtils.wrapClass(clazz, "No constructor or extra constructor found"));
+			assertEquals(clazz.getDeclaredConstructors().length, 1, TestUtils.wrapClass(clazz, "No constructor or extra constructor found"));
+		System.out.println("Success: Event constructor is good");
+	}
 
-			Constructor constructor = constructors[0];
-
+	@Test(dependsOnMethods = {"constructorNumTest"})
+	public void constructorFirstParamTest() {
+		for (Class<?> clazz : eventClasses)
 			//Is the first parameter a bot refrence?
-			Class[] constParams = constructor.getParameterTypes();
-			assertEquals(constParams[0], PircBotX.class, TestUtils.wrapClass(clazz, "First parameter of constructor isn't of PircBotX type"));
+			assertEquals(clazz.getDeclaredConstructors()[0].getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(clazz, "First parameter of constructor isn't of PircBotX type"));
+	}
 
+	@Test(dependsOnMethods = {"constructorNumTest","constructorFirstParamTest"})
+	public void constructorToFieldNumTest() {
+		for (Class<?> clazz : eventClasses)
 			//Are the number of fields and constructor parameters equal?
 			//(subtract one parameter to account for bot)
-			assertEquals(constParams.length - 1, clazz.getDeclaredFields().length, TestUtils.wrapClass(clazz, "Number of constructor parameters don't match number of fields"));
-		}
-		System.out.println("Success: Event constructor is good");
+			assertEquals(clazz.getDeclaredConstructors()[0].getParameterTypes().length - 1, clazz.getDeclaredFields().length, TestUtils.wrapClass(clazz, "Number of constructor parameters don't match number of fields"));
 	}
 }
