@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Voice} events
+ * Listener for {@link org.pircbotx.hooks.events.VoiceEvent}events
  * @see org.pircbotx.hooks.events.Voice
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface VoiceListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Voice} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.VoiceEvent}occurs
 	 * @param event The generated VoiceEvent
 	 */
 	public void onVoice(VoiceEvent event);

@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetNoExternalMessages} events
+ * Listener for {@link org.pircbotx.hooks.events.SetNoExternalMessagesEvent}events
  * @see org.pircbotx.hooks.events.SetNoExternalMessages
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetNoExternalMessagesListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetNoExternalMessages} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetNoExternalMessagesEvent}occurs
 	 * @param event The generated SetNoExternalMessagesEvent
 	 */
 	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event);

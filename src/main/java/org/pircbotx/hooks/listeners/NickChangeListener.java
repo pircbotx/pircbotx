@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.NickChange} events
+ * Listener for {@link org.pircbotx.hooks.events.NickChangeEvent}events
  * @see org.pircbotx.hooks.events.NickChange
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface NickChangeListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.NickChange} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.NickChangeEvent}occurs
 	 * @param event The generated NickChangeEvent
 	 */
 	public void onNickChange(NickChangeEvent event);

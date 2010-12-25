@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Version} events
+ * Listener for {@link org.pircbotx.hooks.events.VersionEvent}events
  * @see org.pircbotx.hooks.events.Version
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface VersionListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Version} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.VersionEvent}occurs
 	 * @param event The generated VersionEvent
 	 */
 	public void onVersion(VersionEvent event);

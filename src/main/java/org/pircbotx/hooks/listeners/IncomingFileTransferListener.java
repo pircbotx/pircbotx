@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.IncomingFileTransfer} events
+ * Listener for {@link org.pircbotx.hooks.events.IncomingFileTransferEvent}events
  * @see org.pircbotx.hooks.events.IncomingFileTransfer
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface IncomingFileTransferListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingFileTransfer} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingFileTransferEvent}occurs
 	 * @param event The generated IncomingFileTransferEvent
 	 */
 	public void onIncomingFileTransfer(IncomingFileTransferEvent event);

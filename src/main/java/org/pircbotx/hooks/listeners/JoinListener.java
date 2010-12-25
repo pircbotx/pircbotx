@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Join} events
+ * Listener for {@link org.pircbotx.hooks.events.JoinEvent}events
  * @see org.pircbotx.hooks.events.Join
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface JoinListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Join} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.JoinEvent}occurs
 	 * @param event The generated JoinEvent
 	 */
 	public void onJoin(JoinEvent event);

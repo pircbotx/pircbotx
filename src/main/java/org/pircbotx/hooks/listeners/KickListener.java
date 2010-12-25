@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Kick} events
+ * Listener for {@link org.pircbotx.hooks.events.KickEvent}events
  * @see org.pircbotx.hooks.events.Kick
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface KickListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Kick} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.KickEvent}occurs
 	 * @param event The generated KickEvent
 	 */
 	public void onKick(KickEvent event);

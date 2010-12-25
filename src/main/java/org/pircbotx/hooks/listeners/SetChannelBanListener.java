@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetChannelBanEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetChannelBan} events
+ * Listener for {@link org.pircbotx.hooks.events.SetChannelBanEvent}events
  * @see org.pircbotx.hooks.events.SetChannelBan
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetChannelBanListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelBan} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelBanEvent}occurs
 	 * @param event The generated SetChannelBanEvent
 	 */
 	public void onSetChannelBan(SetChannelBanEvent event);

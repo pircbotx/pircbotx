@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Connect} events
+ * Listener for {@link org.pircbotx.hooks.events.ConnectEvent}events
  * @see org.pircbotx.hooks.events.Connect
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ConnectListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Connect} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.ConnectEvent}occurs
 	 * @param event The generated ConnectEvent
 	 */
 	public void onConnect(ConnectEvent event);

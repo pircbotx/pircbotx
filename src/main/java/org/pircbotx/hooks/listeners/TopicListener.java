@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Topic} events
+ * Listener for {@link org.pircbotx.hooks.events.TopicEvent}events
  * @see org.pircbotx.hooks.events.Topic
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface TopicListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Topic} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.TopicEvent}occurs
 	 * @param event The generated TopicEvent
 	 */
 	public void onTopic(TopicEvent event);

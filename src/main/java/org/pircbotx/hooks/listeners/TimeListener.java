@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Time} events
+ * Listener for {@link org.pircbotx.hooks.events.TimeEvent}events
  * @see org.pircbotx.hooks.events.Time
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface TimeListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Time} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.TimeEvent}occurs
 	 * @param event The generated TimeEvent
 	 */
 	public void onTime(TimeEvent event);

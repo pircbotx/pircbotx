@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.FileTransferFinished} events
+ * Listener for {@link org.pircbotx.hooks.events.FileTransferFinishedEvent}events
  * @see org.pircbotx.hooks.events.FileTransferFinished
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface FileTransferFinishedListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.FileTransferFinished} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.FileTransferFinishedEvent}occurs
 	 * @param event The generated FileTransferFinishedEvent
 	 */
 	public void onFileTransferFinished(FileTransferFinishedEvent event);

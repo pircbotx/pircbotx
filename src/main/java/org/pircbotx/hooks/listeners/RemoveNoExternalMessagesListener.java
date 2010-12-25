@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemoveNoExternalMessages} events
+ * Listener for {@link org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent}events
  * @see org.pircbotx.hooks.events.RemoveNoExternalMessages
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveNoExternalMessagesListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveNoExternalMessages} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent}occurs
 	 * @param event The generated RemoveNoExternalMessagesEvent
 	 */
 	public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event);

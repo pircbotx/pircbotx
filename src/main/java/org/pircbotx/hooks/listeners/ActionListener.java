@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Action} events
+ * Listener for {@link org.pircbotx.hooks.events.ActionEvent}events
  * @see org.pircbotx.hooks.events.Action
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ActionListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Action} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.ActionEvent}occurs
 	 * @param event The generated ActionEvent
 	 */
 	public void onAction(ActionEvent event);

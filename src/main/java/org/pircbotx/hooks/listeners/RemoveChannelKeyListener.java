@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemoveChannelKey} events
+ * Listener for {@link org.pircbotx.hooks.events.RemoveChannelKeyEvent}events
  * @see org.pircbotx.hooks.events.RemoveChannelKey
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveChannelKeyListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelKey} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelKeyEvent}occurs
 	 * @param event The generated RemoveChannelKeyEvent
 	 */
 	public void onRemoveChannelKey(RemoveChannelKeyEvent event);

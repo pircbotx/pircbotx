@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemoveInviteOnlyEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemoveInviteOnly} events
+ * Listener for {@link org.pircbotx.hooks.events.RemoveInviteOnlyEvent}events
  * @see org.pircbotx.hooks.events.RemoveInviteOnly
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveInviteOnlyListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveInviteOnly} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveInviteOnlyEvent}occurs
 	 * @param event The generated RemoveInviteOnlyEvent
 	 */
 	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event);
