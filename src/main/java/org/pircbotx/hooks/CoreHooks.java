@@ -25,11 +25,11 @@ import org.pircbotx.events.PingEvent;
 import org.pircbotx.events.ServerPingEvent;
 import org.pircbotx.events.TimeEvent;
 import org.pircbotx.events.VersionEvent;
-import org.pircbotx.listeners.FingerListener;
-import org.pircbotx.listeners.PingListener;
-import org.pircbotx.listeners.ServerPingListener;
-import org.pircbotx.listeners.TimeListener;
-import org.pircbotx.listeners.VersionListener;
+import org.pircbotx.hooks.listeners.FingerListener;
+import org.pircbotx.hooks.listeners.PingListener;
+import org.pircbotx.hooks.listeners.ServerPingListener;
+import org.pircbotx.hooks.listeners.TimeListener;
+import org.pircbotx.hooks.listeners.VersionListener;
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>

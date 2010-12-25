@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.listeners.VoiceListener;
+import org.pircbotx.hooks.listeners.VoiceListener;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
