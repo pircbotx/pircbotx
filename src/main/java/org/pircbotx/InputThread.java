@@ -22,7 +22,7 @@ package org.pircbotx;
 import java.io.BufferedReader;
 import java.io.InterruptedIOException;
 import java.net.Socket;
-import org.pircbotx.events.DisconnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 
 /**
  * A Thread which reads lines from the IRC server.  It then

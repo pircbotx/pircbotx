@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.DeVoiceEvent;
+import org.pircbotx.hooks.events.DeVoiceEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface DeVoiceListener extends Listener {

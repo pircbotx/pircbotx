@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.ActionEvent;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface ActionListener extends Listener {

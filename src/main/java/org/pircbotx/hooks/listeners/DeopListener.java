@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.DeopEvent;
+import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface DeopListener extends Listener {

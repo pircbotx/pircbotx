@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.MotdEvent;
+import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface MotdListener extends Listener {

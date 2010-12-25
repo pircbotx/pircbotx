@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.InviteEvent;
+import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface InviteListener extends Listener {

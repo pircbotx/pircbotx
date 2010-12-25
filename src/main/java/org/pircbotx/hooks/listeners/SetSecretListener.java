@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetSecretEvent;
+import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetSecretListener extends Listener {

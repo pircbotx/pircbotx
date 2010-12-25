@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.RemoveChannelBanEvent;
+import org.pircbotx.hooks.events.RemoveChannelBanEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface RemoveChannelBanListener extends Listener {

@@ -20,11 +20,11 @@
 package org.pircbotx.hooks;
 
 import java.util.Date;
-import org.pircbotx.events.FingerEvent;
-import org.pircbotx.events.PingEvent;
-import org.pircbotx.events.ServerPingEvent;
-import org.pircbotx.events.TimeEvent;
-import org.pircbotx.events.VersionEvent;
+import org.pircbotx.hooks.events.FingerEvent;
+import org.pircbotx.hooks.events.PingEvent;
+import org.pircbotx.hooks.events.ServerPingEvent;
+import org.pircbotx.hooks.events.TimeEvent;
+import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.listeners.FingerListener;
 import org.pircbotx.hooks.listeners.PingListener;
 import org.pircbotx.hooks.listeners.ServerPingListener;

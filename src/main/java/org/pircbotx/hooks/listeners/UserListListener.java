@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.UserListEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface UserListListener extends Listener {

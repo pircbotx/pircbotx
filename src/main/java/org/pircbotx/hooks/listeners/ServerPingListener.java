@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.ServerPingEvent;
+import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface ServerPingListener extends Listener {

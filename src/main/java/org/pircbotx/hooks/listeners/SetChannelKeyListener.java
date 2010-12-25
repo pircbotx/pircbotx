@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetChannelKeyEvent;
+import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetChannelKeyListener extends Listener {

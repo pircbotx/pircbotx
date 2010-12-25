@@ -19,11 +19,11 @@
 
 package org.pircbotx;
 
-import org.pircbotx.events.ActionEvent;
-import org.pircbotx.events.ChannelInfoEvent;
-import org.pircbotx.events.MotdEvent;
-import org.pircbotx.events.TopicEvent;
-import org.pircbotx.events.UserListEvent;
+import org.pircbotx.hooks.events.ActionEvent;
+import org.pircbotx.hooks.events.ChannelInfoEvent;
+import org.pircbotx.hooks.events.MotdEvent;
+import org.pircbotx.hooks.events.TopicEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

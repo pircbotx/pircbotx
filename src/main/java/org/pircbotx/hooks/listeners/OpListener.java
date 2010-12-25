@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.OpEvent;
+import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface OpListener extends Listener {

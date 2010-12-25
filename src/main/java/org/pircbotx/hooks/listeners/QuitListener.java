@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.QuitEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface QuitListener extends Listener {

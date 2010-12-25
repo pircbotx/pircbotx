@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.ServerResponseEvent;
+import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface ServerResponseListener extends Listener {

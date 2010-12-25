@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetModeratedEvent;
+import org.pircbotx.hooks.events.SetModeratedEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetModeratedListener extends Listener {

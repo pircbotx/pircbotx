@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetTopicProtectionEvent;
+import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetTopicProtectionListener extends Listener {

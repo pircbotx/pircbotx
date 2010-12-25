@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.ModeEvent;
+import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface ModeListener extends Listener {

@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.RemoveChannelKeyEvent;
+import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface RemoveChannelKeyListener extends Listener {

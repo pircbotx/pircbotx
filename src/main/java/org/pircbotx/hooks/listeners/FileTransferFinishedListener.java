@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.FileTransferFinishedEvent;
+import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface FileTransferFinishedListener extends Listener {

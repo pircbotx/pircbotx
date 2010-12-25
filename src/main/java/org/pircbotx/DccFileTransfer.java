@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import org.pircbotx.events.FileTransferFinishedEvent;
+import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 
 /**
  * This class is used to administer a DCC file transfer.

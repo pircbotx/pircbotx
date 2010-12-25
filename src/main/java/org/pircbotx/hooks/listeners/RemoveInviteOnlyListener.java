@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.RemoveInviteOnlyEvent;
+import org.pircbotx.hooks.events.RemoveInviteOnlyEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface RemoveInviteOnlyListener extends Listener {
