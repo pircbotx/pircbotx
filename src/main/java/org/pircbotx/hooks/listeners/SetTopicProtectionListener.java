@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface SetTopicProtectionListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.SetTopicProtection} events
+ * @see org.pircbotx.hooks.events.SetTopicProtection
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface SetTopicProtectionListener extends Listener {
 	public void onSetTopicProtection(SetTopicProtectionEvent event);
 }

@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface OpListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Op} events
+ * @see org.pircbotx.hooks.events.Op
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface OpListener extends Listener {
 	public void onOp(OpEvent event);
 }

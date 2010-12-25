@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.RemovePrivateEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface RemovePrivateListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.RemovePrivate} events
+ * @see org.pircbotx.hooks.events.RemovePrivate
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface RemovePrivateListener extends Listener {
 	public void onRemovePrivate(RemovePrivateEvent event);
 }

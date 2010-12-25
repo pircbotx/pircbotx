@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface NickChangeListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.NickChange} events
+ * @see org.pircbotx.hooks.events.NickChange
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface NickChangeListener extends Listener {
 	public void onNickChange(NickChangeEvent event);
 }

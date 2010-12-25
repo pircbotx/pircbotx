@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface TopicListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Topic} events
+ * @see org.pircbotx.hooks.events.Topic
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface TopicListener extends Listener {
 	public void onTopic(TopicEvent event);
 }

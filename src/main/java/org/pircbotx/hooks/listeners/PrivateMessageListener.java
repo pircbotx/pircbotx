@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface PrivateMessageListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.PrivateMessage} events
+ * @see org.pircbotx.hooks.events.PrivateMessage
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface PrivateMessageListener extends Listener {
 	public void onPrivateMessage(PrivateMessageEvent event);
 }

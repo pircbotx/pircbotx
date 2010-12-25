@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface VersionListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Version} events
+ * @see org.pircbotx.hooks.events.Version
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface VersionListener extends Listener {
 	public void onVersion(VersionEvent event);
 }

@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface ActionListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Action} events
+ * @see org.pircbotx.hooks.events.Action
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface ActionListener extends Listener {
 	public void onAction(ActionEvent event);
 }

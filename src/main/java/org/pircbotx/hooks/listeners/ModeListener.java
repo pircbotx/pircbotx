@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface ModeListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Mode} events
+ * @see org.pircbotx.hooks.events.Mode
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface ModeListener extends Listener {
 	public void onMode(ModeEvent event);
 }

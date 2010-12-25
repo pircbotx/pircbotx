@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface TimeListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Time} events
+ * @see org.pircbotx.hooks.events.Time
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface TimeListener extends Listener {
 	public void onTime(TimeEvent event);
 }

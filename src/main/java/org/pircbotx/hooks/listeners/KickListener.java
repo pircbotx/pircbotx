@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface KickListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Kick} events
+ * @see org.pircbotx.hooks.events.Kick
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface KickListener extends Listener {
 	public void onKick(KickEvent event);
 }

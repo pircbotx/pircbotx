@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface VoiceListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Voice} events
+ * @see org.pircbotx.hooks.events.Voice
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface VoiceListener extends Listener {
 	public void onVoice(VoiceEvent event);
 }

@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface RemoveChannelKeyListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.RemoveChannelKey} events
+ * @see org.pircbotx.hooks.events.RemoveChannelKey
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface RemoveChannelKeyListener extends Listener {
 	public void onRemoveChannelKey(RemoveChannelKeyEvent event);
 }

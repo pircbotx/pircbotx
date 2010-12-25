@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface InviteListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Invite} events
+ * @see org.pircbotx.hooks.events.Invite
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface InviteListener extends Listener {
 	public void onInvite(InviteEvent event);
 }

@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.RemoveInviteOnlyEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface RemoveInviteOnlyListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.RemoveInviteOnly} events
+ * @see org.pircbotx.hooks.events.RemoveInviteOnly
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface RemoveInviteOnlyListener extends Listener {
 	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event);
 }

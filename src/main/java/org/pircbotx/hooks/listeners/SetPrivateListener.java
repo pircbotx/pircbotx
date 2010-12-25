@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface SetPrivateListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.SetPrivate} events
+ * @see org.pircbotx.hooks.events.SetPrivate
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface SetPrivateListener extends Listener {
 	public void onSetPrivate(SetPrivateEvent event);
 }

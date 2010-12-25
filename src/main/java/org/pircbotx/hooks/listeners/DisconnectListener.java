@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface DisconnectListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Disconnect} events
+ * @see org.pircbotx.hooks.events.Disconnect
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface DisconnectListener extends Listener {
 	public void onDisconnect(DisconnectEvent event);
 }

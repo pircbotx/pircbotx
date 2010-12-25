@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface QuitListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Quit} events
+ * @see org.pircbotx.hooks.events.Quit
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface QuitListener extends Listener {
 	public void onQuit(QuitEvent event);
 }

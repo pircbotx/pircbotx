@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface SetSecretListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.SetSecret} events
+ * @see org.pircbotx.hooks.events.SetSecret
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface SetSecretListener extends Listener {
 	public void onSetSecret(SetSecretEvent event);
 }

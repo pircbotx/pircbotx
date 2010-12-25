@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface JoinListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.Join} events
+ * @see org.pircbotx.hooks.events.Join
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface JoinListener extends Listener {
 	public void onJoin(JoinEvent event);
 }

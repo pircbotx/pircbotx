@@ -22,6 +22,11 @@ package org.pircbotx.hooks.listeners;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Listener;
 
-public interface UserListListener extends Listener {
+/**
+ * Listener for {@link org.pircbotx.hooks.events.UserList} events
+ * @see org.pircbotx.hooks.events.UserList
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+ public interface UserListListener extends Listener {
 	public void onUserList(UserListEvent event);
 }
