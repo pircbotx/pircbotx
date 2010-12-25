@@ -76,8 +76,7 @@ public class AdapterListenerTest {
 	protected void subtract(Class testClazz, List<String> testClasses) {
 		List<String> clazzesCopy = new ArrayList(testClasses);
 		for (Class curClazz : testClazz.getInterfaces()) {
-			assertNotNull(curClazz.getEnclosingClass(), curClazz + " is not a sub class");
-			clazzesCopy.remove(curClazz.getEnclosingClass().getSimpleName());
+			clazzesCopy.remove(curClazz.getSimpleName());
 		}
 		String leftOver = "";
 		for (String leftOverClazz : clazzesCopy)
