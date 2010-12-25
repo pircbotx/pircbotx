@@ -18,13 +18,8 @@
  */
 package org.pircbotx.events;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
 import static org.testng.Assert.*;
