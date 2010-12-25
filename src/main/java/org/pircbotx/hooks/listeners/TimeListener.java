@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface TimeListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Time} occurs
+	 * @param event The generated TimeEvent
+	 */
 	public void onTime(TimeEvent event);
 }

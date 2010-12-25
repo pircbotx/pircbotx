@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface VoiceListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Voice} occurs
+	 * @param event The generated VoiceEvent
+	 */
 	public void onVoice(VoiceEvent event);
 }

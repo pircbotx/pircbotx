@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ConnectListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Connect} occurs
+	 * @param event The generated ConnectEvent
+	 */
 	public void onConnect(ConnectEvent event);
 }

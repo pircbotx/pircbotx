@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveModeratedListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveModerated} occurs
+	 * @param event The generated RemoveModeratedEvent
+	 */
 	public void onRemoveModerated(RemoveModeratedEvent event);
 }

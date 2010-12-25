@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface PrivateMessageListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.PrivateMessage} occurs
+	 * @param event The generated PrivateMessageEvent
+	 */
 	public void onPrivateMessage(PrivateMessageEvent event);
 }

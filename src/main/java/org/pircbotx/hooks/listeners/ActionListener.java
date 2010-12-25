@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ActionListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Action} occurs
+	 * @param event The generated ActionEvent
+	 */
 	public void onAction(ActionEvent event);
 }

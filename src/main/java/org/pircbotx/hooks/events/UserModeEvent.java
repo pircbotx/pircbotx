@@ -19,12 +19,13 @@
 
 package org.pircbotx.hooks.events;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-
 /**
  * Called when the mode of a user is set.
  *  <p>
@@ -51,5 +52,11 @@ public class UserModeEvent extends Event {
 		this.target = target;
 		this.source = source;
 		this.mode = mode;
+		ActionListener listener = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+			
+		};
 	}
 }

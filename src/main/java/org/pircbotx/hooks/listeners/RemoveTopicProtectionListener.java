@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveTopicProtectionListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveTopicProtection} occurs
+	 * @param event The generated RemoveTopicProtectionEvent
+	 */
 	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event);
 }

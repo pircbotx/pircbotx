@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface DisconnectListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Disconnect} occurs
+	 * @param event The generated DisconnectEvent
+	 */
 	public void onDisconnect(DisconnectEvent event);
 }

@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface NickChangeListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.NickChange} occurs
+	 * @param event The generated NickChangeEvent
+	 */
 	public void onNickChange(NickChangeEvent event);
 }

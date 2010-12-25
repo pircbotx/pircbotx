@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface IncomingChatRequestListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingChatRequest} occurs
+	 * @param event The generated IncomingChatRequestEvent
+	 */
 	public void onIncomingChatRequest(IncomingChatRequestEvent event);
 }

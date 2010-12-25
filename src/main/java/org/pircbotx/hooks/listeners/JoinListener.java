@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface JoinListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Join} occurs
+	 * @param event The generated JoinEvent
+	 */
 	public void onJoin(JoinEvent event);
 }

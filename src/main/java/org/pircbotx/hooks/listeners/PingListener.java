@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface PingListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Ping} occurs
+	 * @param event The generated PingEvent
+	 */
 	public void onPing(PingEvent event);
 }

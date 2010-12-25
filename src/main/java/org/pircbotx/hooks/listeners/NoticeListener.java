@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface NoticeListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Notice} occurs
+	 * @param event The generated NoticeEvent
+	 */
 	public void onNotice(NoticeEvent event);
 }

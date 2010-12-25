@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface MotdListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Motd} occurs
+	 * @param event The generated MotdEvent
+	 */
 	public void onMotd(MotdEvent event);
 }

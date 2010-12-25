@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ServerResponseListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.ServerResponse} occurs
+	 * @param event The generated ServerResponseEvent
+	 */
 	public void onServerResponse(ServerResponseEvent event);
 }

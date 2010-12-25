@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface InviteListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Invite} occurs
+	 * @param event The generated InviteEvent
+	 */
 	public void onInvite(InviteEvent event);
 }

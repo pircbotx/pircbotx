@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ChannelInfoListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.ChannelInfo} occurs
+	 * @param event The generated ChannelInfoEvent
+	 */
 	public void onChannelInfo(ChannelInfoEvent event);
 }

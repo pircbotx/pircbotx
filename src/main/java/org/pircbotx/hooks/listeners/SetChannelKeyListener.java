@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetChannelKeyListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelKey} occurs
+	 * @param event The generated SetChannelKeyEvent
+	 */
 	public void onSetChannelKey(SetChannelKeyEvent event);
 }
