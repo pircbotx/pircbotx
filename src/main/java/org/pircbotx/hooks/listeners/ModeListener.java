@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ModeListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Mode} occurs
+	 * @param event The generated ModeEvent
+	 */
 	public void onMode(ModeEvent event);
 }

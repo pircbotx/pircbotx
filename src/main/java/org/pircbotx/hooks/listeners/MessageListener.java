@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface MessageListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Message} occurs
+	 * @param event The generated MessageEvent
+	 */
 	public void onMessage(MessageEvent event);
 }

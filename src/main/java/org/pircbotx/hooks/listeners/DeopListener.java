@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface DeopListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Deop} occurs
+	 * @param event The generated DeopEvent
+	 */
 	public void onDeop(DeopEvent event);
 }

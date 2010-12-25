@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface KickListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Kick} occurs
+	 * @param event The generated KickEvent
+	 */
 	public void onKick(KickEvent event);
 }

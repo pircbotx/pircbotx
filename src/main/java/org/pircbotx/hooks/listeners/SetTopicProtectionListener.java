@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetTopicProtectionListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetTopicProtection} occurs
+	 * @param event The generated SetTopicProtectionEvent
+	 */
 	public void onSetTopicProtection(SetTopicProtectionEvent event);
 }

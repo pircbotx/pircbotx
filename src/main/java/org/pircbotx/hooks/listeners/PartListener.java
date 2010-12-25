@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface PartListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Part} occurs
+	 * @param event The generated PartEvent
+	 */
 	public void onPart(PartEvent event);
 }

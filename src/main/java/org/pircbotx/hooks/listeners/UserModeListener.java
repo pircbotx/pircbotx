@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface UserModeListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.UserMode} occurs
+	 * @param event The generated UserModeEvent
+	 */
 	public void onUserMode(UserModeEvent event);
 }

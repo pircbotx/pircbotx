@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface UserListListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.UserList} occurs
+	 * @param event The generated UserListEvent
+	 */
 	public void onUserList(UserListEvent event);
 }

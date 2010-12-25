@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetSecretListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetSecret} occurs
+	 * @param event The generated SetSecretEvent
+	 */
 	public void onSetSecret(SetSecretEvent event);
 }

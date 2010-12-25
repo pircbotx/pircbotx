@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetModeratedListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetModerated} occurs
+	 * @param event The generated SetModeratedEvent
+	 */
 	public void onSetModerated(SetModeratedEvent event);
 }

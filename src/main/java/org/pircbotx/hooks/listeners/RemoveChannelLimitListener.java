@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveChannelLimitListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelLimit} occurs
+	 * @param event The generated RemoveChannelLimitEvent
+	 */
 	public void onRemoveChannelLimit(RemoveChannelLimitEvent event);
 }

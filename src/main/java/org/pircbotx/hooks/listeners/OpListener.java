@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface OpListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Op} occurs
+	 * @param event The generated OpEvent
+	 */
 	public void onOp(OpEvent event);
 }

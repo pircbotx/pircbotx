@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveSecretListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveSecret} occurs
+	 * @param event The generated RemoveSecretEvent
+	 */
 	public void onRemoveSecret(RemoveSecretEvent event);
 }

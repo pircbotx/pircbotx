@@ -28,5 +28,9 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface VersionListener extends Listener {
+	/**
+	 * Invoked when an {@link org.pircbotx.hooks.events.Version} occurs
+	 * @param event The generated VersionEvent
+	 */
 	public void onVersion(VersionEvent event);
 }
