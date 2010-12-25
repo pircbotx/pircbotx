@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
 import org.pircbotx.listeners.VoiceListener;
 import org.testng.annotations.Test;
@@ -78,9 +79,7 @@ public class AdapterListenerTest {
 		for (Class curClazz : testClazz.getInterfaces()) {
 			clazzesCopy.remove(curClazz.getSimpleName());
 		}
-		String leftOver = "";
-		for (String leftOverClazz : clazzesCopy)
-			leftOver += leftOverClazz;
+		String leftOver = StringUtils.join(clazzesCopy.toArray(),", ");
 		assertEquals(clazzesCopy.size(), 0, testClazz.getSimpleName() + " does not implment " + leftOver);
 	}
 }
