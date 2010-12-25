@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface PrivateMessageListener extends Listener {

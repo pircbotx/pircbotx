@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.UserModeEvent;
+import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface UserModeListener extends Listener {

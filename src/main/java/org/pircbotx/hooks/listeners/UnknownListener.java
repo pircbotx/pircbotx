@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.UnknownEvent;
+import org.pircbotx.hooks.events.UnknownEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface UnknownListener extends Listener {

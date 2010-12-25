@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.NoticeEvent;
+import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface NoticeListener extends Listener {

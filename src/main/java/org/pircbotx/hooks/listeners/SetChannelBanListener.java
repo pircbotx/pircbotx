@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetChannelBanEvent;
+import org.pircbotx.hooks.events.SetChannelBanEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetChannelBanListener extends Listener {

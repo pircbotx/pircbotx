@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.IncomingChatRequestEvent;
+import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface IncomingChatRequestListener extends Listener {

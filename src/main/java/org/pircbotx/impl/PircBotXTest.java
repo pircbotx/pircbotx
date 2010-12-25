@@ -20,8 +20,8 @@
 package org.pircbotx.impl;
 
 import org.pircbotx.PircBotX;
-import org.pircbotx.events.ConnectEvent;
-import org.pircbotx.events.UserListEvent;
+import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.listeners.ConnectListener;
 import org.pircbotx.hooks.listeners.UserListListener;
 

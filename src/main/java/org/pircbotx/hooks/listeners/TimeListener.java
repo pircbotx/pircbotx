@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.TimeEvent;
+import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface TimeListener extends Listener {

@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.NickChangeEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface NickChangeListener extends Listener {

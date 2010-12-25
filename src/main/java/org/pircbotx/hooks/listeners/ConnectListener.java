@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.ConnectEvent;
+import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface ConnectListener extends Listener {

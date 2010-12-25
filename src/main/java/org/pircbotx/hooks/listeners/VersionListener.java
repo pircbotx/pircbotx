@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.VersionEvent;
+import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface VersionListener extends Listener {

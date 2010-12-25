@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.FingerEvent;
+import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface FingerListener extends Listener {

@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.ChannelInfoEvent;
+import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface ChannelInfoListener extends Listener {

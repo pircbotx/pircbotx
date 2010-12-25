@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.RemoveSecretEvent;
+import org.pircbotx.hooks.events.RemoveSecretEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface RemoveSecretListener extends Listener {

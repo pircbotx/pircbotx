@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.RemoveModeratedEvent;
+import org.pircbotx.hooks.events.RemoveModeratedEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface RemoveModeratedListener extends Listener {

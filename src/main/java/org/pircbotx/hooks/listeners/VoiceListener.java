@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.VoiceEvent;
+import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface VoiceListener extends Listener {

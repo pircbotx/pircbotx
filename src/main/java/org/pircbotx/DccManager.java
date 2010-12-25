@@ -21,8 +21,8 @@ package org.pircbotx;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
-import org.pircbotx.events.IncomingChatRequestEvent;
-import org.pircbotx.events.IncomingFileTransferEvent;
+import org.pircbotx.hooks.events.IncomingChatRequestEvent;
+import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
 /**
  * This class is used to process DCC events from the server.

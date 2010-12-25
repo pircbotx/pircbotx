@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetNoExternalMessagesEvent;
+import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetNoExternalMessagesListener extends Listener {

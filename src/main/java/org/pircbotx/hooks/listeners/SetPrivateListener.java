@@ -19,7 +19,7 @@
 
 package org.pircbotx.hooks.listeners;
 
-import org.pircbotx.events.SetPrivateEvent;
+import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.Listener;
 
 public interface SetPrivateListener extends Listener {
