@@ -72,7 +72,7 @@ public class MassListenerTest {
 			assertEquals(params.length, 1, TestUtils.wrapClass(listenerClass, "More than one method parameter found"));
 
 			//Should be using the correct class correctly
-			String paramName = params.getClass().getSimpleName();
+			String paramName = params[0].getSimpleName();
 			String listenerName = listenerClass.getSimpleName();
 			//Strip out suffixes and make sure the root is equal
 			assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
