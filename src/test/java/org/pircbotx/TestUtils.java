@@ -16,10 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
-import java.lang.reflect.Method;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -28,5 +27,17 @@ import java.lang.reflect.Method;
 public class TestUtils {
 	public static String wrapClass(Class aClass, String message) {
 		return message + " in class " + aClass.toString();
+	}
+
+	public static String getRootName(Class aClass) {
+		String name = aClass.getSimpleName();
+
+		if (StringUtils.endsWith(name, "Event"))
+			return StringUtils.stripEnd(name, "Event");
+		else if (StringUtils.endsWith(name, "Listener"))
+			return StringUtils.stripEnd(name, "Listener");
+
+		//Can't get anything, error out
+		throw new IllegalArgumentException("Cannot get root of class name " + aClass.toString());
 	}
 }
