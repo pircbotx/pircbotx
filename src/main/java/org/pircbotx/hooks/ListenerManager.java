@@ -17,36 +17,41 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.hooks.helpers;
+package org.pircbotx.hooks;
 
-import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.Event;
+import java.util.Set;
+import org.pircbotx.exception.UnknownEventException;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class Event<T extends PircBotX> {
-	protected final long timestamp;
-	protected final T bot;
-	
-	public Event(T bot) {
-		this.timestamp = System.currentTimeMillis();
-		this.bot = bot;
-	}
+public interface ListenerManager<I extends Listener> {
+	/**
+	 * Sends event to all appropriate listeners.
+	 * @param event The event to send
+	 */
+	public void dispatchEvent(Event event) throws UnknownEventException;
 
 	/**
-	 * Returns the {@link PircBotX} instance that this event originally came from
-	 * @return A {@link PircBotX} instance
+	 * Adds an I listener to the list of
+	 * listeners for an event.
+	 * @param listener The listener to add
 	 */
-	protected final T getBot() {
-		return bot;
-	}
+	public void addListener(I listener);
 
 	/**
-	 * Returns the timestamp of when the event was created
-	 * @return A timestamp as a long
+	 * Removes an I Listener from the list
+	 * listeners for an event
+	 * @param listener
 	 */
-	public long getTimestamp() {
-		return timestamp;
-	}
+	public void removeListener(I listener);
+
+	/**
+	 * Gets all the listeners to an event
+	 * @return An <b>Immutable set</b> of I listeners
+	 */
+	public Set<I> getListeners();
 }

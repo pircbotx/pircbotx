@@ -24,7 +24,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.ChannelListEntry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.Event;
 
 /**
  * After calling the listChannels() method in PircBotX, the server

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.pircbotx.TestUtils;
-import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
+import org.pircbotx.hooks.ListenerAdapterInterface;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 

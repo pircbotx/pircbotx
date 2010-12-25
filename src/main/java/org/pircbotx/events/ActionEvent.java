@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.Event;
 
 /**
  * Called whenever an ACTION is sent from a user.  E.g.

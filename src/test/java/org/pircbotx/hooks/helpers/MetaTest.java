@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.hooks.helpers.ListenerAdapter;
-import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.ListenerAdapterInterface;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 

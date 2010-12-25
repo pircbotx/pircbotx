@@ -20,7 +20,7 @@
 package org.pircbotx.listeners;
 
 import org.pircbotx.events.RemoveNoExternalMessagesEvent;
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 
 public interface RemoveNoExternalMessagesListener extends Listener {
 	public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event);

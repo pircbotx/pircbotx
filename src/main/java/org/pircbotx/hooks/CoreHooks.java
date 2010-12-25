@@ -17,7 +17,7 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.hooks.helpers;
+package org.pircbotx.hooks;
 
 import java.util.Date;
 import org.pircbotx.events.FingerEvent;

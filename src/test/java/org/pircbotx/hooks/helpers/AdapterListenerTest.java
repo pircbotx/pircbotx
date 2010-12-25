@@ -19,6 +19,7 @@
 
 package org.pircbotx.hooks.helpers;
 
+import org.pircbotx.hooks.ListenerAdapterInterface;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;

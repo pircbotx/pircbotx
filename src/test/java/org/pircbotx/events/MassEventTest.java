@@ -24,7 +24,7 @@ import java.util.List;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
 import static org.testng.Assert.*;
-import org.pircbotx.hooks.helpers.ListenerAdapterInterface;
+import org.pircbotx.hooks.ListenerAdapterInterface;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

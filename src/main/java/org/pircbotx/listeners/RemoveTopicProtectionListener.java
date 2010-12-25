@@ -20,7 +20,7 @@
 package org.pircbotx.listeners;
 
 import org.pircbotx.events.RemoveTopicProtectionEvent;
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 
 public interface RemoveTopicProtectionListener extends Listener {
 	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event);

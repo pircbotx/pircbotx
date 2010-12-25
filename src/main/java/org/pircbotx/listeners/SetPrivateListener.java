@@ -20,7 +20,7 @@
 package org.pircbotx.listeners;
 
 import org.pircbotx.events.SetPrivateEvent;
-import org.pircbotx.hooks.helpers.Listener;
+import org.pircbotx.hooks.Listener;
 
 public interface SetPrivateListener extends Listener {
 	public void onSetPrivate(SetPrivateEvent event);

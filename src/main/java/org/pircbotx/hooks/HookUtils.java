@@ -17,8 +17,10 @@
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.pircbotx.hooks.helpers;
+package org.pircbotx.hooks;
 
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.Event;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

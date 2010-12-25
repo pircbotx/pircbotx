@@ -19,7 +19,7 @@
 
 package org.pircbotx.exception;
 
-import org.pircbotx.hooks.helpers.Event;
+import org.pircbotx.hooks.Event;
 
 /**
  *
