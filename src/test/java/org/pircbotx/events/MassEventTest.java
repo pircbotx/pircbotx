@@ -66,12 +66,4 @@ public class MassEventTest {
 		}
 		System.out.println("Success: Event constructor is good");
 	}
-	
-	public void annotationTest() {
-		for(Class<?> clazz : eventClasses) {
-			//Make sure @Data and @EqualsAndHashCode are present
-			assertNotNull(clazz.getAnnotation(Data.class));
-			assertNotNull(clazz.getAnnotation(EqualsAndHashCode.class));
-		}
-	}
 }
