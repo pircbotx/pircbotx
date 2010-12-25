@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.listeners;
 
 import java.lang.reflect.Method;
@@ -36,31 +35,39 @@ public class MassListenerTest {
 	private final List<Class<?>> listenerClasses = new ArrayList(Arrays.asList(ListenerAdapterInterface.class.getInterfaces()));
 
 	@Test
-	public void methodCheck() {
-		for (Class<?> listenerClass : listenerClasses) {
-			Method[] methods = listenerClass.getDeclaredMethods();
-
+	public void methodNumTest() {
+		for (Class<?> listenerClass : listenerClasses)
 			//Should only have 1 method
-			assertEquals(methods.length, 1, TestUtils.wrapClass(listenerClass, "More than one method found"));
+			assertEquals(listenerClass.getDeclaredMethods().length, 1, TestUtils.wrapClass(listenerClass, "More than one method found"));
+	}
 
-			Method method = methods[0];
-			Class<?>[] params = method.getParameterTypes();
-
+	@Test(dependsOnMethods={"methodNumTest"})
+	public void methodNamingTest() {
+		for (Class<?> listenerClass : listenerClasses)
 			//Should follow naming convention
-			assertEquals(method.getName(), "on" + TestUtils.getRootName(listenerClass));
+			assertEquals(listenerClass.getDeclaredMethods()[0].getName(), "on" + TestUtils.getRootName(listenerClass));
 
+	}
+
+	@Test(dependsOnMethods={"methodNumTest"})
+	public void methodParamNumTest() {
+		for (Class<?> listenerClass : listenerClasses)
 			//Should only have 1 parameter
-			assertEquals(params.length, 1, TestUtils.wrapClass(listenerClass, "More than one method parameter found"));
+			assertEquals(listenerClass.getDeclaredMethods()[0].getParameterTypes().length, 1, TestUtils.wrapClass(listenerClass, "More than one method parameter found"));
+	}
 
+	@Test(dependsOnMethods={"methodNumTest","methodParamNumTest"})
+	public void methodParamClassTest() {
+		for (Class<?> listenerClass : listenerClasses) {
 			//Should be using the correct class correctly
-			String paramName = params[0].getSimpleName();
+			String paramName = listenerClass.getDeclaredMethods()[0].getParameterTypes()[0].getSimpleName();
 			String listenerName = listenerClass.getSimpleName();
 			//Strip out suffixes and make sure the root is equal
 			assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
 		}
 	}
 
-	@Test
+	@Test(dependsOnMethods={"methodNumTest"})
 	public void parameterCheck() {
 		//Get all the Listeners that are part of ListenerAdapterInterface
 		for (Class<?> listenerClass : listenerClasses) {
