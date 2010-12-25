@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,11 +32,11 @@ public class TestUtils {
 
 	public static String getRootName(Class aClass) {
 		String name = aClass.getSimpleName();
-
+		
 		if (StringUtils.endsWith(name, "Event"))
-			return StringUtils.stripEnd(name, "Event");
+			return name.split("Event")[0];
 		else if (StringUtils.endsWith(name, "Listener"))
-			return StringUtils.stripEnd(name, "Listener");
+			return name.split("Listener")[0];
 
 		//Can't get anything, error out
 		throw new IllegalArgumentException("Cannot get root of class name " + aClass.toString());
