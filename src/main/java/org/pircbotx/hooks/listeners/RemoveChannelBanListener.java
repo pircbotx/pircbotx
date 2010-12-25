@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemoveChannelBanEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemoveChannelBan} events
+ * Listener for {@link org.pircbotx.hooks.events.RemoveChannelBanEvent}events
  * @see org.pircbotx.hooks.events.RemoveChannelBan
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveChannelBanListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelBan} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelBanEvent}occurs
 	 * @param event The generated RemoveChannelBanEvent
 	 */
 	public void onRemoveChannelBan(RemoveChannelBanEvent event);

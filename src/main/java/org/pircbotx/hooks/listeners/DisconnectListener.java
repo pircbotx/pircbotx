@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Disconnect} events
+ * Listener for {@link org.pircbotx.hooks.events.DisconnectEvent}events
  * @see org.pircbotx.hooks.events.Disconnect
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface DisconnectListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Disconnect} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.DisconnectEvent}occurs
 	 * @param event The generated DisconnectEvent
 	 */
 	public void onDisconnect(DisconnectEvent event);

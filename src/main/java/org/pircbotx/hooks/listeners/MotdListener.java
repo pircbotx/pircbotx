@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Motd} events
+ * Listener for {@link org.pircbotx.hooks.events.MotdEvent}events
  * @see org.pircbotx.hooks.events.Motd
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface MotdListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Motd} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.MotdEvent}occurs
 	 * @param event The generated MotdEvent
 	 */
 	public void onMotd(MotdEvent event);

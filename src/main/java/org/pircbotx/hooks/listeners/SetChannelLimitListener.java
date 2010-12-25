@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetChannelLimitEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetChannelLimit} events
+ * Listener for {@link org.pircbotx.hooks.events.SetChannelLimitEvent}events
  * @see org.pircbotx.hooks.events.SetChannelLimit
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetChannelLimitListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelLimit} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelLimitEvent}occurs
 	 * @param event The generated SetChannelLimitEvent
 	 */
 	public void onSetChannelLimit(SetChannelLimitEvent event);

@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.ServerPing} events
+ * Listener for {@link org.pircbotx.hooks.events.ServerPingEvent}events
  * @see org.pircbotx.hooks.events.ServerPing
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ServerPingListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.ServerPing} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.ServerPingEvent}occurs
 	 * @param event The generated ServerPingEvent
 	 */
 	public void onServerPing(ServerPingEvent event);

@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.DeVoiceEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.DeVoice} events
+ * Listener for {@link org.pircbotx.hooks.events.DeVoiceEvent}events
  * @see org.pircbotx.hooks.events.DeVoice
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface DeVoiceListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.DeVoice} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.DeVoiceEvent}occurs
 	 * @param event The generated DeVoiceEvent
 	 */
 	public void onDeVoice(DeVoiceEvent event);

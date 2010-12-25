@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Part} events
+ * Listener for {@link org.pircbotx.hooks.events.PartEvent}events
  * @see org.pircbotx.hooks.events.Part
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface PartListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Part} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.PartEvent}occurs
 	 * @param event The generated PartEvent
 	 */
 	public void onPart(PartEvent event);

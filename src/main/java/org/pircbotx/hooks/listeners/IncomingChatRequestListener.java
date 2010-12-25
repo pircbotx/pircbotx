@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.IncomingChatRequest} events
+ * Listener for {@link org.pircbotx.hooks.events.IncomingChatRequestEvent}events
  * @see org.pircbotx.hooks.events.IncomingChatRequest
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface IncomingChatRequestListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingChatRequest} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingChatRequestEvent}occurs
 	 * @param event The generated IncomingChatRequestEvent
 	 */
 	public void onIncomingChatRequest(IncomingChatRequestEvent event);

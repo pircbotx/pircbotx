@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetInviteOnlyEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetInviteOnly} events
+ * Listener for {@link org.pircbotx.hooks.events.SetInviteOnlyEvent}events
  * @see org.pircbotx.hooks.events.SetInviteOnly
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetInviteOnlyListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetInviteOnly} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetInviteOnlyEvent}occurs
 	 * @param event The generated SetInviteOnlyEvent
 	 */
 	public void onSetInviteOnly(SetInviteOnlyEvent event);

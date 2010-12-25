@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.ServerResponse} events
+ * Listener for {@link org.pircbotx.hooks.events.ServerResponseEvent}events
  * @see org.pircbotx.hooks.events.ServerResponse
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ServerResponseListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.ServerResponse} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.ServerResponseEvent}occurs
 	 * @param event The generated ServerResponseEvent
 	 */
 	public void onServerResponse(ServerResponseEvent event);

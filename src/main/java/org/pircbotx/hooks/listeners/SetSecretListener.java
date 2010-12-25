@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetSecret} events
+ * Listener for {@link org.pircbotx.hooks.events.SetSecretEvent}events
  * @see org.pircbotx.hooks.events.SetSecret
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetSecretListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetSecret} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetSecretEvent}occurs
 	 * @param event The generated SetSecretEvent
 	 */
 	public void onSetSecret(SetSecretEvent event);

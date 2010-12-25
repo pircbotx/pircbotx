@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.UserMode} events
+ * Listener for {@link org.pircbotx.hooks.events.UserModeEvent}events
  * @see org.pircbotx.hooks.events.UserMode
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface UserModeListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.UserMode} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.UserModeEvent}occurs
 	 * @param event The generated UserModeEvent
 	 */
 	public void onUserMode(UserModeEvent event);

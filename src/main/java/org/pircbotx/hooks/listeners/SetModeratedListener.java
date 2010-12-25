@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetModeratedEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetModerated} events
+ * Listener for {@link org.pircbotx.hooks.events.SetModeratedEvent}events
  * @see org.pircbotx.hooks.events.SetModerated
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetModeratedListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetModerated} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetModeratedEvent}occurs
 	 * @param event The generated SetModeratedEvent
 	 */
 	public void onSetModerated(SetModeratedEvent event);

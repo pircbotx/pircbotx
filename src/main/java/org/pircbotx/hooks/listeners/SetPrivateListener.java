@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetPrivate} events
+ * Listener for {@link org.pircbotx.hooks.events.SetPrivateEvent}events
  * @see org.pircbotx.hooks.events.SetPrivate
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetPrivateListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetPrivate} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetPrivateEvent}occurs
 	 * @param event The generated SetPrivateEvent
 	 */
 	public void onSetPrivate(SetPrivateEvent event);

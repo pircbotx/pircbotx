@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetTopicProtection} events
+ * Listener for {@link org.pircbotx.hooks.events.SetTopicProtectionEvent}events
  * @see org.pircbotx.hooks.events.SetTopicProtection
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetTopicProtectionListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetTopicProtection} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetTopicProtectionEvent}occurs
 	 * @param event The generated SetTopicProtectionEvent
 	 */
 	public void onSetTopicProtection(SetTopicProtectionEvent event);

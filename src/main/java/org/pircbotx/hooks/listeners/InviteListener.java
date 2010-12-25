@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Invite} events
+ * Listener for {@link org.pircbotx.hooks.events.InviteEvent}events
  * @see org.pircbotx.hooks.events.Invite
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface InviteListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Invite} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.InviteEvent}occurs
 	 * @param event The generated InviteEvent
 	 */
 	public void onInvite(InviteEvent event);

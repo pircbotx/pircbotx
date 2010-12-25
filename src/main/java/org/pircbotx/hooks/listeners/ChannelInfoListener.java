@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.ChannelInfo} events
+ * Listener for {@link org.pircbotx.hooks.events.ChannelInfoEvent}events
  * @see org.pircbotx.hooks.events.ChannelInfo
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ChannelInfoListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.ChannelInfo} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.ChannelInfoEvent}occurs
 	 * @param event The generated ChannelInfoEvent
 	 */
 	public void onChannelInfo(ChannelInfoEvent event);

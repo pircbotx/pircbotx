@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.SetChannelKey} events
+ * Listener for {@link org.pircbotx.hooks.events.SetChannelKeyEvent}events
  * @see org.pircbotx.hooks.events.SetChannelKey
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface SetChannelKeyListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelKey} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelKeyEvent}occurs
 	 * @param event The generated SetChannelKeyEvent
 	 */
 	public void onSetChannelKey(SetChannelKeyEvent event);

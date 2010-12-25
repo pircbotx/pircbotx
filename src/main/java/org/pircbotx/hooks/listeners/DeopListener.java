@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Deop} events
+ * Listener for {@link org.pircbotx.hooks.events.DeopEvent}events
  * @see org.pircbotx.hooks.events.Deop
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface DeopListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Deop} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.DeopEvent}occurs
 	 * @param event The generated DeopEvent
 	 */
 	public void onDeop(DeopEvent event);

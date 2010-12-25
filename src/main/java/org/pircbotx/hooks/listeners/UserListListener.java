@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.UserList} events
+ * Listener for {@link org.pircbotx.hooks.events.UserListEvent}events
  * @see org.pircbotx.hooks.events.UserList
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface UserListListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.UserList} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.UserListEvent}occurs
 	 * @param event The generated UserListEvent
 	 */
 	public void onUserList(UserListEvent event);

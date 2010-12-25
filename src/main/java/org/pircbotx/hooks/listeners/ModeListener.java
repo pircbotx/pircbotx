@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Mode} events
+ * Listener for {@link org.pircbotx.hooks.events.ModeEvent}events
  * @see org.pircbotx.hooks.events.Mode
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface ModeListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Mode} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.ModeEvent}occurs
 	 * @param event The generated ModeEvent
 	 */
 	public void onMode(ModeEvent event);

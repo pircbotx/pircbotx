@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Finger} events
+ * Listener for {@link org.pircbotx.hooks.events.FingerEvent}events
  * @see org.pircbotx.hooks.events.Finger
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface FingerListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Finger} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.FingerEvent}occurs
 	 * @param event The generated FingerEvent
 	 */
 	public void onFinger(FingerEvent event);

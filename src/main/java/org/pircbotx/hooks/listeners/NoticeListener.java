@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Notice} events
+ * Listener for {@link org.pircbotx.hooks.events.NoticeEvent}events
  * @see org.pircbotx.hooks.events.Notice
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface NoticeListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Notice} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.NoticeEvent}occurs
 	 * @param event The generated NoticeEvent
 	 */
 	public void onNotice(NoticeEvent event);

@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemoveTopicProtection} events
+ * Listener for {@link org.pircbotx.hooks.events.RemoveTopicProtectionEvent}events
  * @see org.pircbotx.hooks.events.RemoveTopicProtection
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveTopicProtectionListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveTopicProtection} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveTopicProtectionEvent}occurs
 	 * @param event The generated RemoveTopicProtectionEvent
 	 */
 	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event);

@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Message} events
+ * Listener for {@link org.pircbotx.hooks.events.MessageEvent}events
  * @see org.pircbotx.hooks.events.Message
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface MessageListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Message} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.MessageEvent}occurs
 	 * @param event The generated MessageEvent
 	 */
 	public void onMessage(MessageEvent event);

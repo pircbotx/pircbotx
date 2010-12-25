@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Quit} events
+ * Listener for {@link org.pircbotx.hooks.events.QuitEvent}events
  * @see org.pircbotx.hooks.events.Quit
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface QuitListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Quit} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.QuitEvent}occurs
 	 * @param event The generated QuitEvent
 	 */
 	public void onQuit(QuitEvent event);

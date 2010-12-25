@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemoveSecretEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemoveSecret} events
+ * Listener for {@link org.pircbotx.hooks.events.RemoveSecretEvent}events
  * @see org.pircbotx.hooks.events.RemoveSecret
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemoveSecretListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveSecret} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveSecretEvent}occurs
 	 * @param event The generated RemoveSecretEvent
 	 */
 	public void onRemoveSecret(RemoveSecretEvent event);

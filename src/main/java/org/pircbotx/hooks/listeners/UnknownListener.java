@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.UnknownEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Unknown} events
+ * Listener for {@link org.pircbotx.hooks.events.UnknownEvent}events
  * @see org.pircbotx.hooks.events.Unknown
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface UnknownListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Unknown} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.UnknownEvent}occurs
 	 * @param event The generated UnknownEvent
 	 */
 	public void onUnknown(UnknownEvent event);

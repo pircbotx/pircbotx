@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.RemovePrivateEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.RemovePrivate} events
+ * Listener for {@link org.pircbotx.hooks.events.RemovePrivateEvent}events
  * @see org.pircbotx.hooks.events.RemovePrivate
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface RemovePrivateListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.RemovePrivate} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.RemovePrivateEvent}occurs
 	 * @param event The generated RemovePrivateEvent
 	 */
 	public void onRemovePrivate(RemovePrivateEvent event);

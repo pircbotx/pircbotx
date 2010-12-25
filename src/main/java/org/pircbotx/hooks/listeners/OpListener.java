@@ -23,13 +23,13 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Listener for {@link org.pircbotx.hooks.events.Op} events
+ * Listener for {@link org.pircbotx.hooks.events.OpEvent}events
  * @see org.pircbotx.hooks.events.Op
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
  public interface OpListener extends Listener {
 	/**
-	 * Invoked when an {@link org.pircbotx.hooks.events.Op} occurs
+	 * Invoked when an {@link org.pircbotx.hooks.events.OpEvent}occurs
 	 * @param event The generated OpEvent
 	 */
 	public void onOp(OpEvent event);
