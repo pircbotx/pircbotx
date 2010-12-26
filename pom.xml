@@ -108,8 +108,9 @@
 				</configuration>
 				<executions>
 					<execution>
+						<phase>process-sources</phase>
 						<goals>
-							<goal>check</goal>
+							<goal>format</goal>
 						</goals>
 					</execution>
 				</executions>
