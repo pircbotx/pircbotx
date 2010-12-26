@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import org.pircbotx.hooks.Listener;
@@ -140,6 +139,7 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
 import org.pircbotx.exception.UnknownEventException;
+import org.pircbotx.hooks.HookUtils;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -2183,109 +2183,8 @@ public abstract class PircBotX {
 		}
 
 		public void dispatchEvent(Event event) {
-			//Yea, this is ugly. But it does get the job done
-			//Loop through all listeners, and call appropiate one based on Event type
 			for (Listener curListener : listeners)
-				if (event instanceof ActionEvent && curListener instanceof ActionListener)
-					((ActionListener) curListener).onAction((ActionEvent) event);
-				else if (event instanceof ChannelInfoEvent && curListener instanceof ChannelInfoListener)
-					((ChannelInfoListener) curListener).onChannelInfo((ChannelInfoEvent) event);
-				else if (event instanceof ConnectEvent && curListener instanceof ConnectListener)
-					((ConnectListener) curListener).onConnect((ConnectEvent) event);
-				else if (event instanceof DeopEvent && curListener instanceof DeopListener)
-					((DeopListener) curListener).onDeop((DeopEvent) event);
-				else if (event instanceof DeVoiceEvent && curListener instanceof DeVoiceListener)
-					((DeVoiceListener) curListener).onDeVoice((DeVoiceEvent) event);
-				else if (event instanceof DisconnectEvent && curListener instanceof DisconnectListener)
-					((DisconnectListener) curListener).onDisconnect((DisconnectEvent) event);
-				else if (event instanceof FileTransferFinishedEvent && curListener instanceof FileTransferFinishedListener)
-					((FileTransferFinishedListener) curListener).onFileTransferFinished((FileTransferFinishedEvent) event);
-				else if (event instanceof FingerEvent && curListener instanceof FingerListener)
-					((FingerListener) curListener).onFinger((FingerEvent) event);
-				else if (event instanceof IncomingChatRequestEvent && curListener instanceof IncomingChatRequestListener)
-					((IncomingChatRequestListener) curListener).onIncomingChatRequest((IncomingChatRequestEvent) event);
-				else if (event instanceof IncomingFileTransferEvent && curListener instanceof IncomingFileTransferListener)
-					((IncomingFileTransferListener) curListener).onIncomingFileTransfer((IncomingFileTransferEvent) event);
-				else if (event instanceof InviteEvent && curListener instanceof InviteListener)
-					((InviteListener) curListener).onInvite((InviteEvent) event);
-				else if (event instanceof JoinEvent && curListener instanceof JoinListener)
-					((JoinListener) curListener).onJoin((JoinEvent) event);
-				else if (event instanceof KickEvent && curListener instanceof KickListener)
-					((KickListener) curListener).onKick((KickEvent) event);
-				else if (event instanceof MessageEvent && curListener instanceof MessageListener)
-					((MessageListener) curListener).onMessage((MessageEvent) event);
-				else if (event instanceof ModeEvent && curListener instanceof ModeListener)
-					((ModeListener) curListener).onMode((ModeEvent) event);
-				else if (event instanceof NickChangeEvent && curListener instanceof NickChangeListener)
-					((NickChangeListener) curListener).onNickChange((NickChangeEvent) event);
-				else if (event instanceof NoticeEvent && curListener instanceof NoticeListener)
-					((NoticeListener) curListener).onNotice((NoticeEvent) event);
-				else if (event instanceof OpEvent && curListener instanceof OpListener)
-					((OpListener) curListener).onOp((OpEvent) event);
-				else if (event instanceof PartEvent && curListener instanceof PartListener)
-					((PartListener) curListener).onPart((PartEvent) event);
-				else if (event instanceof PingEvent && curListener instanceof PingListener)
-					((PingListener) curListener).onPing((PingEvent) event);
-				else if (event instanceof PrivateMessageEvent && curListener instanceof PrivateMessageListener)
-					((PrivateMessageListener) curListener).onPrivateMessage((PrivateMessageEvent) event);
-				else if (event instanceof QuitEvent && curListener instanceof QuitListener)
-					((QuitListener) curListener).onQuit((QuitEvent) event);
-				else if (event instanceof RemoveChannelBanEvent && curListener instanceof RemoveChannelBanListener)
-					((RemoveChannelBanListener) curListener).onRemoveChannelBan((RemoveChannelBanEvent) event);
-				else if (event instanceof RemoveChannelKeyEvent && curListener instanceof RemoveChannelKeyListener)
-					((RemoveChannelKeyListener) curListener).onRemoveChannelKey((RemoveChannelKeyEvent) event);
-				else if (event instanceof RemoveChannelLimitEvent && curListener instanceof RemoveChannelLimitListener)
-					((RemoveChannelLimitListener) curListener).onRemoveChannelLimit((RemoveChannelLimitEvent) event);
-				else if (event instanceof RemoveInviteOnlyEvent && curListener instanceof RemoveInviteOnlyListener)
-					((RemoveInviteOnlyListener) curListener).onRemoveInviteOnly((RemoveInviteOnlyEvent) event);
-				else if (event instanceof RemoveModeratedEvent && curListener instanceof RemoveModeratedListener)
-					((RemoveModeratedListener) curListener).onRemoveModerated((RemoveModeratedEvent) event);
-				else if (event instanceof RemoveNoExternalMessagesEvent && curListener instanceof RemoveNoExternalMessagesListener)
-					((RemoveNoExternalMessagesListener) curListener).onRemoveNoExternalMessages((RemoveNoExternalMessagesEvent) event);
-				else if (event instanceof RemovePrivateEvent && curListener instanceof RemovePrivateListener)
-					((RemovePrivateListener) curListener).onRemovePrivate((RemovePrivateEvent) event);
-				else if (event instanceof RemoveSecretEvent && curListener instanceof RemoveSecretListener)
-					((RemoveSecretListener) curListener).onRemoveSecret((RemoveSecretEvent) event);
-				else if (event instanceof RemoveTopicProtectionEvent && curListener instanceof RemoveTopicProtectionListener)
-					((RemoveTopicProtectionListener) curListener).onRemoveTopicProtection((RemoveTopicProtectionEvent) event);
-				else if (event instanceof ServerPingEvent && curListener instanceof ServerPingListener)
-					((ServerPingListener) curListener).onServerPing((ServerPingEvent) event);
-				else if (event instanceof ServerResponseEvent && curListener instanceof ServerResponseListener)
-					((ServerResponseListener) curListener).onServerResponse((ServerResponseEvent) event);
-				else if (event instanceof SetChannelBanEvent && curListener instanceof SetChannelBanListener)
-					((SetChannelBanListener) curListener).onSetChannelBan((SetChannelBanEvent) event);
-				else if (event instanceof SetChannelKeyEvent && curListener instanceof SetChannelKeyListener)
-					((SetChannelKeyListener) curListener).onSetChannelKey((SetChannelKeyEvent) event);
-				else if (event instanceof SetChannelLimitEvent && curListener instanceof SetChannelLimitListener)
-					((SetChannelLimitListener) curListener).onSetChannelLimit((SetChannelLimitEvent) event);
-				else if (event instanceof SetInviteOnlyEvent && curListener instanceof SetInviteOnlyListener)
-					((SetInviteOnlyListener) curListener).onSetInviteOnly((SetInviteOnlyEvent) event);
-				else if (event instanceof SetModeratedEvent && curListener instanceof SetModeratedListener)
-					((SetModeratedListener) curListener).onSetModerated((SetModeratedEvent) event);
-				else if (event instanceof SetNoExternalMessagesEvent && curListener instanceof SetNoExternalMessagesListener)
-					((SetNoExternalMessagesListener) curListener).onSetNoExternalMessages((SetNoExternalMessagesEvent) event);
-				else if (event instanceof SetPrivateEvent && curListener instanceof SetPrivateListener)
-					((SetPrivateListener) curListener).onSetPrivate((SetPrivateEvent) event);
-				else if (event instanceof SetSecretEvent && curListener instanceof SetSecretListener)
-					((SetSecretListener) curListener).onSetSecret((SetSecretEvent) event);
-				else if (event instanceof SetTopicProtectionEvent && curListener instanceof SetTopicProtectionListener)
-					((SetTopicProtectionListener) curListener).onSetTopicProtection((SetTopicProtectionEvent) event);
-				else if (event instanceof TimeEvent && curListener instanceof TimeListener)
-					((TimeListener) curListener).onTime((TimeEvent) event);
-				else if (event instanceof TopicEvent && curListener instanceof TopicListener)
-					((TopicListener) curListener).onTopic((TopicEvent) event);
-				else if (event instanceof UnknownEvent && curListener instanceof UnknownListener)
-					((UnknownListener) curListener).onUnknown((UnknownEvent) event);
-				else if (event instanceof UserListEvent && curListener instanceof UserListListener)
-					((UserListListener) curListener).onUserList((UserListEvent) event);
-				else if (event instanceof UserModeEvent && curListener instanceof UserModeListener)
-					((UserModeListener) curListener).onUserMode((UserModeEvent) event);
-				else if (event instanceof VersionEvent && curListener instanceof VersionListener)
-					((VersionListener) curListener).onVersion((VersionEvent) event);
-				else if (event instanceof VoiceEvent && curListener instanceof VoiceListener)
-					((VoiceListener) curListener).onVoice((VoiceEvent) event);
-				else
-					throw new UnknownEventException(event);
+				HookUtils.callListener(event, curListener);
 		}
 	}
 
