@@ -28,7 +28,7 @@ import org.pircbotx.exception.UnknownEventException;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface ListenerManager<I extends Listener> {
+public interface ListenerManager {
 	/**
 	 * Sends event to all appropriate listeners.
 	 * @param event The event to send
@@ -40,18 +40,18 @@ public interface ListenerManager<I extends Listener> {
 	 * listeners for an event.
 	 * @param listener The listener to add
 	 */
-	public void addListener(I listener);
+	public void addListener(Listener listener);
 
 	/**
 	 * Removes an I Listener from the list
 	 * listeners for an event
 	 * @param listener
 	 */
-	public void removeListener(I listener);
+	public void removeListener(Listener listener);
 
 	/**
 	 * Gets all the listeners to an event
 	 * @return An <b>Immutable set</b> of I listeners
 	 */
-	public Set<I> getListeners();
+	public Set<Listener> getListeners();
 }

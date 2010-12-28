@@ -2167,7 +2167,7 @@ public abstract class PircBotX {
 	 * To add a new event, SubClass, override dispatchEvent,
 	 * call default implementation, then loop over the listeners yourself 
 	 */
-	public static class EventListenerManager implements ListenerManager<Listener> {
+	public static class EventListenerManager implements ListenerManager {
 		protected Set<Listener> listeners = new HashSet<Listener>();
 
 		public void addListener(Listener listener) {
