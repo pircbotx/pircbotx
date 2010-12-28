@@ -139,6 +139,7 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
 import org.pircbotx.exception.UnknownEventException;
+import org.pircbotx.hooks.GenericListenerManager;
 import org.pircbotx.hooks.HookUtils;
 import static org.pircbotx.ReplyConstants.*;
 
@@ -226,7 +227,7 @@ public abstract class PircBotX {
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
 	private final Object logLock = new Object();
-	protected ListenerManager listeners = new EventListenerManager();
+	protected ListenerManager listeners = new GenericListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -2158,34 +2159,6 @@ public abstract class PircBotX {
 	 */
 	public void setListeners(ListenerManager listeners) {
 		this.listeners = listeners;
-	}
-
-	/**
-	 * ListenerManager based on normal Event system. All events are hardwired
-	 * to their respective listeners.
-	 * <p>
-	 * To add a new event, SubClass, override dispatchEvent,
-	 * call default implementation, then loop over the listeners yourself 
-	 */
-	public static class EventListenerManager implements ListenerManager {
-		protected Set<Listener> listeners = new HashSet<Listener>();
-
-		public void addListener(Listener listener) {
-			listeners.add(listener);
-		}
-
-		public void removeListener(Listener listener) {
-			listeners.remove(listener);
-		}
-
-		public Set<Listener> getListeners() {
-			return Collections.unmodifiableSet(listeners);
-		}
-
-		public void dispatchEvent(Event event) {
-			for (Listener curListener : listeners)
-				HookUtils.callListener(event, curListener);
-		}
 	}
 
 	protected class ListBuilder<A> {
