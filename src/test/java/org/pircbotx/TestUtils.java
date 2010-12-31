@@ -19,9 +19,12 @@
 package org.pircbotx;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapterInterface;
 import org.testng.annotations.DataProvider;
 
@@ -37,17 +40,17 @@ public class TestUtils {
 				add(listenerClass.getDeclaredMethods()[0].getParameterTypes()[0]);
 		}
 	};
-	
-	@DataProvider
-	protected static Object[][] EventDataProvider() {
-		Object[][] params = new Object[0][0];
-		for(Class<?> event : eventClasses) {
-			ArrayUtils.add(params, new Object[]{event});
-		}
+
+	@DataProvider(name = "getEvents")
+	public static Object[][] EventDataProvider() {
+		int eventSize = eventClasses.size();
+		Object[][] params = new Object[eventSize][];
+		for (int i = 0; i < eventSize; i++)
+			params[i] = new Object[]{eventClasses.get(i)};
+
 		return params;
 	}
-	
-	
+
 	public static String wrapClass(Class aClass, String message) {
 		return message + " in class " + aClass.toString();
 	}
@@ -63,6 +66,4 @@ public class TestUtils {
 		//Can't get anything, error out
 		throw new IllegalArgumentException("Cannot get root of class name " + aClass.toString());
 	}
-	
-
 }
