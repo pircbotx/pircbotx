@@ -2032,7 +2032,7 @@ public abstract class PircBotX {
 	 *         are in.
 	 */
 	public final Set<Channel> getChannels() {
-		return _userChanInfo.getBValues();
+		return _userChanInfo.getAValues();
 	}
 
 	public Set<Channel> getChannels(User user) {
@@ -2050,7 +2050,7 @@ public abstract class PircBotX {
 		if (name == null)
 			throw new NullPointerException("Can't get a null channel");
 		Channel chan = null;
-		for (Channel curChan : _userChanInfo.getBValues())
+		for (Channel curChan : _userChanInfo.getAValues())
 			if (curChan.getName().equals(name))
 				chan = curChan;
 
@@ -2064,7 +2064,7 @@ public abstract class PircBotX {
 	public Set<String> getChannelsNames() {
 		return Collections.unmodifiableSet(new HashSet<String>() {
 			{
-				for (Channel curChan : _userChanInfo.getBValues())
+				for (Channel curChan : _userChanInfo.getAValues())
 					add(curChan.getName());
 			}
 		});
@@ -2123,7 +2123,7 @@ public abstract class PircBotX {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
 		User user = null;
-		for (User curUser : _userChanInfo.getAValues())
+		for (User curUser : _userChanInfo.getBValues())
 			if (curUser.getNick().equals(nick))
 				user = curUser;
 
@@ -2134,7 +2134,7 @@ public abstract class PircBotX {
 	}
 
 	public boolean userExists(String nick) {
-		for (User curUser : _userChanInfo.getAValues())
+		for (User curUser : _userChanInfo.getBValues())
 			if (curUser.getNick().equals(nick))
 				return true;
 		return false;
