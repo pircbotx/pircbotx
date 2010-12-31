@@ -39,7 +39,7 @@ public class TestUtils {
 	};
 	
 	@DataProvider
-	protected Object[][] EventDataProvider() {
+	protected static Object[][] EventDataProvider() {
 		Object[][] params = new Object[0][0];
 		for(Class<?> event : eventClasses) {
 			ArrayUtils.add(params, new Object[]{event});
