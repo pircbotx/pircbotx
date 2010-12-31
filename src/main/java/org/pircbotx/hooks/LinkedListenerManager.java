@@ -18,9 +18,14 @@
  */
 package org.pircbotx.hooks;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.pircbotx.ManyToManyMap;
 import org.pircbotx.exception.UnknownEventException;
 import org.pircbotx.hooks.listeners.ActionListener;
@@ -30,6 +35,7 @@ import org.pircbotx.hooks.listeners.ActionListener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class LinkedListenerManager implements ListenerManager {
+	protected final Map<Class<? extends Event>, Class<? extends Listener>> listenerEvents = new HashMap();
 	/**
 	 * Maps listeners to their type of listener
 	 * A - Type of Listener. Eg {@link ActionListener}. Only in Class form
@@ -38,12 +44,28 @@ public class LinkedListenerManager implements ListenerManager {
 	protected final ManyToManyMap<Class<? extends Listener>, Listener> map = new ManyToManyMap();
 
 	public void dispatchEvent(Event event) throws UnknownEventException {
+		//Get the listener
+		Class<? extends Listener> listenerClass = listenerEvents.get(event.getClass());
+		
+		for(Listener curListener : map.getAValues(listenerClass)) {
+			try {
+				listenerClass.getDeclaredMethods()[0].invoke(curListener, event);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			} 
+		}
 	}
 
 	public void addListener(Listener listener) {
-		//Associate the listener type with the actual listener
-		for (Class<? extends Listener> listenerTypes : getAllInterfaces(listener.getClass()))
-			map.put(listenerTypes, listener);
+		for (Class<? extends Listener> listenerType : getAllInterfaces(listener.getClass())) {
+			//Get the event out of it
+			Class<?> rawParamType = listenerType.getMethods()[0].getParameterTypes()[0];
+			if (rawParamType.isAssignableFrom(Event.class) && !listenerEvents.containsValue(listenerType))
+				listenerEvents.put(rawParamType.asSubclass(Event.class), listenerType);
+
+			//Associate the listener type with the actual listener
+			map.put(listenerType, listener);
+		}
 	}
 
 	public void removeListener(Listener listener) {
