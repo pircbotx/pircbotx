@@ -31,38 +31,34 @@ import org.testng.annotations.Test;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MassListenerTest {
-	private final List<Class<?>> listenerClasses = new ArrayList(Arrays.asList(ListenerAdapterInterface.class.getInterfaces()));
-
-	@Test
-	public void methodNumTest() {
-		for (Class<?> listenerClass : listenerClasses)
-			//Should only have 1 method
-			assertEquals(listenerClass.getDeclaredMethods().length, 1, TestUtils.wrapClass(listenerClass, "More than one method found"));
+	@Test(dataProvider = "getListeners", dataProviderClass = TestUtils.class)
+	public void methodNumTest(Class<?> listenerClass) {
+		//Should only have 1 method
+		assertEquals(listenerClass.getDeclaredMethods().length, 1, TestUtils.wrapClass(listenerClass, "More than one method found"));
+		System.out.println("Success: Method number is good (1) in class " + listenerClass);
 	}
 
-	@Test(dependsOnMethods={"methodNumTest"})
-	public void methodNamingTest() {
-		for (Class<?> listenerClass : listenerClasses)
-			//Should follow naming convention
-			assertEquals(listenerClass.getDeclaredMethods()[0].getName(), "on" + TestUtils.getRootName(listenerClass));
-
+	@Test(dataProvider = "getListeners", dataProviderClass = TestUtils.class, dependsOnMethods = {"methodNumTest"})
+	public void methodNamingTest(Class<?> listenerClass) {
+		//Should follow naming convention
+		assertEquals(listenerClass.getDeclaredMethods()[0].getName(), "on" + TestUtils.getRootName(listenerClass));
+		System.out.println("Success: Method naming is good in class " + listenerClass);
 	}
 
-	@Test(dependsOnMethods={"methodNumTest"})
-	public void methodParamNumTest() {
-		for (Class<?> listenerClass : listenerClasses)
-			//Should only have 1 parameter
-			assertEquals(listenerClass.getDeclaredMethods()[0].getParameterTypes().length, 1, TestUtils.wrapClass(listenerClass, "More than one method parameter found"));
+	@Test(dataProvider = "getListeners", dataProviderClass = TestUtils.class, dependsOnMethods = {"methodNumTest"})
+	public void methodParamNumTest(Class<?> listenerClass) {
+		//Should only have 1 parameter
+		assertEquals(listenerClass.getDeclaredMethods()[0].getParameterTypes().length, 1, TestUtils.wrapClass(listenerClass, "More than one method parameter found"));
+		System.out.println("Success: Method parameter number is good in class " + listenerClass);
 	}
 
-	@Test(dependsOnMethods={"methodNumTest","methodParamNumTest"})
-	public void methodParamClassTest() {
-		for (Class<?> listenerClass : listenerClasses) {
-			//Should be using the correct class correctly
-			String paramName = listenerClass.getDeclaredMethods()[0].getParameterTypes()[0].getSimpleName();
-			String listenerName = listenerClass.getSimpleName();
-			//Strip out suffixes and make sure the root is equal
-			assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
-		}
+	@Test(dataProvider = "getListeners", dataProviderClass = TestUtils.class, dependsOnMethods = {"methodNumTest", "methodParamNumTest"})
+	public void methodParamClassTest(Class<?> listenerClass) {
+		//Should be using the correct class correctly
+		String paramName = listenerClass.getDeclaredMethods()[0].getParameterTypes()[0].getSimpleName();
+		String listenerName = listenerClass.getSimpleName();
+		//Strip out suffixes and make sure the root is equal
+		assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
+		System.out.println("Success: Method parameter class is good in class " + listenerClass);
 	}
 }
