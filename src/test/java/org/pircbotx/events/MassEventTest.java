@@ -33,35 +33,25 @@ import org.testng.annotations.Test;
  */
 @Test()
 public class MassEventTest {
-	List<Class<?>> eventClasses = new ArrayList();
-
-	@BeforeClass
-	public void setup() {
-		for (Class listenerClass : ListenerAdapterInterface.class.getInterfaces())
-			//Add listener parameter method to the list
-			eventClasses.add(listenerClass.getDeclaredMethods()[0].getParameterTypes()[0]);
+	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	public void constructorNumTest(Class<?> event) {
+		//Is there only one constructor?
+		assertEquals(event.getDeclaredConstructors().length, 1, TestUtils.wrapClass(event, "No constructor or extra constructor found"));
+		System.out.println("Success: Event constructor is good in class "+event);
 	}
 
-	@Test
-	public void constructorNumTest() {
-		for (Class<?> clazz : eventClasses)
-			//Is there only one constructor?
-			assertEquals(clazz.getDeclaredConstructors().length, 1, TestUtils.wrapClass(clazz, "No constructor or extra constructor found"));
-		System.out.println("Success: Event constructor is good");
+	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class, dependsOnMethods = {"constructorNumTest"})
+	public void constructorFirstParamTest(Class<?> event) {
+		//Is the first parameter a bot refrence?
+		assertEquals(event.getDeclaredConstructors()[0].getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
+		System.out.println("Success: First constructor parameter is good in class "+event);
 	}
 
-	@Test(dependsOnMethods = {"constructorNumTest"})
-	public void constructorFirstParamTest() {
-		for (Class<?> clazz : eventClasses)
-			//Is the first parameter a bot refrence?
-			assertEquals(clazz.getDeclaredConstructors()[0].getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(clazz, "First parameter of constructor isn't of PircBotX type"));
-	}
-
-	@Test(dependsOnMethods = {"constructorNumTest","constructorFirstParamTest"})
-	public void constructorToFieldNumTest() {
-		for (Class<?> clazz : eventClasses)
-			//Are the number of fields and constructor parameters equal?
-			//(subtract one parameter to account for bot)
-			assertEquals(clazz.getDeclaredConstructors()[0].getParameterTypes().length - 1, clazz.getDeclaredFields().length, TestUtils.wrapClass(clazz, "Number of constructor parameters don't match number of fields"));
+	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class, dependsOnMethods = {"constructorNumTest", "constructorFirstParamTest"})
+	public void constructorToFieldNumTest(Class<?> event) {
+		//Are the number of fields and constructor parameters equal?
+		//(subtract one parameter to account for bot)
+		assertEquals(event.getDeclaredConstructors()[0].getParameterTypes().length - 1, event.getDeclaredFields().length, TestUtils.wrapClass(event, "Number of constructor parameters don't match number of fields"));
+		System.out.println("Success: Number of parameters in constructors matches number of fields in class "+event);
 	}
 }
