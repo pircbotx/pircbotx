@@ -19,6 +19,7 @@
 package org.pircbotx;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,8 @@ public class TestUtils {
 				add(listenerClass.getDeclaredMethods()[0].getParameterTypes()[0]);
 		}
 	};
+	
+	protected static final List<Class<?>> listenerClasses = new ArrayList(Arrays.asList(ListenerAdapterInterface.class.getInterfaces()));
 
 	@DataProvider(name = "getEvents")
 	public static Object[][] EventDataProvider() {
@@ -51,6 +54,16 @@ public class TestUtils {
 		return params;
 	}
 
+	@DataProvider(name = "getListeners")
+	public static Object[][] ListenerDataProvider() {
+		int listenerSize = listenerClasses.size();
+		Object[][] params = new Object[listenerSize][];
+		for (int i = 0; i < listenerSize; i++)
+			params[i] = new Object[]{listenerClasses.get(i)};
+
+		return params;
+	}
+	
 	public static String wrapClass(Class aClass, String message) {
 		return message + " in class " + aClass.toString();
 	}
