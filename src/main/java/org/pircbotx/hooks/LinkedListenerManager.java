@@ -44,10 +44,12 @@ public class LinkedListenerManager implements ListenerManager {
 	protected final ManyToManyMap<Class<? extends Listener>, Listener> map = new ManyToManyMap();
 
 	public void dispatchEvent(Event event) {
+		//Use a much more efficient process to call the Listener than HookUtils.callListener
 		try {
 			//Get the listener
 			Class<? extends Listener> listenerClass = listenerEvents.get(event.getClass());
 
+			//Using the listener class method, call it on the listener
 			for (Listener curListener : map.getAValues(listenerClass))
 				listenerClass.getDeclaredMethods()[0].invoke(curListener, event);
 		} catch (Throwable t) {
