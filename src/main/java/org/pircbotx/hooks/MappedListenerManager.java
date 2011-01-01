@@ -65,14 +65,14 @@ public class MappedListenerManager implements ListenerManager {
 		}
 	}
 
-	public void removeListener(Listener listener) {
-		//Delete all associations with listener
-		map.deleteB(listener);
+	public boolean removeListener(Listener listener) {
+		//Delete all associations with listener (if null is returned, then it didn't exist)
+		return map.deleteB(listener) != null;
 	}
 	
-	public void removeListener(Listener listener, Class<? extends Listener> listenerClass) {
-		//Delete all associations with listener
-		map.dissociate(listenerClass, listener);
+	public boolean removeListener(Listener listener, Class<? extends Listener> listenerClass) {
+		//Delete association with listener
+		return map.dissociate(listenerClass, listener);
 	}
 
 	public Set<Listener> getListeners() {
