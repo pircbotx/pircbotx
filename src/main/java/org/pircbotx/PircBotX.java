@@ -2037,7 +2037,7 @@ public abstract class PircBotX {
 	public Set<Channel> getChannels(User user) {
 		if (user == null)
 			throw new NullPointerException("Can't get a null user");
-		return _userChanInfo.getBValues(user);
+		return _userChanInfo.getAValues(user);
 	}
 
 	/**
@@ -2106,7 +2106,7 @@ public abstract class PircBotX {
 	public final Set<User> getUsers(String channel) {
 		if (channel == null)
 			throw new NullPointerException("Can't get a null channel");
-		return _userChanInfo.getAValues(getChannel(channel));
+		return _userChanInfo.getBValues(getChannel(channel));
 	}
 
 	public Set<User> getUsers(Channel chan) {

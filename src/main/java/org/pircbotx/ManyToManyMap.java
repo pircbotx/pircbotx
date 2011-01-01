@@ -134,7 +134,7 @@ public class ManyToManyMap<A, B> {
 	 * @param key The A entry to use
 	 * @return An <b>immutable</b> view of the B entries associated with the A entry
 	 */
-	public Set<B> getAValues(A key) {
+	public Set<B> getBValues(A key) {
 		synchronized (lockObject) {
 			return Collections.unmodifiableSet(AMap.get(key));
 		}
@@ -145,7 +145,7 @@ public class ManyToManyMap<A, B> {
 	 * @param key The B entry to use
 	 * @return An <b>immutable</b> view of the B entries associated with the B entry
 	 */
-	public Set<A> getBValues(B key) {
+	public Set<A> getAValues(B key) {
 		synchronized (lockObject) {
 			return Collections.unmodifiableSet(BMap.get(key));
 		}
