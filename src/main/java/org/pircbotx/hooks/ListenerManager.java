@@ -69,8 +69,10 @@ public interface ListenerManager {
 	 * on exception handling and performance.
 	 * @param listener An implementation of one or more listeners that all need
 	 *                 to be removed
+	 * @return True if the listener was removed, false if it didn't exist or wasn't
+	 *         removed
 	 */
-	public void removeListener(Listener listener);
+	public boolean removeListener(Listener listener);
 	
 	/**
 	 * Removes only the specific listener of a class while leaving others intact.
@@ -84,8 +86,10 @@ public interface ListenerManager {
 	 * @param listenerClass A class that represents the specific listener to fetch,
 	 *                      eg {@link MotdListener}, <b>not the implementation of 
 	 *                      the listener</b>
+	 * @return True if the listener was removed, false if it didn't exist or wasn't
+	 *         removed
 	 */
-	public void removeListener(Listener listener, Class<? extends Listener> listenerClass);
+	public boolean removeListener(Listener listener, Class<? extends Listener> listenerClass);
 
 	/**
 	 * Gets all listeners that are in this ListenerManager
