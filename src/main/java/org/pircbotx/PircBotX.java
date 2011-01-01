@@ -281,11 +281,7 @@ public abstract class PircBotX {
 		String line = null;
 		int tries = 1;
 		while ((line = breader.readLine()) != null) {
-			try {
-				handleLine(line);
-			} catch (Throwable ex) {
-				ex.printStackTrace();
-			}
+			handleLine(line);
 
 			int firstSpace = line.indexOf(" ");
 			int secondSpace = line.indexOf(" ", firstSpace + 1);
