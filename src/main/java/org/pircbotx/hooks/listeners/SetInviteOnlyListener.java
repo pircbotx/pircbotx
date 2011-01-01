@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetInviteOnlyEvent}occurs
 	 * @param event The generated SetInviteOnlyEvent
 	 */
-	public void onSetInviteOnly(SetInviteOnlyEvent event);
+	public void onSetInviteOnly(SetInviteOnlyEvent event) throws Exception;
 }

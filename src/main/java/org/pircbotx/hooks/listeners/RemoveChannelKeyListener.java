@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelKeyEvent}occurs
 	 * @param event The generated RemoveChannelKeyEvent
 	 */
-	public void onRemoveChannelKey(RemoveChannelKeyEvent event);
+	public void onRemoveChannelKey(RemoveChannelKeyEvent event) throws Exception;
 }

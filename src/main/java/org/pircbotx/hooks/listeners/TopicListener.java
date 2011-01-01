@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.TopicEvent}occurs
 	 * @param event The generated TopicEvent
 	 */
-	public void onTopic(TopicEvent event);
+	public void onTopic(TopicEvent event) throws Exception;
 }

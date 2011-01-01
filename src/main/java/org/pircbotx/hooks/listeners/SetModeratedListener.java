@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetModeratedEvent}occurs
 	 * @param event The generated SetModeratedEvent
 	 */
-	public void onSetModerated(SetModeratedEvent event);
+	public void onSetModerated(SetModeratedEvent event) throws Exception;
 }

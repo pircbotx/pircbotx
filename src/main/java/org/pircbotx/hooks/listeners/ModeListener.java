@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.ModeEvent}occurs
 	 * @param event The generated ModeEvent
 	 */
-	public void onMode(ModeEvent event);
+	public void onMode(ModeEvent event) throws Exception;
 }

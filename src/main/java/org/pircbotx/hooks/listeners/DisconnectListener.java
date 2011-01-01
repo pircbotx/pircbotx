@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.DisconnectEvent}occurs
 	 * @param event The generated DisconnectEvent
 	 */
-	public void onDisconnect(DisconnectEvent event);
+	public void onDisconnect(DisconnectEvent event) throws Exception;
 }

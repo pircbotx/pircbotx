@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.FingerEvent}occurs
 	 * @param event The generated FingerEvent
 	 */
-	public void onFinger(FingerEvent event);
+	public void onFinger(FingerEvent event) throws Exception;
 }

@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.UnknownEvent}occurs
 	 * @param event The generated UnknownEvent
 	 */
-	public void onUnknown(UnknownEvent event);
+	public void onUnknown(UnknownEvent event) throws Exception;
 }

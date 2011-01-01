@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetTopicProtectionEvent}occurs
 	 * @param event The generated SetTopicProtectionEvent
 	 */
-	public void onSetTopicProtection(SetTopicProtectionEvent event);
+	public void onSetTopicProtection(SetTopicProtectionEvent event) throws Exception;
 }

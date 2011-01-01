@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.ConnectEvent}occurs
 	 * @param event The generated ConnectEvent
 	 */
-	public void onConnect(ConnectEvent event);
+	public void onConnect(ConnectEvent event) throws Exception;
 }

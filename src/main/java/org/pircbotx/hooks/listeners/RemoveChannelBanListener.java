@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelBanEvent}occurs
 	 * @param event The generated RemoveChannelBanEvent
 	 */
-	public void onRemoveChannelBan(RemoveChannelBanEvent event);
+	public void onRemoveChannelBan(RemoveChannelBanEvent event) throws Exception;
 }

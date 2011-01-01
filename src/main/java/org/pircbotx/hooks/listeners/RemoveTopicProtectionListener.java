@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveTopicProtectionEvent}occurs
 	 * @param event The generated RemoveTopicProtectionEvent
 	 */
-	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event);
+	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) throws Exception;
 }

@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.InviteEvent}occurs
 	 * @param event The generated InviteEvent
 	 */
-	public void onInvite(InviteEvent event);
+	public void onInvite(InviteEvent event) throws Exception;
 }

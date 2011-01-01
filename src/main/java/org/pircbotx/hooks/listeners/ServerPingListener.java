@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.ServerPingEvent}occurs
 	 * @param event The generated ServerPingEvent
 	 */
-	public void onServerPing(ServerPingEvent event);
+	public void onServerPing(ServerPingEvent event) throws Exception;
 }

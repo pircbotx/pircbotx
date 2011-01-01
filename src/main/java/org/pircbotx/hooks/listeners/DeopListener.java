@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.DeopEvent}occurs
 	 * @param event The generated DeopEvent
 	 */
-	public void onDeop(DeopEvent event);
+	public void onDeop(DeopEvent event) throws Exception;
 }

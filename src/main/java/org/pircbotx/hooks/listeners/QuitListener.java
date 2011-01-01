@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.QuitEvent}occurs
 	 * @param event The generated QuitEvent
 	 */
-	public void onQuit(QuitEvent event);
+	public void onQuit(QuitEvent event) throws Exception;
 }

@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.JoinEvent}occurs
 	 * @param event The generated JoinEvent
 	 */
-	public void onJoin(JoinEvent event);
+	public void onJoin(JoinEvent event) throws Exception;
 }

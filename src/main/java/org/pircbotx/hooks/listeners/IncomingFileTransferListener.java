@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingFileTransferEvent}occurs
 	 * @param event The generated IncomingFileTransferEvent
 	 */
-	public void onIncomingFileTransfer(IncomingFileTransferEvent event);
+	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception;
 }

@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.KickEvent}occurs
 	 * @param event The generated KickEvent
 	 */
-	public void onKick(KickEvent event);
+	public void onKick(KickEvent event) throws Exception;
 }

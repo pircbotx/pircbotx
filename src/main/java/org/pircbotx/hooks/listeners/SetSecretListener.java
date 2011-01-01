@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetSecretEvent}occurs
 	 * @param event The generated SetSecretEvent
 	 */
-	public void onSetSecret(SetSecretEvent event);
+	public void onSetSecret(SetSecretEvent event) throws Exception;
 }
