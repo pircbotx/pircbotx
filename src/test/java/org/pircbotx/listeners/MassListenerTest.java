@@ -21,7 +21,9 @@ package org.pircbotx.listeners;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 import org.pircbotx.TestUtils;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapterInterface;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -54,11 +56,15 @@ public class MassListenerTest {
 
 	@Test(dataProvider = "getListeners", dataProviderClass = TestUtils.class, dependsOnMethods = {"methodNumTest", "methodParamNumTest"})
 	public void methodParamClassTest(Class<?> listenerClass) {
+		Class<?> paramClass = listenerClass.getDeclaredMethods()[0].getParameterTypes()[0];
 		//Should be using the correct class correctly
-		String paramName = listenerClass.getDeclaredMethods()[0].getParameterTypes()[0].getSimpleName();
+		String paramName = paramClass.getSimpleName();
 		String listenerName = listenerClass.getSimpleName();
 		//Strip out suffixes and make sure the root is equal
 		assertEquals(paramName.split("Event")[0], listenerName.split("Listener")[0], "Method does not use the correct class");
+		//Make sure the event actually is an event (Class.isAssignableFrom fails, so the manual approach is nessesary)
+		assertEquals(paramClass.getSuperclass(),Event.class,"Method parameter isn't an event (Event: "+paramClass+")");
+		
 		System.out.println("Success: Method parameter class is good in class " + listenerClass);
 	}
 }
