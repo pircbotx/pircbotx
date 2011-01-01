@@ -29,7 +29,7 @@ import java.util.Set;
  *  <p>
  * Please note: This is a very basic and absolute type of manager. If a single 
  * class implements multiple listeners and you remove one, you remove them all! 
- * Therefor its  highly recommended to use {@link LinkedListenerManager} instead.
+ * Therefor its  highly recommended to use {@link MappedListenerManager} instead.
  * This class is only provided for convince.
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
