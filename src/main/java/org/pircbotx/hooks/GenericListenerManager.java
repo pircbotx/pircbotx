@@ -21,6 +21,7 @@ package org.pircbotx.hooks;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 /**
  * Generic ListenerManager based off of a normal event system. This is backed
  * by {@link HookUtils#callListener(org.pircbotx.hooks.Event, org.pircbotx.hooks.Listener)}
@@ -49,7 +50,11 @@ public class GenericListenerManager implements ListenerManager {
 	}
 
 	public void dispatchEvent(Event event) {
-		for (Listener curListener : listeners)
-			HookUtils.callListener(event, curListener);
+		try {
+			for (Listener curListener : listeners)
+				HookUtils.callListener(event, curListener);
+		} catch (Throwable t) {
+			event.getBot().logException(t);
+		}
 	}
 }
