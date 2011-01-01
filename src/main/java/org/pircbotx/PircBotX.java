@@ -1095,8 +1095,7 @@ public abstract class PircBotX {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	protected void handleLine(String line) throws Throwable {
-		try {
+	protected void handleLine(String line) {
 			log(line);
 
 			// Check for server pings.
@@ -1276,23 +1275,23 @@ public abstract class PircBotX {
 				// If we reach this point, then we've found something that the PircBotX
 				// Doesn't currently deal with.
 				getListeners().dispatchEvent(new UnknownEvent(this, line));
-		} catch (Throwable t) {
-			logException(t);
-		}
-	}
 
-	/**
-	 * This method is called by the PircBotX when a numeric response
-	 * is received from the IRC server.  We use this method to
-	 * allow PircBotX to process various responses from the server
-	 * before then passing them on to the onServerResponse method.
-	 *  <p>
-	 * Note that this method is private and should not appear in any
-	 * of the javadoc generated documenation.
-	 *
-	 * @param code The three-digit numerical code for the response.
-	 * @param response The full response from the IRC server.
-	 */
+		}
+
+		/**
+		 * This method is called by the PircBotX when a numeric response
+		 * is received from the IRC server.  We use this method to
+		 * allow PircBotX to process various responses from the server
+		 * before then passing them on to the onServerResponse method.
+		 *  <p>
+		 * Note that this method is private and should not appear in any
+		 * of the javadoc generated documenation.
+		 *
+		 * @param code The three-digit numerical code for the response.
+		 * @param response The full response from the IRC server.
+		 */
+	
+
 	protected void processServerResponse(int code, String response) {
 		//NOTE: Update tests if adding support for a new code
 		String[] parsed = response.split(" ");
