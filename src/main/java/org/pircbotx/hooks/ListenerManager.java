@@ -20,6 +20,8 @@ package org.pircbotx.hooks;
 
 import java.util.Set;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.listeners.ChannelInfoListener;
+import org.pircbotx.hooks.listeners.MotdListener;
 
 /**
  * Manages everything about Listeners: adding, removing, and dispatching events
@@ -57,20 +59,47 @@ public interface ListenerManager {
 	public void addListener(Listener listener);
 
 	/**
-	 * Removes an I Listener from the list listeners for an event
-	 * <p>
-	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
-	 * on exception handling and performance.s
-	 * @param listener
-	 */
-	public void removeListener(Listener listener);
-
-	/**
-	 * Gets all the listeners to an event
+	 * Removes all listeners that the provided listener implements. Eg if Listener
+	 * X implements {@link MotdListener} and {@link ChannelInfoListener}, both
+	 * are removed. This should only be used when a listener only listeners for
+	 * one event, otherwise {@link #removeListener(org.pircbotx.hooks.Listener, java.lang.Class) }
+	 * is recommended
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
-	 * @return An <b>Immutable set</b> of I listeners
+	 * @param listener
+	 */
+	public void removeListener(Listener listener);
+	
+	/**
+	 * Removes only the specific listener of a class while leaving others intact.
+	 * Eg if Listener X implements {@link MotdListener} and {@link ChannelInfoListener}
+	 * and <code>MotdListener</code> is specified, the <code>ChannelInfoListner</code>
+	 * still exists.
+	 * <p>
+	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
+	 * on exception handling and performance.
+	 * @param listener
+	 * @param listenerClass 
+	 */
+	public void removeListener(Listener listener, Class<? extends Listener> listenerClass);
+
+	/**
+	 * Gets all listeners that are in this ListenerManager
+	 * <p>
+	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
+	 * on exception handling and performance.
+	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
 	 */
 	public Set<Listener> getListeners();
+	
+	/**
+	 * Gets all listeners that implement the specified listener
+	 * <p>
+	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
+	 * on exception handling and performance.
+	 * @param listenerClass
+	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
+	 */
+	public Set<Listener> getListeners(Class<? extends Listener> listenerClass);
 }
