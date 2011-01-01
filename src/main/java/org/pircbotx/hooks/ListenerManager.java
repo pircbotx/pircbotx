@@ -67,7 +67,8 @@ public interface ListenerManager {
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
-	 * @param listener
+	 * @param listener An implementation of one or more listeners that all need
+	 *                 to be removed
 	 */
 	public void removeListener(Listener listener);
 	
@@ -79,8 +80,10 @@ public interface ListenerManager {
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
-	 * @param listener
-	 * @param listenerClass 
+	 * @param listener This class that implements one or more listeners
+	 * @param listenerClass A class that represents the specific listener to fetch,
+	 *                      eg {@link MotdListener}, <b>not the implementation of 
+	 *                      the listener</b>
 	 */
 	public void removeListener(Listener listener, Class<? extends Listener> listenerClass);
 
@@ -98,7 +101,9 @@ public interface ListenerManager {
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
-	 * @param listenerClass
+	 * @param listenerClass A class that represents the specific listener to fetch,
+	 *                      eg {@link MotdListener}, <b>not the implementation of 
+	 *                      the listener</b>
 	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
 	 */
 	public Set<Listener> getListeners(Class<? extends Listener> listenerClass);
