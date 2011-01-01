@@ -32,7 +32,7 @@ public interface ListenerManager {
 	 * Sends event to all appropriate listeners.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(Event event) throws Exception;
+	public void dispatchEvent(Event event);
 
 	/**
 	 * Adds an I listener to the list of

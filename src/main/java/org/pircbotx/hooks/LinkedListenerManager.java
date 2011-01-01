@@ -43,7 +43,7 @@ public class LinkedListenerManager implements ListenerManager {
 	 */
 	protected final ManyToManyMap<Class<? extends Listener>, Listener> map = new ManyToManyMap();
 
-	public void dispatchEvent(Event event) throws UnknownEventException {
+	public void dispatchEvent(Event event) {
 		//Get the listener
 		Class<? extends Listener> listenerClass = listenerEvents.get(event.getClass());
 		
