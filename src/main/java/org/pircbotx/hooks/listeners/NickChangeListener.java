@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.NickChangeEvent}occurs
 	 * @param event The generated NickChangeEvent
 	 */
-	public void onNickChange(NickChangeEvent event);
+	public void onNickChange(NickChangeEvent event) throws Exception;
 }

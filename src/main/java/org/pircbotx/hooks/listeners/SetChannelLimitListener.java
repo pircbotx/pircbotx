@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelLimitEvent}occurs
 	 * @param event The generated SetChannelLimitEvent
 	 */
-	public void onSetChannelLimit(SetChannelLimitEvent event);
+	public void onSetChannelLimit(SetChannelLimitEvent event) throws Exception;
 }

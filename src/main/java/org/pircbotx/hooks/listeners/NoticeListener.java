@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.NoticeEvent}occurs
 	 * @param event The generated NoticeEvent
 	 */
-	public void onNotice(NoticeEvent event);
+	public void onNotice(NoticeEvent event) throws Exception;
 }

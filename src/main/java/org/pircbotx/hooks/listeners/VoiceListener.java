@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.VoiceEvent}occurs
 	 * @param event The generated VoiceEvent
 	 */
-	public void onVoice(VoiceEvent event);
+	public void onVoice(VoiceEvent event) throws Exception;
 }

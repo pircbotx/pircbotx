@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetChannelKeyEvent}occurs
 	 * @param event The generated SetChannelKeyEvent
 	 */
-	public void onSetChannelKey(SetChannelKeyEvent event);
+	public void onSetChannelKey(SetChannelKeyEvent event) throws Exception;
 }

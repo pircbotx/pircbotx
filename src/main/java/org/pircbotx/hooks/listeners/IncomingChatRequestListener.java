@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.IncomingChatRequestEvent}occurs
 	 * @param event The generated IncomingChatRequestEvent
 	 */
-	public void onIncomingChatRequest(IncomingChatRequestEvent event);
+	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception;
 }

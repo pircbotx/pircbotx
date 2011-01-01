@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.TimeEvent}occurs
 	 * @param event The generated TimeEvent
 	 */
-	public void onTime(TimeEvent event);
+	public void onTime(TimeEvent event) throws Exception;
 }

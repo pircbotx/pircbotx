@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.VersionEvent}occurs
 	 * @param event The generated VersionEvent
 	 */
-	public void onVersion(VersionEvent event);
+	public void onVersion(VersionEvent event) throws Exception;
 }

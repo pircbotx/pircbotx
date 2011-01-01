@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.UserListEvent}occurs
 	 * @param event The generated UserListEvent
 	 */
-	public void onUserList(UserListEvent event);
+	public void onUserList(UserListEvent event) throws Exception;
 }

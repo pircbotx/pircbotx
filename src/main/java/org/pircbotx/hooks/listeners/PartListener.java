@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.PartEvent}occurs
 	 * @param event The generated PartEvent
 	 */
-	public void onPart(PartEvent event);
+	public void onPart(PartEvent event) throws Exception;
 }

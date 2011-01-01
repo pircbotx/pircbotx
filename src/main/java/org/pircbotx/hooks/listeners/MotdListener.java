@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.MotdEvent}occurs
 	 * @param event The generated MotdEvent
 	 */
-	public void onMotd(MotdEvent event);
+	public void onMotd(MotdEvent event) throws Exception;
 }

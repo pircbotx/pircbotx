@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveSecretEvent}occurs
 	 * @param event The generated RemoveSecretEvent
 	 */
-	public void onRemoveSecret(RemoveSecretEvent event);
+	public void onRemoveSecret(RemoveSecretEvent event) throws Exception;
 }

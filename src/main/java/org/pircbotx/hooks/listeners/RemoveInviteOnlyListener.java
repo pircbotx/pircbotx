@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveInviteOnlyEvent}occurs
 	 * @param event The generated RemoveInviteOnlyEvent
 	 */
-	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event);
+	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) throws Exception;
 }

@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.UserModeEvent}occurs
 	 * @param event The generated UserModeEvent
 	 */
-	public void onUserMode(UserModeEvent event);
+	public void onUserMode(UserModeEvent event) throws Exception;
 }

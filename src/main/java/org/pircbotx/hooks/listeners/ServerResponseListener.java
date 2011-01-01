@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.ServerResponseEvent}occurs
 	 * @param event The generated ServerResponseEvent
 	 */
-	public void onServerResponse(ServerResponseEvent event);
+	public void onServerResponse(ServerResponseEvent event) throws Exception;
 }

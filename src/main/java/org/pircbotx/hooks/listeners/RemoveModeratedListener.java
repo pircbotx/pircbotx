@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveModeratedEvent}occurs
 	 * @param event The generated RemoveModeratedEvent
 	 */
-	public void onRemoveModerated(RemoveModeratedEvent event);
+	public void onRemoveModerated(RemoveModeratedEvent event) throws Exception;
 }

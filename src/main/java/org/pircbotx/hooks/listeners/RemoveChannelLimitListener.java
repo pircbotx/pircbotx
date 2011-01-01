@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemoveChannelLimitEvent}occurs
 	 * @param event The generated RemoveChannelLimitEvent
 	 */
-	public void onRemoveChannelLimit(RemoveChannelLimitEvent event);
+	public void onRemoveChannelLimit(RemoveChannelLimitEvent event) throws Exception;
 }

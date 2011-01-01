@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.PrivateMessageEvent}occurs
 	 * @param event The generated PrivateMessageEvent
 	 */
-	public void onPrivateMessage(PrivateMessageEvent event);
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception;
 }

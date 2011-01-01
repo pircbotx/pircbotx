@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetPrivateEvent}occurs
 	 * @param event The generated SetPrivateEvent
 	 */
-	public void onSetPrivate(SetPrivateEvent event);
+	public void onSetPrivate(SetPrivateEvent event) throws Exception;
 }

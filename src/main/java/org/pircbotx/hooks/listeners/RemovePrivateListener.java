@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.RemovePrivateEvent}occurs
 	 * @param event The generated RemovePrivateEvent
 	 */
-	public void onRemovePrivate(RemovePrivateEvent event);
+	public void onRemovePrivate(RemovePrivateEvent event) throws Exception;
 }

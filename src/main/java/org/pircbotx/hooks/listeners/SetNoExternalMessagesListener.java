@@ -31,5 +31,5 @@ import org.pircbotx.hooks.Listener;
 	 * Invoked when an {@link org.pircbotx.hooks.events.SetNoExternalMessagesEvent}occurs
 	 * @param event The generated SetNoExternalMessagesEvent
 	 */
-	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event);
+	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) throws Exception;
 }
