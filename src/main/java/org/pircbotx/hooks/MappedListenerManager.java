@@ -30,7 +30,7 @@ import org.pircbotx.hooks.listeners.ActionListener;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class LinkedListenerManager implements ListenerManager {
+public class MappedListenerManager implements ListenerManager {
 	protected final Map<Class<? extends Event>, Class<? extends Listener>> listenerEvents = new HashMap();
 	/**
 	 * Maps listeners to their type of listener
@@ -44,7 +44,7 @@ public class LinkedListenerManager implements ListenerManager {
 		try {
 			//Get the listener
 			Class<? extends Listener> listenerClass = listenerEvents.get(event.getClass());
-
+			
 			//Using the listener class method, call it on the listener
 			for (Listener curListener : map.getAValues(listenerClass))
 				listenerClass.getDeclaredMethods()[0].invoke(curListener, event);
