@@ -18,10 +18,7 @@
  */
 package org.pircbotx.hooks;
 
-import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.Event;
 import java.util.Set;
-import org.pircbotx.exception.UnknownEventException;
 
 /**
  *
