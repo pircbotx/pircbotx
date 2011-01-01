@@ -27,7 +27,7 @@ import org.pircbotx.ManyToManyMap;
 import org.pircbotx.hooks.listeners.ActionListener;
 
 /**
- *
+ * A ListenerManager based off of explicitly mapping Listeners to events
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MappedListenerManager implements ListenerManager {
@@ -46,7 +46,7 @@ public class MappedListenerManager implements ListenerManager {
 			Class<? extends Listener> listenerClass = listenerEvents.get(event.getClass());
 			
 			//Using the listener class method, call it on the listener
-			for (Listener curListener : map.getAValues(listenerClass))
+			for (Listener curListener : map.getBValues(listenerClass))
 				listenerClass.getDeclaredMethods()[0].invoke(curListener, event);
 		} catch (Throwable t) {
 			event.getBot().logException(t);
@@ -69,10 +69,20 @@ public class MappedListenerManager implements ListenerManager {
 		//Delete all associations with listener
 		map.deleteB(listener);
 	}
+	
+	public void removeListener(Listener listener, Class<? extends Listener> listenerClass) {
+		//Delete all associations with listener
+		map.dissociate(listenerClass, listener);
+	}
 
 	public Set<Listener> getListeners() {
 		//Returned map is already unmodifiable
 		return map.getBValues();
+	}
+	
+	public Set<Listener> getListeners(Class<? extends Listener> listenerClass) {
+		//Returned map is already unmodifiable
+		return map.getBValues(listenerClass);
 	}
 
 	protected static Set<Class<? extends Listener>> getAllInterfaces(Class<?> listener) {
