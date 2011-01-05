@@ -31,8 +31,6 @@ import org.testng.annotations.DataProvider;
  */
 public class TestUtils {
 	protected static final List<Class<? extends Event>> eventClasses = HookUtils.getAllEvents();
-	
-	protected static final List<Class<? extends Listener>> listenerClasses = HookUtils.getAllListeners();
 
 	@DataProvider(name = "getEvents")
 	public static Object[][] EventDataProvider() {
@@ -40,16 +38,6 @@ public class TestUtils {
 		Object[][] params = new Object[eventSize][];
 		for (int i = 0; i < eventSize; i++)
 			params[i] = new Object[]{eventClasses.get(i)};
-
-		return params;
-	}
-
-	@DataProvider(name = "getListeners")
-	public static Object[][] ListenerDataProvider() {
-		int listenerSize = listenerClasses.size();
-		Object[][] params = new Object[listenerSize][];
-		for (int i = 0; i < listenerSize; i++)
-			params[i] = new Object[]{listenerClasses.get(i)};
 
 		return params;
 	}
