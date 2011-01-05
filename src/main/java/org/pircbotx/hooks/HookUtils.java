@@ -18,13 +18,9 @@
  */
 package org.pircbotx.hooks;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.pircbotx.exception.UnknownEventException;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -75,55 +71,6 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
-import org.pircbotx.hooks.listeners.ActionListener;
-import org.pircbotx.hooks.listeners.ChannelInfoListener;
-import org.pircbotx.hooks.listeners.ConnectListener;
-import org.pircbotx.hooks.listeners.DeVoiceListener;
-import org.pircbotx.hooks.listeners.DeopListener;
-import org.pircbotx.hooks.listeners.DisconnectListener;
-import org.pircbotx.hooks.listeners.FileTransferFinishedListener;
-import org.pircbotx.hooks.listeners.FingerListener;
-import org.pircbotx.hooks.listeners.IncomingChatRequestListener;
-import org.pircbotx.hooks.listeners.IncomingFileTransferListener;
-import org.pircbotx.hooks.listeners.InviteListener;
-import org.pircbotx.hooks.listeners.JoinListener;
-import org.pircbotx.hooks.listeners.KickListener;
-import org.pircbotx.hooks.listeners.MessageListener;
-import org.pircbotx.hooks.listeners.ModeListener;
-import org.pircbotx.hooks.listeners.NickChangeListener;
-import org.pircbotx.hooks.listeners.NoticeListener;
-import org.pircbotx.hooks.listeners.OpListener;
-import org.pircbotx.hooks.listeners.PartListener;
-import org.pircbotx.hooks.listeners.PingListener;
-import org.pircbotx.hooks.listeners.PrivateMessageListener;
-import org.pircbotx.hooks.listeners.QuitListener;
-import org.pircbotx.hooks.listeners.RemoveChannelBanListener;
-import org.pircbotx.hooks.listeners.RemoveChannelKeyListener;
-import org.pircbotx.hooks.listeners.RemoveChannelLimitListener;
-import org.pircbotx.hooks.listeners.RemoveInviteOnlyListener;
-import org.pircbotx.hooks.listeners.RemoveModeratedListener;
-import org.pircbotx.hooks.listeners.RemoveNoExternalMessagesListener;
-import org.pircbotx.hooks.listeners.RemovePrivateListener;
-import org.pircbotx.hooks.listeners.RemoveSecretListener;
-import org.pircbotx.hooks.listeners.RemoveTopicProtectionListener;
-import org.pircbotx.hooks.listeners.ServerPingListener;
-import org.pircbotx.hooks.listeners.ServerResponseListener;
-import org.pircbotx.hooks.listeners.SetChannelBanListener;
-import org.pircbotx.hooks.listeners.SetChannelKeyListener;
-import org.pircbotx.hooks.listeners.SetChannelLimitListener;
-import org.pircbotx.hooks.listeners.SetInviteOnlyListener;
-import org.pircbotx.hooks.listeners.SetModeratedListener;
-import org.pircbotx.hooks.listeners.SetNoExternalMessagesListener;
-import org.pircbotx.hooks.listeners.SetPrivateListener;
-import org.pircbotx.hooks.listeners.SetSecretListener;
-import org.pircbotx.hooks.listeners.SetTopicProtectionListener;
-import org.pircbotx.hooks.listeners.TimeListener;
-import org.pircbotx.hooks.listeners.TopicListener;
-import org.pircbotx.hooks.listeners.UnknownListener;
-import org.pircbotx.hooks.listeners.UserListListener;
-import org.pircbotx.hooks.listeners.UserModeListener;
-import org.pircbotx.hooks.listeners.VersionListener;
-import org.pircbotx.hooks.listeners.VoiceListener;
 
 /**
  *
@@ -132,7 +79,7 @@ import org.pircbotx.hooks.listeners.VoiceListener;
 public class HookUtils {
 	private static final List<Class<? extends Listener>> allListeners = new ArrayList();
 	private static final List<Class<? extends Event>> allEvents = new ArrayList();
-	
+
 	static {
 		//Add all Event classes
 		allEvents.add(ActionEvent.class);
@@ -199,37 +146,5 @@ public class HookUtils {
 	 */
 	public static List<Class<? extends Event>> getAllEvents() {
 		return allEvents;
-	}
-
-	/**
-	 * Using the supplied event, call the appropriate method in the listener. 
-	 * @param event The event to pass
-	 * @param listener The listener that needs its method called
-	 * @return True if the listener method was executed, false otherwise
-	 */
-	public static boolean callListener(Event event, Listener listener) {		
-		//Get base name of event
-		String name = event.getClass().getSimpleName().split("Event")[0];
-		
-		//Try and get the correct method if it exists
-		Method listenerMethod = null;
-		try {
-			listenerMethod = listener.getClass().getMethod("on"+name, event.getClass());
-		} catch (NoSuchMethodException ex) {
-			//Method doesn't exist, just don't call anything
-			return false;
-		} catch (SecurityException ex) {
-			throw new RuntimeException("Method on"+name+" is unaccessable", ex);
-		}
-		
-		//Now that we have the method, attempt to execute it
-		try {
-			listenerMethod.invoke(listener, event);
-		} catch (Exception ex) {
-			throw new RuntimeException("Unexpected error when invoking method on"+name);
-		}
-		
-		//Method executed sucessfully, return true
-		return true;
 	}
 }
