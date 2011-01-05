@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.pircbotx.ManyToManyMap;
-import org.pircbotx.hooks.listeners.ActionListener;
 
 /**
  * A ListenerManager based off of explicitly mapping Listeners to events
