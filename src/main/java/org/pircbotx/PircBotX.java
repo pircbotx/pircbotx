@@ -84,7 +84,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
-import org.pircbotx.hooks.GenericListenerManager;
 import org.pircbotx.hooks.MappedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
