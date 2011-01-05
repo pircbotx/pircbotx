@@ -23,5 +23,5 @@ package org.pircbotx.hooks;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface Listener {
-	public void onEvent(Event event);
+	public void onEvent(Event event) throws Exception;
 }
