@@ -20,8 +20,6 @@ package org.pircbotx.hooks;
 
 import java.util.Set;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.listeners.ChannelInfoListener;
-import org.pircbotx.hooks.listeners.MotdListener;
 
 /**
  * Manages everything about Listeners: adding, removing, and dispatching events
