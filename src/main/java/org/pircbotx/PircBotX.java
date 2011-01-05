@@ -85,6 +85,7 @@ import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
 import org.pircbotx.hooks.GenericListenerManager;
+import org.pircbotx.hooks.MappedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -171,7 +172,7 @@ public abstract class PircBotX {
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
 	private final Object logLock = new Object();
-	protected ListenerManager listeners = new GenericListenerManager();
+	protected ListenerManager listeners = new MappedListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
