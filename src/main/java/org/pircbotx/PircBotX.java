@@ -181,7 +181,7 @@ public class PircBotX {
 	private int socketTimeout = 1000 * 60 * 5;
 	private final ServerInfo serverInfo = new ServerInfo(this);
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
-	private SocketFactory _socketFactory = null; 
+	private SocketFactory _socketFactory = null;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} to the listenermangaer.  Your own constructors
@@ -203,7 +203,7 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
-		 this.connect(hostname, 6667, null, null);
+		this.connect(hostname, 6667, null, null);
 	}
 
 	/**
@@ -218,9 +218,8 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public synchronized void connect(String hostname, int port, SocketFactory socketFactory) throws IOException, IrcException, NickAlreadyInUseException {
-        this.connect(hostname, port, null, socketFactory);
-    }
-
+		this.connect(hostname, port, null, socketFactory);
+	}
 
 	/**
 	 * Attempt to connect to the specified IRC server using the supplied
@@ -249,11 +248,10 @@ public class PircBotX {
 		_userChanInfo.clear();
 
 		// Connect to the server.
-        if (socketFactory == null) {
-            _socket = new Socket(hostname, port);
-        } else {
-            _socket = socketFactory.createSocket(hostname, port);
-        }
+		if (socketFactory == null)
+			_socket = new Socket(hostname, port);
+		else
+			_socket = socketFactory.createSocket(hostname, port);
 
 		log("*** Connected to server.");
 
@@ -1045,202 +1043,200 @@ public class PircBotX {
 	 * @param line The raw line of text from the server.
 	 */
 	protected void handleLine(String line) {
-			log(line);
+		log(line);
 
-			// Check for server pings.
-			if (line.startsWith("PING ")) {
-				// Respond to the ping and return immediately.
-				getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
+		// Check for server pings.
+		if (line.startsWith("PING ")) {
+			// Respond to the ping and return immediately.
+			getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
+			return;
+		}
+
+		String sourceNick = "";
+		String sourceLogin = "";
+		String sourceHostname = "";
+
+		StringTokenizer tokenizer = new StringTokenizer(line);
+		String senderInfo = tokenizer.nextToken();
+		String command = tokenizer.nextToken();
+		String target = null;
+
+		int exclamation = senderInfo.indexOf("!");
+		int at = senderInfo.indexOf("@");
+		if (senderInfo.startsWith(":"))
+			if (exclamation > 0 && at > 0 && exclamation < at) {
+				sourceNick = senderInfo.substring(1, exclamation);
+				sourceLogin = senderInfo.substring(exclamation + 1, at);
+				sourceHostname = senderInfo.substring(at + 1);
+			} else if (tokenizer.hasMoreTokens()) {
+				String token = command;
+
+				int code = -1;
+				try {
+					code = Integer.parseInt(token);
+				} catch (NumberFormatException e) {
+					// Keep the existing value.
+				}
+
+				if (code != -1) {
+					String errorStr = token;
+					String response = line.substring(line.indexOf(errorStr, senderInfo.length()) + 4, line.length());
+					processServerResponse(code, response);
+					// Return from the method.
+					return;
+				} else {
+					// This is not a server response.
+					// It must be a nick without login and hostname.
+					// (or maybe a NOTICE or suchlike from the server)
+					sourceNick = senderInfo;
+					target = token;
+				}
+			} else {
+				// We don't know what this line means.
+				getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+				// Return from the method;
 				return;
 			}
 
-			String sourceNick = "";
-			String sourceLogin = "";
-			String sourceHostname = "";
+		command = command.toUpperCase();
+		if (sourceNick.startsWith(":"))
+			sourceNick = sourceNick.substring(1);
+		if (target == null)
+			target = tokenizer.nextToken();
+		if (target.startsWith(":"))
+			target = target.substring(1);
 
-			StringTokenizer tokenizer = new StringTokenizer(line);
-			String senderInfo = tokenizer.nextToken();
-			String command = tokenizer.nextToken();
-			String target = null;
 
-			int exclamation = senderInfo.indexOf("!");
-			int at = senderInfo.indexOf("@");
-			if (senderInfo.startsWith(":"))
-				if (exclamation > 0 && at > 0 && exclamation < at) {
-					sourceNick = senderInfo.substring(1, exclamation);
-					sourceLogin = senderInfo.substring(exclamation + 1, at);
-					sourceHostname = senderInfo.substring(at + 1);
-				} else if (tokenizer.hasMoreTokens()) {
-					String token = command;
+		User source = getUser(sourceNick);
+		Channel channel = channelExists(target) ? getChannel(target) : null;
+		// Check for CTCP requests.
+		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 
-					int code = -1;
-					try {
-						code = Integer.parseInt(token);
-					} catch (NumberFormatException e) {
-						// Keep the existing value.
-					}
-
-					if (code != -1) {
-						String errorStr = token;
-						String response = line.substring(line.indexOf(errorStr, senderInfo.length()) + 4, line.length());
-						processServerResponse(code, response);
-						// Return from the method.
-						return;
-					} else {
-						// This is not a server response.
-						// It must be a nick without login and hostname.
-						// (or maybe a NOTICE or suchlike from the server)
-						sourceNick = senderInfo;
-						target = token;
-					}
-				} else {
-					// We don't know what this line means.
+			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
+			if (request.equals("VERSION"))
+				// VERSION request
+				getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
+			else if (request.startsWith("ACTION "))
+				// ACTION request
+				getListenerManager().dispatchEvent(new ActionEvent(this, source, channel, request.substring(7)));
+			else if (request.startsWith("PING "))
+				// PING request
+				getListenerManager().dispatchEvent(new PingEvent(this, source, channel, request.substring(5)));
+			else if (request.equals("TIME"))
+				// TIME request
+				getListenerManager().dispatchEvent(new TimeEvent(this, source, channel));
+			else if (request.equals("FINGER"))
+				// FINGER request
+				getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
+			else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
+				// This is a DCC request.
+				boolean success = _dccManager.processRequest(source, request);
+				if (!success)
+					// The DccManager didn't know what to do with the line.
 					getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-					// Return from the method;
-					return;
-				}
-
-			command = command.toUpperCase();
-			if (sourceNick.startsWith(":"))
-				sourceNick = sourceNick.substring(1);
-			if (target == null)
-				target = tokenizer.nextToken();
-			if (target.startsWith(":"))
-				target = target.substring(1);
-
-
-			User source = getUser(sourceNick);
-			Channel channel = channelExists(target) ? getChannel(target) : null;
-			// Check for CTCP requests.
-			if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
-
-				String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
-				if (request.equals("VERSION"))
-					// VERSION request
-					getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
-				else if (request.startsWith("ACTION "))
-					// ACTION request
-					getListenerManager().dispatchEvent(new ActionEvent(this, source, channel, request.substring(7)));
-				else if (request.startsWith("PING "))
-					// PING request
-					getListenerManager().dispatchEvent(new PingEvent(this, source, channel, request.substring(5)));
-				else if (request.equals("TIME"))
-					// TIME request
-					getListenerManager().dispatchEvent(new TimeEvent(this, source, channel));
-				else if (request.equals("FINGER"))
-					// FINGER request
-					getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
-				else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
-					// This is a DCC request.
-					boolean success = _dccManager.processRequest(source, request);
-					if (!success)
-						// The DccManager didn't know what to do with the line.
-						getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-				} else
-					// An unknown CTCP message - ignore it.
-					getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-			} else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0)
-				// This is a normal message to a channel.
-				getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, line.substring(line.indexOf(" :") + 2)));
-			else if (command.equals("PRIVMSG"))
-				// This is a private message to us.
-				getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, line.substring(line.indexOf(" :") + 2)));
-			else if (command.equals("JOIN")) {
-				// Someone is joining a channel.
-				if (sourceNick.equalsIgnoreCase(_nick)) {
-					//Its us, do some setup
-					sendRawLine("WHO " + channel);
-					sendRawLine("MODE " + channel);
-				}
-
-				User usr = getUser(sourceNick);
-				//Only setup if nessesary
-				if (usr.getHostmask() == null) {
-					usr.setLogin(sourceLogin);
-					usr.setHostmask(sourceHostname);
-				}
-				//user.addUser(usr);
-
-				getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
-			} else if (command.equals("PART"))
-				// Someone is parting from a channel.
-				if (sourceNick.equals(getNick()))
-					_userChanInfo.dissociate(getChannel(target), getUser(sourceNick), true);
-				else
-					//Just remove the user from memory
-					//getChannel(target).removeUser(sourceNick);
-					getListenerManager().dispatchEvent(new PartEvent(this, channel, source));
-			else if (command.equals("NICK")) {
-				// Somebody is changing their nick.
-				String newNick = target;
-				getUser(sourceNick).setNick(newNick);
-				if (sourceNick.equals(getNick()))
-					// Update our nick if it was us that changed nick.
-					setNick(newNick);
-				getListenerManager().dispatchEvent(new NickChangeEvent(this, sourceNick, newNick, source));
-			} else if (command.equals("NOTICE"))
-				// Someone is sending a notice.
-				getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, line.substring(line.indexOf(" :") + 2)));
-			else if (command.equals("QUIT")) {
-				// Someone has quit from the IRC server.
-				if (sourceNick.equals(getNick()))
-					//We just quit the server
-					_userChanInfo.clear();
-				else
-					//Someone else
-					_userChanInfo.deleteB(getUser(sourceNick));
-				getListenerManager().dispatchEvent(new QuitEvent(this, source, line.substring(line.indexOf(" :") + 2)));
-			} else if (command.equals("KICK")) {
-				// Somebody has been kicked from a channel.
-				String recipient = tokenizer.nextToken();
-				User user = getUser(sourceNick);
-				if (recipient.equals(getNick()))
-					//We were just kicked
-					_userChanInfo.deleteB(user);
-				else
-					//Someone else
-					_userChanInfo.dissociate(getChannel(target), user, true);
-				getListenerManager().dispatchEvent(new KickEvent(this, channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
-			} else if (command.equals("MODE")) {
-				// Somebody is changing the mode on a channel or user.
-				String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
-				if (mode.startsWith(":"))
-					mode = mode.substring(1);
-				processMode(target, sourceNick, sourceLogin, sourceHostname, mode);
-			} else if (command.equals("TOPIC")) {
-				// Someone is changing the topic.
-				String topic = line.substring(line.indexOf(" :") + 2);
-				long currentTime = System.currentTimeMillis();
-				Channel chan = getChannel(target);
-				chan.setTopic(topic);
-				chan.setTopicSetter(sourceNick);
-				chan.setTopicTimestamp(currentTime);
-
-				getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, true));
-			} else if (command.equals("INVITE"))
-				// Somebody is inviting somebody else into a channel.
-				getListenerManager().dispatchEvent(new InviteEvent(this, source, channel));
-			else
-				// If we reach this point, then we've found something that the PircBotX
-				// Doesn't currently deal with.
+			} else
+				// An unknown CTCP message - ignore it.
 				getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+		} else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0)
+			// This is a normal message to a channel.
+			getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, line.substring(line.indexOf(" :") + 2)));
+		else if (command.equals("PRIVMSG"))
+			// This is a private message to us.
+			getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, line.substring(line.indexOf(" :") + 2)));
+		else if (command.equals("JOIN")) {
+			// Someone is joining a channel.
+			if (sourceNick.equalsIgnoreCase(_nick)) {
+				//Its us, do some setup
+				sendRawLine("WHO " + channel);
+				sendRawLine("MODE " + channel);
+			}
 
-		}
+			User usr = getUser(sourceNick);
+			//Only setup if nessesary
+			if (usr.getHostmask() == null) {
+				usr.setLogin(sourceLogin);
+				usr.setHostmask(sourceHostname);
+			}
+			//user.addUser(usr);
 
-		/**
-		 * This method is called by the PircBotX when a numeric response
-		 * is received from the IRC server.  We use this method to
-		 * allow PircBotX to process various responses from the server
-		 * before then passing them on to the onServerResponse method.
-		 *  <p>
-		 * Note that this method is private and should not appear in any
-		 * of the javadoc generated documenation.
-		 *
-		 * @param code The three-digit numerical code for the response.
-		 * @param response The full response from the IRC server.
-		 */
-	
+			getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
+		} else if (command.equals("PART"))
+			// Someone is parting from a channel.
+			if (sourceNick.equals(getNick()))
+				_userChanInfo.dissociate(getChannel(target), getUser(sourceNick), true);
+			else
+				//Just remove the user from memory
+				//getChannel(target).removeUser(sourceNick);
+				getListenerManager().dispatchEvent(new PartEvent(this, channel, source));
+		else if (command.equals("NICK")) {
+			// Somebody is changing their nick.
+			String newNick = target;
+			getUser(sourceNick).setNick(newNick);
+			if (sourceNick.equals(getNick()))
+				// Update our nick if it was us that changed nick.
+				setNick(newNick);
+			getListenerManager().dispatchEvent(new NickChangeEvent(this, sourceNick, newNick, source));
+		} else if (command.equals("NOTICE"))
+			// Someone is sending a notice.
+			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, line.substring(line.indexOf(" :") + 2)));
+		else if (command.equals("QUIT")) {
+			// Someone has quit from the IRC server.
+			if (sourceNick.equals(getNick()))
+				//We just quit the server
+				_userChanInfo.clear();
+			else
+				//Someone else
+				_userChanInfo.deleteB(getUser(sourceNick));
+			getListenerManager().dispatchEvent(new QuitEvent(this, source, line.substring(line.indexOf(" :") + 2)));
+		} else if (command.equals("KICK")) {
+			// Somebody has been kicked from a channel.
+			String recipient = tokenizer.nextToken();
+			User user = getUser(sourceNick);
+			if (recipient.equals(getNick()))
+				//We were just kicked
+				_userChanInfo.deleteB(user);
+			else
+				//Someone else
+				_userChanInfo.dissociate(getChannel(target), user, true);
+			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
+		} else if (command.equals("MODE")) {
+			// Somebody is changing the mode on a channel or user.
+			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
+			if (mode.startsWith(":"))
+				mode = mode.substring(1);
+			processMode(target, sourceNick, sourceLogin, sourceHostname, mode);
+		} else if (command.equals("TOPIC")) {
+			// Someone is changing the topic.
+			String topic = line.substring(line.indexOf(" :") + 2);
+			long currentTime = System.currentTimeMillis();
+			Channel chan = getChannel(target);
+			chan.setTopic(topic);
+			chan.setTopicSetter(sourceNick);
+			chan.setTopicTimestamp(currentTime);
 
+			getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, true));
+		} else if (command.equals("INVITE"))
+			// Somebody is inviting somebody else into a channel.
+			getListenerManager().dispatchEvent(new InviteEvent(this, source, channel));
+		else
+			// If we reach this point, then we've found something that the PircBotX
+			// Doesn't currently deal with.
+			getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+
+	}
+
+	/**
+	 * This method is called by the PircBotX when a numeric response
+	 * is received from the IRC server.  We use this method to
+	 * allow PircBotX to process various responses from the server
+	 * before then passing them on to the onServerResponse method.
+	 *  <p>
+	 * Note that this method is private and should not appear in any
+	 * of the javadoc generated documenation.
+	 *
+	 * @param code The three-digit numerical code for the response.
+	 * @param response The full response from the IRC server.
+	 */
 	protected void processServerResponse(int code, String response) {
 		//NOTE: Update tests if adding support for a new code
 		String[] parsed = response.split(" ");
@@ -2129,18 +2125,18 @@ public class PircBotX {
 			channels.add(entry);
 		}
 	}
-	
+
 	/**
-     * Returns the last SocketFactory that we used to connect to an IRC server.
-     * This does not imply that the connection attempt to the server was
-     * successful (we suggest you look at the onConnect method).
-     * A value of null is returned if the PircBot has never tried to connect
-     * to a server using a SocketFactory.
-     * 
-     * @return The last SocketFactory that we used when connecting to an IRC server.
-     *         Returns null if we have not previously connected using a SocketFactory.
-     */
-    public SocketFactory getSocketFactory() {
-    	return _socketFactory;
-    }
+	 * Returns the last SocketFactory that we used to connect to an IRC server.
+	 * This does not imply that the connection attempt to the server was
+	 * successful (we suggest you look at the onConnect method).
+	 * A value of null is returned if the PircBot has never tried to connect
+	 * to a server using a SocketFactory.
+	 * 
+	 * @return The last SocketFactory that we used when connecting to an IRC server.
+	 *         Returns null if we have not previously connected using a SocketFactory.
+	 */
+	public SocketFactory getSocketFactory() {
+		return _socketFactory;
+	}
 }
