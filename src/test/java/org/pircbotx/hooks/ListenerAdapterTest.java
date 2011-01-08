@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx.hooks.helpers;
+package org.pircbotx.hooks;
 
 import org.pircbotx.hooks.ListenerAdapterInterface;
 import java.io.File;
@@ -33,7 +33,7 @@ import static org.testng.Assert.*;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class AdapterListenerTest {
+public class ListenerAdapterTest {
 	/**
 	 * Makes sure meta interfaces implment all the hooks
 	 * @throws Exception
