@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import javax.net.SocketFactory;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -180,6 +181,7 @@ public class PircBotX {
 	private int socketTimeout = 1000 * 60 * 5;
 	private final ServerInfo serverInfo = new ServerInfo(this);
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
+	private SocketFactory _socketFactory = null; 
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} to the listenermangaer.  Your own constructors
@@ -201,7 +203,7 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
-		connect(hostname, 6667, null);
+		 this.connect(hostname, 6667, null, null);
 	}
 
 	/**
@@ -215,9 +217,10 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
-		connect(hostname, port, null);
-	}
+	public synchronized void connect(String hostname, int port, SocketFactory socketFactory) throws IOException, IrcException, NickAlreadyInUseException {
+        this.connect(hostname, port, null, socketFactory);
+    }
+
 
 	/**
 	 * Attempt to connect to the specified IRC server using the supplied
@@ -232,7 +235,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public synchronized void connect(String hostname, int port, String password) throws IOException, IrcException, NickAlreadyInUseException {
+	public synchronized void connect(String hostname, int port, String password, SocketFactory socketFactory) throws IOException, IrcException, NickAlreadyInUseException {
 		_server = hostname;
 		_port = port;
 		_password = password;
@@ -246,7 +249,12 @@ public class PircBotX {
 		_userChanInfo.clear();
 
 		// Connect to the server.
-		_socket = new Socket(hostname, port);
+        if (socketFactory == null) {
+            _socket = new Socket(hostname, port);
+        } else {
+            _socket = socketFactory.createSocket(hostname, port);
+        }
+
 		log("*** Connected to server.");
 
 		_inetAddress = _socket.getLocalAddress();
@@ -346,7 +354,7 @@ public class PircBotX {
 	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
 		if (getServer() == null)
 			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
-		connect(getServer(), getPort(), getPassword());
+		connect(getServer(), getPort(), getPassword(), getSocketFactory());
 	}
 
 	/**
@@ -2121,4 +2129,18 @@ public class PircBotX {
 			channels.add(entry);
 		}
 	}
+	
+	/**
+     * Returns the last SocketFactory that we used to connect to an IRC server.
+     * This does not imply that the connection attempt to the server was
+     * successful (we suggest you look at the onConnect method).
+     * A value of null is returned if the PircBot has never tried to connect
+     * to a server using a SocketFactory.
+     * 
+     * @return The last SocketFactory that we used when connecting to an IRC server.
+     *         Returns null if we have not previously connected using a SocketFactory.
+     */
+    public SocketFactory getSocketFactory() {
+    	return _socketFactory;
+    }
 }
