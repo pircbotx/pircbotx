@@ -24,13 +24,10 @@ import java.util.Set;
 
 /**
  * Generic ListenerManager based off of a normal event system. This is backed
- * by {@link HookUtils#callListener(org.pircbotx.hooks.Event, org.pircbotx.hooks.Listener)}
- * and a simple HashSet. 
+ * by a simple {@link HashSet} 
  *  <p>
  * Please note: This is a very basic and absolute type of manager. If a single 
- * class implements multiple listeners and you remove one, you remove them all! 
- * Therefor its  highly recommended to use {@link MappedListenerManager} instead.
- * This class is only provided for convince.
+ * class implements multiple listeners and you remove one, you remove them all!
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -41,8 +38,8 @@ public class GenericListenerManager implements ListenerManager {
 		listeners.add(listener);
 	}
 
-	public void removeListener(Listener listener) {
-		listeners.remove(listener);
+	public boolean removeListener(Listener listener) {
+		return listeners.remove(listener);
 	}
 
 	public Set<Listener> getListeners() {
@@ -52,7 +49,7 @@ public class GenericListenerManager implements ListenerManager {
 	public void dispatchEvent(Event event) {
 		try {
 			for (Listener curListener : listeners)
-				HookUtils.callListener(event, curListener);
+				curListener.onEvent(event);
 		} catch (Throwable t) {
 			event.getBot().logException(t);
 		}
