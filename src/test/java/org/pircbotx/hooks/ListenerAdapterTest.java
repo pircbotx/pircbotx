@@ -18,14 +18,15 @@
  */
 package org.pircbotx.hooks;
 
-import org.pircbotx.hooks.ListenerAdapterInterface;
+import java.lang.reflect.Method;
+import org.pircbotx.hooks.ListenerAdapter;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.hooks.listeners.VoiceListener;
+import org.pircbotx.hooks.events.VoiceEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -35,13 +36,13 @@ import static org.testng.Assert.*;
  */
 public class ListenerAdapterTest {
 	/**
-	 * Makes sure meta interfaces implment all the hooks
+	 * Makes sure adapter uses all events
 	 * @throws Exception
 	 */
 	@Test
-	public void interfaceImplmentTest() throws Exception {
+	public void eventImplementTest() throws Exception {
 		String sep = System.getProperty("file.separator");
-		Class testClazz = VoiceListener.class;
+		Class testClazz = VoiceEvent.class;
 
 		//Since dumping path in getResources() fails, extract path from root
 		Enumeration<URL> rootResources = testClazz.getClassLoader().getResources("");
@@ -51,19 +52,29 @@ public class ListenerAdapterTest {
 
 		//Get root directory as a file
 		File hookDir = new File(root + sep + "classes" + sep + (testClazz.getPackage().getName().replace(".", sep)) + sep);
-		assertNotNull(hookDir, "Fetched Hook directory is null");
-		assertTrue(hookDir.exists(), "Hook directory doesn't exist");
-		assertTrue(hookDir.isDirectory(), "Hook directory isn't a directory");
+		assertNotNull(hookDir, "Fetched Event directory is null");
+		assertTrue(hookDir.exists(), "Event directory doesn't exist");
+		assertTrue(hookDir.isDirectory(), "Event directory isn't a directory");
 
-		//Get all classes
-		List<String> clazzes = new ArrayList();
-		assertTrue(hookDir.listFiles().length > 0, "Hook directory is empty");
+		//Get all file names
+		List<String> classFiles = new ArrayList();
+		assertTrue(hookDir.listFiles().length > 0, "Event directory is empty");
 		for (File clazzFile : hookDir.listFiles())
 			//If its not a file or .java or its a subclass, ignore
 			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
-				clazzes.add(clazzFile.getName().split("\\.")[0]);
+				classFiles.add(clazzFile.getName().split("\\.")[0]);
+		
+		//Get all events ListenerAdapter uses
+		List<String> classMethods = new ArrayList();
+		for(Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			assertEquals(curMethod.getParameterTypes().length,1,"More than one parameter in method "+curMethod);
+			classMethods.add(curMethod.getParameterTypes()[0].getSimpleName());
+		}
 
-		subtract(ListenerAdapterInterface.class, clazzes);
+		//Subtract the differences
+		classFiles.removeAll(classMethods);
+		String leftOver = StringUtils.join(classFiles.toArray(),", ");
+		assertEquals(classFiles.size(), 0, testClazz.getSimpleName() + " does not implment " + leftOver);
 
 		System.out.println("Success: Meta Interface implment all hooks");
 	}
