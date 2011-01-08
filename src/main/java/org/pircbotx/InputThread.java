@@ -116,7 +116,7 @@ public class InputThread implements Runnable {
 
 		//Now that the socket is definatly closed, call event and log
 		//_bot.removeAllChannels();
-		_bot.getListeners().dispatchEvent(new DisconnectEvent(_bot));
+		_bot.getListenerManager().dispatchEvent(new DisconnectEvent(_bot));
 		_bot.log("*** Disconnected.");
 	}
 }
