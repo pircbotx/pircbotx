@@ -25,7 +25,7 @@ package org.pircbotx;
  * Most info thanks to <a href="www.irc.org/tech_docs/005.html">this great website
  * </a> on what each one does
  *
- * @author LordQuackstar
+ * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ServerInfo {
 	private PircBotX _bot;

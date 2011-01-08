@@ -36,7 +36,7 @@ import java.util.Set;
  * simplifies this process
  *<P>
  * This class is internally synchronized and fully thread safe. 
- * @author LordQuackstar
+ * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ManyToManyMap<A, B> {
 	protected final Map<A, HashSet<B>> AMap = new HashMap<A, HashSet<B>>();
