@@ -238,13 +238,13 @@ public class PircBotXTest {
 
 	/**
 	 * Modified PircBotX for this testing
-	 * -Adds testing listeners
+	 * -Adds testing listenerManager
 	 * -Makes processServerResponse more visible
 	 * -Makes send* methods signal result
 	 */
 	public class PircBotXMod extends PircBotX {
 		public PircBotXMod() {
-			getListeners().addListener(new Listener());
+			getListenerManager().addListener(new Listener());
 		}
 
 		@Override

@@ -64,7 +64,7 @@ public class DccManager {
 				// Stick with the old value.
 			}
 
-			_bot.getListeners().dispatchEvent(new IncomingFileTransferEvent(_bot, new DccFileTransfer(_bot, this, source, type, filename, address, port, size)));
+			_bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(_bot, new DccFileTransfer(_bot, this, source, type, filename, address, port, size)));
 
 		} else if (type.equals("RESUME")) {
 			int port = Integer.parseInt(tokenizer.nextToken());
@@ -112,7 +112,7 @@ public class DccManager {
 
 			new Thread() {
 				public void run() {
-					_bot.getListeners().dispatchEvent(new IncomingChatRequestEvent(_bot, chat));
+					_bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(_bot, chat));
 				}
 			}.start();
 		} else
