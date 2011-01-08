@@ -54,7 +54,6 @@ package org.pircbotx;
  *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
  *          <p/>Forked by Leon Blakey as part of the PircBotX project
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
- * @version    2.0 Alpha
  */
 public class Colors {
 	/**
