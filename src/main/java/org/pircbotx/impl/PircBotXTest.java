@@ -37,7 +37,7 @@ public class PircBotXTest extends PircBotX implements ConnectListener, UserListL
 		setMessageDelay(0);
 		setVersion("Quackbot 3.3");
 		setVerbose(true);
-		getListeners().addListener(this);
+		getListenerManager().addListener(this);
 	}
 
 	@Override
