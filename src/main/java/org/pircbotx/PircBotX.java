@@ -1384,7 +1384,7 @@ public class PircBotX {
 	 * @param sourceHostname The hostname of the user that set the mode.
 	 * @param mode  The mode that has been set.
 	 */
-	private void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
+	protected void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 		User source = getUser(sourceNick);
 		if (_channelPrefixes.indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
