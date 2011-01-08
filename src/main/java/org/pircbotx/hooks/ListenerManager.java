@@ -71,23 +71,6 @@ public interface ListenerManager {
 	 *         removed
 	 */
 	public boolean removeListener(Listener listener);
-	
-	/**
-	 * Removes only the specific listener of a class while leaving others intact.
-	 * Eg if Listener X implements {@link MotdListener} and {@link ChannelInfoListener}
-	 * and <code>MotdListener</code> is specified, the <code>ChannelInfoListner</code>
-	 * still exists.
-	 * <p>
-	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
-	 * on exception handling and performance.
-	 * @param listener This class that implements one or more listeners
-	 * @param listenerClass A class that represents the specific listener to fetch,
-	 *                      eg {@link MotdListener}, <b>not the implementation of 
-	 *                      the listener</b>
-	 * @return True if the listener was removed, false if it didn't exist or wasn't
-	 *         removed
-	 */
-	public boolean removeListener(Listener listener, Class<? extends Listener> listenerClass);
 
 	/**
 	 * Gets all listeners that are in this ListenerManager
@@ -97,16 +80,4 @@ public interface ListenerManager {
 	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
 	 */
 	public Set<Listener> getListeners();
-	
-	/**
-	 * Gets all listeners that implement the specified listener
-	 * <p>
-	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
-	 * on exception handling and performance.
-	 * @param listenerClass A class that represents the specific listener to fetch,
-	 *                      eg {@link MotdListener}, <b>not the implementation of 
-	 *                      the listener</b>
-	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
-	 */
-	public Set<Listener> getListeners(Class<? extends Listener> listenerClass);
 }
