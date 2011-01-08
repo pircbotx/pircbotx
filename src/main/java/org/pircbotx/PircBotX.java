@@ -119,7 +119,7 @@ import static org.pircbotx.ReplyConstants.*;
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
  * @version    2.0 Alpha
  */
-public abstract class PircBotX {
+public class PircBotX {
 	/**
 	 * The definitive version number of this release of PircBotX.
 	 * (Note: Change this before automatically building releases)
