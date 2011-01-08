@@ -37,7 +37,7 @@ public class Event<T extends PircBotX> {
 	 * Returns the {@link PircBotX} instance that this event originally came from
 	 * @return A {@link PircBotX} instance
 	 */
-	protected final T getBot() {
+	public T getBot() {
 		return bot;
 	}
 
