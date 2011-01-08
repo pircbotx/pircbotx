@@ -18,6 +18,10 @@
  */
 package org.pircbotx.hooks;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -73,7 +77,24 @@ import org.pircbotx.hooks.events.VoiceEvent;
  * TODO
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class ListenerAdapter implements ListenerAdapterInterface {
+public class ListenerAdapter implements Listener {
+	protected static final Map<Class<? extends Event>, Method> eventToMethod = new HashMap();
+	
+	static {
+		for(Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			if(curMethod.getName().equals("onEvent"))
+				continue;
+			eventToMethod.put((Class<? extends Event>)curMethod.getParameterTypes()[0], curMethod);
+		}
+	}
+	
+	public void onEvent(Event event) throws Exception {
+		try {
+			eventToMethod.get(event.getClass()).invoke(this, event);
+		} catch (InvocationTargetException ex) {
+			throw (Exception)ex.getCause();
+		}
+	}
 	public void onAction(ActionEvent event) {
 	}
 

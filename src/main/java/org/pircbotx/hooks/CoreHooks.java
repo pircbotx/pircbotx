@@ -24,17 +24,12 @@ import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
-import org.pircbotx.hooks.listeners.FingerListener;
-import org.pircbotx.hooks.listeners.PingListener;
-import org.pircbotx.hooks.listeners.ServerPingListener;
-import org.pircbotx.hooks.listeners.TimeListener;
-import org.pircbotx.hooks.listeners.VersionListener;
+
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class CoreHooks implements FingerListener, PingListener, ServerPingListener, TimeListener, VersionListener {
-
+public class CoreHooks implements Listener {
 	public void onFinger(FingerEvent event) {
 		event.getBot().sendCTCPResponse(event, "FINGER " + event.getBot().getFinger());
 	}
@@ -53,5 +48,18 @@ public class CoreHooks implements FingerListener, PingListener, ServerPingListen
 
 	public void onVersion(VersionEvent event) {
 		event.getBot().sendCTCPResponse(event, "VERSION " + event.getBot().getVersion());
+	}
+
+	public void onEvent(Event event) {
+		if (event instanceof VersionEvent)
+			onVersion((VersionEvent) event);
+		else if (event instanceof TimeEvent)
+			onTime((TimeEvent) event);
+		else if (event instanceof ServerPingEvent)
+			onServerPing((ServerPingEvent) event);
+		else if (event instanceof PingEvent)
+			onPing((PingEvent) event);
+		else if (event instanceof FingerEvent)
+			onFinger((FingerEvent) event);
 	}
 }
