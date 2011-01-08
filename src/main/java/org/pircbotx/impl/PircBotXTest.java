@@ -19,53 +19,47 @@
 package org.pircbotx.impl;
 
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.UserListEvent;
-import org.pircbotx.hooks.listeners.ConnectListener;
-import org.pircbotx.hooks.listeners.UserListListener;
 
 /**
  *
  * @author LordQuackstar
  */
-public class PircBotXTest extends PircBotX implements ConnectListener, UserListListener {
-	public PircBotXTest() {
-		setName("TheLQ");
-		setLogin("LQ");
-		setAutoNickChange(true);
-		setFinger("Quackbot IRC bot by Lord.Quackstar. Source: http://quackbot.googlecode.com/");
-		setMessageDelay(0);
-		setVersion("Quackbot 3.3");
-		setVerbose(true);
-		getListenerManager().addListener(this);
-	}
-
-	@Override
-	public void onConnect(ConnectEvent event) {
-		sendRawLine("NICKSERV identify manganip");
-		joinChannel("#honcast");
-		joinChannel("#3on3.et");
-		joinChannel("#lemondogs");
-		joinChannel("#5on5");
-		joinChannel("#5on5.css");
-		joinChannel("#pracc");
-		joinChannel("#matsi");
-		joinChannel("#k1ck");
-		joinChannel("#honcast");
-		joinChannel("#cod4.wars");
-		joinChannel("#teamliquid");
-		joinChannel("#pcw");
-	}
-
-	@Override
-	public void onUserList(UserListEvent event) {
-		log("INNEFFIENT CALLED");
+public class PircBotXTest implements Listener {
+	public void onEvent(Event rawevent) throws Exception {
+		if (rawevent instanceof ConnectEvent) {
+			ConnectEvent event = (ConnectEvent) rawevent;
+			event.getBot().sendRawLine("NICKSERV identify manganip");
+			event.getBot().joinChannel("#honcast");
+			event.getBot().joinChannel("#3on3.et");
+			event.getBot().joinChannel("#lemondogs");
+			event.getBot().joinChannel("#5on5");
+			event.getBot().joinChannel("#5on5.css");
+			event.getBot().joinChannel("#pracc");
+			event.getBot().joinChannel("#matsi");
+			event.getBot().joinChannel("#k1ck");
+			event.getBot().joinChannel("#honcast");
+			event.getBot().joinChannel("#cod4.wars");
+			event.getBot().joinChannel("#teamliquid");
+			event.getBot().joinChannel("#pcw");
+		} else if (rawevent instanceof UserListEvent)
+			rawevent.getBot().log("INNEFFIENT CALLED");
 	}
 
 	public static void main(String[] args) {
 		try {
-			PircBotXTest test = new PircBotXTest();
+			PircBotX test = new PircBotX();
 			test.connect("irc.quakenet.org");
+			test.setName("TheLQ");
+			test.setLogin("LQ");
+			test.setAutoNickChange(true);
+			test.setFinger("Quackbot IRC bot by Lord.Quackstar. Source: http://quackbot.googlecode.com/");
+			test.setMessageDelay(0);
+			test.setVersion("Quackbot 3.3");
+			test.setVerbose(true);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
