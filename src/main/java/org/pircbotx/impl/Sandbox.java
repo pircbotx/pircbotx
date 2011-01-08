@@ -18,12 +18,9 @@
  */
 package org.pircbotx.impl;
 
-import java.lang.reflect.Constructor;
-import lombok.Data;
-
 /**
  *
- * @author Owner
+ * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Sandbox {
 }
