@@ -201,7 +201,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public final synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
+	public synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
 		connect(hostname, 6667, null);
 	}
 
@@ -216,7 +216,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public final synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
+	public synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
 		connect(hostname, port, null);
 	}
 
@@ -233,7 +233,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public final synchronized void connect(String hostname, int port, String password) throws IOException, IrcException, NickAlreadyInUseException {
+	public synchronized void connect(String hostname, int port, String password) throws IOException, IrcException, NickAlreadyInUseException {
 		_server = hostname;
 		_port = port;
 		_password = password;
@@ -344,7 +344,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public final synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
+	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
 		if (getServer() == null)
 			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
 		connect(getServer(), getPort(), getPassword());
@@ -637,7 +637,7 @@ public class PircBotX {
 	 *
 	 * @param newNick The new nick to use.
 	 */
-	public final void changeNick(String newNick) {
+	public void changeNick(String newNick) {
 		sendRawLine("NICK " + newNick);
 	}
 
@@ -665,7 +665,7 @@ public class PircBotX {
 	 *
 	 * @param password The password which will be used to identify with NickServ.
 	 */
-	public final void identify(String password) {
+	public void identify(String password) {
 		sendRawLine("NICKSERV IDENTIFY " + password);
 	}
 
@@ -684,7 +684,7 @@ public class PircBotX {
 	 *
 	 * @see #op(String,String) op
 	 */
-	public final void setMode(String channel, String mode) {
+	public void setMode(String channel, String mode) {
 		sendRawLine("MODE " + channel + " " + mode);
 	}
 
@@ -743,7 +743,7 @@ public class PircBotX {
 	 * @param channel The channel to ban the user from.
 	 * @param hostmask A hostmask representing the user we're banning.
 	 */
-	public final void ban(String channel, String hostmask) {
+	public void ban(String channel, String hostmask) {
 		sendRawLine("MODE " + channel + " +b " + hostmask);
 	}
 
@@ -756,7 +756,7 @@ public class PircBotX {
 	 * @param channel The channel to unban the user from.
 	 * @param hostmask A hostmask representing the user we're unbanning.
 	 */
-	public final void unBan(String channel, String hostmask) {
+	public void unBan(String channel, String hostmask) {
 		sendRawLine("MODE " + channel + " -b " + hostmask);
 	}
 
@@ -768,7 +768,7 @@ public class PircBotX {
 	 * @param channel The channel we're opping the user on.
 	 * @param nick The nick of the user we are opping.
 	 */
-	public final void op(String channel, String nick) {
+	public void op(String channel, String nick) {
 		setMode(channel, "+o " + nick);
 	}
 
@@ -780,7 +780,7 @@ public class PircBotX {
 	 * @param channel The channel we're deopping the user on.
 	 * @param nick The nick of the user we are deopping.
 	 */
-	public final void deOp(String channel, String nick) {
+	public void deOp(String channel, String nick) {
 		setMode(channel, "-o " + nick);
 	}
 
@@ -792,7 +792,7 @@ public class PircBotX {
 	 * @param channel The channel we're voicing the user on.
 	 * @param nick The nick of the user we are voicing.
 	 */
-	public final void voice(String channel, String nick) {
+	public void voice(String channel, String nick) {
 		setMode(channel, "+v " + nick);
 	}
 
@@ -804,7 +804,7 @@ public class PircBotX {
 	 * @param channel The channel we're devoicing the user on.
 	 * @param nick The nick of the user we are devoicing.
 	 */
-	public final void deVoice(String channel, String nick) {
+	public void deVoice(String channel, String nick) {
 		setMode(channel, "-v " + nick);
 	}
 
@@ -818,7 +818,7 @@ public class PircBotX {
 	 * @param topic   The new topic for the channel.
 	 *
 	 */
-	public final void setTopic(String channel, String topic) {
+	public void setTopic(String channel, String topic) {
 		sendRawLine("TOPIC " + channel + " :" + topic);
 	}
 
@@ -830,7 +830,7 @@ public class PircBotX {
 	 * @param channel The channel to kick the user from.
 	 * @param nick    The nick of the user to kick.
 	 */
-	public final void kick(String channel, String nick) {
+	public void kick(String channel, String nick) {
 		kick(channel, nick, "");
 	}
 
@@ -843,7 +843,7 @@ public class PircBotX {
 	 * @param nick    The nick of the user to kick.
 	 * @param reason  A description of the reason for kicking a user.
 	 */
-	public final void kick(String channel, String nick, String reason) {
+	public void kick(String channel, String nick, String reason) {
 		sendRawLine("KICK " + channel + " " + nick + " :" + reason);
 	}
 
@@ -857,7 +857,7 @@ public class PircBotX {
 	 *
 	 * @see #onChannelInfo(String,int,String) onChannelInfo
 	 */
-	public final void listChannels() {
+	public void listChannels() {
 		listChannels(null);
 	}
 
@@ -878,7 +878,7 @@ public class PircBotX {
 	 *
 	 * @see #onChannelInfo(String,int,String) onChannelInfo
 	 */
-	public final void listChannels(String parameters) {
+	public void listChannels(String parameters) {
 		if (!channelListBuilder.isRunning)
 			if (parameters == null)
 				sendRawLine("LIST");
@@ -908,7 +908,7 @@ public class PircBotX {
 	 * @see DccFileTransfer
 	 *
 	 */
-	public final DccFileTransfer dccSendFile(File file, User reciever, int timeout) {
+	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) {
 		DccFileTransfer transfer = new DccFileTransfer(this, _dccManager, file, reciever, timeout);
 		transfer.doSend(true);
 		return transfer;
@@ -938,7 +938,7 @@ public class PircBotX {
 	 *
 	 * @see DccChat
 	 */
-	public final DccChat dccSendChatRequest(User sender, int timeout) {
+	public DccChat dccSendChatRequest(User sender, int timeout) {
 		DccChat chat = null;
 		try {
 			ServerSocket ss = null;
@@ -1494,7 +1494,7 @@ public class PircBotX {
 	 *
 	 * @param verbose true if verbose mode is to be used.  Default is false.
 	 */
-	public final void setVerbose(boolean verbose) {
+	public void setVerbose(boolean verbose) {
 		_verbose = verbose;
 	}
 
@@ -1521,7 +1521,7 @@ public class PircBotX {
 	 *
 	 * @param nick The new nick.
 	 */
-	private void setNick(String nick) {
+	protected void setNick(String nick) {
 		_nick = nick;
 	}
 
@@ -1551,7 +1551,7 @@ public class PircBotX {
 	 *
 	 * @param finger The new finger message for the Bot.
 	 */
-	public final void setFinger(String finger) {
+	public void setFinger(String finger) {
 		_finger = finger;
 	}
 
@@ -1561,7 +1561,7 @@ public class PircBotX {
 	 *
 	 * @return The name of the PircBotX.
 	 */
-	public final String getName() {
+	public String getName() {
 		return _name;
 	}
 
@@ -1586,7 +1586,7 @@ public class PircBotX {
 	 *
 	 * @return The login of the PircBotX.
 	 */
-	public final String getLogin() {
+	public String getLogin() {
 		return _login;
 	}
 
@@ -1595,7 +1595,7 @@ public class PircBotX {
 	 *
 	 * @return The version of the PircBotX.
 	 */
-	public final String getVersion() {
+	public String getVersion() {
 		return _version;
 	}
 
@@ -1604,7 +1604,7 @@ public class PircBotX {
 	 *
 	 * @return The finger message of the PircBotX.
 	 */
-	public final String getFinger() {
+	public String getFinger() {
 		return _finger;
 	}
 
@@ -1615,7 +1615,7 @@ public class PircBotX {
 	 *
 	 * @return True if and only if the PircBotX is currently connected to a server.
 	 */
-	public final synchronized boolean isConnected() {
+	public boolean isConnected() {
 		return _inputThread != null && _inputThread.isConnected();
 	}
 
@@ -1631,7 +1631,7 @@ public class PircBotX {
 	 * @param delay The number of milliseconds between each outgoing message.
 	 *
 	 */
-	public final void setMessageDelay(long delay) {
+	public void setMessageDelay(long delay) {
 		if (delay < 0)
 			throw new IllegalArgumentException("Cannot have a negative time.");
 		_messageDelay = delay;
@@ -1643,7 +1643,7 @@ public class PircBotX {
 	 *
 	 * @return Number of milliseconds.
 	 */
-	public final long getMessageDelay() {
+	public long getMessageDelay() {
 		return _messageDelay;
 	}
 
@@ -1656,7 +1656,7 @@ public class PircBotX {
 	 *
 	 * @return The maximum line length (currently fixed at 512)
 	 */
-	public final int getMaxLineLength() {
+	public int getMaxLineLength() {
 		return InputThread.MAX_LINE_LENGTH;
 	}
 
@@ -1669,7 +1669,7 @@ public class PircBotX {
 	 *
 	 * @return The number of lines in the outgoing message Queue.
 	 */
-	public final int getOutgoingQueueSize() {
+	public int getOutgoingQueueSize() {
 		return _outputThread.getQueueSize();
 	}
 
@@ -1683,7 +1683,7 @@ public class PircBotX {
 	 * @return The name of the last machine we tried to connect to. Returns
 	 *         null if no connection attempts have ever been made.
 	 */
-	public final String getServer() {
+	public String getServer() {
 		return _server;
 	}
 
@@ -1700,7 +1700,7 @@ public class PircBotX {
 	 * @return The port number of the last IRC server we connected to.
 	 *         Returns -1 if no connection attempts have ever been made.
 	 */
-	public final int getPort() {
+	public int getPort() {
 		return _port;
 	}
 
@@ -1716,7 +1716,7 @@ public class PircBotX {
 	 * @return The last password that we used when connecting to an IRC server.
 	 *         Returns null if we have not previously connected using a password.
 	 */
-	public final String getPassword() {
+	public String getPassword() {
 		return _password;
 	}
 
@@ -1972,7 +1972,7 @@ public class PircBotX {
 	 * @return A String array containing the names of all channels that we
 	 *         are in.
 	 */
-	public final Set<Channel> getChannels() {
+	public Set<Channel> getChannels() {
 		return _userChanInfo.getAValues();
 	}
 
@@ -2045,7 +2045,7 @@ public class PircBotX {
 	 *
 	 * @see #onUserList(String,User[]) onUserList
 	 */
-	public final Set<User> getUsers(String channel) {
+	public Set<User> getUsers(String channel) {
 		if (channel == null)
 			throw new NullPointerException("Can't get a null channel");
 		return _userChanInfo.getBValues(getChannel(channel));
