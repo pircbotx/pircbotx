@@ -1510,7 +1510,7 @@ public class PircBotX {
 	 *
 	 * @param name The new name of the Bot.
 	 */
-	protected final void setName(String name) {
+	public void setName(String name) {
 		_name = name;
 	}
 
@@ -1531,7 +1531,7 @@ public class PircBotX {
 	 *
 	 * @param login The new login of the Bot.
 	 */
-	protected final void setLogin(String login) {
+	public void setLogin(String login) {
 		_login = login;
 	}
 
@@ -1541,7 +1541,7 @@ public class PircBotX {
 	 *
 	 * @param version The new version of the Bot.
 	 */
-	protected final void setVersion(String version) {
+	public void setVersion(String version) {
 		_version = version;
 	}
 
@@ -1551,7 +1551,7 @@ public class PircBotX {
 	 *
 	 * @param finger The new finger message for the Bot.
 	 */
-	protected final void setFinger(String finger) {
+	public final void setFinger(String finger) {
 		_finger = finger;
 	}
 
