@@ -20,7 +20,7 @@ package org.pircbotx;
 
 /**
  *
- * @author LordQuackstar
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface ThreadFactory {
 	public Thread newThread(Runnable r, PircBotX bot);

@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  *
- * @author LordQuackstar
+ * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Channel {
 	private final String _name;

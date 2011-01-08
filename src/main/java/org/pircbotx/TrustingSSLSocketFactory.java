@@ -38,9 +38,10 @@ import javax.net.ssl.X509TrustManager;
 /**
  * An SSLSocketFactory implementation that treats all certificates as valid. Use with care.
  * 
- * @author Originally by: <a href="http://www.brudvik.org/projects/development/pircbot-with-ssl/">
- *         Kjell Arne Brudvik from brudvik.org</a>
- *         <p>Implemented and Maintained in PircBotX by: Leon Blakey <lord.quackstar at gmail.com>
+ * @author Originally by: 
+ *         <a href="http://www.brudvik.org/projects/development/pircbot-with-ssl/">Kjell Arne Brudvik from brudvik.org</a>
+ *         <p>Implemented and Maintained in PircBotX by: 
+ *         Leon Blakey <lord.quackstar at gmail.com>
  *         
  */
 public class TrustingSSLSocketFactory extends SSLSocketFactory {
