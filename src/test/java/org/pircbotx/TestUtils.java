@@ -18,15 +18,11 @@
  */
 package org.pircbotx;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.ListenerAdapterInterface;
+import org.pircbotx.hooks.HookUtils;
+import org.pircbotx.hooks.Listener;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -34,15 +30,7 @@ import org.testng.annotations.DataProvider;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestUtils {
-	protected static final List<Class<?>> eventClasses = new ArrayList() {
-		{
-			for (Class listenerClass : ListenerAdapterInterface.class.getInterfaces())
-				//Add listener parameter method to the list
-				add(listenerClass.getDeclaredMethods()[0].getParameterTypes()[0]);
-		}
-	};
-	
-	protected static final List<Class<?>> listenerClasses = new ArrayList(Arrays.asList(ListenerAdapterInterface.class.getInterfaces()));
+	protected static final List<Class<? extends Event>> eventClasses = HookUtils.getAllEvents();
 
 	@DataProvider(name = "getEvents")
 	public static Object[][] EventDataProvider() {
@@ -50,16 +38,6 @@ public class TestUtils {
 		Object[][] params = new Object[eventSize][];
 		for (int i = 0; i < eventSize; i++)
 			params[i] = new Object[]{eventClasses.get(i)};
-
-		return params;
-	}
-
-	@DataProvider(name = "getListeners")
-	public static Object[][] ListenerDataProvider() {
-		int listenerSize = listenerClasses.size();
-		Object[][] params = new Object[listenerSize][];
-		for (int i = 0; i < listenerSize; i++)
-			params[i] = new Object[]{listenerClasses.get(i)};
 
 		return params;
 	}

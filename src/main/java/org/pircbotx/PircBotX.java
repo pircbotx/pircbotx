@@ -84,7 +84,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
-import org.pircbotx.hooks.GenericListenerManager;
+import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.hooks.MappedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -171,7 +172,7 @@ public abstract class PircBotX {
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
 	private final Object logLock = new Object();
-	protected ListenerManager listeners = new GenericListenerManager();
+	protected ListenerManager listeners = new MappedListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -182,11 +183,12 @@ public abstract class PircBotX {
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
 
 	/**
-	 * Constructs a PircBotX with the default settings.  Your own constructors
+	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} to the listenermangaer.  Your own constructors
 	 * in classes which extend the PircBotX abstract class should be responsible
 	 * for changing the default settings if required.
 	 */
 	public PircBotX() {
+		listeners.addListener(new CoreHooks());
 	}
 
 	/**
@@ -281,11 +283,7 @@ public abstract class PircBotX {
 		String line = null;
 		int tries = 1;
 		while ((line = breader.readLine()) != null) {
-			try {
-				handleLine(line);
-			} catch (Throwable ex) {
-				ex.printStackTrace();
-			}
+			handleLine(line);
 
 			int firstSpace = line.indexOf(" ");
 			int secondSpace = line.indexOf(" ", firstSpace + 1);
@@ -2098,10 +2096,14 @@ public abstract class PircBotX {
 	}
 
 	/**
-	 * @param listeners the listeners to set
+	 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
+	 * when this method is called. If you do not want this, remove CoreHooks with
+	 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
+	 * @param The listener manager
 	 */
 	public void setListeners(ListenerManager listeners) {
 		this.listeners = listeners;
+		listeners.addListener(new CoreHooks());
 	}
 
 	protected class ListBuilder<A> {

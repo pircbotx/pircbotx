@@ -57,20 +57,27 @@ public interface ListenerManager {
 	public void addListener(Listener listener);
 
 	/**
-	 * Removes an I Listener from the list listeners for an event
-	 * <p>
-	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
-	 * on exception handling and performance.s
-	 * @param listener
-	 */
-	public void removeListener(Listener listener);
-
-	/**
-	 * Gets all the listeners to an event
+	 * Removes all listeners that the provided listener implements. Eg if Listener
+	 * X implements {@link MotdListener} and {@link ChannelInfoListener}, both
+	 * are removed. This should only be used when a listener only listeners for
+	 * one event, otherwise {@link #removeListener(org.pircbotx.hooks.Listener, java.lang.Class) }
+	 * is recommended
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
-	 * @return An <b>Immutable set</b> of I listeners
+	 * @param listener An implementation of one or more listeners that all need
+	 *                 to be removed
+	 * @return True if the listener was removed, false if it didn't exist or wasn't
+	 *         removed
+	 */
+	public boolean removeListener(Listener listener);
+
+	/**
+	 * Gets all listeners that are in this ListenerManager
+	 * <p>
+	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
+	 * on exception handling and performance.
+	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
 	 */
 	public Set<Listener> getListeners();
 }
