@@ -67,7 +67,6 @@ import org.pircbotx.hooks.Event;
  *
  * @author  Forked by Leon Blakey as part of the PircBotX project
  *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
- * @version    2.0 Alpha
  */
 public class Utils {
 	public static boolean isBlank(String str) {
