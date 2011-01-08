@@ -26,7 +26,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 
 /**
  *
- * @author LordQuackstar
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXTest implements Listener {
 	public void onEvent(Event rawevent) throws Exception {
