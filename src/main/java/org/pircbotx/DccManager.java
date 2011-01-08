@@ -27,10 +27,10 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
  * This class is used to process DCC events from the server.
  *
  * @since   1.2.0
- * @author  Origionally by Paul James Mutton,
- *          <a href="http://www.jibble.org/">http://www.jibble.org/</a>
- *          <p/>Forked by Leon Blakey as part of the PircBotX project
- *          <a href="http://pircbotx.googlecode.com">http://pircbotx.googlecode.com/</a>
+ * @author  Origionally by:
+ *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
+ *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
+ *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccManager {
 	/**
