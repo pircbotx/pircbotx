@@ -109,7 +109,6 @@ public class ManyToManyMap<A, B> {
 
 	/**
 	 * Gets an <b>immutable</b> view of B entries
-	 * @param key The A entry to use
 	 * @return An <b>immutable</b> view of the B entries associated with the A entry
 	 */
 	public Set<A> getAValues() {
@@ -120,7 +119,6 @@ public class ManyToManyMap<A, B> {
 
 	/**
 	 * Gets an <b>immutable</b> view of B entries
-	 * @param key The B entry to use
 	 * @return An <b>immutable</b> view of the B entries associated with the B entry
 	 */
 	public Set<B> getBValues() {
@@ -253,8 +251,8 @@ public class ManyToManyMap<A, B> {
 	}
 
 	/**
-	 * Deletes an A entry removing all associations
-	 * @param a The A entry to delete
+	 * Deletes a B entry removing all associations
+	 * @param b The B entry to delete
 	 * @return The associations this entry was associated with. Null if entry does not exist
 	 */
 	public Set<A> deleteB(B b) {

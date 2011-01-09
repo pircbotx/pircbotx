@@ -57,16 +57,11 @@ public interface ListenerManager {
 	public void addListener(Listener listener);
 
 	/**
-	 * Removes all listeners that the provided listener implements. Eg if Listener
-	 * X implements {@link MotdListener} and {@link ChannelInfoListener}, both
-	 * are removed. This should only be used when a listener only listeners for
-	 * one event, otherwise {@link #removeListener(org.pircbotx.hooks.Listener, java.lang.Class) }
-	 * is recommended
+	 * Removes the specified Listener
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
-	 * @param listener An implementation of one or more listeners that all need
-	 *                 to be removed
+	 * @param listener A Listener to remove
 	 * @return True if the listener was removed, false if it didn't exist or wasn't
 	 *         removed
 	 */

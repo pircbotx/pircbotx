@@ -37,7 +37,6 @@ public class ConnectEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param timestamp
 	 */
 	public <T extends PircBotX> ConnectEvent(T bot) {
 		super(bot);

@@ -60,11 +60,7 @@ public class OutputThread implements Runnable {
 	 * A static method to write a line to a BufferedOutputStream and then pass
 	 * the line to the log method of the supplied PircBotX instance.
 	 *
-	 * @param bot The underlying PircBotX instance.
-	 * @param out The BufferedOutputStream to write to.
 	 * @param line The line to be written. "\r\n" is appended to the end.
-	 * @param encoding The charset to use when encoing this string into a
-	 *                 byte array.
 	 */
 	public void sendRawLineNow(String line) {
 		if (line.length() > _bot.getMaxLineLength() - 2)
