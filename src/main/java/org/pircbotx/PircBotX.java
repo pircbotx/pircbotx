@@ -87,6 +87,7 @@ import java.util.Collections;
 import java.util.StringTokenizer;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.GenericListenerManager;
+import org.pircbotx.hooks.Listener;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -2137,5 +2138,13 @@ public class PircBotX {
 	 */
 	public SocketFactory getSocketFactory() {
 		return _socketFactory;
+	}
+	
+	/**
+	 * Utility to add a listener to the current listener manager
+	 * @param listener A listener to add
+	 */
+	public void addListener(Listener listener) {
+		listenerManager.addListener(listener);
 	}
 }
