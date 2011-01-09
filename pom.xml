@@ -137,8 +137,7 @@
 				<version>2.7</version>
 				<configuration>
 					<defaultAuthor>Leon Blakey</defaultAuthor>
-					<defaultSince>3.0</defaultSince>
-					<defaultVersion>3.0-Snapshot</defaultVersion>
+					<defaultVersion>${project.version}</defaultVersion>
 					<links>
 						<link>http://download.oracle.com/javase/6/docs/api</link>
 					</links>
