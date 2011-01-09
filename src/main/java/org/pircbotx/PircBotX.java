@@ -860,7 +860,7 @@ public class PircBotX {
 	 * <p>
 	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 *
-	 * @see #onChannelInfo(String,int,String) onChannelInfo
+	 * @see ChannelInfoEvent
 	 */
 	public void listChannels() {
 		listChannels(null);
@@ -904,7 +904,7 @@ public class PircBotX {
 	 * @since 0.9c
 	 *
 	 * @param file The file to send.
-	 * @param nick The user to whom the file is to be sent.
+	 * @param reciever The user to whom the file is to be sent.
 	 * @param timeout The number of milliseconds to wait for the recipient to
 	 *                acccept the file (we recommend about 120000).
 	 *
@@ -932,8 +932,6 @@ public class PircBotX {
 	 *  <p>
 	 * This method may not be overridden.
 	 *
-	 * @since PircBotX 0.9.8
-	 *
 	 * @param nick The nick of the user we are trying to establish a chat with.
 	 * @param timeout The number of milliseconds to wait for the recipient to
 	 *                accept the chat connection (we recommend about 120000).
@@ -942,6 +940,7 @@ public class PircBotX {
 	 *         text.  Returns <b>null</b> if the connection could not be made.
 	 *
 	 * @see DccChat
+	 * @since PircBotX 0.9.8
 	 */
 	public DccChat dccSendChatRequest(User sender, int timeout) {
 		DccChat chat = null;
@@ -2046,7 +2045,7 @@ public class PircBotX {
 	 * @return An array of User objects. This array is empty if we are not
 	 *         in the channel.
 	 *
-	 * @see #onUserList(String,User[]) onUserList
+	 * @see UserListEvent
 	 */
 	public Set<User> getUsers(String channel) {
 		if (channel == null)
@@ -2059,9 +2058,9 @@ public class PircBotX {
 	}
 
 	/**
-	 * Gets an existing user or creates a new one. Never returns null
+	 * Gets an existing user or creates a new one. 
 	 * @param nick
-	 * @return
+	 * @return The requested User. Never is null
 	 */
 	public User getUser(String nick) {
 		if (nick == null)

@@ -48,9 +48,7 @@ public class ChannelInfoEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel
-	 * @param userCount The number of users visible in this channel.
-	 * @param topic The topic for this channel.
+	 * @param list A list of ChannelList Entries
 	 */
 	public <T extends PircBotX> ChannelInfoEvent(T bot, Set<ChannelListEntry> list) {
 		super(bot);
