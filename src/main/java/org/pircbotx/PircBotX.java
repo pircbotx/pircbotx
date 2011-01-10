@@ -2139,12 +2139,4 @@ public class PircBotX {
 	public SocketFactory getSocketFactory() {
 		return _socketFactory;
 	}
-	
-	/**
-	 * Utility to add a listener to the current listener manager
-	 * @param listener A listener to add
-	 */
-	public void addListener(Listener listener) {
-		listenerManager.addListener(listener);
-	}
 }
