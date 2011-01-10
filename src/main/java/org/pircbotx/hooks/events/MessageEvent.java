@@ -36,20 +36,20 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class MessageEvent extends Event {
 	protected final Channel channel;
-	protected final User source;
+	protected final User user;
 	protected final String message;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel to which the message was sent.
-	 * @param source The user who sent the message.
+	 * @param user The user who sent the message.
 	 * @param message The actual message sent to the channel.
 	 */
-	public <T extends PircBotX> MessageEvent(T bot, Channel channel, User source, String message) {
+	public <T extends PircBotX> MessageEvent(T bot, Channel channel, User user, String message) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 		this.message = message;
 	}
 }
