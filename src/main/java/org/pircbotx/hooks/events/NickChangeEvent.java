@@ -37,19 +37,19 @@ import org.pircbotx.PircBotX;
 public class NickChangeEvent extends Event {
 	protected final String oldNick;
 	protected final String newNick;
-	protected final User source;
+	protected final User user;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param oldNick The old nick.
 	 * @param newNick The new nick.
-	 * @param source The user that changed their nick
+	 * @param user The user that changed their nick
 	 */
-	public <T extends PircBotX> NickChangeEvent(T bot, String oldNick, String newNick, User source) {
+	public <T extends PircBotX> NickChangeEvent(T bot, String oldNick, String newNick, User user) {
 		super(bot);
 		this.oldNick = oldNick;
 		this.newNick = newNick;
-		this.source = source;
+		this.user = user;
 	}
 }
