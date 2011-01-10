@@ -34,18 +34,18 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PrivateMessageEvent extends Event {
-	protected final User source;
+	protected final User user;
 	protected final String message;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The user who sent the private message.
+	 * @param user The user who sent the private message.
 	 * @param message The actual message.
 	 */
-	public <T extends PircBotX> PrivateMessageEvent(T bot, User source, String message) {
+	public <T extends PircBotX> PrivateMessageEvent(T bot, User user, String message) {
 		super(bot);
-		this.source = source;
+		this.user = user;
 		this.message = message;
 	}
 }
