@@ -48,13 +48,14 @@ public interface ListenerManager {
 	public void dispatchEvent(Event event);
 
 	/**
-	 * Adds an I listener to the list of listeners for an event.
+	 * Adds an listener to the list of listeners for an event.
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
 	 * @param listener The listener to add
+	 * @return True if the listener was succesfully added, false if not
 	 */
-	public void addListener(Listener listener);
+	public boolean addListener(Listener listener);
 
 	/**
 	 * Removes the specified Listener
@@ -66,6 +67,13 @@ public interface ListenerManager {
 	 *         removed
 	 */
 	public boolean removeListener(Listener listener);
+
+	/**
+	 * Checks if the specified listener exists
+	 * @param listener The listener <i>instance</i> to look for
+	 * @return True if it the listener exists, false if it doesn't
+	 */
+	public boolean listenerExists(Listener listener);
 
 	/**
 	 * Gets all listeners that are in this ListenerManager
