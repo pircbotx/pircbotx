@@ -2159,12 +2159,4 @@ public class PircBotX {
 	public boolean isAutoNickChange() {
 		return _autoNickChange;
 	}
-	
-	/**
-	 * Get current charset in use
-	 * @return The current charset
-	 */
-	public String getCharset() {
-		return _charset;
-	}
 }
