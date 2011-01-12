@@ -18,7 +18,12 @@
  */
 package org.pircbotx.impl;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -50,16 +55,16 @@ public class PircBotXTest implements Listener {
 	}
 
 	public static void main(String[] args) {
+		PircBotX bot = new PircBotX();
+		bot.setName("TheLQ");
+		bot.setLogin("LQ");
+		bot.setAutoNickChange(true);
+		bot.setFinger("Quackbot IRC bot by Lord.Quackstar. Source: http://quackbot.googlecode.com/");
+		bot.setMessageDelay(0);
+		bot.setVersion("Quackbot 3.3");
+		bot.setVerbose(true);
 		try {
-			PircBotX test = new PircBotX();
-			test.connect("irc.quakenet.org");
-			test.setName("TheLQ");
-			test.setLogin("LQ");
-			test.setAutoNickChange(true);
-			test.setFinger("Quackbot IRC bot by Lord.Quackstar. Source: http://quackbot.googlecode.com/");
-			test.setMessageDelay(0);
-			test.setVersion("Quackbot 3.3");
-			test.setVerbose(true);
+			bot.connect("irc.quakenet.org");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
