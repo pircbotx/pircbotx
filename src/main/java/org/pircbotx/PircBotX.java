@@ -2143,4 +2143,12 @@ public class PircBotX {
 	public SocketFactory getSocketFactory() {
 		return _socketFactory;
 	}
+	
+	/**
+	 * Get current verbose mode
+	 * @return True if verbose is turned on, false if not
+	 */
+	public boolean getVerbose() {
+		return _verbose;
+	}
 }
