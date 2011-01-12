@@ -34,8 +34,8 @@ import java.util.Set;
 public class GenericListenerManager implements ListenerManager {
 	protected Set<Listener> listeners = new HashSet<Listener>();
 
-	public void addListener(Listener listener) {
-		listeners.add(listener);
+	public boolean addListener(Listener listener) {
+		return listeners.add(listener);
 	}
 
 	public boolean removeListener(Listener listener) {
@@ -53,5 +53,9 @@ public class GenericListenerManager implements ListenerManager {
 		} catch (Throwable t) {
 			event.getBot().logException(t);
 		}
+	}
+
+	public boolean listenerExists(Listener listener) {
+		return listeners.contains(listener);
 	}
 }
