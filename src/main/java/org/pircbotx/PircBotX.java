@@ -2148,7 +2148,7 @@ public class PircBotX {
 	 * Get current verbose mode
 	 * @return True if verbose is turned on, false if not
 	 */
-	public boolean getVerbose() {
+	public boolean isVerbose() {
 		return _verbose;
 	}
 }
