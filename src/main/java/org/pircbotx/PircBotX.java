@@ -2106,6 +2106,10 @@ public class PircBotX {
 	 */
 	public void setListenerManager(ListenerManager listenerManager) {
 		this.listenerManager = listenerManager;
+		//Check if corehooks already exist
+		for(Listener curListener : listenerManager.getListeners())
+			if(curListener instanceof CoreHooks)
+				return;
 		listenerManager.addListener(new CoreHooks());
 	}
 
