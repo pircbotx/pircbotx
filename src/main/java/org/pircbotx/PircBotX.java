@@ -2151,4 +2151,12 @@ public class PircBotX {
 	public boolean isVerbose() {
 		return _verbose;
 	}
+	
+	/**
+	 * Get current auto nick change mode
+	 * @return True if auto nick change is turned on, false otherwise
+	 */
+	public boolean isAutoNickChange() {
+		return _autoNickChange;
+	}
 }
