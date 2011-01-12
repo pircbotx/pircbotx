@@ -83,7 +83,7 @@ public class Utils {
 		if (event == null)
 			return null;
 		else if (event instanceof ActionEvent)
-			return ((ActionEvent) event).getSource();
+			return ((ActionEvent) event).getUser();
 		else if (event instanceof DeopEvent)
 			return ((DeopEvent) event).getSource();
 		else if (event instanceof DeVoiceEvent)
@@ -103,11 +103,11 @@ public class Utils {
 		else if (event instanceof KickEvent)
 			return ((KickEvent) event).getSource();
 		else if (event instanceof MessageEvent)
-			return ((MessageEvent) event).getSource();
+			return ((MessageEvent) event).getUser();
 		else if (event instanceof ModeEvent)
 			return ((ModeEvent) event).getSource();
 		else if (event instanceof NickChangeEvent)
-			return ((NickChangeEvent) event).getSource();
+			return ((NickChangeEvent) event).getUser();
 		else if (event instanceof NoticeEvent)
 			return ((NoticeEvent) event).getSource();
 		else if (event instanceof OpEvent)
@@ -117,7 +117,7 @@ public class Utils {
 		else if (event instanceof PingEvent)
 			return ((PingEvent) event).getSource();
 		else if (event instanceof PrivateMessageEvent)
-			return ((PrivateMessageEvent) event).getSource();
+			return ((PrivateMessageEvent) event).getUser();
 		else if (event instanceof QuitEvent)
 			return ((QuitEvent) event).getSource();
 		else if (event instanceof RemoveChannelBanEvent)
