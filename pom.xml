@@ -92,7 +92,7 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-scm</artifactId>
-				<version>1.0-beta-5</version>
+				<version>1.0-beta-7</version>
 			</extension>
 		</extensions>
 		<plugins>
@@ -136,11 +136,13 @@
 				</configuration>
 			</plugin>
 			<!--Manually specifiy site version to use (Maven 3 only!)-->
+			<!--
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0-beta-3</version>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 
@@ -181,5 +183,9 @@
 			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
+		<site>
+			<id>maven-general-repo.googlecode.com</id>
+			<url>scm:hg:https://site.pircbotx.googlecode.com/hg/site</url>
+		</site>
 	</distributionManagement>
 </project>
