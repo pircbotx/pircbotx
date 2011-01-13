@@ -135,6 +135,12 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+			<!--Manually specifiy site version to use (Maven 3 only!)-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.0-beta-3</version>
+			</plugin>
 		</plugins>
 	</build>
 
