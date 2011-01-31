@@ -79,6 +79,7 @@
 	
 	<build>
 		<extensions>
+			<!--Add SVN/webdav deploy support-->
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
@@ -167,6 +168,7 @@
 	</reporting>
 
 	<repositories>
+		<!--Project Lombok repository-->
 		<repository>
 			<id>projectlombok.org</id>
 			<url>http://projectlombok.org/mavenrepo</url>
@@ -174,6 +176,7 @@
 	</repositories>
 	
 	<pluginRepositories>
+		<!--Snapshots for HG SCM provider and API-->
 		<pluginRepository>
 			<id>apache-snapshots</id>
 			<url>https://repository.apache.org/content/groups/snapshots-group/</url>
@@ -184,17 +187,20 @@
 	</pluginRepositories>
 
 	<distributionManagement>
+		<!--Release deploy repository-->
 		<repository>
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
 			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/releases</url>
 		</repository>
+		<!--Snapshot deploy repository-->
 		<snapshotRepository>
 			<id>maven-general-repo.googlecode.com</id>
 			<name>General Maven Repo on Google Code</name>
 			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
+		<!--Site deploy repository-->
 		<site>
 			<id>maven-general-repo.googlecode.com</id>
 			<url>scm:hg:https://site.pircbotx.googlecode.com/hg</url>
