@@ -84,66 +84,68 @@
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
-			<extension>
-				<groupId>org.apache.maven.scm</groupId>
-				<artifactId>maven-scm-provider-hg</artifactId>
-				<version>1.4</version>
-			</extension>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-scm</artifactId>
-				<version>1.0-beta-7</version>
-			</extension>
 		</extensions>
-		<plugins>
-			<!--Makes sure License Headers are consistant across all files-->
-			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<version>1.9.0</version>
-				<configuration>
-					<header>src/etc/license-header.txt</header>
-					<properties>
-						<email>lord.quackstar at gmail.com</email>
-						<name>Leon Blakey</name>
-						<year>2010</year>
-						<projectname>PircBotX</projectname>
-					</properties>
-					<excludes>
-						<exclude>**/*.txt</exclude>
-						<exclude>**/*.log</exclude>
-						<exclude>**/nbactions.xml</exclude>
-					</excludes>
-					<strictCheck>true</strictCheck>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>format</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!--Specifically target Java 1.5-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-			<!--Manually specifiy site version to use (Maven 3 only!)-->
-			<!--
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0-beta-3</version>
-			</plugin>
-			-->
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--Makes sure License Headers are consistant across all files-->
+				<plugin>
+					<groupId>com.mycila.maven-license-plugin</groupId>
+					<artifactId>maven-license-plugin</artifactId>
+					<version>1.9.0</version>
+					<configuration>
+						<header>src/etc/license-header.txt</header>
+						<properties>
+							<email>lord.quackstar at gmail.com</email>
+							<name>Leon Blakey</name>
+							<year>2010</year>
+							<projectname>PircBotX</projectname>
+						</properties>
+						<excludes>
+							<exclude>**/*.txt</exclude>
+							<exclude>**/*.log</exclude>
+							<exclude>**/nbactions.xml</exclude>
+						</excludes>
+						<strictCheck>true</strictCheck>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>process-sources</phase>
+							<goals>
+								<goal>format</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!--Specifically target Java 1.5-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+				</plugin>
+				<!--Use specific site version with SNAPSHOT HG plugins-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.0-beta-3</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-api</artifactId>
+							<version>1.5-SNAPSHOT</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.maven.scm</groupId>
+							<artifactId>maven-scm-provider-hg</artifactId>
+							<version>1.5-SNAPSHOT</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<reporting>
@@ -170,6 +172,16 @@
 			<url>http://projectlombok.org/mavenrepo</url>
 		</repository>
 	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache-snapshots</id>
+			<url>https://repository.apache.org/content/groups/snapshots-group/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<distributionManagement>
 		<repository>
@@ -185,7 +197,7 @@
 		</snapshotRepository>
 		<site>
 			<id>maven-general-repo.googlecode.com</id>
-			<url>scm:hg:https://site.pircbotx.googlecode.com/hg/site</url>
+			<url>scm:hg:https://site.pircbotx.googlecode.com/hg</url>
 		</site>
 	</distributionManagement>
 </project>
