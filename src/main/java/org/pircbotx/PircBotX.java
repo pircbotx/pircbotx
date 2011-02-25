@@ -413,8 +413,8 @@ public class PircBotX {
 	 *
 	 * @since PircBotX 0.9c
 	 */
-	public void startIdentServer() {
-		new IdentServer(this, getLogin());
+	public IdentServer startIdentServer() {
+		return new IdentServer(this, getLogin());
 	}
 
 	/**
