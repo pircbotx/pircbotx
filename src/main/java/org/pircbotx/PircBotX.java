@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import java.util.concurrent.CountDownLatch;
 import javax.net.SocketFactory;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
@@ -2158,5 +2159,37 @@ public class PircBotX {
 	 */
 	public boolean isAutoNickChange() {
 		return _autoNickChange;
+	}
+	
+	public Event waitFor(Class<? extends Event> eventClass) throws InterruptedException {
+		//Create a WaitListener for getting the event
+		WaitListener waitListener = new WaitListener();
+		listenerManager.addListener(waitListener);
+		
+		//Call waitFor which blocks until the desired event is captured
+		Event finalEvent = waitListener.waitFor(eventClass);
+		
+		//Remove listener since its no longer needed
+		listenerManager.removeListener(waitListener);
+		
+		//Return requested listener
+		return finalEvent;
+	}
+	
+	protected class WaitListener implements Listener {
+		protected CountDownLatch signal = new CountDownLatch(1);
+		protected Class<? extends Event> eventClass;
+		protected Event endEvent;
+		public void onEvent(Event event) throws Exception {
+			if(eventClass.isInstance(event)) {
+				endEvent = event;
+			}
+		}
+		
+		public Event waitFor(Class<? extends Event> event) throws InterruptedException {
+			eventClass = event;
+			signal.await();
+			return endEvent;
+		}
 	}
 }
