@@ -1934,7 +1934,7 @@ public class PircBotX {
 	 * @since 1.2.2
 	 */
 	public synchronized void dispose() {
-		System.out.println("disposing...");
+		log("disposing...");
 		//Close the socket from here and let the threads die
 		try {
 			_socket.close();
