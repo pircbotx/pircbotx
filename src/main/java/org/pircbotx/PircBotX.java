@@ -1025,9 +1025,9 @@ public class PircBotX {
 		pw.flush();
 		StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
 		synchronized (logLock) {
-			log("### Your implementation of PircBot is faulty and you have");
+			log("### Your implementation of PircBotX is faulty and you have");
 			log("### allowed an uncaught Exception or Error to propagate in your");
-			log("### code. It may be possible for PircBot to continue operating");
+			log("### code. It may be possible for PircBotX to continue operating");
 			log("### normally. Here is the stack trace that was produced: -");
 			log("### ");
 			while (tokenizer.hasMoreTokens())
