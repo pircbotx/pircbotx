@@ -1332,12 +1332,10 @@ public class PircBotX {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			Channel channel = getChannel(response.split(" ")[1]);
-			System.out.println("Who reply finished for " + channel);
 			getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			System.out.println("Setting mode for channel " + parsed[1] + " to " + parsed[2]);
 			getChannel(parsed[1]).parseMode(parsed[2]);
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
