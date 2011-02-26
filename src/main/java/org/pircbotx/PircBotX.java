@@ -67,7 +67,7 @@ import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.ListenerManager;
+import org.pircbotx.hooks.managers.ListenerManager;
 import java.util.HashSet;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
