@@ -9,7 +9,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(event)}.
+ * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(event)}. 
  * <p>
  * This multithreading can be controlled with the perHook flag in the constructors.
  * <ul>
@@ -23,7 +23,7 @@ import org.pircbotx.hooks.Listener;
 public class ThreadedListenerManager implements ListenerManager {
 	protected ExecutorService pool = Executors.newCachedThreadPool();
 	protected final boolean perHook;
-	protected Set<Listener> listeners = new HashSet<Listener>();
+	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 
 	/**
 	 * Configures with default options: perHook is false and a 
