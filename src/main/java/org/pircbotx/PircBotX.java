@@ -2194,8 +2194,12 @@ public class PircBotX {
 		protected Event endEvent;
 
 		public void onEvent(Event event) throws Exception {
-			if (eventClass.isInstance(event))
+			if (eventClass.isInstance(event)) {
 				endEvent = event;
+				
+				//Unblock waitFor now that we have an event
+				signal.countDown();
+			}
 		}
 
 		/**
