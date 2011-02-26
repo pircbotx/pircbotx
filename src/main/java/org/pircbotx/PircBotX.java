@@ -1149,9 +1149,9 @@ public class PircBotX {
 		else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(_nick)) {
-				//Its us, do some setup
-				sendRawLine("WHO " + channel);
-				sendRawLine("MODE " + channel);
+				//Its us, do some setup (don't use channel var since channel doesn't exist yet)
+				sendRawLine("WHO " + target);
+				sendRawLine("MODE " + target);
 			}
 
 			User usr = getUser(sourceNick);
