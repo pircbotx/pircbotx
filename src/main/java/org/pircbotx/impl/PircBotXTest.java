@@ -62,6 +62,7 @@ public class PircBotXTest implements Listener {
 		bot.setName("Quackbotz");
 		bot.setLogin("LQ");
 		bot.setVerbose(true);
+		bot.getListenerManager().addListener(new PircBotXTest());
 		try {
 			bot.connect("irc.freenode.org");
 		} catch (Exception ex) {
