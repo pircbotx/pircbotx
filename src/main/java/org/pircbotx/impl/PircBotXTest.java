@@ -22,6 +22,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 
 /**
@@ -35,6 +36,25 @@ public class PircBotXTest implements Listener {
 			event.getBot().joinChannel("#quackbot");
 		} else if (rawevent instanceof UserListEvent)
 			rawevent.getBot().log("INNEFFIENT CALLED");
+		else if (rawevent instanceof MessageEvent) {
+			MessageEvent mevent = (MessageEvent) rawevent;
+			String message = mevent.getMessage();
+			PircBotX bot = rawevent.getBot();
+
+			//If this isn't a waittest, return
+			if (!message.startsWith("?waitTest start"))
+				return;
+			bot.sendMessage(mevent.getChannel(), "Started...");
+			while (true) {
+				MessageEvent currentEvent = bot.waitFor(MessageEvent.class);
+				if (currentEvent.getMessage().startsWith("?waitTest ping"))
+					bot.sendMessage(mevent.getChannel(), "Pong");
+				else if (currentEvent.getMessage().startsWith("?waitTest end")) {
+					bot.sendMessage(mevent.getChannel(), "Killing...");
+					return;
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {
