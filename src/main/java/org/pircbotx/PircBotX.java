@@ -2169,7 +2169,7 @@ public class PircBotX {
 	 * @throws InterruptedException If the thread is interrupted, this exception
 	 *                              is thrown
 	 */
-	public Event waitFor(Class<? extends Event> eventClass) throws InterruptedException {
+	public <E extends Event> E waitFor(Class<? extends E> eventClass) throws InterruptedException {
 		//Create a WaitListener for getting the event
 		WaitListener waitListener = new WaitListener();
 		listenerManager.addListener(waitListener);
@@ -2181,7 +2181,7 @@ public class PircBotX {
 		listenerManager.removeListener(waitListener);
 
 		//Return requested listener
-		return finalEvent;
+		return (E) finalEvent;
 	}
 
 	/**
