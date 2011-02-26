@@ -2164,6 +2164,11 @@ public class PircBotX {
 	/**
 	 * Using the specified eventClass, block until the Event occurs. Eg wait for 
 	 * a response from a user, capturing the MessageEvent or PrivateMessageEvent.
+	 * <p>
+	 * <b>Warning:</b> The listener manager in use <i>must</i> support multithreading.
+	 * If not, the entire bot will freeze since its waiting in the same thread
+	 * that's reading input from the server. This means you <i>can't</i> use
+	 * {@link GenericListenerManager}.
 	 * @param eventClass The class representing the Event to capture
 	 * @return The requested event
 	 * @throws InterruptedException If the thread is interrupted, this exception
