@@ -2161,6 +2161,14 @@ public class PircBotX {
 		return _autoNickChange;
 	}
 	
+	/**
+	 * Using the specified eventClass, block until the Event occurs. Eg wait for 
+	 * a response from a user, capturing the MessageEvent or PrivateMessageEvent.
+	 * @param eventClass The class representing the Event to capture
+	 * @return The requested event
+	 * @throws InterruptedException If the thread is interrupted, this exception
+	 *                              is thrown
+	 */
 	public Event waitFor(Class<? extends Event> eventClass) throws InterruptedException {
 		//Create a WaitListener for getting the event
 		WaitListener waitListener = new WaitListener();
@@ -2176,6 +2184,10 @@ public class PircBotX {
 		return finalEvent;
 	}
 	
+	/**
+	 * A listener that waits for the specified event before returning. Used in
+	 * {@link PircBotX#waitFor(java.lang.Class) }
+	 */
 	protected class WaitListener implements Listener {
 		protected CountDownLatch signal = new CountDownLatch(1);
 		protected Class<? extends Event> eventClass;
@@ -2186,6 +2198,13 @@ public class PircBotX {
 			}
 		}
 		
+		/**
+		 * Block until the Event represented by the given class is passed
+		 * @param event A class representing the event to wait for
+		 * @return The specified event
+		 * @throws InterruptedException If the thread is interrupted, this exception
+		 *                              is thrown
+		 */
 		public Event waitFor(Class<? extends Event> event) throws InterruptedException {
 			eventClass = event;
 			signal.await();
