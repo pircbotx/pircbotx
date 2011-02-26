@@ -9,7 +9,15 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * 
+ * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(event)}.
+ * <p>
+ * This multithreading can be controlled with the perHook flag in the constructors.
+ * <ul>
+ *    <li><code>false</code> - Default. Listeners are executed sequentially in
+ *                             a separate thread per event.</li>
+ *    <li><code>true</code> - Every listener is executed in a different thread 
+ *                            all at once per event.</li>
+ * </ul>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ThreadedListenerManager implements ListenerManager {
@@ -17,19 +25,38 @@ public class ThreadedListenerManager implements ListenerManager {
 	protected final boolean perHook;
 	protected Set<Listener> listeners = new HashSet<Listener>();
 
+	/**
+	 * Configures with default options: perHook is false and a 
+	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
+	 */
 	public ThreadedListenerManager() {
 		perHook = false;
 	}
 
+	/**
+	 * Configures with default {@link Executors#newCachedThreadPool() cached threadpool}
+	 * and the specified perHook mode
+	 * @param perHook 
+	 */
 	public ThreadedListenerManager(boolean perHook) {
 		this.perHook = perHook;
 	}
 
+	/**
+	 * Configures with default perHook mode (false) and specified 
+	 * {@link ExecutorService}
+	 * @param pool 
+	 */
 	public ThreadedListenerManager(ExecutorService pool) {
 		perHook = false;
 		this.pool = pool;
 	}
 
+	/**
+	 * Configures with specified perHook mode and {@link ExecutorService}
+	 * @param pool
+	 * @param perHook 
+	 */
 	public ThreadedListenerManager(ExecutorService pool, boolean perHook) {
 		this.perHook = perHook;
 		this.pool = pool;
