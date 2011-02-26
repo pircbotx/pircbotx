@@ -18,12 +18,7 @@
  */
 package org.pircbotx.impl;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.pircbotx.PircBotX;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -37,19 +32,7 @@ public class PircBotXTest implements Listener {
 	public void onEvent(Event rawevent) throws Exception {
 		if (rawevent instanceof ConnectEvent) {
 			ConnectEvent event = (ConnectEvent) rawevent;
-			event.getBot().sendRawLine("NICKSERV identify manganip");
-			event.getBot().joinChannel("#honcast");
-			event.getBot().joinChannel("#3on3.et");
-			event.getBot().joinChannel("#lemondogs");
-			event.getBot().joinChannel("#5on5");
-			event.getBot().joinChannel("#5on5.css");
-			event.getBot().joinChannel("#pracc");
-			event.getBot().joinChannel("#matsi");
-			event.getBot().joinChannel("#k1ck");
-			event.getBot().joinChannel("#honcast");
-			event.getBot().joinChannel("#cod4.wars");
-			event.getBot().joinChannel("#teamliquid");
-			event.getBot().joinChannel("#pcw");
+			event.getBot().joinChannel("#quackbot");
 		} else if (rawevent instanceof UserListEvent)
 			rawevent.getBot().log("INNEFFIENT CALLED");
 	}
@@ -64,7 +47,7 @@ public class PircBotXTest implements Listener {
 		bot.setVersion("Quackbot 3.3");
 		bot.setVerbose(true);
 		try {
-			bot.connect("irc.quakenet.org");
+			bot.connect("irc.freenode.org");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
