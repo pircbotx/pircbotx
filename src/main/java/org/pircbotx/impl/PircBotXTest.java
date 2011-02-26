@@ -59,12 +59,8 @@ public class PircBotXTest implements Listener {
 
 	public static void main(String[] args) {
 		PircBotX bot = new PircBotX();
-		bot.setName("TheLQ");
+		bot.setName("Quackbotz");
 		bot.setLogin("LQ");
-		bot.setAutoNickChange(true);
-		bot.setFinger("Quackbot IRC bot by Lord.Quackstar. Source: http://quackbot.googlecode.com/");
-		bot.setMessageDelay(0);
-		bot.setVersion("Quackbot 3.3");
 		bot.setVerbose(true);
 		try {
 			bot.connect("irc.freenode.org");
