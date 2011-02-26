@@ -35,8 +35,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
-import org.pircbotx.hooks.GenericListenerManager;
-import org.pircbotx.hooks.ListenerManager;
+import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
  *
