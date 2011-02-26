@@ -16,10 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx.hooks;
+package org.pircbotx.hooks.managers;
 
 import java.util.Set;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
 
 /**
  * Manages everything about Listeners: adding, removing, and dispatching events

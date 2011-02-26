@@ -16,11 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx.hooks;
+package org.pircbotx.hooks.managers;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
 
 /**
  * Generic ListenerManager based off of a normal event system. This is backed
