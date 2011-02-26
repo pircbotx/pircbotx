@@ -1334,11 +1334,11 @@ public class PircBotX {
 			//End of the WHO reply
 			Channel channel = getChannel(response.split(" ")[1]);
 			getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
-		} else if (code == RPL_CHANNELMODEIS) {
+		} else if (code == RPL_CHANNELMODEIS)
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
 			getChannel(parsed[1]).parseMode(parsed[2]);
-		} else if (code == 329) {
+		else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. Note mIRC says lordquackstar shouldn't be there while Freenode
 			//displays it. From /JOIN(?)
@@ -2108,8 +2108,8 @@ public class PircBotX {
 	public void setListenerManager(ListenerManager listenerManager) {
 		this.listenerManager = listenerManager;
 		//Check if corehooks already exist
-		for(Listener curListener : listenerManager.getListeners())
-			if(curListener instanceof CoreHooks)
+		for (Listener curListener : listenerManager.getListeners())
+			if (curListener instanceof CoreHooks)
 				return;
 		listenerManager.addListener(new CoreHooks());
 	}
@@ -2144,7 +2144,7 @@ public class PircBotX {
 	public SocketFactory getSocketFactory() {
 		return _socketFactory;
 	}
-	
+
 	/**
 	 * Get current verbose mode
 	 * @return True if verbose is turned on, false if not
@@ -2152,7 +2152,7 @@ public class PircBotX {
 	public boolean isVerbose() {
 		return _verbose;
 	}
-	
+
 	/**
 	 * Get current auto nick change mode
 	 * @return True if auto nick change is turned on, false otherwise
@@ -2160,7 +2160,7 @@ public class PircBotX {
 	public boolean isAutoNickChange() {
 		return _autoNickChange;
 	}
-	
+
 	/**
 	 * Using the specified eventClass, block until the Event occurs. Eg wait for 
 	 * a response from a user, capturing the MessageEvent or PrivateMessageEvent.
@@ -2173,17 +2173,17 @@ public class PircBotX {
 		//Create a WaitListener for getting the event
 		WaitListener waitListener = new WaitListener();
 		listenerManager.addListener(waitListener);
-		
+
 		//Call waitFor which blocks until the desired event is captured
 		Event finalEvent = waitListener.waitFor(eventClass);
-		
+
 		//Remove listener since its no longer needed
 		listenerManager.removeListener(waitListener);
-		
+
 		//Return requested listener
 		return finalEvent;
 	}
-	
+
 	/**
 	 * A listener that waits for the specified event before returning. Used in
 	 * {@link PircBotX#waitFor(java.lang.Class) }
@@ -2192,12 +2192,12 @@ public class PircBotX {
 		protected CountDownLatch signal = new CountDownLatch(1);
 		protected Class<? extends Event> eventClass;
 		protected Event endEvent;
+
 		public void onEvent(Event event) throws Exception {
-			if(eventClass.isInstance(event)) {
+			if (eventClass.isInstance(event))
 				endEvent = event;
-			}
 		}
-		
+
 		/**
 		 * Block until the Event represented by the given class is passed
 		 * @param event A class representing the event to wait for
