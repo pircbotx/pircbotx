@@ -19,18 +19,27 @@
 package org.pircbotx.hooks.managers;
 
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.PircBotX;
 
 /**
  * Generic ListenerManager based off of a normal event system. This is backed
  * by a simple {@link HashSet} 
  *  <p>
- * Please note: This is a very basic and absolute type of manager. If a single 
- * class implements multiple listeners and you remove one, you remove them all!
- *
+ * Please note: This is a very basic manager offering little security and 
+ * features. Any long running listener will block all bot operations since its
+ * executed in the same thread. Adding any listeners during bot operation 
+ * ( Eg {@link PircBotX#waitFor(java.lang.Class) PircBotX's waitFor method}) in
+ * another thread is risky since the set might be in use already, throwing a 
+ * {@link ConcurrentModificationException}. 
+ * <p>
+ * Due to these issues any bot of complexity should use {@link ThreadedListenerManager},
+ * however most simple bots can use this just fine. 
+ * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class GenericListenerManager implements ListenerManager {
