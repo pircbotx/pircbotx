@@ -1065,7 +1065,7 @@ public class PircBotX {
 	 * @param line The raw line of text from the server.
 	 */
 	protected void handleLine(String line) {
-		log(line);
+		log("<<<" + line);
 
 		// Check for server pings.
 		if (line.startsWith("PING ")) {
