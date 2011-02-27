@@ -907,7 +907,7 @@ public class PircBotX {
 	 * @see #onChannelInfo(String,int,String) onChannelInfo
 	 */
 	public void listChannels(String parameters) {
-		if (!channelListBuilder.isRunning)
+		if (!channelListBuilder.isRunning())
 			if (parameters == null)
 				sendRawLine("LIST");
 			else
@@ -1265,7 +1265,7 @@ public class PircBotX {
 		if (code == RPL_LISTSTART)
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
-			channelListBuilder.isRunning = true;
+			channelListBuilder.setRunning(true);
 		else if (code == RPL_LIST) {
 			//This is part of a full channel listing as part of /LIST
 			//EXAMPLE: 322 lordquackstar #xomb 12 :xomb exokernel project @ www.xomb.org
@@ -1282,10 +1282,12 @@ public class PircBotX {
 			}
 			String topic = response.substring(colon + 1);
 			channelListBuilder.add(new ChannelListEntry(channel, userCount, topic));
-		} else if (code == RPL_LISTEND)
+		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
 			getListenerManager().dispatchEvent(new ChannelInfoEvent(this, channelListBuilder.finish()));
+			channelListBuilder.setRunning(false);
+		}
 		else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
@@ -2225,18 +2227,18 @@ public class PircBotX {
 	
 	protected class ListBuilder<A> {
 		@Getter @Setter
-		private boolean isRunning = false;
+		private boolean running = false;
 		private Set<A> channels = new HashSet();
 
 		public Set<A> finish() {
-			isRunning = false;
+			running = false;
 			Set<A> copy = new HashSet(channels);
 			channels.clear();
 			return copy;
 		}
 
 		public void add(A entry) {
-			isRunning = true;
+			running = true;
 			channels.add(entry);
 		}
 	}
