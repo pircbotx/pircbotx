@@ -25,6 +25,7 @@ import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -243,6 +244,7 @@ public class PircBotXTest {
 	 */
 	public class PircBotXMod extends PircBotX {
 		public PircBotXMod() {
+			setListenerManager(new GenericListenerManager());
 			getListenerManager().addListener(new TestListener());
 		}
 
