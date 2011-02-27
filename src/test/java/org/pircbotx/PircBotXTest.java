@@ -70,7 +70,6 @@ public class PircBotXTest {
 		sendMethods.remove("sendRawLineViaQueue");
 		sendMethods.remove("sendRawLine");
 
-
 		for (Map.Entry<String, List<Method>> entry : sendMethods.entrySet()) {
 			List<Method> methods = entry.getValue();
 			final String key = entry.getKey();
