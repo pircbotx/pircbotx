@@ -188,10 +188,22 @@ public class PircBotX {
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} 
-	 * to the default ListenerManager, {@link ThreadedListenerManager}. 
+	 * to the default ListenerManager, {@link ThreadedListenerManager}. This also
+	 * adds a shutdown hook to the current runtime while will properly shutdown 
+	 * the bot by calling {@link #disconnect() } and {@link #dispose() }
 	 */
 	public PircBotX() {
 		listenerManager.addListener(new CoreHooks());
+		final PircBotX thisBot = this;
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				if (thisBot.isConnected()) {
+					thisBot.disconnect();
+					thisBot.dispose();
+				}
+			}
+		});
 	}
 
 	/**
@@ -2201,7 +2213,7 @@ public class PircBotX {
 		public void onEvent(Event event) throws Exception {
 			if (eventClass.isInstance(event)) {
 				endEvent = event;
-				
+
 				//Unblock waitFor now that we have an event
 				signal.countDown();
 			}
