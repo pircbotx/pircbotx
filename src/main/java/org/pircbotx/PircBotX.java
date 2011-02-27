@@ -904,7 +904,7 @@ public class PircBotX {
 	 * @param parameters The parameters to supply when requesting the
 	 *                   list.
 	 *
-	 * @see #onChannelInfo(String,int,String) onChannelInfo
+	 * @see ChannelInfoEvent
 	 */
 	public void listChannels(String parameters) {
 		if (!channelListBuilder.isRunning())
@@ -955,7 +955,8 @@ public class PircBotX {
 	 *  <p>
 	 * This method may not be overridden.
 	 *
-	 * @param nick The nick of the user we are trying to establish a chat with.
+	 * @param sender The user object representing the user we are trying to 
+	 *               establish a chat with.
 	 * @param timeout The number of milliseconds to wait for the recipient to
 	 *                accept the chat connection (we recommend about 120000).
 	 *
@@ -2124,7 +2125,7 @@ public class PircBotX {
 	 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
 	 * when this method is called. If you do not want this, remove CoreHooks with
 	 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
-	 * @param The listener manager
+	 * @param listenerManager The listener manager
 	 */
 	public void setListenerManager(ListenerManager listenerManager) {
 		this.listenerManager = listenerManager;
