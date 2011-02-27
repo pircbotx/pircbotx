@@ -40,7 +40,8 @@ public class TopicEvent extends Event {
 	protected final String topic;
 	protected final User source;
 	protected final boolean changed;
-
+	protected final long date;
+	
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
@@ -51,11 +52,12 @@ public class TopicEvent extends Event {
 	 * @param changed True if the topic has just been changed, false if
 	 *                the topic was already there.
 	 */
-	public <T extends PircBotX> TopicEvent(T bot, Channel channel, String topic, User source, boolean changed) {
+	public <T extends PircBotX> TopicEvent(T bot, Channel channel, String topic, User source, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.topic = topic;
 		this.source = source;
 		this.changed = changed;
+		this.date = date;
 	}
 }
