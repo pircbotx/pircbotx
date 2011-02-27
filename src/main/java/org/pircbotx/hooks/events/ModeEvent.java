@@ -29,10 +29,10 @@ import org.pircbotx.PircBotX;
  * Used when the mode of a channel is set.
  *  <p>
  * You may find it more convenient to decode the meaning of the mode
- * string by using instead {@link Op}, {@link DeOp}, {@link Voice},
- * {@link DeVoice, ChannelKey}, {@link DeChannelKey},
- * {@link ChannelLimit}, {@link DeChannelLimit}, {@link ChannelBan} or
- * {@link DeChannelBan} as appropriate.
+ * string by using instead {@link OpEvent}, {@link DeopEvent}, {@link VoiceEvent},
+ * {@link DeVoiceEvent}, {@link SetChannelKeyEvent}, {@link RemoveChannelKeyEvent},
+ * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent}, 
+ * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
  *  <p>
  * The implementation of this method in the PircBotX abstract class
  * performs no actions and may be overridden as required.

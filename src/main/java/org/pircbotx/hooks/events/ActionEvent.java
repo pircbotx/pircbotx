@@ -40,9 +40,10 @@ public class ActionEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The user that sent the message
-	 * @param target The target channel of the action. A value of <code>null</code>
-	 *               means the target is us.
+	 * @param user The user object representing the user that sent the message
+	 * @param channel The channel object representing the target channel of the 
+	 *                action. A value of <code>null</code> means that this is
+	 *                is a private message, not a channel
 	 * @param action The action carried out by the user.
 	 */
 	public <T extends PircBotX> ActionEvent(T bot, User user, Channel channel, String action) {

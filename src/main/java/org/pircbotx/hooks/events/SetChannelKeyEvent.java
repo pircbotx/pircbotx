@@ -48,7 +48,7 @@ public class SetChannelKeyEvent extends Event {
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
-	 * @param sourceNick The user that performed the mode change.
+	 * @param source The user that performed the mode change.
 	 * @param key The new key for the channel.
 	 */
 	public <T extends PircBotX> SetChannelKeyEvent(T bot, Channel channel, User source, String key) {

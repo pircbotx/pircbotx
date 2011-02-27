@@ -44,9 +44,8 @@ public class RemoveInviteOnlyEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param timestamp The timestamp of when this object was created
 	 * @param channel The channel in which the mode change took place.
-	 * @param sourceNick The user that performed the mode change.
+	 * @param source The user that performed the mode change.
 	 */
 	public <T extends PircBotX> RemoveInviteOnlyEvent(T bot, Channel channel, User source) {
 		super(bot);

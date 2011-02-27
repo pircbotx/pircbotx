@@ -47,7 +47,7 @@ public class SetChannelLimitEvent extends Event {
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
-	 * @param sourceNick The user that performed the mode change.
+	 * @param source The user that performed the mode change.
 	 * @param limit The maximum number of users that may be in this channel at the same time.
 	 */
 	public <T extends PircBotX> SetChannelLimitEvent(T bot, Channel channel, User source, int limit) {

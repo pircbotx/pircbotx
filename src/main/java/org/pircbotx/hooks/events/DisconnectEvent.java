@@ -48,7 +48,6 @@ public class DisconnectEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param timestamp
 	 */
 	public <T extends PircBotX> DisconnectEvent(T bot) {
 		super(bot);

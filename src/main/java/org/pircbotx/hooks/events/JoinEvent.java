@@ -43,7 +43,7 @@ public class JoinEvent extends Event {
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel which somebody joined.
-	 * @param user The user who joined the channel.
+	 * @param source The user who joined the channel.
 	 */
 	public <T extends PircBotX> JoinEvent(T bot, Channel channel, User source) {
 		super(bot);
