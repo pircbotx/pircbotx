@@ -24,6 +24,7 @@ import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
-import org.pircbotx.hooks.ListenerAdapter;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -244,7 +244,7 @@ public class PircBotXTest {
 	 */
 	public class PircBotXMod extends PircBotX {
 		public PircBotXMod() {
-			getListenerManager().addListener(new Listener());
+			getListenerManager().addListener(new TestListener());
 		}
 
 		@Override
@@ -283,27 +283,14 @@ public class PircBotXTest {
 		}
 	}
 
-	public class Listener extends ListenerAdapter {
-
-		@Override
-		public void onChannelInfo(ChannelInfoEvent event) {
-			signal.event = event;
-		}
-
-		@Override
-		public void onMotd(MotdEvent event) {
-			signal.event = event;
-		}
-
-		@Override
-		public void onTopic(TopicEvent event) {
-			signal.event = event;
-		}
-
-		@Override
-		public void onUserList(UserListEvent event) {
-			signal.event = event;
-		}
+	public class TestListener implements Listener {
+		public void onEvent(Event event) throws Exception {
+			if(event instanceof ChannelInfoEvent || 
+					event instanceof MotdEvent || 
+					event instanceof TopicEvent || 
+					event instanceof UserListEvent)
+				signal.event = event;
+		}		
 	}
 
 	public class Signal {
