@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import lombok.Synchronized;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
@@ -80,6 +81,7 @@ public class ThreadedListenerManager implements ListenerManager {
 		return listeners.contains(listener);
 	}
 
+	@Synchronized("listeners")
 	public void dispatchEvent(final Event event) {
 		if (perHook)
 			//For each Listener, add a new Runnable
@@ -96,13 +98,13 @@ public class ThreadedListenerManager implements ListenerManager {
 		else
 			pool.submit(new Runnable() {
 				public void run() {
-					try {
 						for (Listener curListener : listeners)
-							curListener.onEvent(event);
-					} catch (Throwable t) {
-						event.getBot().logException(t);
+							try {
+								curListener.onEvent(event);
+							} catch (Throwable t) {
+								event.getBot().logException(t);
+							}
 					}
-				}
 			});
 	}
 }
