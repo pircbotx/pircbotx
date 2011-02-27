@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -33,11 +34,7 @@ import lombok.Setter;
  */
 @Data
 public class ServerInfo {
-	private PircBotX _bot;
-
-	public ServerInfo(PircBotX bot) {
-		_bot = bot;
-	}
+	private final PircBotX bot;
 
 	public void parse(String input) {
 	}
