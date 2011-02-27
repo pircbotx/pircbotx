@@ -18,6 +18,8 @@
  */
 package org.pircbotx;
 
+import lombok.Setter;
+import lombok.Getter;
 import java.util.concurrent.CountDownLatch;
 import javax.net.SocketFactory;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -2127,8 +2129,9 @@ public class PircBotX {
 	}
 
 	protected class ListBuilder<A> {
-		protected boolean isRunning = false;
-		protected Set<A> channels = new HashSet();
+		@Getter @Setter
+		private boolean isRunning = false;
+		private Set<A> channels = new HashSet();
 
 		public Set<A> finish() {
 			isRunning = false;
