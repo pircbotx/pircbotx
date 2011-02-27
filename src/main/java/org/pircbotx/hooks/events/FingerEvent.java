@@ -43,7 +43,7 @@ public class FingerEvent extends Event {
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param source The user that sent the FINGER request.
-	 * @param target 
+	 * @param channel The target channel of the FINGER request 
 	 */
 	public <T extends PircBotX> FingerEvent(T bot, User source, Channel channel) {
 		super(bot);

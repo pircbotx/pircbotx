@@ -10,8 +10,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(event)}. 
- *  This makes {@link #dispatchEvent(event)} return almost immediately freeing
+ * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(org.pircbotx.hooks.Event)}. 
+ *  This makes {@link #dispatchEvent(org.pircbotx.hooks.Event)} return almost immediately freeing
  * up the bot to execute other incoming events
  * <p>
  * This multithreading can be controlled with the perHook flag in the constructors.
