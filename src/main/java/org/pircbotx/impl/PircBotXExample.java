@@ -24,12 +24,13 @@ import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.UserListEvent;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class PircBotXTest implements Listener {
+public class PircBotXExample implements Listener {
 	public void onEvent(Event rawevent) throws Exception {
 		if (rawevent instanceof ConnectEvent) {
 			ConnectEvent event = (ConnectEvent) rawevent;
@@ -47,22 +48,25 @@ public class PircBotXTest implements Listener {
 			bot.sendMessage(mevent.getChannel(), "Started...");
 			while (true) {
 				MessageEvent currentEvent = bot.waitFor(MessageEvent.class);
+				System.out.println("NEW MESSAGE: "+currentEvent.getMessage());
 				if (currentEvent.getMessage().startsWith("?waitTest ping"))
 					bot.sendMessage(mevent.getChannel(), "Pong");
 				else if (currentEvent.getMessage().startsWith("?waitTest end")) {
 					bot.sendMessage(mevent.getChannel(), "Killing...");
 					return;
 				}
+				bot.log("End of MessageEvent");
 			}
 		}
 	}
 
 	public static void main(String[] args) {
 		PircBotX bot = new PircBotX();
-		bot.setName("Quackbotz");
+		bot.setName("Quackbot6");
 		bot.setLogin("LQ");
 		bot.setVerbose(true);
-		bot.getListenerManager().addListener(new PircBotXTest());
+		bot.setListenerManager(new ThreadedListenerManager());
+		bot.getListenerManager().addListener(new PircBotXExample());
 		try {
 			bot.connect("irc.freenode.org");
 		} catch (Exception ex) {
