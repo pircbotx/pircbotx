@@ -89,6 +89,7 @@ import java.util.StringTokenizer;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
 /**
@@ -174,7 +175,7 @@ public class PircBotX {
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
 	private final Object logLock = new Object();
-	protected ListenerManager listenerManager = new GenericListenerManager();
+	protected ListenerManager listenerManager = new ThreadedListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -186,9 +187,8 @@ public class PircBotX {
 	private SocketFactory _socketFactory = null;
 
 	/**
-	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} to the listenermangaer.  Your own constructors
-	 * in classes which extend the PircBotX abstract class should be responsible
-	 * for changing the default settings if required.
+	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} 
+	 * to the default ListenerManager, {@link ThreadedListenerManager}. 
 	 */
 	public PircBotX() {
 		listenerManager.addListener(new CoreHooks());
