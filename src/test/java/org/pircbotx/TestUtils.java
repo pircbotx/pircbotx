@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.HookUtils;
-import org.pircbotx.hooks.Listener;
 import org.testng.annotations.DataProvider;
 
 /**
