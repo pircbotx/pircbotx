@@ -33,7 +33,7 @@ if %answer%==2 (
 	mvn release:clean release:prepare release:perform
 )
 if %answer%==3 (
-	mvn site:deploy
+	mvn site:site site:deploy
 )
 
 pause
