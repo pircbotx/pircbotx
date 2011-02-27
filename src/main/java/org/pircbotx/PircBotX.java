@@ -88,6 +88,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
+import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.Listener;
@@ -176,6 +177,10 @@ public class PircBotX {
 	private String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 	private String _finger = "You ought to be arrested for fingering a bot!";
 	private String _channelPrefixes = "#&+!";
+	/**
+	 * The logging lock object preventing lines from being printed as other
+	 * lines are being printed
+	 */
 	private final Object logLock = new Object();
 	protected ListenerManager listenerManager = new ThreadedListenerManager();
 	/**
@@ -1026,11 +1031,13 @@ public class PircBotX {
 	 *
 	 * @param line The line to add to the log.
 	 */
+	@Synchronized(value="logLock")
 	public void log(String line) {
 		if (_verbose)
 			System.out.println(System.currentTimeMillis() + " " + line);
 	}
 
+	@Synchronized(value="logLock")
 	public void logException(Throwable t) {
 		if (!_verbose)
 			return;
@@ -1039,15 +1046,13 @@ public class PircBotX {
 		t.printStackTrace(pw);
 		pw.flush();
 		StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
-		synchronized (logLock) {
-			log("### Your implementation of PircBotX is faulty and you have");
-			log("### allowed an uncaught Exception or Error to propagate in your");
-			log("### code. It may be possible for PircBotX to continue operating");
-			log("### normally. Here is the stack trace that was produced: -");
-			log("### ");
-			while (tokenizer.hasMoreTokens())
-				log("### " + tokenizer.nextToken());
-		}
+		log("### Your implementation of PircBotX is faulty and you have");
+		log("### allowed an uncaught Exception or Error to propagate in your");
+		log("### code. It may be possible for PircBotX to continue operating");
+		log("### normally. Here is the stack trace that was produced: -");
+		log("### ");
+		while (tokenizer.hasMoreTokens())
+			log("### " + tokenizer.nextToken());
 	}
 
 	/**
