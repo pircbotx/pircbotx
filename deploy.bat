@@ -18,12 +18,11 @@
 @REM
 
 @echo off
-echo Lazy auto deply since I can't remember commands
-echo.
 echo Please select option
 echo  1) Deploy SNAPSHOT
 echo  2) Deploy RELEASE
-echo .
+echo  3) Deploy SITE
+echo.
 set /p answer=Run number: 
 
 if %answer%==1 (
@@ -32,6 +31,9 @@ if %answer%==1 (
 )
 if %answer%==2 (
 	mvn release:clean release:prepare release:perform
+)
+if %answer%==3 (
+	mvn site:deploy
 )
 
 pause
