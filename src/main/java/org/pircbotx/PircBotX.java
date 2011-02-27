@@ -2128,24 +2128,6 @@ public class PircBotX {
 		listenerManager.addListener(new CoreHooks());
 	}
 
-	protected class ListBuilder<A> {
-		@Getter @Setter
-		private boolean isRunning = false;
-		private Set<A> channels = new HashSet();
-
-		public Set<A> finish() {
-			isRunning = false;
-			Set<A> copy = new HashSet(channels);
-			channels.clear();
-			return copy;
-		}
-
-		public void add(A entry) {
-			isRunning = true;
-			channels.add(entry);
-		}
-	}
-
 	/**
 	 * Returns the last SocketFactory that we used to connect to an IRC server.
 	 * This does not imply that the connection attempt to the server was
@@ -2233,6 +2215,24 @@ public class PircBotX {
 			eventClass = event;
 			signal.await();
 			return endEvent;
+		}
+	}
+	
+	protected class ListBuilder<A> {
+		@Getter @Setter
+		private boolean isRunning = false;
+		private Set<A> channels = new HashSet();
+
+		public Set<A> finish() {
+			isRunning = false;
+			Set<A> copy = new HashSet(channels);
+			channels.clear();
+			return copy;
+		}
+
+		public void add(A entry) {
+			isRunning = true;
+			channels.add(entry);
 		}
 	}
 }
