@@ -1237,7 +1237,7 @@ public class PircBotX {
 			chan.setTopicSetter(sourceNick);
 			chan.setTopicTimestamp(currentTime);
 
-			getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, true));
+			getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, currentTime, true));
 		} else if (command.equals("INVITE"))
 			// Somebody is inviting somebody else into a channel.
 			getListenerManager().dispatchEvent(new InviteEvent(this, source, channel));
@@ -1313,7 +1313,7 @@ public class PircBotX {
 			chan.setTopicTimestamp(date);
 			chan.setTopicSetter(setBy.getNick());
 
-			getListenerManager().dispatchEvent(new TopicEvent(this, chan, chan.getTopic(), setBy, false));
+			getListenerManager().dispatchEvent(new TopicEvent(this, chan, chan.getTopic(), setBy, date, false));
 		} else if (code == RPL_NAMREPLY) {
 			//EXAMPLE: 353 PircBotX = #aChannel :PircBotX @SuperOp someoneElse
 			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
