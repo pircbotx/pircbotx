@@ -62,10 +62,9 @@ public class PircBotXExample implements Listener {
 
 	public static void main(String[] args) {
 		PircBotX bot = new PircBotX();
-		bot.setName("Quackbot6");
+		bot.setName("Quackbot5");
 		bot.setLogin("LQ");
 		bot.setVerbose(true);
-		bot.setListenerManager(new ThreadedListenerManager());
 		bot.getListenerManager().addListener(new PircBotXExample());
 		try {
 			bot.connect("irc.freenode.org");
