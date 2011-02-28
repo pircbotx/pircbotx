@@ -226,6 +226,22 @@ public class PircBotX {
 	public synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
 		this.connect(hostname, 6667, null, null);
 	}
+	
+	/**
+	 * Attempt to connect to the specified IRC server and port number.
+	 * The onConnect method is called upon success.
+	 *
+	 * @param hostname The hostname of the server to connect to.
+	 * @param port The port number to connect to on the server.
+	 * @param socketFactory The factory to use for creating sockets, including secure sockets
+	 *
+	 * @throws IOException if it was not possible to connect to the server.
+	 * @throws IrcException if the server would not let us join it.
+	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
+	 */
+	public synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
+		this.connect(hostname, port, null, null);
+	}
 
 	/**
 	 * Attempt to connect to the specified IRC server and port number.
