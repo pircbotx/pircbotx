@@ -244,8 +244,8 @@ public class PircBotX {
 	}
 	
 	/**
-	 * Attempt to connect to the specified IRC server using the supplied
-	 * password.
+	 * Attempt to connect to the specified IRC server using the given port
+	 * and password.
 	 * The onConnect method is called upon success.
 	 *
 	 * @param hostname The hostname of the server to connect to.
@@ -262,7 +262,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * Attempt to connect to the specified IRC server and port number.
+	 * Attempt to connect to the specified IRC server using the given port number
+	 * and socketFactory.
 	 * The onConnect method is called upon success.
 	 *
 	 * @param hostname The hostname of the server to connect to.
@@ -279,7 +280,7 @@ public class PircBotX {
 
 	/**
 	 * Attempt to connect to the specified IRC server using the supplied
-	 * password.
+	 * port number, password, and socketFactory.
 	 * The onConnect method is called upon success.
 	 *
 	 * @param hostname The hostname of the server to connect to.
