@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a hostmask ban is removed from a channel.
@@ -37,7 +38,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RemoveChannelBanEvent extends Event {
+public class RemoveChannelBanEvent extends Event implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final String hostmask;
