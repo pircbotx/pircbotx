@@ -39,20 +39,20 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class RemoveChannelBanEvent extends Event {
 	protected final Channel channel;
-	protected final User source;
+	protected final User user;
 	protected final String hostmask;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
-	 * @param source The user that performed the mode change.
+	 * @param user The user that performed the mode change.
 	 * @param hostmask The ban hostmask set
 	 */
-	public <T extends PircBotX> RemoveChannelBanEvent(T bot, Channel channel, User source, String hostmask) {
+	public <T extends PircBotX> RemoveChannelBanEvent(T bot, Channel channel, User user, String hostmask) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 		this.hostmask = hostmask;
 	}
 }

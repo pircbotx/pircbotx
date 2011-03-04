@@ -41,20 +41,20 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelKeyEvent extends Event {
 	protected final Channel channel;
-	protected final User source;
+	protected final User user;
 	protected final String key;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
-	 * @param source The user that performed the mode change.
+	 * @param user The user that performed the mode change.
 	 * @param key The new key for the channel.
 	 */
-	public <T extends PircBotX> SetChannelKeyEvent(T bot, Channel channel, User source, String key) {
+	public <T extends PircBotX> SetChannelKeyEvent(T bot, Channel channel, User user, String key) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 		this.key = key;
 	}
 }
