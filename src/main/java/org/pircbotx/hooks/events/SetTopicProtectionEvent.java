@@ -48,7 +48,7 @@ public class SetTopicProtectionEvent extends Event {
 	 * @param channel The channel in which the mode change took place.
 	 * @param user The user that performed the mode change.
 	 */
-	public <T extends PircBotX> SetTopicProtectionEvent(T bot, Channel user, User source) {
+	public <T extends PircBotX> SetTopicProtectionEvent(T bot, Channel channel, User user) {
 		super(bot);
 		this.user = user;
 		this.source = source;
