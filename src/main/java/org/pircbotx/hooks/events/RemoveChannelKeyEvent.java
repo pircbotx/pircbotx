@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a channel key is removed.
@@ -37,7 +38,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RemoveChannelKeyEvent extends Event {
+public class RemoveChannelKeyEvent extends Event implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final String key;

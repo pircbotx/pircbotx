@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a channel is set to only allow messages from users that
@@ -38,7 +39,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetNoExternalMessagesEvent extends Event {
+public class SetNoExternalMessagesEvent extends Event implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 

@@ -24,6 +24,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a user limit is set for a channel.  The number of users in
@@ -38,7 +39,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelLimitEvent extends Event {
+public class SetChannelLimitEvent extends Event implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final int limit;

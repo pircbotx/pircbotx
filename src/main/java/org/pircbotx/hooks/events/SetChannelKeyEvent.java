@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a channel key is set.  When the channel key has been set,
@@ -39,7 +40,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelKeyEvent extends Event {
+public class SetChannelKeyEvent extends Event implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final String key;

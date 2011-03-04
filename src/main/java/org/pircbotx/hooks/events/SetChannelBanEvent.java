@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a user (possibly us) gets banned from a channel.  Being
@@ -40,7 +41,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelBanEvent extends Event {
+public class SetChannelBanEvent extends Event implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final String hostmask;
