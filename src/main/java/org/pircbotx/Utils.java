@@ -121,41 +121,41 @@ public class Utils {
 		else if (event instanceof QuitEvent)
 			return ((QuitEvent) event).getSource();
 		else if (event instanceof RemoveChannelBanEvent)
-			return ((RemoveChannelBanEvent) event).getSource();
+			return ((RemoveChannelBanEvent) event).getUser();
 		else if (event instanceof RemoveChannelKeyEvent)
-			return ((RemoveChannelKeyEvent) event).getSource();
+			return ((RemoveChannelKeyEvent) event).getUser();
 		else if (event instanceof RemoveChannelLimitEvent)
-			return ((RemoveChannelLimitEvent) event).getSource();
+			return ((RemoveChannelLimitEvent) event).getUser();
 		else if (event instanceof RemoveInviteOnlyEvent)
-			return ((RemoveInviteOnlyEvent) event).getSource();
+			return ((RemoveInviteOnlyEvent) event).getUser();
 		else if (event instanceof RemoveModeratedEvent)
-			return ((RemoveModeratedEvent) event).getSource();
+			return ((RemoveModeratedEvent) event).getUser();
 		else if (event instanceof RemoveNoExternalMessagesEvent)
-			return ((RemoveNoExternalMessagesEvent) event).getSource();
+			return ((RemoveNoExternalMessagesEvent) event).getUser();
 		else if (event instanceof RemovePrivateEvent)
-			return ((RemovePrivateEvent) event).getSource();
+			return ((RemovePrivateEvent) event).getUser();
 		else if (event instanceof RemoveSecretEvent)
-			return ((RemoveSecretEvent) event).getSource();
+			return ((RemoveSecretEvent) event).getUser();
 		else if (event instanceof RemoveTopicProtectionEvent)
-			return ((RemoveTopicProtectionEvent) event).getSource();
+			return ((RemoveTopicProtectionEvent) event).getUser();
 		else if (event instanceof SetChannelBanEvent)
-			return ((SetChannelBanEvent) event).getSource();
+			return ((SetChannelBanEvent) event).getUser();
 		else if (event instanceof SetChannelKeyEvent)
-			return ((SetChannelKeyEvent) event).getSource();
+			return ((SetChannelKeyEvent) event).getUser();
 		else if (event instanceof SetChannelLimitEvent)
-			return ((SetChannelLimitEvent) event).getSource();
+			return ((SetChannelLimitEvent) event).getUser();
 		else if (event instanceof SetInviteOnlyEvent)
-			return ((SetInviteOnlyEvent) event).getSource();
+			return ((SetInviteOnlyEvent) event).getUser();
 		else if (event instanceof SetModeratedEvent)
-			return ((SetModeratedEvent) event).getSource();
+			return ((SetModeratedEvent) event).getUser();
 		else if (event instanceof SetNoExternalMessagesEvent)
-			return ((SetNoExternalMessagesEvent) event).getSource();
+			return ((SetNoExternalMessagesEvent) event).getUser();
 		else if (event instanceof SetPrivateEvent)
-			return ((SetPrivateEvent) event).getSource();
+			return ((SetPrivateEvent) event).getUser();
 		else if (event instanceof SetSecretEvent)
-			return ((SetSecretEvent) event).getSource();
+			return ((SetSecretEvent) event).getUser();
 		else if (event instanceof SetTopicProtectionEvent)
-			return ((SetTopicProtectionEvent) event).getSource();
+			return ((SetTopicProtectionEvent) event).getUser();
 		else if (event instanceof TimeEvent)
 			return ((TimeEvent) event).getSource();
 		else if (event instanceof TopicEvent)
