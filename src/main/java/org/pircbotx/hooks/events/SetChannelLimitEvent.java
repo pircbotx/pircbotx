@@ -40,20 +40,20 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelLimitEvent extends Event {
 	protected final Channel channel;
-	protected final User source;
+	protected final User user;
 	protected final int limit;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
-	 * @param source The user that performed the mode change.
+	 * @param user The user that performed the mode change.
 	 * @param limit The maximum number of users that may be in this channel at the same time.
 	 */
-	public <T extends PircBotX> SetChannelLimitEvent(T bot, Channel channel, User source, int limit) {
+	public <T extends PircBotX> SetChannelLimitEvent(T bot, Channel channel, User user, int limit) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 		this.limit = limit;
 	}
 }
