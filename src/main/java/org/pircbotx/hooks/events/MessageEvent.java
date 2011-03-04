@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Used whenever a message is sent to a channel.
@@ -34,7 +35,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MessageEvent extends Event {
+public class MessageEvent extends Event implements GenericMessageEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final String message;
