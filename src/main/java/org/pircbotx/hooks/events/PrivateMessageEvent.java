@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * This method is called whenever a private message is sent to the PircBotX.
@@ -33,7 +34,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PrivateMessageEvent extends Event {
+public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	protected final User user;
 	protected final String message;
 
