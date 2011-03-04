@@ -62,7 +62,6 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.Event;
 
-
 /**
  *
  * @author  Leon Blakey <lord.quackstar at gmail.com>
@@ -71,8 +70,6 @@ public class Utils {
 	public static boolean isBlank(String str) {
 		return (str != null) && (str.trim().equals(""));
 	}
-
-
 
 	/**
 	 * Extract the source user from any Event
