@@ -50,7 +50,7 @@ public class SetTopicProtectionEvent extends Event {
 	 */
 	public <T extends PircBotX> SetTopicProtectionEvent(T bot, Channel channel, User user) {
 		super(bot);
+		this.channel = channel;
 		this.user = user;
-		this.source = source;
 	}
 }
