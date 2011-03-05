@@ -834,6 +834,10 @@ public class PircBotX {
 	public void op(String channel, String nick) {
 		setMode(channel, "+o " + nick);
 	}
+	
+	public void op(Channel channel, User user) {
+		op(channel.getName(), user.getNick());
+	}
 
 	/**
 	 * Removes operator privilidges from a user on a channel.
@@ -845,6 +849,10 @@ public class PircBotX {
 	 */
 	public void deOp(String channel, String nick) {
 		setMode(channel, "-o " + nick);
+	}
+	
+	public void deOp(Channel channel, User user) {
+		deOp(channel.getName(), user.getNick());
 	}
 
 	/**
@@ -858,6 +866,10 @@ public class PircBotX {
 	public void voice(String channel, String nick) {
 		setMode(channel, "+v " + nick);
 	}
+	
+	public void voice(Channel channel, User user) {
+		voice(channel.getName(), user.getNick());
+	}
 
 	/**
 	 * Removes voice privilidges from a user on a channel.
@@ -869,6 +881,10 @@ public class PircBotX {
 	 */
 	public void deVoice(String channel, String nick) {
 		setMode(channel, "-v " + nick);
+	}
+	
+	public void deVoice(Channel channel, User user) {
+		deVoice(channel.getName(), user.getNick());
 	}
 
 	/**
