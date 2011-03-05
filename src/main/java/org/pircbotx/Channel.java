@@ -162,6 +162,13 @@ public class Channel {
 	 * @param op the _op to set
 	 */
 	public void setOp(User user, boolean op) {
+		if(op)
+			_bot.op(_name, user.getNick());
+		else
+			_bot.deOp(_name, user.getNick());
+	}
+	
+	void setOpReal(User user, boolean op) {
 		if (op)
 			_op.add(user);
 		else
@@ -183,13 +190,20 @@ public class Channel {
 	 * @param voice the _voice to set
 	 */
 	public void setVoice(User user, boolean voice) {
+		if(voice)
+			_bot.voice(_name, user.getNick());
+		else
+			_bot.deVoice(_name, user.getNick());
+	}
+	
+	void setVoiceReal(User user, boolean voice) {
 		if (voice)
 			_voice.add(user);
 		else
 			_voice.remove(user);
 	}
 
-	public boolean removeUser(User user) {
+	boolean removeUser(User user) {
 		return _op.remove(user) || _voice.remove(user);
 	}
 }
