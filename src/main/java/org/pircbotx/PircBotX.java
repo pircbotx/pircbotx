@@ -1354,13 +1354,11 @@ public class PircBotX {
 			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
 			parsed = response.split(" ", 4);
 			Channel chan = getChannel(parsed[2]);
-			//TODO: If were part of the channel
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
 				curUser.setOp(chan, nick.contains("@"));
 				curUser.setVoice(chan, nick.contains("+"));
 			}
-
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
 			// This is the end of a NAMES list, so we know that we've got
