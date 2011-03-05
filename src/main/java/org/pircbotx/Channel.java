@@ -156,23 +156,20 @@ public class Channel {
 		return _op.contains(user);
 	}
 
-	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @param op the _op to set
-	 */
-	public void setOp(User user, boolean op) {
-		if(op)
-			_bot.op(_name, user.getNick());
-		else
-			_bot.deOp(_name, user.getNick());
+	public void op(User user) {
+		_bot.op(this, user);
 	}
-	
-	void setOpReal(User user, boolean op) {
-		if (op)
-			_op.add(user);
-		else
-			_op.remove(user);
+
+	void addOp(User user) {
+		_op.add(user);
+	}
+
+	public void deOp(User user) {
+		_bot.deOp(this, user);
+	}
+
+	void removeOp(User user) {
+		_op.remove(user);
 	}
 
 	/**
@@ -184,23 +181,20 @@ public class Channel {
 		return _voice.contains(user);
 	}
 
-	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @param voice the _voice to set
-	 */
-	public void setVoice(User user, boolean voice) {
-		if(voice)
-			_bot.voice(_name, user.getNick());
-		else
-			_bot.deVoice(_name, user.getNick());
+	public void voice(User user) {
+		_bot.voice(this, user);
 	}
-	
-	void setVoiceReal(User user, boolean voice) {
-		if (voice)
-			_voice.add(user);
-		else
-			_voice.remove(user);
+
+	void addVoice(User user) {
+		_voice.add(user);
+	}
+
+	public void deVoice(User user) {
+		_bot.deVoice(this, user);
+	}
+
+	void removeVoice(User user) {
+		_voice.remove(user);
 	}
 
 	boolean removeUser(User user) {
