@@ -1486,20 +1486,20 @@ public class PircBotX {
 				else if (atPos == 'o') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						channel.setOpReal(source, true);
+						channel.addOp(source);
 						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint));
 					} else {
-						channel.setOpReal(source, false);
+						channel.removeOp(source);
 						getListenerManager().dispatchEvent(new DeopEvent(this, channel, source, reciepeint));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						channel.setVoiceReal(source, true);
+						channel.addVoice(source);
 						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint));
 					} else {
-						channel.setVoiceReal(source, false);
+						channel.removeVoice(source);
 						getListenerManager().dispatchEvent(new DeVoiceEvent(this, channel, source, reciepeint));
 					}
 					p++;
