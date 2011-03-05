@@ -26,7 +26,7 @@ echo.
 set /p answer=Run number: 
 
 if %answer%==1 (
-	mvn clean install javadoc:jar source:jar deploy
+	mvn clean deploy
 
 )
 if %answer%==2 (
