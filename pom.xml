@@ -36,8 +36,8 @@
 	</developers>
 
 	<issueManagement>
-		<system>Google Code Issue Tracker</system>
-		<url>http://code.google.com/p/pircbotx/issues</url>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/pircbotx/issues/list</url>
 	</issueManagement>
 
 	<scm>
