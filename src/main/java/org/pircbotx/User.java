@@ -37,51 +37,51 @@ public class User implements Comparable<User> {
 	/**
 	 * The user represented by this object's nickname on the server.
 	 */
-	private String _nick;
+	private String nick;
 	/**
 	 * The real name of this user represented by this object on the server
 	 */
-	private String _realname = "";
+	private String realName = "";
 	/**
 	 * The login of the user represented by this object on the server
 	 */
-	private String _login = "";
+	private String login = "";
 	/**
 	 * The hostmask of the user represented by this object on this server
 	 */
-	private String _hostmask = "";
+	private String hostmask = "";
 	/**
 	 * Weather or not the user represented by this object is away in the channel
 	 * this object was fetched from
 	 */
-	private boolean _away = false;
+	private boolean away = false;
 	/**
 	 * Weather or not the user represented by this object is an IRCop on the server
 	 */
-	private boolean _ircop = false;
+	private boolean ircop = false;
 	/**
 	 * The server that the user represented by this object is joined to
 	 */
-	private String _server = "";
+	private String server = "";
 	/**
 	 * Weather or not the user represented by this object is identified. Note that
 	 * on some server's this is not 100% reliable
 	 */
-	private boolean _identified = true;
+	private boolean identified = true;
 	/**
 	 * The number of hops it takes to the user represented by this object
 	 */
-	private int _hops = 0;
-	private final PircBotX _bot;
+	private int hops = 0;
+	private final PircBotX bot;
 
 	public User(PircBotX bot, String nick) {
-		_nick = nick;
-		_bot = bot;
+		this.nick = nick;
+		this.bot = bot;
 	}
 
 	public void parseStatus(String channel, String prefix) {
-		setOp(_bot.getChannel(channel), prefix.contains("@"));
-		setVoice(_bot.getChannel(channel), prefix.contains("+"));
+		setOp(bot.getChannel(channel), prefix.contains("@"));
+		setVoice(bot.getChannel(channel), prefix.contains("+"));
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
@@ -91,7 +91,7 @@ public class User implements Comparable<User> {
 	 * @return All channels this user is a part of
 	 */
 	public Collection<Channel> getChannels() {
-		return _bot.getChannels(this);
+		return bot.getChannels(this);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class User implements Comparable<User> {
 	 * @return the _nick
 	 */
 	public String getNick() {
-		return _nick;
+		return nick;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class User implements Comparable<User> {
 	 * @param nick the _nick to set
 	 */
 	void setNick(String nick) {
-		_nick = nick;
+		this.nick = nick;
 	}
 
 	/**
@@ -171,7 +171,7 @@ public class User implements Comparable<User> {
 	 * @return the _realname
 	 */
 	public String getRealname() {
-		return _realname;
+		return realName;
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class User implements Comparable<User> {
 	 * @param realname the _realname to set
 	 */
 	void setRealname(String realname) {
-		_realname = realname;
+		realName = realname;
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class User implements Comparable<User> {
 	 * @return the _hostmask
 	 */
 	public String getHostmask() {
-		return _hostmask;
+		return hostmask;
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class User implements Comparable<User> {
 	 * @param hostmask the _hostmask to set
 	 */
 	void setHostmask(String hostmask) {
-		_hostmask = hostmask;
+		this.hostmask = hostmask;
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class User implements Comparable<User> {
 	 * @return the _away
 	 */
 	public boolean isAway() {
-		return _away;
+		return away;
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class User implements Comparable<User> {
 	 * @param away the _away to set
 	 */
 	public void setAway(boolean away) {
-		_away = away;
+		this.away = away;
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class User implements Comparable<User> {
 	 * @return the _ircop
 	 */
 	public boolean isIrcop() {
-		return _ircop;
+		return ircop;
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class User implements Comparable<User> {
 	 * @param ircop the _ircop to set
 	 */
 	public void setIrcop(boolean ircop) {
-		_ircop = ircop;
+		this.ircop = ircop;
 	}
 
 	/**
@@ -237,7 +237,7 @@ public class User implements Comparable<User> {
 	 * @return the _server
 	 */
 	public String getServer() {
-		return _server;
+		return server;
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class User implements Comparable<User> {
 	 * @param server the _server to set
 	 */
 	void setServer(String server) {
-		_server = server;
+		this.server = server;
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class User implements Comparable<User> {
 	 * @return the _identified
 	 */
 	public boolean isIdentified() {
-		return _identified;
+		return identified;
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class User implements Comparable<User> {
 	 * @param identified the _identified to set
 	 */
 	void setIdentified(boolean identified) {
-		_identified = identified;
+		this.identified = identified;
 	}
 
 	/**
@@ -271,7 +271,7 @@ public class User implements Comparable<User> {
 	 * @return the hops
 	 */
 	public int getHops() {
-		return _hops;
+		return hops;
 	}
 
 	/**
@@ -279,7 +279,7 @@ public class User implements Comparable<User> {
 	 * @param hops the hops to set
 	 */
 	public void setHops(int hops) {
-		_hops = hops;
+		this.hops = hops;
 	}
 
 	/**
@@ -287,7 +287,7 @@ public class User implements Comparable<User> {
 	 * @return the _login
 	 */
 	public String getLogin() {
-		return _login;
+		return login;
 	}
 
 	/**
@@ -295,7 +295,7 @@ public class User implements Comparable<User> {
 	 * @param login the _login to set
 	 */
 	void setLogin(String login) {
-		_login = login;
+		this.login = login;
 	}
 
 	/**
@@ -304,7 +304,7 @@ public class User implements Comparable<User> {
 	 * @return the _op
 	 */
 	public boolean isOp(String chan) {
-		return _bot.getChannel(chan).isOp(this);
+		return bot.getChannel(chan).isOp(this);
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class User implements Comparable<User> {
 	 * @return the _voice
 	 */
 	public boolean hasVoice(String chan) {
-		return _bot.getChannel(chan).hasVoice(this);
+		return bot.getChannel(chan).hasVoice(this);
 	}
 
 	/**
