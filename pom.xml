@@ -45,6 +45,15 @@
 		<developerConnection>scm:hg:https://pircbotx.googlecode.com/hg</developerConnection>
 		<url>https://pircbotx.googlecode.com/hg</url>
 	</scm>
+	
+    <mailingLists>
+        <mailingList>
+            <name>pircbotx</name>
+            <subscribe>pircbotx-subscribe@googlegroups.com</subscribe>
+            <unsubscribe>pircbotx-unsubscribe@googlegroups.com</unsubscribe>
+            <archive>http://groups.google.com/group/pircbotx</archive>
+        </mailingList>
+    </mailingLists>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
