@@ -41,9 +41,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:svn:http://pircbotx.googlecode.com</connection>
-		<developerConnection>scm:svn:https://pircbotx.googlecode.com/svn</developerConnection>
-		<url>http://code.google.com/p/pircbotx/source/browse/</url>
+		<connection>scm:hg:http://pircbotx.googlecode.com</connection>
+		<developerConnection>scm:hg:https://pircbotx.googlecode.com/hg</developerConnection>
+		<url>https://pircbotx.googlecode.com/hg</url>
 	</scm>
 
 	<properties>
