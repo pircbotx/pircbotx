@@ -30,7 +30,6 @@ public class Channel {
 	private final String _name;
 	private String _mode = "";
 	private String _topic = "";
-	private long _timestamp;
 	private long _topicTimestamp;
 	private String _topicSetter = "";
 	private final PircBotX _bot;
@@ -97,20 +96,6 @@ public class Channel {
 	}
 
 	/**
-	 * @return the timestamp
-	 */
-	public long getTimestamp() {
-		return _timestamp;
-	}
-
-	/**
-	 * @param timestamp the timestamp to set
-	 */
-	public void setTimestamp(long timestamp) {
-		this._timestamp = timestamp;
-	}
-
-	/**
 	 * @return the topicTimestamp
 	 */
 	public long getTopicTimestamp() {
@@ -129,7 +114,6 @@ public class Channel {
 		return "Name{" + _name + "} "
 				+ "Mode{" + _mode + "} "
 				+ "Topic{" + _topic + "} "
-				+ "Timestamp{" + _timestamp + "} "
 				+ "Topic Timestamp{" + _topicTimestamp + "} ";
 	}
 
