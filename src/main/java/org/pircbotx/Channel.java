@@ -21,47 +21,41 @@ package org.pircbotx;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
+@Data
+@ToString(exclude={"op","voice"})
 public class Channel {
-	private final String _name;
-	private String _mode = "";
-	private String _topic = "";
-	private long _topicTimestamp;
-	private String _topicSetter = "";
-	private final PircBotX _bot;
+	private final String name;
+	@Setter(AccessLevel.PACKAGE)
+	private String mode = "";
+	@Setter(AccessLevel.PACKAGE)
+	private String topic = "";
+	@Setter(AccessLevel.PACKAGE)
+	private long topicTimestamp;
+	@Setter(AccessLevel.PACKAGE)
+	private String topicSetter = "";
+	private final PircBotX bot;
 	/**
 	 * Weather or not the user represented by this object is an op in the channel
 	 * this object was fetched from
 	 */
-	private Set<User> _op = Collections.synchronizedSet(new HashSet<User>());
+	@Getter(AccessLevel.NONE)
+	private final Set<User> op = Collections.synchronizedSet(new HashSet<User>());
 	/**
 	 * Weather or not the user represented by this object has voice in the channel
 	 * this object was fetched from
 	 */
-	private Set<User> _voice = Collections.synchronizedSet(new HashSet<User>());
-
-	public Channel(PircBotX bot, String name) {
-		_name = name;
-		_bot = bot;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return _name;
-	}
-
-	/**
-	 * @return the mode
-	 */
-	public String getMode() {
-		return _mode;
-	}
+	@Getter(AccessLevel.NONE)
+	private final Set<User> voice = Collections.synchronizedSet(new HashSet<User>());
 
 	public void parseMode(String rawMode) {
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
@@ -72,63 +66,22 @@ public class Channel {
 			else if (curChar == '+')
 				adding = true;
 			else if (adding)
-				_mode = _mode + curChar;
+				mode = mode + curChar;
 			else
-				_mode = _mode.replace(Character.toString(curChar), "");
+				mode = mode.replace(Character.toString(curChar), "");
 	}
 
 	public Set<User> getUsers() {
-		return _bot.getUsers(_name);
+		return bot.getUsers(name);
 	}
-
+	
 	/**
-	 * @return the topic
-	 */
-	public String getTopic() {
-		return _topic;
-	}
-
-	/**
-	 * @param topic the topic to set
-	 */
-	public void setTopic(String topic) {
-		this._topic = topic;
-	}
-
-	/**
-	 * @return the topicTimestamp
-	 */
-	public long getTopicTimestamp() {
-		return _topicTimestamp;
-	}
-
-	/**
-	 * @param topicTimestamp the topicTimestamp to set
-	 */
-	public void setTopicTimestamp(long topicTimestamp) {
-		this._topicTimestamp = topicTimestamp;
-	}
-
-	@Override
-	public String toString() {
-		return "Name{" + _name + "} "
-				+ "Mode{" + _mode + "} "
-				+ "Topic{" + _topic + "} "
-				+ "Topic Timestamp{" + _topicTimestamp + "} ";
-	}
-
-	/**
-	 * @return the _topicSetter
+	 * Get the user that set the topic. As the user may or may not be in the
+	 * channel return as a string
+	 * @return The user that set the topic in String format
 	 */
 	public String getTopicSetter() {
-		return _topicSetter;
-	}
-
-	/**
-	 * @param topicSetter the _topicSetter to set
-	 */
-	public void setTopicSetter(String topicSetter) {
-		this._topicSetter = topicSetter;
+		return topicSetter;
 	}
 
 	/**
@@ -137,23 +90,23 @@ public class Channel {
 	 * @return the _op
 	 */
 	public boolean isOp(User user) {
-		return _op.contains(user);
+		return op.contains(user);
 	}
 
 	public void op(User user) {
-		_bot.op(this, user);
+		bot.op(this, user);
 	}
 
 	void addOp(User user) {
-		_op.add(user);
+		op.add(user);
 	}
 
 	public void deOp(User user) {
-		_bot.deOp(this, user);
+		bot.deOp(this, user);
 	}
 
 	void removeOp(User user) {
-		_op.remove(user);
+		op.remove(user);
 	}
 
 	/**
@@ -162,26 +115,26 @@ public class Channel {
 	 * @return the _voice
 	 */
 	public boolean hasVoice(User user) {
-		return _voice.contains(user);
+		return voice.contains(user);
 	}
 
 	public void voice(User user) {
-		_bot.voice(this, user);
+		bot.voice(this, user);
 	}
 
 	void addVoice(User user) {
-		_voice.add(user);
+		voice.add(user);
 	}
 
 	public void deVoice(User user) {
-		_bot.deVoice(this, user);
+		bot.deVoice(this, user);
 	}
 
 	void removeVoice(User user) {
-		_voice.remove(user);
+		voice.remove(user);
 	}
 
 	boolean removeUser(User user) {
-		return _op.remove(user) || _voice.remove(user);
+		return op.remove(user) || voice.remove(user);
 	}
 }
