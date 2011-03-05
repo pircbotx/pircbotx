@@ -19,6 +19,7 @@
 package org.pircbotx;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * This class is used to represent a user on an IRC server.
@@ -85,8 +86,12 @@ public class User implements Comparable<User> {
 		setIrcop(prefix.contains("*"));
 	}
 
+	/**
+	 * Get all channels this user is a part of
+	 * @return All channels this user is a part of
+	 */
 	public Collection<Channel> getChannels() {
-		return null; //TODO
+		return _bot.getChannels(this);
 	}
 
 	/**
