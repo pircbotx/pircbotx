@@ -6,7 +6,10 @@
 	<packaging>jar</packaging>
 	<version>1.3-SNAPSHOT</version>
 	<name>pircbotx</name>
+	<description>A simple, easy to use, Java IRC Bot Framework based off of a fork of the popular PircBot 
+	framework, bringing in many new up to date things to the project in an official distribution.</description>
 	<url>http://pircbotx.googlecode.com/</url>
+	<inceptionYear>2010</inceptionYear>
 
 	<licenses>
 		<license>
