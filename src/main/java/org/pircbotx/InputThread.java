@@ -34,7 +34,7 @@ import org.pircbotx.hooks.events.DisconnectEvent;
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
-public class InputThread implements Runnable {
+public class InputThread extends Thread {
 	private final PircBotX _bot;
 	private Socket _socket;
 	private BufferedReader _breader = null;
