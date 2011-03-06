@@ -48,10 +48,11 @@ public class ListenerAdapterTest {
 		Enumeration<URL> rootResources = testClazz.getClassLoader().getResources("");
 		assertNotNull(rootResources, "Voice class resources are null");
 		assertEquals(rootResources.hasMoreElements(), true, "No voice class resources");
-		String root = new File(rootResources.nextElement().getFile()).getParent();
-
+		File root = new File(rootResources.nextElement().getFile().replace("%20", " ")).getParentFile();
+		assertTrue(root.exists(), "Root dir (" + root + ") doesn't exist");
+		
 		//Get root directory as a file
-		File hookDir = new File(root + sep + "classes" + sep + (testClazz.getPackage().getName().replace(".", sep)) + sep);
+		File hookDir = new File(root, sep + "classes" + sep + (testClazz.getPackage().getName().replace(".", sep)) + sep);
 		assertNotNull(hookDir, "Fetched Event directory is null");
 		assertTrue(hookDir.exists(), "Event directory doesn't exist");
 		assertTrue(hookDir.isDirectory(), "Event directory isn't a directory");
@@ -60,7 +61,7 @@ public class ListenerAdapterTest {
 		List<String> classFiles = new ArrayList();
 		assertTrue(hookDir.listFiles().length > 0, "Event directory is empty");
 		for (File clazzFile : hookDir.listFiles())
-			//If its not a file or .java or its a subclass, ignore
+			//If its a directory, its not a .class, or its a subclass, ignore
 			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
 				classFiles.add(clazzFile.getName().split("\\.")[0]);
 		
