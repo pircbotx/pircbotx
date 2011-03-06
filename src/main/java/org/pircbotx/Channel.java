@@ -71,6 +71,10 @@ public class Channel {
 				mode = mode.replace(Character.toString(curChar), "");
 	}
 
+	/**
+	 * Get all users in this channel
+	 * @return 
+	 */
 	public Set<User> getUsers() {
 		return bot.getUsers(name);
 	}
@@ -85,55 +89,94 @@ public class Channel {
 	}
 
 	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @return the _op
+	 * Checks if the given use is an Op or not in this channel
+	 * @return True if the user is an op, false if not
 	 */
 	public boolean isOp(User user) {
 		return op.contains(user);
 	}
-
+	
+	/*
+	 * Attempts to give Operator status to the given user in this channel. See 
+	 * {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to Op
+	 */
 	public void op(User user) {
 		bot.op(this, user);
 	}
 
+	/**
+	 * Adds user to list of operator users
+	 * @param user 
+	 */
 	void addOp(User user) {
 		op.add(user);
 	}
 
+	/**
+	 * Attempts to remove Operator status from the given user in this channel. See
+	 * {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to Voice
+	 */
 	public void deOp(User user) {
 		bot.deOp(this, user);
 	}
 
+	/**
+	 * Removes the user from the operator list
+	 * @param user 
+	 */
 	void removeOp(User user) {
 		op.remove(user);
 	}
 
 	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @return the _voice
+	 * Checks if the given use has Voice or not in this channel
+	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
 		return voice.contains(user);
 	}
 
+	/**
+	 * Attempts to give Voice status to the given user in this channel. See 
+	 * {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to Op
+	 */
 	public void voice(User user) {
 		bot.voice(this, user);
 	}
 
+	/*
+	 * Adds user to list of voiced users in this channel
+	 * @param user
+	 */
 	void addVoice(User user) {
 		voice.add(user);
 	}
 
+	/**
+	 * Attempts to remove Voice status from the given user in this channel. See
+	 * {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to Voice
+	 */
 	public void deVoice(User user) {
 		bot.deVoice(this, user);
 	}
 
+	/**
+	 * Removes user from list of voiced users in this channel
+	 * @param user 
+	 */
 	void removeVoice(User user) {
 		voice.remove(user);
 	}
 
+	/**
+	 * Removes user from op and voice lists
+	 * @param user
+	 * @return True if removal was sucess
+	 */
 	boolean removeUser(User user) {
 		return op.remove(user) || voice.remove(user);
 	}
