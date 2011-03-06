@@ -33,7 +33,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
-public class OutputThread implements Runnable {
+public class OutputThread extends Thread {
 	protected PircBotX _bot = null;
 	protected LinkedBlockingQueue<String> _queue = new LinkedBlockingQueue<String>();
 	protected final BufferedWriter _bwriter;

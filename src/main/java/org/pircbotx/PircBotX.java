@@ -135,8 +135,6 @@ public class PircBotX {
 	// Connection stuff.
 	protected InputThread _inputThread = null;
 	protected OutputThread _outputThread = null;
-	protected Thread _actualInputThread;
-	protected Thread _actualOutputThread;
 	private String _charset = null;
 	private InetAddress _inetAddress = null;
 	// Details about the last server that we connected to.
@@ -387,10 +385,8 @@ public class PircBotX {
 		_socket.setSoTimeout(getSocketTimeout());
 
 		//Start input and output threads to start accepting lines
-		_actualInputThread = InputThread.threadFactory.newThread(_inputThread, this);
-		_actualOutputThread = OutputThread.threadFactory.newThread(_outputThread, this);
-		_actualInputThread.start();
-		_actualOutputThread.start();
+		_inputThread.start();
+		_inputThread.start();
 
 		getListenerManager().dispatchEvent(new ConnectEvent(this));
 	}
@@ -2012,8 +2008,8 @@ public class PircBotX {
 			_socket.close();
 		} catch (Exception e) {
 			//Something went wrong, interrupt to make sure they are closed
-			_actualOutputThread.interrupt();
-			_actualInputThread.interrupt();
+			_outputThread.interrupt();
+			_inputThread.interrupt();
 		}
 	}
 
