@@ -97,8 +97,8 @@ public class Channel {
 	}
 
 	/*
-	 * Attempts to give Operator status to the given user in this channel. See 
-	 * {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
+	 * Attempts to give Operator status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to Op
 	 */
 	public void op(User user) {
@@ -114,8 +114,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Operator status from the given user in this channel. See
-	 * {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * Attempts to remove Operator status from the given user in this channel. 
+	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to Voice
 	 */
 	public void deOp(User user) {
@@ -139,8 +139,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Voice status to the given user in this channel. See 
-	 * {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * Attempts to give Voice status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to Op
 	 */
 	public void voice(User user) {
@@ -156,8 +156,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Voice status from the given user in this channel. See
-	 * {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * Attempts to remove Voice status from the given user in this channel. Simply
+	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to Voice
 	 */
 	public void deVoice(User user) {
