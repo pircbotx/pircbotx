@@ -79,34 +79,38 @@ public class InputThread extends Thread {
 	 */
 	@Override
 	public void run() {
-		try {
-			boolean running = true;
-			while (running)
-				try {
-					String line = null;
-					while ((line = breader.readLine()) != null)
-							bot.handleLine(line);
-						
-					if (line == null) {
-						System.err.println("Null line, socket closed");
-						// The server must have disconnected us.
-						running = false;
-					}
-				} catch (InterruptedIOException iioe) {
-					// This will happen if we haven't received anything from the server for a while.
-					// So we shall send it a ping to check that we are still connected.
-					bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
-					// Now we go back to listening for stuff from the server...
-				}
-		} catch (Exception e) {
-			e.printStackTrace();
+		while (true) {
+			//Get line from the server
+			String line = null;
+			try {
+				line = breader.readLine();
+			} catch (InterruptedIOException iioe) {
+				// This will happen if we haven't received anything from the server for a while.
+				// So we shall send it a ping to check that we are still connected.
+				bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
+				// Now we go back to listening for stuff from the server...
+				continue;
+			} catch (Exception e) {
+				bot.logException(e);
+			}
+			
+			//End the loop if the line is null
+			if(line == null)
+				break;
+
+			//Start acting the line
+			try {
+				bot.handleLine(line);
+			} catch (Exception e) {
+				bot.logException(e);
+			}
 		}
 
-		//Disconnected at this point
+		//Disconnected at this point, close the socket
 		try {
 			socket.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			bot.logException(e);
 		}
 
 		//Now that the socket is definatly closed, call event and log
