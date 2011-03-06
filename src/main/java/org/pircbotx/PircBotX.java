@@ -231,7 +231,6 @@ public class PircBotX {
 	 *
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
-	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
@@ -249,7 +248,6 @@ public class PircBotX {
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
 	 * @param password The password to use to join the server.
-	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
