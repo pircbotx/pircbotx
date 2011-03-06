@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.Synchronized;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
@@ -23,7 +24,7 @@ import org.pircbotx.hooks.Listener;
  * </ul>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class ThreadedListenerManager implements ListenerManager {
+public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected ExecutorService pool = Executors.newCachedThreadPool();
 	protected final boolean perHook;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
@@ -82,7 +83,7 @@ public class ThreadedListenerManager implements ListenerManager {
 	}
 
 	@Synchronized("listeners")
-	public void dispatchEvent(final Event event) {
+	public void dispatchEvent(final Event<E> event) {
 		if (perHook)
 			//For each Listener, add a new Runnable
 			for (final Listener curListener : listeners)
