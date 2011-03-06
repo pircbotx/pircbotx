@@ -1372,8 +1372,10 @@ public class PircBotX {
 			Channel chan = getChannel(parsed[2]);
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
-				curUser.setOp(chan, nick.contains("@"));
-				curUser.setVoice(chan, nick.contains("+"));
+				if(nick.contains("@"))
+					chan.addOp(curUser);
+				if(nick.contains("+"))
+					chan.addVoice(curUser);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
@@ -1398,7 +1400,7 @@ public class PircBotX {
 				curUser.setNick(parsed[5]);
 				curUser.parseStatus(chan.getName(), parsed[6]);
 				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
-				curUser.setRealname(parsed[8]);
+				curUser.setRealName(parsed[8]);
 			}
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
@@ -1427,7 +1429,7 @@ public class PircBotX {
 			}
 
 			//Set in channel
-			getChannel(channel).setTimestamp(createDate);
+			getChannel(channel).setCreateTimestamp(createDate);
 		} else if (code == RPL_MOTDSTART)
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
