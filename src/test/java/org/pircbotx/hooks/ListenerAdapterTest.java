@@ -19,7 +19,6 @@
 package org.pircbotx.hooks;
 
 import java.lang.reflect.Method;
-import org.pircbotx.hooks.ListenerAdapter;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -78,19 +77,5 @@ public class ListenerAdapterTest {
 		assertEquals(classFiles.size(), 0, testClazz.getSimpleName() + " does not implment " + leftOver);
 
 		System.out.println("Success: Meta Interface implment all hooks");
-	}
-
-	/**
-	 * Subtract Interfaces from class list
-	 * @param testClazz
-	 * @param testClasses
-	 */
-	protected void subtract(Class testClazz, List<String> testClasses) {
-		List<String> clazzesCopy = new ArrayList(testClasses);
-		for (Class curClazz : testClazz.getInterfaces()) {
-			clazzesCopy.remove(curClazz.getSimpleName());
-		}
-		String leftOver = StringUtils.join(clazzesCopy.toArray(),", ");
-		assertEquals(clazzesCopy.size(), 0, testClazz.getSimpleName() + " does not implment " + leftOver);
 	}
 }
