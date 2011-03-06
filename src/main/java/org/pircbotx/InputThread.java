@@ -35,10 +35,10 @@ import org.pircbotx.hooks.events.DisconnectEvent;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class InputThread extends Thread {
-	private final PircBotX _bot;
-	private Socket _socket;
-	private BufferedReader _breader = null;
-	private boolean _isConnected = true;
+	private final PircBotX bot;
+	private Socket socket;
+	private BufferedReader breader = null;
+	private boolean isConnected = true;
 	public static final int MAX_LINE_LENGTH = 512;
 
 	/**
@@ -50,9 +50,9 @@ public class InputThread extends Thread {
 	 * @param bwriter The BufferedWriter that sends lines to the server.
 	 */
 	InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
-		_bot = bot;
-		_socket = socket;
-		_breader = breader;
+		this.bot = bot;
+		this.socket = socket;
+		this.breader = breader;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class InputThread extends Thread {
 	 * @return True if still connected.
 	 */
 	boolean isConnected() {
-		return _isConnected;
+		return isConnected;
 	}
 
 	/**
@@ -83,8 +83,8 @@ public class InputThread extends Thread {
 			while (running)
 				try {
 					String line = null;
-					while ((line = _breader.readLine()) != null)
-							_bot.handleLine(line);
+					while ((line = breader.readLine()) != null)
+							bot.handleLine(line);
 						
 					if (line == null) {
 						System.err.println("Null line, socket closed");
@@ -94,7 +94,7 @@ public class InputThread extends Thread {
 				} catch (InterruptedIOException iioe) {
 					// This will happen if we haven't received anything from the server for a while.
 					// So we shall send it a ping to check that we are still connected.
-					_bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
+					bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
 					// Now we go back to listening for stuff from the server...
 				}
 		} catch (Exception e) {
@@ -103,14 +103,14 @@ public class InputThread extends Thread {
 
 		//Disconnected at this point
 		try {
-			_socket.close();
+			socket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		//Now that the socket is definatly closed, call event and log
 		//_bot.removeAllChannels();
-		_bot.getListenerManager().dispatchEvent(new DisconnectEvent(_bot));
-		_bot.log("*** Disconnected.");
+		bot.getListenerManager().dispatchEvent(new DisconnectEvent(bot));
+		bot.log("*** Disconnected.");
 	}
 }
