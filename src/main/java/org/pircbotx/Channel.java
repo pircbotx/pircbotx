@@ -32,7 +32,7 @@ import lombok.ToString;
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
-@ToString(exclude={"op","voice"})
+@ToString(exclude = {"op", "voice"})
 public class Channel {
 	private final String name;
 	@Setter(AccessLevel.PACKAGE)
@@ -78,7 +78,7 @@ public class Channel {
 	public Set<User> getUsers() {
 		return bot.getUsers(name);
 	}
-	
+
 	/**
 	 * Get the user that set the topic. As the user may or may not be in the
 	 * channel return as a string
@@ -95,7 +95,7 @@ public class Channel {
 	public boolean isOp(User user) {
 		return op.contains(user);
 	}
-	
+
 	/*
 	 * Attempts to give Operator status to the given user in this channel. See 
 	 * {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
