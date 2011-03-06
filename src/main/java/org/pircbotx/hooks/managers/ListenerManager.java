@@ -47,7 +47,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * on exception handling and performance.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(E event);
+	public void dispatchEvent(Event<E> event);
 
 	/**
 	 * Adds an listener to the list of listeners for an event.
