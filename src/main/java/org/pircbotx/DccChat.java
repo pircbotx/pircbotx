@@ -35,14 +35,14 @@ import java.net.Socket;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccChat {
-	private PircBotX _bot;
-	private User _source;
-	private BufferedReader _reader;
-	private BufferedWriter _writer;
-	private Socket _socket;
-	private boolean _acceptable;
-	private long _address = 0;
-	private int _port = 0;
+	private PircBotX bot;
+	private User source;
+	private BufferedReader reader;
+	private BufferedWriter writer;
+	private Socket socket;
+	private boolean acceptable;
+	private long address = 0;
+	private int port = 0;
 
 	/**
 	 * This constructor is used when we are accepting a DCC CHAT request
@@ -57,11 +57,11 @@ public class DccChat {
 	 * @throws IOException If the connection cannot be made.
 	 */
 	DccChat(PircBotX bot, User source, long address, int port) {
-		_bot = bot;
-		_address = address;
-		_port = port;
-		_source = source;
-		_acceptable = true;
+		this.bot = bot;
+		this.address = address;
+		this.port = port;
+		this.source = source;
+		acceptable = true;
 	}
 
 	/**
@@ -76,12 +76,12 @@ public class DccChat {
 	 * @throws IOException If the socket cannot be read from.
 	 */
 	DccChat(PircBotX bot, User source, Socket socket) throws IOException {
-		_bot = bot;
-		_source = source;
-		_socket = socket;
-		_reader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-		_writer = new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream()));
-		_acceptable = false;
+		this.bot = bot;
+		this.source = source;
+		this.socket = socket;
+		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+		acceptable = false;
 	}
 
 	/**
@@ -91,13 +91,13 @@ public class DccChat {
 	 *
 	 */
 	public synchronized void accept() throws IOException {
-		if (_acceptable) {
-			_acceptable = false;
-			int[] ip = _bot.longToIp(_address);
+		if (acceptable) {
+			acceptable = false;
+			int[] ip = bot.longToIp(address);
 			String ipStr = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
-			_socket = new Socket(ipStr, _port);
-			_reader = new BufferedReader(new InputStreamReader(_socket.getInputStream()));
-			_writer = new BufferedWriter(new OutputStreamWriter(_socket.getOutputStream()));
+			socket = new Socket(ipStr, port);
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 		}
 	}
 
@@ -112,9 +112,9 @@ public class DccChat {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public String readLine() throws IOException {
-		if (_acceptable)
+		if (acceptable)
 			throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
-		return _reader.readLine();
+		return reader.readLine();
 	}
 
 	/**
@@ -127,11 +127,11 @@ public class DccChat {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void sendLine(String line) throws IOException {
-		if (_acceptable)
+		if (acceptable)
 			throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
 		// No need for synchronization here really...
-		_writer.write(line + "\r\n");
-		_writer.flush();
+		writer.write(line + "\r\n");
+		writer.flush();
 	}
 
 	/**
@@ -140,13 +140,13 @@ public class DccChat {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void close() throws IOException {
-		if (_acceptable)
+		if (acceptable)
 			throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
-		_socket.close();
+		socket.close();
 	}
 
 	public User getSource() {
-		return _source;
+		return source;
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class DccChat {
 	 * @return the BufferedReader used by this DCC Chat.
 	 */
 	public BufferedReader getBufferedReader() {
-		return _reader;
+		return reader;
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class DccChat {
 	 * @return the BufferedReader used by this DCC Chat.
 	 */
 	public BufferedWriter getBufferedWriter() {
-		return _writer;
+		return writer;
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class DccChat {
 	 * @return the raw Socket used by this DCC Chat.
 	 */
 	public Socket getSocket() {
-		return _socket;
+		return socket;
 	}
 
 	/**
@@ -182,6 +182,6 @@ public class DccChat {
 	 * @return the address of the sender as a long.
 	 */
 	public long getNumericalAddress() {
-		return _address;
+		return address;
 	}
 }
