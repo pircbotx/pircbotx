@@ -178,6 +178,6 @@ public class Channel {
 	 * @return True if removal was sucess
 	 */
 	boolean removeUser(User user) {
-		return op.remove(user) || voice.remove(user);
+		return op.remove(user) && voice.remove(user);
 	}
 }
