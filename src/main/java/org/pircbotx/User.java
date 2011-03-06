@@ -24,11 +24,10 @@ import lombok.Data;
 import lombok.Setter;
 
 /**
- * This class is used to represent a user on an IRC server.
- * Instances of this class are returned by the getUsers method
- * in the PircBot class.
-
- *
+ * Represents a User on the server. Contains all the available information about
+ * the user as well as some useful delegate methods like 
+ * {@link #op(org.pircbotx.Channel) giving op} or {@link #voice(chan) voice}
+ * status.
  * @since   1.0.0
  * @author  Origionally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
