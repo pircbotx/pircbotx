@@ -51,9 +51,9 @@ import java.net.Socket;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class IdentServer extends Thread {
-	private PircBotX _bot;
-	private String _login;
-	private ServerSocket _ss = null;
+	private PircBotX bot;
+	private String login;
+	private ServerSocket ss = null;
 	/**
 	 * Constructs and starts an instance of an IdentServer that will
 	 * respond to a client with the provided login.  Rather than calling
@@ -68,18 +68,18 @@ public class IdentServer extends Thread {
 	 * @param login The login that the ident server will respond with.
 	 */
 	IdentServer(PircBotX bot, String login) {
-		_bot = bot;
-		_login = login;
+		this.bot = bot;
+		this.login = login;
 
 		try {
-			_ss = new ServerSocket(113);
-			_ss.setSoTimeout(60000);
+			ss = new ServerSocket(113);
+			ss.setSoTimeout(60000);
 		} catch (Exception e) {
-			_bot.log("*** Could not start the ident server on port 113.");
+			bot.log("*** Could not start the ident server on port 113.");
 			return;
 		}
 
-		_bot.log("*** Ident server running on port 113 for the next 60 seconds...");
+		bot.log("*** Ident server running on port 113 for the next 60 seconds...");
 		this.setName(this.getClass() + "-Thread");
 		this.start();
 	}
@@ -91,7 +91,7 @@ public class IdentServer extends Thread {
 	 */
 	public void run() {
 		try {
-			Socket socket = _ss.accept();
+			Socket socket = ss.accept();
 			socket.setSoTimeout(60000);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -99,11 +99,11 @@ public class IdentServer extends Thread {
 
 			String line = reader.readLine();
 			if (line != null) {
-				_bot.log("*** Ident request received: " + line);
-				line = line + " : USERID : UNIX : " + _login;
+				bot.log("*** Ident request received: " + line);
+				line = line + " : USERID : UNIX : " + login;
 				writer.write(line + "\r\n");
 				writer.flush();
-				_bot.log("*** Ident reply sent: " + line);
+				bot.log("*** Ident reply sent: " + line);
 				writer.close();
 			}
 		} catch (Exception e) {
@@ -111,11 +111,11 @@ public class IdentServer extends Thread {
 		}
 
 		try {
-			_ss.close();
+			ss.close();
 		} catch (Exception e) {
 			// Doesn't really matter...
 		}
 
-		_bot.log("*** The Ident server has been shut down.");
+		bot.log("*** The Ident server has been shut down.");
 	}
 }
