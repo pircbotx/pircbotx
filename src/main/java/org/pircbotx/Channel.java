@@ -28,7 +28,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- *
+ * Represents a Channel that we're joined to. Contains all the available 
+ * information about the channel, as well as delegate methods for useful functions
+ * like {@link #op(org.pircbotx.User) giving op} or 
+ * {@link #voice(org.pircbotx.User) voice} status.
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
