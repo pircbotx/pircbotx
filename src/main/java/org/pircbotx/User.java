@@ -26,7 +26,7 @@ import lombok.Setter;
 /**
  * Represents a User on the server. Contains all the available information about
  * the user as well as some useful delegate methods like 
- * {@link #op(org.pircbotx.Channel) giving op} or {@link #voice(chan) voice}
+ * {@link #op(org.pircbotx.Channel) giving op} or {@link #voice(org.pircbotx.Channel) voice}
  * status.
  * @since   1.0.0
  * @author  Origionally by:
@@ -113,10 +113,10 @@ public class User implements Comparable<User> {
 		return chan.isOp(this);
 	}
 
-/*
+	/**
 	 * Attempts to give Operator status to this user in the given channel. Simply
 	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to Op
+	 * @param chan The Channel to perform the Op in
 	 */
 	public void op(Channel chan) {
 		bot.op(chan, this);
@@ -125,7 +125,7 @@ public class User implements Comparable<User> {
 	/**
 	 * Attempts to remove Operator status from this user in the given channel. 
 	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to Voice
+	 * @param chan The Channel to perform the DeOp in
 	 */
 	public void deOp(Channel chan) {
 		bot.deOp(chan, this);

@@ -81,7 +81,7 @@ public class Channel {
 
 	/**
 	 * Get all users in this channel
-	 * @return 
+	 * @return Set of users in this channel
 	 */
 	public Set<User> getUsers() {
 		return bot.getUsers(name);
