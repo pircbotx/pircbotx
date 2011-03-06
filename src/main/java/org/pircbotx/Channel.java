@@ -57,6 +57,11 @@ public class Channel {
 	@Getter(AccessLevel.NONE)
 	private final Set<User> voice = Collections.synchronizedSet(new HashSet<User>());
 
+	public Channel(PircBotX bot, String name) {
+		this.bot = bot;
+		this.name = name;
+	}
+	
 	public void parseMode(String rawMode) {
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
 		boolean adding = true;
