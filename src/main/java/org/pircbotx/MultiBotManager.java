@@ -39,7 +39,10 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
- *
+ * Manager that provides an easy way to create bots on many different servers
+ * with the same or close to the same information. All important setup methods
+ * have been mirrored here. For documentation, see their equivalent PircBotX
+ * methods.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
