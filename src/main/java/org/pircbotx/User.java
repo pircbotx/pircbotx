@@ -57,6 +57,11 @@ public class User implements Comparable<User> {
 	private int hops = 0;
 	private final PircBotX bot;
 
+	public User(PircBotX bot, String nick) {
+		this.bot = bot;
+		this.nick = nick;
+	}
+	
 	public void parseStatus(String channel, String prefix) {
 		if(prefix.contains("@"))
 			bot.getChannel(channel).addOp(this);
