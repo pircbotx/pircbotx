@@ -21,7 +21,7 @@ package org.pircbotx;
 import lombok.Data;
 
 /**
- *
+ * A channel entry returned from /LIST command
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
