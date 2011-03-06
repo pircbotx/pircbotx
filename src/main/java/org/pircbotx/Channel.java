@@ -45,14 +45,12 @@ public class Channel {
 	private String topicSetter = "";
 	private final PircBotX bot;
 	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
+	 * Set of opped users in this channel
 	 */
 	@Getter(AccessLevel.NONE)
 	private final Set<User> op = Collections.synchronizedSet(new HashSet<User>());
 	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
+	 * Set of voiced users in this channel
 	 */
 	@Getter(AccessLevel.NONE)
 	private final Set<User> voice = Collections.synchronizedSet(new HashSet<User>());
