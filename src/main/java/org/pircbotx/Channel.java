@@ -42,6 +42,8 @@ public class Channel {
 	@Setter(AccessLevel.PACKAGE)
 	private long topicTimestamp;
 	@Setter(AccessLevel.PACKAGE)
+	private long createTimestamp;
+	@Setter(AccessLevel.PACKAGE)
 	private String topicSetter = "";
 	private final PircBotX bot;
 	/**
