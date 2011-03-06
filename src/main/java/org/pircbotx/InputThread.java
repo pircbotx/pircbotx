@@ -40,11 +40,6 @@ public class InputThread implements Runnable {
 	private BufferedReader _breader = null;
 	private boolean _isConnected = true;
 	public static final int MAX_LINE_LENGTH = 512;
-	public static ThreadFactory threadFactory = new ThreadFactory() {
-		public Thread newThread(Runnable r, PircBotX bot) {
-			return new Thread(r, bot.getServer() + "-" + bot.getNick() + "-InputThread");
-		}
-	};
 
 	/**
 	 * The InputThread reads lines from the IRC server and allows the
