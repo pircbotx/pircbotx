@@ -35,6 +35,15 @@ import java.net.Socket;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccChat {
+	private PircBotX _bot;
+	private User _source;
+	private BufferedReader _reader;
+	private BufferedWriter _writer;
+	private Socket _socket;
+	private boolean _acceptable;
+	private long _address = 0;
+	private int _port = 0;
+
 	/**
 	 * This constructor is used when we are accepting a DCC CHAT request
 	 * from somebody. It attempts to connect to the client that issued the
@@ -175,12 +184,4 @@ public class DccChat {
 	public long getNumericalAddress() {
 		return _address;
 	}
-	private PircBotX _bot;
-	private User _source;
-	private BufferedReader _reader;
-	private BufferedWriter _writer;
-	private Socket _socket;
-	private boolean _acceptable;
-	private long _address = 0;
-	private int _port = 0;
 }
