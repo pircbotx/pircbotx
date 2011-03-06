@@ -2212,6 +2212,22 @@ public class PircBotX {
 	public boolean isAutoNickChange() {
 		return _autoNickChange;
 	}
+	
+	/**
+	 * Reset bot, clearing all internal fields
+	 */
+	void reset() {
+		//Clear the user-channel map
+		_userChanInfo.clear();
+		//Clear any existing channel list
+		channelListBuilder.finish();
+		//Clear any information that might be provided in another connect() method
+		_server = null;
+		_port = -1;
+		_password = null;
+		_inetAddress = null;
+		_socket = null;
+	}
 
 	/**
 	 * Using the specified eventClass, block until the Event occurs. Eg wait for 
