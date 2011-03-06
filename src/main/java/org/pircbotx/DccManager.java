@@ -33,6 +33,9 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccManager {
+	private PircBotX _bot;
+	private Vector _awaitingResume = new Vector();
+
 	/**
 	 * Constructs a DccManager to look after all DCC SEND and CHAT events.
 	 *
@@ -138,6 +141,4 @@ public class DccManager {
 	void removeAwaitingResume(DccFileTransfer transfer) {
 		_awaitingResume.removeElement(transfer);
 	}
-	private PircBotX _bot;
-	private Vector _awaitingResume = new Vector();
 }

@@ -43,6 +43,21 @@ public class DccFileTransfer {
 	 * The default buffer size to use when sending and receiving files.
 	 */
 	public static final int BUFFER_SIZE = 1024;
+	private PircBotX _bot;
+	private DccManager _manager;
+	private User _user;
+	private String _type;
+	private long _address;
+	private int _port;
+	private long _size;
+	private boolean _received;
+	private Socket _socket = null;
+	private long _progress = 0;
+	private File _file = null;
+	private int _timeout = 0;
+	private boolean _incoming;
+	private long _packetDelay = 0;
+	private long _startTime = 0;
 
 	/**
 	 * Constructor used for receiving files.
@@ -423,19 +438,4 @@ public class DccFileTransfer {
 	public long getNumericalAddress() {
 		return _address;
 	}
-	private PircBotX _bot;
-	private DccManager _manager;
-	private User _user;
-	private String _type;
-	private long _address;
-	private int _port;
-	private long _size;
-	private boolean _received;
-	private Socket _socket = null;
-	private long _progress = 0;
-	private File _file = null;
-	private int _timeout = 0;
-	private boolean _incoming;
-	private long _packetDelay = 0;
-	private long _startTime = 0;
 }
