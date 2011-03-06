@@ -51,6 +51,9 @@ import java.net.Socket;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class IdentServer extends Thread {
+	private PircBotX _bot;
+	private String _login;
+	private ServerSocket _ss = null;
 	/**
 	 * Constructs and starts an instance of an IdentServer that will
 	 * respond to a client with the provided login.  Rather than calling
@@ -115,7 +118,4 @@ public class IdentServer extends Thread {
 
 		_bot.log("*** The Ident server has been shut down.");
 	}
-	private PircBotX _bot;
-	private String _login;
-	private ServerSocket _ss = null;
 }
