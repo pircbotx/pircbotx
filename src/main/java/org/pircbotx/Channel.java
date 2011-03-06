@@ -116,7 +116,7 @@ public class Channel {
 	/**
 	 * Attempts to remove Operator status from the given user in this channel. 
 	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to Voice
+	 * @param user The user to attempt to remove Operator status from
 	 */
 	public void deOp(User user) {
 		bot.deOp(this, user);
@@ -141,7 +141,7 @@ public class Channel {
 	/**
 	 * Attempts to give Voice status to the given user in this channel. Simply 
 	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to Op
+	 * @param user The user to attempt to voice
 	 */
 	public void voice(User user) {
 		bot.voice(this, user);
@@ -158,7 +158,7 @@ public class Channel {
 	/**
 	 * Attempts to remove Voice status from the given user in this channel. Simply
 	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to Voice
+	 * @param user The user to attempt to remove Voice from
 	 */
 	public void deVoice(User user) {
 		bot.deVoice(this, user);
