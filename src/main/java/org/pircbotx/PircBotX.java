@@ -2172,7 +2172,7 @@ public class PircBotX {
 	 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
 	 * @param listenerManager The listener manager
 	 */
-	public void setListenerManager(ListenerManager listenerManager) {
+	public void setListenerManager(ListenerManager<?> listenerManager) {
 		this.listenerManager = listenerManager;
 		//Check if corehooks already exist
 		for (Listener curListener : listenerManager.getListeners())
