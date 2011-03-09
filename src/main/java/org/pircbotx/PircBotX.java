@@ -180,7 +180,7 @@ public class PircBotX {
 	 * lines are being printed
 	 */
 	private final Object logLock = new Object();
-	protected ListenerManager listenerManager = new ThreadedListenerManager();
+	protected ListenerManager<? extends PircBotX> listenerManager = new ThreadedListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -2172,7 +2172,7 @@ public class PircBotX {
 	 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
 	 * @param listenerManager The listener manager
 	 */
-	public void setListenerManager(ListenerManager<?> listenerManager) {
+	public void setListenerManager(ListenerManager<? extends PircBotX> listenerManager) {
 		this.listenerManager = listenerManager;
 		//Check if corehooks already exist
 		for (Listener curListener : listenerManager.getListeners())
