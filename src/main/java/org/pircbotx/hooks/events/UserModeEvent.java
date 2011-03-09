@@ -51,11 +51,5 @@ public class UserModeEvent extends Event {
 		this.target = target;
 		this.source = source;
 		this.mode = mode;
-		ActionListener listener = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-			
-		};
 	}
 }
