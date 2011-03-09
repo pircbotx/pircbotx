@@ -42,7 +42,7 @@ import org.pircbotx.PircBotX;
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class GenericListenerManager implements ListenerManager {
+public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected Set<Listener> listeners = new HashSet<Listener>();
 
 	public boolean addListener(Listener listener) {
@@ -57,7 +57,7 @@ public class GenericListenerManager implements ListenerManager {
 		return Collections.unmodifiableSet(listeners);
 	}
 
-	public void dispatchEvent(Event event) {
+	public void dispatchEvent(Event<E> event) {
 		try {
 			for (Listener curListener : listeners)
 				curListener.onEvent(event);

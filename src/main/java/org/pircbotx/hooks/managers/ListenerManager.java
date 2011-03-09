@@ -39,7 +39,7 @@ import org.pircbotx.hooks.Listener;
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface ListenerManager {
+public interface ListenerManager<E extends PircBotX> {
 	/**
 	 * Sends event to all appropriate listeners.
 	 * <p>
@@ -47,7 +47,7 @@ public interface ListenerManager {
 	 * on exception handling and performance.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(Event event);
+	public void dispatchEvent(Event<E> event);
 
 	/**
 	 * Adds an listener to the list of listeners for an event.

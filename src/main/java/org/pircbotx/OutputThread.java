@@ -33,15 +33,10 @@ import java.util.concurrent.LinkedBlockingQueue;
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
-public class OutputThread implements Runnable {
-	protected PircBotX _bot = null;
-	protected LinkedBlockingQueue<String> _queue = new LinkedBlockingQueue<String>();
-	protected final BufferedWriter _bwriter;
-	public static ThreadFactory threadFactory = new ThreadFactory() {
-		public Thread newThread(Runnable r, PircBotX bot) {
-			return new Thread(r, bot.getServer() + "-" + bot.getNick() + "-OutputThread");
-		}
-	};
+public class OutputThread extends Thread {
+	protected PircBotX bot = null;
+	protected LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<String>();
+	protected final BufferedWriter bwriter;
 
 	/**
 	 * Constructs an OutputThread for the underlying PircBotX.  All messages
@@ -52,8 +47,8 @@ public class OutputThread implements Runnable {
 	 * @param bot The underlying PircBotX instance.
 	 */
 	public OutputThread(PircBotX bot, BufferedWriter bwriter) {
-		_bot = bot;
-		_bwriter = bwriter;
+		this.bot = bot;
+		this.bwriter = bwriter;
 	}
 
 	/**
@@ -63,13 +58,13 @@ public class OutputThread implements Runnable {
 	 * @param line The line to be written. "\r\n" is appended to the end.
 	 */
 	public void sendRawLineNow(String line) {
-		if (line.length() > _bot.getMaxLineLength() - 2)
-			line = line.substring(0, _bot.getMaxLineLength() - 2);
-		synchronized (_bwriter) {
+		if (line.length() > bot.getMaxLineLength() - 2)
+			line = line.substring(0, bot.getMaxLineLength() - 2);
+		synchronized (bwriter) {
 			try {
-				_bwriter.write(line + "\r\n");
-				_bwriter.flush();
-				_bot.log(">>>" + line);
+				bwriter.write(line + "\r\n");
+				bwriter.flush();
+				bot.log(">>>" + line);
 			} catch (Exception e) {
 				// Silent response - just lose the line.
 			}
@@ -77,11 +72,11 @@ public class OutputThread implements Runnable {
 	}
 
 	public void send(String message) {
-		_queue.add(message);
+		queue.add(message);
 	}
 
 	public int getQueueSize() {
-		return _queue.size();
+		return queue.size();
 	}
 
 	/**
@@ -93,11 +88,11 @@ public class OutputThread implements Runnable {
 		try {
 			while (true) {
 				//Small delay to prevent spamming of the channel
-				Thread.sleep(_bot.getMessageDelay());
+				Thread.sleep(bot.getMessageDelay());
 
-				String line = _queue.take();
+				String line = queue.take();
 				if (line != null)
-					_bot.sendRawLine(line);
+					bot.sendRawLine(line);
 			}
 		} catch (InterruptedException e) {
 			// Just let the method return naturally...

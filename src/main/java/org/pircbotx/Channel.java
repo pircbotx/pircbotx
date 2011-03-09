@@ -21,49 +21,50 @@ package org.pircbotx;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- *
+ * Represents a Channel that we're joined to. Contains all the available 
+ * information about the channel, as well as delegate methods for useful functions
+ * like {@link #op(org.pircbotx.User) giving op} or 
+ * {@link #voice(org.pircbotx.User) voice} status.
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
+@Data
+@ToString(exclude = {"op", "voice"})
 public class Channel {
-	private final String _name;
-	private String _mode = "";
-	private String _topic = "";
-	private long _timestamp;
-	private long _topicTimestamp;
-	private String _topicSetter = "";
-	private final PircBotX _bot;
+	private final String name;
+	@Setter(AccessLevel.PACKAGE)
+	private String mode = "";
+	@Setter(AccessLevel.PACKAGE)
+	private String topic = "";
+	@Setter(AccessLevel.PACKAGE)
+	private long topicTimestamp;
+	@Setter(AccessLevel.PACKAGE)
+	private long createTimestamp;
+	@Setter(AccessLevel.PACKAGE)
+	private String topicSetter = "";
+	private final PircBotX bot;
 	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
+	 * Set of opped users in this channel
 	 */
-	private Set<User> _op = Collections.synchronizedSet(new HashSet<User>());
+	@Getter(AccessLevel.NONE)
+	private final Set<User> op = Collections.synchronizedSet(new HashSet<User>());
 	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
+	 * Set of voiced users in this channel
 	 */
-	private Set<User> _voice = Collections.synchronizedSet(new HashSet<User>());
+	@Getter(AccessLevel.NONE)
+	private final Set<User> voice = Collections.synchronizedSet(new HashSet<User>());
 
 	public Channel(PircBotX bot, String name) {
-		_name = name;
-		_bot = bot;
+		this.bot = bot;
+		this.name = name;
 	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return _name;
-	}
-
-	/**
-	 * @return the mode
-	 */
-	public String getMode() {
-		return _mode;
-	}
-
+	
 	public void parseMode(String rawMode) {
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
 		boolean adding = true;
@@ -73,123 +74,118 @@ public class Channel {
 			else if (curChar == '+')
 				adding = true;
 			else if (adding)
-				_mode = _mode + curChar;
+				mode = mode + curChar;
 			else
-				_mode = _mode.replace(Character.toString(curChar), "");
+				mode = mode.replace(Character.toString(curChar), "");
 	}
 
+	/**
+	 * Get all users in this channel
+	 * @return Set of users in this channel
+	 */
 	public Set<User> getUsers() {
-		return _bot.getUsers(_name);
+		return bot.getUsers(name);
 	}
 
 	/**
-	 * @return the topic
-	 */
-	public String getTopic() {
-		return _topic;
-	}
-
-	/**
-	 * @param topic the topic to set
-	 */
-	public void setTopic(String topic) {
-		this._topic = topic;
-	}
-
-	/**
-	 * @return the timestamp
-	 */
-	public long getTimestamp() {
-		return _timestamp;
-	}
-
-	/**
-	 * @param timestamp the timestamp to set
-	 */
-	public void setTimestamp(long timestamp) {
-		this._timestamp = timestamp;
-	}
-
-	/**
-	 * @return the topicTimestamp
-	 */
-	public long getTopicTimestamp() {
-		return _topicTimestamp;
-	}
-
-	/**
-	 * @param topicTimestamp the topicTimestamp to set
-	 */
-	public void setTopicTimestamp(long topicTimestamp) {
-		this._topicTimestamp = topicTimestamp;
-	}
-
-	@Override
-	public String toString() {
-		return "Name{" + _name + "} "
-				+ "Mode{" + _mode + "} "
-				+ "Topic{" + _topic + "} "
-				+ "Timestamp{" + _timestamp + "} "
-				+ "Topic Timestamp{" + _topicTimestamp + "} ";
-	}
-
-	/**
-	 * @return the _topicSetter
+	 * Get the user that set the topic. As the user may or may not be in the
+	 * channel return as a string
+	 * @return The user that set the topic in String format
 	 */
 	public String getTopicSetter() {
-		return _topicSetter;
+		return topicSetter;
 	}
 
 	/**
-	 * @param topicSetter the _topicSetter to set
-	 */
-	public void setTopicSetter(String topicSetter) {
-		this._topicSetter = topicSetter;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @return the _op
+	 * Checks if the given use is an Op or not in this channel
+	 * @return True if the user is an op, false if not
 	 */
 	public boolean isOp(User user) {
-		return _op.contains(user);
+		return op.contains(user);
 	}
 
-	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @param op the _op to set
+	/*
+	 * Attempts to give Operator status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to Op
 	 */
-	public void setOp(User user, boolean op) {
-		if (op)
-			_op.add(user);
-		else
-			_op.remove(user);
+	public void op(User user) {
+		bot.op(this, user);
 	}
 
 	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @return the _voice
+	 * Adds user to list of operator users
+	 * @param user 
+	 */
+	void addOp(User user) {
+		op.add(user);
+	}
+
+	/**
+	 * Attempts to remove Operator status from the given user in this channel. 
+	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to remove Operator status from
+	 */
+	public void deOp(User user) {
+		bot.deOp(this, user);
+	}
+
+	/**
+	 * Removes the user from the operator list
+	 * @param user 
+	 */
+	void removeOp(User user) {
+		op.remove(user);
+	}
+
+	/**
+	 * Checks if the given use has Voice or not in this channel
+	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
-		return _voice.contains(user);
+		return voice.contains(user);
 	}
 
 	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @param voice the _voice to set
+	 * Attempts to give Voice status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to voice
 	 */
-	public void setVoice(User user, boolean voice) {
-		if (voice)
-			_voice.add(user);
-		else
-			_voice.remove(user);
+	public void voice(User user) {
+		bot.voice(this, user);
 	}
 
-	public boolean removeUser(User user) {
-		return _op.remove(user) || _voice.remove(user);
+	/*
+	 * Adds user to list of voiced users in this channel
+	 * @param user
+	 */
+	void addVoice(User user) {
+		voice.add(user);
+	}
+
+	/**
+	 * Attempts to remove Voice status from the given user in this channel. Simply
+	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to remove Voice from
+	 */
+	public void deVoice(User user) {
+		bot.deVoice(this, user);
+	}
+
+	/**
+	 * Removes user from list of voiced users in this channel
+	 * @param user 
+	 */
+	void removeVoice(User user) {
+		voice.remove(user);
+	}
+
+	/**
+	 * Removes user from op and voice lists
+	 * @param user
+	 * @return True if removal was sucess
+	 */
+	boolean removeUser(User user) {
+		return op.remove(user) && voice.remove(user);
 	}
 }

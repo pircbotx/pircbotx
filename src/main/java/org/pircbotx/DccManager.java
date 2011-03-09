@@ -33,13 +33,16 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccManager {
+	private PircBotX bot;
+	private Vector awaitingResume = new Vector();
+
 	/**
 	 * Constructs a DccManager to look after all DCC SEND and CHAT events.
 	 *
 	 * @param bot The PircBotX whose DCC events this class will handle.
 	 */
 	DccManager(PircBotX bot) {
-		_bot = bot;
+		this.bot = bot;
 	}
 
 	/**
@@ -63,18 +66,18 @@ public class DccManager {
 				// Stick with the old value.
 			}
 
-			_bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(_bot, new DccFileTransfer(_bot, this, source, type, filename, address, port, size)));
+			bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, new DccFileTransfer(bot, this, source, type, filename, address, port, size)));
 
 		} else if (type.equals("RESUME")) {
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long progress = Long.parseLong(tokenizer.nextToken());
 
 			DccFileTransfer transfer = null;
-			synchronized (_awaitingResume) {
-				for (int i = 0; i < _awaitingResume.size(); i++) {
-					transfer = (DccFileTransfer) _awaitingResume.elementAt(i);
+			synchronized (awaitingResume) {
+				for (int i = 0; i < awaitingResume.size(); i++) {
+					transfer = (DccFileTransfer) awaitingResume.elementAt(i);
 					if (transfer.getSource().equals(source) && transfer.getPort() == port) {
-						_awaitingResume.removeElementAt(i);
+						awaitingResume.removeElementAt(i);
 						break;
 					}
 				}
@@ -82,7 +85,7 @@ public class DccManager {
 
 			if (transfer != null) {
 				transfer.setProgress(progress);
-				_bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
+				bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
 			}
 
 		} else if (type.equals("ACCEPT")) {
@@ -90,11 +93,11 @@ public class DccManager {
 			long progress = Long.parseLong(tokenizer.nextToken());
 
 			DccFileTransfer transfer = null;
-			synchronized (_awaitingResume) {
-				for (int i = 0; i < _awaitingResume.size(); i++) {
-					transfer = (DccFileTransfer) _awaitingResume.elementAt(i);
+			synchronized (awaitingResume) {
+				for (int i = 0; i < awaitingResume.size(); i++) {
+					transfer = (DccFileTransfer) awaitingResume.elementAt(i);
 					if (transfer.getSource().equals(source) && transfer.getPort() == port) {
-						_awaitingResume.removeElementAt(i);
+						awaitingResume.removeElementAt(i);
 						break;
 					}
 				}
@@ -107,11 +110,11 @@ public class DccManager {
 			long address = Long.parseLong(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 
-			final DccChat chat = new DccChat(_bot, source, address, port);
+			final DccChat chat = new DccChat(bot, source, address, port);
 
 			new Thread() {
 				public void run() {
-					_bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(_bot, chat));
+					bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, chat));
 				}
 			}.start();
 		} else
@@ -127,8 +130,8 @@ public class DccManager {
 	 * @param transfer the DccFileTransfer that may be resumed.
 	 */
 	void addAwaitingResume(DccFileTransfer transfer) {
-		synchronized (_awaitingResume) {
-			_awaitingResume.addElement(transfer);
+		synchronized (awaitingResume) {
+			awaitingResume.addElement(transfer);
 		}
 	}
 
@@ -136,8 +139,6 @@ public class DccManager {
 	 * Remove this transfer from the list of those awaiting resuming.
 	 */
 	void removeAwaitingResume(DccFileTransfer transfer) {
-		_awaitingResume.removeElement(transfer);
+		awaitingResume.removeElement(transfer);
 	}
-	private PircBotX _bot;
-	private Vector _awaitingResume = new Vector();
 }
