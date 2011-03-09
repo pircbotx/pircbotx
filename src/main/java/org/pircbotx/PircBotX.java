@@ -135,8 +135,6 @@ public class PircBotX {
 	// Connection stuff.
 	protected InputThread _inputThread = null;
 	protected OutputThread _outputThread = null;
-	protected Thread _actualInputThread;
-	protected Thread _actualOutputThread;
 	private String _charset = null;
 	private InetAddress _inetAddress = null;
 	// Details about the last server that we connected to.
@@ -233,7 +231,6 @@ public class PircBotX {
 	 *
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
-	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
@@ -251,7 +248,6 @@ public class PircBotX {
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
 	 * @param password The password to use to join the server.
-	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
@@ -387,10 +383,8 @@ public class PircBotX {
 		_socket.setSoTimeout(getSocketTimeout());
 
 		//Start input and output threads to start accepting lines
-		_actualInputThread = InputThread.threadFactory.newThread(_inputThread, this);
-		_actualOutputThread = OutputThread.threadFactory.newThread(_outputThread, this);
-		_actualInputThread.start();
-		_actualOutputThread.start();
+		_inputThread.start();
+		_inputThread.start();
 
 		getListenerManager().dispatchEvent(new ConnectEvent(this));
 	}
@@ -834,6 +828,10 @@ public class PircBotX {
 	public void op(String channel, String nick) {
 		setMode(channel, "+o " + nick);
 	}
+	
+	public void op(Channel channel, User user) {
+		op(channel.getName(), user.getNick());
+	}
 
 	/**
 	 * Removes operator privilidges from a user on a channel.
@@ -845,6 +843,10 @@ public class PircBotX {
 	 */
 	public void deOp(String channel, String nick) {
 		setMode(channel, "-o " + nick);
+	}
+	
+	public void deOp(Channel channel, User user) {
+		deOp(channel.getName(), user.getNick());
 	}
 
 	/**
@@ -858,6 +860,10 @@ public class PircBotX {
 	public void voice(String channel, String nick) {
 		setMode(channel, "+v " + nick);
 	}
+	
+	public void voice(Channel channel, User user) {
+		voice(channel.getName(), user.getNick());
+	}
 
 	/**
 	 * Removes voice privilidges from a user on a channel.
@@ -869,6 +875,10 @@ public class PircBotX {
 	 */
 	public void deVoice(String channel, String nick) {
 		setMode(channel, "-v " + nick);
+	}
+	
+	public void deVoice(Channel channel, User user) {
+		deVoice(channel.getName(), user.getNick());
 	}
 
 	/**
@@ -1354,13 +1364,13 @@ public class PircBotX {
 			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
 			parsed = response.split(" ", 4);
 			Channel chan = getChannel(parsed[2]);
-			//TODO: If were part of the channel
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
-				curUser.setOp(chan, nick.contains("@"));
-				curUser.setVoice(chan, nick.contains("+"));
+				if(nick.contains("@"))
+					chan.addOp(curUser);
+				if(nick.contains("+"))
+					chan.addVoice(curUser);
 			}
-
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
 			// This is the end of a NAMES list, so we know that we've got
@@ -1384,7 +1394,7 @@ public class PircBotX {
 				curUser.setNick(parsed[5]);
 				curUser.parseStatus(chan.getName(), parsed[6]);
 				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
-				curUser.setRealname(parsed[8]);
+				curUser.setRealName(parsed[8]);
 			}
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
@@ -1413,7 +1423,7 @@ public class PircBotX {
 			}
 
 			//Set in channel
-			getChannel(channel).setTimestamp(createDate);
+			getChannel(channel).setCreateTimestamp(createDate);
 		} else if (code == RPL_MOTDSTART)
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
@@ -1472,20 +1482,20 @@ public class PircBotX {
 				else if (atPos == 'o') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						source.setOp(channel, true);
+						channel.addOp(source);
 						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint));
 					} else {
-						source.setOp(channel, false);
+						channel.removeOp(source);
 						getListenerManager().dispatchEvent(new DeopEvent(this, channel, source, reciepeint));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						source.setVoice(channel, true);
+						channel.addVoice(source);
 						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint));
 					} else {
-						source.setVoice(channel, false);
+						channel.removeVoice(source);
 						getListenerManager().dispatchEvent(new DeVoiceEvent(this, channel, source, reciepeint));
 					}
 					p++;
@@ -1996,8 +2006,8 @@ public class PircBotX {
 			_socket.close();
 		} catch (Exception e) {
 			//Something went wrong, interrupt to make sure they are closed
-			_actualOutputThread.interrupt();
-			_actualInputThread.interrupt();
+			_outputThread.interrupt();
+			_inputThread.interrupt();
 		}
 	}
 
@@ -2199,6 +2209,22 @@ public class PircBotX {
 	 */
 	public boolean isAutoNickChange() {
 		return _autoNickChange;
+	}
+	
+	/**
+	 * Reset bot, clearing all internal fields
+	 */
+	void reset() {
+		//Clear the user-channel map
+		_userChanInfo.clear();
+		//Clear any existing channel list
+		channelListBuilder.finish();
+		//Clear any information that might be provided in another connect() method
+		_server = null;
+		_port = -1;
+		_password = null;
+		_inetAddress = null;
+		_socket = null;
 	}
 
 	/**

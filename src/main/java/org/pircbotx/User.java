@@ -19,119 +19,63 @@
 package org.pircbotx;
 
 import java.util.Collection;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 
 /**
- * This class is used to represent a user on an IRC server.
- * Instances of this class are returned by the getUsers method
- * in the PircBot class.
-
- *
+ * Represents a User on the server. Contains all the available information about
+ * the user as well as some useful delegate methods like 
+ * {@link #op(org.pircbotx.Channel) giving op} or {@link #voice(org.pircbotx.Channel) voice}
+ * status.
  * @since   1.0.0
  * @author  Origionally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
+@Data
 public class User implements Comparable<User> {
-	/**
-	 * The user represented by this object's nickname on the server.
-	 */
-	private String _nick;
-	/**
-	 * The real name of this user represented by this object on the server
-	 */
-	private String _realname = "";
-	/**
-	 * The login of the user represented by this object on the server
-	 */
-	private String _login = "";
-	/**
-	 * The hostmask of the user represented by this object on this server
-	 */
-	private String _hostmask = "";
-	/**
-	 * Weather or not the user represented by this object is away in the channel
-	 * this object was fetched from
-	 */
-	private boolean _away = false;
-	/**
-	 * Weather or not the user represented by this object is an IRCop on the server
-	 */
-	private boolean _ircop = false;
-	/**
-	 * The server that the user represented by this object is joined to
-	 */
-	private String _server = "";
-	/**
-	 * Weather or not the user represented by this object is identified. Note that
-	 * on some server's this is not 100% reliable
-	 */
-	private boolean _identified = true;
-	/**
-	 * The number of hops it takes to the user represented by this object
-	 */
-	private int _hops = 0;
-	private final PircBotX _bot;
+	@Setter(AccessLevel.PACKAGE)
+	private String nick;
+	@Setter(AccessLevel.PACKAGE)
+	private String realName = "";
+	@Setter(AccessLevel.PACKAGE)
+	private String login = "";
+	@Setter(AccessLevel.PACKAGE)
+	private String hostmask = "";
+	@Setter(AccessLevel.PACKAGE)
+	private boolean away = false;
+	@Setter(AccessLevel.PACKAGE)
+	private boolean ircop = false;
+	@Setter(AccessLevel.PACKAGE)
+	private String server = "";
+	@Setter(AccessLevel.PACKAGE)
+	private boolean identified = true;
+	@Setter(AccessLevel.PACKAGE)
+	private int hops = 0;
+	private final PircBotX bot;
 
 	public User(PircBotX bot, String nick) {
-		_nick = nick;
-		_bot = bot;
+		this.bot = bot;
+		this.nick = nick;
 	}
-
+	
 	public void parseStatus(String channel, String prefix) {
-		setOp(_bot.getChannel(channel), prefix.contains("@"));
-		setVoice(_bot.getChannel(channel), prefix.contains("+"));
+		if(prefix.contains("@"))
+			bot.getChannel(channel).addOp(this);
+		if(prefix.contains("+"))
+			bot.getChannel(channel).addVoice(this);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
 
+	/**
+	 * Get all channels this user is a part of
+	 * @return All channels this user is a part of
+	 */
 	public Collection<Channel> getChannels() {
-		return null; //TODO
-	}
-
-	/**
-	 *
-	 * @return The user's prefix and nick.
-	 */
-	@Override
-	public String toString() {
-		return getNick();
-	}
-
-	/**
-	 * Returns true if the nick represented by this User object is the same
-	 * as the argument. A case insensitive comparison is made.
-	 *
-	 * @return true if the nicks are identical (case insensitive).
-	 */
-	public boolean equals(String nick) {
-		return nick.equalsIgnoreCase(nick);
-	}
-
-	/**
-	 * Returns true if the nick represented by this User object is the same
-	 * as the nick of the User object given as an argument.
-	 * A case insensitive comparison is made.
-	 *
-	 * @return true if o is a User object with a matching lowercase nick.
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof User) {
-			User other = (User) o;
-			return other.getNick().equalsIgnoreCase(getNick());
-		}
-		return false;
-	}
-
-	/**
-	 * Returns the hash code of this User object.
-	 *
-	 * @return the hash code of the User object.
-	 */
-	@Override
-	public int hashCode() {
-		return getNick().toLowerCase().hashCode();
+		return bot.getChannels(this);
 	}
 
 	/**
@@ -146,186 +90,70 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * The user represented by this object's nickname on the server.
-	 * @return the _nick
-	 */
-	public String getNick() {
-		return _nick;
-	}
-
-	/**
-	 * The user represented by this object's nickname on the server.
-	 * @param nick the _nick to set
-	 */
-	void setNick(String nick) {
-		_nick = nick;
-	}
-
-	/**
-	 * The real name of this user represented by this object on the server
-	 * @return the _realname
-	 */
-	public String getRealname() {
-		return _realname;
-	}
-
-	/**
-	 * The real name of this user represented by this object on the server
-	 * @param realname the _realname to set
-	 */
-	void setRealname(String realname) {
-		_realname = realname;
-	}
-
-	/**
-	 * The hostmask of the user represented by this object on this server
-	 * @return the _hostmask
-	 */
-	public String getHostmask() {
-		return _hostmask;
-	}
-
-	/**
-	 * The hostmask of the user represented by this object on this server
-	 * @param hostmask the _hostmask to set
-	 */
-	void setHostmask(String hostmask) {
-		_hostmask = hostmask;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is away in the channel
-	 * this object was fetched from
-	 * @return the _away
-	 */
-	public boolean isAway() {
-		return _away;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is away in the channel
-	 * this object was fetched from
-	 * @param away the _away to set
-	 */
-	public void setAway(boolean away) {
-		_away = away;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is an IRCop on the server
-	 * @return the _ircop
-	 */
-	public boolean isIrcop() {
-		return _ircop;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is an IRCop on the server
-	 * @param ircop the _ircop to set
-	 */
-	public void setIrcop(boolean ircop) {
-		_ircop = ircop;
-	}
-
-	/**
-	 * The server that the user represented by this object is joined to
-	 * @return the _server
+	 * The exact server that this user is joined to
+	 * @return The address of the server
 	 */
 	public String getServer() {
-		return _server;
+		return server;
 	}
 
 	/**
-	 * The server that the user represented by this object is joined to
-	 * @param server the _server to set
-	 */
-	void setServer(String server) {
-		_server = server;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is identified. Note that
-	 * on some server's this is not 100% reliable
-	 * @return the _identified
-	 */
-	public boolean isIdentified() {
-		return _identified;
-	}
-
-	/**
-	 * Weather or not the user represented by this object is identified. Note that
-	 * on some server's this is not 100% reliable
-	 * @param identified the _identified to set
-	 */
-	void setIdentified(boolean identified) {
-		_identified = identified;
-	}
-
-	/**
-	 * The number of hops it takes to the user represented by this object
+	 * The number of hops it takes to this user
 	 * @return the hops
 	 */
 	public int getHops() {
-		return _hops;
+		return hops;
 	}
 
 	/**
-	 * The number of hops it takes to the user represented by this object
-	 * @param hops the hops to set
+	 * Checks if the user is an operator in the specified channel
+	 * @return True if they are an op, false if not
 	 */
-	public void setHops(int hops) {
-		_hops = hops;
+	public boolean isOp(Channel chan) {
+		return chan.isOp(this);
 	}
 
 	/**
-	 * The login of the user represented by this object on the server
-	 * @return the _login
+	 * Attempts to give Operator status to this user in the given channel. Simply
+	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param chan The Channel to perform the Op in
 	 */
-	public String getLogin() {
-		return _login;
+	public void op(Channel chan) {
+		bot.op(chan, this);
 	}
 
 	/**
-	 * The login of the user represented by this object on the server
-	 * @param login the _login to set
+	 * Attempts to remove Operator status from this user in the given channel. 
+	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param chan The Channel to perform the DeOp in
 	 */
-	void setLogin(String login) {
-		_login = login;
+	public void deOp(Channel chan) {
+		bot.deOp(chan, this);
+	}
+	
+	/**
+	 * Checks if the user has voice status in the given channel
+	 * @return True if the user has voice, false if not
+	 */
+	public boolean hasVoice(Channel chan) {
+		return chan.hasVoice(this);
 	}
 
 	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @return the _op
+	 * Attempts to give Voice status to this user in the given channel. Simply 
+	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param chan The channel to give voice in
 	 */
-	public boolean isOp(String chan) {
-		return _bot.getChannel(chan).isOp(this);
+	public void voice(Channel chan) {
+		bot.voice(chan, this);
 	}
 
 	/**
-	 * Weather or not the user represented by this object is an op in the channel
-	 * this object was fetched from
-	 * @param op the _op to set
+	 * Attempts to remove Voice status from this user in the given channel. Simply
+	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param chan The channel to give voice in
 	 */
-	public void setOp(Channel chan, boolean op) {
-		chan.setOp(this, op);
-	}
-
-	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @return the _voice
-	 */
-	public boolean hasVoice(String chan) {
-		return _bot.getChannel(chan).hasVoice(this);
-	}
-
-	/**
-	 * Weather or not the user represented by this object has voice in the channel
-	 * this object was fetched from
-	 * @param voice the _voice to set
-	 */
-	public void setVoice(Channel chan, boolean voice) {
-		chan.setVoice(this, voice);
+	public void deVoice(Channel chan) {
+		bot.deVoice(chan, this);
 	}
 }
