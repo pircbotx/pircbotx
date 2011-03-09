@@ -34,17 +34,12 @@ import org.pircbotx.hooks.events.DisconnectEvent;
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
-public class InputThread implements Runnable {
-	private final PircBotX _bot;
-	private Socket _socket;
-	private BufferedReader _breader = null;
-	private boolean _isConnected = true;
+public class InputThread extends Thread {
+	private final PircBotX bot;
+	private Socket socket;
+	private BufferedReader breader = null;
+	private boolean isConnected = true;
 	public static final int MAX_LINE_LENGTH = 512;
-	public static ThreadFactory threadFactory = new ThreadFactory() {
-		public Thread newThread(Runnable r, PircBotX bot) {
-			return new Thread(r, bot.getServer() + "-" + bot.getNick() + "-InputThread");
-		}
-	};
 
 	/**
 	 * The InputThread reads lines from the IRC server and allows the
@@ -55,9 +50,9 @@ public class InputThread implements Runnable {
 	 * @param bwriter The BufferedWriter that sends lines to the server.
 	 */
 	InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
-		_bot = bot;
-		_socket = socket;
-		_breader = breader;
+		this.bot = bot;
+		this.socket = socket;
+		this.breader = breader;
 	}
 
 	/**
@@ -68,7 +63,7 @@ public class InputThread implements Runnable {
 	 * @return True if still connected.
 	 */
 	boolean isConnected() {
-		return _isConnected;
+		return isConnected;
 	}
 
 	/**
@@ -82,40 +77,45 @@ public class InputThread implements Runnable {
 	 * after such a problem, but the existence of any uncaught exceptions
 	 * in your code is something you should really fix.
 	 */
+	@Override
 	public void run() {
-		try {
-			boolean running = true;
-			while (running)
-				try {
-					String line = null;
-					while ((line = _breader.readLine()) != null)
-							_bot.handleLine(line);
-						
-					if (line == null) {
-						System.err.println("Null line, socket closed");
-						// The server must have disconnected us.
-						running = false;
-					}
-				} catch (InterruptedIOException iioe) {
-					// This will happen if we haven't received anything from the server for a while.
-					// So we shall send it a ping to check that we are still connected.
-					_bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
-					// Now we go back to listening for stuff from the server...
-				}
-		} catch (Exception e) {
-			e.printStackTrace();
+		while (true) {
+			//Get line from the server
+			String line = null;
+			try {
+				line = breader.readLine();
+			} catch (InterruptedIOException iioe) {
+				// This will happen if we haven't received anything from the server for a while.
+				// So we shall send it a ping to check that we are still connected.
+				bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
+				// Now we go back to listening for stuff from the server...
+				continue;
+			} catch (Exception e) {
+				bot.logException(e);
+			}
+			
+			//End the loop if the line is null
+			if(line == null)
+				break;
+
+			//Start acting the line
+			try {
+				bot.handleLine(line);
+			} catch (Exception e) {
+				bot.logException(e);
+			}
 		}
 
-		//Disconnected at this point
+		//Disconnected at this point, close the socket
 		try {
-			_socket.close();
+			socket.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			bot.logException(e);
 		}
 
 		//Now that the socket is definatly closed, call event and log
-		//_bot.removeAllChannels();
-		_bot.getListenerManager().dispatchEvent(new DisconnectEvent(_bot));
-		_bot.log("*** Disconnected.");
+		bot.reset();
+		bot.getListenerManager().dispatchEvent(new DisconnectEvent(bot));
+		bot.log("*** Disconnected.");
 	}
 }

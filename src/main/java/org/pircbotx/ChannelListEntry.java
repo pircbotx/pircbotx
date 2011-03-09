@@ -18,10 +18,13 @@
  */
 package org.pircbotx;
 
+import lombok.Data;
+
 /**
- *
+ * A channel entry returned from /LIST command
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Data
 public class ChannelListEntry {
 	protected final String name;
 	protected final int users;
@@ -31,26 +34,5 @@ public class ChannelListEntry {
 		this.name = name;
 		this.users = users;
 		this.topic = topic;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the users
-	 */
-	public int getUsers() {
-		return users;
-	}
-
-	/**
-	 * @return the topic
-	 */
-	public String getTopic() {
-		return topic;
 	}
 }

@@ -74,7 +74,11 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 
 /**
- * TODO
+ * Adapter that provides methods to capture each event separately, removing
+ * the need to check, cast, and call your custom method for each event you want
+ * to capture. 
+ * <p>
+ * To use, simply override the method that has the event you want to capture. 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ListenerAdapter implements Listener {

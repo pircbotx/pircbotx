@@ -21,17 +21,11 @@ package org.pircbotx;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.SocketFactory;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
@@ -39,7 +33,10 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
- *
+ * Manager that provides an easy way to create bots on many different servers
+ * with the same or close to the same information. All important setup methods
+ * have been mirrored here. For documentation, see their equivalent PircBotX
+ * methods.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -48,7 +45,7 @@ public class MultiBotManager {
 	protected Set<BotEntry> bots = new HashSet<BotEntry>();
 	protected PircBotX dummyBot;
 	protected ListenerManager listenerManager = new GenericListenerManager();
-	protected String name = "PircBotXUser";
+	protected String name;
 	protected boolean verbose;
 	protected int socketTimeout;
 	protected long messageDelay;
@@ -58,10 +55,10 @@ public class MultiBotManager {
 	protected InetAddress dcciNetAddress;
 	protected int[] dccports;
 
-	public MultiBotManager() {
+	public MultiBotManager(String name) {
 		//Create a temp bot and mirror default values
 		dummyBot = new PircBotX();
-		name = dummyBot.getName();
+		this.name = name;
 		verbose = dummyBot.isVerbose();
 		socketTimeout = dummyBot.getSocketTimeout();
 		messageDelay = dummyBot.getMessageDelay();
