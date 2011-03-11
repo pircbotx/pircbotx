@@ -891,8 +891,8 @@ public class PircBotX {
 	 * @param topic   The new topic for the channel.
 	 *
 	 */
-	public void setTopic(String channel, String topic) {
-		sendRawLine("TOPIC " + channel + " :" + topic);
+	public void setTopic(Channel chan, String topic) {
+		sendRawLine("TOPIC " + chan.getName() + " :" + topic);
 	}
 
 	/**
