@@ -823,34 +823,26 @@ public class PircBotX {
 	 * status itself.
 	 *
 	 * @param channel The channel we're opping the user on.
-	 * @param nick The nick of the user we are opping.
-	 */
-	public void op(String channel, String nick) {
-		setMode(channel, "+o " + nick);
-	}
-	
-	public void op(Channel channel, User user) {
-		op(channel.getName(), user.getNick());
+	 * @param nick The user we are opping.
+	 */	
+	public void op(Channel chan, User user) {
+		setMode(chan, "+o " + user.getNick());
 	}
 
 	/**
-	 * Removes operator privilidges from a user on a channel.
+	 * Removes operator privileges from a user on a channel.
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
 	 * @param channel The channel we're deopping the user on.
-	 * @param nick The nick of the user we are deopping.
+	 * @param nick Theuser we are deopping.
 	 */
-	public void deOp(String channel, String nick) {
-		setMode(channel, "-o " + nick);
-	}
-	
-	public void deOp(Channel channel, User user) {
-		deOp(channel.getName(), user.getNick());
+	public void deOp(Channel chan, User user) {
+		setMode(chan, "-o " + user.getNick());
 	}
 
 	/**
-	 * Grants voice privilidges to a user on a channel.
+	 * Grants voice privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
