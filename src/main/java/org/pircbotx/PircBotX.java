@@ -2040,8 +2040,7 @@ public class PircBotX {
 	 *
 	 * @since PircBotX 1.0.0
 	 *
-	 * @return A String array containing the names of all channels that we
-	 *         are in.
+	 * @return An <i>unmodifiable</i> Set of all channels were connected to
 	 */
 	public Set<Channel> getChannels() {
 		return _userChanInfo.getAValues();
