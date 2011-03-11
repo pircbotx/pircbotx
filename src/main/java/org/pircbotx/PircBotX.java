@@ -2073,6 +2073,10 @@ public class PircBotX {
 		return chan;
 	}
 
+	/**
+	 * Gets all the name's of all the channels that we are connected to
+	 * @return An <i>Unmodifiable</i> set of Channel names
+	 */
 	public Set<String> getChannelsNames() {
 		return Collections.unmodifiableSet(new HashSet<String>() {
 			{
