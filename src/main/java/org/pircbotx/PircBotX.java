@@ -2083,8 +2083,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * Check if we are still connected to the given channel. Useful for Listeners
-	 * that store Channel objects internally
+	 * Check if we are still connected to the given channel. Useful for checking
+	 * the validity of existing Channel objects
 	 * @param chan A (potentially invalid) channel object
 	 * @return True if we are still connected to the channel, false if not
 	 */
