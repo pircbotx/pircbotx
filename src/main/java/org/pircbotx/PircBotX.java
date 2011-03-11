@@ -2128,16 +2128,15 @@ public class PircBotX {
 	public User getUser(String nick) {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
-		User user = null;
-		//TODO: Use returns
 		for (User curUser : _userChanInfo.getBValues())
 			if (curUser.getNick().equals(nick))
-				user = curUser;
+				return curUser;
 
-		if (user == null)
-			//User does not exist, create one
-			_userChanInfo.putA(user = new User(this, nick));
+		//User does not exist, create one
+		User user = new User(this, nick);
+		_userChanInfo.putA(user);
 		return user;
+		
 	}
 
 	/**
