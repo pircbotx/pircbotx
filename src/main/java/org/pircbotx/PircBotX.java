@@ -871,14 +871,10 @@ public class PircBotX {
 	 * status itself.
 	 *
 	 * @param channel The channel we're devoicing the user on.
-	 * @param nick The nick of the user we are devoicing.
+	 * @param nick The user we are devoicing.
 	 */
-	public void deVoice(String channel, String nick) {
-		setMode(channel, "-v " + nick);
-	}
-	
-	public void deVoice(Channel channel, User user) {
-		deVoice(channel.getName(), user.getNick());
+	public void deVoice(Channel chan, User user) {
+		setMode(chan, "-v " + user.getNick());
 	}
 
 	/**
