@@ -2061,15 +2061,13 @@ public class PircBotX {
 	public Channel getChannel(String name) {
 		if (name == null)
 			throw new NullPointerException("Can't get a null channel");
-		Channel chan = null;
 		for (Channel curChan : _userChanInfo.getAValues())
 			if (curChan.getName().equals(name))
-				chan = curChan;
+				return curChan;
 
-
-		if (chan == null)
-			//User does not exist, create one
-			_userChanInfo.putB(chan = new Channel(this, name));
+		//Channel does not exist, create one
+		Channel chan = new Channel(this, name);
+		_userChanInfo.putB(chan);
 		return chan;
 	}
 
