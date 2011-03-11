@@ -2122,6 +2122,11 @@ public class PircBotX {
 		return _userChanInfo.getBValues(getChannel(channel));
 	}
 
+	/**
+	 * Get all user's in the channel. Must be joined to the channel for this to work
+	 * @param chan The channel object to search in
+	 * @return A Set of all user's in the channel
+	 */
 	public Set<User> getUsers(Channel chan) {
 		return getUsers(chan.getName());
 	}
@@ -2135,6 +2140,7 @@ public class PircBotX {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
 		User user = null;
+		//TODO: Use returns
 		for (User curUser : _userChanInfo.getBValues())
 			if (curUser.getNick().equals(nick))
 				user = curUser;
@@ -2145,6 +2151,11 @@ public class PircBotX {
 		return user;
 	}
 
+	/**
+	 * Check if a user exists
+	 * @param nick The nick of the user to lookup
+	 * @return True if they exist, false if not
+	 */
 	public boolean userExists(String nick) {
 		for (User curUser : _userChanInfo.getBValues())
 			if (curUser.getNick().equals(nick))
@@ -2160,7 +2171,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * @return the listenerManager
+	 * Returns the current ListenerManager in use by this bot. 
+	 * @return Current ListenerManager
 	 */
 	public ListenerManager getListenerManager() {
 		return listenerManager;
