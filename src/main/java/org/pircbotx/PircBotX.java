@@ -741,8 +741,8 @@ public class PircBotX {
 	 *
 	 * @see #op(String,String) op
 	 */
-	public void setMode(String channel, String mode) {
-		sendRawLine("MODE " + channel + " " + mode);
+	public void setMode(Channel chan, String mode) {
+		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
 
 	/**
