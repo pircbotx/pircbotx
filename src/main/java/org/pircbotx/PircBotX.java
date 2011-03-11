@@ -886,7 +886,7 @@ public class PircBotX {
 	 * may require the bot to have operator status in the channel.
 	 *
 	 * @param chan The channel to kick the user from.
-	 * @param nick    The nick of the user to kick.
+	 * @param nick The user to kick.
 	 */
 	public void kick(Channel chan, User user) {
 		kick(chan, user, "");
@@ -898,7 +898,7 @@ public class PircBotX {
 	 * may require the bot to have operator status in the channel.
 	 *
 	 * @param chan The channel to kick the user from.
-	 * @param nick    The nick of the user to kick.
+	 * @param nick    The user to kick.
 	 * @param reason  A description of the reason for kicking a user.
 	 */
 	public void kick(Channel chan, User user, String reason) {
