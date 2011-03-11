@@ -2087,17 +2087,17 @@ public class PircBotX {
 	}
 
 	/**
-	 * Returns an array of all users in the specified channel.
-	 *  <p>
+	 * Get all user's in the channel. 
+	 * 
 	 * There are some important things to note about this method:-
 	 * <ul>
 	 *  <li>This method may not return a full list of users if you call it
 	 *      before the complete nick list has arrived from the IRC server.
 	 *  </li>
 	 *  <li>If you wish to find out which users are in a channel as soon
-	 *      as you join it, then you should override the onUserList method
-	 *      instead of calling this method, as the onUserList method is only
-	 *      called as soon as the full user list has been received.
+	 *      as you join it, then you should listen for a {@link UserListEvent}
+	 *      instead of calling this method, as the {@link UserListEvent} is only
+	 *      dispatched as soon as the full user list has been received.
 	 *  </li>
 	 *  <li>This method will return immediately, as it does not require any
 	 *      interaction with the IRC server.
@@ -2109,26 +2109,15 @@ public class PircBotX {
 	 *
 	 * @since PircBotX 1.0.0
 	 *
-	 * @param channel The name of the channel to list.
-	 *
-	 * @return An array of User objects. This array is empty if we are not
-	 *         in the channel.
+	 * @param chan The channel object to search in
+	 * @return A Set of all user's in the channel
 	 *
 	 * @see UserListEvent
 	 */
-	public Set<User> getUsers(String channel) {
-		if (channel == null)
-			throw new NullPointerException("Can't get a null channel");
-		return _userChanInfo.getBValues(getChannel(channel));
-	}
-
-	/**
-	 * Get all user's in the channel. Must be joined to the channel for this to work
-	 * @param chan The channel object to search in
-	 * @return A Set of all user's in the channel
-	 */
 	public Set<User> getUsers(Channel chan) {
-		return getUsers(chan.getName());
+		if (chan == null)
+			throw new NullPointerException("Can't get a null channel");
+		return _userChanInfo.getBValues(chan);
 	}
 
 	/**
