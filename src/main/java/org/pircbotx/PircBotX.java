@@ -2082,8 +2082,14 @@ public class PircBotX {
 		});
 	}
 
-	public boolean channelExists(String channel) {
-		return getChannelsNames().contains(channel);
+	/**
+	 * Check if we are still connected to the given channel. Useful for Listeners
+	 * that store Channel objects internally
+	 * @param chan A (potentially invalid) channel object
+	 * @return True if we are still connected to the channel, false if not
+	 */
+	public boolean channelExists(Channel chan) {
+		return _userChanInfo.containsA(chan);
 	}
 
 	/**
