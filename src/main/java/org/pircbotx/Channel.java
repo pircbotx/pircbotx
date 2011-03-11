@@ -80,8 +80,8 @@ public class Channel {
 	}
 
 	/**
-	 * Get all users in this channel
-	 * @return Set of users in this channel
+	 * Get all users in this channel. Simply calls {@link PircBotX#getUsers(org.pircbotx.Channel) }
+	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
 	public Set<User> getUsers() {
 		return bot.getUsers(this);
