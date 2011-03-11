@@ -1176,7 +1176,7 @@ public class PircBotX {
 
 
 		User source = getUser(sourceNick);
-		Channel channel = channelExists(target) ? getChannel(target) : null;
+		Channel channel = getChannel(target);
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 
@@ -1376,7 +1376,7 @@ public class PircBotX {
 			// This is the end of a NAMES list, so we know that we've got
 			// the full list of users in the channel that we just joined. From /NAMES and /JOIN
 			String channelName = response.split(" ", 3)[1];
-			Channel channel = channelExists(channelName) ? getChannel(channelName) : null;
+			Channel channel = getChannel(channelName);
 			getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
