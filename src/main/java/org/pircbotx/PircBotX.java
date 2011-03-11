@@ -744,6 +744,18 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode) {
 		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
+	
+	/**
+	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
+	 * @param channel The channel on which to perform the mode change.
+	 * @param mode    The new mode to apply to the channel. <b>This should not
+	 *                include arguments!</b>
+	 * @param user  The user to perform the mode change on
+	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
+	 */
+	public void setMode(Channel chan, String mode, User user) {
+		setMode(chan, mode + user.getNick());
+	}
 
 	/**
 	 * Sends an invitation to join a channel.  Some channels can be marked
