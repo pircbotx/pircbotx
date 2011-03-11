@@ -855,14 +855,11 @@ public class PircBotX {
 	 * status itself.
 	 *
 	 * @param channel The channel we're voicing the user on.
-	 * @param nick The nick of the user we are voicing.
+	 * @param nick The user we are voicing.
 	 */
-	public void voice(String channel, String nick) {
-		setMode(channel, "+v " + nick);
-	}
 	
-	public void voice(Channel channel, User user) {
-		voice(channel.getName(), user.getNick());
+	public void voice(Channel chan, User user) {
+		setMode(chan, "+v " + user.getNick());
 	}
 
 	/**
