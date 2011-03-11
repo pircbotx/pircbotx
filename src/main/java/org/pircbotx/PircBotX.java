@@ -2047,6 +2047,11 @@ public class PircBotX {
 		return _userChanInfo.getAValues();
 	}
 
+	/**
+	 * Get all channels that the given user is connected to
+	 * @param user The user to lookup
+	 * @return An <i>unmodifiable</i> Set of user's in the channel
+	 */
 	public Set<Channel> getChannels(User user) {
 		if (user == null)
 			throw new NullPointerException("Can't get a null user");
