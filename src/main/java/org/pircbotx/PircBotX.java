@@ -900,11 +900,11 @@ public class PircBotX {
 	 * This method attempts to kick a user from a channel and
 	 * may require the bot to have operator status in the channel.
 	 *
-	 * @param channel The channel to kick the user from.
+	 * @param chan The channel to kick the user from.
 	 * @param nick    The nick of the user to kick.
 	 */
-	public void kick(String channel, String nick) {
-		kick(channel, nick, "");
+	public void kick(Channel chan, User user) {
+		kick(chan, user, "");
 	}
 
 	/**
@@ -912,12 +912,12 @@ public class PircBotX {
 	 * This method attempts to kick a user from a channel and
 	 * may require the bot to have operator status in the channel.
 	 *
-	 * @param channel The channel to kick the user from.
+	 * @param chan The channel to kick the user from.
 	 * @param nick    The nick of the user to kick.
 	 * @param reason  A description of the reason for kicking a user.
 	 */
-	public void kick(String channel, String nick, String reason) {
-		sendRawLine("KICK " + channel + " " + nick + " :" + reason);
+	public void kick(Channel chan, User user, String reason) {
+		sendRawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
 	}
 
 	/**
