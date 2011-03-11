@@ -84,7 +84,7 @@ public class Channel {
 	 * @return Set of users in this channel
 	 */
 	public Set<User> getUsers() {
-		return bot.getUsers(name);
+		return bot.getUsers(this);
 	}
 
 	/**
