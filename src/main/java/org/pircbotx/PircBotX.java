@@ -588,6 +588,18 @@ public class PircBotX {
 		if (target != null && message != null)
 			sendMessage(target.getName(), message);
 	}
+	
+	/**
+	 * Send a message to the given user in the given channel in this format: 
+	 * <code>user: message</code>. Very useful for responding directly to a command
+	 * @param chan The channel to send the message to
+	 * @param user
+	 * @param message 
+	 */
+	public void sendMessage(Channel chan, User user, String message) {
+		if (chan != null && user != null && message != null)
+			sendMessage(chan.getName(), user.getNick() + ": " + message);
+	}
 
 	/**
 	 * Sends an action to the channel or to a user.
