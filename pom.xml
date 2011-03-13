@@ -189,14 +189,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
-	<repositories>
-		<!--Project Lombok repository-->
-		<repository>
-			<id>projectlombok.org</id>
-			<url>http://projectlombok.org/mavenrepo</url>
-		</repository>
-	</repositories>
 	
 	<pluginRepositories>
 		<!--Snapshots for HG SCM provider and API-->
