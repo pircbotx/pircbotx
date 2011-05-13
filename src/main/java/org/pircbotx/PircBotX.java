@@ -330,6 +330,7 @@ public class PircBotX {
 		_inputThread = new InputThread(this, _socket, breader);
 		if (_outputThread == null)
 			_outputThread = new OutputThread(this, bwriter);
+		_outputThread.start();
 
 		// Attempt to join the server.
 		if (Utils.isBlank(password))
@@ -382,7 +383,7 @@ public class PircBotX {
 		// This makes the socket timeout on read operations after 5 minutes.
 		_socket.setSoTimeout(getSocketTimeout());
 
-		//Start input and output threads to start accepting lines
+		//Start input to start accepting lines
 		_inputThread.start();
 
 		getListenerManager().dispatchEvent(new ConnectEvent(this));
