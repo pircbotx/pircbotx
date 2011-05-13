@@ -91,8 +91,8 @@ public class OutputThread extends Thread {
 				Thread.sleep(bot.getMessageDelay());
 
 				String line = queue.take();
-				if (line != null)
-					bot.sendRawLine(line);
+				if (line != null && bot.isConnected())
+					sendRawLineNow(line);
 			}
 		} catch (InterruptedException e) {
 			// Just let the method return naturally...
