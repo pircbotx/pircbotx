@@ -384,7 +384,6 @@ public class PircBotX {
 
 		//Start input and output threads to start accepting lines
 		_inputThread.start();
-		_inputThread.start();
 
 		getListenerManager().dispatchEvent(new ConnectEvent(this));
 	}
