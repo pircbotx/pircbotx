@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,6 +37,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(exclude = {"op", "voice"})
+@EqualsAndHashCode(exclude = {"op", "voice"})
 public class Channel {
 	private final String name;
 	@Setter(AccessLevel.PACKAGE)
