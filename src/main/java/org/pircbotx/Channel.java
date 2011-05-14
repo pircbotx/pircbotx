@@ -37,7 +37,7 @@ import lombok.ToString;
  */
 @Data
 @ToString(exclude = {"op", "voice"})
-@EqualsAndHashCode(exclude = {"op", "voice"})
+@EqualsAndHashCode(of = {"name", "bot"})
 public class Channel {
 	private final String name;
 	@Setter(AccessLevel.PACKAGE)
