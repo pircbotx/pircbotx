@@ -71,18 +71,6 @@ public class ManyToManyMap<A, B> {
 		}
 	}
 
-	public HashSet<B> removeA(A a) {
-		synchronized (lockObject) {
-			return AMap.remove(a);
-		}
-	}
-
-	public HashSet<A> removeB(B b) {
-		synchronized (lockObject) {
-			return BMap.remove(b);
-		}
-	}
-
 	/**
 	 * Checks if an A entry exists
 	 * @param key The A Entry to look for
@@ -207,7 +195,7 @@ public class ManyToManyMap<A, B> {
 	 * @return True if values where dissociated, false if not. False should only
 	 *              happen if one of the entries doesn't exist
 	 */
-	public boolean dissociate(A a, B b, boolean remove) {
+	public boolean dissociate(A a, B b, boolean delete) {
 		synchronized (lockObject) {
 			if (!AMap.containsKey(a) && !BMap.containsKey(b))
 				//Nothing do dissociate
@@ -215,13 +203,13 @@ public class ManyToManyMap<A, B> {
 
 			Set<?> values = AMap.get(a);
 			values.remove(b);
-			if (remove && values.isEmpty())
-				removeA(a);
+			if (delete && values.isEmpty())
+				deleteA(a);
 
 			values = BMap.get(b);
 			values.remove(a);
-			if (remove && values.isEmpty())
-				removeB(b);
+			if (delete && values.isEmpty())
+				deleteB(b);
 		}
 		return true;
 	}
@@ -238,7 +226,7 @@ public class ManyToManyMap<A, B> {
 				return null;
 
 			//Get all associated B entries to remove later while removing A entry
-			Set<B> assoications = Collections.unmodifiableSet(removeA(a));
+			Set<B> assoications = Collections.unmodifiableSet(AMap.remove(a));
 
 			//Clear associations in B map
 			for (B curEntry : assoications)
@@ -259,9 +247,8 @@ public class ManyToManyMap<A, B> {
 			if (!BMap.containsKey(b))
 				return null;
 
-
 			//Get all associated B entries to remove later while removing A entry
-			Set<A> assoications = Collections.unmodifiableSet(removeB(b));
+			Set<A> assoications = Collections.unmodifiableSet(BMap.remove(b));
 
 			//Clear associations in B map
 			for (A curEntry : assoications)
