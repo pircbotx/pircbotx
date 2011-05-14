@@ -142,17 +142,19 @@ public class PircBotX {
 	private int _port = -1;
 	private String _password = null;
 	private long _messageDelay = 1000;
-	// A Hashtable of channels that points to a selfreferential Hashtable of
-	// User objects (used to remember which users are in which channels).
+	/*
+	 * A Many to Many map that links Users to Channels and channels to users. Modified
+	 * to remove each channel's and user's internal refrences to each other.
+	 */
 	protected ManyToManyMap<Channel, User> _userChanInfo = new ManyToManyMap<Channel, User>() {
 		@Override
-		public HashSet<Channel> removeB(User b) {
+		public Set<Channel> deleteB(User b) {
 			//Remove the Channels internal reference to the User
 			synchronized (lockObject) {
 				for (Channel curChan : BMap.get(b))
 					curChan.removeUser(b);
 			}
-			return super.removeB(b);
+			return super.deleteB(b);
 		}
 
 		@Override
