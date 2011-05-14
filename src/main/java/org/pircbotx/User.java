@@ -19,8 +19,11 @@
 package org.pircbotx;
 
 import java.util.Collection;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -35,6 +38,7 @@ import lombok.Setter;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
+@EqualsAndHashCode(of = {"uuid", "bot"})
 public class User implements Comparable<User> {
 	@Setter(AccessLevel.PACKAGE)
 	private String nick;
@@ -55,6 +59,8 @@ public class User implements Comparable<User> {
 	@Setter(AccessLevel.PACKAGE)
 	private int hops = 0;
 	private final PircBotX bot;
+	@Getter(AccessLevel.NONE)
+	protected final UUID uuid = UUID.randomUUID();
 
 	public User(PircBotX bot, String nick) {
 		this.bot = bot;
