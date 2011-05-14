@@ -23,7 +23,7 @@ public interface GenericMessageEvent extends GenericUserEvent {
 
 	/**
 	 * The user that sent the message
-	 * @return 
+	 * @return The user
 	 */
 	public User getUser();
 }
