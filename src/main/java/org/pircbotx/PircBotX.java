@@ -749,11 +749,11 @@ public class PircBotX {
 	 * by calling setMode("#cs", "+o Dave");
 	 * An alternative way of doing this would be to use the op method.
 	 *
-	 * @param channel The channel on which to perform the mode change.
+	 * @param chan The channel on which to perform the mode change.
 	 * @param mode    The new mode to apply to the channel.  This may include
 	 *                zero or more arguments if necessary.
 	 *
-	 * @see #op(String,String) op
+	 * @see #op(org.pircbotx.Channel, org.pircbotx.User) 
 	 */
 	public void setMode(Channel chan, String mode) {
 		sendRawLine("MODE " + chan.getName() + " " + mode);
@@ -761,7 +761,7 @@ public class PircBotX {
 	
 	/**
 	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
-	 * @param channel The channel on which to perform the mode change.
+	 * @param chan The channel on which to perform the mode change.
 	 * @param mode    The new mode to apply to the channel. <b>This should not
 	 *                include arguments!</b>
 	 * @param user  The user to perform the mode change on
@@ -848,8 +848,8 @@ public class PircBotX {
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
-	 * @param channel The channel we're opping the user on.
-	 * @param nick The user we are opping.
+	 * @param chan The channel we're opping the user on.
+	 * @param user The user we are opping.
 	 */	
 	public void op(Channel chan, User user) {
 		setMode(chan, "+o " + user.getNick());
@@ -860,8 +860,8 @@ public class PircBotX {
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
-	 * @param channel The channel we're deopping the user on.
-	 * @param nick Theuser we are deopping.
+	 * @param chan The channel we're deopping the user on.
+	 * @param user The user we are deopping.
 	 */
 	public void deOp(Channel chan, User user) {
 		setMode(chan, "-o " + user.getNick());
@@ -872,8 +872,8 @@ public class PircBotX {
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
-	 * @param channel The channel we're voicing the user on.
-	 * @param nick The user we are voicing.
+	 * @param chan The channel we're voicing the user on.
+	 * @param user The user we are voicing.
 	 */
 	
 	public void voice(Channel chan, User user) {
@@ -881,12 +881,12 @@ public class PircBotX {
 	}
 
 	/**
-	 * Removes voice privilidges from a user on a channel.
+	 * Removes voice privileges from a user on a channel.
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
-	 * @param channel The channel we're devoicing the user on.
-	 * @param nick The user we are devoicing.
+	 * @param chan The channel we're devoicing the user on.
+	 * @param user The user we are devoicing.
 	 */
 	public void deVoice(Channel chan, User user) {
 		setMode(chan, "-v " + user.getNick());
@@ -898,7 +898,7 @@ public class PircBotX {
 	 * may require the bot to have operator status if the topic
 	 * is protected.
 	 *
-	 * @param channel The channel on which to perform the mode change.
+	 * @param chan The channel on which to perform the mode change.
 	 * @param topic   The new topic for the channel.
 	 *
 	 */
@@ -912,7 +912,7 @@ public class PircBotX {
 	 * may require the bot to have operator status in the channel.
 	 *
 	 * @param chan The channel to kick the user from.
-	 * @param nick The user to kick.
+	 * @param user The user to kick.
 	 */
 	public void kick(Channel chan, User user) {
 		kick(chan, user, "");
@@ -924,7 +924,7 @@ public class PircBotX {
 	 * may require the bot to have operator status in the channel.
 	 *
 	 * @param chan The channel to kick the user from.
-	 * @param nick    The user to kick.
+	 * @param user    The user to kick.
 	 * @param reason  A description of the reason for kicking a user.
 	 */
 	public void kick(Channel chan, User user, String reason) {
