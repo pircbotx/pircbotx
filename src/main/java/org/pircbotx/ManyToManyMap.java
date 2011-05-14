@@ -26,7 +26,7 @@ import java.util.Set;
 
 /**
  * This is a small custom map that supports a Many to Many relationship, based on
- * 2 core <code>HashMap</code>'s and <code>HashSet</code>'s for performance.
+ * 2 core <code>HashMap</code>'s with nested <code>HashSet</code>'s for performance.
  * <p>
  * A good example of a Many to Many relationship is this IRC bot where you have
  * users and channels. A channel has many users, and users can join many channels.
@@ -37,8 +37,8 @@ import java.util.Set;
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ManyToManyMap<A, B> {
-	protected final Map<A, HashSet<B>> AMap = new HashMap<A, HashSet<B>>();
-	protected final Map<B, HashSet<A>> BMap = new HashMap<B, HashSet<A>>();
+	protected final Map<A, Set<B>> AMap = new HashMap<A, Set<B>>();
+	protected final Map<B, Set<A>> BMap = new HashMap<B, Set<A>>();
 	protected final Object lockObject = new Object();
 
 	/**
