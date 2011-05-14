@@ -1185,7 +1185,8 @@ public class PircBotX {
 
 
 		User source = getUser(sourceNick);
-		Channel channel = getChannel(target);
+		//If command and target are equal, then its a command being sent, not a channel.
+		Channel channel = (command.equals(target)) ? null : getChannel(target);
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 
