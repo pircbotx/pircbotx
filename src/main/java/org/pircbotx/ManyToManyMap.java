@@ -215,12 +215,12 @@ public class ManyToManyMap<A, B> {
 
 			Set<?> values = AMap.get(a);
 			values.remove(b);
-			if (values.isEmpty())
+			if (remove && values.isEmpty())
 				removeA(a);
 
 			values = BMap.get(b);
 			values.remove(a);
-			if (values.isEmpty())
+			if (remove && values.isEmpty())
 				removeB(b);
 		}
 		return true;
