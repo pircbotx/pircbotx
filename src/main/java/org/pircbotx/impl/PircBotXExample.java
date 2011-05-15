@@ -21,37 +21,53 @@ package org.pircbotx.impl;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.UserListEvent;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class PircBotXExample implements Listener {
-	public void onEvent(Event rawevent) throws Exception {
-		if (rawevent instanceof MessageEvent) {
-			MessageEvent mevent = (MessageEvent) rawevent;
-			String message = mevent.getMessage();
-			PircBotX bot = rawevent.getBot();
+public class PircBotXExample extends ListenerAdapter implements Listener {
+	/**
+	 * Easy and recommended way to handle events: Override respective methods in 
+	 * {@link ListenerAdapter}. 
+	 * <p>
+	 * This example shows how to work with the waitFor ability of PircBotX. Follow
+	 * the inline comments for how this works 
+	 * @param event A MessageEvent
+	 * @throws Exception If any Exceptions might be thrown, throw them up and let
+	 * the {@link ListenerManager} handle it. This can be removed though if not needed
+	 */
+	@Override
+	public void onMessage(MessageEvent event) throws Exception {
+		String message = event.getMessage();
+		PircBotX bot = event.getBot();
 
-			//If this isn't a waittest, return
-			if (!message.startsWith("?waitTest start"))
+		//If this isn't a waittest, return
+		if (!message.startsWith("?waitTest start"))
+			return;
+		bot.sendMessage(event.getChannel(), "Started...");
+		while (true) {
+			MessageEvent currentEvent = bot.waitFor(MessageEvent.class);
+			System.out.println("NEW MESSAGE: " + currentEvent.getMessage());
+			if (currentEvent.getMessage().startsWith("?waitTest ping"))
+				bot.sendMessage(event.getChannel(), "Pong");
+			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
+				bot.sendMessage(event.getChannel(), "Killing...");
 				return;
-			bot.sendMessage(mevent.getChannel(), "Started...");
-			while (true) {
-				MessageEvent currentEvent = bot.waitFor(MessageEvent.class);
-				System.out.println("NEW MESSAGE: "+currentEvent.getMessage());
-				if (currentEvent.getMessage().startsWith("?waitTest ping"))
-					bot.sendMessage(mevent.getChannel(), "Pong");
-				else if (currentEvent.getMessage().startsWith("?waitTest end")) {
-					bot.sendMessage(mevent.getChannel(), "Killing...");
-					return;
-				}
-				bot.log("End of MessageEvent");
 			}
+			bot.log("End of MessageEvent");
 		}
+	}
+
+	/**
+	 * 
+	 * @param rawevent
+	 * @throws Exception 
+	 */
+	public void onEvent(Event rawevent) throws Exception {
+		
 	}
 
 	public static void main(String[] args) {
