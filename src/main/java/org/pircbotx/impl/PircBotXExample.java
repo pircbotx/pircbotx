@@ -24,7 +24,6 @@ import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.UserListEvent;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
 /**
  *
@@ -35,9 +34,7 @@ public class PircBotXExample implements Listener {
 		if (rawevent instanceof ConnectEvent) {
 			ConnectEvent event = (ConnectEvent) rawevent;
 			event.getBot().joinChannel("#quackbot");
-		} else if (rawevent instanceof UserListEvent)
-			rawevent.getBot().log("INNEFFIENT CALLED");
-		else if (rawevent instanceof MessageEvent) {
+		} else if (rawevent instanceof MessageEvent) {
 			MessageEvent mevent = (MessageEvent) rawevent;
 			String message = mevent.getMessage();
 			PircBotX bot = rawevent.getBot();
