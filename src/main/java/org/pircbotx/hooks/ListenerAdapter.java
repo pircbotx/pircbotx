@@ -79,6 +79,11 @@ import org.pircbotx.hooks.events.VoiceEvent;
  * to capture. 
  * <p>
  * To use, simply override the method that has the event you want to capture. 
+ * <p>
+ * <b>WARNING:</b> If you are going to be implementing {@link Listener}'s 
+ * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
+ * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
+ * will work!
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ListenerAdapter implements Listener {
