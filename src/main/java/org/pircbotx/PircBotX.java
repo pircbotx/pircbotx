@@ -1249,7 +1249,7 @@ public class PircBotX {
 		} else if (command.equals("PART"))
 			// Someone is parting from a channel.
 			if (sourceNick.equals(getNick()))
-				_userChanInfo.dissociate(getChannel(target), getUser(sourceNick));
+				_userChanInfo.dissociate(channel, getUser(sourceNick));
 			else
 				//Just remove the user from memory
 				//getChannel(target).removeUser(sourceNick);
@@ -1283,7 +1283,7 @@ public class PircBotX {
 				_userChanInfo.deleteA(channel);
 			else
 				//Someone else
-				_userChanInfo.dissociate(getChannel(target), user, true);
+				_userChanInfo.dissociate(channel, user, true);
 			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user.
@@ -1295,10 +1295,9 @@ public class PircBotX {
 			// Someone is changing the topic.
 			String topic = line.substring(line.indexOf(" :") + 2);
 			long currentTime = System.currentTimeMillis();
-			Channel chan = getChannel(target);
-			chan.setTopic(topic);
-			chan.setTopicSetter(sourceNick);
-			chan.setTopicTimestamp(currentTime);
+			channel.setTopic(topic);
+			channel.setTopicSetter(sourceNick);
+			channel.setTopicTimestamp(currentTime);
 
 			getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, currentTime, true));
 		} else if (command.equals("INVITE"))
