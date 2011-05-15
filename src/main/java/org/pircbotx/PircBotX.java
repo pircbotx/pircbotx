@@ -161,6 +161,12 @@ public class PircBotX {
 		public boolean dissociate(Channel a, User b, boolean remove) {
 			//Remove the Channels internal reference to the User
 			a.removeUser(b);
+			
+			//If user is not associated with anything, remove
+			//Don't put in deleteB because user might be PMing us but not in our channels
+			if(getAValues(b).isEmpty())
+				deleteB(b);
+			
 			return super.dissociate(a, b, remove);
 		}
 	};
@@ -1243,7 +1249,7 @@ public class PircBotX {
 		} else if (command.equals("PART"))
 			// Someone is parting from a channel.
 			if (sourceNick.equals(getNick()))
-				_userChanInfo.dissociate(getChannel(target), getUser(sourceNick), true);
+				_userChanInfo.dissociate(getChannel(target), getUser(sourceNick));
 			else
 				//Just remove the user from memory
 				//getChannel(target).removeUser(sourceNick);
