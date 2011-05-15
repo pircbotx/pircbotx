@@ -25,7 +25,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
- *
+ * Basic example class for various features of PircBotX
+ * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXExample extends ListenerAdapter implements Listener {
