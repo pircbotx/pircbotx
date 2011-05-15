@@ -27,14 +27,12 @@ set /p answer=Run number:
 
 if %answer%==1 (
 	mvn clean install javadoc:jar source:jar deploy
-
 )
 if %answer%==2 (
 	mvn release:clean release:prepare release:perform
 )
 if %answer%==3 (
-	mvn site:site site:deploy
+	mvn clean site:site site:deploy
 )
 
 pause
-
