@@ -51,7 +51,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		//If this isn't a waittest, ignore
 		if (!event.getMessage().startsWith("?waitTest start"))
 			return;
-		
+
 		//WaitTest has started
 		bot.sendMessage(event.getChannel(), "Started...");
 		//Infinate loop since we might recieve messages that aren't WaitTest's. 
@@ -89,39 +89,38 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		//Since we extend ListenerAdapter and implement Listener in the same class
 		//call the super onEvent so ListenerAdapter will work
 		super.onEvent(rawevent);
-		
+
 		//Make sure were dealing with a message
-		if(rawevent instanceof MessageEvent) {
+		if (rawevent instanceof MessageEvent) {
 			//Cast to get access to all the MessageEvent specific methods
-			MessageEvent event = (MessageEvent)rawevent;
-			
+			MessageEvent event = (MessageEvent) rawevent;
+
 			//Basic hello world
-			if(event.getMessage().startsWith("?hello"))
+			if (event.getMessage().startsWith("?hello"))
 				event.getBot().sendMessage(event.getChannel(), "World");
 		}
-		
+
 	}
 
 	public static void main(String[] args) {
 		//Create a new bot
 		PircBotX bot = new PircBotX();
-		
+
 		//Setup this bot
 		bot.setName("Quackbot5"); //Set the nick of the bot. CHANGE IN YOUR CODE
 		bot.setLogin("LQ"); //login part of hostmask, eg name:login@host
 		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
-		
+
 		//This class is a listener, so add it to the bots known listeners
 		bot.getListenerManager().addListener(new PircBotXExample());
-		
+
 		//bot.connect throws various exceptions for failures
 		try {
 			//Connect to the freenode IRC network
 			bot.connect("irc.freenode.org");
 			//Join the #quackbot channel
 			bot.joinChannel("#quackbot");
-		} 
-		//In your code you should catch and handle each exception seperately,
+		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {
 			ex.printStackTrace();
