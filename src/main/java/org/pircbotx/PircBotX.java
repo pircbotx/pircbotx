@@ -1249,11 +1249,13 @@ public class PircBotX {
 		} else if (command.equals("PART"))
 			// Someone is parting from a channel.
 			if (sourceNick.equals(getNick()))
-				_userChanInfo.dissociate(channel, getUser(sourceNick));
-			else
+				//We parted the channel
+				_userChanInfo.deleteA(channel);
+			else {
 				//Just remove the user from memory
-				//getChannel(target).removeUser(sourceNick);
+				_userChanInfo.dissociate(channel, getUser(sourceNick));
 				getListenerManager().dispatchEvent(new PartEvent(this, channel, source));
+			}
 		else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
