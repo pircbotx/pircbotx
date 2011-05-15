@@ -83,32 +83,32 @@ import org.pircbotx.hooks.events.VoiceEvent;
  */
 public class ListenerAdapter implements Listener {
 	protected static final Map<Class<? extends Event>, Method> eventToMethod = new HashMap();
-	
+
 	static {
-		for(Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
-			if(curMethod.getName().equals("onEvent"))
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			if (curMethod.getName().equals("onEvent"))
 				continue;
-			eventToMethod.put((Class<? extends Event>)curMethod.getParameterTypes()[0], curMethod);
+			eventToMethod.put((Class<? extends Event>) curMethod.getParameterTypes()[0], curMethod);
 		}
 	}
-	
+
 	public void onEvent(Event event) throws Exception {
 		try {
 			eventToMethod.get(event.getClass()).invoke(this, event);
 		} catch (InvocationTargetException ex) {
 			Throwable cause = ex.getCause();
-			if(cause instanceof Exception)
-				throw (Exception)ex.getCause();
-			else {
+			if (cause instanceof Exception)
+				throw (Exception) ex.getCause();
+			else
 				//Must be something severe
-				if(event.getBot() != null)
+				if (event.getBot() != null)
 					event.getBot().logException(cause);
 				else
 					//No bot to work with, just print an exception
 					cause.printStackTrace();
-			}
 		}
 	}
+
 	public void onAction(ActionEvent event) throws Exception {
 	}
 
