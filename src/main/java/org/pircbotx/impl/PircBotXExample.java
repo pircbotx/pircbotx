@@ -35,29 +35,39 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	 * <p>
 	 * This example shows how to work with the waitFor ability of PircBotX. Follow
 	 * the inline comments for how this works 
+	 * <p>
+	 * <b>WARNING:</b> This example requires using a Threaded listener manager 
+	 *                 (this is PircBotX's default)
 	 * @param event A MessageEvent
 	 * @throws Exception If any Exceptions might be thrown, throw them up and let
 	 * the {@link ListenerManager} handle it. This can be removed though if not needed
 	 */
 	@Override
 	public void onMessage(MessageEvent event) throws Exception {
-		String message = event.getMessage();
 		PircBotX bot = event.getBot();
 
-		//If this isn't a waittest, return
-		if (!message.startsWith("?waitTest start"))
+		//If this isn't a waittest, ignore
+		if (!event.getMessage().startsWith("?waitTest start"))
 			return;
+		
+		//WaitTest has started
 		bot.sendMessage(event.getChannel(), "Started...");
+		//Infinate loop since we might recieve messages that aren't WaitTest's. 
 		while (true) {
+			//Use the waitFor() method to wait for a MessageEvent.
+			//This will block (wait) until a message event comes in, ignoring
+			//everything else
 			MessageEvent currentEvent = bot.waitFor(MessageEvent.class);
-			System.out.println("NEW MESSAGE: " + currentEvent.getMessage());
+			//Check if this message is the "ping" command
 			if (currentEvent.getMessage().startsWith("?waitTest ping"))
-				bot.sendMessage(event.getChannel(), "Pong");
+				bot.sendMessage(currentEvent.getChannel(), "Pong");
+			//Check if this message is the "end" command
 			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
-				bot.sendMessage(event.getChannel(), "Killing...");
+				bot.sendMessage(currentEvent.getChannel(), "Killing...");
+				//Very important that we end the infinate loop or else the test
+				//will continue forever!
 				return;
 			}
-			bot.log("End of MessageEvent");
 		}
 	}
 
