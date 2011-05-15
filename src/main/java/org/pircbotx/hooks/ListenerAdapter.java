@@ -96,7 +96,17 @@ public class ListenerAdapter implements Listener {
 		try {
 			eventToMethod.get(event.getClass()).invoke(this, event);
 		} catch (InvocationTargetException ex) {
-			throw (Exception)ex.getCause();
+			Throwable cause = ex.getCause();
+			if(cause instanceof Exception)
+				throw (Exception)ex.getCause();
+			else {
+				//Must be something severe
+				if(event.getBot() != null)
+					event.getBot().logException(cause);
+				else
+					//No bot to work with, just print an exception
+					cause.printStackTrace();
+			}
 		}
 	}
 	public void onAction(ActionEvent event) throws Exception {
