@@ -99,153 +99,153 @@ public class ListenerAdapter implements Listener {
 			throw (Exception)ex.getCause();
 		}
 	}
-	public void onAction(ActionEvent event) {
+	public void onAction(ActionEvent event) throws Exception {
 	}
 
-	public void onChannelInfo(ChannelInfoEvent event) {
+	public void onChannelInfo(ChannelInfoEvent event) throws Exception {
 	}
 
-	public void onConnect(ConnectEvent event) {
+	public void onConnect(ConnectEvent event) throws Exception {
 	}
 
-	public void onDeop(DeopEvent event) {
+	public void onDeop(DeopEvent event) throws Exception {
 	}
 
-	public void onDeVoice(DeVoiceEvent event) {
+	public void onDeVoice(DeVoiceEvent event) throws Exception {
 	}
 
-	public void onDisconnect(DisconnectEvent event) {
+	public void onDisconnect(DisconnectEvent event) throws Exception {
 	}
 
-	public void onFileTransferFinished(FileTransferFinishedEvent event) {
+	public void onFileTransferFinished(FileTransferFinishedEvent event) throws Exception {
 	}
 
-	public void onFinger(FingerEvent event) {
+	public void onFinger(FingerEvent event) throws Exception {
 	}
 
-	public void onIncomingChatRequest(IncomingChatRequestEvent event) {
+	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
 	}
 
-	public void onIncomingFileTransfer(IncomingFileTransferEvent event) {
+	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
 	}
 
-	public void onInvite(InviteEvent event) {
+	public void onInvite(InviteEvent event) throws Exception {
 	}
 
-	public void onJoin(JoinEvent event) {
+	public void onJoin(JoinEvent event) throws Exception {
 	}
 
-	public void onKick(KickEvent event) {
+	public void onKick(KickEvent event) throws Exception {
 	}
 
-	public void onMessage(MessageEvent event) {
+	public void onMessage(MessageEvent event) throws Exception {
 	}
 
-	public void onMode(ModeEvent event) {
+	public void onMode(ModeEvent event) throws Exception {
 	}
 
-	public void onMotd(MotdEvent event) {
+	public void onMotd(MotdEvent event) throws Exception {
 	}
 
-	public void onNickChange(NickChangeEvent event) {
+	public void onNickChange(NickChangeEvent event) throws Exception {
 	}
 
-	public void onNotice(NoticeEvent event) {
+	public void onNotice(NoticeEvent event) throws Exception {
 	}
 
-	public void onOp(OpEvent event) {
+	public void onOp(OpEvent event) throws Exception {
 	}
 
-	public void onPart(PartEvent event) {
+	public void onPart(PartEvent event) throws Exception {
 	}
 
-	public void onPing(PingEvent event) {
+	public void onPing(PingEvent event) throws Exception {
 	}
 
-	public void onPrivateMessage(PrivateMessageEvent event) {
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
 	}
 
-	public void onQuit(QuitEvent event) {
+	public void onQuit(QuitEvent event) throws Exception {
 	}
 
-	public void onRemoveChannelBan(RemoveChannelBanEvent event) {
+	public void onRemoveChannelBan(RemoveChannelBanEvent event) throws Exception {
 	}
 
-	public void onRemoveChannelKey(RemoveChannelKeyEvent event) {
+	public void onRemoveChannelKey(RemoveChannelKeyEvent event) throws Exception {
 	}
 
-	public void onRemoveChannelLimit(RemoveChannelLimitEvent event) {
+	public void onRemoveChannelLimit(RemoveChannelLimitEvent event) throws Exception {
 	}
 
-	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) {
+	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) throws Exception {
 	}
 
-	public void onRemoveModerated(RemoveModeratedEvent event) {
+	public void onRemoveModerated(RemoveModeratedEvent event) throws Exception {
 	}
 
-	public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event) {
+	public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event) throws Exception {
 	}
 
-	public void onRemovePrivate(RemovePrivateEvent event) {
+	public void onRemovePrivate(RemovePrivateEvent event) throws Exception {
 	}
 
-	public void onRemoveSecret(RemoveSecretEvent event) {
+	public void onRemoveSecret(RemoveSecretEvent event) throws Exception {
 	}
 
-	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) {
+	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) throws Exception {
 	}
 
-	public void onServerPing(ServerPingEvent event) {
+	public void onServerPing(ServerPingEvent event) throws Exception {
 	}
 
-	public void onServerResponse(ServerResponseEvent event) {
+	public void onServerResponse(ServerResponseEvent event) throws Exception {
 	}
 
-	public void onSetChannelBan(SetChannelBanEvent event) {
+	public void onSetChannelBan(SetChannelBanEvent event) throws Exception {
 	}
 
-	public void onSetChannelKey(SetChannelKeyEvent event) {
+	public void onSetChannelKey(SetChannelKeyEvent event) throws Exception {
 	}
 
-	public void onSetChannelLimit(SetChannelLimitEvent event) {
+	public void onSetChannelLimit(SetChannelLimitEvent event) throws Exception {
 	}
 
-	public void onSetInviteOnly(SetInviteOnlyEvent event) {
+	public void onSetInviteOnly(SetInviteOnlyEvent event) throws Exception {
 	}
 
-	public void onSetModerated(SetModeratedEvent event) {
+	public void onSetModerated(SetModeratedEvent event) throws Exception {
 	}
 
-	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) {
+	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) throws Exception {
 	}
 
-	public void onSetPrivate(SetPrivateEvent event) {
+	public void onSetPrivate(SetPrivateEvent event) throws Exception {
 	}
 
-	public void onSetSecret(SetSecretEvent event) {
+	public void onSetSecret(SetSecretEvent event) throws Exception {
 	}
 
-	public void onSetTopicProtection(SetTopicProtectionEvent event) {
+	public void onSetTopicProtection(SetTopicProtectionEvent event) throws Exception {
 	}
 
-	public void onTime(TimeEvent event) {
+	public void onTime(TimeEvent event) throws Exception {
 	}
 
-	public void onTopic(TopicEvent event) {
+	public void onTopic(TopicEvent event) throws Exception {
 	}
 
-	public void onUnknown(UnknownEvent event) {
+	public void onUnknown(UnknownEvent event) throws Exception {
 	}
 
-	public void onUserList(UserListEvent event) {
+	public void onUserList(UserListEvent event) throws Exception {
 	}
 
-	public void onUserMode(UserModeEvent event) {
+	public void onUserMode(UserModeEvent event) throws Exception {
 	}
 
-	public void onVersion(VersionEvent event) {
+	public void onVersion(VersionEvent event) throws Exception {
 	}
 
-	public void onVoice(VoiceEvent event) {
+	public void onVoice(VoiceEvent event) throws Exception {
 	}
 }
