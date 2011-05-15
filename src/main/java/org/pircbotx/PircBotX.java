@@ -1195,8 +1195,8 @@ public class PircBotX {
 
 
 		User source = getUser(sourceNick);
-		//If command and target are equal, then its a command being sent, not a channel.
-		Channel channel = (command.equals(target)) ? null : getChannel(target);
+		//If the channel matches a prefix, then its a channel
+		Channel channel = (_channelPrefixes.indexOf(target.charAt(0)) >= 0) ? null : getChannel(target);
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 
@@ -1304,9 +1304,11 @@ public class PircBotX {
 			channel.setTopicTimestamp(currentTime);
 
 			getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, currentTime, true));
-		} else if (command.equals("INVITE"))
+		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
-			getListenerManager().dispatchEvent(new InviteEvent(this, source, channel));
+			//Use line method instead of channel since channel is wrong
+			getListenerManager().dispatchEvent(new InviteEvent(this, source, line.substring(line.indexOf(" :") + 2)));
+		}
 		else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
