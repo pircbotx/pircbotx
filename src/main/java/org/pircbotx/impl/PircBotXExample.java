@@ -72,11 +72,31 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	}
 
 	/**
-	 * 
-	 * @param rawevent
-	 * @throws Exception 
+	 * Older way to handle events. We are given a generic event and must cast
+	 * to the event type that we want
+	 * <p>
+	 * <b>WARNING:</b> If you are extending ListenerAdapter and implementing Listener
+	 * in the same class (as this does) you <b>must</b> call <code>super.onEvent(event)</code>
+	 * otherwise none of the methods in ListenerAdapter will get called!
+	 * @param rawevent A generic event
+	 * @throws Exception If any Exceptions might be thrown, throw them up and let
+	 * the {@link ListenerManager} handle it. This can be removed though if not needed
 	 */
+	@Override
 	public void onEvent(Event rawevent) throws Exception {
+		//Since we extend ListenerAdapter and implement Listener in the same class
+		//call the super onEvent so ListenerAdapter will work
+		super.onEvent(rawevent);
+		
+		//Make sure were dealing with a message
+		if(rawevent instanceof MessageEvent) {
+			//Cast to get access to all the MessageEvent specific methods
+			MessageEvent event = (MessageEvent)rawevent;
+			
+			//Basic hello world
+			if(event.getMessage().startsWith("?hello"))
+				event.getBot().sendMessage(event.getChannel(), "World");
+		}
 		
 	}
 
