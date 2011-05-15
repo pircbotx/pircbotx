@@ -25,7 +25,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
 
 /**
- * Basic example class for various features of PircBotX
+ * Basic example class for various features of PircBotX. Heavily documented
+ * to explain what's going on
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -102,15 +103,27 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	}
 
 	public static void main(String[] args) {
+		//Create a new bot
 		PircBotX bot = new PircBotX();
-		bot.setName("Quackbot5");
-		bot.setLogin("LQ");
-		bot.setVerbose(true);
+		
+		//Setup this bot
+		bot.setName("Quackbot5"); //Set the nick of the bot. CHANGE IN YOUR CODE
+		bot.setLogin("LQ"); //login part of hostmask, eg name:login@host
+		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
+		
+		//This class is a listener, so add it to the bots known listeners
 		bot.getListenerManager().addListener(new PircBotXExample());
+		
+		//bot.connect throws various exceptions for failures
 		try {
+			//Connect to the freenode IRC network
 			bot.connect("irc.freenode.org");
+			//Join the #quackbot channel
 			bot.joinChannel("#quackbot");
-		} catch (Exception ex) {
+		} 
+		//In your code you should catch and handle each exception seperately,
+		//but here we just lump them all togeather for simpliciy
+		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
