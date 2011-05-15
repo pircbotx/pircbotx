@@ -31,10 +31,7 @@ import org.pircbotx.hooks.events.UserListEvent;
  */
 public class PircBotXExample implements Listener {
 	public void onEvent(Event rawevent) throws Exception {
-		if (rawevent instanceof ConnectEvent) {
-			ConnectEvent event = (ConnectEvent) rawevent;
-			event.getBot().joinChannel("#quackbot");
-		} else if (rawevent instanceof MessageEvent) {
+		if (rawevent instanceof MessageEvent) {
 			MessageEvent mevent = (MessageEvent) rawevent;
 			String message = mevent.getMessage();
 			PircBotX bot = rawevent.getBot();
@@ -65,6 +62,7 @@ public class PircBotXExample implements Listener {
 		bot.getListenerManager().addListener(new PircBotXExample());
 		try {
 			bot.connect("irc.freenode.org");
+			bot.joinChannel("#quackbot");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
