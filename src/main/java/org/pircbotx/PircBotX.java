@@ -1280,7 +1280,7 @@ public class PircBotX {
 			User user = getUser(sourceNick);
 			if (recipient.equals(getNick()))
 				//We were just kicked
-				_userChanInfo.deleteB(user);
+				_userChanInfo.deleteA(channel);
 			else
 				//Someone else
 				_userChanInfo.dissociate(getChannel(target), user, true);
