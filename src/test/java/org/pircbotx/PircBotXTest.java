@@ -18,11 +18,9 @@
  */
 package org.pircbotx;
 
+import java.util.HashSet;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
-import org.pircbotx.hooks.events.MotdEvent;
-import org.pircbotx.hooks.events.TopicEvent;
-import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -247,7 +245,7 @@ public class PircBotXTest {
 			setListenerManager(new GenericListenerManager());
 			getListenerManager().addListener(new Listener() {
 				public void onEvent(Event event) throws Exception {
-					signal.event = event;
+					signal.event.add(event);
 				}		
 			});
 		}
@@ -287,7 +285,7 @@ public class PircBotXTest {
 		public String target = null;
 		public String message = null;
 		public Channel chan = null;
-		public Event event = null;
+		public Set<Event> event = new HashSet<Event>();
 
 		public void set(String target, String message) {
 			this.target = target;
