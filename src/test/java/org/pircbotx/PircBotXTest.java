@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
+import org.pircbotx.hooks.events.TopicEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -200,7 +201,6 @@ public class PircBotXTest {
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
 		bot.handleLine(":irc.someserver.net 323 :End of /LIST");
 		ChannelInfoEvent cevent = getEvent(ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
-		signal.events.clear();
 		Set<ChannelListEntry> channels = cevent.getList();
 		assertEquals(channels.size(), 3);
 		boolean channelParsed = false;
@@ -226,14 +226,18 @@ public class PircBotXTest {
 		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
 	}
 
-	@Test
+	@Test(dependsOnMethods="topicResponseTest")
 	public void topicInfoResponseTest() {
 		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
+		signal.events.clear();
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel ISetTopic 1268522937");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
 
+		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
+		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
+		
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
 	
