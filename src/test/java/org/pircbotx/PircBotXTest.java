@@ -193,11 +193,12 @@ public class PircBotXTest {
 	@Test
 	public void listResponseTest() {
 		//Simulate /LIST response, verify results
-		bot.processServerResponse(321, "Channel :Users Name");
-		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel 99 :" + aString);
-		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
-		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
-		bot.processServerResponse(323, ":End of /LIST");
+		signal.events.clear();
+		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
+		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
+		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
+		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
+		bot.handleLine(":irc.someserver.net 323 :End of /LIST");
 		ChannelInfoEvent cevent = getEvent(ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
 		signal.events.clear();
 		Set<ChannelListEntry> channels = cevent.getList();
@@ -219,7 +220,7 @@ public class PircBotXTest {
 	public void topicResponseTest() {
 		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
-		bot.processServerResponse(332, "PircBotXUser #aChannel :" + aString + aString);
+		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
 
 		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
@@ -229,9 +230,9 @@ public class PircBotXTest {
 	public void topicInfoResponseTest() {
 		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
-		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
+		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel ISetTopic 1268522937");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
-		assertEquals(aChannel.getTopicTimestamp(), (long) 1564842512 * 1000);
+		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
 
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
