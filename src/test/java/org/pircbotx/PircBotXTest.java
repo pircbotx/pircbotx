@@ -227,7 +227,7 @@ public class PircBotXTest {
 
 	@Test
 	public void topicInfoResponseTest() {
-		//Simulate a /TOPIC or /JOIN, verify results
+		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.processServerResponse(333, "PircBotXUser #aChannel ISetTopic 1564842512");
 		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
@@ -245,12 +245,11 @@ public class PircBotXTest {
 	public class PircBotXMod extends PircBotX {
 		public PircBotXMod() {
 			setListenerManager(new GenericListenerManager());
-			getListenerManager().addListener(new TestListener());
-		}
-
-		@Override
-		public void processServerResponse(int code, String response) {
-			super.processServerResponse(code, response);
+			getListenerManager().addListener(new Listener() {
+				public void onEvent(Event event) throws Exception {
+					signal.event = event;
+				}		
+			});
 		}
 
 		@Override
@@ -282,16 +281,6 @@ public class PircBotXTest {
 		public void sendNotice(String target, String notice) {
 			signal.set(target, notice);
 		}
-	}
-
-	public class TestListener implements Listener {
-		public void onEvent(Event event) throws Exception {
-			if(event instanceof ChannelInfoEvent || 
-					event instanceof MotdEvent || 
-					event instanceof TopicEvent || 
-					event instanceof UserListEvent)
-				signal.event = event;
-		}		
 	}
 
 	public class Signal {
