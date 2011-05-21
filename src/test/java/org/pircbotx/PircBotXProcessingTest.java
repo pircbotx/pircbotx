@@ -116,7 +116,7 @@ public class PircBotXProcessingTest {
 		assertNotNull(userChan, "User is not joined to channel after JoinEvent");
 		User chanUser = null;
 		for(User curUser : aChannel.getUsers())
-			if(curUser.getNick().equals("aUser"))
+			if(curUser.getNick().equals("AUser"))
 				chanUser = curUser;
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
 		
