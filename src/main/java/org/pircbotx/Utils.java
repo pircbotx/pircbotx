@@ -88,35 +88,35 @@ public class Utils {
 		else if (event instanceof FileTransferFinishedEvent)
 			return ((FileTransferFinishedEvent) event).getTransfer().getSource();
 		else if (event instanceof FingerEvent)
-			return ((FingerEvent) event).getSource();
+			return ((FingerEvent) event).getUser();
 		else if (event instanceof IncomingChatRequestEvent)
 			return ((IncomingChatRequestEvent) event).getChat().getSource();
 		else if (event instanceof IncomingFileTransferEvent)
 			return ((IncomingFileTransferEvent) event).getTransfer().getSource();
 		else if (event instanceof InviteEvent)
-			return ((InviteEvent) event).getSource();
+			return ((InviteEvent) event).getUser();
 		else if (event instanceof JoinEvent)
-			return ((JoinEvent) event).getSource();
+			return ((JoinEvent) event).getUser();
 		else if (event instanceof KickEvent)
 			return ((KickEvent) event).getSource();
 		else if (event instanceof MessageEvent)
 			return ((MessageEvent) event).getUser();
 		else if (event instanceof ModeEvent)
-			return ((ModeEvent) event).getSource();
+			return ((ModeEvent) event).getUser();
 		else if (event instanceof NickChangeEvent)
 			return ((NickChangeEvent) event).getUser();
 		else if (event instanceof NoticeEvent)
-			return ((NoticeEvent) event).getSource();
+			return ((NoticeEvent) event).getUser();
 		else if (event instanceof OpEvent)
 			return ((OpEvent) event).getSource();
 		else if (event instanceof PartEvent)
-			return ((PartEvent) event).getSource();
+			return ((PartEvent) event).getUser();
 		else if (event instanceof PingEvent)
-			return ((PingEvent) event).getSource();
+			return ((PingEvent) event).getUser();
 		else if (event instanceof PrivateMessageEvent)
 			return ((PrivateMessageEvent) event).getUser();
 		else if (event instanceof QuitEvent)
-			return ((QuitEvent) event).getSource();
+			return ((QuitEvent) event).getUser();
 		else if (event instanceof RemoveChannelBanEvent)
 			return ((RemoveChannelBanEvent) event).getUser();
 		else if (event instanceof RemoveChannelKeyEvent)
@@ -154,13 +154,13 @@ public class Utils {
 		else if (event instanceof SetTopicProtectionEvent)
 			return ((SetTopicProtectionEvent) event).getUser();
 		else if (event instanceof TimeEvent)
-			return ((TimeEvent) event).getSource();
+			return ((TimeEvent) event).getUser();
 		else if (event instanceof TopicEvent)
-			return ((TopicEvent) event).getSource();
+			return ((TopicEvent) event).getUser();
 		else if (event instanceof UserModeEvent)
 			return ((UserModeEvent) event).getSource();
 		else if (event instanceof VersionEvent)
-			return ((VersionEvent) event).getSource();
+			return ((VersionEvent) event).getUser();
 		else if (event instanceof VoiceEvent)
 			return ((VoiceEvent) event).getSource();
 		return null;
