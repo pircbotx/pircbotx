@@ -22,6 +22,8 @@ echo Please select option
 echo  1) Deploy SNAPSHOT
 echo  2) Deploy RELEASE
 echo  3) Deploy SITE
+echo  4) Check for Dependency updates
+echo  5) Check for Plugin Updates
 echo.
 set /p answer=Run number: 
 
@@ -33,6 +35,12 @@ if %answer%==2 (
 )
 if %answer%==3 (
 	mvn clean site:site site:deploy
+)
+if %answer%==4 (
+	mvn versions:display-dependency-updates
+)
+if %answer%==5 (
+	mvn versions:display-plugin-updates
 )
 
 pause
