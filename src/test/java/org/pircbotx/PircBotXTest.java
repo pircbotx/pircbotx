@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang.StringUtils;
+import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -217,6 +218,36 @@ public class PircBotXTest {
 	}
 
 	@Test
+	public void joinResponseTest() {
+		//Simulate another user joining
+		signal.events.clear();
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
+		
+		//Make sure the event gives us the same channels
+		JoinEvent jevent = getEvent(JoinEvent.class, "No aChannel dispatched");
+		assertEquals(aChannel, jevent.getChannel(), "Event's channel does not match origional channel");
+		assertEquals(aUser, jevent.getUser(), "Event's user does not match origional user");
+		
+		//Make sure user info was updated
+		assertEquals("~ALogin", aUser.getLogin(), "User login wrong on JoinEvent");
+		assertEquals("some.host", aUser.getHostmask(), "User hostmask wrong on JoinEvent");
+		Channel userChan = null;
+		for(Channel curChan : aUser.getChannels())
+			if(curChan.getName().equals("#aChannel"))
+				userChan = curChan;
+		assertNotNull(userChan, "User is not joined to channel after JoinEvent");
+		User chanUser = null;
+		for(User curUser : aChannel.getUsers())
+			if(curUser.getNick().equals("aUser"))
+				chanUser = curUser;
+		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
+		
+		System.out.println("Success: Information up to date when user joins");
+	}
+	
+	@Test(dependsOnMethods="joinResponseTest")
 	public void topicResponseTest() {
 		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
