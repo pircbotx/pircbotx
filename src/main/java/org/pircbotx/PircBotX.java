@@ -2123,6 +2123,18 @@ public class PircBotX {
 	public boolean channelExists(Channel chan) {
 		return _userChanInfo.containsA(chan);
 	}
+	
+	/**
+	 * Check if we are still connected to given channel by string. 
+	 * @param channel A channel name as a string
+	 * @return True if we are still connected to the channel, false if not
+	 */
+	public boolean channelExists(String channel) {
+		for (Channel curChan : _userChanInfo.getAValues())
+			if (curChan.getName().equals(channel))
+				return true;
+		return false;
+	}
 
 	/**
 	 * Get all user's in the channel. 
