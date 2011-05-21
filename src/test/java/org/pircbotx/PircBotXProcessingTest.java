@@ -103,12 +103,12 @@ public class PircBotXProcessingTest {
 		
 		//Make sure the event gives us the same channels
 		JoinEvent jevent = getEvent(JoinEvent.class, "No aChannel dispatched");
-		assertEquals(aChannel, jevent.getChannel(), "Event's channel does not match origional channel");
-		assertEquals(aUser, jevent.getUser(), "Event's user does not match origional user");
+		assertEquals(jevent.getChannel(), aChannel, "Event's channel does not match origional channel");
+		assertEquals(jevent.getUser(), aUser, "Event's user does not match origional user");
 		
 		//Make sure user info was updated
-		assertEquals("~ALogin", aUser.getLogin(), "User login wrong on JoinEvent");
-		assertEquals("some.host", aUser.getHostmask(), "User hostmask wrong on JoinEvent");
+		assertEquals(aUser.getLogin(), "~ALogin", "User login wrong on JoinEvent");
+		assertEquals(aUser.getHostmask(), "some.host", "User hostmask wrong on JoinEvent");
 		Channel userChan = null;
 		for(Channel curChan : aUser.getChannels())
 			if(curChan.getName().equals("#aChannel"))
