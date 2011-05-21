@@ -35,16 +35,18 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class InviteEvent extends Event {
-	protected final User user;
+	protected final String user;
 	protected final String channel;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that sent the invitation.
-	 * @param channel The channel that we're being invited to.
+	 * @param user The user that sent the invitation. Provided as a string since
+	 *             the user may or may not be in a channel were in
+	 * @param channel The channel that we're being invited to. Provided as a string
+	 *                since we are not joined to the channel yet
 	 */
-	public <T extends PircBotX> InviteEvent(T bot, User user, String channel) {
+	public <T extends PircBotX> InviteEvent(T bot, String user, String channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
