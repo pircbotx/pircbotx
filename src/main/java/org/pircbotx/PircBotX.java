@@ -1276,7 +1276,7 @@ public class PircBotX {
 				_userChanInfo.clear();
 			else
 				//Someone else
-				_userChanInfo.deleteB(getUser(sourceNick));
+				_userChanInfo.deleteB(source);
 			getListenerManager().dispatchEvent(new QuitEvent(this, source, line.substring(line.indexOf(" :") + 2)));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
