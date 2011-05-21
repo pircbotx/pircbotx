@@ -20,6 +20,8 @@ package org.pircbotx;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
@@ -139,8 +141,8 @@ public class PircBotXProcessingTest {
 		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		events.clear();
-		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel ISetTopic 1268522937");
-		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
+		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
+		assertEquals(aChannel.getTopicSetter(), "AUser");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
 
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
@@ -164,6 +166,15 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
 		
 		System.out.println("Success: MessageEvent gives expected results");
+	}
+	
+	@Test(dependsOnMethods="messageTest")
+	public void mapCheck1Test() {
+		//Test in this stage the status of the Many To Many map
+		ManyToManyMap<Channel, User> map = bot._userChanInfo;
+		
+		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
+		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
 	}
 	
 	public <B> B getEvent(Class<B> clazz, String errorMessage) {
