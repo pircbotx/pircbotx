@@ -23,6 +23,7 @@ import java.util.Set;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
+import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -76,7 +77,23 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 	
-	@Test
+	@Test(dependsOnMethods="listResponseTest")
+	public void inviteResponseTest() {
+		//Simulate getting invited to a channel
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
+		
+		//Verify event values
+		InviteEvent ievent = getEvent(InviteEvent.class, "No InviteEvent dispatched");
+		assertEquals(ievent.getUser(), "AUser", "InviteEvent user is wrong");
+		assertEquals(ievent.getChannel(), "#aChannel", "InviteEvent channel is wrong");
+		
+		//Make sure the event doesn't create a user or a channel
+		assertFalse(bot.channelExists("#aChannel"), "InviteEvent created channel, shouldn't have");
+		assertFalse(bot.userExists("AUser"), "InviteEvent created user, shouldn't have");
+	}
+	
+	@Test(dependsOnMethods="inviteResponseTest")
 	public void joinResponseTest() {
 		//Simulate another user joining
 		events.clear();
