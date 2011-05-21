@@ -53,7 +53,7 @@ public class PircBotXProcessingTest {
 	}
 	
 	@Test
-	public void listResponseTest() {
+	public void listTest() {
 		//Simulate /LIST response, verify results
 		events.clear();
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
@@ -78,7 +78,7 @@ public class PircBotXProcessingTest {
 	}
 	
 	@Test(dependsOnMethods="listResponseTest")
-	public void inviteResponseTest() {
+	public void inviteTest() {
 		//Simulate getting invited to a channel
 		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
@@ -94,7 +94,7 @@ public class PircBotXProcessingTest {
 	}
 	
 	@Test(dependsOnMethods="inviteResponseTest")
-	public void joinResponseTest() {
+	public void joinTest() {
 		//Simulate another user joining
 		events.clear();
 		Channel aChannel = bot.getChannel("#aChannel");
@@ -124,7 +124,7 @@ public class PircBotXProcessingTest {
 	}
 	
 	@Test(dependsOnMethods="joinResponseTest")
-	public void topicResponseTest() {
+	public void topicTest() {
 		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
@@ -134,7 +134,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods="topicResponseTest")
-	public void topicInfoResponseTest() {
+	public void topicInfoTest() {
 		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		events.clear();
