@@ -20,7 +20,6 @@ package org.pircbotx;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -122,6 +121,7 @@ public class PircBotXProcessingTest {
 			if(curUser.getNick().equals("AUser"))
 				chanUser = curUser;
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
+		assertTrue(bot.userExists("AUser"))
 		
 		System.out.println("Success: Information up to date when user joins");
 	}
