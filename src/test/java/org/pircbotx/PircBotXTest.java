@@ -198,7 +198,9 @@ public class PircBotXTest {
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
 		bot.processServerResponse(322, "PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
 		bot.processServerResponse(323, ":End of /LIST");
-		Set<ChannelListEntry> channels = ((ChannelInfoEvent) signal.event).getList();
+		ChannelInfoEvent cevent = getEvent(ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
+		signal.events.clear();
+		Set<ChannelListEntry> channels = cevent.getList();
 		assertEquals(channels.size(), 3);
 		boolean channelParsed = false;
 		for (ChannelListEntry entry : channels)
@@ -233,6 +235,16 @@ public class PircBotXTest {
 
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
+	
+	public <B> B getEvent(Class<B> clazz, String errorMessage) {
+		B cevent = null;
+		for(Event curEvent : signal.events)
+			if(curEvent.getClass().isAssignableFrom(clazz))
+				return (B)curEvent;
+		//Failed, does not exist
+		assertNotNull(cevent, errorMessage);
+		return null;
+	}
 
 	/**
 	 * Modified PircBotX for this testing
@@ -245,7 +257,7 @@ public class PircBotXTest {
 			setListenerManager(new GenericListenerManager());
 			getListenerManager().addListener(new Listener() {
 				public void onEvent(Event event) throws Exception {
-					signal.event.add(event);
+					signal.events.add(event);
 				}		
 			});
 		}
@@ -285,7 +297,7 @@ public class PircBotXTest {
 		public String target = null;
 		public String message = null;
 		public Channel chan = null;
-		public Set<Event> event = new HashSet<Event>();
+		public Set<Event> events = new HashSet<Event>();
 
 		public void set(String target, String message) {
 			this.target = target;
