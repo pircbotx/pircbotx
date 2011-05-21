@@ -1307,7 +1307,10 @@ public class PircBotX {
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
-			getListenerManager().dispatchEvent(new InviteEvent(this, source, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, line.substring(line.indexOf(" :") + 2)));
+			//Delete user if not part of any of our channels
+			if(source.getChannels().isEmpty())
+				_userChanInfo.deleteB(source);
 		}
 		else
 			// If we reach this point, then we've found something that the PircBotX
