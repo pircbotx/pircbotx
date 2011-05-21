@@ -150,7 +150,7 @@
 						<target>1.5</target>
 					</configuration>
 				</plugin>
-				<!--Use specific site version with SNAPSHOT HG plugins-->
+				<!--Deploy site with Mercurial (Hg)-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
@@ -159,12 +159,12 @@
 						<dependency>
 							<groupId>org.apache.maven.scm</groupId>
 							<artifactId>maven-scm-api</artifactId>
-							<version>1.5-SNAPSHOT</version>
+							<version>1.5</version>
 						</dependency>
 						<dependency>
 							<groupId>org.apache.maven.scm</groupId>
 							<artifactId>maven-scm-provider-hg</artifactId>
-							<version>1.5-SNAPSHOT</version>
+							<version>1.5</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -189,17 +189,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	
-	<pluginRepositories>
-		<!--Snapshots for HG SCM provider and API-->
-		<pluginRepository>
-			<id>apache-snapshots</id>
-			<url>https://repository.apache.org/content/groups/snapshots-group/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<!--
 		Distrobution
