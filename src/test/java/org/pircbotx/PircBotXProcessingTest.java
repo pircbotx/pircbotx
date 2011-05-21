@@ -1,0 +1,143 @@
+/**
+ * Copyright (C) 2010 Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * PircBotX is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.pircbotx;
+
+import java.util.HashSet;
+import java.util.Set;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.events.ChannelInfoEvent;
+import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.TopicEvent;
+import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import static org.testng.Assert.*;
+
+/**
+ * Usability tests for PircBotX that test how PircBotX handles lines and events.
+ * Any other tests not involving processing lines should be in PircBotXTest
+ * 
+ * @author Leon Blakey <lord.quackstar at gmail.com>
+ */
+public class PircBotXProcessingTest {
+	final PircBotX bot = new PircBotX();
+	final Set<Event> events = new HashSet<Event>();
+	final String aString = "I'm some super long string that has multiple words";
+	
+	@BeforeClass
+	public void setup() {
+		bot.setListenerManager(new GenericListenerManager());
+		bot.getListenerManager().addListener(new Listener() {
+			public void onEvent(Event event) throws Exception {
+				events.add(event);
+			}
+		});
+	}
+	
+	@Test
+	public void listResponseTest() {
+		//Simulate /LIST response, verify results
+		events.clear();
+		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
+		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
+		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
+		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
+		bot.handleLine(":irc.someserver.net 323 :End of /LIST");
+		ChannelInfoEvent cevent = getEvent(ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
+		Set<ChannelListEntry> channels = cevent.getList();
+		assertEquals(channels.size(), 3);
+		boolean channelParsed = false;
+		for (ChannelListEntry entry : channels)
+			if (entry.getName().equals("#PircBotXChannel1")) {
+				assertEquals(entry.getName(), "#PircBotXChannel1");
+				assertEquals(entry.getTopic(), aString + aString);
+				assertEquals(entry.getUsers(), 100);
+				channelParsed = true;
+			}
+		assertTrue(channelParsed, "Channel #PircBotXChannel1 not found in /LIST results!");
+
+		System.out.println("Success: Output from /LIST command gives expected results");
+	}
+	
+	@Test
+	public void joinResponseTest() {
+		//Simulate another user joining
+		events.clear();
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
+		
+		//Make sure the event gives us the same channels
+		JoinEvent jevent = getEvent(JoinEvent.class, "No aChannel dispatched");
+		assertEquals(aChannel, jevent.getChannel(), "Event's channel does not match origional channel");
+		assertEquals(aUser, jevent.getUser(), "Event's user does not match origional user");
+		
+		//Make sure user info was updated
+		assertEquals("~ALogin", aUser.getLogin(), "User login wrong on JoinEvent");
+		assertEquals("some.host", aUser.getHostmask(), "User hostmask wrong on JoinEvent");
+		Channel userChan = null;
+		for(Channel curChan : aUser.getChannels())
+			if(curChan.getName().equals("#aChannel"))
+				userChan = curChan;
+		assertNotNull(userChan, "User is not joined to channel after JoinEvent");
+		User chanUser = null;
+		for(User curUser : aChannel.getUsers())
+			if(curUser.getNick().equals("aUser"))
+				chanUser = curUser;
+		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
+		
+		System.out.println("Success: Information up to date when user joins");
+	}
+	
+	@Test(dependsOnMethods="joinResponseTest")
+	public void topicResponseTest() {
+		//Simulate a /TOPIC or /JOIN, verify results
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
+		assertEquals(aChannel.getTopic(), aString + aString);
+
+		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
+	}
+
+	@Test(dependsOnMethods="topicResponseTest")
+	public void topicInfoResponseTest() {
+		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
+		Channel aChannel = bot.getChannel("#aChannel");
+		events.clear();
+		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel ISetTopic 1268522937");
+		assertEquals(aChannel.getTopicSetter(), "ISetTopic");
+		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
+
+		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
+		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
+		
+		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
+	}
+	
+	public <B> B getEvent(Class<B> clazz, String errorMessage) {
+		B cevent = null;
+		for(Event curEvent : events)
+			if(curEvent.getClass().isAssignableFrom(clazz))
+				return (B)curEvent;
+		//Failed, does not exist
+		assertNotNull(cevent, errorMessage);
+		return null;
+	}
+}
