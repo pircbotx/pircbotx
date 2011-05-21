@@ -77,7 +77,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 	
-	@Test(dependsOnMethods="listResponseTest")
+	@Test(dependsOnMethods="listTest")
 	public void inviteTest() {
 		//Simulate getting invited to a channel
 		events.clear();
@@ -93,7 +93,7 @@ public class PircBotXProcessingTest {
 		assertFalse(bot.userExists("AUser"), "InviteEvent created user, shouldn't have");
 	}
 	
-	@Test(dependsOnMethods="inviteResponseTest")
+	@Test(dependsOnMethods="inviteTest")
 	public void joinTest() {
 		//Simulate another user joining
 		events.clear();
@@ -123,7 +123,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Information up to date when user joins");
 	}
 	
-	@Test(dependsOnMethods="joinResponseTest")
+	@Test(dependsOnMethods="joinTest")
 	public void topicTest() {
 		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
@@ -133,7 +133,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
 	}
 
-	@Test(dependsOnMethods="topicResponseTest")
+	@Test(dependsOnMethods="topicTest")
 	public void topicInfoTest() {
 		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
