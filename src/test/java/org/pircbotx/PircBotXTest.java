@@ -53,7 +53,7 @@ public class PircBotXTest {
 	final Event event = new ActionEvent(bot, user, chan, string);
 
 	@Test
-	public void sendNamingTests() {
+	public void sendMethodsNamingTests() {
 		//Get all send method variations in one list
 		Map<String, List<Method>> sendMethods = new HashMap<String, List<Method>>();
 		for (Method curMethod : botClass.getDeclaredMethods()) {
