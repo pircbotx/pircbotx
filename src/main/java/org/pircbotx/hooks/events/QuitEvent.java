@@ -36,18 +36,18 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QuitEvent extends Event {
-	protected final User channel;
+	protected final User user;
 	protected final String reason;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The user that quit from the server.
+	 * @param user The user that quit from the server.
 	 * @param reason The reason given for quitting the server.
 	 */
-	public <T extends PircBotX> QuitEvent(T bot, User channel, String reason) {
+	public <T extends PircBotX> QuitEvent(T bot, User user, String reason) {
 		super(bot);
-		this.channel = channel;
+		this.user = user;
 		this.reason = reason;
 	}
 }
