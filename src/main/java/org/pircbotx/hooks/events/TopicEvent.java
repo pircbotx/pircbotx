@@ -38,7 +38,7 @@ import org.pircbotx.PircBotX;
 public class TopicEvent extends Event {
 	protected final Channel channel;
 	protected final String topic;
-	protected final User source;
+	protected final User user;
 	protected final boolean changed;
 	protected final long date;
 	
@@ -47,16 +47,16 @@ public class TopicEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel that the topic belongs to.
 	 * @param topic The topic for the channel.
-	 * @param source The user that set the topic.
+	 * @param user The user that set the topic.
 	 * @param date When the topic was set (milliseconds since the epoch).
 	 * @param changed True if the topic has just been changed, false if
 	 *                the topic was already there.
 	 */
-	public <T extends PircBotX> TopicEvent(T bot, Channel channel, String topic, User source, long date, boolean changed) {
+	public <T extends PircBotX> TopicEvent(T bot, Channel channel, String topic, User user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.topic = topic;
-		this.source = source;
+		this.user = user;
 		this.changed = changed;
 		this.date = date;
 	}

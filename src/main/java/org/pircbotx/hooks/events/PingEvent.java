@@ -37,22 +37,22 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PingEvent extends Event {
-	protected final User source;
-	protected final Channel target;
+	protected final User user;
+	protected final Channel channel;
 	protected final String pingValue;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The user that sent the PING request.
-	 * @param target The channel that received the ping request. A value of <code>null</code>
+	 * @param user The user that sent the PING request.
+	 * @param channel The channel that received the ping request. A value of <code>null</code>
 	 *               means the target was us.
 	 * @param pingValue The value that was supplied as an argument to the PING command.
 	 */
-	public <T extends PircBotX> PingEvent(T bot, User source, Channel target, String pingValue) {
+	public <T extends PircBotX> PingEvent(T bot, User user, Channel channel, String pingValue) {
 		super(bot);
-		this.source = source;
-		this.target = target;
+		this.user = user;
+		this.channel = channel;
 		this.pingValue = pingValue;
 	}
 }

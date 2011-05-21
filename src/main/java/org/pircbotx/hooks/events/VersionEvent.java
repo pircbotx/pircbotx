@@ -35,19 +35,19 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class VersionEvent extends Event {
-	protected final User source;
+	protected final User user;
 	protected final Channel target;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The nick of the user that sent the VERSION request.
+	 * @param user The nick of the user that sent the VERSION request.
 	 * @param target The target channel of the VERSION request. A value of <code>null</code>
 	 *               means that that the target is us.
 	 */
-	public <T extends PircBotX> VersionEvent(T bot, User source, Channel target) {
+	public <T extends PircBotX> VersionEvent(T bot, User user, Channel target) {
 		super(bot);
-		this.source = source;
+		this.user = user;
 		this.target = target;
 	}
 }

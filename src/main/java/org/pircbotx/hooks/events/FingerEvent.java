@@ -36,18 +36,18 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FingerEvent extends Event {
-	protected final User source;
+	protected final User user;
 	protected final Channel channel;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The user that sent the FINGER request.
+	 * @param user The user that sent the FINGER request.
 	 * @param channel The target channel of the FINGER request 
 	 */
-	public <T extends PircBotX> FingerEvent(T bot, User source, Channel channel) {
+	public <T extends PircBotX> FingerEvent(T bot, User user, Channel channel) {
 		super(bot);
-		this.source = source;
+		this.user = user;
 		this.channel = channel;
 	}
 }
