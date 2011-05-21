@@ -36,19 +36,19 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TimeEvent extends Event {
-	protected final User source;
+	protected final User user;
 	protected final Channel target;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The user that sent the TIME request.
+	 * @param user The user that sent the TIME request.
 	 * @param target The target channel of the TIME request. A value of <code>null</code>
 	 *               means that target is us
 	 */
-	public <T extends PircBotX> TimeEvent(T bot, User source, Channel target) {
+	public <T extends PircBotX> TimeEvent(T bot, User user, Channel target) {
 		super(bot);
-		this.source = source;
+		this.user = user;
 		this.target = target;
 	}
 }

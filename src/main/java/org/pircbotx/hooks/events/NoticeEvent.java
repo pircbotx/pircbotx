@@ -35,21 +35,21 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class NoticeEvent extends Event {
-	protected final User source;
+	protected final User user;
 	protected final Channel target;
 	protected final String notice;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param source The nick of the user that sent the notice.
+	 * @param user The nick of the user that sent the notice.
 	 * @param target The target channel of the notice. A value of <code>null</code>
 	 *               means that the target is us
 	 * @param notice The notice message.
 	 */
-	public <T extends PircBotX> NoticeEvent(T bot, User source, Channel target, String notice) {
+	public <T extends PircBotX> NoticeEvent(T bot, User user, Channel target, String notice) {
 		super(bot);
-		this.source = source;
+		this.user = user;
 		this.target = target;
 		this.notice = notice;
 	}

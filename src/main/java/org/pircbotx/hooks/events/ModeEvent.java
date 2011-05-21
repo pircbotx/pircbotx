@@ -42,20 +42,20 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class ModeEvent extends Event {
 	protected final Channel channel;
-	protected final User source;
+	protected final User user;
 	protected final String mode;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel that the mode operation applies to.
-	 * @param source The user that set the mode.
+	 * @param user The user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	public <T extends PircBotX> ModeEvent(T bot, Channel channel, User source, String mode) {
+	public <T extends PircBotX> ModeEvent(T bot, Channel channel, User user, String mode) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 		this.mode = mode;
 	}
 }
