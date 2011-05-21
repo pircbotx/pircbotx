@@ -1239,14 +1239,8 @@ public class PircBotX {
 				sendRawLine("MODE " + target);
 			}
 
-			User usr = getUser(sourceNick);
-			//Only setup if nessesary
-			if (usr.getHostmask() == null) {
-				usr.setLogin(sourceLogin);
-				usr.setHostmask(sourceHostname);
-			}
-			//user.addUser(usr);
-
+			source.setLogin(sourceLogin);
+			source.setHostmask(sourceHostname);
 			getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
 		} else if (command.equals("PART"))
 			// Someone is parting from a channel.
