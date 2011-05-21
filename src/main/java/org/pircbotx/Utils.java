@@ -72,7 +72,8 @@ public class Utils {
 	}
 
 	/**
-	 * Extract the source user from any Event
+	 * Extract the source user from any Event. <b>Warning:</b> This will not work
+	 * on events that return the user as a string like {@link InviteEvent}
 	 * @param event An event to get information from
 	 * @return The object of the user or null if the event doesn't have a source
 	 */
@@ -93,8 +94,6 @@ public class Utils {
 			return ((IncomingChatRequestEvent) event).getChat().getSource();
 		else if (event instanceof IncomingFileTransferEvent)
 			return ((IncomingFileTransferEvent) event).getTransfer().getSource();
-		else if (event instanceof InviteEvent)
-			return ((InviteEvent) event).getUser();
 		else if (event instanceof JoinEvent)
 			return ((JoinEvent) event).getUser();
 		else if (event instanceof KickEvent)
