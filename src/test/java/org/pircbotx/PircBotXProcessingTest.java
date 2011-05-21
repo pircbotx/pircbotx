@@ -25,6 +25,7 @@ import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
@@ -146,6 +147,23 @@ public class PircBotXProcessingTest {
 		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 		
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
+	}
+	
+	@Test(dependsOnMethods="topicInfoTest")
+	public void messageTest() {
+		//Simulate a channel message
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + aString);
+		
+		//Verify event contents
+		MessageEvent mevent = getEvent(MessageEvent.class, "MessageEvent not dispatched");
+		assertEquals(mevent.getChannel(), aChannel, "Event channel and origional channel do not match");
+		assertEquals(mevent.getUser(), aUser, "Event user and origional user do not match");
+		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
+		
+		System.out.println("Success: MessageEvent gives expected results");
 	}
 	
 	public <B> B getEvent(Class<B> clazz, String errorMessage) {
