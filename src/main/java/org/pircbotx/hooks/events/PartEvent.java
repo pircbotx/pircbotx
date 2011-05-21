@@ -37,17 +37,17 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class PartEvent extends Event {
 	protected final Channel channel;
-	protected final User source;
+	protected final User user;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel which somebody parted from.
-	 * @param source The user who parted from the channel.
+	 * @param user The user who parted from the channel.
 	 */
-	public <T extends PircBotX> PartEvent(T bot, Channel channel, User source) {
+	public <T extends PircBotX> PartEvent(T bot, Channel channel, User user) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 	}
 }
