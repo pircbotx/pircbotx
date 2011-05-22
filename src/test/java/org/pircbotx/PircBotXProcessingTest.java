@@ -29,6 +29,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.TopicEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -167,6 +168,21 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 		assertEquals(mevent.getUser(), aUser, "Event user and origional user do not match");
 		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
+		
+		System.out.println("Success: MessageEvent gives expected results");
+	}
+	
+	@Test(dependsOnMethods="messageTest")
+	public void privateMessageTest() {
+		//Simulate a private message from a user that is already in one of our channels
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
+		
+		//Verify event contents
+		PrivateMessageEvent pevent = getEvent(PrivateMessageEvent.class, "MessageEvent not dispatched");
+		assertEquals(pevent.getUser(), aUser, "Event user and origional user do not match");
+		assertEquals(pevent.getMessage(), aString, "Message sent does not match");
 		
 		System.out.println("Success: MessageEvent gives expected results");
 	}
