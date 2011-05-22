@@ -46,6 +46,10 @@ public class PircBotXProcessingTest {
 	final Set<Event> events = new HashSet<Event>();
 	final String aString = "I'm some super long string that has multiple words";
 	
+	/**
+	 * General bot setup: Use GenericListenerManager (no threading), add custom
+	 * listener to add all called events to Event set, set nick, etc
+	 */
 	@BeforeClass
 	public void setup() {
 		bot.setListenerManager(new GenericListenerManager());
@@ -58,9 +62,11 @@ public class PircBotXProcessingTest {
 		bot.setName("PircBotXUser");
 	}
 	
+	/**
+	 * Simulate /LIST response with 3 channels
+	 */
 	@Test
 	public void listTest() {
-		//Simulate /LIST response, verify results
 		events.clear();
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
@@ -83,9 +89,11 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 	
+	/**
+	 * Simulate getting invited to a channel
+	 */
 	@Test(dependsOnMethods="listTest")
 	public void inviteTest() {
-		//Simulate getting invited to a channel
 		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 		
@@ -99,9 +107,11 @@ public class PircBotXProcessingTest {
 		assertFalse(bot.userExists("AUser"), "InviteEvent created user, shouldn't have");
 	}
 	
+	/**
+	 * Simulate another using joining the channel we just joined
+	 */
 	@Test(dependsOnMethods="inviteTest")
 	public void joinTest() {
-		//Simulate another user joining
 		events.clear();
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -130,9 +140,11 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Information up to date when user joins");
 	}
 	
+	/**
+	 * Simulate a /TOPIC (no args) or /JOIN (inital topic sent when joining)
+	 */
 	@Test(dependsOnMethods="joinTest")
 	public void topicTest() {
-		//Simulate a /TOPIC or /JOIN, verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
@@ -140,9 +152,11 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
 	}
 
+	/**
+	 * Simulate a /TOPIC info (sent after joining a channel and topic is sent)
+	 */
 	@Test(dependsOnMethods="topicTest")
 	public void topicInfoTest() {
-		//Simulate a /TOPIC info (sent after joining a channel and topic is sent), verify results
 		Channel aChannel = bot.getChannel("#aChannel");
 		events.clear();
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
@@ -155,9 +169,11 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
 	
+	/**
+	 * Simulate a channel message being sent
+	 */
 	@Test(dependsOnMethods="topicInfoTest")
 	public void messageTest() {
-		//Simulate a channel message
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		events.clear();
@@ -172,9 +188,11 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: MessageEvent gives expected results");
 	}
 	
+	/**
+	 * Simulate a private message from a user that's already a part of one of our channels
+	 */
 	@Test(dependsOnMethods="messageTest")
 	public void privateMessageTest() {
-		//Simulate a private message from a user that is already in one of our channels
 		User aUser = bot.getUser("AUser");
 		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
@@ -187,18 +205,23 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: MessageEvent gives expected results");
 	}
 	
+	/**
+	 * Check internal ManyToManyMap for any extra values
+	 */
 	@Test(dependsOnMethods="messageTest")
 	public void mapCheck1Test() {
-		//Test in this stage the status of the Many To Many map
 		ManyToManyMap<Channel, User> map = bot._userChanInfo;
 		
 		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
 		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
 	}
 	
+	/**
+	 * Simulate kicking a user that just joined. Note that since joinTest passed
+	 * (this test indirectly depends on it), simulating a JOIN is safe
+	 */
 	@Test(dependsOnMethods="mapCheck1Test")
 	public void kickTest() {
-		//Simulate kicking a user that just joined (joinTest passed so JOINing works)
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		events.clear();
@@ -213,14 +236,18 @@ public class PircBotXProcessingTest {
 		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
 		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
 		
-		//Make sure Map only has the relevant values
-		ManyToManyMap<Channel, User> map = bot._userChanInfo;
-		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
-		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
-		
 		System.out.println("Success: KickEvent gives expected results");
 	}
 	
+	/**
+	 * After simulating a server response, call this to get a specific Event from
+	 * the Event set. Note that if the event does not exist an Assertion error will
+	 * be thrown. Also note that only one event will be fetched
+	 * @param <B> The event type to be fetched
+	 * @param clazz The class of the event type
+	 * @param errorMessage An error message if the event type does not exist
+	 * @return A single requested event
+	 */
 	protected <B> B getEvent(Class<B> clazz, String errorMessage) {
 		B cevent = null;
 		for(Event curEvent : events)
