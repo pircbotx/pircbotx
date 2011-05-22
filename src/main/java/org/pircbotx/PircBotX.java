@@ -162,13 +162,7 @@ public class PircBotX {
 			//Remove the Channels internal reference to the User
 			a.removeUser(b);
 			
-			boolean result = super.dissociate(a, b, remove);
-			
-			//If user is not associated with anything, remove
-			//Don't put in deleteB because user might be PMing us but not in our channels
-			if(getAValues(b).isEmpty())
-				deleteB(b);
-			
+			boolean result = super.dissociate(a, b, remove);			
 			return result;
 		}
 	};
