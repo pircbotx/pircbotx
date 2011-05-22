@@ -208,7 +208,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Check internal ManyToManyMap for any extra values
 	 */
-	@Test(dependsOnMethods="messageTest")
+	@Test(dependsOnMethods="privateMessageTest")
 	public void mapCheck1Test() {
 		ManyToManyMap<Channel, User> map = bot._userChanInfo;
 		
