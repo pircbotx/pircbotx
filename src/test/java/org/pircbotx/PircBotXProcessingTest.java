@@ -28,6 +28,7 @@ import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -206,9 +207,28 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Check internal ManyToManyMap for any extra values
+	 * Simulate a NOTICE sent to the channel
 	 */
 	@Test(dependsOnMethods="privateMessageTest")
+	public void channelNoticeTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host NOTICE #aChannel :" + aString);
+		
+		//Verify event contents
+		NoticeEvent nevent = getEvent(NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
+		assertEquals(nevent.getChannel(), aChannel, "NoticeEvent's channel does not match given");
+		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
+		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
+		
+		System.out.println("Success: NoticeEvent gives expected results");
+	}
+	
+	/**
+	 * Check internal ManyToManyMap for any extra values
+	 */
+	@Test(dependsOnMethods="channelNoticeTest")
 	public void mapCheck1Test() {
 		ManyToManyMap<Channel, User> map = bot._userChanInfo;
 		
