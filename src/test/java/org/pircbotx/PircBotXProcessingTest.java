@@ -53,6 +53,8 @@ public class PircBotXProcessingTest {
 				events.add(event);
 			}
 		});
+		bot.setNick("PircBotXUser");
+		bot.setName("PircBotXUser");
 	}
 	
 	@Test
