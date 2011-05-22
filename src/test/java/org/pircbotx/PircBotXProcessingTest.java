@@ -195,6 +195,11 @@ public class PircBotXProcessingTest {
 		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
 		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
 		
+		//Make sure Map only has the relevant values
+		ManyToManyMap<Channel, User> map = bot._userChanInfo;
+		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
+		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
+		
 		System.out.println("Success: KickEvent gives expected results");
 	}
 	
