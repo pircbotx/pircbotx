@@ -226,9 +226,28 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Check internal ManyToManyMap for any extra values
+	 * Simulate a NOTICE sent directly to us
 	 */
 	@Test(dependsOnMethods="channelNoticeTest")
+	public void userNoticeTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
+		
+		//Verify event contents
+		NoticeEvent nevent = getEvent(NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
+		assertNull(nevent.getChannel(), "NoticeEvent's channel isn't null during private notice");
+		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
+		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
+		
+		System.out.println("Success: NoticeEvent gives expected results");
+	}
+	
+	/**
+	 * Check internal ManyToManyMap for any extra values
+	 */
+	@Test(dependsOnMethods="userNoticeTest")
 	public void mapCheck1Test() {
 		ManyToManyMap<Channel, User> map = bot._userChanInfo;
 		
