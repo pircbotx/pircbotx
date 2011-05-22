@@ -18,8 +18,6 @@
  */
 package org.pircbotx.hooks.events;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,9 +25,6 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 /**
  * Called when the mode of a user is set.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
