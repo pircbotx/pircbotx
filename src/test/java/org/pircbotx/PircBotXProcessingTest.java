@@ -203,7 +203,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: KickEvent gives expected results");
 	}
 	
-	public <B> B getEvent(Class<B> clazz, String errorMessage) {
+	protected <B> B getEvent(Class<B> clazz, String errorMessage) {
 		B cevent = null;
 		for(Event curEvent : events)
 			if(curEvent.getClass().isAssignableFrom(clazz))
