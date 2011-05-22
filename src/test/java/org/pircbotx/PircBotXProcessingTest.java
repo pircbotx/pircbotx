@@ -121,7 +121,7 @@ public class PircBotXProcessingTest {
 			if(curUser.getNick().equals("AUser"))
 				chanUser = curUser;
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
-		assertTrue(bot.userExists("AUser"))
+		assertTrue(bot.userExists("AUser"));
 		
 		System.out.println("Success: Information up to date when user joins");
 	}
