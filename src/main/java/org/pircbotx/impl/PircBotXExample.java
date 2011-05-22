@@ -110,6 +110,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		bot.setName("Quackbot5"); //Set the nick of the bot. CHANGE IN YOUR CODE
 		bot.setLogin("LQ"); //login part of hostmask, eg name:login@host
 		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
+		bot.setAutoNickChange(true); //Automatically change nick when the current one is in use
 
 		//This class is a listener, so add it to the bots known listeners
 		bot.getListenerManager().addListener(new PircBotXExample());
