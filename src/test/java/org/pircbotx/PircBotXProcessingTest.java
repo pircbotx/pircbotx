@@ -31,6 +31,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -64,9 +65,33 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Simulate /LIST response with 3 channels
+	 * Test mode being changed
 	 */
 	@Test
+	public void userModeTest() {
+		//Use two users to differentiate between source and target
+		User aUser = bot.getUser("PircBotXUser");
+		User aUser2 = bot.getUser("PircBotXUser2");
+		events.clear();
+		bot.handleLine(":PircBotXUser MODE PircBotXUser2 :+i");
+		
+		//Verify event contents
+		UserModeEvent uevent = getEvent(UserModeEvent.class, "UserModeEvent not dispatched on change");
+		assertEquals(uevent.getSource(), aUser, "UserModeEvent's source does not match given");
+		assertEquals(uevent.getTarget(), aUser2, "UserModeEvent's target does not match given");
+		assertEquals(uevent.getMode(), "+i", "UserModeEvent's mode does not match given");
+
+		//Cleanup
+		bot._userChanInfo.deleteB(aUser);
+		bot._userChanInfo.deleteB(aUser2);
+		
+		System.out.println("Success: UserModeEvent gives expected results");
+	}
+	
+	/**
+	 * Simulate /LIST response with 3 channels
+	 */
+	@Test(dependsOnMethods="userModeTest")
 	public void listTest() {
 		events.clear();
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
