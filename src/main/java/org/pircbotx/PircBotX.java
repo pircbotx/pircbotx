@@ -1170,7 +1170,9 @@ public class PircBotX {
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
 					sourceNick = senderInfo;
-					target = token;
+					//WARNING: Changed from origional PircBot
+					//Instead of command as target, use channel/user
+					target = tokenizer.nextToken();
 				}
 			} else {
 				// We don't know what this line means.
