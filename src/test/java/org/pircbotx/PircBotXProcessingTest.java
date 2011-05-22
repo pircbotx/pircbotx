@@ -26,6 +26,7 @@ import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -175,6 +176,26 @@ public class PircBotXProcessingTest {
 		
 		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
 		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
+	}
+	
+	@Test(dependsOnMethods="mapCheck1Test")
+	public void kickTest() {
+		//Simulate kicking a user that just joined (joinTest passed so JOINing works)
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		User otherUser = bot.getUser("OtherUser");
+		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
+		
+		//Verify event contents
+		KickEvent kevent = getEvent(KickEvent.class, "KickEvent not dispatched");
+		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
+		assertEquals(kevent.getSource(), aUser, "KickEvent's getSource doesn't match kicker user");
+		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
+		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
+		
+		System.out.println("Success: KickEvent gives expected results");
 	}
 	
 	public <B> B getEvent(Class<B> clazz, String errorMessage) {
