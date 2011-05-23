@@ -1412,7 +1412,7 @@ public class PircBotX {
 		} else if (code == RPL_CHANNELMODEIS)
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			getChannel(parsed[1]).parseMode(parsed[2]);
+			getChannel(parsed[1]).setMode(parsed[2]);
 		else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. Note mIRC says lordquackstar shouldn't be there while Freenode
