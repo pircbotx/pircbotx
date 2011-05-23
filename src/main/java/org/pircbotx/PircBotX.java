@@ -1556,7 +1556,7 @@ public class PircBotX {
 					else
 						getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, source));
 			}
-
+			channel.parseMode(mode);
 			getListenerManager().dispatchEvent(new ModeEvent(this, channel, source, mode));
 		} else {
 			// The mode of a user is being changed.
