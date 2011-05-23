@@ -70,8 +70,8 @@ public class Channel {
 	public void parseMode(String rawMode) {
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
 		boolean adding = true;
-		for (char curChar : rawMode.toCharArray())
-			if ("--".contains(Character.toString(curChar)))
+		for (char curChar : rawMode.toCharArray()) {
+			if (curChar == '-')
 				adding = false;
 			else if (curChar == '+')
 				adding = true;
@@ -79,6 +79,7 @@ public class Channel {
 				mode = mode + curChar;
 			else
 				mode = mode.replace(Character.toString(curChar), "");
+		}
 	}
 
 	/**
