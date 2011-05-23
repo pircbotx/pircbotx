@@ -1468,6 +1468,7 @@ public class PircBotX {
 		if (_channelPrefixes.indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
 			Channel channel = getChannel(target);
+			channel.parseMode(mode);
 			StringTokenizer tok = new StringTokenizer(mode);
 			String[] params = new String[tok.countTokens()];
 
@@ -1556,7 +1557,6 @@ public class PircBotX {
 					else
 						getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, source));
 			}
-			channel.parseMode(mode);
 			getListenerManager().dispatchEvent(new ModeEvent(this, channel, source, mode));
 		} else {
 			// The mode of a user is being changed.
