@@ -119,7 +119,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate getting invited to a channel
 	 */
-	@Test(dependsOnMethods="listTest")
+	@Test(dependsOnMethods="listTest", description="Hey look, text")
 	public void inviteTest() {
 		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
@@ -132,6 +132,8 @@ public class PircBotXProcessingTest {
 		//Make sure the event doesn't create a user or a channel
 		assertFalse(bot.channelExists("#aChannel"), "InviteEvent created channel, shouldn't have");
 		assertFalse(bot.userExists("AUser"), "InviteEvent created user, shouldn't have");
+		
+		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 	
 	/**
@@ -256,7 +258,6 @@ public class PircBotXProcessingTest {
 	 */
 	@Test(dependsOnMethods="channelNoticeTest")
 	public void userNoticeTest() {
-		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
@@ -288,7 +289,8 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: ModeEvent gives expected results");
 		
 		//Check channel mode
-		assertEquals(aChannel.getMode(), "m", "Channel's mode is not updates");
+		assertEquals(aChannel.getMode(), "m", "Channel's mode is not updated");
+		
 		System.out.println("Success: Channel's mode is up to date");
 	}
 	
@@ -301,6 +303,8 @@ public class PircBotXProcessingTest {
 		
 		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
 		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
+		
+		System.out.println("Success: Map check for extra values #1 is good");
 	}
 	
 	/**
