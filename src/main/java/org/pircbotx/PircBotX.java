@@ -161,8 +161,8 @@ public class PircBotX {
 		public boolean dissociate(Channel a, User b, boolean remove) {
 			//Remove the Channels internal reference to the User
 			a.removeUser(b);
-			
-			boolean result = super.dissociate(a, b, remove);			
+
+			boolean result = super.dissociate(a, b, remove);
 			return result;
 		}
 	};
@@ -228,7 +228,7 @@ public class PircBotX {
 	public synchronized void connect(String hostname) throws IOException, IrcException, NickAlreadyInUseException {
 		this.connect(hostname, 6667, null, null);
 	}
-	
+
 	/**
 	 * Attempt to connect to the specified IRC server and port number.
 	 * The onConnect method is called upon success.
@@ -243,7 +243,7 @@ public class PircBotX {
 	public synchronized void connect(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
 		this.connect(hostname, port, null, null);
 	}
-	
+
 	/**
 	 * Attempt to connect to the specified IRC server using the given port
 	 * and password.
@@ -592,7 +592,7 @@ public class PircBotX {
 		if (target != null && message != null)
 			sendMessage(target.getName(), message);
 	}
-	
+
 	/**
 	 * Send a message to the given user in the given channel in this format: 
 	 * <code>user: message</code>. Very useful for responding directly to a command
@@ -760,7 +760,7 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode) {
 		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
-	
+
 	/**
 	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
 	 * @param chan The channel on which to perform the mode change.
@@ -852,7 +852,7 @@ public class PircBotX {
 	 *
 	 * @param chan The channel we're opping the user on.
 	 * @param user The user we are opping.
-	 */	
+	 */
 	public void op(Channel chan, User user) {
 		setMode(chan, "+o " + user.getNick());
 	}
@@ -877,7 +877,6 @@ public class PircBotX {
 	 * @param chan The channel we're voicing the user on.
 	 * @param user The user we are voicing.
 	 */
-	
 	public void voice(Channel chan, User user) {
 		setMode(chan, "+v " + user.getNick());
 	}
@@ -1090,13 +1089,13 @@ public class PircBotX {
 	 *
 	 * @param line The line to add to the log.
 	 */
-	@Synchronized(value="logLock")
+	@Synchronized(value = "logLock")
 	public void log(String line) {
 		if (_verbose)
 			System.out.println(System.currentTimeMillis() + " " + line);
 	}
 
-	@Synchronized(value="logLock")
+	@Synchronized(value = "logLock")
 	public void logException(Throwable t) {
 		if (!_verbose)
 			return;
@@ -1165,13 +1164,11 @@ public class PircBotX {
 					processServerResponse(code, response);
 					// Return from the method.
 					return;
-				} else {
+				} else
 					// This is not a server response.
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
-					sourceNick = senderInfo;
-					//WARNING: Changed from origional PircBot. Instead of command as target, use channel/user (setup later)
-				}
+					sourceNick = senderInfo; //WARNING: Changed from origional PircBot. Instead of command as target, use channel/user (setup later)
 			} else {
 				// We don't know what this line means.
 				getListenerManager().dispatchEvent(new UnknownEvent(this, line));
@@ -1190,10 +1187,9 @@ public class PircBotX {
 
 		User source = getUser(sourceNick);
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (_channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null ;
+		Channel channel = (_channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
-
 			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
@@ -1297,10 +1293,9 @@ public class PircBotX {
 			//Use line method instead of channel since channel is wrong
 			getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, line.substring(line.indexOf(" :") + 2)));
 			//Delete user if not part of any of our channels
-			if(source.getChannels().isEmpty())
+			if (source.getChannels().isEmpty())
 				_userChanInfo.deleteB(source);
-		}
-		else
+		} else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
 			getListenerManager().dispatchEvent(new UnknownEvent(this, line));
@@ -1347,8 +1342,7 @@ public class PircBotX {
 			//End of channel list, dispatch event
 			getListenerManager().dispatchEvent(new ChannelInfoEvent(this, channelListBuilder.finish()));
 			channelListBuilder.setRunning(false);
-		}
-		else if (code == RPL_TOPIC) {
+		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
 			parsed = response.split(" ", 3);
@@ -1380,9 +1374,9 @@ public class PircBotX {
 			Channel chan = getChannel(parsed[2]);
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
-				if(nick.contains("@"))
+				if (nick.contains("@"))
 					chan.addOp(curUser);
-				if(nick.contains("+"))
+				if (nick.contains("+"))
 					chan.addVoice(curUser);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
@@ -2111,7 +2105,7 @@ public class PircBotX {
 	public boolean channelExists(Channel chan) {
 		return _userChanInfo.containsA(chan);
 	}
-	
+
 	/**
 	 * Check if we are still connected to given channel by string. 
 	 * @param channel A channel name as a string
@@ -2174,7 +2168,7 @@ public class PircBotX {
 		User user = new User(this, nick);
 		_userChanInfo.putA(user);
 		return user;
-		
+
 	}
 
 	/**
@@ -2248,7 +2242,7 @@ public class PircBotX {
 	public boolean isAutoNickChange() {
 		return _autoNickChange;
 	}
-	
+
 	/**
 	 * Reset bot, clearing all internal fields
 	 */
@@ -2324,9 +2318,10 @@ public class PircBotX {
 			return endEvent;
 		}
 	}
-	
+
 	protected class ListBuilder<A> {
-		@Getter @Setter
+		@Getter
+		@Setter
 		private boolean running = false;
 		private Set<A> channels = new HashSet();
 
