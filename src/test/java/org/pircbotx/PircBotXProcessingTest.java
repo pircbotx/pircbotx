@@ -28,6 +28,7 @@ import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -270,9 +271,31 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Check internal ManyToManyMap for any extra values
+	 * Simulate a generic channel mode change
 	 */
 	@Test(dependsOnMethods="userNoticeTest")
+	public void genericModeTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +m");
+		
+		//Verify event contents
+		ModeEvent mevent = getEvent(ModeEvent.class, "No ModeEvent dispatched with +m");
+		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
+		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
+		assertEquals(mevent.getMode(), "+m", "ModeEvent's mode does not match given mode");
+		System.out.println("Success: ModeEvent gives expected results");
+		
+		//Check channel mode
+		assertEquals(aChannel.getMode(), "m", "Channel's mode is not updates");
+		System.out.println("Success: Channel's mode is up to date");
+	}
+	
+	/**
+	 * Check internal ManyToManyMap for any extra values
+	 */
+	@Test(dependsOnMethods="genericModeTest")
 	public void mapCheck1Test() {
 		ManyToManyMap<Channel, User> map = bot._userChanInfo;
 		
