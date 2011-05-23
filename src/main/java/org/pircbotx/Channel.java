@@ -21,12 +21,15 @@ package org.pircbotx;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
 /**
  * Represents a Channel that we're joined to. Contains all the available 
@@ -40,7 +43,6 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"name", "bot"})
 public class Channel {
 	private final String name;
-	@Setter(AccessLevel.PACKAGE)
 	private String mode = "";
 	@Setter(AccessLevel.PACKAGE)
 	private String topic = "";
@@ -50,7 +52,9 @@ public class Channel {
 	private long createTimestamp;
 	@Setter(AccessLevel.PACKAGE)
 	private String topicSetter = "";
-	private final PircBotX bot;
+	protected final PircBotX bot;
+	protected boolean modeStale = false;
+	protected CountDownLatch modeLatch = null;
 	/**
 	 * Set of opped users in this channel
 	 */
@@ -68,6 +72,14 @@ public class Channel {
 	}
 	
 	public void parseMode(String rawMode) {
+		if(rawMode.contains(" ")) {
+			//Mode contains arguments which are impossible to parse. 
+			//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
+			//Need to ask server
+			modeStale = true;
+			return;
+		}
+		
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
 		boolean adding = true;
 		for (char curChar : rawMode.toCharArray()) {
@@ -76,10 +88,50 @@ public class Channel {
 			else if (curChar == '+')
 				adding = true;
 			else if (adding)
-				mode = mode + curChar;
+				//Add to beginning since end may contan arguments
+				mode = curChar + mode;
 			else
 				mode = mode.replace(Character.toString(curChar), "");
 		}
+	}
+	
+	/**
+	 * Gets the channel mode. If mode is simple (no arguments), this will return immediately.
+	 * If its not (mode with arguments, eg channel key), then asks the server for the 
+	 * correct mode, waiting until it gets a response
+	 * <p>
+	 * <b>WARNING:</b> Because of the last checking, a threaded listener manager like
+	 * {@link ThreadedListenerManager} is required. Using a single threaded listener
+	 * manager like {@link GenericListenerManager} will mean this method <i>never returns</i>!
+	 * @return A known good mode, either immediatly or soon. 
+	 */
+	public String getMode() {
+		if(!modeStale)
+			return mode;
+		
+		//Mode is stale, get new mode from server
+		try {
+			bot.sendRawLine("MODE " + getName());
+			if(modeLatch == null || modeLatch.getCount() == 0)
+				modeLatch = new CountDownLatch(1);
+			//Wait for setMode to be called
+			modeLatch.await();
+			//We have known good mode from server, now return
+			return mode;
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Waiting for mode response interrupted", e);
+		}
+	}
+	
+	/**
+	 * Sets the mode of the channel. If there is a getMode() waiting on this,
+	 * fire it. 
+	 * @param mode 
+	 */
+	void setMode(String mode) {
+		this.mode = mode;
+		if(modeLatch != null && modeLatch.getCount() == 1)
+			modeLatch.countDown();
 	}
 
 	/**
