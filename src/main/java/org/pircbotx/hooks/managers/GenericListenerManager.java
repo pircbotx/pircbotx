@@ -37,11 +37,16 @@ import org.pircbotx.PircBotX;
  * another thread is risky since the set might be in use already, throwing a 
  * {@link ConcurrentModificationException}. 
  * <p>
- * Due to these issues any bot of complexity should use {@link ThreadedListenerManager},
- * however most simple bots can use this just fine. 
+ * Due to multiple functions of PircBotX depend on multiple threads, this class
+ * is deprecated and is only kept for legacy reasons or special cases. Use of
+ * this class will have unexpected results
+ * <p>
+ * All bots should now use {@link ThreadedListenerManager}.
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @see ThreadedListenerManagerr
  */
+@Deprecated
 public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected Set<Listener> listeners = new HashSet<Listener>();
 
