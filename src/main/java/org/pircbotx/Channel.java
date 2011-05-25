@@ -53,7 +53,9 @@ public class Channel {
 	@Setter(AccessLevel.PACKAGE)
 	private String topicSetter = "";
 	protected final PircBotX bot;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
+	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
 	/**
 	 * Set of opped users in this channel
