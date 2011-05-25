@@ -310,7 +310,8 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Test opping person that just joined
+	 * Test opping person that just joined. Note that since joinTest passed
+	 * (this test indirectly depends on it), simulating a JOIN is safe
 	 */
 	@Test(dependsOnMethods="mapCheck1Test")
 	public void opTest() {
@@ -335,15 +336,13 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Simulate kicking a user that just joined. Note that since joinTest passed
-	 * (this test indirectly depends on it), simulating a JOIN is safe
+	 * Simulate another user being kicked
 	 */
 	@Test(dependsOnMethods="opTest")
 	public void kickTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		events.clear();
-		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
 		
@@ -353,6 +352,10 @@ public class PircBotXProcessingTest {
 		assertEquals(kevent.getSource(), aUser, "KickEvent's getSource doesn't match kicker user");
 		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
 		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
+		
+		//Make sure we've sufficently forgotten about the user
+		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they were kicked");
+		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that was kicked an op");
 		
 		System.out.println("Success: KickEvent gives expected results");
 	}
