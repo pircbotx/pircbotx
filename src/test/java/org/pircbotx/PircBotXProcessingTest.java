@@ -33,6 +33,7 @@ import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
@@ -354,6 +355,21 @@ public class PircBotXProcessingTest {
 		assertTrue(aUser.isOp(aChannel), "User's isOp method doesn't reflect op status");
 		
 		System.out.println("Success: Oping a user updates the appropiate places");
+	}
+	
+	/**
+	 * Test a user quitting
+	 */
+	@Test(dependsOnMethods="opTest")
+	public void quitTest() {
+		User otherUser = bot.getUser("OtherUser");
+		events.clear();
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :" + aString);
+		
+		//Check event contents
+		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
+		assertEquals(qevent.getUser(), otherUser, "QuitEvent's user does not match given");
+		assertEquals(qevent.getReason(), aString, "QuitEvent's reason does not match given");
 	}
 	
 	/**
