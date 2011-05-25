@@ -362,6 +362,7 @@ public class PircBotXProcessingTest {
 	 */
 	@Test(dependsOnMethods="opTest")
 	public void quitTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		events.clear();
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :" + aString);
@@ -370,6 +371,12 @@ public class PircBotXProcessingTest {
 		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
 		assertEquals(qevent.getUser(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), aString, "QuitEvent's reason does not match given");
+		
+		//Make sure user is gone
+		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they quit");
+		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that quit an op");
+		
+		System.out.println("Success: QuitEvent gives the appropiate information and bot forgets refrences");
 	}
 	
 	/**
