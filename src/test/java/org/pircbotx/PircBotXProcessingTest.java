@@ -339,6 +339,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Test another user getting voiced
 	 */
+	@Test(dependsOnMethods="opTest")
 	public void voiceTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -360,7 +361,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate another user being kicked
 	 */
-	@Test(dependsOnMethods="opTest")
+	@Test(dependsOnMethods="voiceTest")
 	public void kickTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
