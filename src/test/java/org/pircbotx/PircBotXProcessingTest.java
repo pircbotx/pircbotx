@@ -394,6 +394,9 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		events.clear();
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +v OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :" + aString);
 		
 		//Check event contents
