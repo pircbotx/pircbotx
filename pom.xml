@@ -15,7 +15,8 @@
 	-->
 	<name>pircbotx</name>
 	<description>A simple, easy to use, Java IRC Bot Framework based off of a fork of the popular PircBot 
-	framework, bringing in many new up to date things to the project in an official distribution.</description>
+	framework, bringing in many new up to date things to the project in an official distribution.
+	</description>
 	<url>http://pircbotx.googlecode.com/</url>
 	<inceptionYear>2010</inceptionYear>
 
@@ -54,14 +55,14 @@
 		<url>https://pircbotx.googlecode.com/hg</url>
 	</scm>
 	
-    <mailingLists>
-        <mailingList>
-            <name>pircbotx</name>
-            <subscribe>pircbotx-subscribe@googlegroups.com</subscribe>
-            <unsubscribe>pircbotx-unsubscribe@googlegroups.com</unsubscribe>
-            <archive>http://groups.google.com/group/pircbotx</archive>
-        </mailingList>
-    </mailingLists>
+	<mailingLists>
+		<mailingList>
+			<name>pircbotx</name>
+			<subscribe>pircbotx-subscribe@googlegroups.com</subscribe>
+			<unsubscribe>pircbotx-unsubscribe@googlegroups.com</unsubscribe>
+			<archive>http://groups.google.com/group/pircbotx</archive>
+		</mailingList>
+	</mailingLists>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
