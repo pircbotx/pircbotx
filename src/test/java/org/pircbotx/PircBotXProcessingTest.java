@@ -331,7 +331,7 @@ public class PircBotXProcessingTest {
 		
 		//Check op lists
 		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
-		assertTrue(aUser.isOp(aChannel), "User's isOp method doesn't reflect updated op status");
+		assertTrue(otherUser.isOp(aChannel), "User's isOp method doesn't reflect updated op status");
 		
 		System.out.println("Success: Oping a user updates the appropiate places");
 	}
