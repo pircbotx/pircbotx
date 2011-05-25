@@ -30,6 +30,7 @@ import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
+import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
@@ -328,6 +329,31 @@ public class PircBotXProcessingTest {
 		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
 		
 		System.out.println("Success: KickEvent gives expected results");
+	}
+	
+	/**
+	 * Test opping person that just joined
+	 */
+	@Test(dependsOnMethods="kickTest")
+	public void opTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		User otherUser = bot.getUser("OtherUser");
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
+		
+		//Verify event contents
+		OpEvent oevent = getEvent(OpEvent.class, "OpEvent not dispatched");
+		assertEquals(oevent.getChannel(), aChannel, "OpEvent's channel does not match given");
+		assertEquals(oevent.getSource(), aUser, "OpEvent's source user does not match given");
+		assertEquals(oevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
+		
+		//Check channels op list
+		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
+		assertTrue(aUser.isOp(aChannel), "User's isOp method doesn't reflect op status");
+		
+		System.out.println("Success: Oping a user updates the appropiate places");
 	}
 	
 	/**
