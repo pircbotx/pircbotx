@@ -161,9 +161,7 @@ public class PircBotX {
 		public boolean dissociate(Channel a, User b, boolean remove) {
 			//Remove the Channels internal reference to the User
 			a.removeUser(b);
-
-			boolean result = super.dissociate(a, b, remove);
-			return result;
+			return super.dissociate(a, b, remove);
 		}
 	};
 	// DccManager to process and handle all DCC events.
