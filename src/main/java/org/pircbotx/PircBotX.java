@@ -2097,16 +2097,6 @@ public class PircBotX {
 	}
 
 	/**
-	 * Check if we are still connected to the given channel. Useful for checking
-	 * the validity of existing Channel objects
-	 * @param chan A (potentially invalid) channel object
-	 * @return True if we are still connected to the channel, false if not
-	 */
-	public boolean channelExists(Channel chan) {
-		return _userChanInfo.containsA(chan);
-	}
-
-	/**
 	 * Check if we are still connected to given channel by string. 
 	 * @param channel A channel name as a string
 	 * @return True if we are still connected to the channel, false if not
