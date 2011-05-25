@@ -378,6 +378,10 @@ public class PircBotXProcessingTest {
 		//Make sure we've sufficently forgotten about the user
 		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they were kicked");
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that was kicked an op");
+		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that was kicked with voice");
+		assertFalse(otherUser.isOp(aChannel), "User's isOp method still considers user to have op after kick");
+		assertFalse(otherUser.hasVoice(aChannel), "User's hasVoice method still considers user to have voice after kick");
+		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after kick");
 		
 		System.out.println("Success: KickEvent gives expected results");
 	}
@@ -400,6 +404,10 @@ public class PircBotXProcessingTest {
 		//Make sure user is gone
 		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they quit");
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that quit an op");
+		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that quit with voice");
+		assertFalse(otherUser.isOp(aChannel), "User's isOp method still considers user to have op after quit");
+		assertFalse(otherUser.hasVoice(aChannel), "User's hasVoice method still considers user to have voice after quit");
+		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after quit");
 		
 		System.out.println("Success: QuitEvent gives the appropiate information and bot forgets refrences");
 	}
