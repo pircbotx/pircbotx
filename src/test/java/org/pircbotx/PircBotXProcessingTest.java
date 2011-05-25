@@ -355,7 +355,7 @@ public class PircBotXProcessingTest {
 		
 		//Check voice lists
 		assertTrue(aChannel.hasVoice(otherUser), "Channel's internal voice list not updated with new voice");
-		assertTrue(aUser.hasVoice(aChannel), "User's hasVoice method doesn't reflect updated voice status");
+		assertTrue(otherUser.hasVoice(aChannel), "User's hasVoice method doesn't reflect updated voice status");
 	}
 	
 	/**
