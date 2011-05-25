@@ -1262,15 +1262,14 @@ public class PircBotX {
 			getListenerManager().dispatchEvent(new QuitEvent(this, source, line.substring(line.indexOf(" :") + 2)));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
-			String recipient = tokenizer.nextToken();
-			User user = getUser(sourceNick);
-			if (recipient.equals(getNick()))
+			User recipient = getUser(tokenizer.nextToken());
+			if (recipient.getNick().equals(getNick()))
 				//We were just kicked
 				_userChanInfo.deleteA(channel);
 			else
 				//Someone else
-				_userChanInfo.dissociate(channel, user, true);
-			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, getUser(recipient), line.substring(line.indexOf(" :") + 2)));
+				_userChanInfo.dissociate(channel, recipient, true);
+			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, line.substring(line.indexOf(" :") + 2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user.
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
