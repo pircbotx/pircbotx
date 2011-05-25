@@ -310,32 +310,9 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Simulate kicking a user that just joined. Note that since joinTest passed
-	 * (this test indirectly depends on it), simulating a JOIN is safe
-	 */
-	@Test(dependsOnMethods="mapCheck1Test")
-	public void kickTest() {
-		Channel aChannel = bot.getChannel("#aChannel");
-		User aUser = bot.getUser("AUser");
-		events.clear();
-		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
-		User otherUser = bot.getUser("OtherUser");
-		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
-		
-		//Verify event contents
-		KickEvent kevent = getEvent(KickEvent.class, "KickEvent not dispatched");
-		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
-		assertEquals(kevent.getSource(), aUser, "KickEvent's getSource doesn't match kicker user");
-		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
-		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
-		
-		System.out.println("Success: KickEvent gives expected results");
-	}
-	
-	/**
 	 * Test opping person that just joined
 	 */
-	@Test(dependsOnMethods="kickTest")
+	@Test(dependsOnMethods="mapCheck1Test")
 	public void opTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -358,9 +335,32 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Test a user quitting
+	 * Simulate kicking a user that just joined. Note that since joinTest passed
+	 * (this test indirectly depends on it), simulating a JOIN is safe
 	 */
 	@Test(dependsOnMethods="opTest")
+	public void kickTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		events.clear();
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		User otherUser = bot.getUser("OtherUser");
+		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
+		
+		//Verify event contents
+		KickEvent kevent = getEvent(KickEvent.class, "KickEvent not dispatched");
+		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
+		assertEquals(kevent.getSource(), aUser, "KickEvent's getSource doesn't match kicker user");
+		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
+		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
+		
+		System.out.println("Success: KickEvent gives expected results");
+	}
+	
+	/**
+	 * Test a user quitting
+	 */
+	@Test(dependsOnMethods="kickTest")
 	public void quitTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
