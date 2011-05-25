@@ -35,6 +35,7 @@ import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
+import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -328,11 +329,32 @@ public class PircBotXProcessingTest {
 		assertEquals(oevent.getSource(), aUser, "OpEvent's source user does not match given");
 		assertEquals(oevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
 		
-		//Check channels op list
+		//Check op lists
 		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
-		assertTrue(aUser.isOp(aChannel), "User's isOp method doesn't reflect op status");
+		assertTrue(aUser.isOp(aChannel), "User's isOp method doesn't reflect updated op status");
 		
 		System.out.println("Success: Oping a user updates the appropiate places");
+	}
+	
+	/**
+	 * Test another user getting voiced
+	 */
+	public void voiceTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		User otherUser = bot.getUser("OtherUser");
+		events.clear();
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +v OtherUser");
+		
+		//Verify event contents
+		VoiceEvent vevent = getEvent(VoiceEvent.class, "VoiceEvent not dispatched");
+		assertEquals(vevent.getChannel(), aChannel, "OpEvent's channel does not match given");
+		assertEquals(vevent.getSource(), aUser, "OpEvent's source user does not match given");
+		assertEquals(vevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
+		
+		//Check voice lists
+		assertTrue(aChannel.hasVoice(otherUser), "Channel's internal voice list not updated with new voice");
+		assertTrue(aUser.hasVoice(aChannel), "User's hasVoice method doesn't reflect updated voice status");
 	}
 	
 	/**
