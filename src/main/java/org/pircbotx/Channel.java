@@ -60,12 +60,10 @@ public class Channel {
 	/**
 	 * Set of opped users in this channel
 	 */
-	@Getter(AccessLevel.NONE)
 	private final Set<User> op = Collections.synchronizedSet(new HashSet<User>());
 	/**
 	 * Set of voiced users in this channel
 	 */
-	@Getter(AccessLevel.NONE)
 	private final Set<User> voice = Collections.synchronizedSet(new HashSet<User>());
 
 	public Channel(PircBotX bot, String name) {
