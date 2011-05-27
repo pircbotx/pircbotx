@@ -60,11 +60,11 @@ public class Channel {
 	/**
 	 * Set of opped users in this channel
 	 */
-	private final Set<User> op = Collections.synchronizedSet(new HashSet<User>());
+	private final Set<User> ops = Collections.synchronizedSet(new HashSet<User>());
 	/**
 	 * Set of voiced users in this channel
 	 */
-	private final Set<User> voice = Collections.synchronizedSet(new HashSet<User>());
+	private final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
 
 	public Channel(PircBotX bot, String name) {
 		this.bot = bot;
@@ -156,7 +156,7 @@ public class Channel {
 	 * @return True if the user is an op, false if not
 	 */
 	public boolean isOp(User user) {
-		return op.contains(user);
+		return ops.contains(user);
 	}
 
 	/*
@@ -173,7 +173,7 @@ public class Channel {
 	 * @param user 
 	 */
 	void addOp(User user) {
-		op.add(user);
+		ops.add(user);
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class Channel {
 	 * @param user 
 	 */
 	void removeOp(User user) {
-		op.remove(user);
+		ops.remove(user);
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class Channel {
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
-		return voice.contains(user);
+		return voices.contains(user);
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class Channel {
 	 * @param user
 	 */
 	void addVoice(User user) {
-		voice.add(user);
+		voices.add(user);
 	}
 
 	/**
@@ -232,7 +232,7 @@ public class Channel {
 	 * @param user 
 	 */
 	void removeVoice(User user) {
-		voice.remove(user);
+		voices.remove(user);
 	}
 
 	/**
@@ -241,6 +241,6 @@ public class Channel {
 	 * @return True if removal was sucess
 	 */
 	boolean removeUser(User user) {
-		return op.remove(user) && voice.remove(user);
+		return ops.remove(user) && voices.remove(user);
 	}
 }
