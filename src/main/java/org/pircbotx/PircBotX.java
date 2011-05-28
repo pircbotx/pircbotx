@@ -92,6 +92,7 @@ import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
@@ -192,6 +193,7 @@ public class PircBotX {
 	private final ServerInfo serverInfo = new ServerInfo(this);
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
 	private SocketFactory _socketFactory = null;
+	protected boolean loggedIn = false;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} 
@@ -380,8 +382,9 @@ public class PircBotX {
 			setNick(nick);
 		}
 
+		loggedIn = true;
 		log("*** Logged onto server.");
-
+		
 		// This makes the socket timeout on read operations after 5 minutes.
 		_socket.setSoTimeout(getSocketTimeout());
 
@@ -733,11 +736,24 @@ public class PircBotX {
 	 * network is only compatible with the private message approach, you may
 	 * typically identify like so:
 	 * <pre>sendMessage("NickServ", "identify PASSWORD");</pre>
+	 *  <p>
+	 * Note that this method will add a temporary listener for ConnectEvent if
+	 * the bot is not logged in yet. If the bot is logged in the command is sent
+	 * immediately to the server
 	 *
 	 * @param password The password which will be used to identify with NickServ.
 	 */
-	public void identify(String password) {
-		sendRawLine("NICKSERV IDENTIFY " + password);
+	public void identify(final String password) {
+		if(loggedIn)
+			sendRawLine("NICKSERV IDENTIFY " + password);
+		else
+			listenerManager.addListener(new ListenerAdapter() {
+				@Override
+				public void onConnect(ConnectEvent event) throws Exception {
+					sendRawLine("NICKSERV IDENTIFY " + password);
+					//Do not autoremove as other bots may be sharing this ListenerManager
+				}
+			});
 	}
 
 	/**
