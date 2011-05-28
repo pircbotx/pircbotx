@@ -38,6 +38,7 @@ public class OpEvent extends Event {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
+	protected final boolean isOp;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -46,10 +47,11 @@ public class OpEvent extends Event {
 	 * @param source The user that performed the mode change.
 	 * @param recipient The user that got 'opped'.
 	 */
-	public <T extends PircBotX> OpEvent(T bot, Channel channel, User source, User recipient) {
+	public <T extends PircBotX> OpEvent(T bot, Channel channel, User source, User recipient, boolean isOp) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;
 		this.recipient = recipient;
+		this.isOp = isOp;
 	}
 }

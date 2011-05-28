@@ -18,14 +18,11 @@
  */
 package org.pircbotx.hooks;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DeVoiceEvent;
-import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.events.FingerEvent;
@@ -85,8 +82,6 @@ public class HookUtils {
 		allEvents.add(ActionEvent.class);
 		allEvents.add(ChannelInfoEvent.class);
 		allEvents.add(ConnectEvent.class);
-		allEvents.add(DeopEvent.class);
-		allEvents.add(DeVoiceEvent.class);
 		allEvents.add(DisconnectEvent.class);
 		allEvents.add(FileTransferFinishedEvent.class);
 		allEvents.add(FingerEvent.class);

@@ -25,8 +25,6 @@ import java.util.Map;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DeVoiceEvent;
-import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.events.FingerEvent;
@@ -121,12 +119,6 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onConnect(ConnectEvent event) throws Exception {
-	}
-
-	public void onDeop(DeopEvent event) throws Exception {
-	}
-
-	public void onDeVoice(DeVoiceEvent event) throws Exception {
 	}
 
 	public void onDisconnect(DisconnectEvent event) throws Exception {
