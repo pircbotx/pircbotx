@@ -86,7 +86,7 @@ import org.pircbotx.hooks.events.VoiceEvent;
  * will work!
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class ListenerAdapter implements Listener {
+public abstract class ListenerAdapter implements Listener {
 	protected static final Map<Class<? extends Event>, Method> eventToMethod = new HashMap();
 
 	static {
