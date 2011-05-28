@@ -1411,7 +1411,7 @@ public class PircBotX {
 				curUser.setHostmask(parsed[3]);
 				curUser.setServer(parsed[4]);
 				curUser.setNick(parsed[5]);
-				curUser.parseStatus(chan.getName(), parsed[6]);
+				curUser.parseStatus(chan, parsed[6]);
 				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
 				curUser.setRealName(parsed[8]);
 			}
