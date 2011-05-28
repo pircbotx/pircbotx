@@ -39,24 +39,16 @@ import lombok.Setter;
  */
 @Data
 @EqualsAndHashCode(of = {"uuid", "bot"})
+@Setter(AccessLevel.PACKAGE)
 public class User implements Comparable<User> {
-	@Setter(AccessLevel.PACKAGE)
 	private String nick;
-	@Setter(AccessLevel.PACKAGE)
 	private String realName = "";
-	@Setter(AccessLevel.PACKAGE)
 	private String login = "";
-	@Setter(AccessLevel.PACKAGE)
 	private String hostmask = "";
-	@Setter(AccessLevel.PACKAGE)
 	private boolean away = false;
-	@Setter(AccessLevel.PACKAGE)
 	private boolean ircop = false;
-	@Setter(AccessLevel.PACKAGE)
 	private String server = "";
-	@Setter(AccessLevel.PACKAGE)
 	private boolean identified = true;
-	@Setter(AccessLevel.PACKAGE)
 	private int hops = 0;
 	private final PircBotX bot;
 	@Getter(AccessLevel.NONE)
