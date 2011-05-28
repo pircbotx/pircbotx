@@ -24,7 +24,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- *
+ * This event is dispatched when the Motd is finished being sent. Motd lines are
+ * separated by <code>\n</code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

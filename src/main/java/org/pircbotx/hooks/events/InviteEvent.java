@@ -27,9 +27,6 @@ import org.pircbotx.PircBotX;
 
 /**
  * Called when we are invited to a channel by a user.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

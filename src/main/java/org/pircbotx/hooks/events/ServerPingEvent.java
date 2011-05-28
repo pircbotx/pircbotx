@@ -26,9 +26,10 @@ import org.pircbotx.PircBotX;
 /**
  * The actions to perform when a PING request comes from the server.
  *  <p>
- * This sends back a correct response, so if you override this method,
- * be sure to either mimic its functionality or to call
- * super.onServerPing(response);
+ * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
+ * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
+ * Listeners of this event should <b>not</b> send a response as the user will get
+ * two responses
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

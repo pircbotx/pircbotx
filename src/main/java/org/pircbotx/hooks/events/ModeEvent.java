@@ -34,8 +34,6 @@ import org.pircbotx.PircBotX;
  * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent}, 
  * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
  *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

@@ -24,11 +24,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called whenever we receive a line from the server that
- * the PircBotX has not been programmed to recognise.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * This event is dispatched whenever we receive a line from the server that
+ * PircBotX has not been programmed to recognize.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

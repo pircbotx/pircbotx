@@ -22,15 +22,17 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called whenever we receive a FINGER request.
+ * This event is dispatched whenever we receive a FINGER request.
  *  <p>
- * This abstract implementation responds correctly, so if you override this
- * method, be sure to either mimic its functionality or to call
- * super.onFinger(...);
+ * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
+ * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
+ * Listeners of this event should <b>not</b> send a response as the user will get
+ * two responses
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

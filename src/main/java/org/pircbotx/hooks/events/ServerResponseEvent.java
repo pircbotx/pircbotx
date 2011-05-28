@@ -33,18 +33,17 @@ import org.pircbotx.ReplyConstants;
  * generated in response to commands are found in the range from 200
  * to 399.  Error replies are found in the range from 400 to 599.
  *  <p>
- * For example, we can use this method to discover the topic of a
+ * For example, we can use this event to discover the topic of a
  * channel when we join it.  If we join the channel #test which
  * has a topic of &quot;I am King of Test&quot; then the response
  * will be &quot;<code>PircBotX #test :I Am King of Test</code>&quot;
  * with a code of 332 to signify that this is a topic.
- * (This is just an example - note that overriding the
- * <code>onTopic</code> method is an easier way of finding the
- * topic for a channel). Check the IRC RFC for the full list of other
- * command response codes.
+ * (This is just an example - note that listening for {@link TopicEvent} is an 
+ * easier way of finding the topic for a channel). Check the IRC RFC for the 
+ * full list of other command response codes.
  *  <p>
- * PircBotX implements the interface ReplyConstants, which contains
- * contstants that you may find useful here.
+ * PircBotX uses the class ReplyConstants, which contains
+ * constants that you may find useful here.
  *
  * @see ReplyConstants
  * @author Leon Blakey <lord.quackstar at gmail.com>
