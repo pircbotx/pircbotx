@@ -1386,9 +1386,9 @@ public class PircBotX {
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				User curUser = getUser(nick);
 				if (nick.contains("@"))
-					chan.addOp(curUser);
+					chan.ops.add(curUser);
 				if (nick.contains("+"))
-					chan.addVoice(curUser);
+					chan.voices.add(curUser);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
@@ -1502,20 +1502,20 @@ public class PircBotX {
 				else if (atPos == 'o') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						channel.addOp(reciepeint);
+						channel.ops.add(reciepeint);
 						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint, true));
 					} else {
-						channel.removeOp(reciepeint);
+						channel.ops.remove(reciepeint);
 						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						channel.addVoice(reciepeint);
+						channel.voices.add(reciepeint);
 						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, true));
 					} else {
-						channel.removeVoice(reciepeint);
+						channel.voices.remove(reciepeint);
 						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
