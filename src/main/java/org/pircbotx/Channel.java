@@ -41,16 +41,13 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
 @Data
 @ToString(exclude = {"ops", "voices"})
 @EqualsAndHashCode(of = {"name", "bot"})
+@Setter(AccessLevel.PACKAGE)
 public class Channel {
 	private final String name;
 	private String mode = "";
-	@Setter(AccessLevel.PACKAGE)
 	private String topic = "";
-	@Setter(AccessLevel.PACKAGE)
 	private long topicTimestamp;
-	@Setter(AccessLevel.PACKAGE)
 	private long createTimestamp;
-	@Setter(AccessLevel.PACKAGE)
 	private String topicSetter = "";
 	protected final PircBotX bot;
 	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
