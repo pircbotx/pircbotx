@@ -57,12 +57,12 @@ public class Channel {
 	/**
 	 * Set of opped users in this channel
 	 */
-	private final Set<User> ops = Collections.synchronizedSet(new HashSet<User>());
+	protected final Set<User> ops = Collections.synchronizedSet(new HashSet<User>());
 	/**
 	 * Set of voiced users in this channel
 	 */
-	private final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
-
+	protected final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
+	
 	public Channel(PircBotX bot, String name) {
 		this.bot = bot;
 		this.name = name;
@@ -186,28 +186,12 @@ public class Channel {
 	}
 
 	/**
-	 * Adds user to list of operator users
-	 * @param user 
-	 */
-	void addOp(User user) {
-		ops.add(user);
-	}
-
-	/**
 	 * Attempts to remove Operator status from the given user in this channel. 
 	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to remove Operator status from
 	 */
 	public void deOp(User user) {
 		bot.deOp(this, user);
-	}
-
-	/**
-	 * Removes the user from the operator list
-	 * @param user 
-	 */
-	void removeOp(User user) {
-		ops.remove(user);
 	}
 
 	/**
@@ -227,14 +211,6 @@ public class Channel {
 		bot.voice(this, user);
 	}
 
-	/*
-	 * Adds user to list of voiced users in this channel
-	 * @param user
-	 */
-	void addVoice(User user) {
-		voices.add(user);
-	}
-
 	/**
 	 * Attempts to remove Voice status from the given user in this channel. Simply
 	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
@@ -242,14 +218,6 @@ public class Channel {
 	 */
 	public void deVoice(User user) {
 		bot.deVoice(this, user);
-	}
-
-	/**
-	 * Removes user from list of voiced users in this channel
-	 * @param user 
-	 */
-	void removeVoice(User user) {
-		voices.remove(user);
 	}
 
 	/**
