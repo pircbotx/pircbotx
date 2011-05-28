@@ -59,11 +59,11 @@ public class User implements Comparable<User> {
 		this.nick = nick;
 	}
 	
-	public void parseStatus(String channel, String prefix) {
+	public void parseStatus(Channel chan, String prefix) {
 		if(prefix.contains("@"))
-			bot.getChannel(channel).ops.add(this);
+			chan.ops.add(this);
 		if(prefix.contains("+"))
-			bot.getChannel(channel).voices.add(this);
+			chan.voices.add(this);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
