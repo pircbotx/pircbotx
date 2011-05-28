@@ -86,6 +86,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -1384,11 +1385,19 @@ public class PircBotX {
 			parsed = response.split(" ", 4);
 			Channel chan = getChannel(parsed[2]);
 			for (String nick : parsed[3].substring(1).split(" ")) {
-				User curUser = getUser(nick);
-				if (nick.contains("@"))
-					chan.ops.add(curUser);
-				if (nick.contains("+"))
-					chan.voices.add(curUser);
+				//Build prefix
+				String prefix = "";
+				for(char character : nick.toCharArray()) {
+					if(!Character.isLetterOrDigit(character))
+						prefix += character;
+					else
+						break;
+				}
+				User user = getUser(nick.substring(prefix.length()));
+				System.out.println("Name: " + user.getNick());
+				System.out.println("Prefix: " + prefix);
+				System.out.println("Channel: " + chan.getName());
+				user.parseStatus(chan, prefix);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
