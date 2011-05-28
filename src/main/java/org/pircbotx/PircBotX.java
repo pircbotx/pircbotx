@@ -25,8 +25,6 @@ import javax.net.SocketFactory;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DeVoiceEvent;
-import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -1505,20 +1503,20 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.addOp(reciepeint);
-						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint));
+						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint, true));
 					} else {
 						channel.removeOp(reciepeint);
-						getListenerManager().dispatchEvent(new DeopEvent(this, channel, source, reciepeint));
+						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.addVoice(reciepeint);
-						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint));
+						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, true));
 					} else {
 						channel.removeVoice(reciepeint);
-						getListenerManager().dispatchEvent(new DeVoiceEvent(this, channel, source, reciepeint));
+						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'k') {

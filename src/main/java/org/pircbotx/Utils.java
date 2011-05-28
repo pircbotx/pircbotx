@@ -19,8 +19,6 @@
 package org.pircbotx;
 
 import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.events.DeVoiceEvent;
-import org.pircbotx.hooks.events.DeopEvent;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
@@ -82,10 +80,6 @@ public class Utils {
 			return null;
 		else if (event instanceof ActionEvent)
 			return ((ActionEvent) event).getUser();
-		else if (event instanceof DeopEvent)
-			return ((DeopEvent) event).getSource();
-		else if (event instanceof DeVoiceEvent)
-			return ((DeVoiceEvent) event).getSource();
 		else if (event instanceof FileTransferFinishedEvent)
 			return ((FileTransferFinishedEvent) event).getTransfer().getSource();
 		else if (event instanceof FingerEvent)
