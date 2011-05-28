@@ -28,14 +28,11 @@ import org.pircbotx.hooks.Event;
 /**
  * After calling the listChannels() method in PircBotX, the server
  * will start to send us information about each channel on the
- * server.  You may override this method in order to receive the
+ * server. You may listen for this event in order to receive the
  * information about each channel as soon as it is received.
  *  <p>
  * Note that certain channels, such as those marked as hidden,
  * may not appear in channel listings.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see PircBotX#listChannels()
  * @see PircBotX#listChannels(java.lang.String) 

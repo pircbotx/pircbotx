@@ -26,10 +26,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
- * This method is called whenever a private message is sent to the PircBotX.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * This event is dispatched whenever a private message is sent to us.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

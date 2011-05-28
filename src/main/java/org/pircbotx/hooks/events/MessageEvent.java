@@ -28,9 +28,6 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Used whenever a message is sent to a channel.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
