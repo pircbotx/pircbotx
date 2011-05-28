@@ -61,9 +61,9 @@ public class User implements Comparable<User> {
 	
 	public void parseStatus(String channel, String prefix) {
 		if(prefix.contains("@"))
-			bot.getChannel(channel).addOp(this);
+			bot.getChannel(channel).ops.add(this);
 		if(prefix.contains("+"))
-			bot.getChannel(channel).addVoice(this);
+			bot.getChannel(channel).voices.add(this);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
