@@ -38,6 +38,7 @@ public class VoiceEvent extends Event {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
+	protected final boolean isVoice;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -46,10 +47,11 @@ public class VoiceEvent extends Event {
 	 * @param source The user that performed the mode change.
 	 * @param recipient The nick of the user that got 'voiced'.
 	 */
-	public <T extends PircBotX> VoiceEvent(T bot, Channel channel, User source, User recipient) {
+	public <T extends PircBotX> VoiceEvent(T bot, Channel channel, User source, User recipient, boolean isVoice) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;
 		this.recipient = recipient;
+		this.isVoice = isVoice;
 	}
 }
