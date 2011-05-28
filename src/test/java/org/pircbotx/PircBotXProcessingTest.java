@@ -359,6 +359,25 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
+	 * Simulate names response
+	 */
+	@Test(dependsOnMethods="voiceTest")
+	public void namesTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		User otherUser = bot.getUser("OtherUser");
+		//Remove from lists, should be added back by command
+		aChannel.ops.remove(otherUser);
+		aChannel.voices.remove(otherUser);
+		events.clear();
+		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
+		
+		//Make sure channel op and voice lists are updated
+		assertTrue(aChannel.isOp(otherUser), "NAMES response doesn't give user op status");
+		assertTrue(aChannel.hasVoice(otherUser), "NAMES response doesn't give user voice status");
+	}
+	
+	/**
 	 * Simulate another user being kicked
 	 */
 	@Test(dependsOnMethods="voiceTest")
