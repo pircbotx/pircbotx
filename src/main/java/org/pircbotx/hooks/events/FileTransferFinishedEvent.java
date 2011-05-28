@@ -25,11 +25,11 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method gets called when a DccFileTransfer has finished.
+ * This event gets dispatched when a DccFileTransfer has finished.
  * If there was a problem, the Exception will say what went wrong.
  * If the file was sent successfully, the Exception will be null.
  *  <p>
- * Both incoming and outgoing file transfers are passed to this method.
+ * Both incoming and outgoing file transfers are passed to this event.
  * You can determine the type by calling the isIncoming or isOutgoing
  * methods on the DccFileTransfer object.
  * @author Leon Blakey <lord.quackstar at gmail.com>

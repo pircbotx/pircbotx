@@ -25,11 +25,11 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called whenever a DCC SEND request is sent to the PircBotX.
+ * This event is dispatched whenever a DCC SEND request is sent to the PircBotX.
  * This means that a client has requested to send a file to us.
- * This abstract implementation performs no action, which means that all
- * DCC SEND requests will be ignored by default. If you wish to receive
- * the file, then you may override this method and call the receive method
+ * By default there are no {@link Listener listeners} for this event, which means 
+ * that all DCC SEND requests will be ignored by default. If you wish to receive
+ * the file, then you must listen for this event and call the receive method
  * on the DccFileTransfer object, which connects to the sender and downloads
  * the file.
  *  <p>
@@ -46,20 +46,13 @@ import org.pircbotx.PircBotX;
  * to be written to disk. Please ensure that you make adequate security
  * checks so that this file does not overwrite anything important!
  *  <p>
- * Each time a file is received, it happens within a new Thread
- * in order to allow multiple files to be downloaded by the PircBotX
- * at the same time.
- *  <p>
  * If you allow resuming and the file already partly exists, it will
  * be appended to instead of overwritten.  If resuming is not enabled,
  * the file will be overwritten if it already exists.
  *  <p>
- * You can throttle the speed of the transfer by calling the setPacketDelay
- * method on the DccFileTransfer object, either before you receive the
- * file or at any moment during the transfer.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * You can throttle the speed of the transfer by calling 
+ * {@link DccFileTransfer#setPacketDelay(millis)} method on the DccFileTransfer 
+ * object, either before you receive the file or at any moment during the transfer.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see DccFileTransfer
  */

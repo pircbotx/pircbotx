@@ -25,12 +25,9 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called whenever someone (possibly us) quits from the
+ * This event is dispatched whenever someone (possibly us) quits from the
  * server.  We will only observe this if the user was in one of the
  * channels to which we are connected.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

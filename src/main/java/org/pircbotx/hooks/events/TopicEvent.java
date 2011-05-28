@@ -26,11 +26,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called whenever a user sets the topic, or when
- * PircBotX joins a new channel and discovers its topic.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * This event is dispatched whenever a user sets the topic, or when
+ * we join a new channel and discovers its topic.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

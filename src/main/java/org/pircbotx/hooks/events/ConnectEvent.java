@@ -24,11 +24,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called once the PircBotX has successfully connected to
+ * This event is dispatched once we successfully connected to
  * the IRC server.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

@@ -27,21 +27,18 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method is called when we receive a user list from the server
+ * This event is dispatched when we receive a user list from the server
  * after joining a channel.
  *  <p>
  * Shortly after joining a channel, the IRC server sends a list of all
  * users in that channel. The PircBotX collects this information and
- * calls this method as soon as it has the full list.
+ * dispatched this event as soon as it has the full list.
  *  <p>
- * To obtain the nick of each user in the channel, call the getNick()
- * method on each User object in the array.
+ * To obtain the nick of each user in the channel, call the {@link User#getNick()}
+ * method on each User object in the {@link Set}.
  *  <p>
- * At a later time, you may call the getUsers method to obtain an
- * up to date list of the users in the channel.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * At a later time, you may call {@link PircBotX#getUsers(org.pircbotx.Channel) } 
+ * to obtain an up to date list of the users in the channel.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
  */

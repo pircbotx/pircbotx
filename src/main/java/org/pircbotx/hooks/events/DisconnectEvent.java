@@ -24,8 +24,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This method carries out the actions to be performed when the PircBotX
- * gets disconnected.  This may happen if the PircBotX quits from the
+ * This event is dispatched when we get disconnected. It is meant for the bot
+ * to carry out actions upon disconnection.  This may happen if the PircBotX quits from the
  * server, or if the connection is unexpectedly lost.
  *  <p>
  * Disconnection from the IRC server is detected immediately if either
@@ -35,11 +35,8 @@ import org.pircbotx.PircBotX;
  * commonly referred to as a "ping timeout").
  *  <p>
  * If you wish to get your IRC bot to automatically rejoin a server after
- * the connection has been lost, then this is probably the ideal method to
- * override to implement such functionality.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * the connection has been lost, then this is probably the ideal event listen for
+ * to implement such functionality.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

@@ -31,11 +31,8 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  * other users may only join that channel if they know the key.  Channel keys
  * are sometimes referred to as passwords.
  *  <p>
- * This is a type of mode change and is also passed to the onMode
- * method in the PircBotX class.
- *  <p>
- * The implementation of this method in the PircBotX abstract class
- * performs no actions and may be overridden as required.
+ * This is a type of mode change and therefor is also dispatched in a 
+ * {@link org.pircbotx.hooks.events.ModeEvent}
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
