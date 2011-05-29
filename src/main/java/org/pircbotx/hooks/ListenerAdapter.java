@@ -28,6 +28,8 @@ import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.events.FingerEvent;
+import org.pircbotx.hooks.events.FounderEvent;
+import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.events.InviteEvent;
@@ -63,6 +65,7 @@ import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
 import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
+import org.pircbotx.hooks.events.SuperOpEvent;
 import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
@@ -128,6 +131,12 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onFinger(FingerEvent event) throws Exception {
+	}
+	
+	public void onFounder(FounderEvent event) throws Exception {
+	}
+	
+	public void onHalfOp(HalfOpEvent event) throws Exception {
 	}
 
 	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
@@ -233,6 +242,9 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onSetTopicProtection(SetTopicProtectionEvent event) throws Exception {
+	}
+	
+	public void onSuperOp(SuperOpEvent event) throws Exception {
 	}
 
 	public void onTime(TimeEvent event) throws Exception {
