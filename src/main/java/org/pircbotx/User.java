@@ -64,6 +64,12 @@ public class User implements Comparable<User> {
 			chan.ops.add(this);
 		if(prefix.contains("+"))
 			chan.voices.add(this);
+		if(prefix.contains("%"))
+			chan.halfOps.add(this);
+		if(prefix.contains("~"))
+			chan.setFounder(this);
+		if(prefix.contains("&"))
+			chan.superOps.add(this);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
