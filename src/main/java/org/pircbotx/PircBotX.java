@@ -1394,11 +1394,7 @@ public class PircBotX {
 					else
 						break;
 				}
-				User user = getUser(nick.substring(prefix.length()));
-				System.out.println("Name: " + user.getNick());
-				System.out.println("Prefix: " + prefix);
-				System.out.println("Channel: " + chan.getName());
-				user.parseStatus(chan, prefix);
+				getUser(nick.substring(prefix.length())).parseStatus(chan, prefix);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
