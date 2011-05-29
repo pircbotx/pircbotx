@@ -49,11 +49,20 @@ public class Channel {
 	private long topicTimestamp;
 	private long createTimestamp;
 	private String topicSetter = "";
+	protected User founder;
 	protected final PircBotX bot;
 	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
 	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
+	/**
+	 * Set of half op users in this channel
+	 */
+	protected final Set<User> halfOps = Collections.synchronizedSet(new HashSet<User>());
+	/**
+	 * Set of super ops users in this channel
+	 */
+	protected final Set<User> superOps = Collections.synchronizedSet(new HashSet<User>());
 	/**
 	 * Set of opped users in this channel
 	 */

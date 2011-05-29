@@ -26,6 +26,8 @@ import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.FingerEvent;
+import org.pircbotx.hooks.events.FounderEvent;
+import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
@@ -59,6 +61,7 @@ import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
 import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
+import org.pircbotx.hooks.events.SuperOpEvent;
 import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
@@ -86,10 +89,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -1526,6 +1527,40 @@ public class PircBotX {
 					} else {
 						channel.voices.remove(reciepeint);
 						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, false));
+					}
+					p++;
+				} else if (atPos == 'h') {
+					//Half-op change
+					User reciepeint = getUser(params[p]);
+					if (pn == '+') {
+						channel.halfOps.add(reciepeint);
+						getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, source, reciepeint, true));
+					} else {
+						channel.halfOps.remove(reciepeint);
+						getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, source, reciepeint, false));
+					}
+					p++;
+				} else if (atPos == 'a') {
+					//SuperOp change
+					User reciepeint = getUser(params[p]);
+					if (pn == '+') {
+						channel.superOps.add(reciepeint);
+						getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, source, reciepeint, true));
+					} else {
+						channel.superOps.remove(reciepeint);
+						getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, source, reciepeint, false));
+					}
+					p++;
+				} else if (atPos == 'q') {
+					//Founder change
+					User reciepeint = getUser(params[p]);
+					if (pn == '+') {
+						channel.setFounder(reciepeint);
+						getListenerManager().dispatchEvent(new FounderEvent(this, channel, source, reciepeint, true));
+					} else {
+						if(channel.getFounder() == reciepeint)
+							channel.setFounder(reciepeint);
+						getListenerManager().dispatchEvent(new FounderEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'k') {
