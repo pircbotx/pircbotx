@@ -74,7 +74,7 @@ public class ListenerAdapterTest {
 		//Subtract the differences
 		classFiles.removeAll(classMethods);
 		String leftOver = StringUtils.join(classFiles.toArray(),", ");
-		assertEquals(classFiles.size(), 0, testClazz.getSimpleName() + " does not implment " + leftOver);
+		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
 
 		System.out.println("Success: Meta Interface implment all hooks");
 	}
