@@ -31,11 +31,11 @@ import org.pircbotx.hooks.events.VersionEvent;
  */
 public class CoreHooks implements Listener {
 	public void onFinger(FingerEvent event) {
-		event.getBot().sendCTCPResponse(event, "FINGER " + event.getBot().getFinger());
+		event.getBot().sendCTCPResponse(event.getUser(), "FINGER " + event.getBot().getFinger());
 	}
 
 	public void onPing(PingEvent event) {
-		event.getBot().sendCTCPResponse(event, "PING " + event.getPingValue());
+		event.getBot().sendCTCPResponse(event.getUser(), "PING " + event.getPingValue());
 	}
 
 	public void onServerPing(ServerPingEvent event) {
@@ -43,11 +43,11 @@ public class CoreHooks implements Listener {
 	}
 
 	public void onTime(TimeEvent event) {
-		event.getBot().sendCTCPResponse(event, "TIME " + new Date().toString());
+		event.getBot().sendCTCPResponse(event.getUser(), "TIME " + new Date().toString());
 	}
 
 	public void onVersion(VersionEvent event) {
-		event.getBot().sendCTCPResponse(event, "VERSION " + event.getBot().getVersion());
+		event.getBot().sendCTCPResponse(event.getUser(), "VERSION " + event.getBot().getVersion());
 	}
 
 	public void onEvent(Event event) {
