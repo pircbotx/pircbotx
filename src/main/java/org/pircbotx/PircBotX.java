@@ -578,12 +578,6 @@ public class PircBotX {
 		_outputThread.send("PRIVMSG " + target + " :" + message);
 	}
 
-	public void sendMessage(Event event, String message) {
-		User target = Utils.getSource(event);
-		if (target != null && message != null)
-			sendMessage(target, message);
-	}
-
 	public void sendMessage(User target, String message) {
 		if (target != null && message != null)
 			sendMessage(target.getNick(), message);
