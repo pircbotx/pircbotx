@@ -624,12 +624,6 @@ public class PircBotX {
 		sendCTCPCommand(target, "ACTION " + action);
 	}
 
-	public void sendAction(Event event, String message) {
-		User target = Utils.getSource(event);
-		if (target != null && message != null)
-			sendAction(target, message);
-	}
-
 	/**
 	 * Send an action to the user. See {@link #sendAction(java.lang.String, java.lang.String) }
 	 * for more information
@@ -661,13 +655,7 @@ public class PircBotX {
 	public void sendNotice(String target, String notice) {
 		_outputThread.send("NOTICE " + target + " :" + notice);
 	}
-
-	public void sendNotice(Event event, String notice) {
-		User target = Utils.getSource(event);
-		if (target != null && notice != null)
-			sendNotice(target, notice);
-	}
-
+	
 	/**
 	 * Send a notice to the user. See {@link #sendNotice(java.lang.String, java.lang.String) }
 	 * for more information
@@ -707,12 +695,6 @@ public class PircBotX {
 		_outputThread.send("PRIVMSG " + target + " :\u0001" + command + "\u0001");
 	}
 
-	public void sendCTCPCommand(Event event, String command) {
-		User target = Utils.getSource(event);
-		if (target != null && command != null)
-			sendCTCPCommand(target, command);
-	}
-
 	/**
 	 * Send a CTCP command to the user. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
 	 * for more information
@@ -733,12 +715,6 @@ public class PircBotX {
 	 */
 	public void sendCTCPResponse(String target, String message) {
 		_outputThread.send("NOTICE " + target + " :\u0001" + message + "\u0001");
-	}
-
-	public void sendCTCPResponse(Event event, String message) {
-		User target = Utils.getSource(event);
-		if (target != null && message != null)
-			sendCTCPResponse(target, message);
 	}
 
 	/**
@@ -849,21 +825,9 @@ public class PircBotX {
 		sendRawLine("INVITE " + nick + " :" + channel);
 	}
 
-	public void sendInvite(Event event, String channel) {
-		User target = Utils.getSource(event);
-		if (target != null && channel != null)
-			sendInvite(target, channel);
-	}
-
 	public void sendInvite(User target, String channel) {
 		if (target != null && channel != null)
 			sendInvite(target.getNick(), channel);
-	}
-
-	public void sendInvite(Event event, Channel channel) {
-		User target = Utils.getSource(event);
-		if (target != null && channel != null)
-			sendInvite(target, channel);
 	}
 
 	public void sendInvite(User target, Channel channel) {
