@@ -832,17 +832,12 @@ public class PircBotX {
 
 	public void sendInvite(User target, Channel channel) {
 		if (target != null && channel != null)
-			sendInvite(target.getNick(), channel);
+			sendInvite(target.getNick(), channel.getName());
 	}
 
 	public void sendInvite(Channel target, Channel channel) {
 		if (target != null && channel != null)
-			sendInvite(target.getName(), channel);
-	}
-
-	public void sendInvite(String nick, Channel channel) {
-		if (nick != null && channel != null)
-			sendInvite(nick, channel.getName());
+			sendInvite(target.getName(), channel.getName());
 	}
 
 	/**
