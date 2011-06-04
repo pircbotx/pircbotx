@@ -81,13 +81,13 @@ public class Utils {
 		else if (event instanceof ActionEvent)
 			return ((ActionEvent) event).getUser();
 		else if (event instanceof FileTransferFinishedEvent)
-			return ((FileTransferFinishedEvent) event).getTransfer().getSource();
+			return ((FileTransferFinishedEvent) event).getTransfer().getUser();
 		else if (event instanceof FingerEvent)
 			return ((FingerEvent) event).getUser();
 		else if (event instanceof IncomingChatRequestEvent)
-			return ((IncomingChatRequestEvent) event).getChat().getSource();
+			return ((IncomingChatRequestEvent) event).getChat().getUser();
 		else if (event instanceof IncomingFileTransferEvent)
-			return ((IncomingFileTransferEvent) event).getTransfer().getSource();
+			return ((IncomingFileTransferEvent) event).getTransfer().getUser();
 		else if (event instanceof JoinEvent)
 			return ((JoinEvent) event).getUser();
 		else if (event instanceof KickEvent)

@@ -76,7 +76,7 @@ public class DccManager {
 			synchronized (awaitingResume) {
 				for (int i = 0; i < awaitingResume.size(); i++) {
 					transfer = (DccFileTransfer) awaitingResume.elementAt(i);
-					if (transfer.getSource().equals(source) && transfer.getPort() == port) {
+					if (transfer.getUser().equals(source) && transfer.getPort() == port) {
 						awaitingResume.removeElementAt(i);
 						break;
 					}
@@ -96,7 +96,7 @@ public class DccManager {
 			synchronized (awaitingResume) {
 				for (int i = 0; i < awaitingResume.size(); i++) {
 					transfer = (DccFileTransfer) awaitingResume.elementAt(i);
-					if (transfer.getSource().equals(source) && transfer.getPort() == port) {
+					if (transfer.getUser().equals(source) && transfer.getPort() == port) {
 						awaitingResume.removeElementAt(i);
 						break;
 					}
