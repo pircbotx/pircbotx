@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import lombok.Getter;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 
 /**
@@ -45,6 +46,7 @@ public class DccFileTransfer {
 	public static final int BUFFER_SIZE = 1024;
 	private PircBotX bot;
 	private DccManager manager;
+	@Getter
 	private User user;
 	private String type;
 	private long address;
@@ -300,10 +302,6 @@ public class DccFileTransfer {
 			} catch (InterruptedException e) {
 				// Do nothing.
 			}
-	}
-
-	public User getSource() {
-		return user;
 	}
 
 	/**
