@@ -53,4 +53,15 @@ public class RemoveChannelBanEvent extends Event implements GenericChannelModeEv
 		this.user = user;
 		this.hostmask = hostmask;
 	}
+	
+	/**
+	 * Respond by send a message in the channel to the user that set the mode
+	 * (<b>Warning:</b> not to the user that got unbanned!) in <code>user: message</code>
+	 * format
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

@@ -52,4 +52,19 @@ public class ActionEvent extends Event {
 		this.channel = channel;
 		this.action = action;
 	}
+
+	/**
+	 * Respond to an action with an action.
+	 * <p>
+	 * Example
+	 * <pre>
+	 *   * SomeUser thinks that this is awesome
+	 *   * PircBotX agrees
+	 * </pre>
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendAction(getChannel(), response);
+	}
 }

@@ -51,4 +51,14 @@ public class RemoveNoExternalMessagesEvent extends Event implements GenericChann
 		this.channel = channel;
 		this.user = user;
 	}
+	
+	/**
+	 * Respond by send a message in the channel to the user that removed the mode
+	 * in <code>user: message</code> format
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

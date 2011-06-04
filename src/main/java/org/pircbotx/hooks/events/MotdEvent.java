@@ -42,4 +42,13 @@ public class MotdEvent extends Event {
 		super(bot);
 		this.motd = motd;
 	}
+
+	/**
+	 * Responds by sending a <b>raw line</b> to the server.
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendRawLineViaQueue(response);
+	}
 }

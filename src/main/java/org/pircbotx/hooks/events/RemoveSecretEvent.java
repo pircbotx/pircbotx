@@ -20,8 +20,8 @@ package org.pircbotx.hooks.events;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
-import lombok.Data; 
-import lombok.EqualsAndHashCode; 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
@@ -36,18 +36,28 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RemoveSecretEvent extends Event implements GenericChannelModeEvent {
-		protected final Channel channel;
-		protected final User user;
+	protected final Channel channel;
+	protected final User user;
 
-		/**
-		 * Default constructor to setup object. Timestamp is automatically set
-		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param channel The channel in which the mode change took place.
-		 * @param user The user that performed the mode change.
-		 */
-		public <T extends PircBotX> RemoveSecretEvent(T bot, Channel channel, User user) {
-			super(bot);
-			this.channel = channel;
-			this.user = user;
-		}
+	/**
+	 * Default constructor to setup object. Timestamp is automatically set
+	 * to current time as reported by {@link System#currentTimeMillis() }
+	 * @param channel The channel in which the mode change took place.
+	 * @param user The user that performed the mode change.
+	 */
+	public <T extends PircBotX> RemoveSecretEvent(T bot, Channel channel, User user) {
+		super(bot);
+		this.channel = channel;
+		this.user = user;
 	}
+
+	/**
+	 * Respond by send a message in the channel to the user that removed the mode
+	 * in <code>user: message</code> format
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
+}

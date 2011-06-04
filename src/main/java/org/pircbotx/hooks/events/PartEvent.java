@@ -47,4 +47,13 @@ public class PartEvent extends Event {
 		this.channel = channel;
 		this.user = user;
 	}
+
+	/**
+	 * Respond by sending a message to the channel
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), response);
+	}
 }

@@ -50,4 +50,14 @@ public class NoticeEvent extends Event {
 		this.channel = channel;
 		this.notice = notice;
 	}
+
+	/**
+	 * Respond by sending a message to the channel in <code>user: message</code>
+	 * format.
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

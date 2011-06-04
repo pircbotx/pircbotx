@@ -59,4 +59,13 @@ public class UserListEvent extends Event {
 		this.channel = channel;
 		this.users = users;
 	}
+
+	/**
+	 * Respond with a message to the channel that the userlist was from
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), response);
+	}
 }
