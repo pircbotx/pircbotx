@@ -836,16 +836,34 @@ public class PircBotX {
 		sendRawLine("INVITE " + nick + " :" + channel);
 	}
 
+	/**
+	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the CTCP command to
+	 * @param channel The channel you are inviting the user to join.
+	 */
 	public void sendInvite(User target, String channel) {
 		if (target != null && channel != null)
 			sendInvite(target.getNick(), channel);
 	}
 
+	/**
+	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the invite to
+	 * @param channel The channel you are inviting the user to join.
+	 */
 	public void sendInvite(User target, Channel channel) {
 		if (target != null && channel != null)
 			sendInvite(target.getNick(), channel.getName());
 	}
 
+	/**
+	 * Send an invite to the channel. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The channel to send the invite to
+	 * @param channel The channel you are inviting the user to join.
+	 */
 	public void sendInvite(Channel target, Channel channel) {
 		if (target != null && channel != null)
 			sendInvite(target.getName(), channel.getName());
