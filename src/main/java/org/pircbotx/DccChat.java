@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import lombok.Getter;
 
 /**
  * This class is used to allow the bot to interact with a DCC Chat session.
@@ -36,7 +37,8 @@ import java.net.Socket;
  */
 public class DccChat {
 	private PircBotX bot;
-	private User source;
+	@Getter
+	private User user;
 	private BufferedReader reader;
 	private BufferedWriter writer;
 	private Socket socket;
@@ -60,7 +62,7 @@ public class DccChat {
 		this.bot = bot;
 		this.address = address;
 		this.port = port;
-		this.source = source;
+		this.user = source;
 		acceptable = true;
 	}
 
@@ -77,7 +79,7 @@ public class DccChat {
 	 */
 	DccChat(PircBotX bot, User source, Socket socket) throws IOException {
 		this.bot = bot;
-		this.source = source;
+		this.user = source;
 		this.socket = socket;
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -143,10 +145,6 @@ public class DccChat {
 		if (acceptable)
 			throw new IOException("You must call the accept() method of the DccChat request before you can use it.");
 		socket.close();
-	}
-
-	public User getSource() {
-		return source;
 	}
 
 	/**
