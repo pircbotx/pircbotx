@@ -75,7 +75,7 @@ public class Utils {
 	 * @param event An event to get information from
 	 * @return The object of the user or null if the event doesn't have a source
 	 */
-	public static User getSource(Event event) {
+	public static User getUser(Event event) {
 		if (event == null)
 			return null;
 		else if (event instanceof ActionEvent)
