@@ -42,4 +42,13 @@ public class UnknownEvent extends Event {
 		super(bot);
 		this.line = line;
 	}
+	
+	/**
+	 * Responds by sending a <b>raw line</b> to the server.
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendRawLineViaQueue(response);
+	}
 }

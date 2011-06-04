@@ -48,4 +48,13 @@ public class InviteEvent extends Event {
 		this.user = user;
 		this.channel = channel;
 	}
+
+	/**
+	 * Respond with a private message to the user who sent the invite
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getUser(), response);
+	}
 }

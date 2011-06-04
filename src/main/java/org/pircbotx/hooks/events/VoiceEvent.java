@@ -54,4 +54,9 @@ public class VoiceEvent extends Event {
 		this.recipient = recipient;
 		this.isVoice = isVoice;
 	}
+
+	@Override
+	public void respond(String response) {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

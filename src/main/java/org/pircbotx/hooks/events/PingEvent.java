@@ -56,4 +56,13 @@ public class PingEvent extends Event {
 		this.channel = channel;
 		this.pingValue = pingValue;
 	}
+	
+	/**
+	 * Respond with a CTCP response to the user
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendCTCPResponse(getUser(), response);
+	}
 }

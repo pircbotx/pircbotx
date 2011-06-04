@@ -52,4 +52,13 @@ public class FingerEvent extends Event {
 		this.user = user;
 		this.channel = channel;
 	}
+
+	/**
+	 * Respond with a CTCP response to the user
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendCTCPResponse(getUser(), response);
+	}
 }

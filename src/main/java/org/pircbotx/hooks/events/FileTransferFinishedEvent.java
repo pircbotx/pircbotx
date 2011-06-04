@@ -53,4 +53,13 @@ public class FileTransferFinishedEvent extends Event {
 		this.transfer = transfer;
 		this.exception = e;
 	}
+
+	/**
+	 * Respond by sending a private message to the user that started the file transfer.
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getTransfer().getUser(), response);
+	}
 }

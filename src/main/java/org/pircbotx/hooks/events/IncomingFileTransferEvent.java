@@ -70,4 +70,13 @@ public class IncomingFileTransferEvent extends Event {
 		super(bot);
 		this.transfer = transfer;
 	}
+
+	/**
+	 * Respond with a <i>private message</i> to the user that sent the request
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getTransfer().getUser(), response);
+	}
 }

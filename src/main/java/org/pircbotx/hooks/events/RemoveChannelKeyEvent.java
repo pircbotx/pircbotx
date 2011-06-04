@@ -53,4 +53,14 @@ public class RemoveChannelKeyEvent extends Event implements GenericChannelModeEv
 		this.user = user;
 		this.key = key;
 	}
+	
+	/**
+	 * Respond by send a message in the channel to the user that removed the mode
+	 * in <code>user: message</code> format
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

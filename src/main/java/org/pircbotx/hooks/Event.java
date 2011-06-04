@@ -48,4 +48,13 @@ public abstract class Event<T extends PircBotX> {
 	public long getTimestamp() {
 		return timestamp;
 	}
+	
+	/**
+	 * A simple abstract method that all events must implement to respond to an
+	 * event happening. All implementing classes should delegate to the sendMessage
+	 * or other relevant methods in the main PircBotX class, not with custom lines
+	 * and calls to {@link PircBotX#sendRawLine(java.lang.String) }
+	 * @param response The response to send
+	 */
+	public abstract void respond(String response);
 }

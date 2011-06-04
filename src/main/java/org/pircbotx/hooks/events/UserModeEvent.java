@@ -47,4 +47,13 @@ public class UserModeEvent extends Event {
 		this.source = source;
 		this.mode = mode;
 	}
+
+	/**
+	 * Respond with a private message to the source user
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getSource(), response);
+	}
 }

@@ -47,4 +47,14 @@ public class QuitEvent extends Event {
 		this.user = user;
 		this.reason = reason;
 	}
+
+	/**
+	 * Does NOT respond! This will throw an {@link UnsupportedOperationException} 
+	 * since we can't respond to a user that just quit
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		throw new UnsupportedOperationException("Attepting to respond to a user that quit");
+	}
 }

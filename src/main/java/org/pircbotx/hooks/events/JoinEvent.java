@@ -47,4 +47,14 @@ public class JoinEvent extends Event {
 		this.channel = channel;
 		this.user = user;
 	}
+
+	/**
+	 * Respond with a channel message in <code>user: message</code> format to
+	 * the user that joined
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }
