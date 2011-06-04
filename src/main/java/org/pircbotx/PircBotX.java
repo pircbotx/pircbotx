@@ -578,11 +578,23 @@ public class PircBotX {
 		_outputThread.send("PRIVMSG " + target + " :" + message);
 	}
 
+	/**
+	 * Send a private message to a user. See {@link #sendMessage(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the message to
+	 * @param message The message to send
+	 */
 	public void sendMessage(User target, String message) {
 		if (target != null && message != null)
 			sendMessage(target.getNick(), message);
 	}
 
+	/**
+	 * Send a message to the channel. See {@link #sendMessage(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The channel to send the message to
+	 * @param message The message to send
+	 */
 	public void sendMessage(Channel target, String message) {
 		if (target != null && message != null)
 			sendMessage(target.getName(), message);
@@ -592,8 +604,8 @@ public class PircBotX {
 	 * Send a message to the given user in the given channel in this format: 
 	 * <code>user: message</code>. Very useful for responding directly to a command
 	 * @param chan The channel to send the message to
-	 * @param user
-	 * @param message 
+	 * @param user The user to recieve the message in the channel
+	 * @param message The message to send
 	 */
 	public void sendMessage(Channel chan, User user, String message) {
 		if (chan != null && user != null && message != null)
@@ -618,11 +630,23 @@ public class PircBotX {
 			sendAction(target, message);
 	}
 
+	/**
+	 * Send an action to the user. See {@link #sendAction(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the action to
+	 * @param message The action message to send
+	 */
 	public void sendAction(User target, String message) {
 		if (target != null && message != null)
 			sendAction(target.getNick(), message);
 	}
 
+	/**
+	 * Send an action to the channel. See {@link #sendAction(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The channel to send the action to
+	 * @param message The action message to send
+	 */
 	public void sendAction(Channel target, String message) {
 		if (target != null && message != null)
 			sendAction(target.getName(), message);
@@ -644,11 +668,23 @@ public class PircBotX {
 			sendNotice(target, notice);
 	}
 
+	/**
+	 * Send a notice to the user. See {@link #sendNotice(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the notice to
+	 * @param message The notice to send
+	 */
 	public void sendNotice(User target, String notice) {
 		if (target != null && notice != null)
 			sendNotice(target.getNick(), notice);
 	}
 
+	/**
+	 * Send a notice to the channel. See {@link #sendNotice(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The channel to send the notice to
+	 * @param message The notice to send
+	 */
 	public void sendNotice(Channel target, String notice) {
 		if (target != null && notice != null)
 			sendNotice(target.getName(), notice);
@@ -677,11 +713,24 @@ public class PircBotX {
 			sendCTCPCommand(target, command);
 	}
 
+	/**
+	 * Send a CTCP command to the user. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the CTCP command to
+	 * @param message The CTCP command to send
+	 */
 	public void sendCTCPCommand(User target, String command) {
 		if (target != null && command != null)
 			sendCTCPCommand(target.getNick(), command);
 	}
 
+	/**
+	 * Send a CTCP response to the target channel or user. Note that the
+	 * {@link CoreHooks} class already handles responding to the most common CTCP 
+	 * commands. Only respond to other commands that aren't implemented
+	 * @param target The target of the response
+	 * @param message The message to send
+	 */
 	public void sendCTCPResponse(String target, String message) {
 		_outputThread.send("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
@@ -692,6 +741,12 @@ public class PircBotX {
 			sendCTCPResponse(target, message);
 	}
 
+	/**
+	 * Send a CTCP Response to the user. See {@link #sendCTCPResponse(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The user to send the CTCP Response to
+	 * @param message The response to send
+	 */
 	public void sendCTCPResponse(User target, String message) {
 		if (target != null && message != null)
 			sendCTCPResponse(target.getNick(), message);
