@@ -24,7 +24,7 @@ import org.pircbotx.PircBotX;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class Event<T extends PircBotX> {
+public abstract class Event<T extends PircBotX> {
 	protected final long timestamp;
 	protected final T bot;
 	
