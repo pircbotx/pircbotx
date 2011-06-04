@@ -705,6 +705,17 @@ public class PircBotX {
 		if (target != null && command != null)
 			sendCTCPCommand(target.getNick(), command);
 	}
+	
+	/**
+	 * Send a CTCP command to the channel. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
+	 * for more information
+	 * @param target The channel to send the CTCP command to
+	 * @param message The CTCP command to send
+	 */
+	public void sendCTCPCommand(Channel target, String command) {
+		if (target != null && command != null)
+			sendCTCPCommand(target.getName(), command);
+	}
 
 	/**
 	 * Send a CTCP response to the target channel or user. Note that the
