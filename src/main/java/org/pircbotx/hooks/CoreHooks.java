@@ -26,7 +26,14 @@ import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 
 /**
- *
+ * Core Hooks of PircBotX that preform basic and expected operations. Any listener
+ * that wishes to duplicate functionality should <b>replace</b> CoreHooks in
+ * the {@link ListenerManager} with a subclass of this class (this way you don't
+ * have to duplicate all the functionality).
+ * <p>
+ * <b>Warning:</b> Removing CoreHooks without providing a replacement will produce
+ * undesired results like server timeouts due to not responding to pings.
+ * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class CoreHooks implements Listener {
@@ -51,6 +58,7 @@ public class CoreHooks implements Listener {
 	}
 
 	public void onEvent(Event event) {
+		//Use a small custom onEvent here instead of ListenerAdapter for performance
 		if (event instanceof VersionEvent)
 			onVersion((VersionEvent) event);
 		else if (event instanceof TimeEvent)
