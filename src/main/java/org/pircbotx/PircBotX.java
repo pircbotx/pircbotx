@@ -786,8 +786,11 @@ public class PircBotX {
 			listenerManager.addListener(new ListenerAdapter() {
 				@Override
 				public void onConnect(ConnectEvent event) throws Exception {
-					sendRawLine("NICKSERV IDENTIFY " + password);
-					//Do not autoremove as other bots may be sharing this ListenerManager
+					//Make sure this bot is us to prevent nasty errors in multi bot sitations
+					if(event.getBot() == PircBotX.this)
+						sendRawLine("NICKSERV IDENTIFY " + password);
+					//Self destrust, this listener has no more porpose
+					event.getBot().getListenerManager().removeListener(this);
 				}
 			});
 	}
