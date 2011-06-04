@@ -49,4 +49,13 @@ public class NickChangeEvent extends Event {
 		this.newNick = newNick;
 		this.user = user;
 	}
+
+	/**
+	 * Respond by sending a <i>private message</i> to the user's new nick
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getNewNick(), response);
+	}
 }

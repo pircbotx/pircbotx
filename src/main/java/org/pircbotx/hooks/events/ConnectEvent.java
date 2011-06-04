@@ -38,4 +38,13 @@ public class ConnectEvent extends Event {
 	public <T extends PircBotX> ConnectEvent(T bot) {
 		super(bot);
 	}
+
+	/**
+	 * Responds by sending a <b>raw line</b> to the server.
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendRawLineViaQueue(response);
+	}
 }

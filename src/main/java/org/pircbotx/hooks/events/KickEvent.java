@@ -20,8 +20,8 @@ package org.pircbotx.hooks.events;
 
 import org.pircbotx.Channel;
 import org.pircbotx.User;
-import lombok.Data; 
-import lombok.EqualsAndHashCode; 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
@@ -33,25 +33,34 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class KickEvent extends Event {
-		protected final Channel channel;
-		protected final User source;
-		protected final User recipient;
-		protected final String reason;
+	protected final Channel channel;
+	protected final User source;
+	protected final User recipient;
+	protected final String reason;
 
-		/**
-		 * Default constructor to setup object. Timestamp is automatically set
-		 * to current time as reported by {@link System#currentTimeMillis() }
-		 * @param channel The channel from which the recipient was kicked.
-		 * @param source The user who performed the kick.
-		 * @param recipient The unfortunate recipient of the kick.
-		 * @param reason The reason given by the user who performed the kick.
-		 */
-		public <T extends PircBotX> KickEvent(T bot, Channel channel, User source, User recipient, String reason) {
-			super(bot);
-			this.channel = channel;
-			this.source = source;
-			this.recipient = recipient;
-			this.reason = reason;
-		}
+	/**
+	 * Default constructor to setup object. Timestamp is automatically set
+	 * to current time as reported by {@link System#currentTimeMillis() }
+	 * @param channel The channel from which the recipient was kicked.
+	 * @param source The user who performed the kick.
+	 * @param recipient The unfortunate recipient of the kick.
+	 * @param reason The reason given by the user who performed the kick.
+	 */
+	public <T extends PircBotX> KickEvent(T bot, Channel channel, User source, User recipient, String reason) {
+		super(bot);
+		this.channel = channel;
+		this.source = source;
+		this.recipient = recipient;
+		this.reason = reason;
 	}
 
+	/**
+	 * Respond with a channel message in <code>user: message</code> format to
+	 * the <i>user that preformed the kick</i>
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getSource(), response);
+	}
+}

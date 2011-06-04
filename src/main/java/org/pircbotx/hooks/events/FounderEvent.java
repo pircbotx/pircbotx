@@ -55,4 +55,15 @@ public class FounderEvent extends Event {
 		this.recipient = recipient;
 		this.isFounder = isFounder;
 	}
+
+	/**
+	 * Respond by send a message in the channel to the user that set the mode
+	 * (<b>Warning:</b> not to the user that got founder status!) in <code>user: message</code>
+	 * format
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getSource(), response);
+	}
 }

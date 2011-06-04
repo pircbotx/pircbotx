@@ -57,4 +57,14 @@ public class TopicEvent extends Event {
 		this.changed = changed;
 		this.date = date;
 	}
+
+	/**
+	 * Respond with a channel message in <code>user: message</code> format to the
+	 * user that set the message
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

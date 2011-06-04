@@ -52,4 +52,17 @@ public class SetModeratedEvent extends Event implements GenericChannelModeEvent 
 		this.channel = channel;
 		this.user = user;
 	}
+	
+	/**
+	 * Respond by send a message in the channel to the user that set the mode
+	 * in <code>user: message</code> format
+	 * <p>
+	 * Note that depending on the bots status in the channel the message may not
+	 * get through
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

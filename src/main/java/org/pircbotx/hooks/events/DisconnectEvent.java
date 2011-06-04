@@ -49,4 +49,14 @@ public class DisconnectEvent extends Event {
 	public <T extends PircBotX> DisconnectEvent(T bot) {
 		super(bot);
 	}
+	
+	/**
+	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException} 
+	 * since we can't respond to a server we just disconnected from. 
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		throw new UnsupportedOperationException("Attepting to respond to a disconnected server");
+	}
 }

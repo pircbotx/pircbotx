@@ -50,4 +50,14 @@ public class MessageEvent extends Event implements GenericMessageEvent {
 		this.user = user;
 		this.message = message;
 	}
+
+	/**
+	 * Respond with a channel message in <code>user: message</code> format to
+	 * the user that sent the message
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChannel(), getUser(), response);
+	}
 }

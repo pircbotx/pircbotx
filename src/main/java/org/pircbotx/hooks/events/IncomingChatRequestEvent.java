@@ -31,7 +31,7 @@ import org.pircbotx.hooks.Listener;
  * than via the IRC server. This is useful for sending many lines of text
  * to and from the bot without having to worry about flooding the server
  * or any operators of the server being able to "spy" on what is being
- * said. By default there are no {@link Listener listeners} for this event,
+ * said. By default there are no {@link Listener} for this event,
  * which means that all DCC CHAT requests will be ignored by default.
  *  <p>
  * If you wish to accept the connection, then you listen for this event
@@ -67,5 +67,15 @@ public class IncomingChatRequestEvent extends Event {
 	public <T extends PircBotX> IncomingChatRequestEvent(T bot, DccChat chat) {
 		super(bot);
 		this.chat = chat;
+	}
+
+	/**
+	 * Respond with a <i>private message</i> to the user that sent the request, 
+	 * <b>not a message over dcc</b> since it might not of been accepted yet
+	 * @param response The response to send 
+	 */
+	@Override
+	public void respond(String response) {
+		getBot().sendMessage(getChat().getUser(), response);
 	}
 }
