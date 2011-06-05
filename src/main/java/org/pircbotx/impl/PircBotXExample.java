@@ -75,7 +75,12 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 	/**
 	 * Older way to handle events. We are given a generic event and must cast
-	 * to the event type that we want. 
+	 * to the event type that we want. This is helpful for when you need to funnel
+	 * all events into a single method, eg logging
+	 * <p>
+	 * This also shows the other way to send messages: With PircBotX's send* 
+	 * methods. These should be used when the respond() method of the event
+	 * doesn't send the message to where you want it to go. 
 	 * <p>
 	 * <b>WARNING:</b> If you are extending ListenerAdapter and implementing Listener
 	 * in the same class (as this does) you <b>must</b> call <code>super.onEvent(event)</code>
@@ -88,6 +93,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	public void onEvent(Event rawevent) throws Exception {
 		//Since we extend ListenerAdapter and implement Listener in the same class
 		//call the super onEvent so ListenerAdapter will work
+		//Unless you are doing that, this line shouldn't be added
 		super.onEvent(rawevent);
 
 		//Make sure were dealing with a message
