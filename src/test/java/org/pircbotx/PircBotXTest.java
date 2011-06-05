@@ -74,9 +74,8 @@ public class PircBotXTest {
 				{
 					add(String.class);
 					add(User.class);
-					add(Event.class);
-					//sendCTCP* and sendInvite shouldn't be sent to a channel
-					if (!key.startsWith("sendCTCP"))
+					//sendCTCPResponse shouldn't have a channel variant
+					if (!key.startsWith("sendCTCPResponse"))
 						add(Channel.class);
 				}
 			});
@@ -100,9 +99,6 @@ public class PircBotXTest {
 	@Test
 	public void sendActionTest() {
 		//Make sure the same result is given no matter which method we call
-		bot.sendAction(event, string);
-		signal.compare("AUser", string);
-
 		bot.sendAction(user, string);
 		signal.compare("AUser", string);
 
@@ -115,9 +111,6 @@ public class PircBotXTest {
 	@Test
 	public void sendCTCPCommandTest() {
 		//Make sure the same result is given no matter which method we call
-		bot.sendCTCPCommand(event, string);
-		signal.compare("AUser", string);
-
 		bot.sendCTCPCommand(user, string);
 		signal.compare("AUser", string);
 
@@ -127,9 +120,6 @@ public class PircBotXTest {
 	@Test
 	public void sendCTCPResponseTest() {
 		//Make sure the same result is given no matter which method we call
-		bot.sendCTCPResponse(event, string);
-		signal.compare("AUser", string);
-
 		bot.sendCTCPResponse(user, string);
 		signal.compare("AUser", string);
 
@@ -139,15 +129,6 @@ public class PircBotXTest {
 	@Test
 	public void sendInviteTest() {
 		//Make sure the same result is given no matter which method we call
-		bot.sendInvite(event, string);
-		signal.compare("AUser", string);
-
-		bot.sendInvite(event, chan);
-		signal.compare("AUser", "AChannel");
-
-		bot.sendInvite(event, chan);
-		signal.compare("AUser", "AChannel");
-
 		bot.sendInvite(user, chan);
 		signal.compare("AUser", "AChannel");
 
@@ -160,9 +141,6 @@ public class PircBotXTest {
 	@Test
 	public void sendMessageTest() {
 		//Make sure the same result is given no matter which method we call
-		bot.sendMessage(event, string);
-		signal.compare("AUser", string);
-
 		bot.sendMessage(user, string);
 		signal.compare("AUser", string);
 
@@ -175,9 +153,6 @@ public class PircBotXTest {
 	@Test
 	public void sendNoiceTest() {
 		//Make sure the same result is given no matter which method we call
-		bot.sendNotice(event, string);
-		signal.compare("AUser", string);
-
 		bot.sendNotice(user, string);
 		signal.compare("AUser", string);
 
