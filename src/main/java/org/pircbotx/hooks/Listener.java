@@ -18,10 +18,12 @@
  */
 package org.pircbotx.hooks;
 
+import org.pircbotx.PircBotX;
+
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface Listener {
-	public void onEvent(Event event) throws Exception;
+public interface Listener<T extends PircBotX> {
+	public void onEvent(Event<T> event) throws Exception;
 }
