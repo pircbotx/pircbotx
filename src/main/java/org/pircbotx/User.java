@@ -73,6 +73,15 @@ public class User implements Comparable<User> {
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
+	
+	void setNick(String nick) {
+		//Replace nick in nick map
+		synchronized(bot.userNickMap) {
+			bot.userNickMap.remove(this.nick);
+			bot.userNickMap.put(nick, this);
+			this.nick = nick;
+		}
+	}
 
 	/**
 	 * Get all channels this user is a part of

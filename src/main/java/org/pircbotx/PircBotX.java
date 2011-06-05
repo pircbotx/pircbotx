@@ -88,6 +88,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
@@ -149,12 +151,21 @@ public class PircBotX {
 	 */
 	protected ManyToManyMap<Channel, User> _userChanInfo = new ManyToManyMap<Channel, User>() {
 		@Override
+		public boolean put(Channel a, User b) {
+			//Add to nick map
+			userNickMap.put(b.getNick(), b);
+			return super.put(a,b);
+		}
+		
+		@Override
 		public Set<Channel> deleteB(User b) {
 			//Remove the Channels internal reference to the User
 			synchronized (lockObject) {
 				for (Channel curChan : BMap.get(b))
 					curChan.removeUser(b);
 			}
+			//Remove from nick map
+			userNickMap.remove(b.getNick());
 			return super.deleteB(b);
 		}
 
@@ -165,6 +176,10 @@ public class PircBotX {
 			return super.dissociate(a, b, remove);
 		}
 	};
+	/**
+	 * Map to provide extremely fast lookup of user object by nick
+	 */
+	protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
 	// DccManager to process and handle all DCC events.
 	private DccManager _dccManager = new DccManager(this);
 	private int[] _dccPorts = null;
@@ -1691,7 +1706,12 @@ public class PircBotX {
 	 * @param nick The new nick.
 	 */
 	protected void setNick(String nick) {
-		_nick = nick;
+		synchronized(userNickMap) {
+			User user = userNickMap.get(_nick);
+			userNickMap.remove(_nick);
+			userNickMap.put(nick, user);
+			_nick = nick;
+		}
 	}
 
 	/**
@@ -2240,10 +2260,9 @@ public class PircBotX {
 	public User getUser(String nick) {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
-		for (User curUser : _userChanInfo.getBValues())
-			if (curUser.getNick().equals(nick))
-				return curUser;
-
+		if(userNickMap.containsKey(nick))
+			return userNickMap.get(nick);
+		
 		//User does not exist, create one
 		User user = new User(this, nick);
 		_userChanInfo.putA(user);
@@ -2264,10 +2283,7 @@ public class PircBotX {
 	 * @return True if they exist, false if not
 	 */
 	public boolean userExists(String nick) {
-		for (User curUser : _userChanInfo.getBValues())
-			if (curUser.getNick().equals(nick))
-				return true;
-		return false;
+		return userNickMap.containsKey(nick);
 	}
 
 	/**
