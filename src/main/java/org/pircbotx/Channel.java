@@ -72,7 +72,7 @@ public class Channel {
 	 */
 	protected final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
 	
-	public Channel(PircBotX bot, String name) {
+	Channel(PircBotX bot, String name) {
 		this.bot = bot;
 		this.name = name;
 	}
