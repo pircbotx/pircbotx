@@ -1238,10 +1238,9 @@ public class PircBotX {
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
-
 		User source = getUser(sourceNick);
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (_channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
+		Channel channel = (target.length() != 0 && _channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
