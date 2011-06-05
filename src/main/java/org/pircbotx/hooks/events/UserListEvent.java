@@ -44,7 +44,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserListEvent extends Event {
+public class UserListEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final Set<User> users;
 
@@ -54,7 +54,7 @@ public class UserListEvent extends Event {
 	 * @param channel The channel that the user list is from.
 	 * @param users An <b>immutable</b> Set of Users belonging to this channel.
 	 */
-	public <T extends PircBotX> UserListEvent(T bot, Channel channel, Set<User> users) {
+	public UserListEvent(T bot, Channel channel, Set<User> users) {
 		super(bot);
 		this.channel = channel;
 		this.users = users;

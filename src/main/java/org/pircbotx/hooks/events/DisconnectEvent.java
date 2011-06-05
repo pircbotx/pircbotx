@@ -41,12 +41,12 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DisconnectEvent extends Event {
+public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 */
-	public <T extends PircBotX> DisconnectEvent(T bot) {
+	public DisconnectEvent(T bot) {
 		super(bot);
 	}
 	

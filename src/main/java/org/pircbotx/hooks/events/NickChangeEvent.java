@@ -31,7 +31,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NickChangeEvent extends Event {
+public class NickChangeEvent<T extends PircBotX> extends Event<T> {
 	protected final String oldNick;
 	protected final String newNick;
 	protected final User user;
@@ -43,7 +43,7 @@ public class NickChangeEvent extends Event {
 	 * @param newNick The new nick.
 	 * @param user The user that changed their nick
 	 */
-	public <T extends PircBotX> NickChangeEvent(T bot, String oldNick, String newNick, User user) {
+	public NickChangeEvent(T bot, String oldNick, String newNick, User user) {
 		super(bot);
 		this.oldNick = oldNick;
 		this.newNick = newNick;

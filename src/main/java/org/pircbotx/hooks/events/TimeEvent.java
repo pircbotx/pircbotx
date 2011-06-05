@@ -37,7 +37,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TimeEvent extends Event {
+public class TimeEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final Channel channel;
 
@@ -48,7 +48,7 @@ public class TimeEvent extends Event {
 	 * @param channel The target channel of the TIME request. A value of <code>null</code>
 	 *               means that target is us
 	 */
-	public <T extends PircBotX> TimeEvent(T bot, User user, Channel channel) {
+	public TimeEvent(T bot, User user, Channel channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

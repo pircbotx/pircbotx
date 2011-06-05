@@ -37,7 +37,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VersionEvent extends Event {
+public class VersionEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final Channel channel;
 
@@ -48,7 +48,7 @@ public class VersionEvent extends Event {
 	 * @param channel The target channel of the VERSION request. A value of <code>null</code>
 	 *               means that that the target is us.
 	 */
-	public <T extends PircBotX> VersionEvent(T bot, User user, Channel channel) {
+	public VersionEvent(T bot, User user, Channel channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

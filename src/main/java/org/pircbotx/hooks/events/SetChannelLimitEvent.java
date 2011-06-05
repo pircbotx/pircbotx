@@ -36,7 +36,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelLimitEvent extends Event implements GenericChannelModeEvent {
+public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final int limit;
@@ -48,7 +48,7 @@ public class SetChannelLimitEvent extends Event implements GenericChannelModeEve
 	 * @param user The user that performed the mode change.
 	 * @param limit The maximum number of users that may be in this channel at the same time.
 	 */
-	public <T extends PircBotX> SetChannelLimitEvent(T bot, Channel channel, User user, int limit) {
+	public SetChannelLimitEvent(T bot, Channel channel, User user, int limit) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

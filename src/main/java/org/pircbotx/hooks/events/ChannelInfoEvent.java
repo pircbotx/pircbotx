@@ -39,7 +39,7 @@ import org.pircbotx.hooks.Event;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ChannelInfoEvent extends Event {
+public class ChannelInfoEvent<T extends PircBotX> extends Event<T> {
 	protected final Set<ChannelListEntry> list;
 
 	/**
@@ -47,7 +47,7 @@ public class ChannelInfoEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param list A list of ChannelList Entries
 	 */
-	public <T extends PircBotX> ChannelInfoEvent(T bot, Set<ChannelListEntry> list) {
+	public ChannelInfoEvent(T bot, Set<ChannelListEntry> list) {
 		super(bot);
 		this.list = list;
 	}

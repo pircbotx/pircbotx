@@ -50,7 +50,7 @@ import org.pircbotx.ReplyConstants;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ServerResponseEvent extends Event {
+public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
 	protected final int code;
 	protected final String response;
 
@@ -60,7 +60,7 @@ public class ServerResponseEvent extends Event {
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
-	public <T extends PircBotX> ServerResponseEvent(T bot, int code, String response) {
+	public ServerResponseEvent(T bot, int code, String response) {
 		super(bot);
 		this.code = code;
 		this.response = response;

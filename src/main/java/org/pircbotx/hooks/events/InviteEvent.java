@@ -31,7 +31,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class InviteEvent extends Event {
+public class InviteEvent<T extends PircBotX> extends Event<T> {
 	protected final String user;
 	protected final String channel;
 
@@ -43,7 +43,7 @@ public class InviteEvent extends Event {
 	 * @param channel The channel that we're being invited to. Provided as a string
 	 *                since we are not joined to the channel yet
 	 */
-	public <T extends PircBotX> InviteEvent(T bot, String user, String channel) {
+	public InviteEvent(T bot, String user, String channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
