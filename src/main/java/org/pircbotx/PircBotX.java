@@ -2248,7 +2248,14 @@ public class PircBotX {
 		User user = new User(this, nick);
 		_userChanInfo.putA(user);
 		return user;
-
+	}
+	
+	/**
+	 * Gets the bots own user object
+	 * @return The user object representing this bot
+	 */
+	public User getUserBot() {
+		return getUser(getNick());
 	}
 
 	/**
