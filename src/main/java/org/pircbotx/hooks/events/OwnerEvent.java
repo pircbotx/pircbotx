@@ -26,7 +26,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * Called when a user (possibly us) gets founder status granted in a channel. Note
+ * Called when a user (possibly us) gets owner status granted in a channel. Note
  * that this isn't supported on all servers
  *  <p>
  * This is a type of mode change and therefor is also dispatched in a 
@@ -35,7 +35,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FounderEvent<T extends PircBotX> extends Event<T> {
+public class OwnerEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
@@ -46,9 +46,9 @@ public class FounderEvent<T extends PircBotX> extends Event<T> {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
 	 * @param source The user that performed the mode change.
-	 * @param recipient The nick of the user that got 'voiced'.
+	 * @param recipient The nick of the user that got owner status.
 	 */
-	public FounderEvent(T bot, Channel channel, User source, User recipient, boolean isFounder) {
+	public OwnerEvent(T bot, Channel channel, User source, User recipient, boolean isFounder) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;
@@ -58,7 +58,7 @@ public class FounderEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
-	 * (<b>Warning:</b> not to the user that got founder status!) in <code>user: message</code>
+	 * (<b>Warning:</b> not to the user that got owner status!) in <code>user: message</code>
 	 * format
 	 * @param response The response to send 
 	 */

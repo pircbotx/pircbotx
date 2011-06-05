@@ -71,9 +71,9 @@ public class Channel {
 	 */
 	protected final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
 	/**
-	 * Set of founder users in this channel
+	 * Set of super owner users in this channel
 	 */
-	protected final Set<User> founders = Collections.synchronizedSet(new HashSet<User>());
+	protected final Set<User> owners = Collections.synchronizedSet(new HashSet<User>());
 	
 	Channel(PircBotX bot, String name) {
 		this.bot = bot;

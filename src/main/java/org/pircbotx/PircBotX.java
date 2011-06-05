@@ -26,7 +26,6 @@ import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.FingerEvent;
-import org.pircbotx.hooks.events.FounderEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -95,6 +94,7 @@ import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
@@ -1602,14 +1602,14 @@ public class PircBotX {
 					}
 					p++;
 				} else if (atPos == 'q') {
-					//Founder change
+					//Owner change
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						channel.founders.add(reciepeint);
-						getListenerManager().dispatchEvent(new FounderEvent(this, channel, source, reciepeint, true));
+						channel.owners.add(reciepeint);
+						getListenerManager().dispatchEvent(new OwnerEvent(this, channel, source, reciepeint, true));
 					} else {
-						channel.founders.remove(reciepeint);
-						getListenerManager().dispatchEvent(new FounderEvent(this, channel, source, reciepeint, false));
+						channel.owners.remove(reciepeint);
+						getListenerManager().dispatchEvent(new OwnerEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'k') {
