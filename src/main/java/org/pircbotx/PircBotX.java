@@ -961,6 +961,90 @@ public class PircBotX {
 	public void deVoice(Channel chan, User user) {
 		setMode(chan, "-v " + user.getNick());
 	}
+	
+	/**
+	 * Grants owner privileges to a user on a channel. 
+	 * Successful use of this method may require the bot to have operator or
+	 * halfOp status itself.
+	 * <p>
+	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
+	 * it to mean something else!
+	 * @param chan
+	 * @param user 
+	 */
+	public void halfOp(Channel chan, User user) {
+		setMode(chan, "+h " + user.getNick());
+	}
+	
+	/**
+	 * Removes owner privileges to a user on a channel. 
+	 * Successful use of this method may require the bot to have operator or
+	 * halfOp status itself.
+	 * <p>
+	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
+	 * it to mean something else!
+	 * @param chan
+	 * @param user 
+	 */
+	public void deHalfOp(Channel chan, User user) {
+		setMode(chan, "-h " + user.getNick());
+	}
+	
+	/**
+	 * Grants owner privileges to a user on a channel. 
+	 * Successful use of this method may require the bot to have owner
+	 * status itself.
+	 * <p>
+	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
+	 * it to mean something else!
+	 * @param chan
+	 * @param user 
+	 */
+	public void owner(Channel chan, User user) {
+		setMode(chan, "+q " + user.getNick());
+	}
+	
+	/**
+	 * Removes owner privileges to a user on a channel. 
+	 * Successful use of this method may require the bot to have owner
+	 * status itself.
+	 * <p>
+	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
+	 * it to mean something else!
+	 * @param chan
+	 * @param user 
+	 */
+	public void deOwner(Channel chan, User user) {
+		setMode(chan, "-q " + user.getNick());
+	}
+	
+	/**
+	 * Grants superOp privileges to a user on a channel. 
+	 * Successful use of this method may require the bot to have owner or superOp
+	 * status itself.
+	 * <p>
+	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
+	 * it to mean something else!
+	 * @param chan
+	 * @param user 
+	 */
+	public void superOp(Channel chan, User user) {
+		setMode(chan, "+a " + user.getNick());
+	}
+	
+	/**
+	 * Removes superOp privileges to a user on a channel. 
+	 * Successful use of this method may require the bot to have owner or superOp
+	 * status itself.
+	 * <p>
+	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
+	 * it to mean something else!
+	 * @param chan
+	 * @param user 
+	 */
+	public void deSuperOp(Channel chan, User user) {
+		setMode(chan, "-a " + user.getNick());
+	}
 
 	/**
 	 * Set the topic for a channel.
