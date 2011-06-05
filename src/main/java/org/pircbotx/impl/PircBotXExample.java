@@ -38,8 +38,8 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	 * This example shows how to work with the waitFor ability of PircBotX. Follow
 	 * the inline comments for how this works 
 	 * <p>
-	 * <b>WARNING:</b> This example requires using a Threaded listener manager 
-	 *                 (this is PircBotX's default)
+	 * *WARNING:* This example requires using a Threaded listener manager 
+	 *            (this is PircBotX's default)
 	 * @param event A MessageEvent
 	 * @throws Exception If any Exceptions might be thrown, throw them up and let
 	 * the {@link ListenerManager} handle it. This can be removed though if not needed
@@ -82,8 +82,8 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	 * methods. These should be used when the respond() method of the event
 	 * doesn't send the message to where you want it to go. 
 	 * <p>
-	 * <b>WARNING:</b> If you are extending ListenerAdapter and implementing Listener
-	 * in the same class (as this does) you <b>must</b> call <code>super.onEvent(event)</code>
+	 * *WARNING:* If you are extending ListenerAdapter and implementing Listener
+	 * in the same class (as this does) you *must* call super.onEvent(event);
 	 * otherwise none of the methods in ListenerAdapter will get called!
 	 * @param rawevent A generic event
 	 * @throws Exception If any Exceptions might be thrown, throw them up and let
