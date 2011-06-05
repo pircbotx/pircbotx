@@ -34,7 +34,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OpEvent extends Event {
+public class OpEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
@@ -47,7 +47,7 @@ public class OpEvent extends Event {
 	 * @param source The user that performed the mode change.
 	 * @param recipient The user that got 'opped'.
 	 */
-	public <T extends PircBotX> OpEvent(T bot, Channel channel, User source, User recipient, boolean isOp) {
+	public OpEvent(T bot, Channel channel, User source, User recipient, boolean isOp) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;

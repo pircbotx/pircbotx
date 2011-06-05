@@ -31,7 +31,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NoticeEvent extends Event {
+public class NoticeEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final Channel channel;
 	protected final String notice;
@@ -44,7 +44,7 @@ public class NoticeEvent extends Event {
 	 *               means that the target is us
 	 * @param notice The notice message.
 	 */
-	public <T extends PircBotX> NoticeEvent(T bot, User user, Channel channel, String notice) {
+	public NoticeEvent(T bot, User user, Channel channel, String notice) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

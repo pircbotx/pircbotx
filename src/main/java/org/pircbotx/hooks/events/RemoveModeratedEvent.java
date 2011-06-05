@@ -35,7 +35,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RemoveModeratedEvent extends Event implements GenericChannelModeEvent {
+public class RemoveModeratedEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 
@@ -45,7 +45,7 @@ public class RemoveModeratedEvent extends Event implements GenericChannelModeEve
 	 * @param channel The channel in which the mode change took place.
 	 * @param user The user that performed the mode change.
 	 */
-	public <T extends PircBotX> RemoveModeratedEvent(T bot, Channel channel, User user) {
+	public RemoveModeratedEvent(T bot, Channel channel, User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

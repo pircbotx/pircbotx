@@ -37,7 +37,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FileTransferFinishedEvent extends Event {
+public class FileTransferFinishedEvent<T extends PircBotX> extends Event<T> {
 	protected final DccFileTransfer transfer;
 	protected final Exception exception;
 
@@ -48,7 +48,7 @@ public class FileTransferFinishedEvent extends Event {
 	 * @param e null if the file was transfered successfully, otherwise this
 	 *          will report what went wrong.
 	 */
-	public <T extends PircBotX> FileTransferFinishedEvent(T bot, DccFileTransfer transfer, Exception e) {
+	public FileTransferFinishedEvent(T bot, DccFileTransfer transfer, Exception e) {
 		super(bot);
 		this.transfer = transfer;
 		this.exception = e;

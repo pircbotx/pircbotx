@@ -35,7 +35,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FounderEvent extends Event {
+public class FounderEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
@@ -48,7 +48,7 @@ public class FounderEvent extends Event {
 	 * @param source The user that performed the mode change.
 	 * @param recipient The nick of the user that got 'voiced'.
 	 */
-	public <T extends PircBotX> FounderEvent(T bot, Channel channel, User source, User recipient, boolean isFounder) {
+	public FounderEvent(T bot, Channel channel, User source, User recipient, boolean isFounder) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;

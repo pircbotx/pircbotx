@@ -34,7 +34,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VoiceEvent extends Event {
+public class VoiceEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
@@ -47,7 +47,7 @@ public class VoiceEvent extends Event {
 	 * @param source The user that performed the mode change.
 	 * @param recipient The nick of the user that got 'voiced'.
 	 */
-	public <T extends PircBotX> VoiceEvent(T bot, Channel channel, User source, User recipient, boolean isVoice) {
+	public VoiceEvent(T bot, Channel channel, User source, User recipient, boolean isVoice) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;

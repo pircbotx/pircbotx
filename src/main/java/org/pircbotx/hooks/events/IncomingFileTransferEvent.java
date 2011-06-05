@@ -58,7 +58,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingFileTransferEvent extends Event {
+public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> {
 	protected final DccFileTransfer transfer;
 
 	/**
@@ -66,7 +66,7 @@ public class IncomingFileTransferEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public <T extends PircBotX> IncomingFileTransferEvent(T bot, DccFileTransfer transfer) {
+	public IncomingFileTransferEvent(T bot, DccFileTransfer transfer) {
 		super(bot);
 		this.transfer = transfer;
 	}

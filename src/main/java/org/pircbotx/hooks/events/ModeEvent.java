@@ -38,7 +38,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ModeEvent extends Event {
+public class ModeEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User user;
 	protected final String mode;
@@ -50,7 +50,7 @@ public class ModeEvent extends Event {
 	 * @param user The user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	public <T extends PircBotX> ModeEvent(T bot, Channel channel, User user, String mode) {
+	public ModeEvent(T bot, Channel channel, User user, String mode) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

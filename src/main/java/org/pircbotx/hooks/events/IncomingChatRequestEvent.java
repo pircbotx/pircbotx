@@ -56,7 +56,7 @@ import org.pircbotx.hooks.Listener;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingChatRequestEvent extends Event {
+public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> {
 	protected final DccChat chat;
 
 	/**
@@ -64,7 +64,7 @@ public class IncomingChatRequestEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 */
-	public <T extends PircBotX> IncomingChatRequestEvent(T bot, DccChat chat) {
+	public IncomingChatRequestEvent(T bot, DccChat chat) {
 		super(bot);
 		this.chat = chat;
 	}

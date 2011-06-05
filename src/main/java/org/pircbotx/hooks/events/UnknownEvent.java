@@ -30,7 +30,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UnknownEvent extends Event {
+public class UnknownEvent<T extends PircBotX> extends Event<T> {
 	protected final String line;
 
 	/**
@@ -38,7 +38,7 @@ public class UnknownEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param line The raw line that was received from the server.
 	 */
-	public <T extends PircBotX> UnknownEvent(T bot, String line) {
+	public UnknownEvent(T bot, String line) {
 		super(bot);
 		this.line = line;
 	}

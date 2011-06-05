@@ -32,7 +32,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class KickEvent extends Event {
+public class KickEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
@@ -46,7 +46,7 @@ public class KickEvent extends Event {
 	 * @param recipient The unfortunate recipient of the kick.
 	 * @param reason The reason given by the user who performed the kick.
 	 */
-	public <T extends PircBotX> KickEvent(T bot, Channel channel, User source, User recipient, String reason) {
+	public KickEvent(T bot, Channel channel, User source, User recipient, String reason) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;
