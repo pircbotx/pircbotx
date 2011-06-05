@@ -29,7 +29,6 @@ import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.events.FingerEvent;
-import org.pircbotx.hooks.events.FounderEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
@@ -132,9 +131,6 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onFinger(FingerEvent<T> event) throws Exception {
-	}
-	
-	public void onFounder(FounderEvent<T> event) throws Exception {
 	}
 	
 	public void onHalfOp(HalfOpEvent<T> event) throws Exception {
