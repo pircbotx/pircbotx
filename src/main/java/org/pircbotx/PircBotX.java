@@ -1605,11 +1605,10 @@ public class PircBotX {
 					//Founder change
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
-						channel.setFounder(reciepeint);
+						channel.founders.add(reciepeint);
 						getListenerManager().dispatchEvent(new FounderEvent(this, channel, source, reciepeint, true));
 					} else {
-						if(channel.getFounder() == reciepeint)
-							channel.setFounder(reciepeint);
+						channel.founders.remove(reciepeint);
 						getListenerManager().dispatchEvent(new FounderEvent(this, channel, source, reciepeint, false));
 					}
 					p++;
