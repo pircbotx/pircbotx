@@ -41,6 +41,7 @@ import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
+import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -167,6 +168,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onOp(OpEvent<T> event) throws Exception {
+	}
+	
+	public void onOwner(OwnerEvent<T> event) throws Exception {
 	}
 
 	public void onPart(PartEvent<T> event) throws Exception {
