@@ -53,7 +53,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			return;
 
 		//WaitTest has started
-		bot.sendMessage(event.getChannel(), "Started...");
+		event.respond("Started...");
 		//Infinate loop since we might recieve messages that aren't WaitTest's. 
 		while (true) {
 			//Use the waitFor() method to wait for a MessageEvent.
@@ -62,10 +62,10 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			MessageEvent currentEvent = bot.waitFor(MessageEvent.class);
 			//Check if this message is the "ping" command
 			if (currentEvent.getMessage().startsWith("?waitTest ping"))
-				bot.sendMessage(currentEvent.getChannel(), "Pong");
+				event.respond("pong");
 			//Check if this message is the "end" command
 			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
-				bot.sendMessage(currentEvent.getChannel(), "Killing...");
+				event.respond("Stopping");
 				//Very important that we end the infinate loop or else the test
 				//will continue forever!
 				return;
@@ -75,7 +75,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 	/**
 	 * Older way to handle events. We are given a generic event and must cast
-	 * to the event type that we want
+	 * to the event type that we want. 
 	 * <p>
 	 * <b>WARNING:</b> If you are extending ListenerAdapter and implementing Listener
 	 * in the same class (as this does) you <b>must</b> call <code>super.onEvent(event)</code>
