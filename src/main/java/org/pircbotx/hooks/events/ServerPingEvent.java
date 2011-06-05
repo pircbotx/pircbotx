@@ -34,7 +34,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ServerPingEvent extends Event {
+public class ServerPingEvent<T extends PircBotX> extends Event<T> {
 	protected final String response;
 
 	/**
@@ -42,7 +42,7 @@ public class ServerPingEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param response The response that should be given back in your PONG.
 	 */
-	public <T extends PircBotX> ServerPingEvent(T bot, String response) {
+	public ServerPingEvent(T bot, String response) {
 		super(bot);
 		this.response = response;
 	}

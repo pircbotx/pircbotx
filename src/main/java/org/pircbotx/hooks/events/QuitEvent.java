@@ -32,7 +32,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QuitEvent extends Event {
+public class QuitEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final String reason;
 
@@ -42,7 +42,7 @@ public class QuitEvent extends Event {
 	 * @param user The user that quit from the server.
 	 * @param reason The reason given for quitting the server.
 	 */
-	public <T extends PircBotX> QuitEvent(T bot, User user, String reason) {
+	public QuitEvent(T bot, User user, String reason) {
 		super(bot);
 		this.user = user;
 		this.reason = reason;

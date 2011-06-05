@@ -37,7 +37,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FingerEvent extends Event {
+public class FingerEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final Channel channel;
 
@@ -47,7 +47,7 @@ public class FingerEvent extends Event {
 	 * @param user The user that sent the FINGER request.
 	 * @param channel The target channel of the FINGER request 
 	 */
-	public <T extends PircBotX> FingerEvent(T bot, User user, Channel channel) {
+	public FingerEvent(T bot, User user, Channel channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

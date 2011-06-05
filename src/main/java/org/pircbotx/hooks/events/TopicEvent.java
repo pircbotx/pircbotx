@@ -32,7 +32,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TopicEvent extends Event {
+public class TopicEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final String topic;
 	protected final User user;
@@ -49,7 +49,7 @@ public class TopicEvent extends Event {
 	 * @param changed True if the topic has just been changed, false if
 	 *                the topic was already there.
 	 */
-	public <T extends PircBotX> TopicEvent(T bot, Channel channel, String topic, User user, long date, boolean changed) {
+	public TopicEvent(T bot, Channel channel, String topic, User user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.topic = topic;

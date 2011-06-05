@@ -37,7 +37,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelKeyEvent extends Event implements GenericChannelModeEvent {
+public class SetChannelKeyEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 	protected final String key;
@@ -49,7 +49,7 @@ public class SetChannelKeyEvent extends Event implements GenericChannelModeEvent
 	 * @param user The user that performed the mode change.
 	 * @param key The new key for the channel.
 	 */
-	public <T extends PircBotX> SetChannelKeyEvent(T bot, Channel channel, User user, String key) {
+	public SetChannelKeyEvent(T bot, Channel channel, User user, String key) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

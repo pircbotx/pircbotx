@@ -37,7 +37,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PingEvent extends Event {
+public class PingEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final Channel channel;
 	protected final String pingValue;
@@ -50,7 +50,7 @@ public class PingEvent extends Event {
 	 *               means the target was us.
 	 * @param pingValue The value that was supplied as an argument to the PING command.
 	 */
-	public <T extends PircBotX> PingEvent(T bot, User user, Channel channel, String pingValue) {
+	public PingEvent(T bot, User user, Channel channel, String pingValue) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

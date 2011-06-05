@@ -32,7 +32,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class JoinEvent extends Event {
+public class JoinEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User user;
 
@@ -42,7 +42,7 @@ public class JoinEvent extends Event {
 	 * @param channel The channel which somebody joined.
 	 * @param user The user who joined the channel.
 	 */
-	public <T extends PircBotX> JoinEvent(T bot, Channel channel, User user) {
+	public JoinEvent(T bot, Channel channel, User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

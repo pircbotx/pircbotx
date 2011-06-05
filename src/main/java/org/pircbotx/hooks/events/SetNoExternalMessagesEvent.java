@@ -36,7 +36,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetNoExternalMessagesEvent extends Event implements GenericChannelModeEvent {
+public class SetNoExternalMessagesEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent {
 	protected final Channel channel;
 	protected final User user;
 
@@ -46,7 +46,7 @@ public class SetNoExternalMessagesEvent extends Event implements GenericChannelM
 	 * @param channel The channel in which the mode change took place.
 	 * @param user The user that performed the mode change.
 	 */
-	public <T extends PircBotX> SetNoExternalMessagesEvent(T bot, Channel channel, User user) {
+	public SetNoExternalMessagesEvent(T bot, Channel channel, User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

@@ -32,7 +32,7 @@ import org.pircbotx.hooks.Event;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ActionEvent extends Event {
+public class ActionEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final Channel channel;
 	protected final String action;
@@ -46,7 +46,7 @@ public class ActionEvent extends Event {
 	 *                is a private message, not a channel
 	 * @param action The action carried out by the user.
 	 */
-	public <T extends PircBotX> ActionEvent(T bot, User user, Channel channel, String action) {
+	public ActionEvent(T bot, User user, Channel channel, String action) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

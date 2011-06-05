@@ -30,7 +30,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MotdEvent extends Event {
+public class MotdEvent<T extends PircBotX> extends Event<T> {
 	protected final String motd;
 
 	/**
@@ -38,7 +38,7 @@ public class MotdEvent extends Event {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param motd The full motd separated by newlines (<code>\n</code>)
 	 */
-	public <T extends PircBotX> MotdEvent(T bot, String motd) {
+	public MotdEvent(T bot, String motd) {
 		super(bot);
 		this.motd = motd;
 	}

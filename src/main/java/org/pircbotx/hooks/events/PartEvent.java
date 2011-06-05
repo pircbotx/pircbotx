@@ -32,7 +32,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PartEvent extends Event {
+public class PartEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User user;
 
@@ -42,7 +42,7 @@ public class PartEvent extends Event {
 	 * @param channel The channel which somebody parted from.
 	 * @param user The user who parted from the channel.
 	 */
-	public <T extends PircBotX> PartEvent(T bot, Channel channel, User user) {
+	public PartEvent(T bot, Channel channel, User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
