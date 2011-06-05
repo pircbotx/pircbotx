@@ -436,6 +436,26 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
+	 * Simpler test for QUITs with no reason. We know that the bot will forget
+	 * about the user already, so no need to test here as well
+	 */
+	@Test(dependsOnMethods="quitTest")
+	public void quitTest2() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User otherUser = bot.getUser("OtherUser");
+		events.clear();
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
+		
+		//Check event contents
+		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
+		assertEquals(qevent.getUser(), otherUser, "QuitEvent's user does not match given");
+		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
+		
+		System.out.println("Success: QuitEvent with no reason gives the appropiate information");
+	}
+	
+	/**
 	 * After simulating a server response, call this to get a specific Event from
 	 * the Event set. Note that if the event does not exist an Assertion error will
 	 * be thrown. Also note that only one event will be fetched
