@@ -49,7 +49,6 @@ public class Channel {
 	private long topicTimestamp;
 	private long createTimestamp;
 	private String topicSetter = "";
-	protected User founder;
 	protected final PircBotX bot;
 	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
@@ -71,6 +70,10 @@ public class Channel {
 	 * Set of voiced users in this channel
 	 */
 	protected final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
+	/**
+	 * Set of founder users in this channel
+	 */
+	protected final Set<User> founders = Collections.synchronizedSet(new HashSet<User>());
 	
 	Channel(PircBotX bot, String name) {
 		this.bot = bot;

@@ -67,7 +67,7 @@ public class User implements Comparable<User> {
 		if(prefix.contains("%"))
 			chan.halfOps.add(this);
 		if(prefix.contains("~"))
-			chan.setFounder(this);
+			chan.founders.add(this);
 		if(prefix.contains("&"))
 			chan.superOps.add(this);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
