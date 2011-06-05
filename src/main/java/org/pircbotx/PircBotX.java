@@ -154,9 +154,9 @@ public class PircBotX {
 		public boolean put(Channel a, User b) {
 			//Add to nick map
 			userNickMap.put(b.getNick(), b);
-			return super.put(a,b);
+			return super.put(a, b);
 		}
-		
+
 		@Override
 		public Set<Channel> deleteB(User b) {
 			//Remove the Channels internal reference to the User
@@ -399,7 +399,7 @@ public class PircBotX {
 
 		loggedIn = true;
 		log("*** Logged onto server.");
-		
+
 		// This makes the socket timeout on read operations after 5 minutes.
 		_socket.setSoTimeout(getSocketTimeout());
 
@@ -670,7 +670,7 @@ public class PircBotX {
 	public void sendNotice(String target, String notice) {
 		_outputThread.send("NOTICE " + target + " :" + notice);
 	}
-	
+
 	/**
 	 * Send a notice to the user. See {@link #sendNotice(java.lang.String, java.lang.String) }
 	 * for more information
@@ -720,7 +720,7 @@ public class PircBotX {
 		if (target != null && command != null)
 			sendCTCPCommand(target.getNick(), command);
 	}
-	
+
 	/**
 	 * Send a CTCP command to the channel. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
 	 * for more information
@@ -795,14 +795,14 @@ public class PircBotX {
 	 * @param password The password which will be used to identify with NickServ.
 	 */
 	public void identify(final String password) {
-		if(loggedIn)
+		if (loggedIn)
 			sendRawLine("NICKSERV IDENTIFY " + password);
 		else
 			listenerManager.addListener(new ListenerAdapter() {
 				@Override
 				public void onConnect(ConnectEvent event) throws Exception {
 					//Make sure this bot is us to prevent nasty errors in multi bot sitations
-					if(event.getBot() == PircBotX.this)
+					if (event.getBot() == PircBotX.this)
 						sendRawLine("NICKSERV IDENTIFY " + password);
 					//Self destrust, this listener has no more porpose
 					event.getBot().getListenerManager().removeListener(this);
@@ -961,7 +961,7 @@ public class PircBotX {
 	public void deVoice(Channel chan, User user) {
 		setMode(chan, "-v " + user.getNick());
 	}
-	
+
 	/**
 	 * Grants owner privileges to a user on a channel. 
 	 * Successful use of this method may require the bot to have operator or
@@ -975,7 +975,7 @@ public class PircBotX {
 	public void halfOp(Channel chan, User user) {
 		setMode(chan, "+h " + user.getNick());
 	}
-	
+
 	/**
 	 * Removes owner privileges to a user on a channel. 
 	 * Successful use of this method may require the bot to have operator or
@@ -989,7 +989,7 @@ public class PircBotX {
 	public void deHalfOp(Channel chan, User user) {
 		setMode(chan, "-h " + user.getNick());
 	}
-	
+
 	/**
 	 * Grants owner privileges to a user on a channel. 
 	 * Successful use of this method may require the bot to have owner
@@ -1003,7 +1003,7 @@ public class PircBotX {
 	public void owner(Channel chan, User user) {
 		setMode(chan, "+q " + user.getNick());
 	}
-	
+
 	/**
 	 * Removes owner privileges to a user on a channel. 
 	 * Successful use of this method may require the bot to have owner
@@ -1017,7 +1017,7 @@ public class PircBotX {
 	public void deOwner(Channel chan, User user) {
 		setMode(chan, "-q " + user.getNick());
 	}
-	
+
 	/**
 	 * Grants superOp privileges to a user on a channel. 
 	 * Successful use of this method may require the bot to have owner or superOp
@@ -1031,7 +1031,7 @@ public class PircBotX {
 	public void superOp(Channel chan, User user) {
 		setMode(chan, "+a " + user.getNick());
 	}
-	
+
 	/**
 	 * Removes superOp privileges to a user on a channel. 
 	 * Successful use of this method may require the bot to have owner or superOp
@@ -1526,12 +1526,11 @@ public class PircBotX {
 			for (String nick : parsed[3].substring(1).split(" ")) {
 				//Build prefix
 				String prefix = "";
-				for(char character : nick.toCharArray()) {
-					if(!Character.isLetterOrDigit(character))
+				for (char character : nick.toCharArray())
+					if (!Character.isLetterOrDigit(character))
 						prefix += character;
 					else
 						break;
-				}
 				getUser(nick.substring(prefix.length())).parseStatus(chan, prefix);
 			}
 		} else if (code == RPL_ENDOFNAMES) {
@@ -1789,7 +1788,7 @@ public class PircBotX {
 	 * @param nick The new nick.
 	 */
 	protected void setNick(String nick) {
-		synchronized(userNickMap) {
+		synchronized (userNickMap) {
 			User user = userNickMap.get(_nick);
 			userNickMap.remove(_nick);
 			userNickMap.put(nick, user);
@@ -2343,15 +2342,15 @@ public class PircBotX {
 	public User getUser(String nick) {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
-		if(userNickMap.containsKey(nick))
+		if (userNickMap.containsKey(nick))
 			return userNickMap.get(nick);
-		
+
 		//User does not exist, create one
 		User user = new User(this, nick);
 		_userChanInfo.putA(user);
 		return user;
 	}
-	
+
 	/**
 	 * Gets the bots own user object
 	 * @return The user object representing this bot
