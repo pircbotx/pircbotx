@@ -27,7 +27,7 @@ import org.pircbotx.PircBotX;
 
 /**
  * Called when a user (possibly us) gets superop status granted in a channel. Note
- * that this isn't supported on all servers
+ * that this isn't supported on all servers or may be used for something else
  *  <p>
  * This is a type of mode change and therefor is also dispatched in a 
  * {@link org.pircbotx.hooks.events.ModeEvent}
