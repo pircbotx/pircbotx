@@ -153,7 +153,8 @@ public class PircBotX {
 		@Override
 		public boolean put(Channel a, User b) {
 			//Add to nick map
-			userNickMap.put(b.getNick(), b);
+			if(b != null)
+				userNickMap.put(b.getNick(), b);
 			return super.put(a, b);
 		}
 
