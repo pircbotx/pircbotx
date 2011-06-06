@@ -1789,7 +1789,7 @@ public class PircBotX {
 	 */
 	protected void setNick(String nick) {
 		synchronized (userNickMap) {
-			User user = userNickMap.get(_nick);
+			User user = getUser(_nick);
 			userNickMap.remove(_nick);
 			userNickMap.put(nick, user);
 			_nick = nick;
