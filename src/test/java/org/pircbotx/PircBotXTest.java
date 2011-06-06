@@ -99,9 +99,12 @@ public class PircBotXTest {
 	@Test
 	public void getUserTest() {
 		PircBotX smallBot = new PircBotX();
-		assertNotNull(smallBot.getUser("SomeNick"), "Getting new user returns null");
-		assertNotNull(smallBot.getUser("SomeNick"), "Getting existing user returns null");
-		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting second new user returns null");
+		smallBot.setNick("BotNick");
+		smallBot.setName("BotNick");
+		assertNotNull(smallBot.getUser("BotNick"), "Getting bots user with getUser returns null");
+		assertNotNull(smallBot.getUser("BotNick"), "Getting existing bots user with getUser returns null");
+		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
+		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
 	}
 
 	@Test
