@@ -95,6 +95,14 @@ public class PircBotXTest {
 
 		System.out.println("Success: PircBotX.send* methods have appropiate variations ");
 	}
+	
+	@Test
+	public void getUserTest() {
+		PircBotX smallBot = new PircBotX();
+		assertNotNull(smallBot.getUser("SomeNick"), "Getting new user returns null");
+		assertNotNull(smallBot.getUser("SomeNick"), "Getting existing user returns null");
+		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting second new user returns null");
+	}
 
 	@Test
 	public void sendActionTest() {
