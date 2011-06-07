@@ -395,7 +395,7 @@ public class PircBotX {
 					throw new IrcException("Could not log into the IRC server: " + line);
 				}
 			}
-			setNick(nick);
+			_nick = nick;
 		}
 
 		loggedIn = true;
