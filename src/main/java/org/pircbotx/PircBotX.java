@@ -1524,8 +1524,12 @@ public class PircBotX {
 			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
 			parsed = response.split(" ", 4);
 			Channel chan = getChannel(parsed[2]);
+			
+			//Note: Do NOT associate with channel here as its difficult to correctly
+			//remove prefix from a user, leading to users who real nick is @Nick
+			
+			//Build prefix for parsing
 			for (String nick : parsed[3].substring(1).split(" ")) {
-				//Build prefix
 				String prefix = "";
 				for (char character : nick.toCharArray())
 					if (!Character.isLetterOrDigit(character))
@@ -1546,9 +1550,9 @@ public class PircBotX {
 			//Part of a WHO reply on information on individual users
 			parsed = response.split(" ", 9);
 			Channel chan = getChannel(parsed[1]);
-
+			
+			//Setup user
 			User curUser = getUser(parsed[5]);
-			//Only setup when needed
 			if (Utils.isBlank(curUser.getLogin())) {
 				curUser.setLogin(parsed[2]);
 				curUser.setIdentified(!parsed[2].startsWith("~"));
@@ -1559,6 +1563,9 @@ public class PircBotX {
 				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
 				curUser.setRealName(parsed[8]);
 			}
+			
+			//Associate with channel
+			_userChanInfo.put(chan, curUser);
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
