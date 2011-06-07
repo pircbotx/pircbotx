@@ -34,6 +34,7 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -378,9 +379,60 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
+	 * Simulate WHO response. 
+	 */
+	@Test(dependsOnMethods="namesTest")
+	public void whoTest() {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		User otherUser = bot.getUser("OtherUser");
+		//Remove from lists, should be added back by command
+		bot._userChanInfo.deleteB(aUser);
+		bot._userChanInfo.deleteB(otherUser);
+		events.clear();
+		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
+		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
+		bot.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
+		
+		//Get new user objects 
+		aUser = bot.getUser("AUser");
+		otherUser = bot.getUser("OtherUser");
+		
+		//Verify event
+		UserListEvent uevent = getEvent(UserListEvent.class, "UserListEvent not dispatched");
+		assertEquals(uevent.getChannel(), aChannel, "UserListEvent's channel does not match given");
+		assertEquals(uevent.getUsers().size(), 2, "UserListEvent's users is larger than it should be");
+		assertTrue(uevent.getUsers().contains(aUser), "UserListEvent doesn't contain aUser");
+		assertTrue(uevent.getUsers().contains(aUser), "UserListEvent doesn't contain OtherUser");
+		
+		//Verify AUser
+		assertEquals(aUser.getNick(), "AUser", "Login doesn't match one given during WHO");
+		assertEquals(aUser.getLogin(), "~ALogin", "Login doesn't match one given during WHO");
+		assertEquals(aUser.getHostmask(), "some.host", "Host doesn't match one given during WHO");
+		assertEquals(aUser.getHops(), 2, "Hops doesn't match one given during WHO");
+		assertEquals(aUser.getRealName(), aString, "RealName doesn't match one given during WHO");
+		assertEquals(aUser.getServer(), "irc.someserver.net", "Server doesn't match one given during WHO");
+		assertFalse(aUser.isAway(), "User is away even though specified as here in WHO");
+		assertTrue(aUser.isOp(aChannel),"User isn't labeled as an op even though specified as one in WHO");
+		assertTrue(aUser.hasVoice(aChannel),"User isn't voiced even though specified as one in WHO");
+		
+		//Verify otherUser
+		assertEquals(otherUser.getNick(), "OtherUser", "Login doesn't match one given during WHO");
+		assertEquals(otherUser.getLogin(), "~OtherLogin", "Login doesn't match one given during WHO");
+		assertEquals(otherUser.getHostmask(), "some.host1", "Host doesn't match one given during WHO");
+		assertEquals(otherUser.getHops(), 4, "Hops doesn't match one given during WHO");
+		assertEquals(otherUser.getRealName(), aString, "RealName doesn't match one given during WHO");
+		assertEquals(otherUser.getServer(), "irc.otherserver.net", "Server doesn't match one given during WHO");
+		assertTrue(otherUser.isAway(), "User is not away though specified as here in WHO");
+		assertFalse(otherUser.isOp(aChannel),"User is labeled as an op even though specified as one in WHO");
+		assertFalse(otherUser.hasVoice(aChannel),"User is labeled as voiced even though specified as one in WHO");
+		otherUser.setAway(true);
+	}
+	
+	/**
 	 * Simulate another user being kicked
 	 */
-	@Test(dependsOnMethods="voiceTest")
+	@Test(dependsOnMethods="whoTest")
 	public void kickTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
