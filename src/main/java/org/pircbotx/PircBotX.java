@@ -1551,7 +1551,7 @@ public class PircBotX {
 			//Only setup when needed
 			if (Utils.isBlank(curUser.getLogin())) {
 				curUser.setLogin(parsed[2]);
-				curUser.setIdentified(parsed[2].startsWith("~"));
+				curUser.setIdentified(!parsed[2].startsWith("~"));
 				curUser.setHostmask(parsed[3]);
 				curUser.setServer(parsed[4]);
 				curUser.setNick(parsed[5]);
