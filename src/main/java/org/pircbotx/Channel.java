@@ -133,6 +133,22 @@ public class Channel {
 	}
 	
 	/**
+	 * Get all users that don't have any special status in this channel. This means
+	 * that they aren't ops, have voice, superops, halops, or owners in this channel
+	 * @return An <i>unmodifiable</i> set of non-special users in the channel
+	 */
+	public Set<User> getNormalUsers() {
+		//Build set
+		Set<User> normalUsers = new HashSet(bot.getUsers(this));
+		normalUsers.removeAll(ops);
+		normalUsers.removeAll(voices);
+		normalUsers.removeAll(halfOps);
+		normalUsers.removeAll(superOps);
+		normalUsers.removeAll(owners);
+		return Collections.unmodifiableSet(normalUsers);
+	}
+	
+	/**
 	 * Gets an <i>unmodifiable</i> Set (IE snapshot) of opped users in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
 	 * by the time you use it again
