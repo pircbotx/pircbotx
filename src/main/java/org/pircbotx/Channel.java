@@ -135,7 +135,7 @@ public class Channel {
 	/**
 	 * Get all users that don't have any special status in this channel. This means
 	 * that they aren't ops, have voice, superops, halops, or owners in this channel
-	 * @return An <i>unmodifiable</i> set of non-special users in the channel
+	 * @return An <i>unmodifiable</i> Set (IE snapshot)  of non-special users in the channel
 	 */
 	public Set<User> getNormalUsers() {
 		//Build set
@@ -149,20 +149,20 @@ public class Channel {
 	}
 	
 	/**
-	 * Gets an <i>unmodifiable</i> Set (IE snapshot) of opped users in this channel. 
+	 * Gets all opped users in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
 	 * by the time you use it again
-	 * @return Set of opped users
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
 	public Set<User> getOps() {
 		return Collections.unmodifiableSet(ops);
 	}
 	
 	/**
-	 * Gets an <i>unmodifiable</i> Set (IE snapshot) of voiced users in this channel. 
+	 * Gets all voiced users in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
 	 * by the time you use it again
-	 * @return Set of opped users
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
 	public Set<User> getVoices() {
 		return Collections.unmodifiableSet(voices);
