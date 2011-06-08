@@ -44,7 +44,7 @@ import org.pircbotx.PircBotX;
  * All bots should now use {@link ThreadedListenerManager}.
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
- * @see ThreadedListenerManagerr
+ * @see ThreadedListenerManager
  */
 @Deprecated
 public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
