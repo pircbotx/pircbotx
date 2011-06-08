@@ -21,7 +21,7 @@ package org.pircbotx.exception;
 /**
  * An IrcException class.
  *
- * @since   0.9
+ * @since   PircBot 0.9
  * @author  Origionally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
