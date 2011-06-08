@@ -34,7 +34,7 @@ public class HookUtils {
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods())
 			if (curMethod.getParameterTypes().length == 1) {
 				Class parameter = curMethod.getParameterTypes()[0];
-				if (parameter.isAssignableFrom(Event.class) && parameter != Event.class)
+				if (!parameter.isAssignableFrom(Event.class) && parameter != Event.class)
 					allEvents.add(parameter);
 			}
 	}
