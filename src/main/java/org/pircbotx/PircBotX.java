@@ -417,7 +417,7 @@ public class PircBotX {
 	 * This method will throw an IrcException if we have never connected
 	 * to an IRC server previously.
 	 *
-	 * @since PircBotX 0.9.9
+	 * @since PircBot 0.9.9
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
@@ -482,7 +482,7 @@ public class PircBotX {
 	 * IRC server, then make sure that port 113 on your machine is visible to
 	 * the IRC server so that it may contact the ident server.
 	 *
-	 * @since PircBotX 0.9c
+	 * @since PircBot 0.9c
 	 */
 	public IdentServer startIdentServer() {
 		return new IdentServer(this, getLogin());
@@ -703,7 +703,7 @@ public class PircBotX {
 	 * The type of response to such commands is largely dependant on the target
 	 * client software.
 	 *
-	 * @since PircBotX 0.9.5
+	 * @since PircBot 0.9.5
 	 *
 	 * @param target The name of the channel or user to send the CTCP message to.
 	 * @param command The CTCP command to send.
@@ -1136,7 +1136,7 @@ public class PircBotX {
 	 *  <p>
 	 * This method may not be overridden.
 	 *
-	 * @since 0.9c
+	 * @since PircBot 0.9c
 	 *
 	 * @param file The file to send.
 	 * @param reciever The user to whom the file is to be sent.
@@ -1176,7 +1176,7 @@ public class PircBotX {
 	 *         text.  Returns <b>null</b> if the connection could not be made.
 	 *
 	 * @see DccChat
-	 * @since PircBotX 0.9.8
+	 * @since PircBot 0.9.8
 	 */
 	public DccChat dccSendChatRequest(User sender, int timeout) {
 		DccChat chat = null;
@@ -1853,7 +1853,7 @@ public class PircBotX {
 	 * The nick returned by this method is maintained only by the PircBotX
 	 * class and is guaranteed to be correct in the context of the IRC server.
 	 *
-	 * @since PircBotX 1.0.0
+	 * @since PircBot 1.0.0
 	 *
 	 * @return The current nick of the bot.
 	 */
@@ -1945,7 +1945,7 @@ public class PircBotX {
 	 * If this returns 0, then the Queue is empty and any new message is likely
 	 * to be sent to the IRC server immediately.
 	 *
-	 * @since PircBotX 0.9.9
+	 * @since PircBot 0.9.9
 	 *
 	 * @return The number of lines in the outgoing message Queue.
 	 */
@@ -1975,7 +1975,7 @@ public class PircBotX {
 	 * A value of -1 is returned if the PircBotX has never tried to connect
 	 * to a server.
 	 *
-	 * @since PircBotX 0.9.9
+	 * @since PircBot 0.9.9
 	 *
 	 * @return The port number of the last IRC server we connected to.
 	 *         Returns -1 if no connection attempts have ever been made.
@@ -1991,7 +1991,7 @@ public class PircBotX {
 	 * A value of null is returned if the PircBotX has never tried to connect
 	 * to a server using a password.
 	 *
-	 * @since PircBotX 0.9.9
+	 * @since PircBot 0.9.9
 	 *
 	 * @return The last password that we used when connecting to an IRC server.
 	 *         Returns null if we have not previously connected using a password.
@@ -2005,7 +2005,7 @@ public class PircBotX {
 	 * long and returns an integer array of size 4 representing the same
 	 * IP address.
 	 *
-	 * @since PircBotX 0.9.4
+	 * @since PircBot 0.9.4
 	 *
 	 * @param address the long value representing the IP address.
 	 *
@@ -2025,7 +2025,7 @@ public class PircBotX {
 	 * of size 4 and returns this as a long representation of the same IP
 	 * address.
 	 *
-	 * @since PircBotX 0.9.4
+	 * @since PircBot 0.9.4
 	 *
 	 * @param address the byte[] of size 4 representing the IP address.
 	 *
@@ -2052,7 +2052,7 @@ public class PircBotX {
 	 * "GB2312" for Chinese encoding.  If a PircBotX is currently connected
 	 * to a server, then it must reconnect before this change takes effect.
 	 *
-	 * @since PircBotX 1.0.4
+	 * @since PircBot 1.0.4
 	 *
 	 * @param charset The new encoding charset to be used by PircBotX.
 	 *
@@ -2071,7 +2071,7 @@ public class PircBotX {
 	 * the IRC server, or null if not set.  Use the setEncoding
 	 * method to change the encoding charset.
 	 *
-	 * @since PircBotX 1.0.4
+	 * @since PircBot 1.0.4
 	 *
 	 * @return The encoding used to send outgoing messages, or
 	 *         null if not set.
@@ -2085,7 +2085,7 @@ public class PircBotX {
 	 * This can be used to find the I.P. address from which the PircBotX is
 	 * connected to a server.
 	 *
-	 * @since PircBotX 1.4.4
+	 * @since PircBot 1.4.4
 	 *
 	 * @return The current local InetAddress, or null if never connected.
 	 */
@@ -2099,7 +2099,7 @@ public class PircBotX {
 	 * is behind a firewall and you need to tell receiving clients to connect
 	 * to a NAT/router, which then forwards the connection.
 	 *
-	 * @since PircBotX 1.4.4
+	 * @since PircBot 1.4.4
 	 *
 	 * @param dccInetAddress The new InetAddress, or null to use the default.
 	 */
@@ -2111,7 +2111,7 @@ public class PircBotX {
 	 * Returns the InetAddress used when sending DCC chat or file transfers.
 	 * If this is null, the default InetAddress will be used.
 	 *
-	 * @since PircBotX 1.4.4
+	 * @since PircBot 1.4.4
 	 *
 	 * @return The current DCC InetAddress, or null if left as default.
 	 */
@@ -2127,7 +2127,7 @@ public class PircBotX {
 	 * fail if all ports are already in use.
 	 * If set to null, <i>any</i> free port number will be used.
 	 *
-	 * @since PircBotX 1.4.4
+	 * @since PircBot 1.4.4
 	 *
 	 * @return An array of port numbers that PircBotX can use to send DCC
 	 *         transfers, or null if any port is allowed.
@@ -2147,7 +2147,7 @@ public class PircBotX {
 	 * fail if all ports are already in use.
 	 * If set to null, <i>any</i> free port number will be used.
 	 *
-	 * @since PircBotX 1.4.4
+	 * @since PircBot 1.4.4
 	 *
 	 * @param ports The set of port numbers that PircBotX may use for DCC
 	 *              transfers, or null to let it use any free port (default).
@@ -2176,7 +2176,7 @@ public class PircBotX {
 	 *   Password{}
 	 * </code>
 	 *
-	 * @since PircBotX 0.9.10
+	 * @since PircBot 0.9.10
 	 *
 	 * @return a String representation of this object.
 	 */
@@ -2206,7 +2206,7 @@ public class PircBotX {
 	 * Attempting to use a PircBotX that has been disposed may result in
 	 * unpredictable behaviour.
 	 *
-	 * @since 1.2.2
+	 * @since PircBot 1.2.2
 	 */
 	public synchronized void dispose() {
 		log("disposing...");
@@ -2247,7 +2247,7 @@ public class PircBotX {
 	 * if the join was successful until a response is received from the
 	 * IRC server.
 	 *
-	 * @since PircBotX 1.0.0
+	 * @since PircBot 1.0.0
 	 *
 	 * @return An <i>unmodifiable</i> Set of all channels were connected to
 	 */
@@ -2330,7 +2330,7 @@ public class PircBotX {
 	 *  </li>
 	 * </ul>
 	 *
-	 * @since PircBotX 1.0.0
+	 * @since PircBot 1.0.0
 	 *
 	 * @param chan The channel object to search in
 	 * @return A Set of all user's in the channel

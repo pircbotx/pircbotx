@@ -44,7 +44,7 @@ import java.net.Socket;
  * if you are running as an unprivileged user who is unable to create
  * a server socket on that port number.
  *
- * @since   0.9c
+ * @since   PircBot 0.9c
  * @author  Origionally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:

@@ -26,7 +26,7 @@ package org.pircbotx;
  * you may find these constants useful when comparing the numeric
  * value of a given code.
  * 
- * @since   1.0.0
+ * @since   PircBot 1.0.0
  * @author  Origionally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
