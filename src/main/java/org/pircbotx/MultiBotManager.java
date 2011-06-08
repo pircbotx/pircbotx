@@ -26,10 +26,10 @@ import java.util.Set;
 import javax.net.SocketFactory;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
@@ -42,9 +42,10 @@ import org.pircbotx.hooks.managers.ListenerManager;
 @Data
 public class MultiBotManager {
 	@Setter(AccessLevel.PRIVATE)
-	protected Set<BotEntry> bots = new HashSet<BotEntry>();
-	protected PircBotX dummyBot;
-	protected ListenerManager listenerManager = new GenericListenerManager();
+	protected final Set<BotEntry> bots = new HashSet();
+	@Getter(AccessLevel.NONE)
+	protected final PircBotX dummyBot;
+	protected ListenerManager listenerManager = null;
 	protected String name;
 	protected boolean verbose;
 	protected int socketTimeout;
@@ -128,6 +129,13 @@ public class MultiBotManager {
 			PircBotX bot = curEntry.getBot();
 			bot.connect(curEntry.getHostname(), curEntry.getPort(), curEntry.getPassword(), bot.getSocketFactory());
 		}
+	}
+	
+	public Set<PircBotX> getBots() {
+		Set<PircBotX> actualBots = new HashSet();
+		for(BotEntry curEntry : bots)
+			actualBots.add(curEntry.getBot());
+		return actualBots;
 	}
 
 	public void setEncoding(String encoding) throws UnsupportedEncodingException {
