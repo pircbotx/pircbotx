@@ -52,7 +52,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		perHook = false;
+		perHook = true;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * @param pool 
 	 */
 	public ThreadedListenerManager(ExecutorService pool) {
-		perHook = false;
+		this();
 		this.pool = pool;
 	}
 
