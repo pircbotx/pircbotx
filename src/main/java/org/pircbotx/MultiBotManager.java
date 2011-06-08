@@ -27,7 +27,6 @@ import javax.net.SocketFactory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -41,7 +40,6 @@ import org.pircbotx.hooks.managers.ListenerManager;
  */
 @Data
 public class MultiBotManager {
-	@Setter(AccessLevel.PRIVATE)
 	protected final Set<BotEntry> bots = new HashSet();
 	@Getter(AccessLevel.NONE)
 	protected final PircBotX dummyBot;
