@@ -173,13 +173,11 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.7</version>
+					<version>2.8</version>
 					<configuration>
 						<defaultAuthor>Leon Blakey</defaultAuthor>
 						<defaultVersion>${project.version}</defaultVersion>
-						<links>
-							<link>http://download.oracle.com/javase/1,5.0/docs/api/</link>
-						</links>
+						<sourcepath>target/src-delomboked</sourcepath>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -192,13 +190,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
+				<version>2.8</version>
 				<configuration>
 					<defaultAuthor>Leon Blakey</defaultAuthor>
 					<defaultVersion>${project.version}</defaultVersion>
 					<links>
 						<link>http://download.oracle.com/javase/1,5.0/docs/api/</link>
 					</links>
+					<sourcepath>target/src-delomboked</sourcepath>
 					<show>public</show>
 				</configuration>
 			</plugin>
