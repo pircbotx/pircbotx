@@ -75,6 +75,17 @@ public class MultiBotManager {
 	public void createBot(String hostname) {
 		createBot(hostname, 6667, null, null);
 	}
+	
+	/**
+	 * Attempt to connect to the specified IRC server and port number.
+	 * The onConnect method is called upon success.
+	 *
+	 * @param hostname The hostname of the server to connect to.
+	 * @param port The port number to connect to on the server.
+	 */
+	public void createBot(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
+		createBot(hostname, port, null, null);
+	}
 
 	/**
 	 * Create a bot using the specified hostname, port and socketfactory with no password
