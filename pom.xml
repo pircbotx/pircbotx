@@ -168,6 +168,32 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			<!--Delombok sources for Javadoc-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>delombok-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<executable>java</executable>
+					<arguments>
+						<argument>-jar</argument>
+						<argument>src/lib/lombok-edge.jar</argument>
+						<argument>delombok</argument>
+						<argument>src/main/java</argument>
+						<argument>-d</argument>
+						<argument>target/src-delomboked</argument>
+					</arguments>
+				</configuration>
+			</plugin>
 			<!--JavaDoc setup for Jars-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
