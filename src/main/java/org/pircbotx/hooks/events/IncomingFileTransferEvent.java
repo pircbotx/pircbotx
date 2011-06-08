@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Listener;
 
 /**
  * This event is dispatched whenever a DCC SEND request is sent to the PircBotX.
@@ -51,7 +52,7 @@ import org.pircbotx.PircBotX;
  * the file will be overwritten if it already exists.
  *  <p>
  * You can throttle the speed of the transfer by calling 
- * {@link DccFileTransfer#setPacketDelay(millis)} method on the DccFileTransfer 
+ * {@link DccFileTransfer#setPacketDelay(long) } method on the DccFileTransfer 
  * object, either before you receive the file or at any moment during the transfer.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see DccFileTransfer

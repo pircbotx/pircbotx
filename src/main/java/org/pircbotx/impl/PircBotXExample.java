@@ -23,6 +23,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
  * Basic example class for various features of PircBotX. Heavily documented
