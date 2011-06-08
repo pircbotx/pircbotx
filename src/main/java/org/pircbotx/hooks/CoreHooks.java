@@ -24,6 +24,7 @@ import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
+import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
  * Core Hooks of PircBotX that preform basic and expected operations. Any listener

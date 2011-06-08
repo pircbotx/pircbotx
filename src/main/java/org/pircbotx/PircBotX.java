@@ -95,6 +95,7 @@ import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.OwnerEvent;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import static org.pircbotx.ReplyConstants.*;
 
@@ -644,22 +645,22 @@ public class PircBotX {
 	 * Send an action to the user. See {@link #sendAction(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The user to send the action to
-	 * @param message The action message to send
+	 * @param action The action message to send
 	 */
-	public void sendAction(User target, String message) {
-		if (target != null && message != null)
-			sendAction(target.getNick(), message);
+	public void sendAction(User target, String action) {
+		if (target != null && action != null)
+			sendAction(target.getNick(), action);
 	}
 
 	/**
 	 * Send an action to the channel. See {@link #sendAction(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The channel to send the action to
-	 * @param message The action message to send
+	 * @param action The action message to send
 	 */
-	public void sendAction(Channel target, String message) {
-		if (target != null && message != null)
-			sendAction(target.getName(), message);
+	public void sendAction(Channel target, String action) {
+		if (target != null && action != null)
+			sendAction(target.getName(), action);
 	}
 
 	/**
@@ -676,7 +677,7 @@ public class PircBotX {
 	 * Send a notice to the user. See {@link #sendNotice(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The user to send the notice to
-	 * @param message The notice to send
+	 * @param notice The notice to send
 	 */
 	public void sendNotice(User target, String notice) {
 		if (target != null && notice != null)
@@ -687,7 +688,7 @@ public class PircBotX {
 	 * Send a notice to the channel. See {@link #sendNotice(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The channel to send the notice to
-	 * @param message The notice to send
+	 * @param notice The notice to send
 	 */
 	public void sendNotice(Channel target, String notice) {
 		if (target != null && notice != null)
@@ -715,7 +716,7 @@ public class PircBotX {
 	 * Send a CTCP command to the user. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The user to send the CTCP command to
-	 * @param message The CTCP command to send
+	 * @param command The CTCP command to send
 	 */
 	public void sendCTCPCommand(User target, String command) {
 		if (target != null && command != null)
@@ -726,7 +727,7 @@ public class PircBotX {
 	 * Send a CTCP command to the channel. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The channel to send the CTCP command to
-	 * @param message The CTCP command to send
+	 * @param command The CTCP command to send
 	 */
 	public void sendCTCPCommand(Channel target, String command) {
 		if (target != null && command != null)

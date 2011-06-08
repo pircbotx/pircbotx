@@ -29,8 +29,8 @@ import org.pircbotx.PircBotX;
  * Used when the mode of a channel is set.
  *  <p>
  * You may find it more convenient to decode the meaning of the mode
- * string by using instead {@link OpEvent}, {@link DeopEvent}, {@link VoiceEvent},
- * {@link DeVoiceEvent}, {@link SetChannelKeyEvent}, {@link RemoveChannelKeyEvent},
+ * string by using instead {@link OpEvent}, {@link VoiceEvent},
+ * {@link SetChannelKeyEvent}, {@link RemoveChannelKeyEvent},
  * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent}, 
  * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
  *  <p>
