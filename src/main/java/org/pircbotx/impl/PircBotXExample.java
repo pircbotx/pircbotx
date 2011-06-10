@@ -107,9 +107,9 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			//Cast to get access to all the MessageEvent specific methods
 			MessageEvent event = (MessageEvent) rawevent;
 
-			//Basic hello world
-			if (event.getMessage().startsWith("?hello"))
-				event.getBot().sendMessage(event.getChannel(), "World");
+			//Basic hello
+			if (event.getMessage().startsWith("?hi"))
+				event.getBot().sendMessage(event.getChannel(), "Hello");
 		}
 
 	}
