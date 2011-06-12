@@ -251,13 +251,12 @@ public class Channel {
 	/**
 	 * Removes user from op and voice lists
 	 * @param user
-	 * @return True if removal was success
 	 */
-	boolean removeUser(User user) {
-		return ops.remove(user) 
-				&& voices.remove(user)
-				&& superOps.remove(user)
-				&& halfOps.remove(user)
-				&& owners.remove(user);
+	protected void removeUser(User user) {
+		ops.remove(user);
+		voices.remove(user);
+		superOps.remove(user);
+		halfOps.remove(user);
+		owners.remove(user);
 	}
 }
