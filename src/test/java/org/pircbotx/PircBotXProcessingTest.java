@@ -484,7 +484,7 @@ public class PircBotXProcessingTest {
 		assertFalse(otherUser.hasVoice(aChannel), "User's hasVoice method still considers user to have voice after quit");
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after quit");
 		assertTrue(otherUser.getChannels().isEmpty(), "User still connected to other channels after quit");
-		assertTrue(aChannel.getUsers().contains(otherUser), "Channel still associated with user that quit");
+		assertFalse(aChannel.getUsers().contains(otherUser), "Channel still associated with user that quit");
 		
 		System.out.println("Success: QuitEvent gives the appropiate information and bot forgets refrences");
 	}
