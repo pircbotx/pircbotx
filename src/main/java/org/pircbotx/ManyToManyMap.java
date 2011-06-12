@@ -114,24 +114,28 @@ public class ManyToManyMap<A, B> {
 	}
 
 	/**
-	 * Gets an <b>immutable</b> view of the B entries associated with the A entry
+	 * Gets an <b>immutable</b> view of the B entries associated with the A entry. 
+	 * Passing a key that doesn't exist will return an empty set instead of null.
 	 * @param key The A entry to use
-	 * @return An <b>immutable</b> view of the B entries associated with the A entry
+	 * @return An <b>immutable</b> view of the B entries associated with the A entry.
+	 * Never null.
 	 */
 	public Set<B> getBValues(A key) {
 		synchronized (lockObject) {
-			return Collections.unmodifiableSet(AMap.get(key));
+			return (AMap.containsKey(key)) ? Collections.unmodifiableSet(AMap.get(key)) : Collections.unmodifiableSet(new HashSet());
 		}
 	}
 
 	/**
 	 * Gets an <b>immutable</b> view of the A entries associated with the B entry
+	 * Passing a key that doesn't exist will return an empty set instead of null.
 	 * @param key The B entry to use
-	 * @return An <b>immutable</b> view of the B entries associated with the B entry
+	 * @return An <b>immutable</b> view of the B entries associated with the B entry.
+	 * Never null
 	 */
 	public Set<A> getAValues(B key) {
 		synchronized (lockObject) {
-			return Collections.unmodifiableSet(BMap.get(key));
+			return (BMap.containsKey(key)) ? Collections.unmodifiableSet(BMap.get(key)) : Collections.unmodifiableSet(new HashSet());
 		}
 	}
 
