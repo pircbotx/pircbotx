@@ -19,6 +19,9 @@
 package org.pircbotx;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -88,6 +91,81 @@ public class User implements Comparable<User> {
 	 */
 	public Collection<Channel> getChannels() {
 		return bot.getChannels(this);
+	}
+	
+	/**
+	 * Get all channels user has Operator status in
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
+	 *         channels user has Operator status in
+	 */
+	public Set<Channel> getChannelsOpIn() {
+		Set<Channel> channels = new HashSet();
+		for(Channel curChannel : bot.getChannels()) 
+			if(curChannel.isOp(this))
+				channels.add(curChannel);
+		return Collections.unmodifiableSet(channels);
+	}
+
+	/**
+	 * Get all channels user has Voice status in
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
+	 *         channels user has Voice status in
+	 */
+	public Set<Channel> getChannelsVoiceIn() {
+		Set<Channel> channels = new HashSet();
+		for(Channel curChannel : bot.getChannels()) 
+			if(curChannel.hasVoice(this))
+				channels.add(curChannel);
+		return Collections.unmodifiableSet(channels);
+	}
+	
+	/**
+	 * Get all channels user has Owner status in
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
+	 *         channels user has Owner status in
+	 */
+	public Set<Channel> getChannelsOwnerIn() {
+		Set<Channel> channels = new HashSet();
+		for(Channel curChannel : bot.getChannels()) 
+			if(curChannel.isOwner(this))
+				channels.add(curChannel);
+		return Collections.unmodifiableSet(channels);
+	}
+
+	/**
+	 * Get all channels user has Half Operator status in
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
+	 *         channels user has Half Operator status in
+	 */
+	public Set<Channel> getChannelsHalfOpIn() {
+		Set<Channel> channels = new HashSet();
+		for(Channel curChannel : bot.getChannels()) 
+			if(curChannel.isHalfOp(this))
+				channels.add(curChannel);
+		return Collections.unmodifiableSet(channels);
+	}
+	
+	/**
+	 * Get all channels user has Super Operator status in
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
+	 *         channels user has Super Operator status in
+	 */
+	public Set<Channel> getChannelsSuperOpIn() {
+		Set<Channel> channels = new HashSet();
+		for(Channel curChannel : bot.getChannels()) 
+			if(curChannel.isSuperOp(this))
+				channels.add(curChannel);
+		return Collections.unmodifiableSet(channels);
 	}
 
 	/**
