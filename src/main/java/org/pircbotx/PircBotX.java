@@ -150,34 +150,7 @@ public class PircBotX {
 	 * A Many to Many map that links Users to Channels and channels to users. Modified
 	 * to remove each channel's and user's internal refrences to each other.
 	 */
-	protected ManyToManyMap<Channel, User> _userChanInfo = new ManyToManyMap<Channel, User>() {
-		@Override
-		public boolean put(Channel a, User b) {
-			//Add to nick map
-			if(b != null)
-				userNickMap.put(b.getNick(), b);
-			return super.put(a, b);
-		}
-
-		@Override
-		public Set<Channel> deleteB(User b) {
-			//Remove the Channels internal reference to the User
-			synchronized (lockObject) {
-				for (Channel curChan : BMap.get(b))
-					curChan.removeUser(b);
-			}
-			//Remove from nick map
-			userNickMap.remove(b.getNick());
-			return super.deleteB(b);
-		}
-
-		@Override
-		public boolean dissociate(Channel a, User b, boolean remove) {
-			//Remove the Channels internal reference to the User
-			a.removeUser(b);
-			return super.dissociate(a, b, remove);
-		}
-	};
+	protected ManyToManyMap<Channel, User> _userChanInfo = new UserChannelMap();
 	/**
 	 * Map to provide extremely fast lookup of user object by nick
 	 */
@@ -2529,6 +2502,38 @@ public class PircBotX {
 		public void add(A entry) {
 			running = true;
 			channels.add(entry);
+		}
+	}
+
+	protected class UserChannelMap extends ManyToManyMap<Channel, User> {
+		public UserChannelMap() {
+		}
+
+		@Override
+		public boolean put(Channel a, User b) {
+			//Add to nick map
+			if(b != null)
+				userNickMap.put(b.getNick(), b);
+			return super.put(a, b);
+		}
+
+		@Override
+		public Set<Channel> deleteB(User b) {
+			//Remove the Channels internal reference to the User
+			synchronized (lockObject) {
+				for (Channel curChan : BMap.get(b))
+					curChan.removeUser(b);
+			}
+			//Remove from nick map
+			userNickMap.remove(b.getNick());
+			return super.deleteB(b);
+		}
+
+		@Override
+		public boolean dissociate(Channel a, User b, boolean remove) {
+			//Remove the Channels internal reference to the User
+			a.removeUser(b);
+			return super.dissociate(a, b, remove);
 		}
 	}
 }
