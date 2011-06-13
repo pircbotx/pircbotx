@@ -228,7 +228,7 @@ public class Channel {
 	}
 
 	/**
-	 * Checks if the given use is an Operator in this channel
+	 * Checks if the given user is an Operator in this channel
 	 * @return True if the user is an Operator, false if not
 	 */
 	public boolean isOp(User user) {
@@ -254,7 +254,7 @@ public class Channel {
 	}
 
 	/**
-	 * Checks if the given use has Voice in this channel
+	 * Checks if the given user has Voice in this channel
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
