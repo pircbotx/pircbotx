@@ -198,8 +198,8 @@ public class Channel {
 	}
 
 	/**
-	 * Checks if the given use is an Op or not in this channel
-	 * @return True if the user is an op, false if not
+	 * Checks if the given use is an Operator in this channel
+	 * @return True if the user is an Operator, false if not
 	 */
 	public boolean isOp(User user) {
 		return ops.contains(user);
@@ -224,7 +224,7 @@ public class Channel {
 	}
 
 	/**
-	 * Checks if the given use has Voice or not in this channel
+	 * Checks if the given use has Voice in this channel
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
