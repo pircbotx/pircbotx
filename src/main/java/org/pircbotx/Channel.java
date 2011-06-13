@@ -50,9 +50,11 @@ public class Channel {
 	private long createTimestamp;
 	private String topicSetter = "";
 	protected final PircBotX bot;
-	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
-	@Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
 	/**
 	 * Set of half op users in this channel
@@ -74,24 +76,24 @@ public class Channel {
 	 * Set of super owner users in this channel
 	 */
 	protected final Set<User> owners = Collections.synchronizedSet(new HashSet<User>());
-	
+
 	Channel(PircBotX bot, String name) {
 		this.bot = bot;
 		this.name = name;
 	}
-	
+
 	public void parseMode(String rawMode) {
-		if(rawMode.contains(" ")) {
+		if (rawMode.contains(" ")) {
 			//Mode contains arguments which are impossible to parse. 
 			//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
 			//Need to ask server
 			modeStale = true;
 			return;
 		}
-		
+
 		//Parse mode by switching between removing and adding by the existance of a + or - sign
 		boolean adding = true;
-		for (char curChar : rawMode.toCharArray()) {
+		for (char curChar : rawMode.toCharArray())
 			if (curChar == '-')
 				adding = false;
 			else if (curChar == '+')
@@ -101,9 +103,8 @@ public class Channel {
 				mode = curChar + mode;
 			else
 				mode = mode.replace(Character.toString(curChar), "");
-		}
 	}
-	
+
 	/**
 	 * Gets the channel mode. If mode is simple (no arguments), this will return immediately.
 	 * If its not (mode with arguments, eg channel key), then asks the server for the 
@@ -115,13 +116,13 @@ public class Channel {
 	 * @return A known good mode, either immediatly or soon. 
 	 */
 	public String getMode() {
-		if(!modeStale)
+		if (!modeStale)
 			return mode;
-		
+
 		//Mode is stale, get new mode from server
 		try {
 			bot.sendRawLine("MODE " + getName());
-			if(modeLatch == null || modeLatch.getCount() == 0)
+			if (modeLatch == null || modeLatch.getCount() == 0)
 				modeLatch = new CountDownLatch(1);
 			//Wait for setMode to be called
 			modeLatch.await();
@@ -131,7 +132,7 @@ public class Channel {
 			throw new RuntimeException("Waiting for mode response interrupted", e);
 		}
 	}
-	
+
 	/**
 	 * Get all users that don't have any special status in this channel. This means
 	 * that they aren't ops, have voice, superops, halops, or owners in this channel
@@ -147,7 +148,7 @@ public class Channel {
 		normalUsers.removeAll(owners);
 		return Collections.unmodifiableSet(normalUsers);
 	}
-	
+
 	/**
 	 * Gets all opped users in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
@@ -157,7 +158,7 @@ public class Channel {
 	public Set<User> getOps() {
 		return Collections.unmodifiableSet(ops);
 	}
-	
+
 	/**
 	 * Gets all voiced users in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
@@ -167,7 +168,7 @@ public class Channel {
 	public Set<User> getVoices() {
 		return Collections.unmodifiableSet(voices);
 	}
-	
+
 	/**
 	 * Sets the mode of the channel. If there is a getMode() waiting on this,
 	 * fire it. 
@@ -175,7 +176,7 @@ public class Channel {
 	 */
 	void setMode(String mode) {
 		this.mode = mode;
-		if(modeLatch != null && modeLatch.getCount() == 1)
+		if (modeLatch != null && modeLatch.getCount() == 1)
 			modeLatch.countDown();
 	}
 
