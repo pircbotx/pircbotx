@@ -194,20 +194,4 @@ public class User implements Comparable<User> {
 	public int getHops() {
 		return hops;
 	}
-
-	/**
-	 * Checks if the user is an operator in the specified channel
-	 * @return True if they are an op, false if not
-	 */
-	public boolean isOp(Channel chan) {
-		return chan.isOp(this);
-	}
-	
-	/**
-	 * Checks if the user has voice status in the given channel
-	 * @return True if the user has voice, false if not
-	 */
-	public boolean hasVoice(Channel chan) {
-		return chan.hasVoice(this);
-	}
 }
