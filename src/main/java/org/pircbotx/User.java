@@ -125,24 +125,6 @@ public class User implements Comparable<User> {
 	public boolean isOp(Channel chan) {
 		return chan.isOp(this);
 	}
-
-	/**
-	 * Attempts to give Operator status to this user in the given channel. Simply
-	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param chan The Channel to perform the Op in
-	 */
-	public void op(Channel chan) {
-		bot.op(chan, this);
-	}
-
-	/**
-	 * Attempts to remove Operator status from this user in the given channel. 
-	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param chan The Channel to perform the DeOp in
-	 */
-	public void deOp(Channel chan) {
-		bot.deOp(chan, this);
-	}
 	
 	/**
 	 * Checks if the user has voice status in the given channel
@@ -150,23 +132,5 @@ public class User implements Comparable<User> {
 	 */
 	public boolean hasVoice(Channel chan) {
 		return chan.hasVoice(this);
-	}
-
-	/**
-	 * Attempts to give Voice status to this user in the given channel. Simply 
-	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param chan The channel to give voice in
-	 */
-	public void voice(Channel chan) {
-		bot.voice(chan, this);
-	}
-
-	/**
-	 * Attempts to remove Voice status from this user in the given channel. Simply
-	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param chan The channel to give voice in
-	 */
-	public void deVoice(Channel chan) {
-		bot.deVoice(chan, this);
 	}
 }
