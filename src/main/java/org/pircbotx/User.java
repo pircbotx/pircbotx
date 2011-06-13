@@ -56,7 +56,7 @@ public class User implements Comparable<User> {
 	@Getter(AccessLevel.NONE)
 	protected final UUID uuid = UUID.randomUUID();
 
-	User(PircBotX bot, String nick) {
+	protected User(PircBotX bot, String nick) {
 		this.bot = bot;
 		this.nick = nick;
 	}
