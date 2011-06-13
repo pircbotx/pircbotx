@@ -77,7 +77,7 @@ public class Channel {
 	 */
 	protected final Set<User> owners = Collections.synchronizedSet(new HashSet<User>());
 
-	Channel(PircBotX bot, String name) {
+	protected Channel(PircBotX bot, String name) {
 		this.bot = bot;
 		this.name = name;
 	}
