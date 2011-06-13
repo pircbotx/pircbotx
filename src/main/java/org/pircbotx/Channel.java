@@ -249,6 +249,84 @@ public class Channel {
 		bot.deVoice(this, user);
 	}
 
+	/*
+	 * Attempts to give Super Operator status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#superOp(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to give Super Operator status
+	 */
+	public void superOp(User user) {
+		bot.superOp(this, user);
+	}
+
+	/**
+	 * Checks if the given user is a Super Operator in this channel
+	 * @return True if the user is a Super Operator, false if not
+	 */
+	public boolean isSuperOp(User user) {
+		return superOps.contains(user);
+	}
+
+	/**
+	 * Attempts to remove Super Operator status from the given user in this channel. 
+	 * Simply calls {@link PircBotX#deSuperOp(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * @param user The user to attempt to remove Super Operator status from
+	 */
+	public void deSuperOp(User user) {
+		bot.deSuperOp(this, user);
+	}
+
+	/*
+	 * Attempts to give Owner status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#owner(org.pircbotx.Channel, org.pircbotx.User) }
+	 * @param user The user to attempt to give Owner status to
+	 */
+	public void owner(User user) {
+		bot.owner(this, user);
+	}
+
+	/**
+	 * Checks if the given user is an Owner in this channel
+	 * @return True if the user is an Owner, false if not
+	 */
+	public boolean isOwner(User user) {
+		return owners.contains(user);
+	}
+
+	/**
+	 * Attempts to remove Owner status from the given user in this channel. 
+	 * Simply calls {@link PircBotX#deOwner(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * @param user The user to attempt to remove Owner status from
+	 */
+	public void deOwner(User user) {
+		bot.deOwner(this, user);
+	}
+
+	/*
+	 * Attempts to give Half Operator status to the given user in this channel. Simply 
+	 * calls {@link PircBotX#halfOp(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * @param user The user to attempt to give Half Operator status to
+	 */
+	public void halfOp(User user) {
+		bot.halfOp(this, user);
+	}
+
+	/**
+	 * Checks if the given user is a Half Operator in this channel
+	 * @return True if the user is a Half Operator, false if not
+	 */
+	public boolean isHalfOp(User user) {
+		return halfOps.contains(user);
+	}
+
+	/**
+	 * Attempts to remove Half Operator status from the given user in this channel. 
+	 * Simply calls {@link PircBotX#deHalfOp(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * @param user The user to attempt to remove Half Operator status from
+	 */
+	public void deHalfOp(User user) {
+		bot.deHalfOp(this, user);
+	}
+
 	/**
 	 * Removes user from op and voice lists
 	 * @param user
