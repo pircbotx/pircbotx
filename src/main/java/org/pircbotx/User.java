@@ -28,8 +28,7 @@ import lombok.Setter;
 
 /**
  * Represents a User on the server. Contains all the available information about
- * the user as well as some useful delegate methods like 
- * {@link #op(org.pircbotx.Channel) giving op} or {@link #voice(org.pircbotx.Channel) voice}
+ * the user as well as some useful delegate methods. 
  * status.
  * @since   PircBot 1.0.0
  * @author  Origionally by:
