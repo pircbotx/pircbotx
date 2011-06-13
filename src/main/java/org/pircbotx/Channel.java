@@ -235,7 +235,7 @@ public class Channel {
 		return ops.contains(user);
 	}
 
-	/*
+	/**
 	 * Attempts to give Operator status to the given user in this channel. Simply 
 	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to Op
@@ -279,7 +279,7 @@ public class Channel {
 		bot.deVoice(this, user);
 	}
 
-	/*
+	/**
 	 * Attempts to give Super Operator status to the given user in this channel. Simply 
 	 * calls {@link PircBotX#superOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to give Super Operator status
@@ -305,7 +305,7 @@ public class Channel {
 		bot.deSuperOp(this, user);
 	}
 
-	/*
+	/**
 	 * Attempts to give Owner status to the given user in this channel. Simply 
 	 * calls {@link PircBotX#owner(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to give Owner status to
@@ -331,7 +331,7 @@ public class Channel {
 		bot.deOwner(this, user);
 	}
 
-	/*
+	/**
 	 * Attempts to give Half Operator status to the given user in this channel. Simply 
 	 * calls {@link PircBotX#halfOp(org.pircbotx.Channel, org.pircbotx.User)  }
 	 * @param user The user to attempt to give Half Operator status to
