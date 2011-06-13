@@ -168,6 +168,36 @@ public class Channel {
 	public Set<User> getVoices() {
 		return Collections.unmodifiableSet(voices);
 	}
+	
+	/**
+	 * Gets all users with Owner status in this channel. 
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Owner status
+	 */
+	public Set<User> getOwners() {
+		return Collections.unmodifiableSet(ops);
+	}
+
+	/**
+	 * Gets all users with Half Operator status in this channel. 
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Half Operator status
+	 */
+	public Set<User> getHalfOps() {
+		return Collections.unmodifiableSet(voices);
+	}
+	
+	/**
+	 * Gets all users with Super Operator status in this channel. 
+	 * Be careful when storing the result from this method as it may be out of date 
+	 * by the time you use it again
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Super Operator status
+	 */
+	public Set<User> getSuperOps() {
+		return Collections.unmodifiableSet(ops);
+	}
 
 	/**
 	 * Sets the mode of the channel. If there is a getMode() waiting on this,
