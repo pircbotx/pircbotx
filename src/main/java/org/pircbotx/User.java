@@ -89,7 +89,7 @@ public class User implements Comparable<User> {
 	 * Get all channels this user is a part of
 	 * @return All channels this user is a part of
 	 */
-	public Collection<Channel> getChannels() {
+	public Set<Channel> getChannels() {
 		return bot.getChannels(this);
 	}
 	
