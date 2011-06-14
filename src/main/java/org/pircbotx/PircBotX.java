@@ -2505,12 +2505,12 @@ public class PircBotX {
 		}
 	}
 
-	protected class UserChannelMap extends ManyToManyMap<Channel, User> {
+	protected class UserChannelMap<C extends Channel, U extends User> extends ManyToManyMap<C, U> {
 		public UserChannelMap() {
 		}
 
 		@Override
-		public boolean put(Channel a, User b) {
+		public boolean put(C a, U b) {
 			//Add to nick map
 			if(b != null)
 				userNickMap.put(b.getNick(), b);
@@ -2518,7 +2518,7 @@ public class PircBotX {
 		}
 
 		@Override
-		public Set<Channel> deleteB(User b) {
+		public Set<C> deleteB(U b) {
 			//Remove the Channels internal reference to the User
 			synchronized (lockObject) {
 				for (Channel curChan : BMap.get(b))
@@ -2530,7 +2530,7 @@ public class PircBotX {
 		}
 
 		@Override
-		public boolean dissociate(Channel a, User b, boolean remove) {
+		public boolean dissociate(C a, U b, boolean remove) {
 			//Remove the Channels internal reference to the User
 			a.removeUser(b);
 			return super.dissociate(a, b, remove);
