@@ -43,10 +43,12 @@ public class UserSnapshot extends User {
 	protected Set<Channel> channelsOwnerIn;
 	protected Set<Channel> channelsSuperOpIn;
 	protected Set<Channel> channelsHalfOpIn;
-
+	protected final User generatedFrom;
+	
 	public UserSnapshot(User user) {
 		super(user.getBot(), user.getNick());
-
+		generatedFrom = user;
+		
 		//Clone fields
 		super.setAway(user.isAway());
 		super.setHops(user.getHops());
