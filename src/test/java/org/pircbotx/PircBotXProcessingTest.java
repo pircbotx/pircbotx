@@ -332,7 +332,6 @@ public class PircBotXProcessingTest {
 		
 		//Check op lists
 		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
-		assertTrue(otherUser.isOp(aChannel), "User's isOp method doesn't reflect updated op status");
 		
 		System.out.println("Success: Oping a user updates the appropiate places");
 	}
@@ -356,7 +355,6 @@ public class PircBotXProcessingTest {
 		
 		//Check voice lists
 		assertTrue(aChannel.hasVoice(otherUser), "Channel's internal voice list not updated with new voice");
-		assertTrue(otherUser.hasVoice(aChannel), "User's hasVoice method doesn't reflect updated voice status");
 	}
 	
 	/**
@@ -413,8 +411,8 @@ public class PircBotXProcessingTest {
 		assertEquals(aUser.getRealName(), aString, "RealName doesn't match one given during WHO");
 		assertEquals(aUser.getServer(), "irc.someserver.net", "Server doesn't match one given during WHO");
 		assertFalse(aUser.isAway(), "User is away even though specified as here in WHO");
-		assertTrue(aUser.isOp(aChannel),"User isn't labeled as an op even though specified as one in WHO");
-		assertTrue(aUser.hasVoice(aChannel),"User isn't voiced even though specified as one in WHO");
+		assertTrue(aChannel.isOp(aUser),"User isn't labeled as an op even though specified as one in WHO");
+		assertTrue(aChannel.hasVoice(aUser),"User isn't voiced even though specified as one in WHO");
 		
 		//Verify otherUser
 		assertEquals(otherUser.getNick(), "OtherUser", "Login doesn't match one given during WHO");
@@ -424,8 +422,8 @@ public class PircBotXProcessingTest {
 		assertEquals(otherUser.getRealName(), aString, "RealName doesn't match one given during WHO");
 		assertEquals(otherUser.getServer(), "irc.otherserver.net", "Server doesn't match one given during WHO");
 		assertTrue(otherUser.isAway(), "User is not away though specified as here in WHO");
-		assertFalse(otherUser.isOp(aChannel),"User is labeled as an op even though specified as one in WHO");
-		assertFalse(otherUser.hasVoice(aChannel),"User is labeled as voiced even though specified as one in WHO");
+		assertFalse(aChannel.isOp(otherUser),"User is labeled as an op even though specified as one in WHO");
+		assertFalse(aChannel.hasVoice(otherUser),"User is labeled as voiced even though specified as one in WHO");
 		otherUser.setAway(true);
 	}
 	
@@ -451,8 +449,6 @@ public class PircBotXProcessingTest {
 		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they were kicked");
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that was kicked an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that was kicked with voice");
-		assertFalse(otherUser.isOp(aChannel), "User's isOp method still considers user to have op after kick");
-		assertFalse(otherUser.hasVoice(aChannel), "User's hasVoice method still considers user to have voice after kick");
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after kick");
 		
 		System.out.println("Success: KickEvent gives expected results");
@@ -480,8 +476,6 @@ public class PircBotXProcessingTest {
 		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they quit");
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that quit an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that quit with voice");
-		assertFalse(otherUser.isOp(aChannel), "User's isOp method still considers user to have op after quit");
-		assertFalse(otherUser.hasVoice(aChannel), "User's hasVoice method still considers user to have voice after quit");
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after quit");
 		assertTrue(otherUser.getChannels().isEmpty(), "User still connected to other channels after quit");
 		assertFalse(aChannel.getUsers().contains(otherUser), "Channel still associated with user that quit");
