@@ -84,6 +84,10 @@ public class User implements Comparable<User> {
 			this.nick = nick;
 		}
 	}
+	
+	public UserSnapshot generateSnapshot() {
+		return new UserSnapshot(this);
+	}
 
 	/**
 	 * Get all channels this user is a part of
