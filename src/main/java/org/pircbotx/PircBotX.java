@@ -833,6 +833,25 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode, User user) {
 		setMode(chan, mode + user.getNick());
 	}
+	
+	/**
+	 * Attempt to set the channel limit to specified value. May require operator
+	 * privileges
+	 * @param chan The channel to set the limit on
+	 * @param limit The maximum amount of people that can be in the channel
+	 */
+	public void setChannelLimit(Channel chan, int limit) {
+		setMode(chan, "+l", limit);
+	}
+	
+	/**
+	 * Attempt to remove the channel limit on the specified channel. May require
+	 * operator privileges
+	 * @param chan 
+	 */
+	public void removeChannelLimit(Channel chan) {
+		setMode(chan, "-l");
+	}
 
 	/**
 	 * Sends an invitation to join a channel.  Some channels can be marked
