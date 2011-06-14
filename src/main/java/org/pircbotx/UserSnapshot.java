@@ -24,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
@@ -34,6 +35,7 @@ import lombok.ToString;
 //Only use super implementation which uses UIDs
 @EqualsAndHashCode(callSuper = true, of = {})
 @ToString(callSuper=true, of={})
+@Setter(AccessLevel.NONE)
 public class UserSnapshot extends User {
 	protected Set<Channel> channels;
 	protected Set<Channel> channelsOpIn;
