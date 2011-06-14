@@ -469,8 +469,11 @@ public class PircBotXProcessingTest {
 		
 		//Check event contents
 		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
-		assertEquals(qevent.getUser(), otherUser, "QuitEvent's user does not match given");
+		//Since QuitEvent gives us a snapshot, compare contents
+		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), aString, "QuitEvent's reason does not match given");
+		
+		
 		
 		//Make sure user is gone
 		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they quit");
@@ -497,7 +500,7 @@ public class PircBotXProcessingTest {
 		
 		//Check event contents
 		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
-		assertEquals(qevent.getUser(), otherUser, "QuitEvent's user does not match given");
+		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
 		
 		System.out.println("Success: QuitEvent with no reason gives the appropiate information");
