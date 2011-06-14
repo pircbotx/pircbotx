@@ -19,15 +19,21 @@
 package org.pircbotx;
 
 import java.util.Set;
+import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  *
  * @author lordquackstar
  */
 @Data
-@EqualsAndHashCode(callSuper=false)
+//Only use super implementation which uses UIDs
+@EqualsAndHashCode(callSuper = true, of = {})
+@ToString(callSuper=true, of={})
 public class UserSnapshot extends User {
 	protected Set<Channel> channels;
 	protected Set<Channel> channelsOpIn;
@@ -35,10 +41,10 @@ public class UserSnapshot extends User {
 	protected Set<Channel> channelsOwnerIn;
 	protected Set<Channel> channelsSuperOpIn;
 	protected Set<Channel> channelsHalfOpIn;
-	
+
 	public UserSnapshot(User user) {
 		super(user.getBot(), user.getNick());
-		
+
 		//Clone fields
 		super.setAway(user.isAway());
 		super.setHops(user.getHops());
@@ -48,7 +54,7 @@ public class UserSnapshot extends User {
 		super.setLogin(user.getLogin());
 		super.setRealName(user.getRealName());
 		super.setServer(user.getServer());
-		
+
 		//Store channels
 		channels = user.getChannels();
 		channelsOpIn = user.getChannelsOpIn();
@@ -106,5 +112,4 @@ public class UserSnapshot extends User {
 	void setServer(String server) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}
-	
 }
