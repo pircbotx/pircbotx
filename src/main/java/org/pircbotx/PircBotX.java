@@ -803,12 +803,30 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode) {
 		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
+	
+	/**
+	 * Set a mode for the channel with arguments. Nicer way to pass arguments than 
+	 * with string concatenation. See {@link #setMode(org.pircbotx.Channel, java.lang.String) } 
+	 * for more information
+	 * @param chan The channel on which to perform the mode change.
+	 * @param mode The new mode to apply to the channel.  This may include
+	 *             zero or more arguments if necessary.
+	 * @param args Arguments to be passed to the mode. All will be converted to
+	 *             a string using {@link Object#toString() } and added together
+	 *             with a single space separating them
+	 */
+	public void setMode(Channel chan, String mode, Object... args) {
+		//Build arg string
+		StringBuilder argBuilder = new StringBuilder(" ");
+		for(Object curArg: args)
+			argBuilder.append(curArg.toString()).append(" ");
+		setMode(chan, mode + argBuilder.toString());
+	}
 
 	/**
 	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
 	 * @param chan The channel on which to perform the mode change.
-	 * @param mode    The new mode to apply to the channel. <b>This should not
-	 *                include arguments!</b>
+	 * @param mode    The new mode to apply to the channel. 
 	 * @param user  The user to perform the mode change on
 	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
 	 */
@@ -1059,7 +1077,7 @@ public class PircBotX {
 	public void kick(Channel chan, User user, String reason) {
 		sendRawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
 	}
-
+	
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
 	 * When the PircBotX receives information for each channel, it will
