@@ -18,11 +18,11 @@
  */
 package org.pircbotx.hooks.events;
 
-import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserSnapshot;
 
 /**
  * This event is dispatched whenever someone (possibly us) quits from the
@@ -33,16 +33,16 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QuitEvent<T extends PircBotX> extends Event<T> {
-	protected final User user;
+	protected final UserSnapshot user;
 	protected final String reason;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that quit from the server.
+	 * @param user The user that quit from the server in snapshot form
 	 * @param reason The reason given for quitting the server.
 	 */
-	public QuitEvent(T bot, User user, String reason) {
+	public QuitEvent(T bot, UserSnapshot user, String reason) {
 		super(bot);
 		this.user = user;
 		this.reason = reason;

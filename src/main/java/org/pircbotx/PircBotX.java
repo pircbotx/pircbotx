@@ -1418,6 +1418,7 @@ public class PircBotX {
 			// Someone is sending a notice.
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, line.substring(line.indexOf(" :") + 2)));
 		else if (command.equals("QUIT")) {
+			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
 			if (sourceNick.equals(getNick()))
 				//We just quit the server
@@ -1425,7 +1426,7 @@ public class PircBotX {
 			else
 				//Someone else
 				_userChanInfo.deleteB(source);
-			getListenerManager().dispatchEvent(new QuitEvent(this, source, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, line.substring(line.indexOf(" :") + 2)));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			User recipient = getUser(tokenizer.nextToken());
