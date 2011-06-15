@@ -24,6 +24,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * This event is dispatched whenever we receive a notice.
@@ -31,7 +32,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NoticeEvent<T extends PircBotX> extends Event<T> {
+public class NoticeEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
 	protected final User user;
 	protected final Channel channel;
 	protected final String notice;
@@ -49,6 +50,14 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> {
 		this.user = user;
 		this.channel = channel;
 		this.notice = notice;
+	}
+	
+	/**
+	 * Returns the notice the user sent
+	 * @return The notice the user sent
+	 */
+	public String getMessage() {
+		return notice;
 	}
 
 	/**

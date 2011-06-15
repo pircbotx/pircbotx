@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericDCCEvent;
 
 /**
  * This event gets dispatched when a DccFileTransfer has finished.
@@ -37,7 +38,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FileTransferFinishedEvent<T extends PircBotX> extends Event<T> {
+public class FileTransferFinishedEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	protected final DccFileTransfer transfer;
 	protected final Exception exception;
 
