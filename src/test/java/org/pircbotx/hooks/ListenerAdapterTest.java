@@ -20,12 +20,14 @@ package org.pircbotx.hooks;
 
 import java.lang.reflect.Method;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.types.GenericUserEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -39,36 +41,17 @@ public class ListenerAdapterTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void eventImplementTest() throws Exception {
-		String sep = System.getProperty("file.separator");
-		Class testClazz = VoiceEvent.class;
-
-		//Since dumping path in getResources() fails, extract path from root
-		Enumeration<URL> rootResources = testClazz.getClassLoader().getResources("");
-		assertNotNull(rootResources, "Voice class resources are null");
-		assertEquals(rootResources.hasMoreElements(), true, "No voice class resources");
-		File root = new File(rootResources.nextElement().getFile().replace("%20", " ")).getParentFile();
-		assertTrue(root.exists(), "Root dir (" + root + ") doesn't exist");
-
-		//Get root directory as a file
-		File hookDir = new File(root, sep + "classes" + sep + (testClazz.getPackage().getName().replace(".", sep)) + sep);
-		assertNotNull(hookDir, "Fetched Event directory is null");
-		assertTrue(hookDir.exists(), "Event directory doesn't exist");
-		assertTrue(hookDir.isDirectory(), "Event directory isn't a directory");
-
+	public void eventImplementTest() throws Exception {		
 		//Get all file names
-		List<String> classFiles = new ArrayList();
-		assertTrue(hookDir.listFiles().length > 0, "Event directory is empty");
-		for (File clazzFile : hookDir.listFiles())
-			//If its a directory, its not a .class, or its a subclass, ignore
-			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
-				classFiles.add(clazzFile.getName().split("\\.")[0]);
+		List<String> classFiles = getClasses(VoiceEvent.class);
 
 		//Get all events ListenerAdapter uses
 		List<String> classMethods = new ArrayList();
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			assertEquals(curMethod.getParameterTypes().length, 1, "More than one parameter in method " + curMethod);
-			classMethods.add(curMethod.getParameterTypes()[0].getSimpleName());
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if(!curClass.isInterface())
+				classMethods.add(curClass.getSimpleName());
 		}
 
 		//Subtract the differences
@@ -76,6 +59,54 @@ public class ListenerAdapterTest {
 		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
 		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
 
-		System.out.println("Success: Meta Interface implment all hooks");
+		System.out.println("Success: ListenerAdapter supports all events");
+	}
+	
+	@Test
+	public void interfaceImplementTest() throws IOException {
+		List<String> classFiles = getClasses(GenericUserEvent.class);
+		
+		//Get all interfaces ListenerAdapter uses
+		List<String> classMethods = new ArrayList();
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			assertEquals(curMethod.getParameterTypes().length, 1, "More than one parameter in method " + curMethod);
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if(curClass.isInterface())
+				classMethods.add(curClass.getSimpleName());
+		}
+		
+		//Subtract the differences
+		classFiles.removeAll(classMethods);
+		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
+		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
+
+		System.out.println("Success: ListenerAdapter supports all event interfaces");
+	}
+	
+	
+	protected static List<String> getClasses(Class<?> clazz) throws IOException {
+		String sep = System.getProperty("file.separator");
+		//Since dumping path in getResources() fails, extract path from root
+		Enumeration<URL> rootResources = clazz.getClassLoader().getResources("");
+		assertNotNull(rootResources, "Voice class resources are null");
+		assertEquals(rootResources.hasMoreElements(), true, "No voice class resources");
+		File root = new File(rootResources.nextElement().getFile().replace("%20", " ")).getParentFile();
+		assertTrue(root.exists(), "Root dir (" + root + ") doesn't exist");
+
+		//Get root directory as a file
+		File dir = new File(root, sep + "classes" + sep + (clazz.getPackage().getName().replace(".", sep)) + sep);
+		assertNotNull(dir, "Fetched Event directory is null");
+		assertTrue(dir.exists(), "Event directory doesn't exist");
+		assertTrue(dir.isDirectory(), "Event directory isn't a directory");
+		
+		//Get classes in directory
+		List<String> classFiles = new ArrayList();
+		assertTrue(dir.listFiles().length > 0, "Event directory is empty");
+		for (File clazzFile : dir.listFiles())
+			//If its a directory, its not a .class, or its a subclass, ignore
+			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
+				classFiles.add(clazzFile.getName().split("\\.")[0]);
+		
+		return classFiles;
 	}
 }
