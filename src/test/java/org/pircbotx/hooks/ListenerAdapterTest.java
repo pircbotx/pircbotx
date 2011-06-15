@@ -49,7 +49,7 @@ public class ListenerAdapterTest {
 		assertEquals(rootResources.hasMoreElements(), true, "No voice class resources");
 		File root = new File(rootResources.nextElement().getFile().replace("%20", " ")).getParentFile();
 		assertTrue(root.exists(), "Root dir (" + root + ") doesn't exist");
-		
+
 		//Get root directory as a file
 		File hookDir = new File(root, sep + "classes" + sep + (testClazz.getPackage().getName().replace(".", sep)) + sep);
 		assertNotNull(hookDir, "Fetched Event directory is null");
@@ -63,17 +63,17 @@ public class ListenerAdapterTest {
 			//If its a directory, its not a .class, or its a subclass, ignore
 			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
 				classFiles.add(clazzFile.getName().split("\\.")[0]);
-		
+
 		//Get all events ListenerAdapter uses
 		List<String> classMethods = new ArrayList();
-		for(Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
-			assertEquals(curMethod.getParameterTypes().length,1,"More than one parameter in method "+curMethod);
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			assertEquals(curMethod.getParameterTypes().length, 1, "More than one parameter in method " + curMethod);
 			classMethods.add(curMethod.getParameterTypes()[0].getSimpleName());
 		}
 
 		//Subtract the differences
 		classFiles.removeAll(classMethods);
-		String leftOver = StringUtils.join(classFiles.toArray(),", ");
+		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
 		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
 
 		System.out.println("Success: Meta Interface implment all hooks");
