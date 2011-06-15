@@ -24,7 +24,7 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.events.OpEvent;
 
 /**
- * Any user event that happens in a channel. Eg {@link OpEvent}
+ * Any user status change in a channel. Eg {@link OpEvent}
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
