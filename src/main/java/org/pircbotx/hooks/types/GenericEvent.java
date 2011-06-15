@@ -16,32 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.hooks.events.OpEvent;
-
 /**
- * Any user event that happens in a channel. Eg {@link OpEvent}
- * 
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * @author lordquackstar
  */
-public interface GenericUserModeEvent<T extends PircBotX> extends GenericEvent {
-	/**
-	 * The channel that the mode changed occured in
-	 */
-	public Channel getChannel();
-	
-	/**
-	 * The source of the mode change
-	 */
-	public User getSource();
-	
-	/**
-	 * The recipient of the mode change
-	 * @return 
-	 */
-	public User getRecipient();
+public interface GenericEvent {
+	public void respond(String response);
 }
