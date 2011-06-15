@@ -20,9 +20,13 @@
 package org.pircbotx.hooks.types;
 
 /**
- *
- * @author lordquackstar
+ * Base interface that all Generic event interfaces must extend from. 
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericEvent {
+	/**
+	 * Send a response using the underlying event's respond() method
+	 * @param response The response to send
+	 */
 	public void respond(String response);
 }
