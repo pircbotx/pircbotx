@@ -124,12 +124,8 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			Throwable cause = ex.getCause();
 			if (cause instanceof Exception)
 				throw (Exception) ex.getCause();
-			else if (event.getBot() != null)
-				//Must be severe, attempt to log it
-				event.getBot().logException(cause);
-			else
-				//No bot to work with, just print an exception
-				cause.printStackTrace();
+			//Wrap in RuntimeException and throw it instead
+			throw new RuntimeException("Error in executing ListenerAdapter", cause);
 		}
 	}
 
