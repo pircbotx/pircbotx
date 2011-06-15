@@ -80,6 +80,7 @@ public class ListenerAdapterTest {
 		}
 
 		//Subtract the differences
+		classFiles.remove("GenericEvent");
 		classFiles.removeAll(classMethods);
 		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
 		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
