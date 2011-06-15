@@ -24,7 +24,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
@@ -59,6 +58,6 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 
 	@Override
 	public void respond(String response) {
-		throw new UnsupportedOperationException("Not supported yet.");
+		getBot().sendMessage(getChannel(), getSource(), response);
 	}
 }
