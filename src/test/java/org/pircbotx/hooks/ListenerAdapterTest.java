@@ -83,6 +83,15 @@ public class ListenerAdapterTest {
 		System.out.println("Success: ListenerAdapter supports all event interfaces");
 	}
 	
+	@Test
+	public void throwsExceptionTest() {
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			Class<?>[] exceptions = curMethod.getExceptionTypes();
+			assertEquals(exceptions.length, 1, "Method " + curMethod + " in ListenerManager doesn't throw an exception or thows too many");
+			assertEquals(exceptions[0], Exception.class, "Method " + curMethod + " in ListenerManager doesn't throw the right exception");
+		}
+	}
+	
 	
 	protected static List<String> getClasses(Class<?> clazz) throws IOException {
 		String sep = System.getProperty("file.separator");
