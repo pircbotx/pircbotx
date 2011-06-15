@@ -21,7 +21,9 @@ package org.pircbotx.hooks;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
@@ -89,30 +91,45 @@ import org.pircbotx.hooks.events.VoiceEvent;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
-	protected static final Map<Class<? extends Event>, Method> eventToMethod = new HashMap();
+	protected static final Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
 
 	static {
+		//Map events to methods
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			if (curMethod.getName().equals("onEvent"))
 				continue;
-			eventToMethod.put((Class<? extends Event>) curMethod.getParameterTypes()[0], curMethod);
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if (!curClass.isInterface()) {
+				Set methods = new HashSet();
+				methods.add(curMethod);
+				eventToMethod.put((Class<? extends Event>) curClass, methods);
+			}
+		}
+		//Now that we have all the events, start mapping interfaces
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if (curClass.isInterface())
+				//Add this interface method to all events that implement it
+				for (Class curEvent : eventToMethod.keySet())
+					if (curClass.isAssignableFrom(curEvent))
+						eventToMethod.get(curEvent).add(curMethod);
 		}
 	}
 
 	public void onEvent(Event<T> event) throws Exception {
 		try {
-			eventToMethod.get(event.getClass()).invoke(this, event);
+			for (Method curMethod : eventToMethod.get(event.getClass()))
+				curMethod.invoke(this, event);
 		} catch (InvocationTargetException ex) {
 			Throwable cause = ex.getCause();
 			if (cause instanceof Exception)
 				throw (Exception) ex.getCause();
+			else if (event.getBot() != null)
+				//Must be severe, attempt to log it
+				event.getBot().logException(cause);
 			else
-				//Must be something severe
-				if (event.getBot() != null)
-					event.getBot().logException(cause);
-				else
-					//No bot to work with, just print an exception
-					cause.printStackTrace();
+				//No bot to work with, just print an exception
+				cause.printStackTrace();
 		}
 	}
 
@@ -133,7 +150,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onFinger(FingerEvent<T> event) throws Exception {
 	}
-	
+
 	public void onHalfOp(HalfOpEvent<T> event) throws Exception {
 	}
 
@@ -169,7 +186,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onOp(OpEvent<T> event) throws Exception {
 	}
-	
+
 	public void onOwner(OwnerEvent<T> event) throws Exception {
 	}
 
@@ -244,7 +261,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onSetTopicProtection(SetTopicProtectionEvent<T> event) throws Exception {
 	}
-	
+
 	public void onSuperOp(SuperOpEvent<T> event) throws Exception {
 	}
 
