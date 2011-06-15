@@ -19,6 +19,8 @@
 
 package org.pircbotx.hooks.types;
 
+import org.pircbotx.PircBotX;
+
 /**
  * Base interface that all Generic event interfaces must extend from. 
  * @author Leon Blakey <lord.quackstar at gmail.com>
@@ -29,4 +31,16 @@ public interface GenericEvent {
 	 * @param response The response to send
 	 */
 	public void respond(String response);
+	
+	/**
+	 * Returns the {@link PircBotX} instance that this event originally came from
+	 * @return A {@link PircBotX} instance
+	 */
+	public PircBotX getBot();
+
+	/**
+	 * Returns the timestamp of when the event was created
+	 * @return A timestamp as a long
+	 */
+	public long getTimestamp();
 }
