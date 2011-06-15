@@ -25,8 +25,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.StringUtils;
+import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -41,7 +45,7 @@ public class ListenerAdapterTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void eventImplementTest() throws Exception {		
+	public void eventImplementTest() throws Exception {
 		//Get all file names
 		List<String> classFiles = getClasses(VoiceEvent.class);
 
@@ -50,7 +54,7 @@ public class ListenerAdapterTest {
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			assertEquals(curMethod.getParameterTypes().length, 1, "More than one parameter in method " + curMethod);
 			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if(!curClass.isInterface())
+			if (!curClass.isInterface())
 				classMethods.add(curClass.getSimpleName());
 		}
 
@@ -61,20 +65,20 @@ public class ListenerAdapterTest {
 
 		System.out.println("Success: ListenerAdapter supports all events");
 	}
-	
+
 	@Test
 	public void interfaceImplementTest() throws IOException {
 		List<String> classFiles = getClasses(GenericMessageEvent.class);
-		
+
 		//Get all interfaces ListenerAdapter uses
 		List<String> classMethods = new ArrayList();
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			assertEquals(curMethod.getParameterTypes().length, 1, "More than one parameter in method " + curMethod);
 			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if(curClass.isInterface())
+			if (curClass.isInterface())
 				classMethods.add(curClass.getSimpleName());
 		}
-		
+
 		//Subtract the differences
 		classFiles.removeAll(classMethods);
 		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
@@ -82,7 +86,7 @@ public class ListenerAdapterTest {
 
 		System.out.println("Success: ListenerAdapter supports all event interfaces");
 	}
-	
+
 	@Test
 	public void throwsExceptionTest() {
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
@@ -91,8 +95,21 @@ public class ListenerAdapterTest {
 			assertEquals(exceptions[0], Exception.class, "Method " + curMethod + " in ListenerManager doesn't throw the right exception");
 		}
 	}
-	
-	
+
+	@Test
+	public void usabilityTest() throws Exception {
+		TestListenerAdapter listener = new TestListenerAdapter();
+
+		//Test if onMessage got called
+		listener.onEvent(new MessageEvent(null, null, null, null));
+		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
+
+		//Test if onGenericChannelMode (interface) got called
+		listener.setCalled(false);
+		listener.onEvent(new MessageEvent(null, null, null, null));
+		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
+	}
+
 	protected static List<String> getClasses(Class<?> clazz) throws IOException {
 		String sep = System.getProperty("file.separator");
 		//Since dumping path in getResources() fails, extract path from root
@@ -107,7 +124,7 @@ public class ListenerAdapterTest {
 		assertNotNull(dir, "Fetched Event directory is null");
 		assertTrue(dir.exists(), "Event directory doesn't exist");
 		assertTrue(dir.isDirectory(), "Event directory isn't a directory");
-		
+
 		//Get classes in directory
 		List<String> classFiles = new ArrayList();
 		assertTrue(dir.listFiles().length > 0, "Event directory is empty");
@@ -115,7 +132,23 @@ public class ListenerAdapterTest {
 			//If its a directory, its not a .class, or its a subclass, ignore
 			if (clazzFile.isFile() && clazzFile.getName().contains("class") && !clazzFile.getName().contains("$"))
 				classFiles.add(clazzFile.getName().split("\\.")[0]);
-		
+
 		return classFiles;
+	}
+
+	@Data
+	@EqualsAndHashCode(callSuper = false)
+	protected class TestListenerAdapter extends ListenerAdapter {
+		protected boolean called = false;
+
+		@Override
+		public void onGenericMessage(GenericMessageEvent event) throws Exception {
+			called = true;
+		}
+
+		@Override
+		public void onMessage(MessageEvent event) throws Exception {
+			called = true;
+		}
 	}
 }
