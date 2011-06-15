@@ -76,6 +76,11 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.types.GenericCTCPCommand;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.pircbotx.hooks.types.GenericDCCEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
+import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
  * Adapter that provides methods to capture each event separately, removing
@@ -280,5 +285,20 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onVoice(VoiceEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericCTCPCommand(GenericCTCPCommand<T> event) throws Exception {
+	}
+	
+	public void onGenericUserMode(GenericUserModeEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericChannelMode(GenericChannelModeEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericDCC(GenericDCCEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericMessage(GenericMessageEvent<T> event) throws Exception {
 	}
 }
