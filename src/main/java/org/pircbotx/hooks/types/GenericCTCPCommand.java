@@ -27,7 +27,7 @@ import org.pircbotx.User;
  *
  * @author lordquackstar
  */
-public interface GenericCTCPCommand<T extends PircBotX> {
+public interface GenericCTCPCommand<T extends PircBotX> extends GenericEvent {
 	public User getUser();
 	
 	public Channel getChannel();
