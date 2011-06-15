@@ -27,7 +27,7 @@ import java.util.Enumeration;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.events.VoiceEvent;
-import org.pircbotx.hooks.types.GenericUserEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -64,7 +64,7 @@ public class ListenerAdapterTest {
 	
 	@Test
 	public void interfaceImplementTest() throws IOException {
-		List<String> classFiles = getClasses(GenericUserEvent.class);
+		List<String> classFiles = getClasses(GenericMessageEvent.class);
 		
 		//Get all interfaces ListenerAdapter uses
 		List<String> classMethods = new ArrayList();
