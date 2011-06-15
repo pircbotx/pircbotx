@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
  * Called when a user (possibly us) gets granted operator status for a channel.
@@ -34,7 +35,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OpEvent<T extends PircBotX> extends Event<T> {
+public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;

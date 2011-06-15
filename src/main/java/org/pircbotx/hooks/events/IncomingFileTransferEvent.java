@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.types.GenericDCCEvent;
 
 /**
  * This event is dispatched whenever a DCC SEND request is sent to the PircBotX.
@@ -59,7 +60,7 @@ import org.pircbotx.hooks.Listener;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> {
+public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	protected final DccFileTransfer transfer;
 
 	/**

@@ -38,7 +38,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelBanEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent {
+public class SetChannelBanEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
 	protected final Channel channel;
 	protected final User user;
 	protected final String hostmask;

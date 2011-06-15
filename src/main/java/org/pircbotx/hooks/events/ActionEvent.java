@@ -24,6 +24,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Called whenever an ACTION is sent from a user.  E.g.
@@ -32,7 +33,7 @@ import org.pircbotx.hooks.Event;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ActionEvent<T extends PircBotX> extends Event<T> {
+public class ActionEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
 	protected final User user;
 	protected final Channel channel;
 	protected final String action;
@@ -51,6 +52,14 @@ public class ActionEvent<T extends PircBotX> extends Event<T> {
 		this.user = user;
 		this.channel = channel;
 		this.action = action;
+	}
+	
+	/**
+	 * Returns the action sent by the user. Same result as getAction
+	 * @return Action sent by the user
+	 */
+	public String getMessage() {
+		return action;
 	}
 
 	/**
