@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.types;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -32,7 +33,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
  * Used in {@link MessageEvent} and {@link PrivateMessageEvent}
  * @author Leon Blakey <lord.quackstar@gmail.com>
  */
-public interface GenericMessageEvent extends GenericUserEvent {
+public interface GenericMessageEvent<T extends PircBotX> extends GenericUserEvent<T> {
 	/**
 	 * The message the user sent
 	 * @return The message

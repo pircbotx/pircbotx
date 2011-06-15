@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.types;
 
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
@@ -25,6 +26,6 @@ import org.pircbotx.User;
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericUserEvent {
+public interface GenericUserEvent<T extends PircBotX> {
 	public User getUser();
 }
