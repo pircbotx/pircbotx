@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.types.GenericDCCEvent;
 
 /**
  * This event will be dispatched whenever a DCC Chat request is received.
@@ -56,7 +57,7 @@ import org.pircbotx.hooks.Listener;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> {
+public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	protected final DccChat chat;
 
 	/**

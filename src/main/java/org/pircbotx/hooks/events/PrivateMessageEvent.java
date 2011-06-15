@@ -31,7 +31,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent {
+public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
 	protected final User user;
 	protected final String message;
 

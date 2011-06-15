@@ -25,6 +25,7 @@ import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericCTCPCommand;
 
 /**
  * This event is dispatched whenever we receive a VERSION request.
@@ -37,7 +38,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VersionEvent<T extends PircBotX> extends Event<T> {
+public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPCommand<T> {
 	protected final User user;
 	protected final Channel channel;
 
