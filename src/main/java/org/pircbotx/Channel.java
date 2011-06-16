@@ -176,7 +176,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Owner status
 	 */
 	public Set<User> getOwners() {
-		return Collections.unmodifiableSet(ops);
+		return Collections.unmodifiableSet(owners);
 	}
 
 	/**
@@ -186,7 +186,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Half Operator status
 	 */
 	public Set<User> getHalfOps() {
-		return Collections.unmodifiableSet(voices);
+		return Collections.unmodifiableSet(halfOps);
 	}
 	
 	/**
@@ -196,7 +196,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Super Operator status
 	 */
 	public Set<User> getSuperOps() {
-		return Collections.unmodifiableSet(ops);
+		return Collections.unmodifiableSet(superOps);
 	}
 
 	/**
