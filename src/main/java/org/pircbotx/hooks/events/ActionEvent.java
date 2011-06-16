@@ -53,7 +53,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 		this.channel = channel;
 		this.action = action;
 	}
-	
+
 	/**
 	 * Returns the action sent by the user. Same result as getAction
 	 * @return Action sent by the user
@@ -74,6 +74,9 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendAction(getChannel(), response);
+		if (getChannel() != null)
+			getBot().sendAction(getChannel(), response);
+		else
+			getBot().sendAction(getUser(), response);
 	}
 }
