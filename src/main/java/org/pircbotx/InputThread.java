@@ -114,6 +114,7 @@ public class InputThread extends Thread {
 		}
 
 		//Now that the socket is definatly closed, call event and log
+		isConnected = false;
 		bot.reset();
 		bot.getListenerManager().dispatchEvent(new DisconnectEvent(bot));
 		bot.log("*** Disconnected.");
