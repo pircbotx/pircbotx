@@ -485,8 +485,8 @@ public class PircBotX {
 	 *
 	 * @param channel The name of the channel to leave.
 	 */
-	public void partChannel(String channel) {
-		sendRawLine("PART " + channel);
+	public void partChannel(Channel channel) {
+		sendRawLine("PART " + channel.getName());
 	}
 
 	/**
@@ -495,8 +495,8 @@ public class PircBotX {
 	 * @param channel The name of the channel to leave.
 	 * @param reason  The reason for parting the channel.
 	 */
-	public void partChannel(String channel, String reason) {
-		sendRawLine("PART " + channel + " :" + reason);
+	public void partChannel(Channel channel, String reason) {
+		sendRawLine("PART " + channel.getName() + " :" + reason);
 	}
 	
 	/**
@@ -506,7 +506,7 @@ public class PircBotX {
 	 * be invalid after this method executes and a new one will be created
 	 */
 	public void cycle(final Channel chan) {
-		partChannel(chan.getName());
+		partChannel(chan);
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
 		listenerManager.addListener(new ListenerAdapter() {
@@ -931,8 +931,8 @@ public class PircBotX {
 	 * @param channel The channel to ban the user from.
 	 * @param hostmask A hostmask representing the user we're banning.
 	 */
-	public void ban(String channel, String hostmask) {
-		sendRawLine("MODE " + channel + " +b " + hostmask);
+	public void ban(Channel channel, String hostmask) {
+		sendRawLine("MODE " + channel.getName() + " +b " + hostmask);
 	}
 
 	/**
@@ -944,8 +944,8 @@ public class PircBotX {
 	 * @param channel The channel to unban the user from.
 	 * @param hostmask A hostmask representing the user we're unbanning.
 	 */
-	public void unBan(String channel, String hostmask) {
-		sendRawLine("MODE " + channel + " -b " + hostmask);
+	public void unBan(Channel channel, String hostmask) {
+		sendRawLine("MODE " + channel.getName() + " -b " + hostmask);
 	}
 
 	/**
