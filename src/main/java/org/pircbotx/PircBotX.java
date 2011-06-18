@@ -857,8 +857,8 @@ public class PircBotX {
 	}
 	
 	/**
-	 * Attempt to set the channel limit to specified value. May require operator
-	 * privileges
+	 * Attempt to set the channel limit (+l) to specified value. May require operator
+	 * privileges in the channel
 	 * @param chan The channel to set the limit on
 	 * @param limit The maximum amount of people that can be in the channel
 	 */
@@ -867,13 +867,124 @@ public class PircBotX {
 	}
 	
 	/**
-	 * Attempt to remove the channel limit on the specified channel. May require
-	 * operator privileges
+	 * Attempt to remove the channel limit (-l) on the specified channel. May require
+	 * operator privileges in the channel
 	 * @param chan 
 	 */
 	public void removeChannelLimit(Channel chan) {
 		setMode(chan, "-l");
 	}
+	
+	/**
+	 * Sets the channel key (+k) or password to get into the channel. May require
+	 * operator privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 * @param key The secret key to use
+	 */
+	public void setChannelKey(Channel chan, String key) {
+		setMode(chan, "+k", key);
+	}
+	
+	/**
+	 * Removes the channel key (-k) or password to get into the channel. May require
+	 * operator privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 * @param key The secret key to remove. If this is not known a blank key or
+	 * asterisk might work
+	 */
+	public void removeChannelKey(Channel chan, String key) {
+		setMode(chan, "-k", key);
+	}
+	
+	/**
+	 * Set the channel as invite only (+i). May require operator privileges in 
+	 * the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void setInviteOnly(Channel chan) {
+		setMode(chan, "+i");
+	}
+	
+	/**
+	 * Removes invite only (-i) status from the channel. May require operator 
+	 * privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void removeInviteOnly(Channel chan) {
+		setMode(chan, "-i");
+	}
+	
+	/**
+	 * Set the channel as moderated (+m). May require operator privileges in 
+	 * the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void setModerated(Channel chan) {
+		setMode(chan, "+m");
+	}
+	
+	/**
+	 * Removes moderated (-m) status from the channel. May require operator 
+	 * privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void removeModerated(Channel chan) {
+		setMode(chan, "-m");
+	}
+	
+	/**
+	 * Prevent external messages from appearing in the channel (+n). May require 
+	 * operator privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void setNoExternalMessages(Channel chan) {
+		setMode(chan, "+n");
+	}
+	
+	/**
+	 * Allow external messages to appear in the channel (+n). May require operator 
+	 * privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void removeNoExternalMessages(Channel chan) {
+		setMode(chan, "-n");
+	}
+	
+	/**
+	 * Set the channel as secret (+s). May require operator privileges in 
+	 * the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void setSecret(Channel chan) {
+		setMode(chan, "+s");
+	}
+	
+	/**
+	 * Removes secret (-s) status from the channel. May require operator 
+	 * privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void removeSecret(Channel chan) {
+		setMode(chan, "-s");
+	}
+	
+	/**
+	 * Prevent non-operator users from changing the channel topic (+t). May 
+	 * require operator privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void setTopicProtection(Channel chan) {
+		setMode(chan, "+t");
+	}
+	
+	/**
+	 * Allow non-operator users to change the channel topic (-t). May require operator 
+	 * privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void removeTopicProtection(Channel chan) {
+		setMode(chan, "-t");
+	}	
 
 	/**
 	 * Sends an invitation to join a channel.  Some channels can be marked
