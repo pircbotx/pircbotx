@@ -520,6 +520,29 @@ public class PircBotX {
 				}
 			});
 	}
+	
+	/**
+	 * Part and rejoin specified channel using channel key. Useful for obtaining 
+	 * auto privileges after identifying
+	 * @param chan The channel to part and join from. Note that the object will
+	 * be invalid after this method executes and a new one will be created
+	 * @param key The key to use when rejoining the channel
+	 */
+	public void cycle(final Channel chan, final String key) {
+		partChannel(chan);
+		//As we might not immediatly part and you can't join a channel that your
+		//already joined to, wait for the PART event before rejoining
+		listenerManager.addListener(new ListenerAdapter() {
+				@Override
+				public void onPart(PartEvent event) throws Exception {
+					//Make sure this bot is us to prevent nasty errors in multi bot sitations
+					if (event.getBot() == PircBotX.this)
+						event.getBot().joinChannel(chan.getName(), key);
+					//Self destrust, this listener has no more porpose
+					event.getBot().getListenerManager().removeListener(this);
+				}
+			});
+	}
 
 	/**
 	 * Quits from the IRC server.
