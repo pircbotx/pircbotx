@@ -19,17 +19,16 @@
 package org.pircbotx;
 
 import java.util.Set;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 /**
- *
- * @author lordquackstar
+ * A snapshot of a user in time. Useful to get information before a user leaves
+ * a channel or server.
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 //Only use super implementation which uses UIDs
