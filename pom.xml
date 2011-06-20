@@ -1,6 +1,13 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<!--Sonatype Parent POM-->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
 	<!--
 		Maven Information
 	-->
@@ -50,7 +57,7 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:hg:http://pircbotx.googlecode.com</connection>
+		<connection>scm:hg:http://pircbotx.googlecode.com/hg</connection>
 		<developerConnection>scm:hg:https://pircbotx.googlecode.com/hg</developerConnection>
 		<url>https://pircbotx.googlecode.com/hg</url>
 	</scm>
@@ -229,19 +236,6 @@
 		Distrobution
 	-->
 	<distributionManagement>
-		<!--Release deploy repository-->
-		<repository>
-			<id>maven-general-repo.googlecode.com</id>
-			<name>General Maven Repo on Google Code</name>
-			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/releases</url>
-		</repository>
-		<!--Snapshot deploy repository-->
-		<snapshotRepository>
-			<id>maven-general-repo.googlecode.com</id>
-			<name>General Maven Repo on Google Code</name>
-			<url>dav:https://general-maven-repo.googlecode.com/svn/maven2/snapshots</url>
-			<uniqueVersion>true</uniqueVersion>
-		</snapshotRepository>
 		<!--Site deploy repository-->
 		<site>
 			<id>maven-general-repo.googlecode.com</id>
