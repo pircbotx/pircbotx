@@ -3,13 +3,16 @@ PircBotX Changelog
 For more details see the Mercurial changelog at http://code.google.com/p/pircbotx/source/list
 
 --------------------------------------------------
-1.3 Beta2 - In Development
+1.3 Beta2 - June 20th, 2011
 --------------------------------------------------
 
-   
-The goal of this release was more bug fixing, implementing feature requests, and cleaning up the API. As this beta period was quite long, the change log is large.
+The goal of this release was more bug fixing, implementing feature requests, and 
+cleaning up the API. As this beta period was quite long, the change log is large.
 
-WARNING: If you are directly upgrading from Beta1 to Beta2 the API has significantly changed. If your bot suddenly won't compile, try other ways to accomplish what your wanting to do (Eg opping with the Channel object instead of the User object) or consult the change log.
+WARNING: If you are directly upgrading from Beta1 to Beta2 the API has significantly 
+changed. If your bot suddenly won't compile, try other ways to accomplish what 
+your wanting to do (Eg opping with the Channel object instead of the User object) 
+or consult the change log.
 
  - Fixed  Issue #5  and  Issue #4  where output thread wouldn't even start or 
    throw an exception
@@ -178,7 +181,6 @@ And lastly at no particular point in time (happened everywhere)
    most of the main functionality has unit tests with more on the way.
  - Documentation added to various undocumented methods and classes. Existing 
    documentation was also fixed and updated in multiple places.
-
 
 
 --------------------------------------------------
