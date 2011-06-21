@@ -49,10 +49,9 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	public void onMessage(MessageEvent event) throws Exception {
 		//Hello world
 		//This way to handle commands is useful for listeners that listen for multiple commands
-		if (event.getMessage().startsWith("?hello")) {
+		if (event.getMessage().startsWith("?hello"))
 			event.respond("Hello World!");
-		}
-		
+
 		//If this isn't a waittest, ignore
 		//This way to handle commands is useful for listers that only listen for one command
 		if (!event.getMessage().startsWith("?waitTest start"))
