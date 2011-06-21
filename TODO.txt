@@ -1,5 +1,0 @@
--Figure out what to do with the rediculous exception handling in InputThread
--Figure out better User.toString() method;
--Should removeCommand throw a InvalidCMDException?
-
--User contains channels or channels contain users. Handle various opping and voicing issues
