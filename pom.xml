@@ -103,7 +103,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.9.3</version>
+			<version>0.10.0-RC1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -183,9 +183,13 @@
 				</executions>
 				<configuration>
 					<executable>java</executable>
+					<classpathScope>compile</classpathScope>
 					<arguments>
-						<argument>-jar</argument>
-						<argument>src/lib/lombok-edge.jar</argument>
+						<argument>-classpath</argument>
+						<classpath>
+							<dependency>org.projectlombok:lombok</dependency>
+						</classpath>
+						<argument>lombok.core.Main</argument>
 						<argument>delombok</argument>
 						<argument>src/main/java</argument>
 						<argument>-d</argument>
