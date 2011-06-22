@@ -113,7 +113,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 
 		//Our custom thread pool (copied Executors.newCachedThreadPool)
 		final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-		bot.setListenerManager(new ThreadedListenerManager(executor, true));
+		bot.setListenerManager(new ThreadedListenerManager(executor));
 
 		//Print thread count every 2 seconds
 		new Thread() {
