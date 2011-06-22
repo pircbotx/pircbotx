@@ -43,8 +43,7 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
-	protected ExecutorService pool = Executors.newCachedThreadPool();
-	protected final boolean perHook;
+	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 
 	/**
@@ -52,16 +51,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		perHook = true;
-	}
-
-	/**
-	 * Configures with default {@link Executors#newCachedThreadPool() cached threadpool}
-	 * and the specified perHook mode
-	 * @param perHook 
-	 */
-	public ThreadedListenerManager(boolean perHook) {
-		this.perHook = perHook;
+		pool = Executors.newCachedThreadPool();
 	}
 
 	/**
@@ -70,17 +60,6 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * @param pool 
 	 */
 	public ThreadedListenerManager(ExecutorService pool) {
-		this();
-		this.pool = pool;
-	}
-
-	/**
-	 * Configures with specified perHook mode and {@link ExecutorService}
-	 * @param pool
-	 * @param perHook 
-	 */
-	public ThreadedListenerManager(ExecutorService pool, boolean perHook) {
-		this.perHook = perHook;
 		this.pool = pool;
 	}
 
@@ -102,28 +81,16 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	@Synchronized("listeners")
 	public void dispatchEvent(final Event<E> event) {
-		if (perHook)
-			//For each Listener, add a new Runnable
-			for (final Listener curListener : listeners)
-				pool.submit(new Runnable() {
-					public void run() {
-						try {
-							curListener.onEvent(event);
-						} catch (Throwable t) {
-							event.getBot().logException(t);
-						}
-					}
-				});
-		else
+		//For each Listener, add a new Runnable
+		for (final Listener curListener : listeners)
 			pool.submit(new Runnable() {
 				public void run() {
-						for (Listener curListener : listeners)
-							try {
-								curListener.onEvent(event);
-							} catch (Throwable t) {
-								event.getBot().logException(t);
-							}
+					try {
+						curListener.onEvent(event);
+					} catch (Throwable t) {
+						event.getBot().logException(t);
 					}
+				}
 			});
 	}
 }
