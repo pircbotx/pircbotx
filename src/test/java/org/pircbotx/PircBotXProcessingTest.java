@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -94,7 +95,7 @@ public class PircBotXProcessingTest {
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
 		bot.handleLine(":irc.someserver.net 323 :End of /LIST");
 		ChannelInfoEvent cevent = getEvent(events, ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
-		
+
 		//Verify event contents
 		Set<ChannelListEntry> channels = cevent.getList();
 		assertEquals(channels.size(), 3);
@@ -219,21 +220,39 @@ public class PircBotXProcessingTest {
 		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
 	}
+	
+	/**
+	 * Do setup and basic verification of channel modes
+	 * @param bot
+	 * @param events
+	 * @param mode
+	 */
+	protected void initModeTest(PircBotX bot, Set<Event> events, String mode, boolean checkChannelMode) {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
+		
+		//Verify generic ModeEvent contents
+		ModeEvent mevent = getEvent(events, ModeEvent.class, "No ModeEvent dispatched with " + mode);
+		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
+		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
+		assertEquals(mevent.getMode(), mode, "ModeEvent's mode does not match given mode");
+		
+		//Check channel mode if told to
+		if(checkChannelMode)
+			assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
+	}
 
 	@Test(dataProvider = "botProvider", description = "Verify ModeEvent from a moderated change")
 	public void setModeratedTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +m");
+		initModeTest(bot, events, "+m", true);
 
-		//Verify generic ModeEvent contents
-		ModeEvent mevent = getEvent(events, ModeEvent.class, "No ModeEvent dispatched with +m");
-		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
-		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
-		assertEquals(mevent.getMode(), "+m", "ModeEvent's mode does not match given mode");
-
-		//Check channel mode
-		assertEquals(aChannel.getMode(), "m", "Channel's mode is not updated");
+		//Check moderated event
+		SetModeratedEvent event = getEvent(events, SetModeratedEvent.class, "No SetModeratedEvent dispatch with +m");
+		assertEquals(event.getChannel(), aChannel, "SetModeratedEvent's channel doesn't match given");
+		assertEquals(event.getUser(), aUser, "SetModeratedEvent's user doesn't match given");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user")
@@ -241,7 +260,7 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
+		initModeTest(bot, events, "+o OtherUser", false);
 
 		//Verify event contents
 		OpEvent oevent = getEvent(events, OpEvent.class, "OpEvent not dispatched");
@@ -258,7 +277,7 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +v OtherUser");
+		initModeTest(bot, events, "+v OtherUser", false);
 
 		//Verify event contents
 		VoiceEvent vevent = getEvent(events, VoiceEvent.class, "VoiceEvent not dispatched");
@@ -273,7 +292,7 @@ public class PircBotXProcessingTest {
 	@Test(dataProvider = "botProvider", description = "Verify NAMES response handling")
 	public void namesTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
-		
+
 		//Make sure all information was created correctly
 		assertTrue(bot.channelExists("#aChannel"), "NAMES response didn't create channel");
 		assertTrue(bot.userExists("AUser"), "NAMES response didn't create user AUser");
@@ -281,11 +300,11 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		
+
 		//Make sure channel contains the users
 		assertTrue(aChannel.getUsers().contains(aUser), "Channel doesn't contain AUser from NAMES response");
 		assertTrue(aChannel.getUsers().contains(otherUser), "Channel doesn't contain OtherUser from NAMES response");
-		
+
 		//Make sure channel classifies the users correctly
 		assertTrue(aChannel.isOp(otherUser), "NAMES response doesn't give user op status");
 		assertTrue(aChannel.hasVoice(otherUser), "NAMES response doesn't give user voice status");
@@ -300,7 +319,7 @@ public class PircBotXProcessingTest {
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
 		bot.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
-		
+
 		//Make sure all information was created correctly
 		assertTrue(bot.channelExists("#aChannel"), "WHO response didn't create channel");
 		assertTrue(bot.userExists("AUser"), "WHO response didn't create user AUser");
@@ -349,7 +368,7 @@ public class PircBotXProcessingTest {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
-		
+
 		//Verify event contents
 		KickEvent kevent = getEvent(events, KickEvent.class, "KickEvent not dispatched");
 		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
