@@ -327,7 +327,7 @@ public class PircBotX {
 		_outputThread.start();
 
 		// Attempt to join the server.
-		if (Utils.isBlank(password))
+		if (!Utils.isBlank(password))
 			_outputThread.sendRawLineNow("PASS " + password);
 		String nick = getName();
 		_outputThread.sendRawLineNow("NICK " + nick);
