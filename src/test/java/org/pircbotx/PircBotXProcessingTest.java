@@ -106,8 +106,6 @@ public class PircBotXProcessingTest {
 				channelParsed = true;
 			}
 		assertTrue(channelParsed, "Channel #PircBotXChannel1 not found in /LIST results!");
-
-		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verifies InviteEvent from incomming invite")
@@ -122,8 +120,6 @@ public class PircBotXProcessingTest {
 		//Make sure the event doesn't create a user or a channel
 		assertFalse(bot.channelExists("#aChannel"), "InviteEvent created channel, shouldn't have");
 		assertFalse(bot.userExists("AUser"), "InviteEvent created user, shouldn't have");
-
-		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verifies JoinEvent from user joining our channel")
@@ -151,8 +147,6 @@ public class PircBotXProcessingTest {
 				chanUser = curUser;
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
 		assertTrue(bot.userExists("AUser"));
-
-		System.out.println("Success: Information up to date when user joins");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
@@ -160,8 +154,6 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
-
-		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify TopicEvent's extended information from line sent after TOPIC line")
@@ -173,8 +165,6 @@ public class PircBotXProcessingTest {
 
 		TopicEvent tevent = getEvent(events, TopicEvent.class, "No topic event dispatched");
 		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
-
-		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify MessageEvent from channel message")
@@ -188,8 +178,6 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 		assertEquals(mevent.getUser(), aUser, "Event user and origional user do not match");
 		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
-
-		System.out.println("Success: MessageEvent gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify PrivateMessage from random user")
@@ -201,8 +189,6 @@ public class PircBotXProcessingTest {
 		PrivateMessageEvent pevent = getEvent(events, PrivateMessageEvent.class, "MessageEvent not dispatched");
 		assertEquals(pevent.getUser(), aUser, "Event user and origional user do not match");
 		assertEquals(pevent.getMessage(), aString, "Message sent does not match");
-
-		System.out.println("Success: MessageEvent gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE in channel")
@@ -216,8 +202,6 @@ public class PircBotXProcessingTest {
 		assertEquals(nevent.getChannel(), aChannel, "NoticeEvent's channel does not match given");
 		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
-
-		System.out.println("Success: NoticeEvent gives expected results");
 	}
 
 	/**
@@ -233,8 +217,6 @@ public class PircBotXProcessingTest {
 		assertNull(nevent.getChannel(), "NoticeEvent's channel isn't null during private notice");
 		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
-
-		System.out.println("Success: NoticeEvent gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify ModeEvent from a moderated change")
@@ -248,12 +230,9 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
 		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
 		assertEquals(mevent.getMode(), "+m", "ModeEvent's mode does not match given mode");
-		System.out.println("Success: ModeEvent gives expected results");
 
 		//Check channel mode
 		assertEquals(aChannel.getMode(), "m", "Channel's mode is not updated");
-
-		System.out.println("Success: Channel's mode is up to date");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user that just joined by another user")
@@ -272,8 +251,6 @@ public class PircBotXProcessingTest {
 
 		//Check op lists
 		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
-
-		System.out.println("Success: Oping a user updates the appropiate places");
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify VoiceEvent from some user voicing another user")
@@ -377,8 +354,6 @@ public class PircBotXProcessingTest {
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that was kicked an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that was kicked with voice");
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after kick");
-
-		System.out.println("Success: KickEvent gives expected results");
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
@@ -405,8 +380,6 @@ public class PircBotXProcessingTest {
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after quit");
 		assertTrue(otherUser.getChannels().isEmpty(), "User still connected to other channels after quit");
 		assertFalse(aChannel.getUsers().contains(otherUser), "Channel still associated with user that quit");
-
-		System.out.println("Success: QuitEvent gives the appropiate information and bot forgets refrences");
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
@@ -420,8 +393,6 @@ public class PircBotXProcessingTest {
 		QuitEvent qevent = getEvent(events, QuitEvent.class, "QuitEvent not dispatched");
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
-
-		System.out.println("Success: QuitEvent with no reason gives the appropiate information");
 	}
 
 	/**
