@@ -87,10 +87,6 @@ public class PircBotXProcessingTest {
 		assertEquals(uevent.getTarget(), aUser2, "UserModeEvent's target does not match given");
 		assertEquals(uevent.getMode(), "+i", "UserModeEvent's mode does not match given");
 
-		//Cleanup
-		bot._userChanInfo.deleteB(aUser);
-		bot._userChanInfo.deleteB(aUser2);
-
 		System.out.println("Success: UserModeEvent gives expected results");
 	}
 
@@ -105,6 +101,8 @@ public class PircBotXProcessingTest {
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
 		bot.handleLine(":irc.someserver.net 323 :End of /LIST");
 		ChannelInfoEvent cevent = getEvent(events, ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
+		
+		//Verify event contents
 		Set<ChannelListEntry> channels = cevent.getList();
 		assertEquals(channels.size(), 3);
 		boolean channelParsed = false;
