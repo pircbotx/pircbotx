@@ -94,6 +94,21 @@ public class PircBotXTest {
 		}
 	}
 	
+	@Test(description = "Make sure getUser doesn't return null and reliably returns the correct value")
+	public void getUserTest() {
+		PircBotX smallBot = new PircBotX();
+		User origUser = smallBot.getUser("SomeUser");
+		assertNotNull(origUser, "getUser returns null for unknown user");
+		assertEquals(origUser, smallBot.getUser("SomeUser"), "getUser doesn't return the same user during second call");
+	}
+	
+	public void getChannelTest() {
+		PircBotX smallBot = new PircBotX();
+		Channel channel = smallBot.getChannel("#aChannel");
+		assertNotNull(channel, "getchannel returns null for unknown channel");
+		assertEquals(channel, smallBot.getChannel("#aChannel"), "getChannel doesn't return the same channel during second call");
+	}
+	
 	@Test(description = "Verify getting the bots own user object works")
 	public void getUserBotTest() {
 		PircBotX smallBot = new PircBotX();
