@@ -71,10 +71,7 @@ public class PircBotXProcessingTest {
 		return new Object[][]{{bot, events}};
 	}
 
-	/**
-	 * Test mode being changed
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verifies UserModeEvent from user mode being changed")
 	public void userModeTest(PircBotX bot, Set<Event> events) {
 		//Use two users to differentiate between source and target
 		User aUser = bot.getUser("PircBotXUser");
@@ -86,14 +83,9 @@ public class PircBotXProcessingTest {
 		assertEquals(uevent.getSource(), aUser, "UserModeEvent's source does not match given");
 		assertEquals(uevent.getTarget(), aUser2, "UserModeEvent's target does not match given");
 		assertEquals(uevent.getMode(), "+i", "UserModeEvent's mode does not match given");
-
-		System.out.println("Success: UserModeEvent gives expected results");
 	}
 
-	/**
-	 * Simulate /LIST response with 3 channels
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verifies ChannelInfoEvent from /LIST command with 3 channels")
 	public void listTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
@@ -118,10 +110,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 
-	/**
-	 * Simulate getting invited to a channel
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verifies InviteEvent from incomming invite")
 	public void inviteTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 
@@ -137,10 +126,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Output from /LIST command gives expected results");
 	}
 
-	/**
-	 * Simulate another using joining the channel we just joined
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -169,10 +155,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Information up to date when user joins");
 	}
 
-	/**
-	 * Simulate a /TOPIC (no args) or /JOIN (inital topic sent when joining)
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
 	public void topicTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
@@ -181,10 +164,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Topic content output from /TOPIC or /JOIN gives expected results");
 	}
 
-	/**
-	 * Simulate a /TOPIC info (sent after joining a channel and topic is sent)
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify TopicEvent's extended information from line sent after TOPIC line")
 	public void topicInfoTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
@@ -197,10 +177,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
 	}
 
-	/**
-	 * Simulate a channel message being sent
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify MessageEvent from channel message")
 	public void messageTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -215,10 +192,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: MessageEvent gives expected results");
 	}
 
-	/**
-	 * Simulate a private message from a user that's already a part of one of our channels
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify PrivateMessage from random user")
 	public void privateMessageTest(PircBotX bot, Set<Event> events) {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
@@ -231,10 +205,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: MessageEvent gives expected results");
 	}
 
-	/**
-	 * Simulate a NOTICE sent to the channel
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE in channel")
 	public void channelNoticeTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -252,7 +223,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a NOTICE sent directly to us
 	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE from a user in PM")
 	public void userNoticeTest(PircBotX bot, Set<Event> events) {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
@@ -266,10 +237,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: NoticeEvent gives expected results");
 	}
 
-	/**
-	 * Simulate a generic channel mode change
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify ModeEvent from a moderated change")
 	public void genericModeTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -288,11 +256,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Channel's mode is up to date");
 	}
 
-	/**
-	 * Test opping person that just joined. Note that since joinTest passed
-	 * (this test indirectly depends on it), simulating a JOIN is safe
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user that just joined by another user")
 	public void opTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -312,10 +276,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: Oping a user updates the appropiate places");
 	}
 
-	/**
-	 * Test another user getting voiced
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify VoiceEvent from some user voicing another user")
 	public void voiceTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -332,10 +293,7 @@ public class PircBotXProcessingTest {
 		assertTrue(aChannel.hasVoice(otherUser), "Channel's internal voice list not updated with new voice");
 	}
 
-	/**
-	 * Simulate names response
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify NAMES response handling")
 	public void namesTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -353,7 +311,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate WHO response. 
 	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify WHO response handling + UserListEvent")
 	public void whoTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -400,10 +358,7 @@ public class PircBotXProcessingTest {
 		otherUser.setAway(true);
 	}
 
-	/**
-	 * Simulate another user being kicked
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify KickEvent from some user kicking another user")
 	public void kickTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -426,10 +381,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: KickEvent gives expected results");
 	}
 
-	/**
-	 * Test a user quitting
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify QuitEvent from user that just joined quitting")
 	public void quitTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
@@ -457,11 +409,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: QuitEvent gives the appropiate information and bot forgets refrences");
 	}
 
-	/**
-	 * Simpler test for QUITs with no reason. We know that the bot will forget
-	 * about the user already, so no need to test here as well
-	 */
-	@Test(dataProvider = "botProvider")
+	@Test(dataProvider = "botProvider", description = "Verify QuitEvent with no message")
 	public void quitTest2(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
