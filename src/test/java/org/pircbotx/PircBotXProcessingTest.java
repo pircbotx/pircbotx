@@ -35,6 +35,7 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.RemoveModeratedEvent;
 import org.pircbotx.hooks.events.SetModeratedEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
@@ -220,7 +221,7 @@ public class PircBotXProcessingTest {
 		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
 	}
-	
+
 	/**
 	 * Do setup and basic verification of channel modes
 	 * @param bot
@@ -231,19 +232,22 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
-		
+
 		//Verify generic ModeEvent contents
 		ModeEvent mevent = getEvent(events, ModeEvent.class, "No ModeEvent dispatched with " + mode);
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
 		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
 		assertEquals(mevent.getMode(), mode, "ModeEvent's mode does not match given mode");
-		
+
 		//Check channel mode if told to
-		if(checkChannelMode)
-			assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
+		if (checkChannelMode)
+			if (mode.substring(0, 1).equals("-"))
+				assertEquals(aChannel.getMode(), "", "Channel mode not empty after removing only mode");
+			else
+				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify ModeEvent from a moderated change")
+	@Test(dataProvider = "botProvider", description = "Verify SetModeratedEvent")
 	public void setModeratedTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -251,6 +255,19 @@ public class PircBotXProcessingTest {
 
 		//Check moderated event
 		SetModeratedEvent event = getEvent(events, SetModeratedEvent.class, "No SetModeratedEvent dispatch with +m");
+		assertEquals(event.getChannel(), aChannel, "SetModeratedEvent's channel doesn't match given");
+		assertEquals(event.getUser(), aUser, "SetModeratedEvent's user doesn't match given");
+	}
+
+	@Test(dataProvider = "botProvider", dependsOnMethods = "setModeratedTest", description = "Verify SetModeratedEvent")
+	public void removeModeratedTest(PircBotX bot, Set<Event> events) {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		initModeTest(bot, events, "+m", true);
+		initModeTest(bot, events, "-m", true);
+
+		//Check moderated event
+		RemoveModeratedEvent event = getEvent(events, RemoveModeratedEvent.class, "No SetModeratedEvent dispatch with +m");
 		assertEquals(event.getChannel(), aChannel, "SetModeratedEvent's channel doesn't match given");
 		assertEquals(event.getUser(), aUser, "SetModeratedEvent's user doesn't match given");
 	}
