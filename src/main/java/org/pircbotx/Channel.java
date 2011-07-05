@@ -39,7 +39,7 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
-@ToString(exclude = {"ops", "voices"})
+@ToString(exclude = {"ops", "voices"}, doNotUseGetters = true)
 @EqualsAndHashCode(of = {"name", "bot"})
 @Setter(AccessLevel.PACKAGE)
 public class Channel {
@@ -168,7 +168,7 @@ public class Channel {
 	public Set<User> getVoices() {
 		return Collections.unmodifiableSet(voices);
 	}
-	
+
 	/**
 	 * Gets all users with Owner status in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
@@ -188,7 +188,7 @@ public class Channel {
 	public Set<User> getHalfOps() {
 		return Collections.unmodifiableSet(halfOps);
 	}
-	
+
 	/**
 	 * Gets all users with Super Operator status in this channel. 
 	 * Be careful when storing the result from this method as it may be out of date 
