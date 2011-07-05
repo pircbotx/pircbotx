@@ -97,7 +97,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate /LIST response with 3 channels
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "userModeTest")
+	@Test(dataProvider = "botProvider")
 	public void listTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
@@ -123,7 +123,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate getting invited to a channel
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "listTest", description = "Hey look, text")
+	@Test(dataProvider = "botProvider")
 	public void inviteTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 
@@ -142,7 +142,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate another using joining the channel we just joined
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "inviteTest")
+	@Test(dataProvider = "botProvider")
 	public void joinTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -174,7 +174,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a /TOPIC (no args) or /JOIN (inital topic sent when joining)
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest")
+	@Test(dataProvider = "botProvider")
 	public void topicTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
@@ -186,7 +186,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a /TOPIC info (sent after joining a channel and topic is sent)
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "topicTest")
+	@Test(dataProvider = "botProvider")
 	public void topicInfoTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
@@ -202,7 +202,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a channel message being sent
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "topicInfoTest")
+	@Test(dataProvider = "botProvider")
 	public void messageTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -220,7 +220,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a private message from a user that's already a part of one of our channels
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "messageTest")
+	@Test(dataProvider = "botProvider")
 	public void privateMessageTest(PircBotX bot, Set<Event> events) {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
@@ -236,7 +236,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a NOTICE sent to the channel
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "privateMessageTest")
+	@Test(dataProvider = "botProvider")
 	public void channelNoticeTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -254,7 +254,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a NOTICE sent directly to us
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "channelNoticeTest")
+	@Test(dataProvider = "botProvider")
 	public void userNoticeTest(PircBotX bot, Set<Event> events) {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
@@ -271,7 +271,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a generic channel mode change
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "userNoticeTest")
+	@Test(dataProvider = "botProvider")
 	public void genericModeTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -294,7 +294,7 @@ public class PircBotXProcessingTest {
 	 * Test opping person that just joined. Note that since joinTest passed
 	 * (this test indirectly depends on it), simulating a JOIN is safe
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "genericModeTest")
+	@Test(dataProvider = "botProvider")
 	public void opTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -317,7 +317,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Test another user getting voiced
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "opTest")
+	@Test(dataProvider = "botProvider")
 	public void voiceTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -337,7 +337,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate names response
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "voiceTest")
+	@Test(dataProvider = "botProvider")
 	public void namesTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -355,7 +355,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate WHO response. 
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "namesTest")
+	@Test(dataProvider = "botProvider")
 	public void whoTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -405,7 +405,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate another user being kicked
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "whoTest")
+	@Test(dataProvider = "botProvider")
 	public void kickTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -431,7 +431,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Test a user quitting
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "kickTest")
+	@Test(dataProvider = "botProvider")
 	public void quitTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
@@ -463,7 +463,7 @@ public class PircBotXProcessingTest {
 	 * Simpler test for QUITs with no reason. We know that the bot will forget
 	 * about the user already, so no need to test here as well
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "quitTest")
+	@Test(dataProvider = "botProvider")
 	public void quitTest2(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
