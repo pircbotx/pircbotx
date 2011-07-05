@@ -294,7 +294,7 @@ public class PircBotXProcessingTest {
 	 * Test opping person that just joined. Note that since joinTest passed
 	 * (this test indirectly depends on it), simulating a JOIN is safe
 	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods = "mapCheck1Test")
+	@Test(dataProvider = "botProvider", dependsOnMethods = "genericModeTest")
 	public void opTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
