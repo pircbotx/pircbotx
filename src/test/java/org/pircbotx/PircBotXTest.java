@@ -110,6 +110,24 @@ public class PircBotXTest {
 		assertEquals(channel, smallBot.getChannel("#aChannel"), "getChannel doesn't return the same channel during second call");
 	}
 	
+	@Test(dependsOnMethods = "getUserTest", description = "Make sure userExists works")
+	public void userExistsTest() {
+		PircBotX smallBot = new PircBotX();
+		//Create user by getting an known one
+		smallBot.getUser("SomeUser");
+		//Make sure it exists
+		smallBot.userExists("SomeUser");
+	}
+	
+	@Test(dependsOnMethods = "getChannelTest", description = "Make sure channelExists works")
+	public void channelExistsTest() {
+		PircBotX smallBot = new PircBotX();
+		//Create channel by getting an unknown one
+		smallBot.getChannel("#aChannel");
+		//Make sure it exists
+		smallBot.channelExists("#aChannel");
+	}
+	
 	@Test(description = "Verify getting the bots own user object works")
 	public void getUserBotTest() {
 		PircBotX smallBot = new PircBotX();
