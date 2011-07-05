@@ -381,7 +381,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: KickEvent gives expected results");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify QuitEvent from user that just joined quitting")
+	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
 	public void quitTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
@@ -409,7 +409,7 @@ public class PircBotXProcessingTest {
 		System.out.println("Success: QuitEvent gives the appropiate information and bot forgets refrences");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify QuitEvent with no message")
+	@Test(dataProvider = "botProvider", dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
 	public void quitTest2(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
