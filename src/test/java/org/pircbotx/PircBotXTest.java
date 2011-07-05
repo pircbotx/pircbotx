@@ -102,6 +102,7 @@ public class PircBotXTest {
 		assertEquals(origUser, smallBot.getUser("SomeUser"), "getUser doesn't return the same user during second call");
 	}
 	
+	@Test(description = "Make sure channel doesn't return null and reliably returns the correct value")
 	public void getChannelTest() {
 		PircBotX smallBot = new PircBotX();
 		Channel channel = smallBot.getChannel("#aChannel");
