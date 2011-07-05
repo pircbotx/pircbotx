@@ -35,8 +35,22 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
+import org.pircbotx.hooks.events.RemoveChannelLimitEvent;
+import org.pircbotx.hooks.events.RemoveInviteOnlyEvent;
 import org.pircbotx.hooks.events.RemoveModeratedEvent;
+import org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent;
+import org.pircbotx.hooks.events.RemovePrivateEvent;
+import org.pircbotx.hooks.events.RemoveSecretEvent;
+import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
+import org.pircbotx.hooks.events.SetChannelKeyEvent;
+import org.pircbotx.hooks.events.SetChannelLimitEvent;
+import org.pircbotx.hooks.events.SetInviteOnlyEvent;
 import org.pircbotx.hooks.events.SetModeratedEvent;
+import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
+import org.pircbotx.hooks.events.SetPrivateEvent;
+import org.pircbotx.hooks.events.SetSecretEvent;
+import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
@@ -286,8 +300,20 @@ public class PircBotXProcessingTest {
 	protected Object[][] channelModeProvider() {
 		Object[][] botParams = botProvider();
 		
-		Object[][] modeParams = {{"+m", SetModeratedEvent.class},
-				{"-m", RemoveModeratedEvent.class}};
+		Object[][] modeParams = {{"+l", SetChannelLimitEvent.class},
+				{"-l", RemoveChannelLimitEvent.class},
+				{"+k", SetChannelKeyEvent.class},
+				{"-k", RemoveChannelKeyEvent.class},
+				{"+i", SetInviteOnlyEvent.class},
+				{"-i", RemoveInviteOnlyEvent.class},
+				{"+n", SetNoExternalMessagesEvent.class},
+				{"-n", RemoveNoExternalMessagesEvent.class},
+				{"+s", SetSecretEvent.class},
+				{"-s", RemoveSecretEvent.class},
+				{"+t", SetTopicProtectionEvent.class},
+				{"-t", RemoveTopicProtectionEvent.class},
+				{"+p", SetPrivateEvent.class},
+				{"-p", RemovePrivateEvent.class}};
 		
 		//For each bot param array, add to it a moderated array
 		Object[][] finalParams = new Object[0][];
