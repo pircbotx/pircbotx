@@ -49,7 +49,7 @@ public class PircBotXTest {
 	final Channel chan = new Channel(bot, "AChannel");
 	final Event event = new ActionEvent(bot, user, chan, string);
 
-	@Test
+	@Test(description = "Make sure send* methods have appropiate variations")
 	public void sendMethodsNamingTests() {
 		//Get all send method variations in one list
 		Map<String, List<Method>> sendMethods = new HashMap<String, List<Method>>();
@@ -92,12 +92,10 @@ public class PircBotXTest {
 			//If something is left, then something is wrong!
 			assertTrue(requiredClasses.isEmpty(), "Method group " + key + " doesn't have a method(s) for " + StringUtils.join(requiredClasses, ", "));
 		}
-
-		System.out.println("Success: PircBotX.send* methods have appropiate variations ");
 	}
 	
-	@Test
-	public void getUserTest() {
+	@Test(description = "Verify getting the bots own user object works")
+	public void getUserBotTest() {
 		PircBotX smallBot = new PircBotX();
 		smallBot.setNick("BotNick");
 		smallBot.setName("BotNick");
@@ -107,7 +105,7 @@ public class PircBotXTest {
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
 	}
 
-	@Test
+	@Test(description = "Verify sendAction variants get the same result")
 	public void sendActionTest() {
 		//Make sure the same result is given no matter which method we call
 		bot.sendAction(user, string);
@@ -115,29 +113,23 @@ public class PircBotXTest {
 
 		bot.sendAction(chan, string);
 		signal.compare("AChannel", string);
-
-		System.out.println("Success: sendAction variations get same result");
 	}
 
-	@Test
+	@Test(description = "Verify sendCTCPCommand variants get the same result")
 	public void sendCTCPCommandTest() {
 		//Make sure the same result is given no matter which method we call
 		bot.sendCTCPCommand(user, string);
 		signal.compare("AUser", string);
-
-		System.out.println("Success: sendCTCPCommand variations get same result");
 	}
 
-	@Test
+	@Test(description = "Verify sendCTCPResponse variants get the same result")
 	public void sendCTCPResponseTest() {
 		//Make sure the same result is given no matter which method we call
 		bot.sendCTCPResponse(user, string);
 		signal.compare("AUser", string);
-
-		System.out.println("Success: sendCTCPResponse variations get same result");
 	}
 
-	@Test
+	@Test(description = "Verify sendInvite variants get the same result")
 	public void sendInviteTest() {
 		//Make sure the same result is given no matter which method we call
 		bot.sendInvite(user, chan);
@@ -145,11 +137,9 @@ public class PircBotXTest {
 
 		bot.sendInvite(chan, chan);
 		signal.compare("AChannel", "AChannel");
-
-		System.out.println("Success: sendInvite variations get same result");
 	}
 
-	@Test
+	@Test(description = "Verify sendMessage variants get the same result")
 	public void sendMessageTest() {
 		//Make sure the same result is given no matter which method we call
 		bot.sendMessage(user, string);
@@ -157,11 +147,9 @@ public class PircBotXTest {
 
 		bot.sendMessage(chan, string);
 		signal.compare("AChannel", string);
-
-		System.out.println("Success: sendMessage variations get same result");
 	}
 
-	@Test
+	@Test(description = "Verify sendNotice variants get the same result")
 	public void sendNoiceTest() {
 		//Make sure the same result is given no matter which method we call
 		bot.sendNotice(user, string);
@@ -169,8 +157,6 @@ public class PircBotXTest {
 
 		bot.sendNotice(chan, string);
 		signal.compare("AChannel", string);
-
-		System.out.println("Success: sendNotice variations get same result");
 	}
 
 	/**
