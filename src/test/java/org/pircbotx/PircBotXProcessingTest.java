@@ -66,8 +66,8 @@ public class PircBotXProcessingTest {
 				events.add(event);
 			}
 		});
-		bot.setNick("PircBotXUser");
-		bot.setName("PircBotXUser");
+		bot.setNick("PircBotXBot");
+		bot.setName("PircBotXBot");
 		return new Object[][]{{bot, events}};
 	}
 
