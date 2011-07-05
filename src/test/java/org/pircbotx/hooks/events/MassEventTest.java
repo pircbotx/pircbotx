@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import java.lang.reflect.Constructor;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
 import static org.testng.Assert.*;
@@ -27,27 +28,18 @@ import org.testng.annotations.Test;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@Test()
 public class MassEventTest {
-	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class)
-	public void constructorNumTest(Class<?> event) {
+	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class, description = "Verify constructor of Events")
+	public void constructorTest(Class<?> event) {
 		//Is there only one constructor?
 		assertEquals(event.getDeclaredConstructors().length, 1, TestUtils.wrapClass(event, "No constructor or extra constructor found"));
-		System.out.println("Success: Event constructor is good in class "+event);
-	}
-
-	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class, dependsOnMethods = {"constructorNumTest"})
-	public void constructorFirstParamTest(Class<?> event) {
+		
 		//Is the first parameter a bot refrence?
-		assertEquals(event.getDeclaredConstructors()[0].getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
-		System.out.println("Success: First constructor parameter is good in class "+event);
-	}
-
-	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class, dependsOnMethods = {"constructorNumTest", "constructorFirstParamTest"})
-	public void constructorToFieldNumTest(Class<?> event) {
+		Constructor constructor = event.getDeclaredConstructors()[0];
+		assertEquals(constructor.getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
+		
 		//Are the number of fields and constructor parameters equal?
 		//(subtract one parameter to account for bot)
-		assertEquals(event.getDeclaredConstructors()[0].getParameterTypes().length - 1, event.getDeclaredFields().length, TestUtils.wrapClass(event, "Number of constructor parameters don't match number of fields"));
-		System.out.println("Success: Number of parameters in constructors matches number of fields in class "+event);
+		assertEquals(constructor.getParameterTypes().length - 1, event.getDeclaredFields().length, TestUtils.wrapClass(event, "Number of constructor parameters don't match number of fields"));
 	}
 }
