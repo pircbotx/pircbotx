@@ -39,6 +39,7 @@ import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -49,16 +50,16 @@ import static org.testng.Assert.*;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXProcessingTest {
-	final PircBotX bot = new PircBotX();
-	final Set<Event> events = new HashSet<Event>();
 	final String aString = "I'm some super long string that has multiple words";
 	
 	/**
 	 * General bot setup: Use GenericListenerManager (no threading), add custom
 	 * listener to add all called events to Event set, set nick, etc
 	 */
-	@BeforeClass
-	public void setup() {
+	@DataProvider
+	public Object[][] botProvider() {
+		PircBotX bot = new PircBotX();
+		final Set<Event> events = new HashSet<Event>();
 		bot.setListenerManager(new GenericListenerManager());
 		bot.getListenerManager().addListener(new Listener() {
 			public void onEvent(Event event) throws Exception {
@@ -67,21 +68,21 @@ public class PircBotXProcessingTest {
 		});
 		bot.setNick("PircBotXUser");
 		bot.setName("PircBotXUser");
+		return new Object[][]{{bot,events}};
 	}
 	
 	/**
 	 * Test mode being changed
 	 */
-	@Test
-	public void userModeTest() {
+	@Test(dataProvider = "botProvider")
+	public void userModeTest(PircBotX bot, Set<Event> events) {
 		//Use two users to differentiate between source and target
 		User aUser = bot.getUser("PircBotXUser");
 		User aUser2 = bot.getUser("PircBotXUser2");
-		events.clear();
 		bot.handleLine(":PircBotXUser MODE PircBotXUser2 :+i");
 		
 		//Verify event contents
-		UserModeEvent uevent = getEvent(UserModeEvent.class, "UserModeEvent not dispatched on change");
+		UserModeEvent uevent = getEvent(events, UserModeEvent.class, "UserModeEvent not dispatched on change");
 		assertEquals(uevent.getSource(), aUser, "UserModeEvent's source does not match given");
 		assertEquals(uevent.getTarget(), aUser2, "UserModeEvent's target does not match given");
 		assertEquals(uevent.getMode(), "+i", "UserModeEvent's mode does not match given");
@@ -96,15 +97,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate /LIST response with 3 channels
 	 */
-	@Test(dependsOnMethods="userModeTest")
-	public void listTest() {
-		events.clear();
+	@Test(dataProvider = "botProvider", dependsOnMethods="userModeTest")
+	public void listTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel2 101 :" + aString + aString + aString);
 		bot.handleLine(":irc.someserver.net 323 :End of /LIST");
-		ChannelInfoEvent cevent = getEvent(ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
+		ChannelInfoEvent cevent = getEvent(events, ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
 		Set<ChannelListEntry> channels = cevent.getList();
 		assertEquals(channels.size(), 3);
 		boolean channelParsed = false;
@@ -123,13 +123,12 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate getting invited to a channel
 	 */
-	@Test(dependsOnMethods="listTest", description="Hey look, text")
-	public void inviteTest() {
-		events.clear();
+	@Test(dataProvider = "botProvider", dependsOnMethods="listTest", description="Hey look, text")
+	public void inviteTest(PircBotX bot, Set<Event> events) {
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 		
 		//Verify event values
-		InviteEvent ievent = getEvent(InviteEvent.class, "No InviteEvent dispatched");
+		InviteEvent ievent = getEvent(events, InviteEvent.class, "No InviteEvent dispatched");
 		assertEquals(ievent.getUser(), "AUser", "InviteEvent user is wrong");
 		assertEquals(ievent.getChannel(), "#aChannel", "InviteEvent channel is wrong");
 		
@@ -143,15 +142,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate another using joining the channel we just joined
 	 */
-	@Test(dependsOnMethods="inviteTest")
-	public void joinTest() {
-		events.clear();
+	@Test(dataProvider = "botProvider", dependsOnMethods="inviteTest")
+	public void joinTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
 		
 		//Make sure the event gives us the same channels
-		JoinEvent jevent = getEvent(JoinEvent.class, "No aChannel dispatched");
+		JoinEvent jevent = getEvent(events, JoinEvent.class, "No aChannel dispatched");
 		assertEquals(jevent.getChannel(), aChannel, "Event's channel does not match origional channel");
 		assertEquals(jevent.getUser(), aUser, "Event's user does not match origional user");
 		
@@ -176,8 +174,8 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a /TOPIC (no args) or /JOIN (inital topic sent when joining)
 	 */
-	@Test(dependsOnMethods="joinTest")
-	public void topicTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="joinTest")
+	public void topicTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
@@ -188,15 +186,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a /TOPIC info (sent after joining a channel and topic is sent)
 	 */
-	@Test(dependsOnMethods="topicTest")
-	public void topicInfoTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="topicTest")
+	public void topicInfoTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
-		events.clear();
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
 		assertEquals(aChannel.getTopicSetter(), "AUser");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
 
-		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
+		TopicEvent tevent = getEvent(events, TopicEvent.class, "No topic event dispatched");
 		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 		
 		System.out.println("Success: Topic info output from /TOPIC or /JOIN gives expected results");
@@ -205,15 +202,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a channel message being sent
 	 */
-	@Test(dependsOnMethods="topicInfoTest")
-	public void messageTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="topicInfoTest")
+	public void messageTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + aString);
 		
 		//Verify event contents
-		MessageEvent mevent = getEvent(MessageEvent.class, "MessageEvent not dispatched");
+		MessageEvent mevent = getEvent(events, MessageEvent.class, "MessageEvent not dispatched");
 		assertEquals(mevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 		assertEquals(mevent.getUser(), aUser, "Event user and origional user do not match");
 		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
@@ -224,14 +220,13 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a private message from a user that's already a part of one of our channels
 	 */
-	@Test(dependsOnMethods="messageTest")
-	public void privateMessageTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="messageTest")
+	public void privateMessageTest(PircBotX bot, Set<Event> events) {
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
 		
 		//Verify event contents
-		PrivateMessageEvent pevent = getEvent(PrivateMessageEvent.class, "MessageEvent not dispatched");
+		PrivateMessageEvent pevent = getEvent(events, PrivateMessageEvent.class, "MessageEvent not dispatched");
 		assertEquals(pevent.getUser(), aUser, "Event user and origional user do not match");
 		assertEquals(pevent.getMessage(), aString, "Message sent does not match");
 		
@@ -241,15 +236,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a NOTICE sent to the channel
 	 */
-	@Test(dependsOnMethods="privateMessageTest")
-	public void channelNoticeTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="privateMessageTest")
+	public void channelNoticeTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE #aChannel :" + aString);
 		
 		//Verify event contents
-		NoticeEvent nevent = getEvent(NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
+		NoticeEvent nevent = getEvent(events, NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
 		assertEquals(nevent.getChannel(), aChannel, "NoticeEvent's channel does not match given");
 		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
@@ -260,14 +254,13 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a NOTICE sent directly to us
 	 */
-	@Test(dependsOnMethods="channelNoticeTest")
-	public void userNoticeTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="channelNoticeTest")
+	public void userNoticeTest(PircBotX bot, Set<Event> events) {
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
 		
 		//Verify event contents
-		NoticeEvent nevent = getEvent(NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
+		NoticeEvent nevent = getEvent(events, NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
 		assertNull(nevent.getChannel(), "NoticeEvent's channel isn't null during private notice");
 		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
@@ -278,15 +271,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a generic channel mode change
 	 */
-	@Test(dependsOnMethods="userNoticeTest")
-	public void genericModeTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="userNoticeTest")
+	public void genericModeTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +m");
 		
 		//Verify event contents
-		ModeEvent mevent = getEvent(ModeEvent.class, "No ModeEvent dispatched with +m");
+		ModeEvent mevent = getEvent(events, ModeEvent.class, "No ModeEvent dispatched with +m");
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
 		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
 		assertEquals(mevent.getMode(), "+m", "ModeEvent's mode does not match given mode");
@@ -301,8 +293,8 @@ public class PircBotXProcessingTest {
 	/**
 	 * Check internal ManyToManyMap for any extra values
 	 */
-	@Test(dependsOnMethods="genericModeTest")
-	public void mapCheck1Test() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="genericModeTest")
+	public void mapCheck1Test(PircBotX bot, Set<Event> events) {
 		ManyToManyMap<Channel, User> map = bot._userChanInfo;
 		
 		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
@@ -315,17 +307,16 @@ public class PircBotXProcessingTest {
 	 * Test opping person that just joined. Note that since joinTest passed
 	 * (this test indirectly depends on it), simulating a JOIN is safe
 	 */
-	@Test(dependsOnMethods="mapCheck1Test")
-	public void opTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="mapCheck1Test")
+	public void opTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
 		
 		//Verify event contents
-		OpEvent oevent = getEvent(OpEvent.class, "OpEvent not dispatched");
+		OpEvent oevent = getEvent(events, OpEvent.class, "OpEvent not dispatched");
 		assertEquals(oevent.getChannel(), aChannel, "OpEvent's channel does not match given");
 		assertEquals(oevent.getSource(), aUser, "OpEvent's source user does not match given");
 		assertEquals(oevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
@@ -339,16 +330,15 @@ public class PircBotXProcessingTest {
 	/**
 	 * Test another user getting voiced
 	 */
-	@Test(dependsOnMethods="opTest")
-	public void voiceTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="opTest")
+	public void voiceTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		events.clear();
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +v OtherUser");
 		
 		//Verify event contents
-		VoiceEvent vevent = getEvent(VoiceEvent.class, "VoiceEvent not dispatched");
+		VoiceEvent vevent = getEvent(events, VoiceEvent.class, "VoiceEvent not dispatched");
 		assertEquals(vevent.getChannel(), aChannel, "OpEvent's channel does not match given");
 		assertEquals(vevent.getSource(), aUser, "OpEvent's source user does not match given");
 		assertEquals(vevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
@@ -360,15 +350,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate names response
 	 */
-	@Test(dependsOnMethods="voiceTest")
-	public void namesTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="voiceTest")
+	public void namesTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
 		//Remove from lists, should be added back by command
 		aChannel.ops.remove(otherUser);
 		aChannel.voices.remove(otherUser);
-		events.clear();
 		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
 		
 		//Make sure channel op and voice lists are updated
@@ -379,15 +368,14 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate WHO response. 
 	 */
-	@Test(dependsOnMethods="namesTest")
-	public void whoTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="namesTest")
+	public void whoTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
 		//Remove from lists, should be added back by command
 		bot._userChanInfo.deleteB(aUser);
 		bot._userChanInfo.deleteB(otherUser);
-		events.clear();
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
 		bot.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
@@ -397,7 +385,7 @@ public class PircBotXProcessingTest {
 		otherUser = bot.getUser("OtherUser");
 		
 		//Verify event
-		UserListEvent uevent = getEvent(UserListEvent.class, "UserListEvent not dispatched");
+		UserListEvent uevent = getEvent(events, UserListEvent.class, "UserListEvent not dispatched");
 		assertEquals(uevent.getChannel(), aChannel, "UserListEvent's channel does not match given");
 		assertEquals(uevent.getUsers().size(), 2, "UserListEvent's users is larger than it should be");
 		assertTrue(uevent.getUsers().contains(aUser), "UserListEvent doesn't contain aUser");
@@ -430,16 +418,15 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate another user being kicked
 	 */
-	@Test(dependsOnMethods="whoTest")
-	public void kickTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="whoTest")
+	public void kickTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		events.clear();
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
 		
 		//Verify event contents
-		KickEvent kevent = getEvent(KickEvent.class, "KickEvent not dispatched");
+		KickEvent kevent = getEvent(events, KickEvent.class, "KickEvent not dispatched");
 		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
 		assertEquals(kevent.getSource(), aUser, "KickEvent's getSource doesn't match kicker user");
 		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
@@ -457,18 +444,17 @@ public class PircBotXProcessingTest {
 	/**
 	 * Test a user quitting
 	 */
-	@Test(dependsOnMethods="kickTest")
-	public void quitTest() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="kickTest")
+	public void quitTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
-		events.clear();
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +v OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :" + aString);
 		
 		//Check event contents
-		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
+		QuitEvent qevent = getEvent(events, QuitEvent.class, "QuitEvent not dispatched");
 		//Since QuitEvent gives us a snapshot, compare contents
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), aString, "QuitEvent's reason does not match given");
@@ -490,16 +476,15 @@ public class PircBotXProcessingTest {
 	 * Simpler test for QUITs with no reason. We know that the bot will forget
 	 * about the user already, so no need to test here as well
 	 */
-	@Test(dependsOnMethods="quitTest")
-	public void quitTest2() {
+	@Test(dataProvider = "botProvider", dependsOnMethods="quitTest")
+	public void quitTest2(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
-		events.clear();
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
 		
 		//Check event contents
-		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
+		QuitEvent qevent = getEvent(events, QuitEvent.class, "QuitEvent not dispatched");
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
 		
@@ -515,7 +500,7 @@ public class PircBotXProcessingTest {
 	 * @param errorMessage An error message if the event type does not exist
 	 * @return A single requested event
 	 */
-	protected <B> B getEvent(Class<B> clazz, String errorMessage) {
+	protected <B> B getEvent(Set<Event> events, Class<B> clazz, String errorMessage) {
 		B cevent = null;
 		for(Event curEvent : events)
 			if(curEvent.getClass().isAssignableFrom(clazz))
