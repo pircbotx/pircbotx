@@ -34,6 +34,7 @@ import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.SetModeratedEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
@@ -220,12 +221,12 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify ModeEvent from a moderated change")
-	public void genericModeTest(PircBotX bot, Set<Event> events) {
+	public void setModeratedTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +m");
 
-		//Verify event contents
+		//Verify generic ModeEvent contents
 		ModeEvent mevent = getEvent(events, ModeEvent.class, "No ModeEvent dispatched with +m");
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
 		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
@@ -235,11 +236,10 @@ public class PircBotXProcessingTest {
 		assertEquals(aChannel.getMode(), "m", "Channel's mode is not updated");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user that just joined by another user")
+	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user")
 	public void opTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
 
@@ -272,17 +272,24 @@ public class PircBotXProcessingTest {
 
 	@Test(dataProvider = "botProvider", description = "Verify NAMES response handling")
 	public void namesTest(PircBotX bot, Set<Event> events) {
+		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
+		
+		//Make sure all information was created correctly
+		assertTrue(bot.channelExists("#aChannel"), "NAMES response didn't create channel");
+		assertTrue(bot.userExists("AUser"), "NAMES response didn't create user AUser");
+		assertTrue(bot.userExists("OtherUser"), "NAMES response didn't create user OtherUser");
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		//Remove from lists, should be added back by command
-		aChannel.ops.remove(otherUser);
-		aChannel.voices.remove(otherUser);
-		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
-
-		//Make sure channel op and voice lists are updated
+		
+		//Make sure channel contains the users
+		assertTrue(aChannel.getUsers().contains(aUser), "Channel doesn't contain AUser from NAMES response");
+		assertTrue(aChannel.getUsers().contains(otherUser), "Channel doesn't contain OtherUser from NAMES response");
+		
+		//Make sure channel classifies the users correctly
 		assertTrue(aChannel.isOp(otherUser), "NAMES response doesn't give user op status");
 		assertTrue(aChannel.hasVoice(otherUser), "NAMES response doesn't give user voice status");
+		assertTrue(aChannel.getNormalUsers().contains(aUser), "NAMES response doesn't give AUser normal status in channel");
 	}
 
 	/**
@@ -290,19 +297,20 @@ public class PircBotXProcessingTest {
 	 */
 	@Test(dataProvider = "botProvider", description = "Verify WHO response handling + UserListEvent")
 	public void whoTest(PircBotX bot, Set<Event> events) {
-		Channel aChannel = bot.getChannel("#aChannel");
-		User aUser = bot.getUser("AUser");
-		User otherUser = bot.getUser("OtherUser");
-		//Remove from lists, should be added back by command
-		bot._userChanInfo.deleteB(aUser);
-		bot._userChanInfo.deleteB(otherUser);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
 		bot.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
-
-		//Get new user objects 
-		aUser = bot.getUser("AUser");
-		otherUser = bot.getUser("OtherUser");
+		
+		//Make sure all information was created correctly
+		assertTrue(bot.channelExists("#aChannel"), "WHO response didn't create channel");
+		assertTrue(bot.userExists("AUser"), "WHO response didn't create user AUser");
+		assertTrue(bot.userExists("OtherUser"), "WHO response didn't create user OtherUser");
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		User otherUser = bot.getUser("OtherUser");
+		assertNotNull(aChannel, "Channel from WHO response is null");
+		assertNotNull(aUser, "AUser from WHO response is null");
+		assertNotNull(otherUser, "OtherUser from WHO response is null");
 
 		//Verify event
 		UserListEvent uevent = getEvent(events, UserListEvent.class, "UserListEvent not dispatched");
@@ -332,16 +340,16 @@ public class PircBotXProcessingTest {
 		assertTrue(otherUser.isAway(), "User is not away though specified as here in WHO");
 		assertFalse(aChannel.isOp(otherUser), "User is labeled as an op even though specified as one in WHO");
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
-		otherUser.setAway(true);
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify KickEvent from some user kicking another user")
+	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
 	public void kickTest(PircBotX bot, Set<Event> events) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":AUser!~ALogin@some.host KICK #aChannel OtherUser :" + aString);
-
+		
 		//Verify event contents
 		KickEvent kevent = getEvent(events, KickEvent.class, "KickEvent not dispatched");
 		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
@@ -350,10 +358,10 @@ public class PircBotXProcessingTest {
 		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
 
 		//Make sure we've sufficently forgotten about the user
-		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they were kicked");
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that was kicked an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that was kicked with voice");
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after kick");
+		assertNotSame(bot.getUser("OtherUser"), otherUser, "User fetched with getUser and previous user object are exactly the same");
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
@@ -371,20 +379,17 @@ public class PircBotXProcessingTest {
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), aString, "QuitEvent's reason does not match given");
 
-
-
 		//Make sure user is gone
-		assertFalse(bot._userChanInfo.containsB(otherUser), "Bot still has refrence to use even though they quit");
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that quit an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that quit with voice");
 		assertFalse(bot.userExists("OtherUser"), "Bot still considers user to exist after quit");
 		assertTrue(otherUser.getChannels().isEmpty(), "User still connected to other channels after quit");
 		assertFalse(aChannel.getUsers().contains(otherUser), "Channel still associated with user that quit");
+		assertNotSame(bot.getUser("OtherUser"), otherUser, "User fetched with getUser and previous user object are exactly the same");
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
 	public void quitTest2(PircBotX bot, Set<Event> events) {
-		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
