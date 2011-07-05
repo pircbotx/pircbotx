@@ -30,7 +30,6 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
-import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -44,7 +43,7 @@ public class ListenerAdapterTest {
 	 * Makes sure adapter uses all events
 	 * @throws Exception
 	 */
-	@Test
+	@Test(description = "Verify ListenerAdapter supports all events")
 	public void eventImplementTest() throws Exception {
 		//Get all file names
 		List<String> classFiles = getClasses(VoiceEvent.class);
@@ -62,11 +61,9 @@ public class ListenerAdapterTest {
 		classFiles.removeAll(classMethods);
 		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
 		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
-
-		System.out.println("Success: ListenerAdapter supports all events");
 	}
 
-	@Test
+	@Test(description = "Verify ListenerAdapter supports all event interfaces")
 	public void interfaceImplementTest() throws IOException {
 		List<String> classFiles = getClasses(GenericMessageEvent.class);
 
@@ -84,11 +81,9 @@ public class ListenerAdapterTest {
 		classFiles.removeAll(classMethods);
 		String leftOver = StringUtils.join(classFiles.toArray(), ", ");
 		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
-
-		System.out.println("Success: ListenerAdapter supports all event interfaces");
 	}
 
-	@Test
+	@Test(description = "Verify all methods in ListenerAdapter throw an exception")
 	public void throwsExceptionTest() {
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			Class<?>[] exceptions = curMethod.getExceptionTypes();
@@ -97,7 +92,7 @@ public class ListenerAdapterTest {
 		}
 	}
 
-	@Test
+	@Test(description = "Do an actual test with a sample ListenerAdapter")
 	public void usabilityTest() throws Exception {
 		TestListenerAdapter listener = new TestListenerAdapter();
 
