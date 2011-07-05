@@ -291,19 +291,6 @@ public class PircBotXProcessingTest {
 	}
 	
 	/**
-	 * Check internal ManyToManyMap for any extra values
-	 */
-	@Test(dataProvider = "botProvider", dependsOnMethods="genericModeTest")
-	public void mapCheck1Test(PircBotX bot, Set<Event> events) {
-		ManyToManyMap<Channel, User> map = bot._userChanInfo;
-		
-		assertEquals(map.getAValues().size(), 1, "Extra Channel values. Full printout \n " + StringUtils.join(map.getAValues().toArray(), "\n "));
-		assertEquals(map.getBValues().size(), 1, "Extra User values. Full printout \n " + StringUtils.join(map.getBValues().toArray(), "\n "));
-		
-		System.out.println("Success: Map check for extra values #1 is good");
-	}
-	
-	/**
 	 * Test opping person that just joined. Note that since joinTest passed
 	 * (this test indirectly depends on it), simulating a JOIN is safe
 	 */
