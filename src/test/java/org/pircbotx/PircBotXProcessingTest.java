@@ -487,7 +487,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * After simulating a server response, call this to get a specific Event from
 	 * the Event set. Note that if the event does not exist an Assertion error will
-	 * be thrown. Also note that only one event will be fetched
+	 * be thrown. Also note that only the last occurence of the event will be fetched
 	 * @param <B> The event type to be fetched
 	 * @param clazz The class of the event type
 	 * @param errorMessage An error message if the event type does not exist
@@ -497,9 +497,9 @@ public class PircBotXProcessingTest {
 		B cevent = null;
 		for (Event curEvent : events)
 			if (curEvent.getClass().isAssignableFrom(clazz))
-				return (B) curEvent;
+				cevent = (B) curEvent;
 		//Failed, does not exist
 		assertNotNull(cevent, errorMessage);
-		return null;
+		return cevent;
 	}
 }
