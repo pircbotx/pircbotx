@@ -1873,7 +1873,7 @@ public class PircBotX {
 					if (pn == '+')
 						getListenerManager().dispatchEvent(new SetChannelKeyEvent(this, channel, source, params[p]));
 					else
-						getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(this, channel, source, params[p]));
+						getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(this, channel, source, (p < params.length) ? params[p] : null));
 					p++;
 				} else if (atPos == 'l')
 					if (pn == '+') {
