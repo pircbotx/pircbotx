@@ -98,6 +98,13 @@
 			<version>2.6</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Mockito for mocking test objects-->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.8.5</version>
+			<scope>test</scope>
+		</dependency>
 		<!--Project Lombok for annotation processing-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
