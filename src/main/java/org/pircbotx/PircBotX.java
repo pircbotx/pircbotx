@@ -610,7 +610,7 @@ public class PircBotX {
 	 * @see Colors
 	 */
 	public void sendMessage(String target, String message) {
-		_outputThread.send("PRIVMSG " + target + " :" + message);
+		sendRawLine("PRIVMSG " + target + " :" + message);
 	}
 
 	/**
@@ -688,7 +688,7 @@ public class PircBotX {
 	 * @param notice The notice to send.
 	 */
 	public void sendNotice(String target, String notice) {
-		_outputThread.send("NOTICE " + target + " :" + notice);
+		sendRawLine("NOTICE " + target + " :" + notice);
 	}
 
 	/**
@@ -727,7 +727,7 @@ public class PircBotX {
 	 * @param command The CTCP command to send.
 	 */
 	public void sendCTCPCommand(String target, String command) {
-		_outputThread.send("PRIVMSG " + target + " :\u0001" + command + "\u0001");
+		sendRawLine("PRIVMSG " + target + " :\u0001" + command + "\u0001");
 	}
 
 	/**
@@ -760,7 +760,7 @@ public class PircBotX {
 	 * @param message The message to send
 	 */
 	public void sendCTCPResponse(String target, String message) {
-		_outputThread.send("NOTICE " + target + " :\u0001" + message + "\u0001");
+		sendRawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
 
 	/**
