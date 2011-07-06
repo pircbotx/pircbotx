@@ -56,7 +56,7 @@ public class PircBotXOutputTest {
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
-		bot.setMessageDelay(0);
+		bot.setMessageDelay(0L);
 
 		//Setup stream
 		InputStream in = new ByteArrayInputStream("".getBytes());
@@ -81,61 +81,61 @@ public class PircBotXOutputTest {
 		aChannel = bot.getChannel("aChannel");
 	}
 
-	@Test(description = "Verify sendAction to user")
+	@Test(timeOut = 5000, description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
 		bot.sendAction(aUser, aString);
 		checkOutput("PRIVMSG aUser :\u0001ACTION " + aString + "\u0001");
 	}
 
-	@Test(description = "Verify sendAction to channel")
+	@Test(timeOut = 5000, description = "Verify sendAction to channel")
 	public void sendActionChannelTest() throws Exception {
 		bot.sendAction(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
 	}
 
-	@Test(description = "Verify sendCTCPCommand to user")
+	@Test(timeOut = 5000, description = "Verify sendCTCPCommand to user")
 	public void sendCTCPCommandUserTest() throws Exception {
 		bot.sendCTCPCommand(aUser, aString);
 		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
 	}
 
-	@Test(description = "Verify sendCTCPResponse to user")
+	@Test(timeOut = 5000, description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
 		bot.sendCTCPResponse(aUser, aString);
 		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
 
-	@Test(description = "Verify sendInvite to user")
+	@Test(timeOut = 5000, description = "Verify sendInvite to user")
 	public void sendInviteUserTest() throws Exception {
 		bot.sendInvite(aUser, aChannel);
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
-	@Test(description = "Verify sendInvite to channel")
+	@Test(timeOut = 5000, description = "Verify sendInvite to channel")
 	public void sendInviteChannelTest() throws Exception {
 		bot.sendInvite(aChannel, bot.getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
 
-	@Test(description = "Verify sendMessage to channel")
+	@Test(timeOut = 5000, description = "Verify sendMessage to channel")
 	public void sendMessageChannelTest() throws Exception {
 		bot.sendMessage(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :" + aString);
 	}
 
-	@Test(description = "Verify sendMessage to user")
+	@Test(timeOut = 5000, description = "Verify sendMessage to user")
 	public void sendMessageUserTest() throws Exception {
 		bot.sendMessage(aUser, aString);
 		checkOutput("PRIVMSG aUser :" + aString);
 	}
 
-	@Test(description = "Verify sendNotice to channel")
+	@Test(timeOut = 5000, description = "Verify sendNotice to channel")
 	public void sendNoticeChannelTest() throws Exception {
 		bot.sendNotice(aChannel, aString);
 		checkOutput("NOTICE #aChannel :" + aString);
 	}
 
-	@Test(description = "Verify sendNotice to user")
+	@Test(timeOut = 5000, description = "Verify sendNotice to user")
 	public void sendNoticeUserTest() throws Exception {
 		bot.sendNotice(aUser, aString);
 		checkOutput("NOTICE aUser :" + aString);
