@@ -1721,16 +1721,14 @@ public class PircBotX {
 			
 			//Setup user
 			User curUser = getUser(parsed[5]);
-			if (curUser.getLogin() != null && !curUser.getLogin().trim().equals("")) {
-				curUser.setLogin(parsed[2]);
-				curUser.setIdentified(!parsed[2].startsWith("~"));
-				curUser.setHostmask(parsed[3]);
-				curUser.setServer(parsed[4]);
-				curUser.setNick(parsed[5]);
-				curUser.parseStatus(chan, parsed[6]);
-				curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
-				curUser.setRealName(parsed[8]);
-			}
+			curUser.setLogin(parsed[2]);
+			curUser.setIdentified(!parsed[2].startsWith("~"));
+			curUser.setHostmask(parsed[3]);
+			curUser.setServer(parsed[4]);
+			curUser.setNick(parsed[5]);
+			curUser.parseStatus(chan, parsed[6]);
+			curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
+			curUser.setRealName(parsed[8]);
 			
 			//Associate with channel
 			_userChanInfo.put(chan, curUser);
