@@ -21,7 +21,6 @@ package org.pircbotx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang.ArrayUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
@@ -69,8 +68,7 @@ public class PircBotXProcessingTest {
 	final String aString = "I'm some super long string that has multiple words";
 	protected List<Event> events;
 	protected PircBotX bot;
-	
-	
+
 	/**
 	 * General bot setup: Use GenericListenerManager (no threading), add custom
 	 * listener to add all called events to Event set, set nick, etc
@@ -261,7 +259,7 @@ public class PircBotXProcessingTest {
 			else
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
-	
+
 	@Test(description = "Verify OpEvent from Op of a user")
 	public void opTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
@@ -278,7 +276,7 @@ public class PircBotXProcessingTest {
 		//Check op lists
 		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
 	}
-	
+
 	@Test(description = "Verify VoiceEvent from some user voicing another user")
 	public void voiceTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
@@ -295,30 +293,30 @@ public class PircBotXProcessingTest {
 		//Check voice lists
 		assertTrue(aChannel.hasVoice(otherUser), "Channel's internal voice list not updated with new voice");
 	}
-	
+
 	@DataProvider
-	protected Object[][] channelModeProvider() {		
+	protected Object[][] channelModeProvider() {
 		return new Object[][]{{"+l 10", null, SetChannelLimitEvent.class},
-				{"-l", "l 10", RemoveChannelLimitEvent.class},
-				{"+k testPassword", null, SetChannelKeyEvent.class},
-				{"-k", "k testPassword", RemoveChannelKeyEvent.class},
-				{"+i", null, SetInviteOnlyEvent.class},
-				{"-i", null, RemoveInviteOnlyEvent.class},
-				{"+n", null, SetNoExternalMessagesEvent.class},
-				{"-n", null, RemoveNoExternalMessagesEvent.class},
-				{"+s", null, SetSecretEvent.class},
-				{"-s", null, RemoveSecretEvent.class},
-				{"+t", null, SetTopicProtectionEvent.class},
-				{"-t", null, RemoveTopicProtectionEvent.class},
-				{"+p", null, SetPrivateEvent.class},
-				{"-p", null, RemovePrivateEvent.class}};
+					{"-l", "l 10", RemoveChannelLimitEvent.class},
+					{"+k testPassword", null, SetChannelKeyEvent.class},
+					{"-k", "k testPassword", RemoveChannelKeyEvent.class},
+					{"+i", null, SetInviteOnlyEvent.class},
+					{"-i", null, RemoveInviteOnlyEvent.class},
+					{"+n", null, SetNoExternalMessagesEvent.class},
+					{"-n", null, RemoveNoExternalMessagesEvent.class},
+					{"+s", null, SetSecretEvent.class},
+					{"-s", null, RemoveSecretEvent.class},
+					{"+t", null, SetTopicProtectionEvent.class},
+					{"-t", null, RemoveTopicProtectionEvent.class},
+					{"+p", null, SetPrivateEvent.class},
+					{"-p", null, RemovePrivateEvent.class}};
 	}
-	
+
 	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
 	public void genericChannelModeTest(String mode, String parentMode, Class<?> modeClass) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
-		if(mode.startsWith("-"))
+		if (mode.startsWith("-"))
 			//Set the mode first
 			aChannel.setMode((parentMode != null) ? parentMode : mode.substring(1));
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
@@ -328,20 +326,20 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
 		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
 		assertEquals(mevent.getMode(), mode, "ModeEvent's mode does not match given mode");
-		
+
 		//Verify generic mode event contents
 		String modeName = modeClass.getSimpleName();
-		GenericChannelModeEvent subEvent = (GenericChannelModeEvent)getEvent(events, modeClass, "No " + modeName + " dispatched with " + mode);
+		GenericChannelModeEvent subEvent = (GenericChannelModeEvent) getEvent(events, modeClass, "No " + modeName + " dispatched with " + mode);
 		assertEquals(subEvent.getChannel(), aChannel, modeName + "'s channel does not match given");
 		assertEquals(subEvent.getUser(), aUser, modeName + "'s user does not match given");
-		
+
 		//Check channel mode
-		if(parentMode == null && !mode.contains(" "))
+		if (parentMode == null && !mode.contains(" "))
 			if (mode.startsWith("-"))
 				assertEquals(aChannel.getMode(), "", "Channel mode not empty after removing only mode");
 			else
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
-	}		
+	}
 
 	@Test(description = "Verify NAMES response handling")
 	public void namesTest() {
