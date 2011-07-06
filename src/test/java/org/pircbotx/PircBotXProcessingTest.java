@@ -320,7 +320,7 @@ public class PircBotXProcessingTest {
 		return finalParams;
 	}
 	
-	@Test(dataProvider = "channelModeProvider")
+	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
 	public void genericChannelModeTest(PircBotX bot, List<Event> events, String mode, Class<?> modeClass) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
