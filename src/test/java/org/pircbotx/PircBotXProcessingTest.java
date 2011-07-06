@@ -298,7 +298,7 @@ public class PircBotXProcessingTest {
 	
 	@DataProvider
 	protected Object[][] channelModeProvider() {		
-		Object[][] modeParams = {{"+l", SetChannelLimitEvent.class},
+		return new Object[][]{{"+l", SetChannelLimitEvent.class},
 				{"-l", RemoveChannelLimitEvent.class},
 				{"+k", SetChannelKeyEvent.class},
 				{"-k", RemoveChannelKeyEvent.class},
@@ -312,12 +312,6 @@ public class PircBotXProcessingTest {
 				{"-t", RemoveTopicProtectionEvent.class},
 				{"+p", SetPrivateEvent.class},
 				{"-p", RemovePrivateEvent.class}};
-		
-		//For each bot param array, add to it a moderated array
-		Object[][] finalParams = new Object[0][];
-		for (Object[] modeParam : modeParams)
-			finalParams = (Object[][])ArrayUtils.add(finalParams, modeParam);
-		return finalParams;
 	}
 	
 	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
