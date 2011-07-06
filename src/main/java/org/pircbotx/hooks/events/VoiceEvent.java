@@ -18,10 +18,12 @@
  */
 package org.pircbotx.hooks.events;
 
+import lombok.AccessLevel;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
@@ -39,7 +41,8 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
-	protected final boolean isVoice;
+	@Getter(AccessLevel.NONE)
+	protected final boolean hasVoice;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -53,7 +56,22 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 		this.channel = channel;
 		this.source = source;
 		this.recipient = recipient;
-		this.isVoice = isVoice;
+		this.hasVoice = isVoice;
+	}
+	
+	/**
+	 * Returns true if this was set, false if removed
+	 * @return 
+	 * @deprecated Use the better named hasVoice method. Will be removed in future versions
+	 * @see #hasVoice() 
+	 */
+	@Deprecated
+	public boolean isVoice() {
+		return hasVoice;
+	}
+	
+	public boolean hasVoice() {
+		return hasVoice;
 	}
 
 	@Override
