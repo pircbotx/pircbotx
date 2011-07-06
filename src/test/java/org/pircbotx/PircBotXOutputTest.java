@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Socket;
 import javax.net.SocketFactory;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -60,14 +61,17 @@ public class PircBotXOutputTest {
 		when(socketFactory.createSocket("example.com", 6667)).thenReturn(socket);
 	}
 	
-	@Test
-	public void connectTest() throws Exception {
+	public void basicConnect() throws Exception {
 		//Connect the bot to the socket
 		bot.connect("example.com", 6667, null, socketFactory);
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 6667);
-		
+	}
+	
+	@Test
+	public void connectTest() throws Exception {
+		basicConnect();
 		String[] lines = botOut.toString().split("\r\n");
 		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
 		assertEquals(lines[0], "NICK PircBotXBot");
