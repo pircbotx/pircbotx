@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Socket;
 import javax.net.SocketFactory;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -36,33 +37,36 @@ import static org.mockito.Mockito.*;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXOutputTest {	
-	@DataProvider
-	public Object[][] botProvider() throws Exception {
+	PircBotX bot;
+	SocketFactory socketFactory;
+	ByteArrayInputStream botIn;
+	ByteArrayOutputStream botOut;
+	
+	@BeforeMethod
+	public void botProvider() throws Exception {
 		//Setup bot
-		PircBotX bot = new PircBotX();
+		bot = new PircBotX();
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
 		
 		//Setup stream
-		ByteArrayInputStream in = new ByteArrayInputStream("".getBytes());
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		botIn = new ByteArrayInputStream("".getBytes());
+		botOut = new ByteArrayOutputStream();
 		Socket socket = mock(Socket.class);
-		when(socket.getInputStream()).thenReturn(in);
-		when(socket.getOutputStream()).thenReturn(out);
-		SocketFactory factory = mock(SocketFactory.class);
-		when(factory.createSocket("example.com", 6667)).thenReturn(socket);
-		
-		return new Object[][]{{bot, factory, in, out}};
+		when(socket.getInputStream()).thenReturn(botIn);
+		when(socket.getOutputStream()).thenReturn(botOut);
+		socketFactory = mock(SocketFactory.class);
+		when(socketFactory.createSocket("example.com", 6667)).thenReturn(socket);
 	}
 	
-	@Test(dataProvider = "botProvider")
-	public void connectTest(PircBotX bot, SocketFactory factory, InputStream botIn, OutputStream botOut) throws Exception {
+	@Test
+	public void connectTest() throws Exception {
 		//Connect the bot to the socket
-		bot.connect("example.com", 6667, null, factory);
+		bot.connect("example.com", 6667, null, socketFactory);
 
 		//Make sure the bot is connected
-		verify(factory).createSocket("example.com", 6667);
+		verify(socketFactory).createSocket("example.com", 6667);
 		
 		String[] lines = botOut.toString().split("\r\n");
 		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
@@ -70,13 +74,13 @@ public class PircBotXOutputTest {
 		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 	}
 	
-	@Test(dataProvider = "botProvider", dependsOnMethods = "connectTest")
-	public void connectWithPasswordTest(PircBotX bot, SocketFactory factory, InputStream botIn, OutputStream botOut) throws Exception {
+	@Test(dependsOnMethods = "connectTest")
+	public void connectWithPasswordTest() throws Exception {
 		//Connect the bot to the socket
-		bot.connect("example.com", 6667, "pa55w0rd", factory);
+		bot.connect("example.com", 6667, "pa55w0rd", socketFactory);
 
 		//Make sure the bot is connected
-		verify(factory).createSocket("example.com", 6667);
+		verify(socketFactory).createSocket("example.com", 6667);
 		
 		String[] lines = botOut.toString().split("\r\n");
 		assertEquals(lines.length, 3);
