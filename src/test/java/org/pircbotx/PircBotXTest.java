@@ -39,21 +39,13 @@ import static org.testng.Assert.*;
  */
 @Test(singleThreaded=true)
 public class PircBotXTest {
-	public final Class<PircBotX> botClass = PircBotX.class;
-	final Signal signal = new Signal();
-	final PircBotXMod bot = new PircBotXMod();
-	//Various useful variables for comparing
 	final String aString = "I'm some super long string that has multiple words";
-	final String string = "AString";
-	final User user = new User(bot, "AUser");
-	final Channel chan = new Channel(bot, "AChannel");
-	final Event event = new ActionEvent(bot, user, chan, string);
 
 	@Test(description = "Make sure send* methods have appropiate variations")
 	public void sendMethodsNamingTests() {
 		//Get all send method variations in one list
 		Map<String, List<Method>> sendMethods = new HashMap<String, List<Method>>();
-		for (Method curMethod : botClass.getDeclaredMethods()) {
+		for (Method curMethod : PircBotX.class.getDeclaredMethods()) {
 			String name = curMethod.getName();
 			if (name.startsWith("send")) {
 				if (!sendMethods.containsKey(name))
@@ -137,129 +129,5 @@ public class PircBotXTest {
 		assertNotNull(smallBot.getUser("BotNick"), "Getting existing bots user with getUser returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
-	}
-
-	@Test(description = "Verify sendAction variants get the same result")
-	public void sendActionTest() {
-		//Make sure the same result is given no matter which method we call
-		bot.sendAction(user, string);
-		signal.compare("AUser", string);
-
-		bot.sendAction(chan, string);
-		signal.compare("AChannel", string);
-	}
-
-	@Test(description = "Verify sendCTCPCommand variants get the same result")
-	public void sendCTCPCommandTest() {
-		//Make sure the same result is given no matter which method we call
-		bot.sendCTCPCommand(user, string);
-		signal.compare("AUser", string);
-	}
-
-	@Test(description = "Verify sendCTCPResponse variants get the same result")
-	public void sendCTCPResponseTest() {
-		//Make sure the same result is given no matter which method we call
-		bot.sendCTCPResponse(user, string);
-		signal.compare("AUser", string);
-	}
-
-	@Test(description = "Verify sendInvite variants get the same result")
-	public void sendInviteTest() {
-		//Make sure the same result is given no matter which method we call
-		bot.sendInvite(user, chan);
-		signal.compare("AUser", "AChannel");
-
-		bot.sendInvite(chan, chan);
-		signal.compare("AChannel", "AChannel");
-	}
-
-	@Test(description = "Verify sendMessage variants get the same result")
-	public void sendMessageTest() {
-		//Make sure the same result is given no matter which method we call
-		bot.sendMessage(user, string);
-		signal.compare("AUser", string);
-
-		bot.sendMessage(chan, string);
-		signal.compare("AChannel", string);
-	}
-
-	@Test(description = "Verify sendNotice variants get the same result")
-	public void sendNoiceTest() {
-		//Make sure the same result is given no matter which method we call
-		bot.sendNotice(user, string);
-		signal.compare("AUser", string);
-
-		bot.sendNotice(chan, string);
-		signal.compare("AChannel", string);
-	}
-
-	/**
-	 * Modified PircBotX for this testing
-	 * -Adds testing listenerManager
-	 * -Makes processServerResponse more visible
-	 * -Makes send* methods signal result
-	 */
-	public class PircBotXMod extends PircBotX {
-		public PircBotXMod() {
-			setListenerManager(new GenericListenerManager());
-		}
-
-		@Override
-		public void sendAction(String target, String action) {
-			signal.set(target, action);
-		}
-
-		@Override
-		public void sendCTCPCommand(String target, String command) {
-			signal.set(target, command);
-		}
-
-		@Override
-		public void sendCTCPResponse(String target, String message) {
-			signal.set(target, message);
-		}
-
-		@Override
-		public void sendInvite(String nick, String channel) {
-			signal.set(nick, channel);
-		}
-
-		@Override
-		public void sendMessage(String target, String message) {
-			signal.set(target, message);
-		}
-
-		@Override
-		public void sendNotice(String target, String notice) {
-			signal.set(target, notice);
-		}
-	}
-
-	public class Signal {
-		public String target = null;
-		public String message = null;
-		public Channel chan = null;
-
-		public void set(String target, String message) {
-			this.target = target;
-			this.message = message;
-		}
-
-		public void set(String target, Channel chan) {
-			this.target = target;
-			this.chan = chan;
-		}
-
-		public void compare(String expectTarget, String expectMessage) {
-			assertEquals(target, expectTarget);
-			assertEquals(message, expectMessage);
-			reset();
-		}
-
-		public void reset() {
-			target = null;
-			message = null;
-			chan = null;
-		}
 	}
 }
