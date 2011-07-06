@@ -58,6 +58,6 @@ public class ChannelInfoEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendRawLineViaQueue(response);
+		getBot().sendRawLine(response);
 	}
 }

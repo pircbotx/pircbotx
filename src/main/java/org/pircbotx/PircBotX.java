@@ -574,7 +574,7 @@ public class PircBotX {
 	 */
 	public void sendRawLine(String line) {
 		if (isConnected())
-			_outputThread.sendRawLineNow(line);
+			_outputThread.send(line);
 	}
 
 	/**
@@ -582,11 +582,11 @@ public class PircBotX {
 	 *
 	 * @param line The raw line to send to the IRC server.
 	 */
-	public void sendRawLineViaQueue(String line) {
+	public void sendRawLineNow(String line) {
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
 		if (isConnected())
-			_outputThread.send(line);
+			_outputThread.sendRawLineNow(line);
 	}
 
 	/**
