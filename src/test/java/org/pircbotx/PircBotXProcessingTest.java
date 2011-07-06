@@ -298,27 +298,29 @@ public class PircBotXProcessingTest {
 	
 	@DataProvider
 	protected Object[][] channelModeProvider() {		
-		return new Object[][]{{"+l", SetChannelLimitEvent.class},
-				{"-l", RemoveChannelLimitEvent.class},
-				{"+i", SetInviteOnlyEvent.class},
-				{"-i", RemoveInviteOnlyEvent.class},
-				{"+n", SetNoExternalMessagesEvent.class},
-				{"-n", RemoveNoExternalMessagesEvent.class},
-				{"+s", SetSecretEvent.class},
-				{"-s", RemoveSecretEvent.class},
-				{"+t", SetTopicProtectionEvent.class},
-				{"-t", RemoveTopicProtectionEvent.class},
-				{"+p", SetPrivateEvent.class},
-				{"-p", RemovePrivateEvent.class}};
+		return new Object[][]{{"+l 10", null, SetChannelLimitEvent.class},
+				{"-l", "l 10", RemoveChannelLimitEvent.class},
+				{"+k testPassword", null, SetChannelKeyEvent.class},
+				{"-k", "k testPassword", RemoveChannelKeyEvent.class},
+				{"+i", null, SetInviteOnlyEvent.class},
+				{"-i", null, RemoveInviteOnlyEvent.class},
+				{"+n", null, SetNoExternalMessagesEvent.class},
+				{"-n", null, RemoveNoExternalMessagesEvent.class},
+				{"+s", null, SetSecretEvent.class},
+				{"-s", null, RemoveSecretEvent.class},
+				{"+t", null, SetTopicProtectionEvent.class},
+				{"-t", null, RemoveTopicProtectionEvent.class},
+				{"+p", null, SetPrivateEvent.class},
+				{"-p", null, RemovePrivateEvent.class}};
 	}
 	
 	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
-	public void genericChannelModeTest(String mode, Class<?> modeClass) {
+	public void genericChannelModeTest(String mode, String parentMode, Class<?> modeClass) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		if(mode.startsWith("-"))
 			//Set the mode first
-			aChannel.setMode(mode.substring(1));
+			aChannel.setMode((parentMode != null) ? parentMode : mode.substring(1));
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
 
 		//Verify generic ModeEvent contents
@@ -334,54 +336,12 @@ public class PircBotXProcessingTest {
 		assertEquals(subEvent.getUser(), aUser, modeName + "'s user does not match given");
 		
 		//Check channel mode
-		if (mode.startsWith("-"))
-			assertEquals(aChannel.getMode(), "", "Channel mode not empty after removing only mode");
-		else
-			assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
-	}
-	
-	@Test(description = "Verify SetChannelKey and RemoveChannelKey")
-	public void SetRemovechannelKeyTest() {
-		Channel aChannel = bot.getChannel("#aChannel");
-		User aUser = bot.getUser("AUser");
-		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
-		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k");
-		
-		//Verify events
-		//WARNING: Do not test aChannel.getMode() as it will lock waiting for the invisible MODE response from the server
-		SetChannelKeyEvent setChannelKeyEvent = getEvent(events, SetChannelKeyEvent.class, "SetChannelKeyEvent not dispatched");
-		assertEquals(setChannelKeyEvent.getChannel(), aChannel, "SetChannelKeyEvent's channel doesn't match given");
-		assertEquals(setChannelKeyEvent.getUser(), aUser, "SetChannelKeyEvent's user doesn't match given");
-		assertEquals(setChannelKeyEvent.getKey(), "testPassword");
-		
-		ModeEvent setModeEvent = null;
-		//Load the first mode event
-		for (Event curEvent : events)
-			if (curEvent instanceof ModeEvent) {
-				setModeEvent = (ModeEvent) curEvent;
-				break;
-			}
-		assertNotNull(setModeEvent, "No ModeEvent found");
-		assertEquals(setModeEvent.getChannel(), aChannel, "ModeEvent's channel does not match given");
-		assertEquals(setModeEvent.getUser(), aUser, "ModeEvent's user does not match given");
-		assertEquals(setModeEvent.getMode(), "+k testPassword", "ModeEvent's mode does not match given mode");
-		
-		RemoveChannelKeyEvent removeChannelKeyEvent = getEvent(events, RemoveChannelKeyEvent.class, "RemoveChannelKeyEvent not dispatched");
-		assertEquals(removeChannelKeyEvent.getChannel(), aChannel, "RemoveChannelKeyEvent's channel doesn't match given");
-		assertEquals(removeChannelKeyEvent.getUser(), aUser, "RemoveChannelKeyEvent's user doesn't match given");
-		assertNull(removeChannelKeyEvent.getKey(), "Channel key when removing isn't null");
-		
-		ModeEvent removeModeEvent = null;
-		//Load the last mode event
-		for(Event curEvent : events)
-			if(curEvent instanceof ModeEvent)
-				removeModeEvent = (ModeEvent)curEvent;
-		assertNotNull(removeModeEvent);
-		assertEquals(removeModeEvent.getChannel(), aChannel, "ModeEvent's channel does not match given");
-		assertEquals(removeModeEvent.getUser(), aUser, "ModeEvent's user does not match given");
-		assertEquals(removeModeEvent.getMode(), "-k", "ModeEvent's mode does not match given mode");
-	}
-		
+		if(parentMode == null && !mode.contains(" "))
+			if (mode.startsWith("-"))
+				assertEquals(aChannel.getMode(), "", "Channel mode not empty after removing only mode");
+			else
+				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
+	}		
 
 	@Test(description = "Verify NAMES response handling")
 	public void namesTest() {
