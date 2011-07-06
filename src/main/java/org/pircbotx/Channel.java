@@ -99,7 +99,6 @@ public class Channel {
 			else if (curChar == '+')
 				adding = true;
 			else if (adding)
-				//Add to beginning since end may contan arguments
 				mode = curChar + mode;
 			else
 				mode = mode.replace(Character.toString(curChar), "");
