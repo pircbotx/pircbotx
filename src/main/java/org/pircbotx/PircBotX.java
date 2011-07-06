@@ -327,7 +327,7 @@ public class PircBotX {
 		_outputThread.start();
 
 		// Attempt to join the server.
-		if (!Utils.isBlank(password))
+		if (password != null && !password.trim().equals(""))
 			_outputThread.sendRawLineNow("PASS " + password);
 		String nick = getName();
 		_outputThread.sendRawLineNow("NICK " + nick);
@@ -1721,7 +1721,7 @@ public class PircBotX {
 			
 			//Setup user
 			User curUser = getUser(parsed[5]);
-			if (Utils.isBlank(curUser.getLogin())) {
+			if (curUser.getLogin() != null && !curUser.getLogin().trim().equals("")) {
 				curUser.setLogin(parsed[2]);
 				curUser.setIdentified(!parsed[2].startsWith("~"));
 				curUser.setHostmask(parsed[3]);
