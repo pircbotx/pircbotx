@@ -312,8 +312,8 @@ public class PircBotXProcessingTest {
 		
 		//For each bot param array, add to it a moderated array
 		Object[][] finalParams = new Object[0][];
-		for(Object[] botParam : botProvider()) {
-			for(Object[] modeParam : modeParams) {
+		for(Object[] modeParam : modeParams) {
+			for(Object[] botParam : botProvider()) {
 				finalParams = (Object[][])ArrayUtils.add(finalParams, ArrayUtils.addAll(botParam, modeParam));
 			}
 		}
