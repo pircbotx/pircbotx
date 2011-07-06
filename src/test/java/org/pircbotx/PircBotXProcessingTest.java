@@ -310,6 +310,7 @@ public class PircBotXProcessingTest {
 					{"-l", "l 10", RemoveChannelLimitEvent.class},
 					{"+k testPassword", null, SetChannelKeyEvent.class},
 					{"-k", "k testPassword", RemoveChannelKeyEvent.class},
+					{"-k testPassword", "k testPassword", RemoveChannelKeyEvent.class},
 					{"+i", null, SetInviteOnlyEvent.class},
 					{"-i", null, RemoveInviteOnlyEvent.class},
 					{"+n", null, SetNoExternalMessagesEvent.class},
@@ -357,6 +358,22 @@ public class PircBotXProcessingTest {
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
 		SetChannelKeyEvent event = getEvent(events, SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
+	public void removeChannelKeyEventEmptyTest() {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k");
+		RemoveChannelKeyEvent event = getEvent(events, RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
+		assertNull(event.getKey(), "RemoveChannelKeyEvent key doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
+	public void removeChannelKeyEventTest() {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k testPassword");
+		RemoveChannelKeyEvent event = getEvent(events, RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
+		assertEquals(event.getKey(), "testPassword", "RemoveChannelKeyEvent key doesn't match given");
 	}
 
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelLimitEvent has the correct limit")
