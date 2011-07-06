@@ -54,6 +54,7 @@ import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -66,15 +67,18 @@ import static org.testng.Assert.*;
  */
 public class PircBotXProcessingTest {
 	final String aString = "I'm some super long string that has multiple words";
-
+	protected List<Event> events;
+	protected PircBotX bot;
+	
+	
 	/**
 	 * General bot setup: Use GenericListenerManager (no threading), add custom
 	 * listener to add all called events to Event set, set nick, etc
 	 */
-	@DataProvider
-	public Object[][] botProvider() {
-		PircBotX bot = new PircBotX();
-		final List<Event> events = new ArrayList<Event>();
+	@BeforeMethod
+	public void setUp() {
+		bot = new PircBotX();
+		events = new ArrayList<Event>();
 		bot.setListenerManager(new GenericListenerManager());
 		bot.getListenerManager().addListener(new Listener() {
 			public void onEvent(Event event) throws Exception {
@@ -83,11 +87,10 @@ public class PircBotXProcessingTest {
 		});
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
-		return new Object[][]{{bot, events}};
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verifies UserModeEvent from user mode being changed")
-	public void userModeTest(PircBotX bot, List<Event> events) {
+	@Test(description = "Verifies UserModeEvent from user mode being changed")
+	public void userModeTest() {
 		//Use two users to differentiate between source and target
 		User aUser = bot.getUser("PircBotXUser");
 		User aUser2 = bot.getUser("PircBotXUser2");
@@ -100,8 +103,8 @@ public class PircBotXProcessingTest {
 		assertEquals(uevent.getMode(), "+i", "UserModeEvent's mode does not match given");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verifies ChannelInfoEvent from /LIST command with 3 channels")
-	public void listTest(PircBotX bot, List<Event> events) {
+	@Test(description = "Verifies ChannelInfoEvent from /LIST command with 3 channels")
+	public void listTest() {
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
@@ -124,7 +127,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verifies InviteEvent from incomming invite")
-	public void inviteTest(PircBotX bot, List<Event> events) {
+	public void inviteTest() {
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 
 		//Verify event values
@@ -138,7 +141,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verifies JoinEvent from user joining our channel")
-	public void joinTest(PircBotX bot, List<Event> events) {
+	public void joinTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
@@ -165,14 +168,14 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
-	public void topicTest(PircBotX bot, List<Event> events) {
+	public void topicTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify TopicEvent's extended information from line sent after TOPIC line")
-	public void topicInfoTest(PircBotX bot, List<Event> events) {
+	public void topicInfoTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
 		assertEquals(aChannel.getTopicSetter(), "AUser");
@@ -183,7 +186,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify MessageEvent from channel message")
-	public void messageTest(PircBotX bot, List<Event> events) {
+	public void messageTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + aString);
@@ -196,7 +199,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify PrivateMessage from random user")
-	public void privateMessageTest(PircBotX bot, List<Event> events) {
+	public void privateMessageTest() {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
 
@@ -207,7 +210,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE in channel")
-	public void channelNoticeTest(PircBotX bot, List<Event> events) {
+	public void channelNoticeTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE #aChannel :" + aString);
@@ -223,7 +226,7 @@ public class PircBotXProcessingTest {
 	 * Simulate a NOTICE sent directly to us
 	 */
 	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE from a user in PM")
-	public void userNoticeTest(PircBotX bot, List<Event> events) {
+	public void userNoticeTest() {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
 
@@ -240,7 +243,7 @@ public class PircBotXProcessingTest {
 	 * @param events
 	 * @param mode
 	 */
-	protected void initModeTest(PircBotX bot, List<Event> events, String mode, boolean checkChannelMode) {
+	protected void initModeTest(String mode, boolean checkChannelMode) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
@@ -260,11 +263,11 @@ public class PircBotXProcessingTest {
 	}
 	
 	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user")
-	public void opTest(PircBotX bot, List<Event> events) {
+	public void opTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		initModeTest(bot, events, "+o OtherUser", false);
+		initModeTest("+o OtherUser", false);
 
 		//Verify event contents
 		OpEvent oevent = getEvent(events, OpEvent.class, "OpEvent not dispatched");
@@ -277,11 +280,11 @@ public class PircBotXProcessingTest {
 	}
 	
 	@Test(dataProvider = "botProvider", description = "Verify VoiceEvent from some user voicing another user")
-	public void voiceTest(PircBotX bot, List<Event> events) {
+	public void voiceTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		initModeTest(bot, events, "+v OtherUser", false);
+		initModeTest("+v OtherUser", false);
 
 		//Verify event contents
 		VoiceEvent vevent = getEvent(events, VoiceEvent.class, "VoiceEvent not dispatched");
@@ -312,16 +315,13 @@ public class PircBotXProcessingTest {
 		
 		//For each bot param array, add to it a moderated array
 		Object[][] finalParams = new Object[0][];
-		for(Object[] modeParam : modeParams) {
-			for(Object[] botParam : botProvider()) {
-				finalParams = (Object[][])ArrayUtils.add(finalParams, ArrayUtils.addAll(botParam, modeParam));
-			}
-		}
+		for (Object[] modeParam : modeParams)
+			finalParams = (Object[][])ArrayUtils.add(finalParams, modeParam);
 		return finalParams;
 	}
 	
 	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
-	public void genericChannelModeTest(PircBotX bot, List<Event> events, String mode, Class<?> modeClass) {
+	public void genericChannelModeTest(String mode, Class<?> modeClass) {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		if(mode.startsWith("-"))
@@ -350,7 +350,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", description = "Verify NAMES response handling")
-	public void namesTest(PircBotX bot, List<Event> events) {
+	public void namesTest() {
 		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
 
 		//Make sure all information was created correctly
@@ -375,7 +375,7 @@ public class PircBotXProcessingTest {
 	 * Simulate WHO response. 
 	 */
 	@Test(dataProvider = "botProvider", description = "Verify WHO response handling + UserListEvent")
-	public void whoTest(PircBotX bot, List<Event> events) {
+	public void whoTest() {
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
 		bot.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
@@ -422,7 +422,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
-	public void kickTest(PircBotX bot, List<Event> events) {
+	public void kickTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
@@ -444,7 +444,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
-	public void quitTest(PircBotX bot, List<Event> events) {
+	public void quitTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -468,7 +468,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "botProvider", dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
-	public void quitTest2(PircBotX bot, List<Event> events) {
+	public void quitTest2() {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
