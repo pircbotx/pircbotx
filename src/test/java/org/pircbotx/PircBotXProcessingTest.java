@@ -18,6 +18,9 @@
  */
 package org.pircbotx;
 
+import org.pircbotx.hooks.events.HalfOpEvent;
+import org.pircbotx.hooks.events.OwnerEvent;
+import org.pircbotx.hooks.events.SuperOpEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +56,7 @@ import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.pircbotx.hooks.types.GenericUserModeEvent;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -260,38 +264,44 @@ public class PircBotXProcessingTest {
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
 
-	@Test(description = "Verify OpEvent from Op of a user")
-	public void opTest() {
-		Channel aChannel = bot.getChannel("#aChannel");
-		User aUser = bot.getUser("AUser");
-		User otherUser = bot.getUser("OtherUser");
-		initModeTest("+o OtherUser", false);
-
-		//Verify event contents
-		OpEvent oevent = getEvent(events, OpEvent.class, "OpEvent not dispatched");
-		assertEquals(oevent.getChannel(), aChannel, "OpEvent's channel does not match given");
-		assertEquals(oevent.getSource(), aUser, "OpEvent's source user does not match given");
-		assertEquals(oevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
-
-		//Check op lists
-		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
+	@DataProvider
+	public Object[][] channelUserModeProvider() {
+		return new Object[][]{{"+o", OpEvent.class, "isOp"},
+					{"-o", OpEvent.class, "isOp"},
+					{"+v", VoiceEvent.class, "hasVoice"},
+					{"-v", VoiceEvent.class, "hasVoice"},
+					{"+q", OwnerEvent.class, "isOwner"},
+					{"-q", OwnerEvent.class, "isOwner"},
+					{"+h", HalfOpEvent.class, "isHalfOp"},
+					{"-h", HalfOpEvent.class, "isHalfOp"},
+					{"+a", SuperOpEvent.class, "isSuperOp"},
+					{"-a", SuperOpEvent.class, "isSuperOp"}};
 	}
 
-	@Test(description = "Verify VoiceEvent from some user voicing another user")
-	public void voiceTest() {
+	@Test(dataProvider = "channelUserModeProvider", description = "Test setting various user modes and verifying events")
+	public void channelUserModeTest(String mode, Class<?> eventClass, String checkMethod) throws Exception {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
-		initModeTest("+v OtherUser", false);
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode + " OtherUser");
 
-		//Verify event contents
-		VoiceEvent vevent = getEvent(events, VoiceEvent.class, "VoiceEvent not dispatched");
-		assertEquals(vevent.getChannel(), aChannel, "OpEvent's channel does not match given");
-		assertEquals(vevent.getSource(), aUser, "OpEvent's source user does not match given");
-		assertEquals(vevent.getRecipient(), otherUser, "OpEvent's reciepient user does not match given");
-
-		//Check voice lists
-		assertTrue(aChannel.hasVoice(otherUser), "Channel's internal voice list not updated with new voice");
+		//Verify generic ModeEvent contents
+		ModeEvent mevent = getEvent(events, ModeEvent.class, "No ModeEvent dispatched with " + mode);
+		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given with mode " + mode);
+		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given with mode " + mode);
+		assertEquals(mevent.getMode(), mode + " OtherUser", "ModeEvent's mode does not match given mode");
+		
+		//Verify specific event contents
+		GenericUserModeEvent event = (GenericUserModeEvent)getEvent(events, eventClass, "No " + eventClass.getSimpleName() + " dispatched with " + mode);
+		assertEquals(event.getChannel(), aChannel, eventClass.getSimpleName() + "'s channel does not match given with mode " + mode);
+		assertEquals(event.getSource(), aUser, eventClass.getSimpleName() + "'s source user does not match given with mode " + mode);
+		assertEquals(event.getRecipient(), otherUser, eventClass.getSimpleName() + "'s recipient user does not match given with mode " + mode);
+		
+		//Make sure the event's is* method returns the correct value
+		assertEquals(eventClass.getMethod(checkMethod).invoke(event), mode.startsWith("+"), "Event's " + checkMethod + " method doesn't return correct value");
+		
+		//Make sure the channels is* method returns the correct value
+		assertEquals(aChannel.getClass().getMethod(checkMethod, User.class).invoke(aChannel, otherUser), mode.startsWith("+"), "Channels's " + checkMethod + " method doesn't return correct value");
 	}
 
 	@DataProvider
@@ -340,7 +350,7 @@ public class PircBotXProcessingTest {
 			else
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
-	
+
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelKeyEvent has the correct key")
 	public void setChannelKeyEventTest() {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
@@ -348,7 +358,7 @@ public class PircBotXProcessingTest {
 		SetChannelKeyEvent event = getEvent(events, SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
 	}
-	
+
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelLimitEvent has the correct limit")
 	public void setChannelLimitEvent() {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
