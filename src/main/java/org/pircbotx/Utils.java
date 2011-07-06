@@ -65,10 +65,6 @@ import org.pircbotx.hooks.Event;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Utils {
-	public static boolean isBlank(String str) {
-		return (str != null) && (str.trim().equals(""));
-	}
-
 	/**
 	 * Extract the source user from any Event. <b>Warning:</b> This will not work
 	 * on events that return the user as a string like {@link InviteEvent}
