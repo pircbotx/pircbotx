@@ -94,15 +94,15 @@ public class PircBotXOutputTest {
 	}
 
 	@Test(description = "Verify sendCTCPCommand to user")
-	public void sendCTCPCommandTest() throws Exception {
+	public void sendCTCPCommandUserTest() throws Exception {
 		bot.sendCTCPCommand(aUser, aString);
-		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
+		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPResponse to user")
-	public void sendCTCPResponseTest() throws Exception {
+	public void sendCTCPResponseUserTest() throws Exception {
 		bot.sendCTCPResponse(aUser, aString);
-		checkOutput("NOTICE #aChannel :\u0001" + aString + "\u0001");
+		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendInvite to user")
@@ -130,15 +130,15 @@ public class PircBotXOutputTest {
 	}
 
 	@Test(description = "Verify sendNotice to channel")
-	public void sendNoiceChannelTest() throws Exception {
+	public void sendNoticeChannelTest() throws Exception {
 		bot.sendNotice(aChannel, aString);
 		checkOutput("NOTICE #aChannel :" + aString);
 	}
 
 	@Test(description = "Verify sendNotice to user")
-	public void sendNoiceUserTest() throws Exception {
+	public void sendNoticeUserTest() throws Exception {
 		bot.sendNotice(aUser, aString);
-		checkOutput("NOTICE #aUser :" + aString);
+		checkOutput("NOTICE aUser :" + aString);
 	}
 
 	/**
