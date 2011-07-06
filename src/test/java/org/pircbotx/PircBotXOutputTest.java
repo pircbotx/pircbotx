@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.PipedInputStream;
 import java.net.Socket;
 import javax.net.SocketFactory;
 import org.testng.annotations.DataProvider;
@@ -56,6 +57,20 @@ public class PircBotXOutputTest {
 	}
 	
 	@Test(dataProvider = "botProvider")
+	public void connectTest(PircBotX bot, SocketFactory factory, InputStream botIn, OutputStream botOut) throws Exception {
+		//Connect the bot to the socket
+		bot.connect("example.com", 6667, null, factory);
+
+		//Make sure the bot is connected
+		verify(factory).createSocket("example.com", 6667);
+		
+		String[] lines = botOut.toString().split("\r\n");
+		assertEquals(lines.length, 2);
+		assertEquals(lines[0], "NICK PircBotXBot");
+		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+	}
+	
+	@Test(dataProvider = "botProvider", dependsOnMethods = "connectTest")
 	public void connectWithPasswordTest(PircBotX bot, SocketFactory factory, InputStream botIn, OutputStream botOut) throws Exception {
 		//Connect the bot to the socket
 		bot.connect("example.com", 6667, "pa55w0rd", factory);
