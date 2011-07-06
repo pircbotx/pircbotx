@@ -18,6 +18,8 @@
  */
 package org.pircbotx;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,42 +34,38 @@ import static org.mockito.Mockito.*;
  * Test the output of PircBotX
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class PircBotXOutputTest {
+public class PircBotXOutputTest {	
 	@DataProvider
-	public Object[][] botProvider() {
+	public Object[][] botProvider() throws Exception {
+		//Setup bot
 		PircBotX bot = new PircBotX();
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
-		return new Object[][]{{bot}};
-	}
-
-	@Test(dataProvider = "botProvider")
-	public void connectWithPasswordTest(PircBotX bot) throws Exception {
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		SocketFactory factory = createSocketFactoryStub(stream);
-
-		bot.connect("example.com", 6667, "pa55w0rd", factory);
-
-		verify(factory).createSocket("example.com", 6667);
-
-		String[] lines = stream.toString().split("\r\n");
-		assertEquals(lines.length, 3);
-		assertEquals(lines[0], "PASS pa55w0rd");
-		assertEquals(lines[1], "NICK PircBotXBot");
-
-	}
-
-	protected SocketFactory createSocketFactoryStub(ByteArrayOutputStream out) throws Exception {
+		
+		//Setup stream
 		ByteArrayInputStream in = new ByteArrayInputStream("".getBytes());
-
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Socket socket = mock(Socket.class);
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(out);
-
 		SocketFactory factory = mock(SocketFactory.class);
 		when(factory.createSocket("example.com", 6667)).thenReturn(socket);
+		
+		return new Object[][]{{bot, factory, in, out}};
+	}
+	
+	@Test(dataProvider = "botProvider")
+	public void connectWithPasswordTest(PircBotX bot, SocketFactory factory, InputStream botIn, OutputStream botOut) throws Exception {
+		//Connect the bot to the socket
+		bot.connect("example.com", 6667, "pa55w0rd", factory);
 
-		return factory;
+		//Make sure the bot is connected
+		verify(factory).createSocket("example.com", 6667);
+		
+		String[] lines = botOut.toString().split("\r\n");
+		assertEquals(lines.length, 3);
+		assertEquals(lines[0], "PASS pa55w0rd");
+		assertEquals(lines[1], "NICK PircBotXBot");
 	}
 }
