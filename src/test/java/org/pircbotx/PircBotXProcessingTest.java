@@ -340,6 +340,22 @@ public class PircBotXProcessingTest {
 			else
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
+	
+	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelKeyEvent has the correct key")
+	public void setChannelKeyEventTest() {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
+		SetChannelKeyEvent event = getEvent(events, SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
+		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelLimitEvent has the correct limit")
+	public void setChannelLimitEvent() {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +l 10");
+		SetChannelLimitEvent event = getEvent(events, SetChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
+		assertEquals(event.getLimit(), 10, "SetChannelLimitEvent key doesn't match given");
+	}
 
 	@Test(description = "Verify NAMES response handling")
 	public void namesTest() {
