@@ -20,6 +20,8 @@ package org.pircbotx;
 
 import java.io.BufferedWriter;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A Thread which is responsible for sending messages to the IRC server.
@@ -72,7 +74,11 @@ public class OutputThread extends Thread {
 	}
 
 	public void send(String message) {
-		queue.add(message);
+		try {
+			queue.put(message);
+		} catch (InterruptedException ex) {
+			throw new RuntimeException("Can't add message to queue", ex);
+		}
 	}
 
 	public int getQueueSize() {
