@@ -126,7 +126,7 @@ public class PircBotXProcessingTest {
 		assertTrue(channelParsed, "Channel #PircBotXChannel1 not found in /LIST results!");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verifies InviteEvent from incomming invite")
+	@Test(description = "Verifies InviteEvent from incomming invite")
 	public void inviteTest() {
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 
@@ -140,7 +140,7 @@ public class PircBotXProcessingTest {
 		assertFalse(bot.userExists("AUser"), "InviteEvent created user, shouldn't have");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verifies JoinEvent from user joining our channel")
+	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -167,14 +167,14 @@ public class PircBotXProcessingTest {
 		assertTrue(bot.userExists("AUser"));
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
+	@Test(description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
 	public void topicTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify TopicEvent's extended information from line sent after TOPIC line")
+	@Test(description = "Verify TopicEvent's extended information from line sent after TOPIC line")
 	public void topicInfoTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
@@ -185,7 +185,7 @@ public class PircBotXProcessingTest {
 		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify MessageEvent from channel message")
+	@Test(description = "Verify MessageEvent from channel message")
 	public void messageTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -198,7 +198,7 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify PrivateMessage from random user")
+	@Test(description = "Verify PrivateMessage from random user")
 	public void privateMessageTest() {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
@@ -209,7 +209,7 @@ public class PircBotXProcessingTest {
 		assertEquals(pevent.getMessage(), aString, "Message sent does not match");
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE in channel")
+	@Test(description = "Verify NoticeEvent from NOTICE in channel")
 	public void channelNoticeTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -225,7 +225,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate a NOTICE sent directly to us
 	 */
-	@Test(dataProvider = "botProvider", description = "Verify NoticeEvent from NOTICE from a user in PM")
+	@Test(description = "Verify NoticeEvent from NOTICE from a user in PM")
 	public void userNoticeTest() {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
@@ -262,7 +262,7 @@ public class PircBotXProcessingTest {
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
 	
-	@Test(dataProvider = "botProvider", description = "Verify OpEvent from Op of a user")
+	@Test(description = "Verify OpEvent from Op of a user")
 	public void opTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -279,7 +279,7 @@ public class PircBotXProcessingTest {
 		assertTrue(aChannel.isOp(otherUser), "Channel's internal Op list not updated with new Op");
 	}
 	
-	@Test(dataProvider = "botProvider", description = "Verify VoiceEvent from some user voicing another user")
+	@Test(description = "Verify VoiceEvent from some user voicing another user")
 	public void voiceTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -349,7 +349,7 @@ public class PircBotXProcessingTest {
 		
 	}
 
-	@Test(dataProvider = "botProvider", description = "Verify NAMES response handling")
+	@Test(description = "Verify NAMES response handling")
 	public void namesTest() {
 		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
 
@@ -374,7 +374,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * Simulate WHO response. 
 	 */
-	@Test(dataProvider = "botProvider", description = "Verify WHO response handling + UserListEvent")
+	@Test(description = "Verify WHO response handling + UserListEvent")
 	public void whoTest() {
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
@@ -421,7 +421,7 @@ public class PircBotXProcessingTest {
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
 	}
 
-	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
+	@Test(dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
 	public void kickTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
@@ -443,7 +443,7 @@ public class PircBotXProcessingTest {
 		assertNotSame(bot.getUser("OtherUser"), otherUser, "User fetched with getUser and previous user object are exactly the same");
 	}
 
-	@Test(dataProvider = "botProvider", dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
+	@Test(dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
 	public void quitTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
@@ -467,7 +467,7 @@ public class PircBotXProcessingTest {
 		assertNotSame(bot.getUser("OtherUser"), otherUser, "User fetched with getUser and previous user object are exactly the same");
 	}
 
-	@Test(dataProvider = "botProvider", dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
+	@Test(dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
 	public void quitTest2() {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
