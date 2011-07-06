@@ -78,7 +78,7 @@ public class PircBotXOutputTest {
 
 		//Setup useful vars
 		aUser = bot.getUser("aUser");
-		aChannel = bot.getChannel("aChannel");
+		aChannel = bot.getChannel("#aChannel");
 	}
 
 	@Test(timeOut = 5000, description = "Verify sendAction to user")
