@@ -290,16 +290,16 @@ public class PircBotXProcessingTest {
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given with mode " + mode);
 		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given with mode " + mode);
 		assertEquals(mevent.getMode(), mode + " OtherUser", "ModeEvent's mode does not match given mode");
-		
+
 		//Verify specific event contents
-		GenericUserModeEvent event = (GenericUserModeEvent)getEvent(events, eventClass, "No " + eventClass.getSimpleName() + " dispatched with " + mode);
+		GenericUserModeEvent event = (GenericUserModeEvent) getEvent(events, eventClass, "No " + eventClass.getSimpleName() + " dispatched with " + mode);
 		assertEquals(event.getChannel(), aChannel, eventClass.getSimpleName() + "'s channel does not match given with mode " + mode);
 		assertEquals(event.getSource(), aUser, eventClass.getSimpleName() + "'s source user does not match given with mode " + mode);
 		assertEquals(event.getRecipient(), otherUser, eventClass.getSimpleName() + "'s recipient user does not match given with mode " + mode);
-		
+
 		//Make sure the event's is* method returns the correct value
 		assertEquals(eventClass.getMethod(checkMethod).invoke(event), mode.startsWith("+"), "Event's " + checkMethod + " method doesn't return correct value");
-		
+
 		//Make sure the channels is* method returns the correct value
 		assertEquals(aChannel.getClass().getMethod(checkMethod, User.class).invoke(aChannel, otherUser), mode.startsWith("+"), "Channels's " + checkMethod + " method doesn't return correct value");
 	}
@@ -359,7 +359,7 @@ public class PircBotXProcessingTest {
 		SetChannelKeyEvent event = getEvent(events, SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
 	}
-	
+
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
 	public void removeChannelKeyEventEmptyTest() {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
@@ -367,7 +367,7 @@ public class PircBotXProcessingTest {
 		RemoveChannelKeyEvent event = getEvent(events, RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertNull(event.getKey(), "RemoveChannelKeyEvent key doesn't match given");
 	}
-	
+
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
 	public void removeChannelKeyEventTest() {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
