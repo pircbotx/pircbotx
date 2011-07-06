@@ -1687,32 +1687,6 @@ public class PircBotX {
 			chan.setTopicSetter(setBy.getNick());
 
 			getListenerManager().dispatchEvent(new TopicEvent(this, chan, chan.getTopic(), setBy, date, false));
-		} else if (code == RPL_NAMREPLY) {
-			//EXAMPLE: 353 PircBotX = #aChannel :PircBotX @SuperOp someoneElse
-			//This is a list of nicks in a channel that we've just joined. SPANS MULTIPLE LINES.  From /NAMES and /JOIN
-			parsed = response.split(" ", 4);
-			Channel chan = getChannel(parsed[2]);
-			
-			//Note: Do NOT associate with channel here as its difficult to correctly
-			//remove prefix from a user, leading to users who real nick is @Nick
-			
-			//Build prefix for parsing
-			for (String nick : parsed[3].substring(1).split(" ")) {
-				String prefix = "";
-				for (char character : nick.toCharArray())
-					if (!Character.isLetterOrDigit(character))
-						prefix += character;
-					else
-						break;
-				getUser(nick.substring(prefix.length())).parseStatus(chan, prefix);
-			}
-		} else if (code == RPL_ENDOFNAMES) {
-			//EXAMPLE: 366 PircBotX #aChannel :End of /NAMES list
-			// This is the end of a NAMES list, so we know that we've got
-			// the full list of users in the channel that we just joined. From /NAMES and /JOIN
-			String channelName = response.split(" ", 3)[1];
-			Channel channel = getChannel(channelName);
-			getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users

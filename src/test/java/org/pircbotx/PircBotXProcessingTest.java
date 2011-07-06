@@ -384,28 +384,6 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getLimit(), 10, "SetChannelLimitEvent key doesn't match given");
 	}
 
-	@Test(description = "Verify NAMES response handling")
-	public void namesTest() {
-		bot.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :AUser @+OtherUser");
-
-		//Make sure all information was created correctly
-		assertTrue(bot.channelExists("#aChannel"), "NAMES response didn't create channel");
-		assertTrue(bot.userExists("AUser"), "NAMES response didn't create user AUser");
-		assertTrue(bot.userExists("OtherUser"), "NAMES response didn't create user OtherUser");
-		Channel aChannel = bot.getChannel("#aChannel");
-		User aUser = bot.getUser("AUser");
-		User otherUser = bot.getUser("OtherUser");
-
-		//Make sure channel contains the users
-		assertTrue(aChannel.getUsers().contains(aUser), "Channel doesn't contain AUser from NAMES response");
-		assertTrue(aChannel.getUsers().contains(otherUser), "Channel doesn't contain OtherUser from NAMES response");
-
-		//Make sure channel classifies the users correctly
-		assertTrue(aChannel.isOp(otherUser), "NAMES response doesn't give user op status");
-		assertTrue(aChannel.hasVoice(otherUser), "NAMES response doesn't give user voice status");
-		assertTrue(aChannel.getNormalUsers().contains(aUser), "NAMES response doesn't give AUser normal status in channel");
-	}
-
 	/**
 	 * Simulate WHO response. 
 	 */
