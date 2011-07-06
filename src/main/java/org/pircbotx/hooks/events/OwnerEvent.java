@@ -40,7 +40,7 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 	protected final Channel channel;
 	protected final User source;
 	protected final User recipient;
-	protected final boolean isFounder;
+	protected final boolean isOwner;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -49,12 +49,22 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 	 * @param source The user that performed the mode change.
 	 * @param recipient The nick of the user that got owner status.
 	 */
-	public OwnerEvent(T bot, Channel channel, User source, User recipient, boolean isFounder) {
+	public OwnerEvent(T bot, Channel channel, User source, User recipient, boolean isOwner) {
 		super(bot);
 		this.channel = channel;
 		this.source = source;
 		this.recipient = recipient;
-		this.isFounder = isFounder;
+		this.isOwner = isOwner;
+	}
+	
+	/**
+	 * Gets the status of the mode change
+	 * @return True if founder status was given, false if removed
+	 * @deprecated Use isOwner, this method being called isFounder is a bug. Will be removed in future versions
+	 */
+	@Deprecated
+	public boolean isFounder() {
+		return isOwner;
 	}
 
 	/**
