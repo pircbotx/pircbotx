@@ -573,6 +573,8 @@ public class PircBotX {
 	 * @param line The raw line to send to the IRC server.
 	 */
 	public void sendRawLine(String line) {
+		if (line == null)
+			throw new NullPointerException("Cannot send null messages to server");
 		if (isConnected())
 			_outputThread.send(line);
 	}
