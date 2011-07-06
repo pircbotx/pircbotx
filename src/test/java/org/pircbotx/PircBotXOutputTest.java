@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
  */
 public class PircBotXOutputTest {
 	@DataProvider
-	protected Object[][] botProvider() {
+	public Object[][] botProvider() {
 		PircBotX bot = new PircBotX();
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
