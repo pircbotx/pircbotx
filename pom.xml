@@ -207,6 +207,20 @@
 					<sourcepath>target/src-delomboked</sourcepath>
 				</configuration>
 			</plugin>
+			<!--Use very verbose logging while testing-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<properties>
+						<property>
+							<name>listener</name>
+							<value>org.pircbotx.TestLogger</value>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -228,12 +242,12 @@
 	</reporting>
 
 	<!--
-		Distrobution
+		Distribution
 	-->
 	<distributionManagement>
 		<!--Site deploy repository-->
 		<site>
-			<id>maven-general-repo.googlecode.com</id>
+			<id>pircbotx.googlecode.com</id>
 			<url>scm:hg:https://site.pircbotx.googlecode.com/hg</url>
 		</site>
 	</distributionManagement>
