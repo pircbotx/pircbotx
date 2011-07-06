@@ -18,9 +18,6 @@
  */
 package org.pircbotx;
 
-import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +52,7 @@ public class PircBotXTest {
 		}
 
 		//Exclude methods that don't make sense to have variations of
-		sendMethods.remove("sendRawLineViaQueue");
+		sendMethods.remove("sendRawLineNow");
 		sendMethods.remove("sendRawLine");
 
 		for (Map.Entry<String, List<Method>> entry : sendMethods.entrySet()) {
