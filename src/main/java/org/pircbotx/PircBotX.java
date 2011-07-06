@@ -467,7 +467,7 @@ public class PircBotX {
 	 * @param channel The name of the channel to join (eg "#cs").
 	 */
 	public void joinChannel(String channel) {
-		sendRawLineViaQueue("JOIN " + channel);
+		sendRawLine("JOIN " + channel);
 	}
 
 	/**
