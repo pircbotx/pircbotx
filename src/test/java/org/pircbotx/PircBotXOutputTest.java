@@ -18,12 +18,12 @@
  */
 package org.pircbotx;
 
+import org.apache.commons.lang.StringUtils;
 import java.io.InputStream;
 import java.io.OutputStream;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.PipedInputStream;
 import java.net.Socket;
 import javax.net.SocketFactory;
 import org.testng.annotations.DataProvider;
@@ -65,7 +65,7 @@ public class PircBotXOutputTest {
 		verify(factory).createSocket("example.com", 6667);
 		
 		String[] lines = botOut.toString().split("\r\n");
-		assertEquals(lines.length, 2);
+		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
 		assertEquals(lines[0], "NICK PircBotXBot");
 		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 	}
