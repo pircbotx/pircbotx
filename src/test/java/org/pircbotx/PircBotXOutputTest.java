@@ -21,6 +21,8 @@ package org.pircbotx;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -30,7 +32,10 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Socket;
+import java.util.concurrent.CountDownLatch;
 import javax.net.SocketFactory;
+import org.apache.commons.io.input.AutoCloseInputStream;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -48,6 +53,8 @@ public class PircBotXOutputTest {
 	protected BufferedReader botOut;
 	protected User aUser;
 	protected Channel aChannel;
+	protected CountDownLatch inputLatch;
+	protected InputStream in;
 
 	@BeforeMethod
 	public void botSetup() throws Exception {
@@ -58,9 +65,24 @@ public class PircBotXOutputTest {
 		bot.setName("PircBotXBot");
 		bot.setMessageDelay(0L);
 
-		//Setup stream
-		InputStream in = new ByteArrayInputStream("".getBytes());
+		//Setup streams for bot
 		PipedOutputStream out = new PipedOutputStream();
+		//Create an input stream that we'll kill later
+		inputLatch = new CountDownLatch(1);
+		in = new AutoCloseInputStream(new ByteArrayInputStream("".getBytes()) {
+			@Override
+			public synchronized int read() {
+				try {
+					//Block until were killed
+					inputLatch.await();
+				} catch (InterruptedException ex) {
+					//Wrap in an RuntimeException so whatever was using this fails
+					throw new RuntimeException("Interrupted while waiting for input", ex);
+				}
+				//No more input
+				return -1;
+			}
+		});
 		Socket socket = mock(Socket.class);
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(out);
@@ -80,62 +102,68 @@ public class PircBotXOutputTest {
 		aUser = bot.getUser("aUser");
 		aChannel = bot.getChannel("#aChannel");
 	}
+	
+	@AfterMethod
+	public void cleanUp() {
+		inputLatch.countDown();
+		bot.dispose();
+	}
 
-	@Test(timeOut = 5000, description = "Verify sendAction to user")
+	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
 		bot.sendAction(aUser, aString);
 		checkOutput("PRIVMSG aUser :\u0001ACTION " + aString + "\u0001");
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendAction to channel")
+	@Test(description = "Verify sendAction to channel")
 	public void sendActionChannelTest() throws Exception {
 		bot.sendAction(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendCTCPCommand to user")
+	@Test(description = "Verify sendCTCPCommand to user")
 	public void sendCTCPCommandUserTest() throws Exception {
 		bot.sendCTCPCommand(aUser, aString);
 		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendCTCPResponse to user")
+	@Test(description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
 		bot.sendCTCPResponse(aUser, aString);
 		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendInvite to user")
+	@Test(description = "Verify sendInvite to user")
 	public void sendInviteUserTest() throws Exception {
 		bot.sendInvite(aUser, aChannel);
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendInvite to channel")
+	@Test(description = "Verify sendInvite to channel")
 	public void sendInviteChannelTest() throws Exception {
 		bot.sendInvite(aChannel, bot.getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendMessage to channel")
+	@Test(description = "Verify sendMessage to channel")
 	public void sendMessageChannelTest() throws Exception {
 		bot.sendMessage(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :" + aString);
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendMessage to user")
+	@Test(description = "Verify sendMessage to user")
 	public void sendMessageUserTest() throws Exception {
 		bot.sendMessage(aUser, aString);
 		checkOutput("PRIVMSG aUser :" + aString);
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendNotice to channel")
+	@Test(description = "Verify sendNotice to channel")
 	public void sendNoticeChannelTest() throws Exception {
 		bot.sendNotice(aChannel, aString);
 		checkOutput("NOTICE #aChannel :" + aString);
 	}
 
-	@Test(timeOut = 5000, description = "Verify sendNotice to user")
+	@Test(description = "Verify sendNotice to user")
 	public void sendNoticeUserTest() throws Exception {
 		bot.sendNotice(aUser, aString);
 		checkOutput("NOTICE aUser :" + aString);
