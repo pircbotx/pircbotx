@@ -105,6 +105,13 @@
 			<version>1.8.5</version>
 			<scope>test</scope>
 		</dependency>
+		<!--Commons IO for testing-->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+			<scope>test</scope>
+		</dependency>
 		<!--Project Lombok for annotation processing-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
