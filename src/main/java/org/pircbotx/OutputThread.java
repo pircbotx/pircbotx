@@ -93,14 +93,14 @@ public class OutputThread extends Thread {
 	public void run() {
 		try {
 			while (true) {
-				//Small delay to prevent spamming of the channel
-				Thread.sleep(bot.getMessageDelay());
-
 				String line = queue.take();
 				if(!bot.isConnected())
 					throw new RuntimeException("Trying to send message when no longer connected");
 				if (line != null && bot.isConnected())
 					sendRawLineNow(line);
+				
+				//Small delay to prevent spamming of the channel
+				Thread.sleep(bot.getMessageDelay());
 			}
 		} catch (InterruptedException e) {
 			// Just let the method return naturally...
