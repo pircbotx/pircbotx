@@ -100,6 +100,33 @@ public class PircBotXConnectTest {
 			}
 		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
 	}
+	
+	@Test
+	public void connectWithDifferentPortTest() throws Exception {
+		//Connect the bot to the socket
+		bot.connect("example.com", 25622, null, socketFactory);
+
+		//Make sure the bot is connected
+		verify(socketFactory).createSocket("example.com", 25622);
+
+		//Verify lines
+		String[] lines = botOut.toString().split("\r\n");
+		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		assertEquals(lines[0], "NICK PircBotXBot");
+		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+
+		//Make sure there's a ConnectEvent dispatched
+		int ran = 0;
+		for (Event curEvent : events)
+			if (curEvent instanceof ConnectEvent) {
+				ConnectEvent cevent = (ConnectEvent) curEvent;
+				ran++;
+
+				//Verify values
+				assertEquals(cevent.getBot(), bot);
+			}
+		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
+	}
 
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithPasswordTest() throws Exception {
