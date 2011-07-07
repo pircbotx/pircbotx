@@ -68,6 +68,7 @@ import static org.testng.Assert.*;
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Test(singleThreaded = true)
 public class PircBotXProcessingTest {
 	final String aString = "I'm some super long string that has multiple words";
 	protected List<Event> events;

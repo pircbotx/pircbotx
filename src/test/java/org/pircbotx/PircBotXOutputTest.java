@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
  * Test the output of PircBotX. Depend on ConnectTests to check mocked sockets
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-//@Test(dependsOnGroups = "ConnectTests")
+@Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
 public class PircBotXOutputTest {
 	protected final String aString = "I'm some super long string that has multiple words";
 	protected PircBotX bot;
