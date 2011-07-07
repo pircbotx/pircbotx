@@ -78,6 +78,13 @@
 		Dependancies and Plugins
 	-->
 	<dependencies>
+		<!--Project Lombok for annotation processing-->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>0.10.0-RC1</version>
+			<scope>provided</scope>
+		</dependency>
 		<!--Use TestNG as testing framework-->
 		<dependency>
 			<groupId>org.testng</groupId>
@@ -111,13 +118,6 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.0.1</version>
 			<scope>test</scope>
-		</dependency>
-		<!--Project Lombok for annotation processing-->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>0.10.0-RC1</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
