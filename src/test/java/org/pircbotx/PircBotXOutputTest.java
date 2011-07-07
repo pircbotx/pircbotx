@@ -18,13 +18,8 @@
  */
 package org.pircbotx;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -102,7 +97,7 @@ public class PircBotXOutputTest {
 		aUser = bot.getUser("aUser");
 		aChannel = bot.getChannel("#aChannel");
 	}
-	
+
 	@AfterMethod
 	public void cleanUp() {
 		inputLatch.countDown();
@@ -181,7 +176,7 @@ public class PircBotXOutputTest {
 		String line = botOut.readLine();
 		assertNotNull(line, "Second output line is null");
 		assertTrue(line.startsWith("USER PircBotX 8 * :"), "Unexpected second line: " + line);
-		
+
 		//Make sure the remaining line is okay
 		System.out.println("Reading third line");
 		line = botOut.readLine();
