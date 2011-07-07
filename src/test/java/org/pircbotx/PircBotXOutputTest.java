@@ -103,6 +103,12 @@ public class PircBotXOutputTest {
 		inputLatch.countDown();
 		bot.dispose();
 	}
+	
+	@Test(description = "Verify sendRawLine works correctly")
+	public void sendRawLineTest() throws Exception {
+		bot.sendRawLine(aString);
+		checkOutput(aString);
+	}
 
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
