@@ -167,7 +167,7 @@ public class PircBotXOutputTest {
 	@Test(description = "Verify sendMessage to user in channel")
 	public void sendMessageChannelUserTest() throws Exception {
 		bot.sendMessage(aChannel, aUser, aString);
-		checkOutput("PRIVMSG #aChannel :" + aString);
+		checkOutput("PRIVMSG #aChannel :aUser: " + aString);
 	}
 
 	@Test(description = "Verify sendMessage to user")
