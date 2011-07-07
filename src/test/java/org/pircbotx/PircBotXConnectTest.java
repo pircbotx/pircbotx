@@ -22,9 +22,13 @@
  */
 package org.pircbotx;
 
+import org.pircbotx.hooks.events.ConnectEvent;
+import java.util.List;
+import org.pircbotx.hooks.Event;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import javax.net.SocketFactory;
 import org.apache.commons.lang.StringUtils;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -44,17 +48,24 @@ public class PircBotXConnectTest {
 	protected SocketFactory socketFactory;
 	protected ByteArrayInputStream botIn;
 	protected ByteArrayOutputStream botOut;
-	
+	protected List<Event> events;
+
 	@BeforeMethod
 	public void botProvider() throws Exception {
 		//Setup bot
 		bot = new PircBotX();
-		bot.setListenerManager(new GenericListenerManager());
+		events = new ArrayList<Event>();
+		bot.setListenerManager(new GenericListenerManager() {
+			@Override
+			public void dispatchEvent(Event event) {
+				events.add(event);
+			}
+		});
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
-		
+
 		//Setup stream
-		botIn = new ByteArrayInputStream("".getBytes());
+		botIn = new ByteArrayInputStream(":ircd.test 004 ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
 		botOut = new ByteArrayOutputStream();
 		Socket socket = mock(Socket.class);
 		when(socket.getInputStream()).thenReturn(botIn);
@@ -62,7 +73,7 @@ public class PircBotXConnectTest {
 		socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket("example.com", 6667)).thenReturn(socket);
 	}
-	
+
 	@Test
 	public void connectTest() throws Exception {
 		//Connect the bot to the socket
@@ -70,14 +81,26 @@ public class PircBotXConnectTest {
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 6667);
-		
+
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
 		assertEquals(lines[0], "NICK PircBotXBot");
 		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+
+		//Make sure there's a ConnectEvent dispatched
+		int ran = 0;
+		for (Event curEvent : events)
+			if (curEvent instanceof ConnectEvent) {
+				ConnectEvent cevent = (ConnectEvent) curEvent;
+				ran++;
+
+				//Verify values
+				assertEquals(cevent.getBot(), bot);
+			}
+		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
 	}
-	
+
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithPasswordTest() throws Exception {
 		//Connect the bot to the socket
@@ -85,11 +108,23 @@ public class PircBotXConnectTest {
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 6667);
-		
+
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 		assertEquals(lines.length, 3);
 		assertEquals(lines[0], "PASS pa55w0rd");
 		assertEquals(lines[1], "NICK PircBotXBot");
+
+		//Make sure there's a ConnectEvent dispatched
+		int ran = 0;
+		for (Event curEvent : events)
+			if (curEvent instanceof ConnectEvent) {
+				ConnectEvent cevent = (ConnectEvent) curEvent;
+				ran++;
+
+				//Verify values
+				assertEquals(cevent.getBot(), bot);
+			}
+		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
 	}
 }
