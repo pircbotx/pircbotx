@@ -46,6 +46,7 @@ import static org.mockito.Mockito.*;
 public class PircBotXConnectTest {
 	protected PircBotX bot;
 	protected SocketFactory socketFactory;
+	protected Socket socket;
 	protected ByteArrayInputStream botIn;
 	protected ByteArrayOutputStream botOut;
 	protected List<Event> events;
@@ -67,7 +68,7 @@ public class PircBotXConnectTest {
 		//Setup stream
 		botIn = new ByteArrayInputStream(":ircd.test 004 ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
 		botOut = new ByteArrayOutputStream();
-		Socket socket = mock(Socket.class);
+		socket = mock(Socket.class);
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
@@ -101,9 +102,10 @@ public class PircBotXConnectTest {
 		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
 	}
 	
-	@Test
+	@Test(dependsOnMethods = "connectTest")
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket
+		when(socketFactory.createSocket("example.com", 25622)).thenReturn(socket);
 		bot.connect("example.com", 25622, null, socketFactory);
 
 		//Make sure the bot is connected
