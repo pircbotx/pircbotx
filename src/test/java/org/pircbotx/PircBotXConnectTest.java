@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
  * relys on a working mock implementation
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@Test(groups = "ConnectTests")
+@Test(groups = "ConnectTests", singleThreaded = true)
 public class PircBotXConnectTest {
 	protected PircBotX bot;
 	protected SocketFactory socketFactory;
