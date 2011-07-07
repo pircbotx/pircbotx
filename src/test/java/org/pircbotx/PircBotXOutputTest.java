@@ -121,6 +121,12 @@ public class PircBotXOutputTest {
 		bot.sendAction(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
 	}
+	
+	@Test(description = "Verify sendAction by string")
+	public void sendActionStringTest() throws Exception {
+		bot.sendAction("#aChannel", aString);
+		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
+	}
 
 	@Test(description = "Verify sendCTCPCommand to user")
 	public void sendCTCPCommandUserTest() throws Exception {
@@ -133,10 +139,22 @@ public class PircBotXOutputTest {
 		bot.sendCTCPCommand(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
 	}
+	
+	@Test(description = "Verify sendCTCPCommand by string")
+	public void sendCTCPCommandStringTest() throws Exception {
+		bot.sendCTCPCommand("#aChannel", aString);
+		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
+	}
 
 	@Test(description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
 		bot.sendCTCPResponse(aUser, aString);
+		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
+	}
+	
+	@Test(description = "Verify sendCTCPResponse by string")
+	public void sendCTCPResponseStringTest() throws Exception {
+		bot.sendCTCPResponse("aUser", aString);
 		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
 
@@ -157,6 +175,12 @@ public class PircBotXOutputTest {
 		bot.sendInvite(aUser, "#aChannel");
 		checkOutput("INVITE aUser :#aChannel");
 	}
+	
+	@Test(description = "Verify sendInvite by string")
+	public void sendInviteStringlTest() throws Exception {
+		bot.sendInvite("aUser", "#aChannel");
+		checkOutput("INVITE aUser :#aChannel");
+	}
 
 	@Test(description = "Verify sendMessage to channel")
 	public void sendMessageChannelTest() throws Exception {
@@ -175,6 +199,12 @@ public class PircBotXOutputTest {
 		bot.sendMessage(aUser, aString);
 		checkOutput("PRIVMSG aUser :" + aString);
 	}
+	
+	@Test(description = "Verify sendMessage by string")
+	public void sendMessageStringTest() throws Exception {
+		bot.sendMessage("aUser", aString);
+		checkOutput("PRIVMSG aUser :" + aString);
+	}
 
 	@Test(description = "Verify sendNotice to channel")
 	public void sendNoticeChannelTest() throws Exception {
@@ -185,6 +215,12 @@ public class PircBotXOutputTest {
 	@Test(description = "Verify sendNotice to user")
 	public void sendNoticeUserTest() throws Exception {
 		bot.sendNotice(aUser, aString);
+		checkOutput("NOTICE aUser :" + aString);
+	}
+	
+	@Test(description = "Verify sendNotice by String")
+	public void sendNoticeStringTest() throws Exception {
+		bot.sendNotice("aUser", aString);
 		checkOutput("NOTICE aUser :" + aString);
 	}
 
