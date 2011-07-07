@@ -121,6 +121,12 @@ public class PircBotXOutputTest {
 		bot.sendCTCPCommand(aUser, aString);
 		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
 	}
+	
+	@Test(description = "Verify sendCTCPCommand to channel")
+	public void sendCTCPCommandChannelTest() throws Exception {
+		bot.sendCTCPCommand(aChannel, aString);
+		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
+	}
 
 	@Test(description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
@@ -129,20 +135,32 @@ public class PircBotXOutputTest {
 	}
 
 	@Test(description = "Verify sendInvite to user")
-	public void sendInviteUserTest() throws Exception {
+	public void sendInviteUserChannelTest() throws Exception {
 		bot.sendInvite(aUser, aChannel);
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite to channel")
-	public void sendInviteChannelTest() throws Exception {
+	public void sendInviteChannelChannelTest() throws Exception {
 		bot.sendInvite(aChannel, bot.getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
+	}
+	
+	@Test(description = "Verify sendInvite to channel by string")
+	public void sendInviteChannelStringlTest() throws Exception {
+		bot.sendInvite(aUser, "#aChannel");
+		checkOutput("INVITE aUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendMessage to channel")
 	public void sendMessageChannelTest() throws Exception {
 		bot.sendMessage(aChannel, aString);
+		checkOutput("PRIVMSG #aChannel :" + aString);
+	}
+	
+	@Test(description = "Verify sendMessage to user in channel")
+	public void sendMessageChannelUserTest() throws Exception {
+		bot.sendMessage(aChannel, aUser, aString);
 		checkOutput("PRIVMSG #aChannel :" + aString);
 	}
 
