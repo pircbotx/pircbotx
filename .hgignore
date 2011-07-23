@@ -1,3 +1,4 @@
 target/
-syntax: glob
-nbactions.xml
+glob:nbactions.xml
+glob:nb-configuration.xml
+
