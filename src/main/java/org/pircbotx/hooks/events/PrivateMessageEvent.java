@@ -53,6 +53,6 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getUser(), message);
+		getBot().sendMessage(getUser(), response);
 	}
 }
