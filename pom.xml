@@ -91,12 +91,6 @@
 			<artifactId>testng</artifactId>
 			<version>6.1.1</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>junit</artifactId>
-					<groupId>junit</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
 		<dependency>
