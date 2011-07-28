@@ -56,9 +56,9 @@
 	</issueManagement>
 
 	<scm>
-		<connection>scm:hg:http://pircbotx.googlecode.com/hg</connection>
-		<developerConnection>scm:hg:https://pircbotx.googlecode.com/hg</developerConnection>
-		<url>https://pircbotx.googlecode.com/hg</url>
+		<connection>scm:hg:http://code.google.com/p/pircbotx</connection>
+		<developerConnection>scm:hg:https://code.google.com/p/pircbotx</developerConnection>
+		<url>https://code.google.com/p/pircbotx</url>
 	</scm>
 	
 	<mailingLists>
