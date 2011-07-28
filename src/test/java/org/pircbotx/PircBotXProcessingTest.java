@@ -494,6 +494,18 @@ public class PircBotXProcessingTest {
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
 	}
 	
+	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
+	public void quitWithoutMessageAndColonTest() {
+		User otherUser = bot.getUser("OtherUser");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT");
+
+		//Check event contents
+		QuitEvent qevent = getEvent(events, QuitEvent.class, "QuitEvent not dispatched");
+		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
+		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
+	}
+	
 	@Test(dependsOnMethods = "joinTest", description = "Verify part with message")
 	public void partWithMessageTest() {
 		User otherUser = bot.getUser("OtherUser");
