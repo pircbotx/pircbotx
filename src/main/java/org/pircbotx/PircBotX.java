@@ -1510,6 +1510,7 @@ public class PircBotX {
 		User source = getUser(sourceNick);
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && _channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
+		String message = (line.contains(" :")) ? line.substring(line.indexOf(" :") + 2) : "";
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
@@ -1539,10 +1540,10 @@ public class PircBotX {
 				getListenerManager().dispatchEvent(new UnknownEvent(this, line));
 		} else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0)
 			// This is a normal message to a channel.
-			getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, message));
 		else if (command.equals("PRIVMSG"))
 			// This is a private message to us.
-			getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, message));
 		else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(_nick)) {
@@ -1574,7 +1575,7 @@ public class PircBotX {
 			getListenerManager().dispatchEvent(new NickChangeEvent(this, sourceNick, newNick, source));
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
-			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
 		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
@@ -1584,7 +1585,7 @@ public class PircBotX {
 			else
 				//Someone else
 				_userChanInfo.deleteB(source);
-			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, message));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			User recipient = getUser(tokenizer.nextToken());
@@ -1594,7 +1595,7 @@ public class PircBotX {
 			else
 				//Someone else
 				_userChanInfo.dissociate(channel, recipient, true);
-			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, message));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user.
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -1613,7 +1614,7 @@ public class PircBotX {
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
-			getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, line.substring(line.indexOf(" :") + 2)));
+			getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, message));
 			//Delete user if not part of any of our channels
 			if (source.getChannels().isEmpty())
 				_userChanInfo.deleteB(source);
@@ -1621,7 +1622,6 @@ public class PircBotX {
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
 			getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-
 	}
 
 	/**
