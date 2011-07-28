@@ -321,9 +321,9 @@ public class PircBotX {
 		BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
 
 		//Construct the output and input threads
-		_inputThread = new InputThread(this, _socket, breader);
+		_inputThread = createInputThread(_socket, breader);
 		if (_outputThread == null)
-			_outputThread = new OutputThread(this, bwriter);
+			_outputThread = createOutputThread(bwriter);
 		_outputThread.start();
 
 		// Attempt to join the server.
@@ -382,6 +382,14 @@ public class PircBotX {
 		_inputThread.start();
 
 		getListenerManager().dispatchEvent(new ConnectEvent(this));
+	}
+	
+	protected InputThread createInputThread(Socket socket, BufferedReader breader) {
+		return new InputThread(this, socket, breader);
+	}
+	
+	protected OutputThread createOutputThread(BufferedWriter bwriter) {
+		return new OutputThread(this, bwriter);
 	}
 
 	/**
