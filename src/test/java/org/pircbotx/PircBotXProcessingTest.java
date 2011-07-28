@@ -458,7 +458,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
-	public void quitTest() {
+	public void quitWithMessageTest() {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -482,7 +482,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
-	public void quitTest2() {
+	public void quitWithoutMessageTest() {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
