@@ -35,6 +35,7 @@ import org.pircbotx.PircBotX;
 public class PartEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
 	protected final User user;
+	protected final String reason;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -42,10 +43,11 @@ public class PartEvent<T extends PircBotX> extends Event<T> {
 	 * @param channel The channel which somebody parted from.
 	 * @param user The user who parted from the channel.
 	 */
-	public PartEvent(T bot, Channel channel, User user) {
+	public PartEvent(T bot, Channel channel, User user, String reason) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
+		this.reason = reason;
 	}
 
 	/**
