@@ -49,7 +49,7 @@ public class InputThread extends Thread {
 	 * @param breader The BufferedReader that reads lines from the server.
 	 * @param bwriter The BufferedWriter that sends lines to the server.
 	 */
-	InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
+	protected InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
 		this.bot = bot;
 		this.socket = socket;
 		this.breader = breader;
