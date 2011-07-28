@@ -1563,7 +1563,7 @@ public class PircBotX {
 			else {
 				//Just remove the user from memory
 				_userChanInfo.dissociate(channel, getUser(sourceNick));
-				getListenerManager().dispatchEvent(new PartEvent(this, channel, source));
+				getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
 			}
 		else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
