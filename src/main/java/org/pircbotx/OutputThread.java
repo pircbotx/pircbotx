@@ -48,7 +48,7 @@ public class OutputThread extends Thread {
 	 *
 	 * @param bot The underlying PircBotX instance.
 	 */
-	public OutputThread(PircBotX bot, BufferedWriter bwriter) {
+	protected OutputThread(PircBotX bot, BufferedWriter bwriter) {
 		this.bot = bot;
 		this.bwriter = bwriter;
 	}
