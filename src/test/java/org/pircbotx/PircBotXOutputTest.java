@@ -29,7 +29,6 @@ import java.io.PipedOutputStream;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 import javax.net.SocketFactory;
-import org.apache.commons.io.input.AutoCloseInputStream;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -54,7 +53,18 @@ public class PircBotXOutputTest {
 	@BeforeMethod
 	public void botSetup() throws Exception {
 		//Setup bot
-		bot = new PircBotX();
+		inputLatch = new CountDownLatch(1);
+		bot = new PircBotX() {
+			@Override
+			protected InputThread createInputThread(Socket socket, BufferedReader breader) {
+				return new InputThread(bot, socket, breader) {
+					@Override
+					public void run() {
+						//Do nothing
+					}
+				};
+			}
+		};
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
@@ -63,21 +73,7 @@ public class PircBotXOutputTest {
 		//Setup streams for bot
 		PipedOutputStream out = new PipedOutputStream();
 		//Create an input stream that we'll kill later
-		inputLatch = new CountDownLatch(1);
-		in = new AutoCloseInputStream(new ByteArrayInputStream("".getBytes()) {
-			@Override
-			public synchronized int read() {
-				try {
-					//Block until were killed
-					inputLatch.await();
-				} catch (InterruptedException ex) {
-					//Wrap in an RuntimeException so whatever was using this fails
-					throw new RuntimeException("Interrupted while waiting for input", ex);
-				}
-				//No more input
-				return -1;
-			}
-		});
+		in = new ByteArrayInputStream("".getBytes());
 		Socket socket = mock(Socket.class);
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(out);
@@ -103,13 +99,13 @@ public class PircBotXOutputTest {
 		inputLatch.countDown();
 		bot.dispose();
 	}
-	
+
 	@Test(description = "Verify sendRawLine works correctly")
 	public void sendRawLineTest() throws Exception {
 		bot.sendRawLine(aString);
 		checkOutput(aString);
 	}
-	
+
 	@Test(description = "Verify sendRawLineNow works correctly")
 	public void sendRawLineNowTest() throws Exception {
 		bot.sendRawLineNow(aString);
@@ -127,7 +123,7 @@ public class PircBotXOutputTest {
 		bot.sendAction(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
 	}
-	
+
 	@Test(description = "Verify sendAction by string")
 	public void sendActionStringTest() throws Exception {
 		bot.sendAction("#aChannel", aString);
@@ -139,13 +135,13 @@ public class PircBotXOutputTest {
 		bot.sendCTCPCommand(aUser, aString);
 		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
 	}
-	
+
 	@Test(description = "Verify sendCTCPCommand to channel")
 	public void sendCTCPCommandChannelTest() throws Exception {
 		bot.sendCTCPCommand(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
 	}
-	
+
 	@Test(description = "Verify sendCTCPCommand by string")
 	public void sendCTCPCommandStringTest() throws Exception {
 		bot.sendCTCPCommand("#aChannel", aString);
@@ -157,7 +153,7 @@ public class PircBotXOutputTest {
 		bot.sendCTCPResponse(aUser, aString);
 		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
-	
+
 	@Test(description = "Verify sendCTCPResponse by string")
 	public void sendCTCPResponseStringTest() throws Exception {
 		bot.sendCTCPResponse("aUser", aString);
@@ -175,13 +171,13 @@ public class PircBotXOutputTest {
 		bot.sendInvite(aChannel, bot.getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
-	
+
 	@Test(description = "Verify sendInvite to channel by string")
 	public void sendInviteChannelStringlTest() throws Exception {
 		bot.sendInvite(aUser, "#aChannel");
 		checkOutput("INVITE aUser :#aChannel");
 	}
-	
+
 	@Test(description = "Verify sendInvite by string")
 	public void sendInviteStringlTest() throws Exception {
 		bot.sendInvite("aUser", "#aChannel");
@@ -193,7 +189,7 @@ public class PircBotXOutputTest {
 		bot.sendMessage(aChannel, aString);
 		checkOutput("PRIVMSG #aChannel :" + aString);
 	}
-	
+
 	@Test(description = "Verify sendMessage to user in channel")
 	public void sendMessageChannelUserTest() throws Exception {
 		bot.sendMessage(aChannel, aUser, aString);
@@ -205,7 +201,7 @@ public class PircBotXOutputTest {
 		bot.sendMessage(aUser, aString);
 		checkOutput("PRIVMSG aUser :" + aString);
 	}
-	
+
 	@Test(description = "Verify sendMessage by string")
 	public void sendMessageStringTest() throws Exception {
 		bot.sendMessage("aUser", aString);
@@ -223,7 +219,7 @@ public class PircBotXOutputTest {
 		bot.sendNotice(aUser, aString);
 		checkOutput("NOTICE aUser :" + aString);
 	}
-	
+
 	@Test(description = "Verify sendNotice by String")
 	public void sendNoticeStringTest() throws Exception {
 		bot.sendNotice("aUser", aString);
