@@ -60,8 +60,8 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 	}
 	
 	/**
-	 * Returns true if this was set, false if removed
-	 * @return 
+	 * Checks if this is a set or remove voice operation
+	 * @return True if this was set, false if removed
 	 * @deprecated Use the better named hasVoice method. Will be removed in future versions
 	 * @see #hasVoice() 
 	 */
