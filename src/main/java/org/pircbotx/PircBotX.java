@@ -1503,7 +1503,7 @@ public class PircBotX {
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
 		if (target == null)
-			target = tokenizer.nextToken();
+			target = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
