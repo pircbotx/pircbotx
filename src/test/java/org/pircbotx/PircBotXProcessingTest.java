@@ -34,6 +34,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
+import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
@@ -492,7 +493,49 @@ public class PircBotXProcessingTest {
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
 	}
-
+	
+	@Test(dependsOnMethods = "joinTest", description = "Verify part with message")
+	public void partWithMessageTest() {
+		User otherUser = bot.getUser("OtherUser");
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 PART #aChannel :" + aString);
+		
+		//Check event contents
+		PartEvent event = getEvent(events, PartEvent.class, "PartEvent not dispatched");
+		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
+		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given"); 
+		assertEquals(event.getReason(), aString, "PartEvent's reason doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
+	public void partWithoutMessageTest() {
+		User otherUser = bot.getUser("OtherUser");
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 PART #aChannel :");
+		
+		//Check event contents
+		PartEvent event = getEvent(events, PartEvent.class, "PartEvent not dispatched");
+		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
+		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given"); 
+		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
+	public void partWithoutMessageAndColonTest() {
+		User otherUser = bot.getUser("OtherUser");
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
+		bot.handleLine(":OtherUser!~OtherLogin@some.host1 PART #aChannel");
+		
+		//Check event contents
+		PartEvent event = getEvent(events, PartEvent.class, "PartEvent not dispatched");
+		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
+		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given"); 
+		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
+	}
+	
 	/**
 	 * After simulating a server response, call this to get a specific Event from
 	 * the Event set. Note that if the event does not exist an Assertion error will
