@@ -481,7 +481,7 @@ public class PircBotXProcessingTest {
 		assertNotSame(bot.getUser("OtherUser"), otherUser, "User fetched with getUser and previous user object are exactly the same");
 	}
 
-	@Test(dependsOnMethods = "quitTest", description = "Verify QuitEvent with no message")
+	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
 	public void quitWithoutMessageTest() {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
