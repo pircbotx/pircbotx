@@ -249,7 +249,7 @@
 		<!--Site deploy repository-->
 		<site>
 			<id>pircbotx.googlecode.com</id>
-			<url>scm:hg:https://site.pircbotx.googlecode.com/hg</url>
+			<url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
 		</site>
 	</distributionManagement>
 </project>
