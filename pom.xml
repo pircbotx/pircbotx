@@ -52,13 +52,13 @@
 
 	<issueManagement>
 		<system>Google Code</system>
-		<url>http://code.google.com/p/pircbotx/issues/list</url>
+		<url>http://code.google.com/p/pircbotx/issues/list/</url>
 	</issueManagement>
 
 	<scm>
-		<connection>scm:hg:http://code.google.com/p/pircbotx</connection>
-		<developerConnection>scm:hg:https://code.google.com/p/pircbotx</developerConnection>
-		<url>https://code.google.com/p/pircbotx</url>
+		<connection>scm:hg:http://code.google.com/p/pircbotx/</connection>
+		<developerConnection>scm:hg:https://code.google.com/p/pircbotx/</developerConnection>
+		<url>https://code.google.com/p/pircbotx/</url>
 	</scm>
 	
 	<mailingLists>
@@ -66,7 +66,7 @@
 			<name>pircbotx</name>
 			<subscribe>pircbotx-subscribe@googlegroups.com</subscribe>
 			<unsubscribe>pircbotx-unsubscribe@googlegroups.com</unsubscribe>
-			<archive>http://groups.google.com/group/pircbotx</archive>
+			<archive>http://groups.google.com/group/pircbotx/</archive>
 		</mailingList>
 	</mailingLists>
 
