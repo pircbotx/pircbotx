@@ -36,6 +36,10 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * with the same or close to the same information. All important setup methods
  * have been mirrored here. For documentation, see their equivalent PircBotX
  * methods.
+ * <p>
+ * <b>Note:</b> Setting any value after connectAll() is invoked will NOT update
+ * all existing bots. You will need to loop over the bots and call the set methods
+ * manually
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
