@@ -101,7 +101,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 
 	public void doAfter() {
 	}
-	
+
 	@Override
 	public void onConnect(ConnectEvent event) throws Exception {
 		System.out.println("Connected to server");
@@ -113,13 +113,13 @@ public class PircBotXJMeter extends ListenerAdapter {
 	}
 
 	public static void main(String[] args) {
-		if(args.length != 1) {
+		if (args.length != 1) {
 			System.err.println("No JMeter IRC server specified");
 			System.exit(2);
 		}
 		String server = args[0];
 		System.out.println("Connecting to server: " + server);
-		
+
 		//Create a new bot
 		PircBotX bot = new PircBotX();
 
@@ -131,12 +131,11 @@ public class PircBotXJMeter extends ListenerAdapter {
 		new Thread() {
 			@Override
 			public void run() {
-				while(true) {
+				while (true) {
 					System.out.println("Pool Size: " + executor.getPoolSize());
-					try {					
+					try {
 						Thread.sleep(2000);
-					}
-					catch(InterruptedException e) {
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
