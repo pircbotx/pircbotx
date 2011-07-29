@@ -23,6 +23,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.PartEvent;
@@ -98,6 +100,16 @@ public class PircBotXJMeter extends ListenerAdapter {
 	}
 
 	public void doAfter() {
+	}
+	
+	@Override
+	public void onConnect(ConnectEvent event) throws Exception {
+		System.out.println("Connected to server");
+	}
+
+	@Override
+	public void onDisconnect(DisconnectEvent event) throws Exception {
+		System.out.println("Disconnected from server");
 	}
 
 	public static void main(String[] args) {
