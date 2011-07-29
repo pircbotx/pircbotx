@@ -46,8 +46,8 @@ public class InputThread extends Thread {
 	 * PircBotX to handle them.
 	 *
 	 * @param bot An instance of the underlying PircBotX.
+	 * @param socket Socket that represents the connection
 	 * @param breader The BufferedReader that reads lines from the server.
-	 * @param bwriter The BufferedWriter that sends lines to the server.
 	 */
 	protected InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
 		this.bot = bot;
@@ -93,9 +93,9 @@ public class InputThread extends Thread {
 			} catch (Exception e) {
 				bot.logException(e);
 			}
-			
+
 			//End the loop if the line is null
-			if(line == null)
+			if (line == null)
 				break;
 
 			//Start acting the line
