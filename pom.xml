@@ -14,7 +14,7 @@
 	<groupId>org.pircbotx</groupId>
 	<artifactId>pircbotx</artifactId>
 	<packaging>jar</packaging>
-	<version>1.6-SNAPSHOT</version>
+	<version>1.5</version>
 	
 	<!--
 		Project information
@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.10.0-RC1</version>
+			<version>0.10.0-RC3</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
@@ -153,7 +153,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0-beta-3</version>
+				<version>3.0-beta-4-SNAPSHOT</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
@@ -241,6 +241,20 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache-snapshots</id>
+			<name>Apache Snapshot Repository</name>
+			<url>https://repository.apache.org/content/groups/snapshots-group/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<!--
 		Distribution
@@ -249,7 +263,7 @@
 		<!--Site deploy repository-->
 		<site>
 			<id>pircbotx.googlecode.com</id>
-			<url>scm:hg:https://site.pircbotx.googlecode.com/hg/</url>
+			<url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
 		</site>
 	</distributionManagement>
 </project>
