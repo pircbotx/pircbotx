@@ -186,9 +186,7 @@
 					<classpathScope>compile</classpathScope>
 					<arguments>
 						<argument>-classpath</argument>
-						<classpath>
-							<dependency>org.projectlombok:lombok</dependency>
-						</classpath>
+						<classpath/>
 						<argument>lombok.core.Main</argument>
 						<argument>delombok</argument>
 						<argument>src/main/java</argument>
