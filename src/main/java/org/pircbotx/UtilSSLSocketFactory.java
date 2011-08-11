@@ -39,8 +39,14 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- *
- * @author lordquackstar
+ * Utility for doing various useful things to an SSL socket factory. 
+ * <p>
+ * Most methods follow the builder pattern, meaning you can declare and setup
+ * this Socket Factory in one line
+ * @author Trusting all certificates code by <a href="http://www.howardism.org/Technical/Java/SelfSignedCerts.html">Howardism</a>
+ *         <p>Disabling Diffie Hellman code by <a href="http://stackoverflow.com/questions/6851461/java-why-does-ssl-handshake-give-could-not-generate-dh-keypair-exception/6862383#6862383">Sam on StackOverflow</a>
+ *         <p>Implemented and Maintained in PircBotX by: 
+ *         Leon Blakey <lord.quackstar at gmail.com>
  */
 @EqualsAndHashCode(callSuper = false)
 @ToString
@@ -50,10 +56,16 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	protected SSLSocketFactory wrappedFactory;
 	protected boolean trustingAllCertificates = false;
 	protected boolean diffieHellmanDisabled = false;
-
+	
 	public UtilSSLSocketFactory() {
 	}
 
+	/**
+	 * By default, trust ALL certificates. <b>This is very insecure.</b> It also
+	 * defeats one of the points of SSL: Making sure your connecting to the right
+	 * server. 
+	 * @return The current UtilSSLSocketFactory instance 
+	 */
 	public UtilSSLSocketFactory trustAllCertificates() {
 		if (trustingAllCertificates)
 			//Already doing this, no need to do it again
@@ -70,6 +82,19 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		return this;
 	}
 
+	/**
+	 * Disable the Diffie Hellman key exchange algorithm. This is useful to work 
+	 * around JDK bug #6521495 which throws an Exception when prime sizes are 
+	 * above 1024 bits.
+	 * <p>
+	 * Note that this requires that the server supports other key exchange algorithms.
+	 * This socket factory (nor any other built in Socket Factory) cannot connect 
+	 * to a server that only supports Diffie Hellman key exchange with prime sizes
+	 * larger than 1024 bits. 
+	 * <p>
+	 * Also see PircBotX Issue #34
+	 * @return 
+	 */
 	public UtilSSLSocketFactory disableDiffieHellman() {
 		diffieHellmanDisabled = true;
 		return this;
@@ -113,6 +138,9 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		return prepare(wrappedFactory.createSocket(s, host, port, autoClose));
 	}
 
+	/**
+	 * X509TrustManager that trusts all certificates. <b>This is very insecure</b>
+	 */
 	public static class NaiveTrustManager implements X509TrustManager {
 		/**
 		 * Doesn't throw an exception, so this is how it approves a certificate.
