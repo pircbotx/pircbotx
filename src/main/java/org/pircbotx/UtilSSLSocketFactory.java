@@ -76,7 +76,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 			return this;
 		trustingAllCertificates = true;
 		try {
-			TrustManager[] tm = new TrustManager[]{new NaiveTrustManager()};
+			TrustManager[] tm = new TrustManager[]{new TrustingX509TrustManager()};
 			SSLContext context = SSLContext.getInstance("SSL");
 			context.init(new KeyManager[0], tm, new SecureRandom());
 			wrappedFactory = (SSLSocketFactory) context.getSocketFactory();
@@ -145,7 +145,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	/**
 	 * X509TrustManager that trusts all certificates. <b>This is very insecure</b>
 	 */
-	public static class NaiveTrustManager implements X509TrustManager {
+	public static class TrustingX509TrustManager implements X509TrustManager {
 		/**
 		 * Doesn't throw an exception, so this is how it approves a certificate.
 		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], String)
