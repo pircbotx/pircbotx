@@ -122,8 +122,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	}
 
 	@Override
-	public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
-			throws IOException, UnknownHostException {
+	public Socket createSocket(String host, int port, InetAddress localHost, int localPort)	throws IOException, UnknownHostException {
 		return prepare(wrappedFactory.createSocket(host, port, localHost, localPort));
 	}
 
