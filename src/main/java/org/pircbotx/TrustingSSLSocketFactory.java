@@ -25,15 +25,11 @@ import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 /**
  * An SSLSocketFactory implementation that treats all certificates as valid. Use with care.
@@ -59,7 +55,7 @@ public class TrustingSSLSocketFactory extends SSLSocketFactory {
 		try {
 			SSLContext sslContext;
 			sslContext = SSLContext.getInstance("SSLv3");
-			sslContext.init(null, new TrustManager[]{new TrustingX509TrustManager()}, null);
+			sslContext.init(null, new TrustManager[]{new UtilSSLSocketFactory.TrustingX509TrustManager()}, null);
 			factory = sslContext.getSocketFactory();
 		} catch (NoSuchAlgorithmException nsae) {
 			throw new SSLException("Unable to initialize the SSL context:  ", nsae);
@@ -145,41 +141,5 @@ public class TrustingSSLSocketFactory extends SSLSocketFactory {
 	private SSLSocket prepare(SSLSocket baseSocket) {
 		baseSocket.setEnabledCipherSuites(ciphers);
 		return baseSocket;
-	}
-
-	/**
-	 * Trusts everyone. Very insecure.
-	 */
-	private class TrustingX509TrustManager implements X509TrustManager {
-
-		/*
-		 * (non-Javadoc)
-		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[],
-		 *      java.lang.String)
-		 */
-		public void checkClientTrusted(X509Certificate[] arg0, String arg1)
-				throws CertificateException {
-			// no Exception implies acceptance
-			return;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[],
-		 *      java.lang.String)
-		 */
-		public void checkServerTrusted(X509Certificate[] arg0, String arg1)
-				throws CertificateException {
-			// no Exception implies acceptance
-			return;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
-		 */
-		public X509Certificate[] getAcceptedIssuers() {
-			return new X509Certificate[0];
-		}
 	}
 }
