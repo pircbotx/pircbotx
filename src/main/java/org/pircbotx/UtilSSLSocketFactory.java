@@ -97,7 +97,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	 * larger than 1024 bits. 
 	 * <p>
 	 * Also see PircBotX Issue #34
-	 * @return 
+	 * @return The current UtilSSLSocketFactory instance 
 	 */
 	public UtilSSLSocketFactory disableDiffieHellman() {
 		diffieHellmanDisabled = true;
