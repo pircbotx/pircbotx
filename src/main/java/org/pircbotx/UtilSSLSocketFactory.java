@@ -56,8 +56,12 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	protected SSLSocketFactory wrappedFactory;
 	protected boolean trustingAllCertificates = false;
 	protected boolean diffieHellmanDisabled = false;
-	
+
+	/**
+	 * Setup UtilSSLSocketFactory wrapping {@link SSLSocketFactory#getDefault() }
+	 */
 	public UtilSSLSocketFactory() {
+		wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 	}
 
 	/**
