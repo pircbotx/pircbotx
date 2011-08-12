@@ -50,11 +50,12 @@ import lombok.ToString;
  */
 @EqualsAndHashCode(callSuper = false)
 @ToString
-@Getter
 public class UtilSSLSocketFactory extends SSLSocketFactory {
 	@Delegate(excludes = SSLSocketFactoryDelegateExclude.class)
 	protected SSLSocketFactory wrappedFactory;
+	@Getter
 	protected boolean trustingAllCertificates = false;
+	@Getter
 	protected boolean diffieHellmanDisabled = false;
 
 	/**
