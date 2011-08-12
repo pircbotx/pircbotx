@@ -383,11 +383,11 @@ public class PircBotX {
 
 		getListenerManager().dispatchEvent(new ConnectEvent(this));
 	}
-	
+
 	protected InputThread createInputThread(Socket socket, BufferedReader breader) {
 		return new InputThread(this, socket, breader);
 	}
-	
+
 	protected OutputThread createOutputThread(BufferedWriter bwriter) {
 		return new OutputThread(this, bwriter);
 	}
@@ -506,7 +506,7 @@ public class PircBotX {
 	public void partChannel(Channel channel, String reason) {
 		sendRawLine("PART " + channel.getName() + " :" + reason);
 	}
-	
+
 	/**
 	 * Part and rejoin specified channel. Useful for obtaining auto privileges
 	 * after identifying
@@ -518,17 +518,17 @@ public class PircBotX {
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
 		listenerManager.addListener(new ListenerAdapter() {
-				@Override
-				public void onPart(PartEvent event) throws Exception {
-					//Make sure this bot is us to prevent nasty errors in multi bot sitations
-					if (event.getBot() == PircBotX.this)
-						event.getBot().joinChannel(chan.getName());
-					//Self destrust, this listener has no more porpose
-					event.getBot().getListenerManager().removeListener(this);
-				}
-			});
+			@Override
+			public void onPart(PartEvent event) throws Exception {
+				//Make sure this bot is us to prevent nasty errors in multi bot sitations
+				if (event.getBot() == PircBotX.this)
+					event.getBot().joinChannel(chan.getName());
+				//Self destrust, this listener has no more porpose
+				event.getBot().getListenerManager().removeListener(this);
+			}
+		});
 	}
-	
+
 	/**
 	 * Part and rejoin specified channel using channel key. Useful for obtaining 
 	 * auto privileges after identifying
@@ -541,15 +541,15 @@ public class PircBotX {
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
 		listenerManager.addListener(new ListenerAdapter() {
-				@Override
-				public void onPart(PartEvent event) throws Exception {
-					//Make sure this bot is us to prevent nasty errors in multi bot sitations
-					if (event.getBot() == PircBotX.this)
-						event.getBot().joinChannel(chan.getName(), key);
-					//Self destrust, this listener has no more porpose
-					event.getBot().getListenerManager().removeListener(this);
-				}
-			});
+			@Override
+			public void onPart(PartEvent event) throws Exception {
+				//Make sure this bot is us to prevent nasty errors in multi bot sitations
+				if (event.getBot() == PircBotX.this)
+					event.getBot().joinChannel(chan.getName(), key);
+				//Self destrust, this listener has no more porpose
+				event.getBot().getListenerManager().removeListener(this);
+			}
+		});
 	}
 
 	/**
@@ -858,7 +858,7 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode) {
 		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
-	
+
 	/**
 	 * Set a mode for the channel with arguments. Nicer way to pass arguments than 
 	 * with string concatenation. See {@link #setMode(org.pircbotx.Channel, java.lang.String) } 
@@ -873,7 +873,7 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode, Object... args) {
 		//Build arg string
 		StringBuilder argBuilder = new StringBuilder(" ");
-		for(Object curArg: args)
+		for (Object curArg : args)
 			argBuilder.append(curArg.toString()).append(" ");
 		setMode(chan, mode + argBuilder.toString());
 	}
@@ -888,7 +888,7 @@ public class PircBotX {
 	public void setMode(Channel chan, String mode, User user) {
 		setMode(chan, mode + user.getNick());
 	}
-	
+
 	/**
 	 * Attempt to set the channel limit (+l) to specified value. May require operator
 	 * privileges in the channel
@@ -898,7 +898,7 @@ public class PircBotX {
 	public void setChannelLimit(Channel chan, int limit) {
 		setMode(chan, "+l", limit);
 	}
-	
+
 	/**
 	 * Attempt to remove the channel limit (-l) on the specified channel. May require
 	 * operator privileges in the channel
@@ -907,7 +907,7 @@ public class PircBotX {
 	public void removeChannelLimit(Channel chan) {
 		setMode(chan, "-l");
 	}
-	
+
 	/**
 	 * Sets the channel key (+k) or password to get into the channel. May require
 	 * operator privileges in the channel
@@ -917,7 +917,7 @@ public class PircBotX {
 	public void setChannelKey(Channel chan, String key) {
 		setMode(chan, "+k", key);
 	}
-	
+
 	/**
 	 * Removes the channel key (-k) or password to get into the channel. May require
 	 * operator privileges in the channel
@@ -928,7 +928,7 @@ public class PircBotX {
 	public void removeChannelKey(Channel chan, String key) {
 		setMode(chan, "-k", key);
 	}
-	
+
 	/**
 	 * Set the channel as invite only (+i). May require operator privileges in 
 	 * the channel
@@ -937,7 +937,7 @@ public class PircBotX {
 	public void setInviteOnly(Channel chan) {
 		setMode(chan, "+i");
 	}
-	
+
 	/**
 	 * Removes invite only (-i) status from the channel. May require operator 
 	 * privileges in the channel
@@ -946,7 +946,7 @@ public class PircBotX {
 	public void removeInviteOnly(Channel chan) {
 		setMode(chan, "-i");
 	}
-	
+
 	/**
 	 * Set the channel as moderated (+m). May require operator privileges in 
 	 * the channel
@@ -955,7 +955,7 @@ public class PircBotX {
 	public void setModerated(Channel chan) {
 		setMode(chan, "+m");
 	}
-	
+
 	/**
 	 * Removes moderated (-m) status from the channel. May require operator 
 	 * privileges in the channel
@@ -964,7 +964,7 @@ public class PircBotX {
 	public void removeModerated(Channel chan) {
 		setMode(chan, "-m");
 	}
-	
+
 	/**
 	 * Prevent external messages from appearing in the channel (+n). May require 
 	 * operator privileges in the channel
@@ -973,7 +973,7 @@ public class PircBotX {
 	public void setNoExternalMessages(Channel chan) {
 		setMode(chan, "+n");
 	}
-	
+
 	/**
 	 * Allow external messages to appear in the channel (+n). May require operator 
 	 * privileges in the channel
@@ -982,7 +982,7 @@ public class PircBotX {
 	public void removeNoExternalMessages(Channel chan) {
 		setMode(chan, "-n");
 	}
-	
+
 	/**
 	 * Set the channel as secret (+s). May require operator privileges in 
 	 * the channel
@@ -991,7 +991,7 @@ public class PircBotX {
 	public void setSecret(Channel chan) {
 		setMode(chan, "+s");
 	}
-	
+
 	/**
 	 * Removes secret (-s) status from the channel. May require operator 
 	 * privileges in the channel
@@ -1000,7 +1000,7 @@ public class PircBotX {
 	public void removeSecret(Channel chan) {
 		setMode(chan, "-s");
 	}
-	
+
 	/**
 	 * Prevent non-operator users from changing the channel topic (+t). May 
 	 * require operator privileges in the channel
@@ -1009,7 +1009,7 @@ public class PircBotX {
 	public void setTopicProtection(Channel chan) {
 		setMode(chan, "+t");
 	}
-	
+
 	/**
 	 * Allow non-operator users to change the channel topic (-t). May require operator 
 	 * privileges in the channel
@@ -1017,7 +1017,7 @@ public class PircBotX {
 	 */
 	public void removeTopicProtection(Channel chan) {
 		setMode(chan, "-t");
-	}	
+	}
 
 	/**
 	 * Sends an invitation to join a channel.  Some channels can be marked
@@ -1262,7 +1262,7 @@ public class PircBotX {
 	public void kick(Channel chan, User user, String reason) {
 		sendRawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
 	}
-	
+
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
 	 * When the PircBotX receives information for each channel, it will
@@ -1354,50 +1354,46 @@ public class PircBotX {
 	 * @see DccChat
 	 * @since PircBot 0.9.8
 	 */
-	public DccChat dccSendChatRequest(User sender, int timeout) {
+	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException {
 		DccChat chat = null;
-		try {
-			ServerSocket ss = null;
+		ServerSocket ss = null;
 
-			int[] ports = getDccPorts();
-			if (ports == null)
-				// Use any free port.
-				ss = new ServerSocket(0);
-			else {
-				for (int i = 0; i < ports.length; i++)
-					try {
-						ss = new ServerSocket(ports[i]);
-						// Found a port number we could use.
-						break;
-					} catch (Exception e) {
-						// Do nothing; go round and try another port.
-					}
-				if (ss == null)
-					// No ports could be used.
-					throw new IOException("All ports returned by getDccPorts() are in use.");
-			}
-
-			ss.setSoTimeout(timeout);
-			int port = ss.getLocalPort();
-
-			InetAddress inetAddress = getDccInetAddress();
-			if (inetAddress == null)
-				inetAddress = getInetAddress();
-			byte[] ip = inetAddress.getAddress();
-			long ipNum = ipToLong(ip);
-
-			sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
-
-			// The client may now connect to us to chat.
-			Socket socket = ss.accept();
-
-			// Close the server socket now that we've finished with it.
-			ss.close();
-
-			chat = new DccChat(this, sender, socket);
-		} catch (Exception e) {
-			// Do nothing.
+		int[] ports = getDccPorts();
+		if (ports == null)
+			// Use any free port.
+			ss = new ServerSocket(0);
+		else {
+			for (int i = 0; i < ports.length; i++)
+				try {
+					ss = new ServerSocket(ports[i]);
+					// Found a port number we could use.
+					break;
+				} catch (Exception e) {
+					// Do nothing; go round and try another port.
+				}
+			if (ss == null)
+				// No ports could be used.
+				throw new IOException("All ports returned by getDccPorts() are in use.");
 		}
+
+		ss.setSoTimeout(timeout);
+		int port = ss.getLocalPort();
+
+		InetAddress inetAddress = getDccInetAddress();
+		if (inetAddress == null)
+			inetAddress = getInetAddress();
+		byte[] ip = inetAddress.getAddress();
+		long ipNum = ipToLong(ip);
+
+		sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
+
+		// The client may now connect to us to chat.
+		Socket socket = ss.accept();
+
+		// Close the server socket now that we've finished with it.
+		ss.close();
+
+		chat = new DccChat(this, sender, socket);
 		return chat;
 	}
 
@@ -1702,7 +1698,7 @@ public class PircBotX {
 			//Part of a WHO reply on information on individual users
 			parsed = response.split(" ", 9);
 			Channel chan = getChannel(parsed[1]);
-			
+
 			//Setup user
 			User curUser = getUser(parsed[5]);
 			curUser.setLogin(parsed[2]);
@@ -1713,7 +1709,7 @@ public class PircBotX {
 			curUser.parseStatus(chan, parsed[6]);
 			curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
 			curUser.setRealName(parsed[8]);
-			
+
 			//Associate with channel
 			_userChanInfo.put(chan, curUser);
 		} else if (code == RPL_ENDOFWHO) {
@@ -2688,7 +2684,7 @@ public class PircBotX {
 		@Override
 		public boolean put(C a, U b) {
 			//Add to nick map
-			if(b != null)
+			if (b != null)
 				userNickMap.put(b.getNick(), b);
 			return super.put(a, b);
 		}
