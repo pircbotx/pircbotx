@@ -83,6 +83,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -1382,8 +1383,7 @@ public class PircBotX {
 		InetAddress inetAddress = getDccInetAddress();
 		if (inetAddress == null)
 			inetAddress = getInetAddress();
-		byte[] ip = inetAddress.getAddress();
-		long ipNum = ipToLong(ip);
+		BigInteger ipNum = ipToInteger(inetAddress);
 
 		sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
 
@@ -2176,17 +2176,8 @@ public class PircBotX {
 	 *
 	 * @return a long representation of the IP address.
 	 */
-	public long ipToLong(byte[] address) {
-		if (address.length != 4)
-			throw new IllegalArgumentException("byte array must be of length 4");
-		long ipNum = 0;
-		long multiplier = 1;
-		for (int i = 3; i >= 0; i--) {
-			int byteVal = (address[i] + 256) % 256;
-			ipNum += byteVal * multiplier;
-			multiplier *= 256;
-		}
-		return ipNum;
+	public BigInteger ipToInteger(InetAddress address) {
+		return new BigInteger(1, address.getAddress());
 	}
 
 	/**
