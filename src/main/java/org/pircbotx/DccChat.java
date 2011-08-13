@@ -101,12 +101,12 @@ public class DccChat {
 	 *
 	 */
 	public synchronized void accept() throws IOException {
-		if (acceptable) {
-			acceptable = false;
-			socket = new Socket(address, port);
-			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		}
+		if (!acceptable)
+			throw new IOException("Connection already created");
+		acceptable = false;
+		socket = new Socket(address, port);
+		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 	}
 
 	/**
