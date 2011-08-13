@@ -58,7 +58,7 @@ public class DccChat {
 	 *
 	 * @throws IOException If the connection cannot be made.
 	 */
-	DccChat(PircBotX bot, User source, long address, int port) {
+	protected DccChat(PircBotX bot, User source, long address, int port) {
 		this.bot = bot;
 		this.address = address;
 		this.port = port;
@@ -77,7 +77,7 @@ public class DccChat {
 	 *
 	 * @throws IOException If the socket cannot be read from.
 	 */
-	DccChat(PircBotX bot, User source, Socket socket) throws IOException {
+	protected DccChat(PircBotX bot, User source, Socket socket) throws IOException {
 		this.bot = bot;
 		this.user = source;
 		this.socket = socket;
