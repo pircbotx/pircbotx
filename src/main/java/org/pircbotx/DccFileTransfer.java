@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -222,8 +223,7 @@ public class DccFileTransfer {
 					InetAddress inetAddress = bot.getDccInetAddress();
 					if (inetAddress == null)
 						inetAddress = bot.getInetAddress();
-					byte[] ip = inetAddress.getAddress();
-					long ipNum = bot.ipToLong(ip);
+					BigInteger ipNum = bot.ipToInteger(inetAddress);
 
 					// Rename the filename so it has no whitespace in it when we send it.
 					// .... I really should do this a bit more nicely at some point ....
