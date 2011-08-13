@@ -109,14 +109,9 @@ public class DccManager {
 		} else if (type.equals("CHAT")) {
 			long address = Long.parseLong(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
-
+			
 			final DccChat chat = new DccChat(bot, source, address, port);
-
-			new Thread() {
-				public void run() {
-					bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, chat));
-				}
-			}.start();
+			bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, chat));
 		} else
 			return false;
 
