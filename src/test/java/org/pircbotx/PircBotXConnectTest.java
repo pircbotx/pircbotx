@@ -30,7 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import javax.net.SocketFactory;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

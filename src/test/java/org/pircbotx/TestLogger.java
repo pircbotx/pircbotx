@@ -19,8 +19,8 @@
 package org.pircbotx;
 
 import java.lang.reflect.Method;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
