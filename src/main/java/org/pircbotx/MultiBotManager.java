@@ -143,6 +143,18 @@ public class MultiBotManager {
 			bot.connect(curEntry.getHostname(), curEntry.getPort(), curEntry.getPassword(), bot.getSocketFactory());
 		}
 	}
+
+	/**
+	 * Disconnect all bots from their respective severs cleanly.
+	 */
+	public void disconnectAll() {
+		for (BotEntry curEntry : bots) {
+			PircBotX bot = curEntry.getBot();
+			if (bot.isConnected()) {
+				bot.disconnect();
+			}
+		}
+	}
 	
 	public Set<PircBotX> getBots() {
 		Set<PircBotX> actualBots = new HashSet();
