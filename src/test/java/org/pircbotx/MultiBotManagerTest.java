@@ -18,10 +18,18 @@
  */
 package org.pircbotx;
 
+import org.testng.annotations.BeforeMethod;
+import static org.testng.Assert.*;
+
 /**
  * Tests for MultiBotManager
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MultiBotManagerTest {
+	protected MultiBotManager manager;
 	
+	@BeforeMethod
+	public void setup() {
+		manager = new MultiBotManager("TestBot");
+	}
 }
