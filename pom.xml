@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.10.0-RC3</version>
+			<version>0.10.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
