@@ -23,7 +23,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Arrays;
 import lombok.Getter;
 
 /**
@@ -43,7 +47,8 @@ public class DccChat {
 	private BufferedWriter writer;
 	private Socket socket;
 	private boolean acceptable;
-	private long address = 0;
+	@Getter
+	private InetAddress address;
 	private int port = 0;
 
 	/**
@@ -58,12 +63,26 @@ public class DccChat {
 	 *
 	 * @throws IOException If the connection cannot be made.
 	 */
-	protected DccChat(PircBotX bot, User source, long address, int port) {
-		this.bot = bot;
-		this.address = address;
-		this.port = port;
-		this.user = source;
-		acceptable = true;
+	protected DccChat(PircBotX bot, User source, BigInteger address, int port) {
+		try {
+			this.bot = bot;
+			//If there aren't enough bytes, pad with 0 byte
+			byte[] addressBytes = address.toByteArray();
+			if(addressBytes.length < 4) {
+				byte[] newAddressBytes = new byte[4];
+				newAddressBytes[3] = addressBytes[0];
+				newAddressBytes[2] = (addressBytes.length > 1) ? addressBytes[1] : (byte)0;
+				newAddressBytes[1] = (addressBytes.length > 2) ? addressBytes[2] : (byte)0;
+				newAddressBytes[0] = (addressBytes.length > 3) ? addressBytes[3] : (byte)0;
+				addressBytes = newAddressBytes;
+			}
+			this.address = InetAddress.getByAddress(addressBytes);
+			this.port = port;
+			this.user = source;
+			acceptable = true;
+		} catch (UnknownHostException ex) {
+			throw new RuntimeException("Can't get InetAdrress version of int IP address " + address, ex);
+		}
 	}
 
 	/**
@@ -93,14 +112,12 @@ public class DccChat {
 	 *
 	 */
 	public synchronized void accept() throws IOException {
-		if (acceptable) {
-			acceptable = false;
-			int[] ip = bot.longToIp(address);
-			String ipStr = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
-			socket = new Socket(ipStr, port);
-			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-		}
+		if (!acceptable)
+			throw new IOException("Connection already created");
+		acceptable = false;
+		socket = new Socket(address, port);
+		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 	}
 
 	/**
@@ -172,14 +189,5 @@ public class DccChat {
 	 */
 	public Socket getSocket() {
 		return socket;
-	}
-
-	/**
-	 * Returns the address of the sender as a long.
-	 *
-	 * @return the address of the sender as a long.
-	 */
-	public long getNumericalAddress() {
-		return address;
 	}
 }

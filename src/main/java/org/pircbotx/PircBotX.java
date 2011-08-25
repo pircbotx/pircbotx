@@ -140,13 +140,13 @@ public class PircBotX {
 	// Connection stuff.
 	protected InputThread _inputThread = null;
 	protected OutputThread _outputThread = null;
-	private String _charset = null;
-	private InetAddress _inetAddress = null;
+	protected String _charset = null;
+	protected InetAddress _inetAddress = null;
 	// Details about the last server that we connected to.
-	private String _server = null;
-	private int _port = -1;
-	private String _password = null;
-	private long _messageDelay = 1000;
+	protected String _server = null;
+	protected int _port = -1;
+	protected String _password = null;
+	protected long _messageDelay = 1000;
 	/*
 	 * A Many to Many map that links Users to Channels and channels to users. Modified
 	 * to remove each channel's and user's internal refrences to each other.
@@ -157,33 +157,33 @@ public class PircBotX {
 	 */
 	protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
 	// DccManager to process and handle all DCC events.
-	private DccManager _dccManager = new DccManager(this);
-	private int[] _dccPorts = null;
-	private InetAddress _dccInetAddress = null;
+	protected DccManager _dccManager = new DccManager(this);
+	protected int[] _dccPorts = null;
+	protected InetAddress _dccInetAddress = null;
 	// Default settings for the PircBotX.
-	private boolean _autoNickChange = false;
-	private boolean _verbose = false;
-	private String _name = "PircBotX";
-	private String _nick = _name;
-	private String _login = "PircBotX";
-	private String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
-	private String _finger = "You ought to be arrested for fingering a bot!";
-	private String _channelPrefixes = "#&+!";
+	protected boolean _autoNickChange = false;
+	protected boolean _verbose = false;
+	protected String _name = "PircBotX";
+	protected String _nick = _name;
+	protected String _login = "PircBotX";
+	protected String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
+	protected String _finger = "You ought to be arrested for fingering a bot!";
+	protected String _channelPrefixes = "#&+!";
 	/**
 	 * The logging lock object preventing lines from being printed as other
 	 * lines are being printed
 	 */
-	private final Object logLock = new Object();
+	protected final Object logLock = new Object();
 	protected ListenerManager<? extends PircBotX> listenerManager = new ThreadedListenerManager();
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
 	 * minutes
 	 */
-	private int socketTimeout = 1000 * 60 * 5;
-	private final ServerInfo serverInfo = new ServerInfo(this);
+	protected int socketTimeout = 1000 * 60 * 5;
+	protected final ServerInfo serverInfo = new ServerInfo(this);
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
-	private SocketFactory _socketFactory = null;
+	protected SocketFactory _socketFactory = null;
 	protected boolean loggedIn = false;
 
 	/**
