@@ -21,6 +21,7 @@ package org.pircbotx;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
 import javax.net.SocketFactory;
@@ -54,7 +55,7 @@ public class MultiBotManager {
 	protected long messageDelay;
 	protected String login;
 	protected boolean autoNickChange;
-	protected String encoding;
+	protected Charset encoding;
 	protected InetAddress dcciNetAddress;
 	protected int[] dccports;
 
@@ -136,12 +137,7 @@ public class MultiBotManager {
 		bot.setMessageDelay(messageDelay);
 		bot.setLogin(login);
 		bot.setAutoNickChange(autoNickChange);
-		try {
-			bot.setEncoding(encoding);
-		} catch (UnsupportedEncodingException ex) {
-			//Should of been caught with setEncoding, wrap with RuntimeException
-			throw new RuntimeException("Creating bot with encoding " + encoding + " failed", ex);
-		}
+		bot.setEncoding(encoding);
 		bot.setDccInetAddress(dcciNetAddress);
 		bot.setDccPorts(dccports);
 
@@ -185,6 +181,10 @@ public class MultiBotManager {
 		dummyBot.setEncoding(encoding);
 
 		//Good, set value
+		this.encoding = dummyBot.getEncoding();
+	}
+
+	public void setEncoding(Charset encoding) {
 		this.encoding = encoding;
 	}
 
