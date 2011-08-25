@@ -171,6 +171,11 @@ public class MultiBotManager {
 		}
 	}
 
+	/**
+	 * Get all the bots that this MultiBotManager is managing. Do not save this
+	 * anywhere as it will be out of date when a new bot is created
+	 * @return An <i>unmodifiable</i> Set of bots that are being managed
+	 */
 	public Set<PircBotX> getBots() {
 		Set<PircBotX> actualBots = new HashSet();
 		for (BotEntry curEntry : bots)
