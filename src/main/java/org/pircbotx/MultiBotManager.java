@@ -156,7 +156,7 @@ public class MultiBotManager {
 	public void connectAll() throws IOException, IrcException, NickAlreadyInUseException {
 		for (BotEntry curEntry : bots) {
 			PircBotX bot = curEntry.getBot();
-			bot.connect(curEntry.getHostname(), curEntry.getPort(), curEntry.getPassword(), bot.getSocketFactory());
+			bot.connect(curEntry.getHostname(), curEntry.getPort(), curEntry.getPassword(), curEntry.getSocketFactory());
 		}
 	}
 
