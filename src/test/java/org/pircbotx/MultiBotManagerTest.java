@@ -18,6 +18,11 @@
  */
 package org.pircbotx;
 
+import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.nio.charset.Charset;
+import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -33,8 +38,46 @@ public class MultiBotManagerTest {
 	public void setup() {
 		manager = new MultiBotManager("TestBot");
 	}
+	
+	@Test(description = "Make sure the values are all copied correctly")
+	public void dummyBotTest() throws UnsupportedEncodingException {
+		//Create a master bot to compare everything to
+		final PircBotX masterBot = new PircBotX();
+		masterBot.setListenerManager(new GenericListenerManager());
+		masterBot.setName("SomeName");
+		masterBot.setVerbose(true);
+		masterBot.setSocketTimeout(9999999);
+		masterBot.setMessageDelay(99999999);
+		masterBot.setLogin("SomeLogin");
+		masterBot.setAutoNickChange(true);
+		masterBot.setEncoding(Charset.availableCharsets().firstKey());
+		masterBot.setDccInetAddress(InetAddress.getLoopbackAddress());
+		masterBot.setDccPorts(new int[]{555,666,777});
+		
+		//Setup the manager to clone it
+		manager = new MultiBotManager(masterBot);
+		
+		//Create 3 servers
+		manager.createBot("some.server1");
+		manager.createBot("some.server2");
+		manager.createBot("some.server3");
+		
+		//Make sure the values are all the same
+		for(PircBotX curBot : manager.getBots()) {
+			assertEquals(curBot.getListenerManager(), masterBot.getListenerManager(), "ListenerManager in subbot is different from master");
+			assertEquals(curBot.getName(), masterBot.getName(), "Name in subbot is different from master");
+			assertEquals(curBot.isVerbose(), masterBot.isVerbose(), "Verbose in subbot is different from master");
+			assertEquals(curBot.getSocketTimeout(), masterBot.getSocketTimeout(), "SocketTimeout in subbot is different from master");
+			assertEquals(curBot.getMessageDelay(), masterBot.getMessageDelay(), "MessageDelay in subbot is different from master");
+			assertEquals(curBot.getLogin(), masterBot.getLogin(), "Login in subbot is different from master");
+			assertEquals(curBot.isAutoNickChange(), masterBot.isAutoNickChange(), "AutoNickChange in subbot is different from master");
+			assertEquals(curBot.getEncoding(), masterBot.getEncoding(), " in subbot is different from master");
+			assertEquals(curBot.getDccInetAddress(), masterBot.getDccInetAddress(), "DccInetAddress in subbot is different from master");
+			assertEquals(curBot.getDccPorts(), masterBot.getDccPorts(), "DccPorts in subbot is different from master");
+		}
+	}
 
-	@Test(description = "Make sure the listener manager is shared")
+	@Test(description = "Make sure the listener manager is shared and not null")
 	public void listenerManagerSameAndNotNullTest() {
 		PircBotX bot1 = manager.createBot("some.server1");
 		PircBotX bot2 = manager.createBot("some.server2");
