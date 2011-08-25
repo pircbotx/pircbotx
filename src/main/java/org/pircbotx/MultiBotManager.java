@@ -58,10 +58,27 @@ public class MultiBotManager {
 	protected InetAddress dcciNetAddress;
 	protected int[] dccports;
 
-	public MultiBotManager(String name) {
-		//Create a temp bot and mirror default values
-		dummyBot = new PircBotX();
-		this.name = name;
+	/**
+	 * Setup MultiBotManager with all bots being called the specified name
+	 * @param name The name that all bots will have by default
+	 */
+	public MultiBotManager(final String name) {
+		this(new PircBotX() {
+			{
+				setName(name);
+			}
+		});
+	}
+
+	/**
+	 * Setup MultiBotManager by cloning ALL of the settings from the specified
+	 * bot
+	 * @param dummyBot The bot to clone the settings from
+	 */
+	public MultiBotManager(PircBotX dummyBot) {
+		//Mirror the values 
+		this.dummyBot = dummyBot;
+		name = dummyBot.getName();
 		listenerManager = dummyBot.getListenerManager();
 		verbose = dummyBot.isVerbose();
 		socketTimeout = dummyBot.getSocketTimeout();
