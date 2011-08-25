@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -168,8 +169,10 @@ public class PircBotXTest {
 	}
 	
 	@Test(description = "Verify setEncoding behaves correctly when passed null")
-	public void setEncodingNullTest() throws UnsupportedEncodingException {
+	public void setEncodingCharsetNullTest() throws UnsupportedEncodingException {
 		PircBotX smallBot = new PircBotX();
-		smallBot.setEncoding(null);
+		//Since plain null is ambiguous, use a null variable.
+		Charset charset = null;
+		smallBot.setEncoding(charset);
 	}
 }
