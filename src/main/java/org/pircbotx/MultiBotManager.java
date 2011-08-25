@@ -191,10 +191,6 @@ public class MultiBotManager {
 		this.encoding = dummyBot.getEncoding();
 	}
 
-	public void setEncoding(Charset encoding) {
-		this.encoding = encoding;
-	}
-
 	@Data
 	protected class BotEntry {
 		protected final PircBotX bot;
