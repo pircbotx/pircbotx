@@ -47,7 +47,7 @@ public class MultiBotManager {
 	protected final Set<BotEntry> bots = new HashSet();
 	@Getter(AccessLevel.NONE)
 	protected final PircBotX dummyBot;
-	protected ListenerManager listenerManager = null;
+	protected ListenerManager listenerManager;
 	protected String name;
 	protected boolean verbose;
 	protected int socketTimeout;
@@ -62,6 +62,7 @@ public class MultiBotManager {
 		//Create a temp bot and mirror default values
 		dummyBot = new PircBotX();
 		this.name = name;
+		listenerManager = dummyBot.getListenerManager();
 		verbose = dummyBot.isVerbose();
 		socketTimeout = dummyBot.getSocketTimeout();
 		messageDelay = dummyBot.getMessageDelay();
