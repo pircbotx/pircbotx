@@ -19,6 +19,7 @@
 package org.pircbotx;
 
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 /**
@@ -31,5 +32,15 @@ public class MultiBotManagerTest {
 	@BeforeMethod
 	public void setup() {
 		manager = new MultiBotManager("TestBot");
+	}
+	
+	@Test
+	public void listenerManagerExists() {
+		manager.createBot("some.server");
+		
+		//Make sure the listenermanager is in the bots
+		assertEquals(manager.getBots().size(), 1, "More than 1 bot has been created");
+		PircBotX bot = manager.getBots().iterator().next();
+		assertNotNull(bot.getListenerManager());
 	}
 }
