@@ -35,19 +35,11 @@ public class MultiBotManagerTest {
 	}
 
 	@Test(description = "Make sure the listener manager is shared")
-	public void listenerManagerSameTest() {
+	public void listenerManagerSameAndNotNullTest() {
 		PircBotX bot1 = manager.createBot("some.server1");
 		PircBotX bot2 = manager.createBot("some.server2");
+		assertNotNull(bot1.getListenerManager(), "MultiBotManager's first bot doesn't have a listener manager");
+		assertNotNull(bot2.getListenerManager(), "MultiBotManager's second bot doesn't have a listener manager");
 		assertEquals(bot1.getListenerManager(), bot2.getListenerManager(), "MultiBotManager's bots don't have the same listener");
-	}
-
-	@Test
-	public void listenerManagerExists() {
-		manager.createBot("some.server");
-
-		//Make sure the listenermanager is in the bots
-		assertEquals(manager.getBots().size(), 1, "More than 1 bot has been created");
-		PircBotX bot = manager.getBots().iterator().next();
-		assertNotNull(bot.getListenerManager());
 	}
 }
