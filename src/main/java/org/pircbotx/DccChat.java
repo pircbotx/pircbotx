@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import lombok.Getter;
 
 /**
@@ -65,7 +66,17 @@ public class DccChat {
 	protected DccChat(PircBotX bot, User source, BigInteger address, int port) {
 		try {
 			this.bot = bot;
-			this.address = InetAddress.getByAddress(address.toByteArray());
+			//If there aren't enough bytes, pad with 0 byte
+			byte[] addressBytes = address.toByteArray();
+			if(addressBytes.length < 4) {
+				byte[] newAddressBytes = new byte[4];
+				newAddressBytes[3] = addressBytes[0];
+				newAddressBytes[2] = (addressBytes.length > 1) ? addressBytes[1] : (byte)0;
+				newAddressBytes[1] = (addressBytes.length > 2) ? addressBytes[2] : (byte)0;
+				newAddressBytes[0] = (addressBytes.length > 3) ? addressBytes[3] : (byte)0;
+				addressBytes = newAddressBytes;
+			}
+			this.address = InetAddress.getByAddress(addressBytes);
 			this.port = port;
 			this.user = source;
 			acceptable = true;
