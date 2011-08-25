@@ -2197,7 +2197,8 @@ public class PircBotX {
 	 */
 	public void setEncoding(String charset) throws UnsupportedEncodingException {
 		// Just try to see if the charset is supported first...
-		"".getBytes(charset);
+		if (charset != null)
+			"".getBytes(charset);
 
 		_charset = charset;
 	}
