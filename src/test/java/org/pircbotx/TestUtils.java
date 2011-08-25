@@ -19,7 +19,7 @@
 package org.pircbotx;
 
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.HookUtils;
 import org.testng.annotations.DataProvider;

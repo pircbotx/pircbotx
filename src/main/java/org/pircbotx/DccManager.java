@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import java.math.BigInteger;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
@@ -107,7 +108,7 @@ public class DccManager {
 				transfer.doReceive(transfer.getFile(), true);
 
 		} else if (type.equals("CHAT")) {
-			long address = Long.parseLong(tokenizer.nextToken());
+			BigInteger address = new BigInteger(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 			
 			final DccChat chat = new DccChat(bot, source, address, port);
