@@ -79,7 +79,7 @@ public class MultiBotManager {
 	public void createBot(String hostname) {
 		createBot(hostname, 6667, null, null);
 	}
-	
+
 	/**
 	 * Attempt to connect to the specified IRC server and port number.
 	 * The onConnect method is called upon success.
@@ -150,15 +150,14 @@ public class MultiBotManager {
 	public void disconnectAll() {
 		for (BotEntry curEntry : bots) {
 			PircBotX bot = curEntry.getBot();
-			if (bot.isConnected()) {
+			if (bot.isConnected())
 				bot.disconnect();
-			}
 		}
 	}
-	
+
 	public Set<PircBotX> getBots() {
 		Set<PircBotX> actualBots = new HashSet();
-		for(BotEntry curEntry : bots)
+		for (BotEntry curEntry : bots)
 			actualBots.add(curEntry.getBot());
 		return actualBots;
 	}
