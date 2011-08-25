@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.10.0-RC3</version>
+			<version>0.10.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
@@ -94,9 +94,9 @@
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.0</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Mockito for mocking test objects-->
