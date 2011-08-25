@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
@@ -164,5 +165,11 @@ public class PircBotXTest {
 		assertNotNull(smallBot.getUser("BotNick"), "Getting existing bots user with getUser returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
+	}
+	
+	@Test(description = "Verify setEncoding behaves correctly when passed null")
+	public void setEncodingNullTest() throws UnsupportedEncodingException {
+		PircBotX smallBot = new PircBotX();
+		smallBot.setEncoding(null);
 	}
 }
