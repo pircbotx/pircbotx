@@ -95,8 +95,8 @@ public class MultiBotManager {
 	 * Create a bot using the specified hostname, 6667 for port, and no password or socketfactory
 	 * @param hostname The hostname of the server to connect to.
 	 */
-	public void createBot(String hostname) {
-		createBot(hostname, 6667, null, null);
+	public PircBotX createBot(String hostname) {
+		return createBot(hostname, 6667, null, null);
 	}
 
 	/**
@@ -106,8 +106,8 @@ public class MultiBotManager {
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
 	 */
-	public void createBot(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
-		createBot(hostname, port, null, null);
+	public PircBotX createBot(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
+		return createBot(hostname, port, null, null);
 	}
 
 	/**
@@ -116,8 +116,8 @@ public class MultiBotManager {
 	 * @param port The port number to connect to on the server.
 	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 */
-	public void createBot(String hostname, int port, SocketFactory socketFactory) {
-		createBot(hostname, port, null, socketFactory);
+	public PircBotX createBot(String hostname, int port, SocketFactory socketFactory) {
+		return createBot(hostname, port, null, socketFactory);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class MultiBotManager {
 	 * @param password The password to use to join the server.
 	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 */
-	public void createBot(String hostname, int port, String password, SocketFactory socketFactory) {
+	public PircBotX createBot(String hostname, int port, String password, SocketFactory socketFactory) {
 		//Create bot with all of the global settings
 		PircBotX bot = new PircBotX();
 		bot.setListenerManager(listenerManager);
@@ -143,6 +143,7 @@ public class MultiBotManager {
 
 		//Add to bot set
 		bots.add(new BotEntry(bot, hostname, port, password, socketFactory));
+		return bot;
 	}
 
 	/**
