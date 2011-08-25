@@ -87,6 +87,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -140,7 +141,7 @@ public class PircBotX {
 	// Connection stuff.
 	protected InputThread _inputThread = null;
 	protected OutputThread _outputThread = null;
-	protected String _charset = null;
+	protected Charset _charset = Charset.defaultCharset();
 	protected InetAddress _inetAddress = null;
 	// Details about the last server that we connected to.
 	protected String _server = null;
@@ -308,15 +309,8 @@ public class PircBotX {
 
 		InputStreamReader inputStreamReader = null;
 		OutputStreamWriter outputStreamWriter = null;
-		if (getEncoding() != null) {
-			// Assume the specified encoding is valid for this JVM.
-			inputStreamReader = new InputStreamReader(_socket.getInputStream(), getEncoding());
-			outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream(), getEncoding());
-		} else {
-			// Otherwise, just use the JVM's default encoding.
-			inputStreamReader = new InputStreamReader(_socket.getInputStream());
-			outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream());
-		}
+		inputStreamReader = new InputStreamReader(_socket.getInputStream(), getEncoding());
+		outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream(), getEncoding());
 
 		BufferedReader breader = new BufferedReader(inputStreamReader);
 		BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
@@ -2182,38 +2176,50 @@ public class PircBotX {
 
 	/**
 	 * Sets the encoding charset to be used when sending or receiving lines
+	 * from the IRC server. Simply a convenience method for {@link #setEncoding(java.nio.charset.Charset) } 
+	 * 
+	 * @since PircBot 1.0.4
+	 * @see #setEncoding(java.nio.charset.Charset) 
+	 * @param charset The charset as a string to use
+	 * @throws NullPointerException If the charset is null
+	 * @throws UnsupportedEncodingException If the passed encoding isn't supported
+	 * by the JMV
+	 */
+	public void setEncoding(String charset) throws UnsupportedEncodingException {
+		if (charset == null)
+			throw new NullPointerException("Can't set charset to null");
+		setEncoding(Charset.forName(charset));
+	}
+
+	/**
+	 * Sets the encoding charset to be used when sending or receiving lines
 	 * from the IRC server.  If set to null, then the platform's default
 	 * charset is used.  You should only use this method if you are
 	 * trying to send text to an IRC server in a different charset, e.g.
 	 * "GB2312" for Chinese encoding.  If a PircBotX is currently connected
 	 * to a server, then it must reconnect before this change takes effect.
 	 *
-	 * @since PircBot 1.0.4
-	 *
 	 * @param charset The new encoding charset to be used by PircBotX.
-	 *
+	 * @throws NullPointerException If the charset is null
 	 * @throws UnsupportedEncodingException If the named charset is not
-	 *                                      supported.
+	 * supported.
 	 */
-	public void setEncoding(String charset) throws UnsupportedEncodingException {
-		// Just try to see if the charset is supported first...
-		if (charset != null)
-			"".getBytes(charset);
-
+	public void setEncoding(Charset charset) {
+		if (charset == null)
+			throw new NullPointerException("Can't set charset to null");
 		_charset = charset;
 	}
 
 	/**
 	 * Returns the encoding used to send and receive lines from
-	 * the IRC server, or null if not set.  Use the setEncoding
+	 * the IRC server. Never will return null Use the {@link #setEncoding(java.nio.charset.Charset)  
 	 * method to change the encoding charset.
 	 *
 	 * @since PircBot 1.0.4
 	 *
-	 * @return The encoding used to send outgoing messages, or
-	 *         null if not set.
+	 * @return The encoding used to send outgoing messages. Never null
 	 */
-	public String getEncoding() {
+	public Charset getEncoding() {
 		return _charset;
 	}
 
