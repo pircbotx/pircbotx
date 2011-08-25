@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.net.SocketFactory;
@@ -174,7 +175,7 @@ public class MultiBotManager {
 		Set<PircBotX> actualBots = new HashSet();
 		for (BotEntry curEntry : bots)
 			actualBots.add(curEntry.getBot());
-		return actualBots;
+		return Collections.unmodifiableSet(actualBots);
 	}
 
 	public void setEncoding(String encoding) throws UnsupportedEncodingException {
