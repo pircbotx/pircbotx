@@ -175,4 +175,12 @@ public class PircBotXTest {
 		Charset charset = null;
 		smallBot.setEncoding(charset);
 	}
+	
+	@Test(description = "Verify setEncoding behaves correctly when passed null")
+	public void setEncodingStringNullTest() throws UnsupportedEncodingException {
+		PircBotX smallBot = new PircBotX();
+		//Since plain null is ambiguous, use a null variable.
+		String charset = null;
+		smallBot.setEncoding(charset);
+	}
 }
