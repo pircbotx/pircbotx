@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import org.pircbotx.hooks.managers.GenericListenerManager;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
