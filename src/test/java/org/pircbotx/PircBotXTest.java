@@ -126,20 +126,20 @@ public class PircBotXTest {
 	@Test(dataProvider = "ipToLongDataProvider")
 	public void ipToLong(String ipAddress, BigInteger expectedResult) throws UnknownHostException {
 		PircBotX smallBot = new PircBotX();
-		
+
 		//First, convert to a byte array
 		InetAddress address = InetAddress.getByName(ipAddress);
 		byte[] byteIp = address.getAddress();
 		System.out.println("IP: " + ipAddress);
 		System.out.println("BigInt: " + new BigInteger(byteIp));
-		System.out.println("BigInt1: " + new BigInteger(1,byteIp));
+		System.out.println("BigInt1: " + new BigInteger(1, byteIp));
 		System.out.println("Array Length: " + byteIp.length);
-		
+
 		//Next, extract the value
 		BigInteger ipToLong = smallBot.ipToInteger(address);
 		System.out.println("Bot Convert: " + ipToLong);
-		
-		
+
+
 		assertEquals(ipToLong, expectedResult, "Converting " + ipAddress + " to long is wrong");
 	}
 
@@ -167,16 +167,16 @@ public class PircBotXTest {
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
 	}
-	
-	@Test(description = "Verify setEncoding behaves correctly when passed null")
-	public void setEncodingCharsetNullTest() throws UnsupportedEncodingException {
+
+	@Test(description = "Verify setEncoding behaves correctly when passed null", expectedExceptions = NullPointerException.class)
+	public void setEncodingCharsetNullTest() {
 		PircBotX smallBot = new PircBotX();
 		//Since plain null is ambiguous, use a null variable.
 		Charset charset = null;
 		smallBot.setEncoding(charset);
 	}
-	
-	@Test(description = "Verify setEncoding behaves correctly when passed null")
+
+	@Test(description = "Verify setEncoding behaves correctly when passed null", expectedExceptions = NullPointerException.class)
 	public void setEncodingStringNullTest() throws UnsupportedEncodingException {
 		PircBotX smallBot = new PircBotX();
 		//Since plain null is ambiguous, use a null variable.
