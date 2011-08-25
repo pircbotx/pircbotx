@@ -37,7 +37,22 @@ public class MultiBotManagerTest {
 	public void setup() {
 		manager = new MultiBotManager("TestBot");
 	}
-	
+
+	@Test(description = "Make sure setting the encoding by string works")
+	public void setEncodingStringTest() throws UnsupportedEncodingException {
+		PircBotX bot = new PircBotX();
+		Charset aCharset = null;
+		//Find a charset that isn't the default PircBotX one
+		for (Charset curCharset : Charset.availableCharsets().values())
+			if (curCharset != bot.getEncoding())
+				aCharset = curCharset;
+		assertNotNull(aCharset, "Couldn't find a charset that was't the default PircBotX one");
+		
+		//Make sure the encoding we set is the same that we get out
+		manager.setEncoding(aCharset.name());
+		assertEquals(manager.createBot("some.server").getEncoding(), aCharset, "Charset is different");
+	}
+
 	@Test(description = "Make sure the values are all copied correctly")
 	public void dummyBotTest() throws UnsupportedEncodingException {
 		//Create a master bot to compare everything to
@@ -51,18 +66,18 @@ public class MultiBotManagerTest {
 		masterBot.setAutoNickChange(true);
 		masterBot.setEncoding(Charset.availableCharsets().firstKey());
 		masterBot.setDccInetAddress(InetAddress.getLoopbackAddress());
-		masterBot.setDccPorts(new int[]{555,666,777});
-		
+		masterBot.setDccPorts(new int[]{555, 666, 777});
+
 		//Setup the manager to clone it
 		manager = new MultiBotManager(masterBot);
-		
+
 		//Create 3 servers
 		manager.createBot("some.server1");
 		manager.createBot("some.server2");
 		manager.createBot("some.server3");
-		
+
 		//Make sure the values are all the same
-		for(PircBotX curBot : manager.getBots()) {
+		for (PircBotX curBot : manager.getBots()) {
 			assertEquals(curBot.getListenerManager(), masterBot.getListenerManager(), "ListenerManager in subbot is different from master");
 			assertEquals(curBot.getName(), masterBot.getName(), "Name in subbot is different from master");
 			assertEquals(curBot.isVerbose(), masterBot.isVerbose(), "Verbose in subbot is different from master");
