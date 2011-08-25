@@ -37,12 +37,10 @@ import org.pircbotx.PircBotX;
  * another thread is risky since the set might be in use already, throwing a 
  * {@link ConcurrentModificationException}. 
  * <p>
- * Due to multiple functions of PircBotX depend on multiple threads, this class
- * is deprecated and is only kept for legacy reasons or special cases. Use of
- * this class will have unexpected results
- * <p>
- * All bots should now use {@link ThreadedListenerManager}.
- * 
+ * @Deprecated  Due to multiple new functions of PircBotX theat depend on multiple 
+ * threads, this class is deprecated and is only kept for legacy reasons or special 
+ * cases. Use of this class will have unexpected results. All bots should now 
+ * use {@link ThreadedListenerManager}.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see ThreadedListenerManager
  */
