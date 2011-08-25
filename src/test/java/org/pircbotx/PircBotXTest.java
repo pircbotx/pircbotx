@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -42,8 +43,14 @@ import static org.testng.Assert.*;
  */
 @Test(singleThreaded = true)
 public class PircBotXTest {
+	protected PircBotX smallBot;
 	final String aString = "I'm some super long string that has multiple words";
 
+	@BeforeMethod
+	public void setup() {
+		smallBot = new PircBotX();
+	}
+	
 	@Test(description = "Make sure send* methods have appropiate variations")
 	public void sendMethodsNamingTests() {
 		//Get all send method variations in one list
@@ -91,7 +98,6 @@ public class PircBotXTest {
 
 	@Test(description = "Make sure getUser doesn't return null and reliably returns the correct value")
 	public void getUserTest() {
-		PircBotX smallBot = new PircBotX();
 		User origUser = smallBot.getUser("SomeUser");
 		assertNotNull(origUser, "getUser returns null for unknown user");
 		assertEquals(origUser, smallBot.getUser("SomeUser"), "getUser doesn't return the same user during second call");
@@ -99,7 +105,6 @@ public class PircBotXTest {
 
 	@Test(description = "Make sure channel doesn't return null and reliably returns the correct value")
 	public void getChannelTest() {
-		PircBotX smallBot = new PircBotX();
 		Channel channel = smallBot.getChannel("#aChannel");
 		assertNotNull(channel, "getchannel returns null for unknown channel");
 		assertEquals(channel, smallBot.getChannel("#aChannel"), "getChannel doesn't return the same channel during second call");
@@ -107,7 +112,6 @@ public class PircBotXTest {
 
 	@Test(dependsOnMethods = "getUserTest", description = "Make sure userExists works")
 	public void userExistsTest() {
-		PircBotX smallBot = new PircBotX();
 		//Create user by getting an known one
 		smallBot.getUser("SomeUser");
 		//Make sure it exists
@@ -116,7 +120,6 @@ public class PircBotXTest {
 
 	@Test(dependsOnMethods = "getChannelTest", description = "Make sure channelExists works")
 	public void channelExistsTest() {
-		PircBotX smallBot = new PircBotX();
 		//Create channel by getting an unknown one
 		smallBot.getChannel("#aChannel");
 		//Make sure it exists
@@ -125,8 +128,6 @@ public class PircBotXTest {
 
 	@Test(dataProvider = "ipToLongDataProvider")
 	public void ipToLong(String ipAddress, BigInteger expectedResult) throws UnknownHostException {
-		PircBotX smallBot = new PircBotX();
-
 		//First, convert to a byte array
 		InetAddress address = InetAddress.getByName(ipAddress);
 		byte[] byteIp = address.getAddress();
@@ -138,7 +139,6 @@ public class PircBotXTest {
 		//Next, extract the value
 		BigInteger ipToLong = smallBot.ipToInteger(address);
 		System.out.println("Bot Convert: " + ipToLong);
-
 
 		assertEquals(ipToLong, expectedResult, "Converting " + ipAddress + " to long is wrong");
 	}
@@ -159,7 +159,6 @@ public class PircBotXTest {
 
 	@Test(description = "Verify getting the bots own user object works")
 	public void getUserBotTest() {
-		PircBotX smallBot = new PircBotX();
 		smallBot.setNick("BotNick");
 		smallBot.setName("BotNick");
 		assertNotNull(smallBot.getUser("BotNick"), "Getting bots user with getUser returns null");
@@ -170,7 +169,6 @@ public class PircBotXTest {
 
 	@Test(description = "Verify setEncoding behaves correctly when passed null", expectedExceptions = NullPointerException.class)
 	public void setEncodingCharsetNullTest() {
-		PircBotX smallBot = new PircBotX();
 		//Since plain null is ambiguous, use a null variable.
 		Charset charset = null;
 		smallBot.setEncoding(charset);
@@ -178,7 +176,6 @@ public class PircBotXTest {
 
 	@Test(description = "Verify setEncoding behaves correctly when passed null", expectedExceptions = NullPointerException.class)
 	public void setEncodingStringNullTest() throws UnsupportedEncodingException {
-		PircBotX smallBot = new PircBotX();
 		//Since plain null is ambiguous, use a null variable.
 		String charset = null;
 		smallBot.setEncoding(charset);
