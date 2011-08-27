@@ -60,6 +60,7 @@ public class OutputThread extends Thread {
 	 * @param line The line to be written. "\r\n" is appended to the end.
 	 */
 	public void sendRawLineNow(String line) {
+		failIfNotConnected();
 		if (line.length() > bot.getMaxLineLength() - 2)
 			line = line.substring(0, bot.getMaxLineLength() - 2);
 		synchronized (bwriter) {
@@ -74,6 +75,7 @@ public class OutputThread extends Thread {
 	}
 
 	public void send(String message) {
+		failIfNotConnected();
 		try {
 			queue.put(message);
 		} catch (InterruptedException ex) {
@@ -83,6 +85,11 @@ public class OutputThread extends Thread {
 
 	public int getQueueSize() {
 		return queue.size();
+	}
+	
+	protected void failIfNotConnected() throws RuntimeException {
+		if(!bot.isConnected())
+					throw new RuntimeException("Trying to send message when no longer connected");
 	}
 
 	/**
@@ -94,8 +101,7 @@ public class OutputThread extends Thread {
 		try {
 			while (true) {
 				String line = queue.take();
-				if(!bot.isConnected())
-					throw new RuntimeException("Trying to send message when no longer connected");
+				failIfNotConnected();
 				if (line != null && bot.isConnected())
 					sendRawLineNow(line);
 				
