@@ -293,8 +293,6 @@ public class PircBotX {
 		if (isConnected())
 			throw new IrcException("The PircBotXis already connected to an IRC server.  Disconnect first.");
 
-		// Don't clear the outqueue - there might be something important in it!
-
 		// Clear everything we may have know about channels.
 		_userChanInfo.clear();
 
@@ -318,8 +316,7 @@ public class PircBotX {
 
 		//Construct the output and input threads
 		_inputThread = createInputThread(_socket, breader);
-		if (_outputThread == null)
-			_outputThread = createOutputThread(bwriter);
+		_outputThread = createOutputThread(bwriter);
 		_outputThread.start();
 
 		// Attempt to join the server.
