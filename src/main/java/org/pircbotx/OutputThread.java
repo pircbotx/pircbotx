@@ -20,8 +20,6 @@ package org.pircbotx;
 
 import java.io.BufferedWriter;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A Thread which is responsible for sending messages to the IRC server.
@@ -86,10 +84,10 @@ public class OutputThread extends Thread {
 	public int getQueueSize() {
 		return queue.size();
 	}
-	
+
 	protected void failIfNotConnected() throws RuntimeException {
-		if(!bot.isConnected())
-					throw new RuntimeException("Trying to send message when no longer connected");
+		if (!bot.isConnected())
+			throw new RuntimeException("Trying to send message when no longer connected");
 	}
 
 	/**
@@ -104,7 +102,7 @@ public class OutputThread extends Thread {
 				failIfNotConnected();
 				if (line != null && bot.isConnected())
 					sendRawLineNow(line);
-				
+
 				//Small delay to prevent spamming of the channel
 				Thread.sleep(bot.getMessageDelay());
 			}
