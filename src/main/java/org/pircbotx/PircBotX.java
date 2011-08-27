@@ -2585,7 +2585,7 @@ public class PircBotX {
 	 * Reset bot, clearing all internal fields. This will NOT remove server
 	 * connect information as a {@link #reconnect() reconnect} might still happen
 	 */
-	void reset() {
+	protected void reset() {
 		//Clear the user-channel map
 		_userChanInfo.clear();
 		//Clear any existing channel list
