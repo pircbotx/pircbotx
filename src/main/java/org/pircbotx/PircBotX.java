@@ -406,7 +406,7 @@ public class PircBotX {
 	/**
 	 * This method disconnects from the server cleanly by calling the
 	 * quitServer() method.  Providing the PircBotX was connected to an
-	 * IRC server, the onDisconnect() will be called as soon as the
+	 * IRC server, DisconnectEvent will be dispatched as soon as the
 	 * disconnection is made by the server.
 	 *
 	 * @see #quitServer() quitServer
