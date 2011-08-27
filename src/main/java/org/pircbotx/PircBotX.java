@@ -552,6 +552,8 @@ public class PircBotX {
 	 * disconnects us.
 	 */
 	public void quitServer() {
+		if(!isConnected())
+			throw new RuntimeException("Can't quit from server because we are already disconnected!");
 		quitServer("");
 	}
 
