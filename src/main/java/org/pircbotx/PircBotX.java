@@ -288,6 +288,7 @@ public class PircBotX {
 		_server = hostname;
 		_port = port;
 		_password = password;
+		_socketFactory = socketFactory;
 
 		if (isConnected())
 			throw new IrcException("The PircBotXis already connected to an IRC server.  Disconnect first.");
