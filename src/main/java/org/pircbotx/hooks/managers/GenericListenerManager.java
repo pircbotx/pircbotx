@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.PircBotX;
@@ -47,6 +49,9 @@ import org.pircbotx.PircBotX;
 @Deprecated
 public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected Set<Listener> listeners = new HashSet<Listener>();
+	@Getter
+	@Setter
+	protected long currentId = 0;
 
 	public boolean addListener(Listener listener) {
 		return listeners.add(listener);
@@ -71,5 +76,9 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 
 	public boolean listenerExists(Listener listener) {
 		return listeners.contains(listener);
+	}
+
+	public long incrementCurrentId() {
+		return currentId++;
 	}
 }
