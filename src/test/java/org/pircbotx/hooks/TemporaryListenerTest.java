@@ -47,7 +47,7 @@ public class TemporaryListenerTest {
 		Listener listener = new TemporaryListener(bot) {
 			@Override
 			public void onMessage(MessageEvent event) throws Exception {
-				super.onMessage(event);
+				mutableEvent.setValue(event);
 			}
 		};
 		bot.getListenerManager().addListener(listener);
