@@ -61,8 +61,6 @@ public class TemporaryListenerTest {
 
 		//Verify event contents
 		assertNotNull(mevent, "MessageEvent not dispatched");
-		assertEquals(mevent.getChannel(), "#aChannel", "Event channel and origional channel do not match");
-		assertEquals(mevent.getUser(), "aUser", "Event user and origional user do not match");
 		assertEquals(mevent.getMessage(), "Some very long message", "Message sent does not match");
 		
 		//Make sure the listner is still there
