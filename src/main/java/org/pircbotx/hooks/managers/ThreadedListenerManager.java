@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.Synchronized;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
@@ -45,6 +46,7 @@ import org.pircbotx.hooks.Listener;
 public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
+	protected AtomicLong currentId = new AtomicLong(0);
 
 	/**
 	 * Configures with default options: perHook is false and a 
@@ -92,5 +94,17 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 					}
 				}
 			});
+	}
+
+	public void setCurrentId(long currentId) {
+		this.currentId.set(currentId);
+	}
+
+	public long getCurrentId() {
+		return currentId.get();
+	}
+
+	public long incrementCurrentId() {
+		return currentId.getAndIncrement();
 	}
 }
