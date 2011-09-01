@@ -27,10 +27,12 @@ import org.pircbotx.PircBotX;
 public abstract class Event<T extends PircBotX> {
 	protected final long timestamp;
 	protected final T bot;
+	protected final long id;
 	
 	public Event(T bot) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
+		this.id = bot.getListenerManager().incrementCurrentId();
 	}
 
 	/**
@@ -47,6 +49,15 @@ public abstract class Event<T extends PircBotX> {
 	 */
 	public long getTimestamp() {
 		return timestamp;
+	}
+	
+	/**
+	 * Returns the id of this event. This id is guaranteed to be unique in the 
+	 * context of other events dispatched from the same listener managers
+	 * @return The id of this event
+	 */
+	public long getId() {
+		return id;
 	}
 	
 	/**
