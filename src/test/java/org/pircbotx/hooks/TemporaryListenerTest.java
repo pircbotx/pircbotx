@@ -44,12 +44,16 @@ public class TemporaryListenerTest {
 	@Test
 	public void eventDispatched() {
 		final MutableObject<MessageEvent> mutableEvent = new MutableObject();
-		bot.getListenerManager().addListener(new TemporaryListener(bot) {
+		Listener listener = new TemporaryListener(bot) {
 			@Override
 			public void onMessage(MessageEvent event) throws Exception {
 				super.onMessage(event);
 			}
-		});
+		};
+		bot.getListenerManager().addListener(listener);
+		
+		//Make sure the listener is there
+		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener doesn't exist in ListenerManager");
 
 		//Send some arbitrary line
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
@@ -60,6 +64,9 @@ public class TemporaryListenerTest {
 		assertEquals(mevent.getChannel(), "#aChannel", "Event channel and origional channel do not match");
 		assertEquals(mevent.getUser(), "aUser", "Event user and origional user do not match");
 		assertEquals(mevent.getMessage(), "Some very long message", "Message sent does not match");
+		
+		//Make sure the listner is still there
+		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener doesn't exist in ListenerManager");
 	}
 	
 	@Test
