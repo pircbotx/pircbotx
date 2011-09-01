@@ -28,6 +28,7 @@ import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -95,14 +96,15 @@ public class ListenerAdapterTest {
 	@Test(description = "Do an actual test with a sample ListenerAdapter")
 	public void usabilityTest() throws Exception {
 		TestListenerAdapter listener = new TestListenerAdapter();
+		PircBotX bot = new PircBotX();
 
 		//Test if onMessage got called
-		listener.onEvent(new MessageEvent(null, null, null, null));
+		listener.onEvent(new MessageEvent(bot, null, null, null));
 		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
 
 		//Test if onGenericChannelMode (interface) got called
 		listener.setCalled(false);
-		listener.onEvent(new MessageEvent(null, null, null, null));
+		listener.onEvent(new MessageEvent(bot, null, null, null));
 		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
 	}
 
