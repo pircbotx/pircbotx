@@ -85,4 +85,30 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
 	 */
 	public Set<Listener> getListeners();
+	
+	/**
+	 * Set the current id used by the ListenerManager
+	 * <p>
+	 * If you set the current id to 0, this means that the next dispatched event
+	 * is going to have an id of 0
+	 * @param currentId The id to set this ListenerManager to
+	 */
+	public void setCurrentId(long currentId);
+	
+	/**
+	 * Gets the current id used by the ListenerManager
+	 * <p>
+	 * The current id is the id that's going to be handed out to an event. This 
+	 * means that this id has not been dispatched yet.
+	 * @return The current id
+	 */
+	public long getCurrentId();
+	
+	/**
+	 * Returns the current ID then increments by 1. This means that if the current
+	 * id is 0 and this method is called, this method returns 0 and {@link #getCurrentId()}
+	 * returns 1.
+	 * @return The current id
+	 */
+	public long incrementCurrentId();
 }
