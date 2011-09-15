@@ -39,15 +39,15 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccManager {
-	private PircBotX bot;
-	private Vector awaitingResume = new Vector();
+	protected PircBotX bot;
+	protected Vector awaitingResume = new Vector();
 
 	/**
 	 * Constructs a DccManager to look after all DCC SEND and CHAT events.
 	 *
 	 * @param bot The PircBotX whose DCC events this class will handle.
 	 */
-	DccManager(PircBotX bot) {
+	protected DccManager(PircBotX bot) {
 		this.bot = bot;
 	}
 
@@ -56,7 +56,7 @@ public class DccManager {
 	 *
 	 * @return True if the type of request was handled successfully.
 	 */
-	boolean processRequest(User source, String request) {
+	protected boolean processRequest(User source, String request) {
 		StringTokenizer tokenizer = new StringTokenizer(request);
 		tokenizer.nextToken();
 		String type = tokenizer.nextToken();
@@ -130,7 +130,7 @@ public class DccManager {
 	 *
 	 * @param transfer the DccFileTransfer that may be resumed.
 	 */
-	void addAwaitingResume(DccFileTransfer transfer) {
+	protected void addAwaitingResume(DccFileTransfer transfer) {
 		synchronized (awaitingResume) {
 			awaitingResume.addElement(transfer);
 		}
@@ -139,7 +139,7 @@ public class DccManager {
 	/**
 	 * Remove this transfer from the list of those awaiting resuming.
 	 */
-	void removeAwaitingResume(DccFileTransfer transfer) {
+	protected void removeAwaitingResume(DccFileTransfer transfer) {
 		awaitingResume.removeElement(transfer);
 	}
 
