@@ -21,11 +21,12 @@ package org.pircbotx;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
@@ -40,7 +41,7 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
  */
 public class DccManager {
 	protected PircBotX bot;
-	protected Vector awaitingResume = new Vector();
+	protected List<DccFileTransfer> awaitingResume = Collections.synchronizedList(new ArrayList<DccFileTransfer>());
 
 	/**
 	 * Constructs a DccManager to look after all DCC SEND and CHAT events.
@@ -78,17 +79,7 @@ public class DccManager {
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long progress = Long.parseLong(tokenizer.nextToken());
 
-			DccFileTransfer transfer = null;
-			synchronized (awaitingResume) {
-				for (int i = 0; i < awaitingResume.size(); i++) {
-					transfer = (DccFileTransfer) awaitingResume.elementAt(i);
-					if (transfer.getUser().equals(source) && transfer.getPort() == port) {
-						awaitingResume.removeElementAt(i);
-						break;
-					}
-				}
-			}
-
+			DccFileTransfer transfer = removeAwaitingResume(source, port);
 			if (transfer != null) {
 				transfer.setProgress(progress);
 				bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
@@ -98,20 +89,9 @@ public class DccManager {
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long progress = Long.parseLong(tokenizer.nextToken());
 
-			DccFileTransfer transfer = null;
-			synchronized (awaitingResume) {
-				for (int i = 0; i < awaitingResume.size(); i++) {
-					transfer = (DccFileTransfer) awaitingResume.elementAt(i);
-					if (transfer.getUser().equals(source) && transfer.getPort() == port) {
-						awaitingResume.removeElementAt(i);
-						break;
-					}
-				}
-			}
-
+			DccFileTransfer transfer = removeAwaitingResume(source, port);
 			if (transfer != null)
 				transfer.doReceive(transfer.getFile(), true);
-
 		} else if (type.equals("CHAT")) {
 			BigInteger address = new BigInteger(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
@@ -124,23 +104,17 @@ public class DccManager {
 		return true;
 	}
 
-	/**
-	 * Add this DccFileTransfer to the list of those awaiting possible
-	 * resuming.
-	 *
-	 * @param transfer the DccFileTransfer that may be resumed.
-	 */
-	protected void addAwaitingResume(DccFileTransfer transfer) {
+	protected DccFileTransfer removeAwaitingResume(User user, int port) {
 		synchronized (awaitingResume) {
-			awaitingResume.addElement(transfer);
+			for (Iterator<DccFileTransfer> it = awaitingResume.iterator(); it.hasNext();) {
+				DccFileTransfer transfer = it.next();
+				if (transfer.getUser().equals(user) && transfer.getPort() == port) {
+					it.remove();
+					return transfer;
+				}
+			}
 		}
-	}
-
-	/**
-	 * Remove this transfer from the list of those awaiting resuming.
-	 */
-	protected void removeAwaitingResume(DccFileTransfer transfer) {
-		awaitingResume.removeElement(transfer);
+		return null;
 	}
 
 	public static BigInteger addressToInteger(InetAddress address) {
