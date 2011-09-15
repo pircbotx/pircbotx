@@ -78,7 +78,9 @@ public class DccChat {
 				newAddressBytes[1] = (addressBytes.length > 2) ? addressBytes[2] : (byte) 0;
 				newAddressBytes[0] = (addressBytes.length > 3) ? addressBytes[3] : (byte) 0;
 				addressBytes = newAddressBytes;
-			}
+			} else if (addressBytes.length == 17)
+				//Has signum, strip it
+				addressBytes = Arrays.copyOfRange(addressBytes, 1, 17);
 			this.address = InetAddress.getByAddress(addressBytes);
 			this.port = port;
 			this.user = source;
