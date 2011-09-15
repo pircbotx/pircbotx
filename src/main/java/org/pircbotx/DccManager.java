@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import lombok.Synchronized;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
@@ -104,16 +105,15 @@ public class DccManager {
 		return true;
 	}
 
+	@Synchronized("awaitingResume")
 	protected DccFileTransfer removeAwaitingResume(User user, int port) {
-		synchronized (awaitingResume) {
-			for (Iterator<DccFileTransfer> it = awaitingResume.iterator(); it.hasNext();) {
-				DccFileTransfer transfer = it.next();
-				if (transfer.getUser().equals(user) && transfer.getPort() == port) {
-					it.remove();
-					return transfer;
-				}
+		for (Iterator<DccFileTransfer> it = awaitingResume.iterator(); it.hasNext();) {
+			DccFileTransfer transfer = it.next();
+			if (transfer.getUser().equals(user) && transfer.getPort() == port) {
+				it.remove();
+				return transfer;
 			}
-		}
+		} 
 		return null;
 	}
 
