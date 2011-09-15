@@ -72,7 +72,6 @@ public class DccChat {
 				//Has signum, strip it
 				addressBytes = Arrays.copyOfRange(addressBytes, 1, 5);
 			else if (addressBytes.length < 4) {
-				System.out.println("Not enough bytes, padding!!");
 				byte[] newAddressBytes = new byte[4];
 				newAddressBytes[3] = addressBytes[0];
 				newAddressBytes[2] = (addressBytes.length > 1) ? addressBytes[1] : (byte) 0;
