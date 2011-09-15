@@ -1377,7 +1377,7 @@ public class PircBotX {
 		InetAddress inetAddress = getDccInetAddress();
 		if (inetAddress == null)
 			inetAddress = getInetAddress();
-		BigInteger ipNum = ipToInteger(inetAddress);
+		BigInteger ipNum = DccManager.addressToInteger(inetAddress);
 
 		sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
 
@@ -2137,41 +2137,6 @@ public class PircBotX {
 	 */
 	public String getPassword() {
 		return _password;
-	}
-
-	/**
-	 * A convenient method that accepts an IP address represented as a
-	 * long and returns an integer array of size 4 representing the same
-	 * IP address.
-	 *
-	 * @since PircBot 0.9.4
-	 *
-	 * @param address the long value representing the IP address.
-	 *
-	 * @return An int[] of size 4.
-	 */
-	public int[] longToIp(long address) {
-		int[] ip = new int[4];
-		for (int i = 3; i >= 0; i--) {
-			ip[i] = (int) (address % 256);
-			address = address / 256;
-		}
-		return ip;
-	}
-
-	/**
-	 * A convenient method that accepts an IP address represented by a byte[]
-	 * of size 4 and returns this as a long representation of the same IP
-	 * address.
-	 *
-	 * @since PircBot 0.9.4
-	 *
-	 * @param address the byte[] of size 4 representing the IP address.
-	 *
-	 * @return a long representation of the IP address.
-	 */
-	public BigInteger ipToInteger(InetAddress address) {
-		return new BigInteger(1, address.getAddress());
 	}
 
 	/**
