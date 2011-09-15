@@ -45,22 +45,22 @@ public class DccFileTransfer {
 	 * The default buffer size to use when sending and receiving files.
 	 */
 	public static final int BUFFER_SIZE = 1024;
-	private PircBotX bot;
-	private DccManager manager;
+	protected PircBotX bot;
+	protected DccManager manager;
 	@Getter
-	private User user;
-	private String type;
-	private long address;
-	private int port;
-	private long size;
-	private boolean received;
-	private Socket socket = null;
-	private long progress = 0;
-	private File file = null;
-	private int timeout = 0;
-	private boolean incoming;
-	private long packetDelay = 0;
-	private long startTime = 0;
+	protected User user;
+	protected String type;
+	protected long address;
+	protected int port;
+	protected long size;
+	protected boolean received;
+	protected Socket socket = null;
+	protected long progress = 0;
+	protected File file = null;
+	protected int timeout = 0;
+	protected boolean incoming;
+	protected long packetDelay = 0;
+	protected long startTime = 0;
 
 	/**
 	 * Constructor used for receiving files.
@@ -127,7 +127,7 @@ public class DccFileTransfer {
 	/**
 	 * Receive the file in a new thread.
 	 */
-	void doReceive(final File file, final boolean resume) {
+	protected void doReceive(final File file, final boolean resume) {
 		new Thread() {
 			public void run() {
 
@@ -189,7 +189,7 @@ public class DccFileTransfer {
 	/**
 	 * Method to send the file inside a new thread.
 	 */
-	void doSend(final boolean allowResume) {
+	protected void doSend(final boolean allowResume) {
 		new Thread() {
 			public void run() {
 
@@ -288,14 +288,14 @@ public class DccFileTransfer {
 	/**
 	 * Package mutator for setting the progress of the file transfer.
 	 */
-	void setProgress(long progress) {
+	protected void setProgress(long progress) {
 		this.progress = progress;
 	}
 
 	/**
 	 *  Delay between packets.
 	 */
-	private void delay() {
+	protected void delay() {
 		if (packetDelay > 0)
 			try {
 				Thread.sleep(packetDelay);
