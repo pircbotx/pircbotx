@@ -19,8 +19,13 @@
 package org.pircbotx;
 
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
@@ -110,7 +115,7 @@ public class DccManager {
 		} else if (type.equals("CHAT")) {
 			BigInteger address = new BigInteger(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
-			
+
 			final DccChat chat = new DccChat(bot, source, address, port);
 			bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, chat));
 		} else
@@ -136,5 +141,29 @@ public class DccManager {
 	 */
 	void removeAwaitingResume(DccFileTransfer transfer) {
 		awaitingResume.removeElement(transfer);
+	}
+	
+	public static BigInteger addressToInteger(InetAddress address) {
+		return new BigInteger(1, address.getAddress());
+	}
+
+	/**
+	 * A convenient method that accepts an IP address represented as a
+	 * long and returns an integer array of size 4 representing the same
+	 * IP address.
+	 *
+	 * @since PircBot 0.9.4
+	 *
+	 * @param address the long value representing the IP address.
+	 *
+	 * @return An int[] of size 4.
+	 */
+	public static int[] longToIp(long address) {
+		int[] ip = new int[4];
+		for (int i = 3; i >= 0; i--) {
+			ip[i] = (int) (address % 256);
+			address = address / 256;
+		}
+		return ip;
 	}
 }
