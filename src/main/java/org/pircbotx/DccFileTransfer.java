@@ -170,8 +170,10 @@ public class DccFileTransfer {
 			try {
 				foutput.close();
 				socket.close();
-			} catch (Exception anye) {
-				// Do nothing.
+			} catch (Exception e) {
+				//This might be important, but don't change any existing exception
+				if (exception == null)
+					exception = e;
 			}
 		}
 		bot.getListenerManager().dispatchEvent(new FileTransferFinishedEvent(bot, DccFileTransfer.this, exception));
