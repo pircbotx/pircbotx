@@ -134,12 +134,8 @@ public class DccFileTransfer {
 		BufferedOutputStream foutput = null;
 		Exception exception = null;
 		try {
-			// Convert the integer address to a proper IP address.
-			int[] ip = bot.longToIp(address);
-			String ipStr = ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
-
 			// Connect the socket and set a timeout.
-			socket = new Socket(ipStr, port);
+			socket = new Socket(address, port);
 			socket.setSoTimeout(30 * 1000);
 			startTime = System.currentTimeMillis();
 
