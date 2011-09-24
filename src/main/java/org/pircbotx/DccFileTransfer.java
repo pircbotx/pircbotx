@@ -52,7 +52,7 @@ public class DccFileTransfer {
 	@Getter
 	protected User user;
 	protected String type;
-	protected long address;
+	protected InetAddress address;
 	protected int port;
 	protected long size;
 	protected boolean received;
@@ -67,7 +67,7 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for receiving files.
 	 */
-	protected DccFileTransfer(PircBotX bot, DccManager manager, User user, String type, String filename, long address, int port, long size) {
+	protected DccFileTransfer(PircBotX bot, DccManager manager, User user, String type, String filename, InetAddress address, int port, long size) {
 		this.bot = bot;
 		this.manager = manager;
 		this.user = user;
@@ -417,11 +417,11 @@ public class DccFileTransfer {
 	}
 
 	/**
-	 * Returns the address of the sender as a long.
+	 * Returns the address of the sender
 	 *
-	 * @return the address of the sender as a long.
+	 * @return the address of the sender
 	 */
-	public long getNumericalAddress() {
+	public InetAddress getNumericalAddress() {
 		return address;
 	}
 }
