@@ -135,8 +135,8 @@ public class DccManager {
 		return awaitingResume.remove(transfer);
 	}
 
-	public static BigInteger addressToInteger(InetAddress address) {
-		return new BigInteger(1, address.getAddress());
+	public static String addressToInteger(InetAddress address) {
+		return new BigInteger(1, address.getAddress()).toString();
 	}
 
 	public static InetAddress integerToAddress(String rawInteger) {
