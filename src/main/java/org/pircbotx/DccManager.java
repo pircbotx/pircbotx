@@ -94,7 +94,7 @@ public class DccManager {
 			if (transfer != null)
 				transfer.doReceive(transfer.getFile(), true);
 		} else if (type.equals("CHAT")) {
-			BigInteger address = new BigInteger(tokenizer.nextToken());
+			InetAddress address = integerToAddress(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 
 			final DccChat chat = new DccChat(bot, source, address, port);
