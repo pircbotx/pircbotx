@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 import lombok.Synchronized;
+import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
@@ -58,7 +59,7 @@ public class DccManager {
 	 *
 	 * @return True if the type of request was handled successfully.
 	 */
-	protected boolean processRequest(User source, String request) {
+	protected boolean processRequest(User source, String request) throws DccException {
 		StringTokenizer tokenizer = new StringTokenizer(request);
 		//Skip the DCC part of the line
 		tokenizer.nextToken();
@@ -86,10 +87,10 @@ public class DccManager {
 			long progress = Long.parseLong(tokenizer.nextToken());
 
 			DccFileTransfer transfer = removeAwaitingResume(source, port);
-			if (transfer != null) {
-				transfer.setProgress(progress);
-				bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
-			}
+			if (transfer == null)
+				throw new DccException("No Dcc File Transfer to resume recieving (filename: " + filename + ", source: " + source + ", port: " + port + ")");
+			transfer.setProgress(progress);
+			bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
 		} else if (type.equals("ACCEPT")) {
 			//We are resuming sending a file to someone, this is them acknowledging
 			//Example: DCC ACCEPT <filename> <port> <position>
@@ -97,8 +98,9 @@ public class DccManager {
 			long progress = Long.parseLong(tokenizer.nextToken());
 
 			DccFileTransfer transfer = removeAwaitingResume(source, port);
-			if (transfer != null)
-				transfer.doReceive(transfer.getFile(), true);
+			if (transfer == null)
+				throw new DccException("No Dcc File Transfer to resume sending (filename: " + filename + ", source: " + source + ", port: " + port + ")");
+			transfer.doReceive(transfer.getFile(), true);
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
@@ -121,7 +123,7 @@ public class DccManager {
 				it.remove();
 				return transfer;
 			}
-		} 
+		}
 		return null;
 	}
 
