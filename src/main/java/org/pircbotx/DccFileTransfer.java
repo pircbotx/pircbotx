@@ -29,6 +29,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import lombok.Getter;
+import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 
 /**
@@ -106,22 +107,22 @@ public class DccFileTransfer {
 	 *
 	 */
 	public synchronized void receive(File file, boolean resume) {
-		if (!received) {
-			received = true;
-			this.file = file;
+		if (received)
+			throw new DccException("File has already been received, can't receive file again");
+		received = true;
+		this.file = file;
 
-			if (type.equals("SEND") && resume) {
-				progress = file.length();
-				if (progress == 0)
-					doReceive(file, false);
-				else {
-					bot.sendCTCPCommand(user.getNick(), "DCC RESUME file.ext " + port + " " + progress);
-					manager.addAwaitingResume(this);
-				}
-			} else {
-				progress = file.length();
-				doReceive(file, resume);
+		if (type.equals("SEND") && resume) {
+			progress = file.length();
+			if (progress == 0)
+				doReceive(file, false);
+			else {
+				bot.sendCTCPCommand(user.getNick(), "DCC RESUME file.ext " + port + " " + progress);
+				manager.addAwaitingResume(this);
 			}
+		} else {
+			progress = file.length();
+			doReceive(file, resume);
 		}
 	}
 
