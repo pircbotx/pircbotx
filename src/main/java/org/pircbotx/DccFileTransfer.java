@@ -32,7 +32,8 @@ import lombok.Getter;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 
 /**
- * This class is used to administer a DCC file transfer.
+ * This class is used to administer a DCC file transfer. <b>Note:</b> Unlike 
+ * PircBot, the methods here do <i>not</i> execute in different threads.
  *
  * @since   PircBot 1.2.0
  * @author  Origionally by:
