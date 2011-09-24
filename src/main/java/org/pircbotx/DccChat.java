@@ -64,6 +64,7 @@ public class DccChat {
 	 * @throws IOException If the connection cannot be made.
 	 */
 	protected DccChat(PircBotX bot, User source, InetAddress address, int port) {
+			this.bot = bot;
 			this.address = address;
 			this.port = port;
 			this.user = source;
