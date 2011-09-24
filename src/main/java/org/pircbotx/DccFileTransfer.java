@@ -263,7 +263,9 @@ public class DccFileTransfer {
 				finput.close();
 				socket.close();
 			} catch (Exception e) {
-				// Do nothing.
+				//This might be important, but don't change any existing exception
+				if (exception == null)
+					exception = e;
 			}
 		}
 
