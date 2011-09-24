@@ -111,9 +111,9 @@ public class DccFileTransfer {
 			throw new DccException("File has already been received, can't receive file again");
 		received = true;
 		this.file = file;
+		progress = file.length();
 
-		if (type.equals("SEND") && resume) {
-			progress = file.length();
+		if (type.equals("SEND") && resume)
 			if (progress == 0)
 				//File is empty, must be a new transfer
 				doReceive(file, false);
@@ -122,11 +122,9 @@ public class DccFileTransfer {
 				bot.sendCTCPCommand(user.getNick(), "DCC RESUME file.ext " + port + " " + progress);
 				manager.addAwaitingResume(this);
 			}
-		} else {
+		else
 			//User must be resuming transfer
-			progress = file.length();
 			doReceive(file, resume);
-		}
 	}
 
 	/**
