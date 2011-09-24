@@ -126,6 +126,14 @@ public class DccManager {
 		}
 		return null;
 	}
+	
+	protected boolean addAwaitingResume(DccFileTransfer transfer) {
+		return awaitingResume.add(transfer);
+	}
+	
+	protected boolean removeAwaitingResume(DccFileTransfer transfer) {
+		return awaitingResume.remove(transfer);
+	}
 
 	public static BigInteger addressToInteger(InetAddress address) {
 		return new BigInteger(1, address.getAddress());
