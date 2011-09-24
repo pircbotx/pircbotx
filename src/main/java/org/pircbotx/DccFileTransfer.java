@@ -128,7 +128,7 @@ public class DccFileTransfer {
 	}
 
 	/**
-	 * Receive the file in a new thread.
+	 * Receive the file
 	 */
 	protected void doReceive(final File file, final boolean resume) {
 		BufferedOutputStream foutput = null;
@@ -182,7 +182,7 @@ public class DccFileTransfer {
 	}
 
 	/**
-	 * Method to send the file inside a new thread.
+	 * Method to send the file
 	 */
 	protected void doSend(final boolean allowResume) {
 		BufferedInputStream finput = null;
