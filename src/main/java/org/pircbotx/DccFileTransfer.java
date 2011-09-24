@@ -214,11 +214,11 @@ public class DccFileTransfer {
 			BigInteger ipNum = bot.ipToInteger(inetAddress);
 
 			// Rename the filename so it has no whitespace in it when we send it
-			String safeFilename = file.getName().replace(' ', '_');
+			String safeFilename = file.getName().replace(' ', '_').trim();
 			safeFilename = safeFilename.replace('\t', '_');
 
 			if (allowResume)
-				manager.addAwaitingResume(DccFileTransfer.this);
+				manager.addAwaitingResume(this);
 
 			// Send the message to the user, telling them where to connect to in order to get the file.
 			bot.sendCTCPCommand(user.getNick(), "DCC SEND " + safeFilename + " " + ipNum + " " + port + " " + file.length());
