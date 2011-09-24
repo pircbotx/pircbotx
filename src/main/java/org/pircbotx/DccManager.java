@@ -69,7 +69,7 @@ public class DccManager {
 		if (type.equals("SEND")) {
 			//Someone is trying to send a file to us
 			//Example: DCC SEND <filename> <ip> <port> <file size> (note File size is optional)
-			long address = Long.parseLong(tokenizer.nextToken());
+			InetAddress address = integerToAddress(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long size = -1;
 			try {
