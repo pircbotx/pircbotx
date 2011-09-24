@@ -115,12 +115,15 @@ public class DccFileTransfer {
 		if (type.equals("SEND") && resume) {
 			progress = file.length();
 			if (progress == 0)
+				//File is empty, must be a new transfer
 				doReceive(file, false);
 			else {
+				//File has content, someone is attempting to send instead of resuming transfer. Attempt to resume
 				bot.sendCTCPCommand(user.getNick(), "DCC RESUME file.ext " + port + " " + progress);
 				manager.addAwaitingResume(this);
 			}
 		} else {
+			//User must be resuming transfer
 			progress = file.length();
 			doReceive(file, resume);
 		}
