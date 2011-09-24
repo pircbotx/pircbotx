@@ -1377,7 +1377,7 @@ public class PircBotX {
 		InetAddress inetAddress = getDccInetAddress();
 		if (inetAddress == null)
 			inetAddress = getInetAddress();
-		BigInteger ipNum = DccManager.addressToInteger(inetAddress);
+		String ipNum = DccManager.addressToInteger(inetAddress);
 
 		sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
 
