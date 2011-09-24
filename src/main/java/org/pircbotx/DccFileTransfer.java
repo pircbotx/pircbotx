@@ -211,7 +211,7 @@ public class DccFileTransfer {
 			InetAddress inetAddress = bot.getDccInetAddress();
 			if (inetAddress == null)
 				inetAddress = bot.getInetAddress();
-			BigInteger ipNum = bot.ipToInteger(inetAddress);
+			String ipNum = DccManager.addressToInteger(inetAddress);
 
 			// Rename the filename so it has no whitespace in it when we send it
 			String safeFilename = file.getName().replace(' ', '_').trim();
