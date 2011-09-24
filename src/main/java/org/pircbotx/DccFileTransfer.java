@@ -140,7 +140,7 @@ public class DccFileTransfer {
 			startTime = System.currentTimeMillis();
 
 			// No longer possible to resume this transfer once it's underway.
-			manager.removeAwaitingResume(DccFileTransfer.this);
+			manager.removeAwaitingResume(this);
 
 			BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 			BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
