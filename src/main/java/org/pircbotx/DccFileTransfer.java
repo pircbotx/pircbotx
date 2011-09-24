@@ -66,7 +66,7 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for receiving files.
 	 */
-	DccFileTransfer(PircBotX bot, DccManager manager, User user, String type, String filename, long address, int port, long size) {
+	protected DccFileTransfer(PircBotX bot, DccManager manager, User user, String type, String filename, long address, int port, long size) {
 		this.bot = bot;
 		this.manager = manager;
 		this.user = user;
@@ -83,7 +83,7 @@ public class DccFileTransfer {
 	/**
 	 * Constructor used for sending files.
 	 */
-	DccFileTransfer(PircBotX bot, DccManager manager, File file, User user, int timeout) {
+	protected DccFileTransfer(PircBotX bot, DccManager manager, File file, User user, int timeout) {
 		this.bot = bot;
 		this.manager = manager;
 		this.user = user;
