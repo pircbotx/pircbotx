@@ -213,8 +213,7 @@ public class DccFileTransfer {
 				inetAddress = bot.getInetAddress();
 			BigInteger ipNum = bot.ipToInteger(inetAddress);
 
-			// Rename the filename so it has no whitespace in it when we send it.
-			// .... I really should do this a bit more nicely at some point ....
+			// Rename the filename so it has no whitespace in it when we send it
 			String safeFilename = file.getName().replace(' ', '_');
 			safeFilename = safeFilename.replace('\t', '_');
 
