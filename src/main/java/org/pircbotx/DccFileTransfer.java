@@ -284,7 +284,7 @@ public class DccFileTransfer {
 			try {
 				Thread.sleep(packetDelay);
 			} catch (InterruptedException e) {
-				// Do nothing.
+				throw new DccException("Sleep between packets interupted", e);
 			}
 	}
 
