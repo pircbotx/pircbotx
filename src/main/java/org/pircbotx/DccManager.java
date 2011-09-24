@@ -60,11 +60,14 @@ public class DccManager {
 	 */
 	protected boolean processRequest(User source, String request) {
 		StringTokenizer tokenizer = new StringTokenizer(request);
+		//Skip the DCC part of the line
 		tokenizer.nextToken();
 		String type = tokenizer.nextToken();
 		String filename = tokenizer.nextToken();
 
 		if (type.equals("SEND")) {
+			//Someone is trying to send a file to us
+			//Example: DCC SEND <filename> <ip> <port> <file size> (note File size is optional)
 			long address = Long.parseLong(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long size = -1;
@@ -75,8 +78,10 @@ public class DccManager {
 			}
 
 			bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, new DccFileTransfer(bot, this, source, type, filename, address, port, size)));
-
 		} else if (type.equals("RESUME")) {
+			//Someone is trying to resume sending a file to us
+			//Example: DCC RESUME <filename> <port> <position>
+			//Reply with: DCC ACCEPT <filename> <port> <position>
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long progress = Long.parseLong(tokenizer.nextToken());
 
@@ -85,8 +90,9 @@ public class DccManager {
 				transfer.setProgress(progress);
 				bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
 			}
-
 		} else if (type.equals("ACCEPT")) {
+			//We are resuming sending a file to someone, this is them acknowledging
+			//Example: DCC ACCEPT <filename> <port> <position>
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long progress = Long.parseLong(tokenizer.nextToken());
 
@@ -94,6 +100,8 @@ public class DccManager {
 			if (transfer != null)
 				transfer.doReceive(transfer.getFile(), true);
 		} else if (type.equals("CHAT")) {
+			//Someone is trying to chat with us
+			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
 			InetAddress address = integerToAddress(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 
