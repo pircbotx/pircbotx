@@ -28,6 +28,7 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import lombok.Getter;
 import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
@@ -186,26 +187,7 @@ public class DccFileTransfer {
 		BufferedInputStream finput = null;
 		Exception exception = null;
 		try {
-			ServerSocket ss = null;
-
-			int[] ports = bot.getDccPorts();
-			if (ports == null)
-				// Use any free port.
-				ss = new ServerSocket(0);
-			else {
-				for (int i = 0; i < ports.length; i++)
-					try {
-						ss = new ServerSocket(ports[i]);
-						// Found a port number we could use.
-						break;
-					} catch (Exception e) {
-						// Do nothing; go round and try another port.
-					}
-				if (ss == null)
-					// No ports could be used.
-					throw new IOException("All ports returned by getDccPorts() are in use.");
-			}
-
+			ServerSocket ss = manager.createServerSocket();
 			ss.setSoTimeout(timeout);
 			port = ss.getLocalPort();
 			InetAddress inetAddress = bot.getDccInetAddress();

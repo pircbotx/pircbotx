@@ -18,8 +18,10 @@
  */
 package org.pircbotx;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,13 +128,35 @@ public class DccManager {
 		}
 		return null;
 	}
-	
+
 	protected boolean addAwaitingResume(DccFileTransfer transfer) {
 		return awaitingResume.add(transfer);
 	}
-	
+
 	protected boolean removeAwaitingResume(DccFileTransfer transfer) {
 		return awaitingResume.remove(transfer);
+	}
+
+	protected ServerSocket createServerSocket() throws IOException, DccException {
+		ServerSocket ss = null;
+		int[] ports = bot.getDccPorts();
+		if (ports == null)
+			// Use any free port.
+			ss = new ServerSocket(0);
+		else {
+			for (int i = 0; i < ports.length; i++)
+				try {
+					ss = new ServerSocket(ports[i]);
+					// Found a port number we could use.
+					break;
+				} catch (Exception e) {
+					// Do nothing; go round and try another port.
+				}
+			if (ss == null)
+				// No ports could be used.
+				throw new DccException("All ports returned by getDccPorts() " + Arrays.toString(ports) + "are in use.");
+		}
+		return ss;
 	}
 
 	public static String addressToInteger(InetAddress address) {
