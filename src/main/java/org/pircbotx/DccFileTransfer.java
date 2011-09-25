@@ -212,7 +212,7 @@ public class DccFileTransfer {
 
 			// No longer possible to resume this transfer once it's underway.
 			if (allowResume)
-				manager.removeAwaitingResume(DccFileTransfer.this);
+				manager.removeAwaitingResume(this);
 
 			// Might as well close the server socket now; it's finished with.
 			ss.close();
