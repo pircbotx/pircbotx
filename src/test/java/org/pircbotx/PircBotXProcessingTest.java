@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.events.SuperOpEvent;
@@ -546,6 +547,20 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
 		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given"); 
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
+	}
+	
+	@Test()
+	public void motdTest() {
+		bot.handleLine(":irc.someserver.net 375 PircBotXUser :- pratchett.freenode.net Message of the Day - ");
+		bot.handleLine(":irc.someserver.net 372 PircBotXUser :- " + aString);
+		bot.handleLine(":irc.someserver.net 372 PircBotXUser :- ");
+		bot.handleLine(":irc.someserver.net 372 PircBotXUser :- " + aString);
+		bot.handleLine(":irc.someserver.net 376 PircBotXUser :End of /MOTD command.");
+		
+		//Check event contents
+		MotdEvent event = getEvent(events, MotdEvent.class, "MotdEvent not dispatched");
+		String realMotd = aString + "\n\n" + aString;
+		assertEquals(event.getMotd(), realMotd, "Motd does not match given");
 	}
 	
 	/**
