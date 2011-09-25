@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import org.testng.annotations.DataProvider;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.Inet6Address;
@@ -26,7 +27,6 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
@@ -80,6 +80,37 @@ public class DCCTest {
 		assertNotNull(event, "No IncomingChatRequestEvent dispatched");
 		
 		System.out.println("Test ran");
+	}
+	
+		@Test(dataProvider = "ipToLongDataProvider")
+	public void ipToLong(String ipAddress, BigInteger expectedResult) throws UnknownHostException {
+		//First, convert to a byte array
+		InetAddress address = InetAddress.getByName(ipAddress);
+		byte[] byteIp = address.getAddress();
+		System.out.println("IP: " + ipAddress);
+		System.out.println("BigInt: " + new BigInteger(byteIp));
+		System.out.println("BigInt1: " + new BigInteger(1, byteIp));
+		System.out.println("Array Length: " + byteIp.length);
+
+		//Next, extract the value
+		BigInteger ipToLong = smallBot.ipToInteger(address);
+		System.out.println("Bot Convert: " + ipToLong);
+
+		assertEquals(ipToLong, expectedResult, "Converting " + ipAddress + " to long is wrong");
+	}
+
+	@DataProvider
+	public Object[][] ipToLongDataProvider() {
+		//Note: All numbers are verified with another tool
+		return new Object[][]{
+					//IPv4 Tests	
+					{"127.0.0.1", new BigInteger("2130706433")},
+					{"192.168.21.6", new BigInteger("3232240902")},
+					{"75.221.45.21", new BigInteger("1272786197")},
+					//IPv6 tests
+					{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", new BigInteger("42540766452641154071740215577757643572")},
+					{"fe80:0:0:0:202:b3ff:fe1e:8329", new BigInteger("338288524927261089654163772891438416681")},
+					{"fe80::202:b3ff:fe1e:5329", new BigInteger("338288524927261089654163772891438404393")},};
 	}
 
 	protected void debug(String type, InetAddress address) {
