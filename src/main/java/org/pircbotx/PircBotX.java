@@ -1722,12 +1722,13 @@ public class PircBotX {
 		else if (code == RPL_MOTD)
 			//Example: PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
 			//This is part of the MOTD, add a new line
-			getServerInfo().setMotd(getServerInfo().getMotd() + response.split(" ", 3) + "\n");
-		else if (code == RPL_ENDOFMOTD)
+			getServerInfo().setMotd(getServerInfo().getMotd() + response.split(" ", 3)[2].trim() + "\n");
+		else if (code == RPL_ENDOFMOTD) {
 			//Example: PircBotX :End of /MOTD command.
-			//End of MOTD, dispatch event
+			//End of MOTD, clean it and dispatch MotdEvent
+			getServerInfo().setMotd(getServerInfo().getMotd().trim());
 			getListenerManager().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
-
+		}
 		//WARNING: Parsed array might be modified, recreate if you're going to use down here
 		getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, response));
 	}
