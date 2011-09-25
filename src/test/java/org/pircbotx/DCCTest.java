@@ -82,7 +82,7 @@ public class DCCTest {
 		System.out.println("Test ran");
 	}
 
-	@Test(dataProvider = "ipToLongDataProvider")
+	@Test(dataProvider = "addressDataProvider")
 	public void addressToIntegerTest(String rawAddress, String expectedResult) throws UnknownHostException {
 		//First, convert to a byte array
 		InetAddress address = InetAddress.getByName(rawAddress);
@@ -91,7 +91,7 @@ public class DCCTest {
 	}
 
 	@DataProvider
-	public Object[][] ipToLongDataProvider() {
+	public Object[][] addressDataProvider() {
 		//Note: All numbers are verified with another tool
 		return new Object[][]{
 					//IPv4 Tests	
