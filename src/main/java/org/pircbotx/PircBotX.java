@@ -1351,26 +1351,7 @@ public class PircBotX {
 	 */
 	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException {
 		DccChat chat = null;
-		ServerSocket ss = null;
-
-		int[] ports = getDccPorts();
-		if (ports == null)
-			// Use any free port.
-			ss = new ServerSocket(0);
-		else {
-			for (int i = 0; i < ports.length; i++)
-				try {
-					ss = new ServerSocket(ports[i]);
-					// Found a port number we could use.
-					break;
-				} catch (Exception e) {
-					// Do nothing; go round and try another port.
-				}
-			if (ss == null)
-				// No ports could be used.
-				throw new IOException("All ports returned by getDccPorts() are in use.");
-		}
-
+		ServerSocket ss = _dccManager.createServerSocket();
 		ss.setSoTimeout(timeout);
 		int port = ss.getLocalPort();
 
