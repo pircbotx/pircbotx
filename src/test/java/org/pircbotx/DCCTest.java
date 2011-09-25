@@ -83,11 +83,11 @@ public class DCCTest {
 	}
 
 	@Test(dataProvider = "ipToLongDataProvider")
-	public void addressToIntegerTest(String ipAddress, String expectedResult) throws UnknownHostException {
+	public void addressToIntegerTest(String rawAddress, String expectedResult) throws UnknownHostException {
 		//First, convert to a byte array
-		InetAddress address = InetAddress.getByName(ipAddress);
+		InetAddress address = InetAddress.getByName(rawAddress);
 		String convertedAddress = DccManager.addressToInteger(address);
-		assertEquals(ipAddress, convertedAddress, "Converted address doesn't match given");
+		assertEquals(convertedAddress, expectedResult, "Converted address doesn't match given");
 	}
 
 	@DataProvider
