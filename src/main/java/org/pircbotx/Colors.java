@@ -50,12 +50,12 @@ package org.pircbotx;
  *
  *
  * @since   PircBot 0.9.12
- * @author  Origionally by:
+ * @author  Originally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
-public class Colors {
+public final class Colors {
 	/**
 	 * Removes all previously applied color and formatting attributes.
 	 */
@@ -154,7 +154,7 @@ public class Colors {
 	 */
 	public static String removeColors(String line) {
 		int length = line.length();
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		int i = 0;
 		while (i < length) {
 			char ch = line.charAt(i);
@@ -215,7 +215,7 @@ public class Colors {
 	 */
 	public static String removeFormatting(String line) {
 		int length = line.length();
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < length; i++) {
 			char ch = line.charAt(i);
 			if (ch == '\u000f' || ch == '\u0002' || ch == '\u001f' || ch == '\u0016') {
