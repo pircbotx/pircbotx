@@ -147,7 +147,22 @@
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
 				</configuration>
+				<!--Do NOT show depreciation in test compile-->
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<configuration>
+							<showDeprecation>false</showDeprecation>
+						</configuration> 
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>                  
+				</executions>
 			</plugin>
 			<!--Deploy site with Mercurial (Hg)-->
 			<plugin>
