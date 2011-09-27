@@ -2478,7 +2478,7 @@ public class PircBotX {
 	 * Returns the current ListenerManager in use by this bot. 
 	 * @return Current ListenerManager
 	 */
-	public ListenerManager getListenerManager() {
+	public ListenerManager<? extends PircBotX> getListenerManager() {
 		return listenerManager;
 	}
 
