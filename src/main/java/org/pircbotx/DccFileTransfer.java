@@ -60,6 +60,7 @@ public class DccFileTransfer {
 	protected Socket socket = null;
 	protected long progress = 0;
 	protected File file = null;
+	protected String filename;
 	protected int timeout = 0;
 	protected boolean incoming;
 	protected long packetDelay = 0;
@@ -74,6 +75,7 @@ public class DccFileTransfer {
 		this.user = user;
 		this.type = type;
 		this.file = new File(filename);
+		this.filename = filename;
 		this.address = address;
 		this.port = port;
 		this.size = size;
@@ -90,6 +92,7 @@ public class DccFileTransfer {
 		this.manager = manager;
 		this.user = user;
 		this.file = file;
+		this.filename = file.getName();
 		size = file.length();
 		this.timeout = timeout;
 		received = true;
