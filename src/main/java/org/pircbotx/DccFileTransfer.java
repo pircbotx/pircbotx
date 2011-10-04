@@ -408,4 +408,14 @@ public class DccFileTransfer {
 	public InetAddress getNumericalAddress() {
 		return address;
 	}
+	
+	/**
+	 * Return the original file name. When receiving this is the filename that the
+	 * user sent it as, when sending this is the name of the file that is being
+	 * sent
+	 * @return 
+	 */
+	public String getFilename() {
+		return filename;
+	}
 }
