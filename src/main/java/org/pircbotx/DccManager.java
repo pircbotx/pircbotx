@@ -139,14 +139,14 @@ public class DccManager {
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;
-		int[] ports = bot.getDccPorts();
-		if (ports == null)
+		List<Integer> ports = bot.getDccPorts();
+		if (ports.isEmpty())
 			// Use any free port.
 			ss = new ServerSocket(0);
 		else {
-			for (int i = 0; i < ports.length; i++)
+			for (int currentPort : ports)
 				try {
-					ss = new ServerSocket(ports[i]);
+					ss = new ServerSocket(currentPort);
 					// Found a port number we could use.
 					break;
 				} catch (Exception e) {
@@ -154,7 +154,7 @@ public class DccManager {
 				}
 			if (ss == null)
 				// No ports could be used.
-				throw new DccException("All ports returned by getDccPorts() " + Arrays.toString(ports) + "are in use.");
+				throw new DccException("All ports returned by getDccPorts() " + ports.toString()  + "are in use.");
 		}
 		return ss;
 	}
