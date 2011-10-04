@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.net.SocketFactory;
 import lombok.AccessLevel;
@@ -58,7 +59,7 @@ public class MultiBotManager {
 	protected boolean autoNickChange;
 	protected Charset encoding;
 	protected InetAddress dcciNetAddress;
-	protected int[] dccports;
+	protected List<Integer> dccports;
 
 	/**
 	 * Setup MultiBotManager with all bots being called the specified name

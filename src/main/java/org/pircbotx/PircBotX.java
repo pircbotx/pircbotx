@@ -18,6 +18,8 @@
  */
 package org.pircbotx;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Setter;
 import lombok.Getter;
 import java.util.concurrent.CountDownLatch;
@@ -83,7 +85,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -92,6 +93,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import lombok.AccessLevel;
 import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
@@ -159,7 +161,8 @@ public class PircBotX {
 	protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
 	// DccManager to process and handle all DCC events.
 	protected DccManager _dccManager = new DccManager(this);
-	protected int[] _dccPorts = null;
+	@Setter(AccessLevel.PROTECTED)
+	protected List<Integer> dccPorts = new ArrayList();
 	protected InetAddress _dccInetAddress = null;
 	// Default settings for the PircBotX.
 	protected boolean _autoNickChange = false;
@@ -2210,45 +2213,20 @@ public class PircBotX {
 	}
 
 	/**
-	 * Returns the set of port numbers to be used when sending a DCC chat
+	 * Returns the list of port numbers to be used when sending a DCC chat
 	 * or file transfer. This is useful when you are behind a firewall and
 	 * need to set up port forwarding. The array of port numbers is traversed
 	 * in sequence until a free port is found to listen on. A DCC tranfer will
 	 * fail if all ports are already in use.
-	 * If set to null, <i>any</i> free port number will be used.
+	 * If empty, <i>any</i> free port number will be used.
 	 *
 	 * @since PircBot 1.4.4
 	 *
 	 * @return An array of port numbers that PircBotX can use to send DCC
 	 *         transfers, or null if any port is allowed.
 	 */
-	public int[] getDccPorts() {
-		if (_dccPorts == null || _dccPorts.length == 0)
-			return null;
-		// Clone the array to prevent external modification.
-		return (int[]) _dccPorts.clone();
-	}
-
-	/**
-	 * Sets the choice of port numbers that can be used when sending a DCC chat
-	 * or file transfer. This is useful when you are behind a firewall and
-	 * need to set up port forwarding. The array of port numbers is traversed
-	 * in sequence until a free port is found to listen on. A DCC transfer will
-	 * fail if all ports are already in use.
-	 * If set to null, <i>any</i> free port number will be used.
-	 *
-	 * @since PircBot 1.4.4
-	 *
-	 * @param ports The set of port numbers that PircBotX may use for DCC
-	 *              transfers, or null to let it use any free port (default).
-	 *
-	 */
-	public void setDccPorts(int[] ports) {
-		if (ports == null || ports.length == 0)
-			_dccPorts = null;
-		else
-			// Clone the array to prevent external modification.
-			_dccPorts = (int[]) ports.clone();
+	public List<Integer> getDccPorts() {
+		return dccPorts;
 	}
 
 	/**
