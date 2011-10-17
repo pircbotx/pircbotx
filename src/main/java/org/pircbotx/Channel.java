@@ -125,6 +125,8 @@ public class Channel {
 				modeLatch = new CountDownLatch(1);
 			//Wait for setMode to be called
 			modeLatch.await();
+			//Mode is no longer stale since we have a good mode
+			modeStale = false;
 			//We have known good mode from server, now return
 			return mode;
 		} catch (InterruptedException e) {
