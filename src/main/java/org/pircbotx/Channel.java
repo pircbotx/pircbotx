@@ -173,6 +173,15 @@ public class Channel {
 		return modeExists('i');
 	}
 
+	/**
+	 * Get the channel limit if it exists
+	 * <p>
+	 * <b>Note:</b> The returned value is the best effort guess of what the channel
+	 * limit is. Unknown modes and their arguments may make the returned value wrong.
+	 * Whether the returned value is null is not affected by this issue
+	 * @return If its set, the best effort guess of what the channel limit is.
+	 * If its not set, null.
+	 */
 	public int getChannelLimit() {
 		try {
 			return Integer.parseInt(getModeArgument('l'));
@@ -183,22 +192,47 @@ public class Channel {
 		}
 	}
 
+	/**
+	 * Get the channel key if it exists
+	 * <p>
+	 * <b>Note:</b> The returned value is the best effort guess of what the channel
+	 * key is. Unknown modes and their arguments may make the returned value wrong.
+	 * Whether the returned value is null is not affected by this issue
+	 * @return If its set, the best effort guess of what the channel key is.
+	 * If its not set, null.
+	 */
 	public String getChannelKey() {
 		return getModeArgument('k');
 	}
 
+	/**
+	 * Check if channel is moderated (+m)
+	 * @return True if set, false if not
+	 */
 	public boolean isModerated() {
 		return modeExists('m');
 	}
 
+	/**
+	 * Check if channel will not accept external messages (+n)
+	 * @return True if set, false if not
+	 */
 	public boolean isNoExternalMessages() {
 		return modeExists('n');
 	}
 
+	/**
+	 * Check if channel is secret (+s)
+	 * @return True if set, false if not
+	 */
 	public boolean isSecret() {
 		return modeExists('s');
 	}
 
+	/**
+	 * Check if the channel has topic protection (+t) set
+	 * @return True if its set, false if not
+	 */
 	public boolean hasTopicProtection() {
 		return modeExists('t');
 	}
