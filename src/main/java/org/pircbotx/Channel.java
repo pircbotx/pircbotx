@@ -195,10 +195,14 @@ public class Channel {
 			return modeParts[modeParts.length];
 
 		//Its in the middle. Go through the modes and move which position we think the argument is
-		int argCounter = 1;
+		int argCounter = 0;
 		for (char curMode : getMode().split(" ")[0].toCharArray())
 			if (curMode == 'l')
 				argCounter++;
+
+		//If arg counter is 0, then the mode arg found
+		if (argCounter == 0)
+			throw new RuntimeException("Arg wasn't found yet it go to the loop");
 
 		//Assume the argument here is the correct one
 		return modeParts[argCounter];
