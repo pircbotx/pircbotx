@@ -192,7 +192,7 @@ public class Channel {
 
 		//If its the last one, use that
 		if (modeParts[0].endsWith("" + modeChar))
-			return modeParts[modeParts.length];
+			return modeParts[modeParts.length - 1];
 
 		//Its in the middle. Go through the modes and move which position we think the argument is
 		int argCounter = 0;
