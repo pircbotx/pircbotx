@@ -66,7 +66,10 @@ public class MultiBotManagerTest {
 		masterBot.setAutoNickChange(true);
 		masterBot.setEncoding(Charset.availableCharsets().firstKey());
 		masterBot.setDccInetAddress(InetAddress.getLoopbackAddress());
-		masterBot.setDccPorts(new int[]{555, 666, 777});
+		masterBot.getDccPorts().clear();
+		masterBot.getDccPorts().add(555);
+		masterBot.getDccPorts().add(666);
+		masterBot.getDccPorts().add(777);
 
 		//Setup the manager to clone it
 		manager = new MultiBotManager(masterBot);
