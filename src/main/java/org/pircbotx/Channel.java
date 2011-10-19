@@ -142,67 +142,8 @@ public class Channel {
 		return getMode().split(" ")[0].contains("" + modeChar);
 	}
 
-	
-	protected String getModeArgument(char modeChar) {
-		String cleanMode = (getMode().startsWith("+") || getMode().startsWith("-")) ? getMode().substring(1) : getMode();
-		String[] modeParts = cleanMode.split(" ");
-		
-		//Make sure it exists
-		if(!modeExists(modeChar))
-			return null;
-		
-		//If its the fist one, use that
-		if(cleanMode.startsWith("" + modeChar))
-			return modeParts[1];
-		
-		//If its the last one, use that
-		if(modeParts[0].endsWith("" + modeChar))
-			return modeParts[modeParts.length];
-		
-		//Its in the middle. Go through the modes and move which position we think the argument is
-		int argCounter = 1;
-		for (char curMode : getMode().split(" ")[0].toCharArray())
-			if (curMode == 'l')
-				argCounter++;
-		
-		//Assume the argument here is the correct one
-		return modeParts[argCounter];
-	}
-
 	public boolean isInviteOnly() {
 		return modeExists('i');
-	}
-
-	/**
-	 * Get the channel limit if it exists
-	 * <p>
-	 * <b>Note:</b> The returned value is the best effort guess of what the channel
-	 * limit is. Unknown modes and their arguments may make the returned value wrong.
-	 * Whether the returned value is null is not affected by this issue
-	 * @return If its set, the best effort guess of what the channel limit is.
-	 * If its not set, null.
-	 */
-	public int getChannelLimit() {
-		try {
-			return Integer.parseInt(getModeArgument('l'));
-		}
-		catch(NumberFormatException e) {
-			//Can't parse it or null, return -1
-			return -1;
-		}
-	}
-
-	/**
-	 * Get the channel key if it exists
-	 * <p>
-	 * <b>Note:</b> The returned value is the best effort guess of what the channel
-	 * key is. Unknown modes and their arguments may make the returned value wrong.
-	 * Whether the returned value is null is not affected by this issue
-	 * @return If its set, the best effort guess of what the channel key is.
-	 * If its not set, null.
-	 */
-	public String getChannelKey() {
-		return getModeArgument('k');
 	}
 
 	/**
@@ -235,6 +176,63 @@ public class Channel {
 	 */
 	public boolean hasTopicProtection() {
 		return modeExists('t');
+	}
+
+	protected String getModeArgument(char modeChar) {
+		String cleanMode = (getMode().startsWith("+") || getMode().startsWith("-")) ? getMode().substring(1) : getMode();
+		String[] modeParts = cleanMode.split(" ");
+
+		//Make sure it exists
+		if (!modeExists(modeChar))
+			return null;
+
+		//If its the fist one, use that
+		if (cleanMode.startsWith("" + modeChar))
+			return modeParts[1];
+
+		//If its the last one, use that
+		if (modeParts[0].endsWith("" + modeChar))
+			return modeParts[modeParts.length];
+
+		//Its in the middle. Go through the modes and move which position we think the argument is
+		int argCounter = 1;
+		for (char curMode : getMode().split(" ")[0].toCharArray())
+			if (curMode == 'l')
+				argCounter++;
+
+		//Assume the argument here is the correct one
+		return modeParts[argCounter];
+	}
+
+	/**
+	 * Get the channel limit if it exists
+	 * <p>
+	 * <b>Note:</b> The returned value is the best effort guess of what the channel
+	 * limit is. Unknown modes and their arguments may make the returned value wrong.
+	 * Whether the returned value is null is not affected by this issue
+	 * @return If its set, the best effort guess of what the channel limit is.
+	 * If its not set, null.
+	 */
+	public int getChannelLimit() {
+		try {
+			return Integer.parseInt(getModeArgument('l'));
+		} catch (NumberFormatException e) {
+			//Can't parse it or null, return -1
+			return -1;
+		}
+	}
+
+	/**
+	 * Get the channel key if it exists
+	 * <p>
+	 * <b>Note:</b> The returned value is the best effort guess of what the channel
+	 * key is. Unknown modes and their arguments may make the returned value wrong.
+	 * Whether the returned value is null is not affected by this issue
+	 * @return If its set, the best effort guess of what the channel key is.
+	 * If its not set, null.
+	 */
+	public String getChannelKey() {
+		return getModeArgument('k');
 	}
 
 	/**
