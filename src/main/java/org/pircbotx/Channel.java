@@ -211,7 +211,7 @@ public class Channel {
 	 * limit is. Unknown modes and their arguments may make the returned value wrong.
 	 * Whether the returned value is null is not affected by this issue
 	 * @return If its set, the best effort guess of what the channel limit is.
-	 * If its not set, null.
+	 * If its not set, returns -1.
 	 */
 	public int getChannelLimit() {
 		try {
