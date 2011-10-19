@@ -82,7 +82,7 @@ public class Channel {
 		this.name = name;
 	}
 
-	public void parseMode(String rawMode) {
+	protected void parseMode(String rawMode) {
 		if (rawMode.contains(" ")) {
 			//Mode contains arguments which are impossible to parse. 
 			//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
