@@ -42,7 +42,7 @@ public class ChannelTest {
 
 	protected void setUnusedModes() {
 		//Have only garbage modes and garbage arguments
-		channel.setMode("+dfandfe arg1 2 #arg3 arg4");
+		channel.setMode("+dfadfe arg1 2 #arg3 arg4");
 	}
 
 	@Test
