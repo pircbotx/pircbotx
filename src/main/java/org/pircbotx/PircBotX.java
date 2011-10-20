@@ -88,6 +88,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1340,7 +1341,7 @@ public class PircBotX {
 	 * Thread, as it may take a long time to return.
 	 *  <p>
 	 * This method may not be overridden.
-	 *
+	 * 
 	 * @param sender The user object representing the user we are trying to 
 	 *               establish a chat with.
 	 * @param timeout The number of milliseconds to wait for the recipient to
@@ -1352,7 +1353,7 @@ public class PircBotX {
 	 * @see DccChat
 	 * @since PircBot 0.9.8
 	 */
-	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException {
+	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
 		DccChat chat = null;
 		ServerSocket ss = _dccManager.createServerSocket();
 		ss.setSoTimeout(timeout);
