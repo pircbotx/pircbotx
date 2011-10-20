@@ -1342,6 +1342,9 @@ public class PircBotX {
 	 *  <p>
 	 * This method may not be overridden.
 	 * 
+	 * @throws IOException If any issue occurs with creating the connection
+	 * @throws SocketTimeoutException If the user does not connect within the
+	 *                                specified timeout period
 	 * @param sender The user object representing the user we are trying to 
 	 *               establish a chat with.
 	 * @param timeout The number of milliseconds to wait for the recipient to
