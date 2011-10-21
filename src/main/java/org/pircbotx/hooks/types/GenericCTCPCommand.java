@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2011 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks.types;
 
 import org.pircbotx.Channel;
