@@ -413,7 +413,7 @@ public class DccFileTransfer {
 	 * Return the original file name. When receiving this is the filename that the
 	 * user sent it as, when sending this is the name of the file that is being
 	 * sent
-	 * @return 
+	 * @return Original file name
 	 */
 	public String getFilename() {
 		return filename;
