@@ -1602,7 +1602,7 @@ public class PircBotX {
 	 * before then passing them on to the onServerResponse method.
 	 *  <p>
 	 * Note that this method is private and should not appear in any
-	 * of the javadoc generated documenation.
+	 * of the javadoc generated documentation.
 	 *
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
