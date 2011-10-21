@@ -118,16 +118,8 @@ import static org.pircbotx.ReplyConstants.*;
  * can be supported using multiple instances of PircBotX.
  *  <p>
  * To perform an action when the PircBotX receives a normal message from the IRC
- * server, you would override the onMessage method defined in the PircBotX
- * class.  All on<i>XYZ</i> methods in the PircBotX class are automatically called
- * when the event <i>XYZ</i> happens, so you would override these if you wish
- * to do something when it does happen.
- *  <p>
- * Some event methods, such as onPing, should only really perform a specific
- * function (i.e. respond to a PING from the server).  For your convenience, such
- * methods are already correctly implemented in the PircBotX and should not
- * normally need to be overridden.  Please read the full documentation for each
- * method to see which ones are already implemented by the PircBotX class.
+ * server, you would listen for the MessageEvent in your listener (see {@link ListenerAdapter}).
+ * Many other events are dispatched as well for other incoming lines
  *
  * @author  Origionally by:
  *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
@@ -1308,8 +1300,6 @@ public class PircBotX {
 	 *  <p>
 	 * You may throttle the speed of this file transfer by calling the
 	 * setPacketDelay method on the DccFileTransfer that is returned.
-	 *  <p>
-	 * This method may not be overridden.
 	 *
 	 * @since PircBot 0.9c
 	 *
@@ -1337,10 +1327,7 @@ public class PircBotX {
 	 * made within the time limit specified by the timeout value, then null
 	 * is returned.
 	 *  <p>
-	 * It is <b>strongly recommended</b> that you call this method within a new
-	 * Thread, as it may take a long time to return.
-	 *  <p>
-	 * This method may not be overridden.
+	 * Note that this method blocks until the user accepts the DCC chat request
 	 * 
 	 * @throws IOException If any issue occurs with creating the connection
 	 * @throws SocketTimeoutException If the user does not connect within the
@@ -1426,8 +1413,6 @@ public class PircBotX {
 	 * This method handles events when any line of text arrives from the server,
 	 * then calling the appropriate method in the PircBotX.  This method is
 	 * protected and only called by the InputThread for this instance.
-	 *  <p>
-	 * This method may not be overridden!
 	 *
 	 * @param line The raw line of text from the server.
 	 */
