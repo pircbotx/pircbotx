@@ -2115,7 +2115,7 @@ public class PircBotX {
 
 	/**
 	 * Sets the encoding charset to be used when sending or receiving lines
-	 * from the IRC server. Simply a convenience method for {@link #setEncoding(java.nio.charset.Charset) } 
+	 * from the IRC server. Simply a convenience method for {@link #setEncoding(java.nio.charset.Charset) }
 	 * 
 	 * @since PircBot 1.0.4
 	 * @see #setEncoding(java.nio.charset.Charset) 
@@ -2151,7 +2151,7 @@ public class PircBotX {
 
 	/**
 	 * Returns the encoding used to send and receive lines from
-	 * the IRC server. Never will return null Use the {@link #setEncoding(java.nio.charset.Charset)  
+	 * the IRC server. Never will return null Use the {@link #setEncoding(java.nio.charset.Charset) }
 	 * method to change the encoding charset.
 	 *
 	 * @since PircBot 1.0.4
