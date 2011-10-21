@@ -38,8 +38,8 @@ import org.pircbotx.PircBotX;
  * ( Eg {@link PircBotX#waitFor(java.lang.Class) PircBotX's waitFor method}) in
  * another thread is risky since the set might be in use already, throwing a 
  * {@link ConcurrentModificationException}. 
- * <p>
- * @Deprecated  Due to multiple new functions of PircBotX theat depend on multiple 
+ * 
+ * @deprecated  Due to multiple new functions of PircBotX theat depend on multiple 
  * threads, this class is deprecated and is only kept for legacy reasons or special 
  * cases. Use of this class will have unexpected results. All bots should now 
  * use {@link ThreadedListenerManager}.
