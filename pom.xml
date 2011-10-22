@@ -14,7 +14,7 @@
 	<groupId>org.pircbotx</groupId>
 	<artifactId>pircbotx</artifactId>
 	<packaging>jar</packaging>
-	<version>1.6-SNAPSHOT</version>
+	<version>1.6</version>
 	
 	<!--
 		Project information
@@ -201,7 +201,7 @@
 					<classpathScope>compile</classpathScope>
 					<arguments>
 						<argument>-classpath</argument>
-						<classpath/>
+						<classpath />
 						<argument>lombok.core.Main</argument>
 						<argument>delombok</argument>
 						<argument>src/main/java</argument>
