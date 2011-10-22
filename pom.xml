@@ -82,14 +82,14 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.10.0</version>
+			<version>0.10.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.2</version>
+			<version>6.3</version>
 			<scope>test</scope>
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
@@ -168,7 +168,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.0-beta-3</version>
+				<version>3.0</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
