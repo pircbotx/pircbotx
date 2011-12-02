@@ -277,8 +277,8 @@ public class PircBotX {
 
 	/**
 	 * Attempt to connect to the specified IRC server using the supplied
-	 * port number, password, and socketFactory.
-	 * The onConnect method is called upon success.
+	 * port number, password, and socketFactory. On success a {@link ConnectEvent}
+	 * will be dispatched
 	 * <p>
 	 * Note that a WebIrc line will be sent ONLY if the {@link #setWebIrcPassword(java.lang.String) 
 	 * WebIrc password is set}
@@ -557,9 +557,8 @@ public class PircBotX {
 
 	/**
 	 * Quits from the IRC server.
-	 * Providing we are actually connected to an IRC server, the
-	 * onDisconnect() method will be called as soon as the IRC server
-	 * disconnects us.
+	 * Providing we are actually connected to an IRC server, a {@link DisconnectEvent}
+	 * will be dispatched as soon as the IRC server disconnects us.
 	 */
 	public void quitServer() {
 		if (!isConnected())
@@ -569,9 +568,8 @@ public class PircBotX {
 
 	/**
 	 * Quits from the IRC server with a reason.
-	 * Providing we are actually connected to an IRC server, the
-	 * onDisconnect() method will be called as soon as the IRC server
-	 * disconnects us.
+	 * Providing we are actually connected to an IRC server, a {@link DisconnectEvent}
+	 * will be dispatched as soon as the IRC server disconnects us.
 	 *
 	 * @param reason The reason for quitting the server.
 	 */
@@ -1270,9 +1268,9 @@ public class PircBotX {
 
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
-	 * When the PircBotX receives information for each channel, it will
-	 * call the onChannelInfo method, which you will need to override
-	 * if you want it to do anything useful.
+	 * When the PircBotX receives information for each channel, a {@link ChannelInfoEvent}
+	 * will be dispatched which you will need to listen for if you want to do
+	 * anything useful.
 	 * <p>
 	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 *
@@ -1284,9 +1282,9 @@ public class PircBotX {
 
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
-	 * When the PircBotX receives information for each channel, it will
-	 * call the onChannelInfo method, which you will need to override
-	 * if you want it to do anything useful.
+	 * When the PircBotX receives information for each channel, a {@link ChannelInfoEvent}
+	 * will be dispatched which you will need to listen for if you want to do
+	 * anything useful
 	 *  <p>
 	 * Some IRC servers support certain parameters for LIST requests.
 	 * One example is a parameter of ">10" to list only those channels
@@ -2083,7 +2081,7 @@ public class PircBotX {
 	/**
 	 * Returns the name of the last IRC server the PircBotX tried to connect to.
 	 * This does not imply that the connection attempt to the server was
-	 * successful (we suggest you look at the onConnect method).
+	 * successful (we suggest you look at the dispatched {@link ConnectEvent}).
 	 * A value of null is returned if the PircBotX has never tried to connect
 	 * to a server.
 	 *
@@ -2098,7 +2096,7 @@ public class PircBotX {
 	 * Returns the port number of the last IRC server that the PircBotX tried
 	 * to connect to.
 	 * This does not imply that the connection attempt to the server was
-	 * successful (we suggest you look at the onConnect method).
+	 * successful (we suggest you look at the dispatched {@link ConnectEvent}).
 	 * A value of -1 is returned if the PircBotX has never tried to connect
 	 * to a server.
 	 *
@@ -2114,7 +2112,7 @@ public class PircBotX {
 	/**
 	 * Returns the last password that we used when connecting to an IRC server.
 	 * This does not imply that the connection attempt to the server was
-	 * successful (we suggest you look at the onConnect method).
+	 * successful (we suggest you look at the dispatched {@link ConnectEvent}).
 	 * A value of null is returned if the PircBotX has never tried to connect
 	 * to a server using a password.
 	 *
@@ -2481,7 +2479,7 @@ public class PircBotX {
 	/**
 	 * Returns the last SocketFactory that we used to connect to an IRC server.
 	 * This does not imply that the connection attempt to the server was
-	 * successful (we suggest you look at the onConnect method).
+	 * successful (we suggest you look at the dispatched {@link ConnectEvent}).
 	 * A value of null is returned if the PircBot has never tried to connect
 	 * to a server using a SocketFactory.
 	 * 
