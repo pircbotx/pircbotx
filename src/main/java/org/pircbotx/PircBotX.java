@@ -182,6 +182,15 @@ public class PircBotX {
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
 	protected SocketFactory _socketFactory = null;
 	protected boolean loggedIn = false;
+	@Setter
+	@Getter
+	protected String webIrcHostname = null;
+	@Setter
+	@Getter
+	protected InetAddress webIrcAddress = null;
+	@Setter
+	@Getter
+	protected String webIrcPassword = null;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} 
@@ -270,6 +279,9 @@ public class PircBotX {
 	 * Attempt to connect to the specified IRC server using the supplied
 	 * port number, password, and socketFactory.
 	 * The onConnect method is called upon success.
+	 * <p>
+	 * Note that a WebIrc line will be sent ONLY if the {@link #setWebIrcPassword(java.lang.String) 
+	 * WebIrc password is set}
 	 *
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
@@ -316,6 +328,8 @@ public class PircBotX {
 		_outputThread.start();
 
 		// Attempt to join the server.
+		if (webIrcPassword != null)
+			_outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 		if (password != null && !password.trim().equals(""))
 			_outputThread.sendRawLineNow("PASS " + password);
 		String nick = getName();
