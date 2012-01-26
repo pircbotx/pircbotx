@@ -347,8 +347,10 @@ public class PircBotX {
 			if (secondSpace >= 0) {
 				String code = line.substring(firstSpace + 1, secondSpace);
 
-				if (code.equals("004"))
+				//Check for both a successful connection (004) or MOTD finished for servers that aren't RFC compliant
+				if (code.equals("004") || code.equals("376"))
 					//EXAMPLE: PircBotX gibson.freenode.net a-ircd-version1.5 allUserModes allChannelModes
+					//EXAMPLE 2: 376 :End of /MOTD command.
 					// We're connected to the server.
 					break;
 				else if (code.equals("433"))
