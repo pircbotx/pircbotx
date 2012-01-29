@@ -27,8 +27,12 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import javax.net.SocketFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -112,6 +116,39 @@ public class PircBotXOutputTest {
 		checkOutput(aString);
 	}
 
+	@Test(description = "Verify sendRawLineSplit works correctly with short strings")
+	public void sendRawLineSplitShort() throws Exception {
+		String beginning = "BEGIN";
+		String ending = "END";
+		bot.sendRawLineSplit(beginning, aString, ending);
+		checkOutput(beginning + aString + ending);
+	}
+	
+	@Test(description = "Verify sendRawLineSplit works correctly with long strings")
+	public void sendRawLineSplitLong() throws Exception {
+		//Generate string parts
+		String seedString = " - ";
+		String beginning = "BEGIN";
+		String ending = "END";
+		Random random = new Random();
+		while((beginning + "1" + seedString + ending).length() < bot.getMaxLineLength() - 2)
+			seedString = seedString + (char)(random.nextInt(26) + 'a');
+		String[] stringParts = new String[]{
+			"1" + seedString,
+			"2" + seedString,
+			"3" + seedString.substring(0, bot.getMaxLineLength()/2)
+		};
+		
+		//Send the message, joining all the message parts into one big chunck
+		bot.sendRawLineSplit(beginning, StringUtils.join(stringParts, ""), ending);
+		
+		//Verify sent lines, making sure they come out in parts
+		checkOutput(beginning + stringParts[0] + ending);
+		//Verify further lines
+		assertEquals(botOut.readLine(), beginning + stringParts[1] + ending, "Second string part doesn't match");
+		assertEquals(botOut.readLine(), beginning + stringParts[2] + ending, "Third string part doesn't match");
+	}
+	
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
 		bot.sendAction(aUser, aString);

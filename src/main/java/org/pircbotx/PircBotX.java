@@ -191,6 +191,9 @@ public class PircBotX {
 	@Setter
 	@Getter
 	protected String webIrcPassword = null;
+	@Setter
+	@Getter
+	protected boolean autoSplitMessage = true;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} 
@@ -603,6 +606,36 @@ public class PircBotX {
 		if (isConnected())
 			_outputThread.sendRawLineNow(line);
 	}
+	
+	protected void sendRawLineSplit(String prefix, String message) {
+		sendRawLineSplit(prefix, message, "");
+	}
+	
+	
+	protected void sendRawLineSplit(String prefix, String message, String suffix) {
+		//Make sure suffix is valid
+		if(suffix == null)
+			suffix = "";
+		
+		//Find if final line is going to be shorter than the max line length
+		String finalMessage = prefix + message + suffix;
+		int realMaxLineLength =  getMaxLineLength() - 2;
+		if(!autoSplitMessage || finalMessage.length() < realMaxLineLength) {
+			//Length is good (or auto split message is set), just go ahead and send it
+			sendRawLine(finalMessage);
+			return;
+		}
+		
+		//Too long, split it up
+		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
+		//Oh look, no function to split every nth char. Since regex is expensive, use this nonsense
+		int iterations = (int)Math.ceil(message.length() / (double)maxMessageLength);
+		for(int i = 0; i < iterations ; i++) {
+			int endPoint = (i != iterations-1) ? ((i+1) * maxMessageLength) : message.length();
+			String curMessagePart = prefix + message.substring(i * maxMessageLength, endPoint) + suffix;
+			sendRawLine(curMessagePart);
+		}
+	}
 
 	/**
 	 * Sends a message to a channel or a private message to a user.  These
@@ -625,7 +658,7 @@ public class PircBotX {
 	 * @see Colors
 	 */
 	public void sendMessage(String target, String message) {
-		sendRawLine("PRIVMSG " + target + " :" + message);
+		sendRawLineSplit("PRIVMSG " + target + " :", message);
 	}
 
 	/**
@@ -703,7 +736,7 @@ public class PircBotX {
 	 * @param notice The notice to send.
 	 */
 	public void sendNotice(String target, String notice) {
-		sendRawLine("NOTICE " + target + " :" + notice);
+		sendRawLineSplit("NOTICE " + target + " :", notice);
 	}
 
 	/**
@@ -742,7 +775,7 @@ public class PircBotX {
 	 * @param command The CTCP command to send.
 	 */
 	public void sendCTCPCommand(String target, String command) {
-		sendRawLine("PRIVMSG " + target + " :\u0001" + command + "\u0001");
+		sendRawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
 	}
 
 	/**

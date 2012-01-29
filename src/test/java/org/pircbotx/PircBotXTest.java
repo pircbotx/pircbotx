@@ -65,6 +65,7 @@ public class PircBotXTest {
 		}
 
 		//Exclude methods that don't make sense to have variations of
+		sendMethods.remove("sendRawLineSplit");
 		sendMethods.remove("sendRawLineNow");
 		sendMethods.remove("sendRawLine");
 
