@@ -90,6 +90,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -350,10 +351,9 @@ public class PircBotX {
 			if (secondSpace >= 0) {
 				String code = line.substring(firstSpace + 1, secondSpace);
 
-				//Check for both a successful connection (004) or MOTD finished for servers that aren't RFC compliant
-				if (code.equals("004") || code.equals("376"))
-					//EXAMPLE: PircBotX gibson.freenode.net a-ircd-version1.5 allUserModes allChannelModes
-					//EXAMPLE 2: 376 :End of /MOTD command.
+				//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
+				String[] codes = {"001","002","003","004","005", "251", "252","253","254","255","375","376"};
+				if (Arrays.asList(codes).contains(code))
 					// We're connected to the server.
 					break;
 				else if (code.equals("433"))
