@@ -131,7 +131,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			//Connect to the freenode IRC network
 			bot.connect("irc.freenode.org");
 			//Join the #quackbot channel
-			bot.joinChannel("#quackbot");
+			bot.joinChannel("#pircbotx");
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {
