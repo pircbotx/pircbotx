@@ -18,8 +18,6 @@
  */
 package org.pircbotx;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Setter;
 import lombok.Getter;
 import java.util.concurrent.CountDownLatch;
@@ -27,6 +25,7 @@ import javax.net.SocketFactory;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.InviteEvent;
@@ -90,9 +89,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import lombok.AccessLevel;
