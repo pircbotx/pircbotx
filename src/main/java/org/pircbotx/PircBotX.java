@@ -96,6 +96,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Synchronized;
 import org.pircbotx.hooks.CoreHooks;
@@ -134,6 +135,7 @@ public class PircBotX {
 	 * (Note: Change this before automatically building releases)
 	 */
 	public static final String VERSION = "1.7";
+	protected static AtomicInteger botCount = new AtomicInteger();
 	protected Socket _socket;
 	// Connection stuff.
 	protected InputThread _inputThread = null;
@@ -204,6 +206,7 @@ public class PircBotX {
 	 * the bot by calling {@link #disconnect() } and {@link #dispose() }
 	 */
 	public PircBotX() {
+		botCount.getAndIncrement();
 		listenerManager.addListener(new CoreHooks());
 		final PircBotX thisBot = this;
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -394,11 +397,15 @@ public class PircBotX {
 	}
 
 	protected InputThread createInputThread(Socket socket, BufferedReader breader) {
-		return new InputThread(this, socket, breader);
+		InputThread input = new InputThread(this, socket, breader);
+		input.setName("bot" + botCount + "-input");
+		return input;
 	}
 
 	protected OutputThread createOutputThread(BufferedWriter bwriter) {
-		return new OutputThread(this, bwriter);
+		OutputThread output = new OutputThread(this, bwriter);
+		output.setName("bot" + botCount + "-output");
+		return output;
 	}
 
 	/**
