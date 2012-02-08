@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.Synchronized;
 import org.pircbotx.PircBotX;
@@ -46,14 +48,15 @@ import org.pircbotx.hooks.Listener;
 public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
-	protected AtomicLong currentId = new AtomicLong(0);
+	protected AtomicLong currentId = new AtomicLong();
+	protected static AtomicInteger poolCount = new AtomicInteger();
 
 	/**
 	 * Configures with default options: perHook is false and a 
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		pool = Executors.newCachedThreadPool();
+		pool = Executors.newCachedThreadPool(new ListenerThreadFactory());
 	}
 
 	/**
@@ -106,5 +109,20 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	public long incrementCurrentId() {
 		return currentId.getAndIncrement();
+	}
+	
+	protected class ListenerThreadFactory implements ThreadFactory {
+		protected final AtomicInteger threadCount = new AtomicInteger();
+		protected String prefix = "pool-listenerThread-";
+
+		public ListenerThreadFactory() {
+			prefix = "pool " + poolCount + "-listenerThread-";
+		}
+		
+		public Thread newThread(Runnable r) {
+			Thread thread = new Thread(r, prefix + threadCount.getAndIncrement());
+			thread.setDaemon(true);
+			return thread;
+		}
 	}
 }
