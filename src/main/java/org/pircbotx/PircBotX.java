@@ -322,10 +322,8 @@ public class PircBotX {
 
 		_inetAddress = _socket.getLocalAddress();
 
-		InputStreamReader inputStreamReader = null;
-		OutputStreamWriter outputStreamWriter = null;
-		inputStreamReader = new InputStreamReader(_socket.getInputStream(), getEncoding());
-		outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream(), getEncoding());
+		InputStreamReader inputStreamReader = new InputStreamReader(_socket.getInputStream(), getEncoding());
+		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream(), getEncoding());
 
 		BufferedReader breader = new BufferedReader(inputStreamReader);
 		BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
