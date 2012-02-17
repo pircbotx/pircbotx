@@ -141,7 +141,8 @@ public class PircBotX {
 	protected InputThread _inputThread = null;
 	protected OutputThread _outputThread = null;
 	protected Charset _charset = Charset.defaultCharset();
-	protected InetAddress _inetAddress = null;
+	@Setter
+	protected InetAddress inetAddress = null;
 	// Details about the last server that we connected to.
 	protected String _server = null;
 	protected int _port = -1;
@@ -314,13 +315,13 @@ public class PircBotX {
 
 		// Connect to the server.
 		if (socketFactory == null)
-			_socket = new Socket(hostname, port);
+			_socket = new Socket(hostname, port, inetAddress, 0);
 		else
-			_socket = socketFactory.createSocket(hostname, port);
+			_socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
 
 		log("*** Connected to server.");
 
-		_inetAddress = _socket.getLocalAddress();
+		inetAddress = _socket.getLocalAddress();
 
 		InputStreamReader inputStreamReader = new InputStreamReader(_socket.getInputStream(), getEncoding());
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream(), getEncoding());
@@ -2225,7 +2226,7 @@ public class PircBotX {
 	 * @return The current local InetAddress, or null if never connected.
 	 */
 	public InetAddress getInetAddress() {
-		return _inetAddress;
+		return inetAddress;
 	}
 
 	/**
