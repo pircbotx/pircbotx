@@ -82,7 +82,7 @@ public class PircBotXOutputTest {
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(out);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket("example.com", 6667)).thenReturn(socket);
+		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
 
 		//Setup ability to read from bots output
 		botOut = new BufferedReader(new InputStreamReader(new PipedInputStream(out)));
@@ -91,7 +91,7 @@ public class PircBotXOutputTest {
 		bot.connect("example.com", 6667, null, socketFactory);
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667);
+		verify(socketFactory).createSocket("example.com", 6667, null, 0);
 
 		//Setup useful vars
 		aUser = bot.getUser("aUser");

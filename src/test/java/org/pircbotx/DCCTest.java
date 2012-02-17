@@ -50,7 +50,7 @@ public class DCCTest {
 	@BeforeMethod
 	public void setup() throws UnknownHostException {
 		bot = new PircBotX();
-		bot._inetAddress = InetAddress.getByName("::1");
+		bot.inetAddress = InetAddress.getByName("::1");
 	}
 
 	@Test
