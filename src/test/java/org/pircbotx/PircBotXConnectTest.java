@@ -72,7 +72,7 @@ public class PircBotXConnectTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket("example.com", 6667)).thenReturn(socket);
+		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class PircBotXConnectTest {
 		bot.connect("example.com", 6667, null, socketFactory);
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667);
+		verify(socketFactory).createSocket("example.com", 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -105,11 +105,11 @@ public class PircBotXConnectTest {
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket
-		when(socketFactory.createSocket("example.com", 25622)).thenReturn(socket);
+		when(socketFactory.createSocket("example.com", 25622, null, 0)).thenReturn(socket);
 		bot.connect("example.com", 25622, null, socketFactory);
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 25622);
+		verify(socketFactory).createSocket("example.com", 25622, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -136,7 +136,7 @@ public class PircBotXConnectTest {
 		bot.connect("example.com", 6667, "pa55w0rd", socketFactory);
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667);
+		verify(socketFactory).createSocket("example.com", 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
