@@ -68,14 +68,17 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		this.pool = pool;
 	}
 
+	@Override
 	public boolean addListener(Listener listener) {
 		return getListenersReal().add(listener);
 	}
 
+	@Override
 	public boolean removeListener(Listener listener) {
 		return getListenersReal().remove(listener);
 	}
 
+	@Override
 	public Set<Listener> getListeners() {
 		return Collections.unmodifiableSet(getListenersReal());
 	}
@@ -84,10 +87,12 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		return listeners;
 	}
 
+	@Override
 	public boolean listenerExists(Listener listener) {
 		return getListenersReal().contains(listener);
 	}
 
+	@Override
 	@Synchronized("listeners")
 	public void dispatchEvent(final Event<E> event) {
 		//For each Listener, add a new Runnable
@@ -103,14 +108,17 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 			});
 	}
 
+	@Override
 	public void setCurrentId(long currentId) {
 		this.currentId.set(currentId);
 	}
 
+	@Override
 	public long getCurrentId() {
 		return currentId.get();
 	}
 
+	@Override
 	public long incrementCurrentId() {
 		return currentId.getAndIncrement();
 	}
