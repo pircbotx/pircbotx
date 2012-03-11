@@ -69,25 +69,29 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	public boolean addListener(Listener listener) {
-		return listeners.add(listener);
+		return getListenersReal().add(listener);
 	}
 
 	public boolean removeListener(Listener listener) {
-		return listeners.remove(listener);
+		return getListenersReal().remove(listener);
 	}
 
 	public Set<Listener> getListeners() {
-		return Collections.unmodifiableSet(listeners);
+		return Collections.unmodifiableSet(getListenersReal());
+	}
+	
+	protected Set<Listener> getListenersReal() {
+		return listeners;
 	}
 
 	public boolean listenerExists(Listener listener) {
-		return listeners.contains(listener);
+		return getListenersReal().contains(listener);
 	}
 
 	@Synchronized("listeners")
 	public void dispatchEvent(final Event<E> event) {
 		//For each Listener, add a new Runnable
-		for (final Listener curListener : listeners)
+		for (final Listener curListener : getListenersReal())
 			pool.submit(new Runnable() {
 				public void run() {
 					try {
