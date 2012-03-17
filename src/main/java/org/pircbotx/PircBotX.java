@@ -10,11 +10,11 @@
  *
  * PircBotX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -490,6 +490,8 @@ public class PircBotX {
 	 * @param channel The name of the channel to join (eg "#cs").
 	 */
 	public void joinChannel(String channel) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't join a null channel");
 		sendRawLine("JOIN " + channel);
 	}
 
@@ -500,6 +502,10 @@ public class PircBotX {
 	 * @param key The key that will be used to join the channel.
 	 */
 	public void joinChannel(String channel, String key) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't join a null channel");
+		if (key == null)
+			throw new IllegalArgumentException("Can't channel " + channel + " with null key");
 		joinChannel(channel + " " + key);
 	}
 
@@ -509,6 +515,8 @@ public class PircBotX {
 	 * @param channel The name of the channel to leave.
 	 */
 	public void partChannel(Channel channel) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't part a null channel");
 		sendRawLine("PART " + channel.getName());
 	}
 
@@ -519,6 +527,8 @@ public class PircBotX {
 	 * @param reason The reason for parting the channel.
 	 */
 	public void partChannel(Channel channel, String reason) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't part a null channel");
 		sendRawLine("PART " + channel.getName() + " :" + reason);
 	}
 
@@ -665,6 +675,8 @@ public class PircBotX {
 	 * @see Colors
 	 */
 	public void sendMessage(String target, String message) {
+		if (target == null)
+			throw new IllegalArgumentException("Can't send message to null target");
 		sendRawLineSplit("PRIVMSG " + target + " :", message);
 	}
 
@@ -675,8 +687,9 @@ public class PircBotX {
 	 * @param message The message to send
 	 */
 	public void sendMessage(User target, String message) {
-		if (target != null && message != null)
-			sendMessage(target.getNick(), message);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send message to null user");
+		sendMessage(target.getNick(), message);
 	}
 
 	/**
@@ -686,8 +699,9 @@ public class PircBotX {
 	 * @param message The message to send
 	 */
 	public void sendMessage(Channel target, String message) {
-		if (target != null && message != null)
-			sendMessage(target.getName(), message);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send message to null channel");
+		sendMessage(target.getName(), message);
 	}
 
 	/**
@@ -698,8 +712,11 @@ public class PircBotX {
 	 * @param message The message to send
 	 */
 	public void sendMessage(Channel chan, User user, String message) {
-		if (chan != null && user != null && message != null)
-			sendMessage(chan.getName(), user.getNick() + ": " + message);
+		if (chan == null)
+			throw new IllegalArgumentException("Can't send message to null channel");
+		if (user == null)
+			throw new IllegalArgumentException("Can't send message to null user");
+		sendMessage(chan.getName(), user.getNick() + ": " + message);
 	}
 
 	/**
@@ -711,6 +728,8 @@ public class PircBotX {
 	 * @see Colors
 	 */
 	public void sendAction(String target, String action) {
+		if (target == null)
+			throw new IllegalArgumentException("Can't send action to null target");
 		sendCTCPCommand(target, "ACTION " + action);
 	}
 
@@ -721,8 +740,9 @@ public class PircBotX {
 	 * @param action The action message to send
 	 */
 	public void sendAction(User target, String action) {
-		if (target != null && action != null)
-			sendAction(target.getNick(), action);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send message to null user");
+		sendAction(target.getNick(), action);
 	}
 
 	/**
@@ -732,8 +752,9 @@ public class PircBotX {
 	 * @param action The action message to send
 	 */
 	public void sendAction(Channel target, String action) {
-		if (target != null && action != null)
-			sendAction(target.getName(), action);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send message to null channel");
+		sendAction(target.getName(), action);
 	}
 
 	/**
@@ -743,6 +764,8 @@ public class PircBotX {
 	 * @param notice The notice to send.
 	 */
 	public void sendNotice(String target, String notice) {
+		if (target == null)
+			throw new IllegalArgumentException("Can't send notice to null target");
 		sendRawLineSplit("NOTICE " + target + " :", notice);
 	}
 
@@ -753,8 +776,9 @@ public class PircBotX {
 	 * @param notice The notice to send
 	 */
 	public void sendNotice(User target, String notice) {
-		if (target != null && notice != null)
-			sendNotice(target.getNick(), notice);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send notice to null user");
+		sendNotice(target.getNick(), notice);
 	}
 
 	/**
@@ -764,8 +788,9 @@ public class PircBotX {
 	 * @param notice The notice to send
 	 */
 	public void sendNotice(Channel target, String notice) {
-		if (target != null && notice != null)
-			sendNotice(target.getName(), notice);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send notice to null channel");
+		sendNotice(target.getName(), notice);
 	}
 
 	/**
@@ -783,6 +808,8 @@ public class PircBotX {
 	 * @param command The CTCP command to send.
 	 */
 	public void sendCTCPCommand(String target, String command) {
+		if (target == null)
+			throw new IllegalArgumentException("Can't send CTCP command to null target");
 		sendRawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
 	}
 
@@ -793,8 +820,9 @@ public class PircBotX {
 	 * @param command The CTCP command to send
 	 */
 	public void sendCTCPCommand(User target, String command) {
-		if (target != null && command != null)
-			sendCTCPCommand(target.getNick(), command);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send CTCP command to null user");
+		sendCTCPCommand(target.getNick(), command);
 	}
 
 	/**
@@ -804,8 +832,9 @@ public class PircBotX {
 	 * @param command The CTCP command to send
 	 */
 	public void sendCTCPCommand(Channel target, String command) {
-		if (target != null && command != null)
-			sendCTCPCommand(target.getName(), command);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send CTCP command to null channel");
+		sendCTCPCommand(target.getName(), command);
 	}
 
 	/**
@@ -816,6 +845,8 @@ public class PircBotX {
 	 * @param message The message to send
 	 */
 	public void sendCTCPResponse(String target, String message) {
+		if (target == null)
+			throw new IllegalArgumentException("Can't send CTCP response to null target");
 		sendRawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
 
@@ -826,8 +857,9 @@ public class PircBotX {
 	 * @param message The response to send
 	 */
 	public void sendCTCPResponse(User target, String message) {
-		if (target != null && message != null)
-			sendCTCPResponse(target.getNick(), message);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send CTCP response to null user");
+		sendCTCPResponse(target.getNick(), message);
 	}
 
 	/**
@@ -839,6 +871,8 @@ public class PircBotX {
 	 * @param newNick The new nick to use.
 	 */
 	public void changeNick(String newNick) {
+		if (newNick == null)
+			throw new IllegalArgumentException("Can't change to null nick");
 		sendRawLine("NICK " + newNick);
 	}
 
@@ -871,6 +905,8 @@ public class PircBotX {
 	 * @param password The password which will be used to identify with NickServ.
 	 */
 	public void identify(final String password) {
+		if (password == null)
+			throw new IllegalArgumentException("Can't identify with null password");
 		if (loggedIn)
 			sendRawLine("NICKSERV IDENTIFY " + password);
 		else
@@ -902,6 +938,10 @@ public class PircBotX {
 	 * @see #op(org.pircbotx.Channel, org.pircbotx.User)
 	 */
 	public void setMode(Channel chan, String mode) {
+		if (chan == null)
+			throw new IllegalArgumentException("Can't set mode on null channel");
+		if (mode == null)
+			throw new IllegalArgumentException("Can't set mode on channel to null");
 		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
 
@@ -917,6 +957,12 @@ public class PircBotX {
 	 * with a single space separating them
 	 */
 	public void setMode(Channel chan, String mode, Object... args) {
+		if (chan == null)
+			throw new IllegalArgumentException("Can't set mode on null channel");
+		if (mode == null)
+			throw new IllegalArgumentException("Can't set mode on channel to null");
+		if (args == null)
+			throw new IllegalArgumentException("Can't set mode arguments to null");
 		//Build arg string
 		StringBuilder argBuilder = new StringBuilder(" ");
 		for (Object curArg : args)
@@ -932,6 +978,10 @@ public class PircBotX {
 	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
 	 */
 	public void setMode(Channel chan, String mode, User user) {
+		if (mode == null)
+			throw new IllegalArgumentException("Can't set user mode on channel to null");
+		if (user == null)
+			throw new IllegalArgumentException("Can't set user mode on null user");
 		setMode(chan, mode + user.getNick());
 	}
 
@@ -961,6 +1011,8 @@ public class PircBotX {
 	 * @param key The secret key to use
 	 */
 	public void setChannelKey(Channel chan, String key) {
+		if (key == null)
+			throw new IllegalArgumentException("Can't set channel key to null");
 		setMode(chan, "+k", key);
 	}
 
@@ -972,6 +1024,8 @@ public class PircBotX {
 	 * asterisk might work
 	 */
 	public void removeChannelKey(Channel chan, String key) {
+		if (key == null)
+			throw new IllegalArgumentException("Can't remove channel key with null key");
 		setMode(chan, "-k", key);
 	}
 
@@ -1075,6 +1129,10 @@ public class PircBotX {
 	 *
 	 */
 	public void sendInvite(String nick, String channel) {
+		if (nick == null)
+			throw new IllegalArgumentException("Can't send invite to null nick");
+		if (channel == null)
+			throw new IllegalArgumentException("Can't send invite to null channel");
 		sendRawLine("INVITE " + nick + " :" + channel);
 	}
 
@@ -1085,8 +1143,9 @@ public class PircBotX {
 	 * @param channel The channel you are inviting the user to join.
 	 */
 	public void sendInvite(User target, String channel) {
-		if (target != null && channel != null)
-			sendInvite(target.getNick(), channel);
+		if (target == null)
+			throw new IllegalArgumentException("Can't send invite to null user");
+		sendInvite(target.getNick(), channel);
 	}
 
 	/**
@@ -1096,7 +1155,10 @@ public class PircBotX {
 	 * @param channel The channel you are inviting the user to join.
 	 */
 	public void sendInvite(User target, Channel channel) {
-		if (target != null && channel != null)
+		if (target == null)
+			throw new IllegalArgumentException("Can't send invite to null user");
+		if (channel == null)
+			throw new IllegalArgumentException("Can't send invite to null channel");
 			sendInvite(target.getNick(), channel.getName());
 	}
 
@@ -1107,7 +1169,10 @@ public class PircBotX {
 	 * @param channel The channel you are inviting the user to join.
 	 */
 	public void sendInvite(Channel target, Channel channel) {
-		if (target != null && channel != null)
+		if (target == null)
+			throw new IllegalArgumentException("Can't send invite to null target channel");
+		if (channel == null)
+			throw new IllegalArgumentException("Can't send invite to null invite channel");
 			sendInvite(target.getName(), channel.getName());
 	}
 
@@ -1122,6 +1187,10 @@ public class PircBotX {
 	 * @param hostmask A hostmask representing the user we're banning.
 	 */
 	public void ban(Channel channel, String hostmask) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't set ban on null channel");
+		if (hostmask == null)
+			throw new IllegalArgumentException("Can't set ban on null hostmask");
 		sendRawLine("MODE " + channel.getName() + " +b " + hostmask);
 	}
 
@@ -1135,11 +1204,15 @@ public class PircBotX {
 	 * @param hostmask A hostmask representing the user we're unbanning.
 	 */
 	public void unBan(Channel channel, String hostmask) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't remove ban on null channel");
+		if (hostmask == null)
+			throw new IllegalArgumentException("Can't remove ban on null hostmask");
 		sendRawLine("MODE " + channel.getName() + " -b " + hostmask);
 	}
 
 	/**
-	 * Grants operator privilidges to a user on a channel.
+	 * Grants operator privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
 	 *
@@ -1147,6 +1220,8 @@ public class PircBotX {
 	 * @param user The user we are opping.
 	 */
 	public void op(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't set op on null user");
 		setMode(chan, "+o " + user.getNick());
 	}
 
@@ -1159,6 +1234,8 @@ public class PircBotX {
 	 * @param user The user we are deopping.
 	 */
 	public void deOp(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't remove op on null user");
 		setMode(chan, "-o " + user.getNick());
 	}
 
@@ -1171,6 +1248,8 @@ public class PircBotX {
 	 * @param user The user we are voicing.
 	 */
 	public void voice(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't set voice on null user");
 		setMode(chan, "+v " + user.getNick());
 	}
 
@@ -1183,6 +1262,8 @@ public class PircBotX {
 	 * @param user The user we are devoicing.
 	 */
 	public void deVoice(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't remove voice on null user");
 		setMode(chan, "-v " + user.getNick());
 	}
 
@@ -1197,6 +1278,8 @@ public class PircBotX {
 	 * @param user
 	 */
 	public void halfOp(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't set halfop on null user");
 		setMode(chan, "+h " + user.getNick());
 	}
 
@@ -1211,6 +1294,8 @@ public class PircBotX {
 	 * @param user
 	 */
 	public void deHalfOp(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't remove halfop on null user");
 		setMode(chan, "-h " + user.getNick());
 	}
 
@@ -1225,6 +1310,8 @@ public class PircBotX {
 	 * @param user
 	 */
 	public void owner(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't set owner on null user");
 		setMode(chan, "+q " + user.getNick());
 	}
 
@@ -1239,6 +1326,8 @@ public class PircBotX {
 	 * @param user
 	 */
 	public void deOwner(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't remove owner on null user");
 		setMode(chan, "-q " + user.getNick());
 	}
 
@@ -1253,6 +1342,8 @@ public class PircBotX {
 	 * @param user
 	 */
 	public void superOp(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't set super op on null user");
 		setMode(chan, "+a " + user.getNick());
 	}
 
@@ -1267,6 +1358,8 @@ public class PircBotX {
 	 * @param user
 	 */
 	public void deSuperOp(Channel chan, User user) {
+		if (user == null)
+			throw new IllegalArgumentException("Can't remove super op on null user");
 		setMode(chan, "-a " + user.getNick());
 	}
 
@@ -1281,6 +1374,10 @@ public class PircBotX {
 	 *
 	 */
 	public void setTopic(Channel chan, String topic) {
+		if (chan == null)
+			throw new IllegalArgumentException("Can't set topic on null channel");
+		if (topic == null)
+			throw new IllegalArgumentException("Can't set topic to null");
 		sendRawLine("TOPIC " + chan.getName() + " :" + topic);
 	}
 
@@ -1306,6 +1403,10 @@ public class PircBotX {
 	 * @param reason A description of the reason for kicking a user.
 	 */
 	public void kick(Channel chan, User user, String reason) {
+		if (chan == null)
+			throw new IllegalArgumentException("Can't kick on null channel");
+		if (user == null)
+			throw new IllegalArgumentException("Can't kick null user");
 		sendRawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
 	}
 
@@ -1369,6 +1470,10 @@ public class PircBotX {
 	 *
 	 */
 	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) {
+		if (file == null)
+			throw new IllegalArgumentException("Can't send a null file");
+		if (reciever == null)
+			throw new IllegalArgumentException("Can't send file to null user");
 		DccFileTransfer transfer = new DccFileTransfer(this, _dccManager, file, reciever, timeout);
 		transfer.doSend(true);
 		return transfer;
@@ -1399,6 +1504,8 @@ public class PircBotX {
 	 * @since PircBot 0.9.8
 	 */
 	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
+		if (sender == null)
+			throw new IllegalArgumentException("Can't send chat request to null user");
 		DccChat chat = null;
 		ServerSocket ss = _dccManager.createServerSocket();
 		ss.setSoTimeout(timeout);
@@ -1472,6 +1579,8 @@ public class PircBotX {
 	 * @param line The raw line of text from the server.
 	 */
 	protected void handleLine(String line) {
+		if (line == null)
+			throw new IllegalArgumentException("Can't process null line");
 		log("<<<" + line);
 
 		// Check for server pings.
@@ -1663,6 +1772,8 @@ public class PircBotX {
 	 * @param response The full response from the IRC server.
 	 */
 	protected void processServerResponse(int code, String response) {
+		if (response == null)
+			throw new IllegalArgumentException("Can't process null response");
 		//NOTE: Update tests if adding support for a new code
 		String[] parsed = response.split(" ");
 		if (code == RPL_LISTSTART)
@@ -1954,6 +2065,8 @@ public class PircBotX {
 	 * @param name The new name of the Bot.
 	 */
 	public void setName(String name) {
+		if (name == null)
+			throw new IllegalArgumentException("Can't set name to null");
 		_name = name;
 	}
 
@@ -1980,6 +2093,8 @@ public class PircBotX {
 	 * @param login The new login of the Bot.
 	 */
 	public void setLogin(String login) {
+		if (login == null)
+			throw new IllegalArgumentException("Can't login to null");
 		_login = login;
 	}
 
@@ -1990,6 +2105,8 @@ public class PircBotX {
 	 * @param version The new version of the Bot.
 	 */
 	public void setVersion(String version) {
+		if (version == null)
+			throw new IllegalArgumentException("Can't version to null");
 		_version = version;
 	}
 
@@ -2000,6 +2117,8 @@ public class PircBotX {
 	 * @param finger The new finger message for the Bot.
 	 */
 	public void setFinger(String finger) {
+		if (finger == null)
+			throw new IllegalArgumentException("Can't finger to null");
 		_finger = finger;
 	}
 
@@ -2415,6 +2534,8 @@ public class PircBotX {
 	 * @return True if we are still connected to the channel, false if not
 	 */
 	public boolean channelExists(String channel) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't check for null channel existing");
 		for (Channel curChan : _userChanInfo.getAValues())
 			if (curChan.getName().equals(channel))
 				return true;
@@ -2511,6 +2632,8 @@ public class PircBotX {
 	 * @param listenerManager The listener manager
 	 */
 	public void setListenerManager(ListenerManager<? extends PircBotX> listenerManager) {
+		if (listenerManager == null)
+			throw new IllegalArgumentException("Can't set listener manager to null");
 		this.listenerManager = listenerManager;
 		//Check if corehooks already exist
 		for (Listener curListener : listenerManager.getListeners())
@@ -2574,6 +2697,8 @@ public class PircBotX {
 	 * is thrown
 	 */
 	public <E extends Event> E waitFor(Class<? extends E> eventClass) throws InterruptedException {
+		if (eventClass == null)
+			throw new IllegalArgumentException("Can't wait for null event");
 		//Create a WaitListener for getting the event
 		WaitListener waitListener = new WaitListener();
 		listenerManager.addListener(waitListener);
