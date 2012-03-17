@@ -56,6 +56,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
+		poolCount.intValue();
 		pool = Executors.newCachedThreadPool(new ListenerThreadFactory());
 	}
 
