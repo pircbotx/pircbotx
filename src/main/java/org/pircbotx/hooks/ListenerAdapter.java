@@ -76,20 +76,16 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
-import org.pircbotx.hooks.types.GenericCTCPCommand;
-import org.pircbotx.hooks.types.GenericChannelModeEvent;
-import org.pircbotx.hooks.types.GenericDCCEvent;
-import org.pircbotx.hooks.types.GenericMessageEvent;
-import org.pircbotx.hooks.types.GenericUserModeEvent;
+import org.pircbotx.hooks.types.*;
 
 /**
  * Adapter that provides methods to capture each event separately, removing
  * the need to check, cast, and call your custom method for each event you want
- * to capture. 
+ * to capture.
  * <p>
- * To use, simply override the method that has the event you want to capture. 
+ * To use, simply override the method that has the event you want to capture.
  * <p>
- * <b>WARNING:</b> If you are going to be implementing {@link Listener}'s 
+ * <b>WARNING:</b> If you are going to be implementing {@link Listener}'s
  * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
  * will work!
@@ -103,7 +99,13 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			if (curMethod.getName().equals("onEvent"))
 				continue;
+			//Make sure this is an event method
+			if (curMethod.getParameterTypes().length != 1)
+				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if (curClass.isAssignableFrom(GenericEvent.class))
+				continue;
+			//Good, add to eventToMethod
 			if (!curClass.isInterface()) {
 				Set methods = new HashSet();
 				methods.add(curMethod);
@@ -286,19 +288,19 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onVoice(VoiceEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericCTCPCommand(GenericCTCPCommand<T> event) throws Exception {
 	}
-	
+
 	public void onGenericUserMode(GenericUserModeEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericChannelMode(GenericChannelModeEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericDCC(GenericDCCEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericMessage(GenericMessageEvent<T> event) throws Exception {
 	}
 }
