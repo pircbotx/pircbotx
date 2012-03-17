@@ -55,6 +55,6 @@ public class QuitEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		throw new UnsupportedOperationException("Attepting to respond to a user that quit");
+		throw new UnsupportedOperationException("Attempting to respond to a user that quit");
 	}
 }
