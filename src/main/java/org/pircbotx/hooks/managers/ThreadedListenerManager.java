@@ -56,8 +56,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		poolCount.intValue();
-		pool = Executors.newCachedThreadPool(new ListenerThreadFactory());
+		pool = Executors.newCachedThreadPool(new ListenerThreadFactory(poolCount.getAndIncrement()));
 	}
 
 	/**
@@ -128,8 +127,8 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		protected final AtomicInteger threadCount = new AtomicInteger();
 		protected String prefix = "pool-listenerThread-";
 
-		public ListenerThreadFactory() {
-			prefix = "pool " + poolCount + "-listenerThread-";
+		public ListenerThreadFactory(int poolNum) {
+			prefix = "pool " + poolNum + "-listenerThread-";
 		}
 		
 		public Thread newThread(Runnable r) {
