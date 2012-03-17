@@ -89,7 +89,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	@Override
 	public boolean listenerExists(Listener listener) {
-		return getListenersReal().contains(listener);
+		return getListeners().contains(listener);
 	}
 
 	@Override
