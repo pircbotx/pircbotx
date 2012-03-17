@@ -10,11 +10,11 @@
  *
  * PircBotX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
+ * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks.managers;
 
@@ -32,16 +32,16 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(org.pircbotx.hooks.Event)}. 
- *  This makes {@link #dispatchEvent(org.pircbotx.hooks.Event)} return almost immediately freeing
+ * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(org.pircbotx.hooks.Event)}.
+ * This makes {@link #dispatchEvent(org.pircbotx.hooks.Event)} return almost immediately freeing
  * up the bot to execute other incoming events
  * <p>
  * This multithreading can be controlled with the perHook flag in the constructors.
  * <ul>
- *    <li><code>false</code> - Default. Listeners are executed sequentially in
- *                             a separate thread per event.</li>
- *    <li><code>true</code> - Every listener is executed in a different thread 
- *                            all at once per event.</li>
+ * <li><code>false</code> - Default. Listeners are executed sequentially in
+ * a separate thread per event.</li>
+ * <li><code>true</code> - Every listener is executed in a different thread
+ * all at once per event.</li>
  * </ul>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -52,7 +52,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	protected static AtomicInteger poolCount = new AtomicInteger();
 
 	/**
-	 * Configures with default options: perHook is false and a 
+	 * Configures with default options: perHook is false and a
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
@@ -60,9 +60,9 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	/**
-	 * Configures with default perHook mode (false) and specified 
+	 * Configures with default perHook mode (false) and specified
 	 * {@link ExecutorService}
-	 * @param pool 
+	 * @param pool
 	 */
 	public ThreadedListenerManager(ExecutorService pool) {
 		this.pool = pool;
@@ -82,7 +82,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	public Set<Listener> getListeners() {
 		return Collections.unmodifiableSet(getListenersReal());
 	}
-	
+
 	protected Set<Listener> getListenersReal() {
 		return listeners;
 	}
@@ -94,18 +94,22 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	@Override
 	@Synchronized("listeners")
-	public void dispatchEvent(final Event<E> event) {
+	public void dispatchEvent(Event<E> event) {
 		//For each Listener, add a new Runnable
-		for (final Listener curListener : getListenersReal())
-			pool.submit(new Runnable() {
-				public void run() {
-					try {
-						curListener.onEvent(event);
-					} catch (Throwable t) {
-						event.getBot().logException(t);
-					}
+		for (Listener curListener : getListenersReal())
+			submitEvent(pool, curListener, event);
+	}
+
+	protected static void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
+		pool.submit(new Runnable() {
+			public void run() {
+				try {
+					listener.onEvent(event);
+				} catch (Throwable t) {
+					event.getBot().logException(t);
 				}
-			});
+			}
+		});
 	}
 
 	@Override
@@ -122,7 +126,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	public long incrementCurrentId() {
 		return currentId.getAndIncrement();
 	}
-	
+
 	protected static class ListenerThreadFactory implements ThreadFactory {
 		protected final AtomicInteger threadCount = new AtomicInteger();
 		protected String prefix = "pool-listenerThread-";
@@ -130,7 +134,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		public ListenerThreadFactory(int poolNum) {
 			prefix = "pool-" + poolNum + "-listenerThread-";
 		}
-		
+
 		public Thread newThread(Runnable r) {
 			Thread thread = new Thread(r, prefix + threadCount.getAndIncrement());
 			thread.setDaemon(true);
