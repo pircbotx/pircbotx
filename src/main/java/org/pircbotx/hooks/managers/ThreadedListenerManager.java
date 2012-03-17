@@ -128,7 +128,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		protected String prefix = "pool-listenerThread-";
 
 		public ListenerThreadFactory(int poolNum) {
-			prefix = "pool " + poolNum + "-listenerThread-";
+			prefix = "pool-" + poolNum + "-listenerThread-";
 		}
 		
 		public Thread newThread(Runnable r) {
