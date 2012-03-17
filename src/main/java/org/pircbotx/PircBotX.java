@@ -10,11 +10,11 @@
  *
  * PircBotX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
+ * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -109,25 +109,25 @@ import static org.pircbotx.ReplyConstants.*;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
- *  <p>
+ * <p>
  * It provides an event-driven architecture to handle common IRC
  * events, flood protection, DCC support, ident support, and more.
  * The comprehensive logfile format is suitable for use with pisg to generate
  * channel statistics.
- *  <p>
+ * <p>
  * Methods of the PircBotX class can be called to send events to the IRC server
- * that it connects to.  For example, calling the sendMessage method will
- * send a message to a channel or user on the IRC server.  Multiple servers
+ * that it connects to. For example, calling the sendMessage method will
+ * send a message to a channel or user on the IRC server. Multiple servers
  * can be supported using multiple instances of PircBotX.
- *  <p>
+ * <p>
  * To perform an action when the PircBotX receives a normal message from the IRC
  * server, you would listen for the MessageEvent in your listener (see {@link ListenerAdapter}).
  * Many other events are dispatched as well for other incoming lines
  *
- * @author  Origionally by:
- *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
- *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
- *          Leon Blakey <lord.quackstar at gmail.com>
+ * @author Origionally by:
+ * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
+ * <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
+ * Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotX {
 	/**
@@ -201,9 +201,9 @@ public class PircBotX {
 	protected boolean autoSplitMessage = true;
 
 	/**
-	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks} 
+	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
 	 * to the default ListenerManager, {@link ThreadedListenerManager}. This also
-	 * adds a shutdown hook to the current runtime while will properly shutdown 
+	 * adds a shutdown hook to the current runtime while will properly shutdown
 	 * the bot by calling {@link #disconnect() } and {@link #dispose() }
 	 */
 	public PircBotX() {
@@ -289,7 +289,7 @@ public class PircBotX {
 	 * port number, password, and socketFactory. On success a {@link ConnectEvent}
 	 * will be dispatched
 	 * <p>
-	 * Note that a WebIrc line will be sent ONLY if the {@link #setWebIrcPassword(java.lang.String) 
+	 * Note that a WebIrc line will be sent ONLY if the {@link #setWebIrcPassword(java.lang.String)
 	 * WebIrc password is set}
 	 *
 	 * @param hostname The hostname of the server to connect to.
@@ -355,7 +355,7 @@ public class PircBotX {
 				String code = line.substring(firstSpace + 1, secondSpace);
 
 				//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
-				String[] codes = {"001","002","003","004","005", "251", "252","253","254","255","375","376"};
+				String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
 				if (Arrays.asList(codes).contains(code))
 					// We're connected to the server.
 					break;
@@ -427,7 +427,7 @@ public class PircBotX {
 
 	/**
 	 * This method disconnects from the server cleanly by calling the
-	 * quitServer() method.  Providing the PircBotX was connected to an
+	 * quitServer() method. Providing the PircBotX was connected to an
 	 * IRC server, DisconnectEvent will be dispatched as soon as the
 	 * disconnection is made by the server.
 	 *
@@ -445,7 +445,7 @@ public class PircBotX {
 	 * available nick is found.
 	 *
 	 * @param autoNickChange Set to true if you want automatic nick changes
-	 *                       during connection.
+	 * during connection.
 	 */
 	public void setAutoNickChange(boolean autoNickChange) {
 		_autoNickChange = autoNickChange;
@@ -453,27 +453,27 @@ public class PircBotX {
 
 	/**
 	 * Starts an ident server (Identification Protocol Server, RFC 1413).
-	 *  <p>
+	 * <p>
 	 * Most IRC servers attempt to contact the ident server on connecting
-	 * hosts in order to determine the user's identity.  A few IRC servers
+	 * hosts in order to determine the user's identity. A few IRC servers
 	 * will not allow you to connect unless this information is provided.
-	 *  <p>
+	 * <p>
 	 * So when a PircBotX is run on a machine that does not run an ident server,
 	 * it may be necessary to call this method to start one up.
-	 *  <p>
+	 * <p>
 	 * Calling this method starts up an ident server which will respond with
 	 * the login provided by calling getLogin() and then shut down immediately.
 	 * It will also be shut down if it has not been contacted within 60 seconds
 	 * of creation.
-	 *  <p>
+	 * <p>
 	 * If you require an ident response, then the correct procedure is to start
-	 * the ident server and then connect to the IRC server.  The IRC server may
+	 * the ident server and then connect to the IRC server. The IRC server may
 	 * then contact the ident server to get the information it needs.
-	 *  <p>
+	 * <p>
 	 * The ident server will fail to start if there is already an ident server
 	 * running on port 113, or if you are running as an unprivileged user who
 	 * is unable to create a server socket on that port number.
-	 *  <p>
+	 * <p>
 	 * If it is essential for you to use an ident server when connecting to an
 	 * IRC server, then make sure that port 113 on your machine is visible to
 	 * the IRC server so that it may contact the ident server.
@@ -516,7 +516,7 @@ public class PircBotX {
 	 * Parts a channel, giving a reason.
 	 *
 	 * @param channel The name of the channel to leave.
-	 * @param reason  The reason for parting the channel.
+	 * @param reason The reason for parting the channel.
 	 */
 	public void partChannel(Channel channel, String reason) {
 		sendRawLine("PART " + channel.getName() + " :" + reason);
@@ -545,7 +545,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Part and rejoin specified channel using channel key. Useful for obtaining 
+	 * Part and rejoin specified channel using channel key. Useful for obtaining
 	 * auto privileges after identifying
 	 * @param chan The channel to part and join from. Note that the object will
 	 * be invalid after this method executes and a new one will be created
@@ -613,51 +613,51 @@ public class PircBotX {
 		if (isConnected())
 			_outputThread.sendRawLineNow(line);
 	}
-	
+
 	protected void sendRawLineSplit(String prefix, String message) {
 		sendRawLineSplit(prefix, message, "");
 	}
-	
-	
+
 	protected void sendRawLineSplit(String prefix, String message, String suffix) {
 		//Make sure suffix is valid
-		if(suffix == null)
+		if (suffix == null)
 			suffix = "";
-		
+
 		//Find if final line is going to be shorter than the max line length
 		String finalMessage = prefix + message + suffix;
-		int realMaxLineLength =  getMaxLineLength() - 2;
-		if(!autoSplitMessage || finalMessage.length() < realMaxLineLength) {
+		int realMaxLineLength = getMaxLineLength() - 2;
+		if (!autoSplitMessage || finalMessage.length() < realMaxLineLength) {
 			//Length is good (or auto split message is set), just go ahead and send it
 			sendRawLine(finalMessage);
 			return;
 		}
-		
+
 		//Too long, split it up
 		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
 		//Oh look, no function to split every nth char. Since regex is expensive, use this nonsense
-		int iterations = (int)Math.ceil(message.length() / (double)maxMessageLength);
-		for(int i = 0; i < iterations ; i++) {
-			int endPoint = (i != iterations-1) ? ((i+1) * maxMessageLength) : message.length();
+		int iterations = (int) Math.ceil(message.length() / (double) maxMessageLength);
+		for (int i = 0; i < iterations; i++) {
+			int endPoint = (i != iterations - 1) ? ((i + 1) * maxMessageLength) : message.length();
 			String curMessagePart = prefix + message.substring(i * maxMessageLength, endPoint) + suffix;
 			sendRawLine(curMessagePart);
 		}
 	}
 
 	/**
-	 * Sends a message to a channel or a private message to a user.  These
+	 * Sends a message to a channel or a private message to a user. These
 	 * messages are added to the outgoing message queue and sent at the
 	 * earliest possible opportunity.
-	 *  <p>
+	 * <p>
 	 * Some examples: -
-	 *  <pre>    // Send the message "Hello!" to the channel #cs.
+	 * <pre>    // Send the message "Hello!" to the channel #cs.
 	 *    sendMessage("#cs", "Hello!");
 	 *
 	 *    // Send a private message to Paul that says "Hi".
 	 *    sendMessage("Paul", "Hi");</pre>
 	 *
 	 * You may optionally apply colours, boldness, underlining, etc to
-	 * the message by using the <code>Colors</code> class.
+	 * the message by using the
+	 * <code>Colors</code> class.
 	 *
 	 * @param target The name of the channel or user nick to send to.
 	 * @param message The message to send.
@@ -691,7 +691,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Send a message to the given user in the given channel in this format: 
+	 * Send a message to the given user in the given channel in this format:
 	 * <code>user: message</code>. Very useful for responding directly to a command
 	 * @param chan The channel to send the message to
 	 * @param user The user to recieve the message in the channel
@@ -769,10 +769,11 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends a CTCP command to a channel or user.  (Client to client protocol).
+	 * Sends a CTCP command to a channel or user. (Client to client protocol).
 	 * Examples of such commands are "PING <number>", "FINGER", "VERSION", etc.
 	 * For example, if you wish to request the version of a user called "Dave",
-	 * then you would call <code>sendCTCPCommand("Dave", "VERSION");</code>.
+	 * then you would call
+	 * <code>sendCTCPCommand("Dave", "VERSION");</code>.
 	 * The type of response to such commands is largely dependant on the target
 	 * client software.
 	 *
@@ -809,7 +810,7 @@ public class PircBotX {
 
 	/**
 	 * Send a CTCP response to the target channel or user. Note that the
-	 * {@link CoreHooks} class already handles responding to the most common CTCP 
+	 * {@link CoreHooks} class already handles responding to the most common CTCP
 	 * commands. Only respond to other commands that aren't implemented
 	 * @param target The target of the response
 	 * @param message The message to send
@@ -845,24 +846,24 @@ public class PircBotX {
 	 * Identify the bot with NickServ, supplying the appropriate password.
 	 * Some IRC Networks (such as freenode) require users to <i>register</i> and
 	 * <i>identify</i> with NickServ before they are able to send private messages
-	 * to other users, thus reducing the amount of spam.  If you are using
+	 * to other users, thus reducing the amount of spam. If you are using
 	 * an IRC network where this kind of policy is enforced, you will need
 	 * to make your bot <i>identify</i> itself to NickServ before you can send
 	 * private messages. Assuming you have already registered your bot's
 	 * nick with NickServ, this method can be used to <i>identify</i> with
 	 * the supplied password. It usually makes sense to identify with NickServ
 	 * immediately after connecting to a server.
-	 *  <p>
+	 * <p>
 	 * This method issues a raw NICKSERV command to the server, and is therefore
 	 * safer than the alternative approach of sending a private message to
 	 * NickServ. The latter approach is considered dangerous, as it may cause
 	 * you to inadvertently transmit your password to an untrusted party if you
 	 * connect to a network which does not run a NickServ service and where the
-	 * untrusted party has assumed the nick "NickServ".  However, if your IRC
+	 * untrusted party has assumed the nick "NickServ". However, if your IRC
 	 * network is only compatible with the private message approach, you may
 	 * typically identify like so:
 	 * <pre>sendMessage("NickServ", "identify PASSWORD");</pre>
-	 *  <p>
+	 * <p>
 	 * Note that this method will add a temporary listener for ConnectEvent if
 	 * the bot is not logged in yet. If the bot is logged in the command is sent
 	 * immediately to the server
@@ -887,7 +888,7 @@ public class PircBotX {
 
 	/**
 	 * Set the mode of a channel.
-	 * This method attempts to set the mode of a channel.  This
+	 * This method attempts to set the mode of a channel. This
 	 * may require the bot to have operator status on the channel.
 	 * For example, if the bot has operator status, we can grant
 	 * operator status to "Dave" on the #cs channel
@@ -895,25 +896,25 @@ public class PircBotX {
 	 * An alternative way of doing this would be to use the op method.
 	 *
 	 * @param chan The channel on which to perform the mode change.
-	 * @param mode    The new mode to apply to the channel.  This may include
-	 *                zero or more arguments if necessary.
+	 * @param mode The new mode to apply to the channel. This may include
+	 * zero or more arguments if necessary.
 	 *
-	 * @see #op(org.pircbotx.Channel, org.pircbotx.User) 
+	 * @see #op(org.pircbotx.Channel, org.pircbotx.User)
 	 */
 	public void setMode(Channel chan, String mode) {
 		sendRawLine("MODE " + chan.getName() + " " + mode);
 	}
 
 	/**
-	 * Set a mode for the channel with arguments. Nicer way to pass arguments than 
-	 * with string concatenation. See {@link #setMode(org.pircbotx.Channel, java.lang.String) } 
+	 * Set a mode for the channel with arguments. Nicer way to pass arguments than
+	 * with string concatenation. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
 	 * for more information
 	 * @param chan The channel on which to perform the mode change.
-	 * @param mode The new mode to apply to the channel.  This may include
-	 *             zero or more arguments if necessary.
+	 * @param mode The new mode to apply to the channel. This may include
+	 * zero or more arguments if necessary.
 	 * @param args Arguments to be passed to the mode. All will be converted to
-	 *             a string using {@link Object#toString() } and added together
-	 *             with a single space separating them
+	 * a string using {@link Object#toString() } and added together
+	 * with a single space separating them
 	 */
 	public void setMode(Channel chan, String mode, Object... args) {
 		//Build arg string
@@ -926,8 +927,8 @@ public class PircBotX {
 	/**
 	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
 	 * @param chan The channel on which to perform the mode change.
-	 * @param mode    The new mode to apply to the channel. 
-	 * @param user  The user to perform the mode change on
+	 * @param mode The new mode to apply to the channel.
+	 * @param user The user to perform the mode change on
 	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
 	 */
 	public void setMode(Channel chan, String mode, User user) {
@@ -947,7 +948,7 @@ public class PircBotX {
 	/**
 	 * Attempt to remove the channel limit (-l) on the specified channel. May require
 	 * operator privileges in the channel
-	 * @param chan 
+	 * @param chan
 	 */
 	public void removeChannelLimit(Channel chan) {
 		setMode(chan, "-l");
@@ -975,7 +976,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Set the channel as invite only (+i). May require operator privileges in 
+	 * Set the channel as invite only (+i). May require operator privileges in
 	 * the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -984,7 +985,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Removes invite only (-i) status from the channel. May require operator 
+	 * Removes invite only (-i) status from the channel. May require operator
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -993,7 +994,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Set the channel as moderated (+m). May require operator privileges in 
+	 * Set the channel as moderated (+m). May require operator privileges in
 	 * the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1002,7 +1003,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Removes moderated (-m) status from the channel. May require operator 
+	 * Removes moderated (-m) status from the channel. May require operator
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1011,7 +1012,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Prevent external messages from appearing in the channel (+n). May require 
+	 * Prevent external messages from appearing in the channel (+n). May require
 	 * operator privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1020,7 +1021,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Allow external messages to appear in the channel (+n). May require operator 
+	 * Allow external messages to appear in the channel (+n). May require operator
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1029,7 +1030,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Set the channel as secret (+s). May require operator privileges in 
+	 * Set the channel as secret (+s). May require operator privileges in
 	 * the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1038,7 +1039,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Removes secret (-s) status from the channel. May require operator 
+	 * Removes secret (-s) status from the channel. May require operator
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1047,7 +1048,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Prevent non-operator users from changing the channel topic (+t). May 
+	 * Prevent non-operator users from changing the channel topic (+t). May
 	 * require operator privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1056,7 +1057,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Allow non-operator users to change the channel topic (-t). May require operator 
+	 * Allow non-operator users to change the channel topic (-t). May require operator
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
@@ -1065,11 +1066,11 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends an invitation to join a channel.  Some channels can be marked
+	 * Sends an invitation to join a channel. Some channels can be marked
 	 * as "invite-only", so it may be useful to allow a bot to invite people
 	 * into it.
 	 *
-	 * @param nick    The nick of the user to invite
+	 * @param nick The nick of the user to invite
 	 * @param channel The channel you are inviting the user to join.
 	 *
 	 */
@@ -1111,8 +1112,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * Bans a user from a channel.  An example of a valid hostmask is
-	 * "*!*compu@*.18hp.net".  This may be used in conjunction with the
+	 * Bans a user from a channel. An example of a valid hostmask is
+	 * "*!*compu@*.18hp.net". This may be used in conjunction with the
 	 * kick method to permanently remove a user from a channel.
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
@@ -1125,7 +1126,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Unbans a user from a channel.  An example of a valid hostmask is
+	 * Unbans a user from a channel. An example of a valid hostmask is
 	 * "*!*compu@*.18hp.net".
 	 * Successful use of this method may require the bot to have operator
 	 * status itself.
@@ -1186,84 +1187,84 @@ public class PircBotX {
 	}
 
 	/**
-	 * Grants owner privileges to a user on a channel. 
+	 * Grants owner privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have operator or
 	 * halfOp status itself.
 	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
 	 * it to mean something else!
 	 * @param chan
-	 * @param user 
+	 * @param user
 	 */
 	public void halfOp(Channel chan, User user) {
 		setMode(chan, "+h " + user.getNick());
 	}
 
 	/**
-	 * Removes owner privileges to a user on a channel. 
+	 * Removes owner privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have operator or
 	 * halfOp status itself.
 	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
 	 * it to mean something else!
 	 * @param chan
-	 * @param user 
+	 * @param user
 	 */
 	public void deHalfOp(Channel chan, User user) {
 		setMode(chan, "-h " + user.getNick());
 	}
 
 	/**
-	 * Grants owner privileges to a user on a channel. 
+	 * Grants owner privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have owner
 	 * status itself.
 	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
 	 * it to mean something else!
 	 * @param chan
-	 * @param user 
+	 * @param user
 	 */
 	public void owner(Channel chan, User user) {
 		setMode(chan, "+q " + user.getNick());
 	}
 
 	/**
-	 * Removes owner privileges to a user on a channel. 
+	 * Removes owner privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have owner
 	 * status itself.
 	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
 	 * it to mean something else!
 	 * @param chan
-	 * @param user 
+	 * @param user
 	 */
 	public void deOwner(Channel chan, User user) {
 		setMode(chan, "-q " + user.getNick());
 	}
 
 	/**
-	 * Grants superOp privileges to a user on a channel. 
+	 * Grants superOp privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have owner or superOp
 	 * status itself.
 	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
 	 * it to mean something else!
 	 * @param chan
-	 * @param user 
+	 * @param user
 	 */
 	public void superOp(Channel chan, User user) {
 		setMode(chan, "+a " + user.getNick());
 	}
 
 	/**
-	 * Removes superOp privileges to a user on a channel. 
+	 * Removes superOp privileges to a user on a channel.
 	 * Successful use of this method may require the bot to have owner or superOp
 	 * status itself.
 	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
 	 * it to mean something else!
 	 * @param chan
-	 * @param user 
+	 * @param user
 	 */
 	public void deSuperOp(Channel chan, User user) {
 		setMode(chan, "-a " + user.getNick());
@@ -1271,12 +1272,12 @@ public class PircBotX {
 
 	/**
 	 * Set the topic for a channel.
-	 * This method attempts to set the topic of a channel.  This
+	 * This method attempts to set the topic of a channel. This
 	 * may require the bot to have operator status if the topic
 	 * is protected.
 	 *
 	 * @param chan The channel on which to perform the mode change.
-	 * @param topic   The new topic for the channel.
+	 * @param topic The new topic for the channel.
 	 *
 	 */
 	public void setTopic(Channel chan, String topic) {
@@ -1301,8 +1302,8 @@ public class PircBotX {
 	 * may require the bot to have operator status in the channel.
 	 *
 	 * @param chan The channel to kick the user from.
-	 * @param user    The user to kick.
-	 * @param reason  A description of the reason for kicking a user.
+	 * @param user The user to kick.
+	 * @param reason A description of the reason for kicking a user.
 	 */
 	public void kick(Channel chan, User user, String reason) {
 		sendRawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
@@ -1327,15 +1328,15 @@ public class PircBotX {
 	 * When the PircBotX receives information for each channel, a {@link ChannelInfoEvent}
 	 * will be dispatched which you will need to listen for if you want to do
 	 * anything useful
-	 *  <p>
+	 * <p>
 	 * Some IRC servers support certain parameters for LIST requests.
 	 * One example is a parameter of ">10" to list only those channels
-	 * that have more than 10 users in them.  Whether these parameters
+	 * that have more than 10 users in them. Whether these parameters
 	 * are supported or not will depend on the IRC server software.
 	 * <p>
 	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 * @param parameters The parameters to supply when requesting the
-	 *                   list.
+	 * list.
 	 *
 	 * @see ChannelInfoEvent
 	 */
@@ -1348,10 +1349,10 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends a file to another user.  Resuming is supported.
+	 * Sends a file to another user. Resuming is supported.
 	 * The other user must be able to connect directly to your bot to be
 	 * able to receive the file.
-	 *  <p>
+	 * <p>
 	 * You may throttle the speed of this file transfer by calling the
 	 * setPacketDelay method on the DccFileTransfer that is returned.
 	 *
@@ -1360,7 +1361,7 @@ public class PircBotX {
 	 * @param file The file to send.
 	 * @param reciever The user to whom the file is to be sent.
 	 * @param timeout The number of milliseconds to wait for the recipient to
-	 *                acccept the file (we recommend about 120000).
+	 * accept the file (we recommend about 120000).
 	 *
 	 * @return The DccFileTransfer that can be used to monitor this transfer.
 	 *
@@ -1374,25 +1375,25 @@ public class PircBotX {
 	}
 
 	/**
-	 * Attempts to establish a DCC CHAT session with a client.  This method
+	 * Attempts to establish a DCC CHAT session with a client. This method
 	 * issues the connection request to the client and then waits for the
-	 * client to respond.  If the connection is successfully made, then a
-	 * DccChat object is returned by this method.  If the connection is not
+	 * client to respond. If the connection is successfully made, then a
+	 * DccChat object is returned by this method. If the connection is not
 	 * made within the time limit specified by the timeout value, then null
 	 * is returned.
-	 *  <p>
+	 * <p>
 	 * Note that this method blocks until the user accepts the DCC chat request
-	 * 
+	 *
 	 * @throws IOException If any issue occurs with creating the connection
 	 * @throws SocketTimeoutException If the user does not connect within the
-	 *                                specified timeout period
-	 * @param sender The user object representing the user we are trying to 
-	 *               establish a chat with.
+	 * specified timeout period
+	 * @param sender The user object representing the user we are trying to
+	 * establish a chat with.
 	 * @param timeout The number of milliseconds to wait for the recipient to
-	 *                accept the chat connection (we recommend about 120000).
+	 * accept the chat connection (we recommend about 120000).
 	 *
 	 * @return a DccChat object that can be used to send and recieve lines of
-	 *         text.  Returns <b>null</b> if the connection could not be made.
+	 * text. Returns <b>null</b> if the connection could not be made.
 	 *
 	 * @see DccChat
 	 * @since PircBot 0.9.8
@@ -1421,18 +1422,18 @@ public class PircBotX {
 	}
 
 	/**
-	 * Adds a line to the log.  This log is currently output to the standard
+	 * Adds a line to the log. This log is currently output to the standard
 	 * output and is in the correct format for use by tools such as pisg, the
-	 * Perl IRC Statistics Generator.  You may override this method if you wish
+	 * Perl IRC Statistics Generator. You may override this method if you wish
 	 * to do something else with log entries.
 	 * Each line in the log begins with a number which
 	 * represents the logging time (as the number of milliseconds since the
-	 * epoch).  This timestamp and the following log entry are separated by
-	 * a single space character, " ".  Outgoing messages are distinguishable
+	 * epoch). This timestamp and the following log entry are separated by
+	 * a single space character, " ". Outgoing messages are distinguishable
 	 * by a log entry that has ">>>" immediately following the space character
-	 * after the timestamp.  DCC events use "+++" and warnings about unhandled
+	 * after the timestamp. DCC events use "+++" and warnings about unhandled
 	 * Exceptions and Errors use "###".
-	 *  <p>
+	 * <p>
 	 * This implementation of the method will only cause log entries to be
 	 * output if the PircBotX has had its verbose mode turned on by calling
 	 * setVerbose(true);
@@ -1465,7 +1466,7 @@ public class PircBotX {
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
-	 * then calling the appropriate method in the PircBotX.  This method is
+	 * then calling the appropriate method in the PircBotX. This method is
 	 * protected and only called by the InputThread for this instance.
 	 *
 	 * @param line The raw line of text from the server.
@@ -1651,10 +1652,10 @@ public class PircBotX {
 
 	/**
 	 * This method is called by the PircBotX when a numeric response
-	 * is received from the IRC server.  We use this method to
+	 * is received from the IRC server. We use this method to
 	 * allow PircBotX to process various responses from the server
 	 * before then passing them on to the onServerResponse method.
-	 *  <p>
+	 * <p>
 	 * Note that this method is private and should not appear in any
 	 * of the javadoc generated documentation.
 	 *
@@ -1780,10 +1781,10 @@ public class PircBotX {
 	}
 
 	/**
-	 * Called when the mode of a channel is set.  We process this in
+	 * Called when the mode of a channel is set. We process this in
 	 * order to call the appropriate onOp, onDeop, etc method before
 	 * finally calling the override-able onMode method.
-	 *  <p>
+	 * <p>
 	 * Note that this method is private and is not intended to appear
 	 * in the javadoc generated documentation.
 	 *
@@ -1791,7 +1792,7 @@ public class PircBotX {
 	 * @param sourceNick The nick of the user that set the mode.
 	 * @param sourceLogin The login of the user that set the mode.
 	 * @param sourceHostname The hostname of the user that set the mode.
-	 * @param mode  The mode that has been set.
+	 * @param mode The mode that has been set.
 	 */
 	protected void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 		User source = getUser(sourceNick);
@@ -1934,7 +1935,7 @@ public class PircBotX {
 	 * will result in no output. For general development, we strongly recommend
 	 * setting the verbose mode to true.
 	 *
-	 * @param verbose true if verbose mode is to be used.  Default is false.
+	 * @param verbose true if verbose mode is to be used. Default is false.
 	 */
 	public void setVerbose(boolean verbose) {
 		_verbose = verbose;
@@ -1942,11 +1943,11 @@ public class PircBotX {
 
 	/**
 	 * Sets the name of the bot, which will be used as its nick when it
-	 * tries to join an IRC server.  This should be set before joining
-	 * any servers, otherwise the default nick will be used.  You would
+	 * tries to join an IRC server. This should be set before joining
+	 * any servers, otherwise the default nick will be used. You would
 	 * typically call this method from the constructor of the class that
 	 * extends PircBotX.
-	 *  <p>
+	 * <p>
 	 * The changeNick method should be used if you wish to change your nick
 	 * when you are connected to a server.
 	 *
@@ -1957,7 +1958,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sets the internal nick of the bot.  This is only to be called by the
+	 * Sets the internal nick of the bot. This is only to be called by the
 	 * PircBotX class in response to notification of nick changes that apply
 	 * to us.
 	 *
@@ -1973,7 +1974,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sets the internal login of the Bot.  This should be set before joining
+	 * Sets the internal login of the Bot. This should be set before joining
 	 * any servers.
 	 *
 	 * @param login The new login of the Bot.
@@ -1983,7 +1984,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sets the internal version of the Bot.  This should be set before joining
+	 * Sets the internal version of the Bot. This should be set before joining
 	 * any servers.
 	 *
 	 * @param version The new version of the Bot.
@@ -1993,7 +1994,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sets the interal finger message.  This should be set before joining
+	 * Sets the interal finger message. This should be set before joining
 	 * any servers.
 	 *
 	 * @param finger The new finger message for the Bot.
@@ -2016,7 +2017,7 @@ public class PircBotX {
 	 * Returns the current nick of the bot. Note that if you have just changed
 	 * your nick, this method will still return the old nick until confirmation
 	 * of the nick change is received from the server.
-	 *  <p>
+	 * <p>
 	 * The nick returned by this method is maintained only by the PircBotX
 	 * class and is guaranteed to be correct in the context of the IRC server.
 	 *
@@ -2069,10 +2070,10 @@ public class PircBotX {
 	/**
 	 * Sets the number of milliseconds to delay between consecutive
 	 * messages when there are multiple messages waiting in the
-	 * outgoing message queue.  This has a default value of 1000ms.
+	 * outgoing message queue. This has a default value of 1000ms.
 	 * It is a good idea to stick to this default value, as it will
 	 * prevent your bot from spamming servers and facing the subsequent
-	 * wrath!  However, if you do need to change this delay value (<b>not
+	 * wrath! However, if you do need to change this delay value (<b>not
 	 * recommended</b>), then this is the method to use.
 	 *
 	 * @param delay The number of milliseconds between each outgoing message.
@@ -2097,8 +2098,8 @@ public class PircBotX {
 	/**
 	 * Gets the maximum length of any line that is sent via the IRC protocol.
 	 * The IRC RFC specifies that line lengths, including the trailing \r\n
-	 * must not exceed 512 bytes.  Hence, there is currently no option to
-	 * change this value in PircBotX.  All lines greater than this length
+	 * must not exceed 512 bytes. Hence, there is currently no option to
+	 * change this value in PircBotX. All lines greater than this length
 	 * will be truncated before being sent to the IRC server.
 	 *
 	 * @return The maximum line length (currently fixed at 512)
@@ -2128,7 +2129,7 @@ public class PircBotX {
 	 * to a server.
 	 *
 	 * @return The name of the last machine we tried to connect to. Returns
-	 *         null if no connection attempts have ever been made.
+	 * null if no connection attempts have ever been made.
 	 */
 	public String getServer() {
 		return _server;
@@ -2145,7 +2146,7 @@ public class PircBotX {
 	 * @since PircBot 0.9.9
 	 *
 	 * @return The port number of the last IRC server we connected to.
-	 *         Returns -1 if no connection attempts have ever been made.
+	 * Returns -1 if no connection attempts have ever been made.
 	 */
 	public int getPort() {
 		return _port;
@@ -2161,7 +2162,7 @@ public class PircBotX {
 	 * @since PircBot 0.9.9
 	 *
 	 * @return The last password that we used when connecting to an IRC server.
-	 *         Returns null if we have not previously connected using a password.
+	 * Returns null if we have not previously connected using a password.
 	 */
 	public String getPassword() {
 		return _password;
@@ -2170,9 +2171,9 @@ public class PircBotX {
 	/**
 	 * Sets the encoding charset to be used when sending or receiving lines
 	 * from the IRC server. Simply a convenience method for {@link #setEncoding(java.nio.charset.Charset) }
-	 * 
+	 *
 	 * @since PircBot 1.0.4
-	 * @see #setEncoding(java.nio.charset.Charset) 
+	 * @see #setEncoding(java.nio.charset.Charset)
 	 * @param charset The charset as a string to use
 	 * @throws NullPointerException If the charset is null
 	 * @throws UnsupportedEncodingException If the passed encoding isn't supported
@@ -2186,10 +2187,10 @@ public class PircBotX {
 
 	/**
 	 * Sets the encoding charset to be used when sending or receiving lines
-	 * from the IRC server.  If set to null, then the platform's default
-	 * charset is used.  You should only use this method if you are
+	 * from the IRC server. If set to null, then the platform's default
+	 * charset is used. You should only use this method if you are
 	 * trying to send text to an IRC server in a different charset, e.g.
-	 * "GB2312" for Chinese encoding.  If a PircBotX is currently connected
+	 * "GB2312" for Chinese encoding. If a PircBotX is currently connected
 	 * to a server, then it must reconnect before this change takes effect.
 	 *
 	 * @param charset The new encoding charset to be used by PircBotX.
@@ -2266,7 +2267,7 @@ public class PircBotX {
 	 * @since PircBot 1.4.4
 	 *
 	 * @return An array of port numbers that PircBotX can use to send DCC
-	 *         transfers, or null if any port is allowed.
+	 * transfers, or null if any port is allowed.
 	 */
 	public List<Integer> getDccPorts() {
 		return dccPorts;
@@ -2305,14 +2306,14 @@ public class PircBotX {
 	 * useful when writing bots or clients that use multiple servers (and
 	 * therefore multiple PircBotX instances) or when integrating a PircBotX
 	 * with an existing program.
-	 *  <p>
+	 * <p>
 	 * Each PircBotX runs its own threads for dispatching messages from its
 	 * outgoing message queue and receiving messages from the server.
 	 * Calling dispose() ensures that these threads are
 	 * stopped, thus freeing up system resources and allowing the PircBotX
 	 * object to be garbage collected if there are no other references to
 	 * it.
-	 *  <p>
+	 * <p>
 	 * Once a PircBotX object has been disposed, it should not be used again.
 	 * Attempting to use a PircBotX that has been disposed may result in
 	 * unpredictable behaviour.
@@ -2352,7 +2353,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Returns an array of all channels that we are in.  Note that if you
+	 * Returns an array of all channels that we are in. Note that if you
 	 * call this method immediately after joining a new channel, the new
 	 * channel may not appear in this array as it is not possible to tell
 	 * if the join was successful until a response is received from the
@@ -2409,7 +2410,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Check if we are still connected to given channel by string. 
+	 * Check if we are still connected to given channel by string.
 	 * @param channel A channel name as a string
 	 * @return True if we are still connected to the channel, false if not
 	 */
@@ -2421,24 +2422,24 @@ public class PircBotX {
 	}
 
 	/**
-	 * Get all user's in the channel. 
-	 * 
+	 * Get all user's in the channel.
+	 *
 	 * There are some important things to note about this method:-
 	 * <ul>
-	 *  <li>This method may not return a full list of users if you call it
-	 *      before the complete nick list has arrived from the IRC server.
-	 *  </li>
-	 *  <li>If you wish to find out which users are in a channel as soon
-	 *      as you join it, then you should listen for a {@link UserListEvent}
-	 *      instead of calling this method, as the {@link UserListEvent} is only
-	 *      dispatched as soon as the full user list has been received.
-	 *  </li>
-	 *  <li>This method will return immediately, as it does not require any
-	 *      interaction with the IRC server.
-	 *  </li>
-	 *  <li>The bot must be in a channel to be able to know which users are
-	 *      in it.
-	 *  </li>
+	 * <li>This method may not return a full list of users if you call it
+	 * before the complete nick list has arrived from the IRC server.
+	 * </li>
+	 * <li>If you wish to find out which users are in a channel as soon
+	 * as you join it, then you should listen for a {@link UserListEvent}
+	 * instead of calling this method, as the {@link UserListEvent} is only
+	 * dispatched as soon as the full user list has been received.
+	 * </li>
+	 * <li>This method will return immediately, as it does not require any
+	 * interaction with the IRC server.
+	 * </li>
+	 * <li>The bot must be in a channel to be able to know which users are
+	 * in it.
+	 * </li>
 	 * </ul>
 	 *
 	 * @since PircBot 1.0.0
@@ -2455,7 +2456,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Gets an existing user or creates a new one. 
+	 * Gets an existing user or creates a new one.
 	 * @param nick
 	 * @return The requested User. Never is null
 	 */
@@ -2496,7 +2497,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Returns the current ListenerManager in use by this bot. 
+	 * Returns the current ListenerManager in use by this bot.
 	 * @return Current ListenerManager
 	 */
 	public ListenerManager<? extends PircBotX> getListenerManager() {
@@ -2524,9 +2525,9 @@ public class PircBotX {
 	 * successful (we suggest you look at the dispatched {@link ConnectEvent}).
 	 * A value of null is returned if the PircBot has never tried to connect
 	 * to a server using a SocketFactory.
-	 * 
+	 *
 	 * @return The last SocketFactory that we used when connecting to an IRC server.
-	 *         Returns null if we have not previously connected using a SocketFactory.
+	 * Returns null if we have not previously connected using a SocketFactory.
 	 */
 	public SocketFactory getSocketFactory() {
 		return _socketFactory;
@@ -2560,7 +2561,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Using the specified eventClass, block until the Event occurs. Eg wait for 
+	 * Using the specified eventClass, block until the Event occurs. Eg wait for
 	 * a response from a user, capturing the MessageEvent or PrivateMessageEvent.
 	 * <p>
 	 * <b>Warning:</b> The listener manager in use <i>must</i> support multithreading.
@@ -2570,7 +2571,7 @@ public class PircBotX {
 	 * @param eventClass The class representing the Event to capture
 	 * @return The requested event
 	 * @throws InterruptedException If the thread is interrupted, this exception
-	 *                              is thrown
+	 * is thrown
 	 */
 	public <E extends Event> E waitFor(Class<? extends E> eventClass) throws InterruptedException {
 		//Create a WaitListener for getting the event
@@ -2610,7 +2611,7 @@ public class PircBotX {
 		 * @param event A class representing the event to wait for
 		 * @return The specified event
 		 * @throws InterruptedException If the thread is interrupted, this exception
-		 *                              is thrown
+		 * is thrown
 		 */
 		public Event waitFor(Class<? extends Event> event) throws InterruptedException {
 			eventClass = event;
