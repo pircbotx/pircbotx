@@ -55,7 +55,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information} 
 	 * on exception handling and performance.
 	 * @param listener The listener to add
-	 * @return True if the listener was succesfully added, false if not
+	 * @return True if the listener was successfully added, false if not
 	 */
 	public boolean addListener(Listener listener);
 
