@@ -123,7 +123,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		return currentId.getAndIncrement();
 	}
 	
-	protected class ListenerThreadFactory implements ThreadFactory {
+	protected static class ListenerThreadFactory implements ThreadFactory {
 		protected final AtomicInteger threadCount = new AtomicInteger();
 		protected String prefix = "pool-listenerThread-";
 
