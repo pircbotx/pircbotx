@@ -308,7 +308,7 @@ public class PircBotX {
 		_socketFactory = socketFactory;
 
 		if (isConnected())
-			throw new IrcException("The PircBotXis already connected to an IRC server.  Disconnect first.");
+			throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
 
 		// Clear everything we may have know about channels.
 		_userChanInfo.clear();
