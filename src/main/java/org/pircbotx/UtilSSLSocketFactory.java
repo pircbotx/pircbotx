@@ -64,6 +64,14 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	public UtilSSLSocketFactory() {
 		wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 	}
+	
+	/**
+	 * Setup UntilSSLSocketFactory wrapping the provided SSLSocketFactory
+	 * @param providedFactory An SSLSocketFactory to wrap
+	 */
+	public UtilSSLSocketFactory(SSLSocketFactory providedFactory) {
+		wrappedFactory = providedFactory;
+	}
 
 	/**
 	 * By default, trust ALL certificates. <b>This is very insecure.</b> It also
