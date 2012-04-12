@@ -91,7 +91,9 @@ public class InputThread extends Thread {
 				// Now we go back to listening for stuff from the server...
 				continue;
 			} catch (Exception e) {
+				//Something is wrong. Assume its bad and begin disconnect
 				bot.logException(e);
+				line = null;
 			}
 
 			//End the loop if the line is null
@@ -102,6 +104,7 @@ public class InputThread extends Thread {
 			try {
 				bot.handleLine(line);
 			} catch (Exception e) {
+				//Exception in client code. Just log and continue
 				bot.logException(e);
 			}
 		}
@@ -110,6 +113,7 @@ public class InputThread extends Thread {
 		try {
 			socket.close();
 		} catch (Exception e) {
+			//There's not much we can do here besides log that we couldn't properly close
 			bot.logException(e);
 		}
 
