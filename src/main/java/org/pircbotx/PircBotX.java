@@ -199,6 +199,7 @@ public class PircBotX {
 	@Setter
 	@Getter
 	protected boolean autoSplitMessage = true;
+	protected Thread shutdownHook;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
@@ -210,7 +211,7 @@ public class PircBotX {
 		botCount.getAndIncrement();
 		listenerManager.addListener(new CoreHooks());
 		final PircBotX thisBot = this;
-		Runtime.getRuntime().addShutdownHook(new Thread() {
+		Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
 			@Override
 			public void run() {
 				if (thisBot.isConnected()) {
