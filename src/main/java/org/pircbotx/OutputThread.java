@@ -58,16 +58,17 @@ public class OutputThread extends Thread {
 	 * @param line The line to be written. "\r\n" is appended to the end.
 	 */
 	public void sendRawLineNow(String line) {
-		failIfNotConnected();
 		if (line.length() > bot.getMaxLineLength() - 2)
 			line = line.substring(0, bot.getMaxLineLength() - 2);
 		synchronized (bwriter) {
+			failIfNotConnected();
 			try {
 				bwriter.write(line + "\r\n");
 				bwriter.flush();
 				bot.log(">>>" + line);
 			} catch (Exception e) {
-				bot.logException(e);
+				//Not much else we can do, but this requires attention of whatever is calling this
+				throw new RuntimeException("Exception encountered when writng to socket", e);
 			}
 		}
 	}
