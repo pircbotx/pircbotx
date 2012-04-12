@@ -2708,6 +2708,7 @@ public class PircBotX {
 					}
 				}
 			});
+			shutdownHook.setName("bot" + botCount + "-shutdownhook");
 		} else if (!use && shutdownHook != null) {
 			//Remove the shutdownHook, if it exists
 			Runtime.getRuntime().removeShutdownHook(shutdownHook);
