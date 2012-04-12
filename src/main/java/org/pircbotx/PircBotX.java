@@ -10,11 +10,11 @@
  *
  * PircBotX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
+ * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -84,6 +84,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -210,16 +211,7 @@ public class PircBotX {
 	public PircBotX() {
 		botCount.getAndIncrement();
 		listenerManager.addListener(new CoreHooks());
-		final PircBotX thisBot = this;
-		Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
-			@Override
-			public void run() {
-				if (thisBot.isConnected()) {
-					thisBot.disconnect();
-					thisBot.dispose();
-				}
-			}
-		});
+		useShutdownHook(true);
 	}
 
 	/**
@@ -1160,7 +1152,7 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't send invite to null user");
 		if (channel == null)
 			throw new IllegalArgumentException("Can't send invite to null channel");
-			sendInvite(target.getNick(), channel.getName());
+		sendInvite(target.getNick(), channel.getName());
 	}
 
 	/**
@@ -1174,7 +1166,7 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't send invite to null target channel");
 		if (channel == null)
 			throw new IllegalArgumentException("Can't send invite to null invite channel");
-			sendInvite(target.getName(), channel.getName());
+		sendInvite(target.getName(), channel.getName());
 	}
 
 	/**
@@ -2682,6 +2674,45 @@ public class PircBotX {
 		_userChanInfo.clear();
 		//Clear any existing channel list
 		channelListBuilder.finish();
+	}
+	
+	/**
+	 * Checks if there is an active shutdown hook for this bot
+	 * @return True if there is, false if not
+	 * @see #useShutdownHook(boolean) 
+	 */
+	public boolean hasShutdownHook() {
+		return shutdownHook != null;
+	}
+
+	/**
+	 * Configure if a shutdown hook is used or not.
+	 * <p>
+	 * For reference, a shutdown hook will properly disconnect a bot from the
+	 * server. This is useful in cases where the JVM doesn't properly close the
+	 * socket meaning the bot still appears online to the IRC server.
+	 * @param use True to create a shutdown hook if one doesn't exist, or false
+	 * to remove the shutdown hook if it exists
+	 */
+	public void useShutdownHook(boolean use) {
+		if (use && shutdownHook == null) {
+			//Define as a weakreference so PircBotX can be GC'd
+			final WeakReference<PircBotX> thisBotRef = new WeakReference(this);
+			Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
+				@Override
+				public void run() {
+					PircBotX thisBot = thisBotRef.get();
+					if (thisBot != null && thisBot.isConnected()) {
+						thisBot.disconnect();
+						thisBot.dispose();
+					}
+				}
+			});
+		} else if (!use && shutdownHook != null) {
+			//Remove the shutdownHook, if it exists
+			Runtime.getRuntime().removeShutdownHook(shutdownHook);
+			shutdownHook = null;
+		}
 	}
 
 	/**
