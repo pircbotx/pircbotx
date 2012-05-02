@@ -101,7 +101,7 @@ public class PircBotXOutputTest {
 	@AfterMethod
 	public void cleanUp() {
 		inputLatch.countDown();
-		bot.dispose();
+		bot.shutdown();
 	}
 
 	@Test(description = "Verify sendRawLine works correctly")
