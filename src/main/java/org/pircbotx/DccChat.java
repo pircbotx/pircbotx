@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -36,7 +37,7 @@ import lombok.Getter;
  *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
  *          Leon Blakey <lord.quackstar at gmail.com>
  */
-public class DccChat {
+public class DccChat implements Closeable {
 	private PircBotX bot;
 	@Getter
 	private User user;
