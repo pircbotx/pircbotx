@@ -18,10 +18,44 @@
  */
 package org.pircbotx;
 
-import lombok.Setter;
-import lombok.Getter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.SocketFactory;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Synchronized;
+import static org.pircbotx.ReplyConstants.*;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NickAlreadyInUseException;
+import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -37,6 +71,7 @@ import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
+import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
@@ -69,44 +104,9 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.managers.ListenerManager;
-import java.util.HashSet;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
-import java.util.Set;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
-import lombok.AccessLevel;
-import lombok.Synchronized;
-import org.pircbotx.hooks.CoreHooks;
-import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
-import static org.pircbotx.ReplyConstants.*;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -332,12 +332,12 @@ public class PircBotX {
 	    outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 	if (password != null && !password.trim().equals(""))
 	    outputThread.sendRawLineNow("PASS " + password);
-	String nick = getName();
-	outputThread.sendRawLineNow("NICK " + nick);
+	String tempNick = getName();
+	outputThread.sendRawLineNow("NICK " + tempNick);
 	outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
 	// Read stuff back from the server to see if we connected.
-	String line = null;
+	String line;
 	int tries = 1;
 	while ((line = breader.readLine()) != null) {
 	    handleLine(line);
@@ -357,8 +357,8 @@ public class PircBotX {
 		    //Nickname in use, rename
 		    if (autoNickChange) {
 			tries++;
-			nick = getName() + tries;
-			outputThread.sendRawLineNow("NICK " + nick);
+			tempNick = getName() + tries;
+			outputThread.sendRawLineNow("NICK " + tempNick);
 		    } else {
 			socket.close();
 			inputThread = null;
@@ -373,7 +373,7 @@ public class PircBotX {
 		    throw new IrcException("Could not log into the IRC server: " + line);
 		}
 	    }
-	    this.nick = nick;
+	    this.nick = tempNick;
 	}
 
 	loggedIn = true;
@@ -1499,26 +1499,24 @@ public class PircBotX {
     public DccChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
 	if (sender == null)
 	    throw new IllegalArgumentException("Can't send chat request to null user");
-	DccChat chat = null;
 	ServerSocket ss = dccManager.createServerSocket();
 	ss.setSoTimeout(timeout);
-	int port = ss.getLocalPort();
+	int serverPort = ss.getLocalPort();
 
-	InetAddress inetAddress = getDccInetAddress();
-	if (inetAddress == null)
-	    inetAddress = getInetAddress();
-	String ipNum = DccManager.addressToInteger(inetAddress);
+	InetAddress ourAddress = getDccInetAddress();
+	if (ourAddress == null)
+	    ourAddress = getInetAddress();
+	String ipNum = DccManager.addressToInteger(ourAddress);
 
-	sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + port);
+	sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + serverPort);
 
 	// The client may now connect to us to chat.
-	Socket socket = ss.accept();
+	Socket userSocket = ss.accept();
 
 	// Close the server socket now that we've finished with it.
 	ss.close();
 
-	chat = new DccChat(this, sender, socket);
-	return chat;
+	return new DccChat(this, sender, userSocket);
     }
 
     /**
@@ -1851,8 +1849,8 @@ public class PircBotX {
 	    //EXAMPLE: 329 lordquackstar #botters 1199140245
 	    //Tells when channel was created. Note mIRC says lordquackstar shouldn't be there while Freenode
 	    //displays it. From /JOIN(?)
-	    int createDate = -1;
-	    String channel = "";
+	    int createDate;
+	    String channel;
 
 	    //Freenode version
 	    try {
@@ -2028,8 +2026,8 @@ public class PircBotX {
 	    getListenerManager().dispatchEvent(new ModeEvent(this, channel, source, mode));
 	} else {
 	    // The mode of a user is being changed.
-	    String nick = target;
-	    getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(nick), source, mode));
+	    String userNick = target;
+	    getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(userNick), source, mode));
 	}
     }
 
