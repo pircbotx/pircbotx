@@ -20,15 +20,14 @@ package org.pircbotx;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import lombok.Getter;
 import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
@@ -65,6 +64,7 @@ public class DccFileTransfer {
     protected boolean incoming;
     protected long packetDelay = 0;
     protected long startTime = 0;
+    public Closeable fileStream = null;
 
     /**
      * Constructor used for receiving files.
@@ -151,6 +151,7 @@ public class DccFileTransfer {
 
 	    // Following line fixed for jdk 1.1 compatibility.
 	    foutput = new BufferedOutputStream(new FileOutputStream(file.getCanonicalPath(), resume));
+	    fileStream = foutput;
 
 	    byte[] inBuffer = new byte[BUFFER_SIZE];
 	    byte[] outBuffer = new byte[4];
@@ -223,6 +224,7 @@ public class DccFileTransfer {
 	    BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
 	    BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 	    finput = new BufferedInputStream(new FileInputStream(file));
+	    fileStream = finput;
 
 	    // Check for resuming.
 	    if (progress > 0) {
@@ -380,6 +382,7 @@ public class DccFileTransfer {
      */
     public void close() throws IOException {
 	socket.close();
+	fileStream.close();
     }
 
     /**
