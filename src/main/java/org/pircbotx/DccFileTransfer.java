@@ -120,7 +120,7 @@ public class DccFileTransfer implements Closeable {
 	if (type.equals("SEND") && resume)
 	    if (progress == 0)
 		//File is empty, must be a new transfer
-		doReceive(file, false);
+		doReceive(false);
 	    else {
 		//File has content, someone is attempting to send instead of resuming transfer. Attempt to resume
 		bot.sendCTCPCommand(user.getNick(), "DCC RESUME file.ext " + port + " " + progress);
@@ -128,13 +128,13 @@ public class DccFileTransfer implements Closeable {
 	    }
 	else
 	    //User must be resuming transfer
-	    doReceive(file, resume);
+	    doReceive(resume);
     }
 
     /**
      * Receive the file
      */
-    protected void doReceive(final File file, final boolean resume) {
+    protected void doReceive(final boolean resume) {
 	BufferedOutputStream foutput = null;
 	Exception exception = null;
 	try {
@@ -173,8 +173,7 @@ public class DccFileTransfer implements Closeable {
 	    exception = e;
 	} finally {
 	    try {
-		foutput.close();
-		socket.close();
+		close();
 	    } catch (Exception e) {
 		//This might be important, but don't change any existing exception
 		if (exception == null)
@@ -247,8 +246,7 @@ public class DccFileTransfer implements Closeable {
 	    exception = e;
 	} finally {
 	    try {
-		finput.close();
-		socket.close();
+		close();
 	    } catch (Exception e) {
 		//This might be important, but don't change any existing exception
 		if (exception == null)
