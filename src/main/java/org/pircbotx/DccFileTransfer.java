@@ -48,7 +48,6 @@ public class DccFileTransfer implements Closeable {
      */
     public static final int BUFFER_SIZE = 1024;
     protected PircBotX bot;
-    protected DccManager manager;
     @Getter
     protected User user;
     protected String type;
@@ -69,9 +68,8 @@ public class DccFileTransfer implements Closeable {
     /**
      * Constructor used for receiving files.
      */
-    protected DccFileTransfer(PircBotX bot, DccManager manager, User user, String type, String filename, InetAddress address, int port, long size) {
+    protected DccFileTransfer(PircBotX bot, User user, String type, String filename, InetAddress address, int port, long size) {
 	this.bot = bot;
-	this.manager = manager;
 	this.user = user;
 	this.type = type;
 	this.file = new File(filename);
@@ -82,15 +80,14 @@ public class DccFileTransfer implements Closeable {
 	received = false;
 
 	incoming = true;
-	manager.addDccFileTransfer(this);
+	bot.getDccManager().addDccFileTransfer(this);
     }
 
     /**
      * Constructor used for sending files.
      */
-    protected DccFileTransfer(PircBotX bot, DccManager manager, File file, User user, int timeout) {
+    protected DccFileTransfer(PircBotX bot, File file, User user, int timeout) {
 	this.bot = bot;
-	this.manager = manager;
 	this.user = user;
 	this.file = file;
 	this.filename = file.getName();
@@ -99,7 +96,7 @@ public class DccFileTransfer implements Closeable {
 	received = true;
 
 	incoming = false;
-	manager.addDccFileTransfer(this);
+	bot.getDccManager().addDccFileTransfer(this);
     }
 
     /**
@@ -126,7 +123,7 @@ public class DccFileTransfer implements Closeable {
 	    else {
 		//File has content, someone is attempting to send instead of resuming transfer. Attempt to resume
 		bot.sendCTCPCommand(user.getNick(), "DCC RESUME file.ext " + port + " " + progress);
-		manager.addAwaitingResume(this);
+		bot.getDccManager().addAwaitingResume(this);
 	    }
 	else
 	    //User must be resuming transfer
@@ -146,7 +143,7 @@ public class DccFileTransfer implements Closeable {
 	    startTime = System.currentTimeMillis();
 
 	    // No longer possible to resume this transfer once it's underway.
-	    manager.removeAwaitingResume(this);
+	    bot.getDccManager().removeAwaitingResume(this);
 
 	    BufferedInputStream input = new BufferedInputStream(socket.getInputStream());
 	    BufferedOutputStream output = new BufferedOutputStream(socket.getOutputStream());
@@ -192,7 +189,7 @@ public class DccFileTransfer implements Closeable {
 	BufferedInputStream finput = null;
 	Exception exception = null;
 	try {
-	    ServerSocket ss = manager.createServerSocket();
+	    ServerSocket ss = bot.getDccManager().createServerSocket();
 	    ss.setSoTimeout(timeout);
 	    port = ss.getLocalPort();
 	    InetAddress inetAddress = bot.getDccInetAddress();
@@ -205,7 +202,7 @@ public class DccFileTransfer implements Closeable {
 	    safeFilename = safeFilename.replace('\t', '_');
 
 	    if (allowResume)
-		manager.addAwaitingResume(this);
+		bot.getDccManager().addAwaitingResume(this);
 
 	    // Send the message to the user, telling them where to connect to in order to get the file.
 	    bot.sendCTCPCommand(user.getNick(), "DCC SEND " + safeFilename + " " + ipNum + " " + port + " " + file.length());
@@ -217,7 +214,7 @@ public class DccFileTransfer implements Closeable {
 
 	    // No longer possible to resume this transfer once it's underway.
 	    if (allowResume)
-		manager.removeAwaitingResume(this);
+		bot.getDccManager().removeAwaitingResume(this);
 
 	    // Might as well close the server socket now; it's finished with.
 	    ss.close();
@@ -383,7 +380,7 @@ public class DccFileTransfer implements Closeable {
     public void close() throws IOException {
 	socket.close();
 	fileStream.close();
-	manager.removeDccFileTransfer(this);
+	bot.getDccManager().removeDccFileTransfer(this);
     }
 
     /**

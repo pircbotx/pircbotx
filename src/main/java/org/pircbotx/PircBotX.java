@@ -1468,7 +1468,7 @@ public class PircBotX {
 	    throw new IllegalArgumentException("Can't send a null file");
 	if (reciever == null)
 	    throw new IllegalArgumentException("Can't send file to null user");
-	DccFileTransfer transfer = new DccFileTransfer(this, dccManager, file, reciever, timeout);
+	DccFileTransfer transfer = new DccFileTransfer(this, file, reciever, timeout);
 	transfer.doSend(true);
 	return transfer;
     }
