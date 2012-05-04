@@ -82,6 +82,7 @@ public class DccFileTransfer implements Closeable {
 	received = false;
 
 	incoming = true;
+	manager.addDccFileTransfer(this);
     }
 
     /**
@@ -98,6 +99,7 @@ public class DccFileTransfer implements Closeable {
 	received = true;
 
 	incoming = false;
+	manager.addDccFileTransfer(this);
     }
 
     /**
@@ -381,6 +383,7 @@ public class DccFileTransfer implements Closeable {
     public void close() throws IOException {
 	socket.close();
 	fileStream.close();
+	manager.removeDccFileTransfer(this);
     }
 
     /**

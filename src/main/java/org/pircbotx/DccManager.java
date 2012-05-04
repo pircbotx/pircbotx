@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,8 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 public class DccManager {
 	protected PircBotX bot;
 	protected List<DccFileTransfer> awaitingResume = Collections.synchronizedList(new ArrayList<DccFileTransfer>());
+	protected List<DccFileTransfer> allFileTransfers = Collections.synchronizedList(new ArrayList<DccFileTransfer>());
+	protected List<DccChat> allChats = Collections.synchronizedList(new ArrayList<DccChat>());
 
 	/**
 	 * Constructs a DccManager to look after all DCC SEND and CHAT events.
@@ -102,7 +105,7 @@ public class DccManager {
 			DccFileTransfer transfer = removeAwaitingResume(source, port);
 			if (transfer == null)
 				throw new DccException("No Dcc File Transfer to resume sending (filename: " + filename + ", source: " + source + ", port: " + port + ")");
-			transfer.doReceive(transfer.getFile(), true);
+			transfer.doReceive(true);
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
@@ -127,6 +130,44 @@ public class DccManager {
 			}
 		}
 		return null;
+	}
+	
+	protected DccFileTransfer addDccFileTransfer(DccFileTransfer transfer) {
+	    allFileTransfers.add(transfer);
+	    return transfer;
+	}
+	
+	protected DccFileTransfer removeDccFileTransfer(DccFileTransfer transfer) {
+	   if(!allFileTransfers.remove(transfer))
+	       throw new RuntimeException("Attempted to forget about DccFileTransfer that doesn't exist");
+	   return transfer;
+	}
+	
+	/**
+	 * Get all DccFileTransfer's, regardless if they are awaiting resume or not.
+	 * @return An unmodifiable list view of DccChats
+	 */
+	public List<DccFileTransfer> getAllFileTransfers() {
+	    return Collections.unmodifiableList(allFileTransfers);
+	}
+	
+	protected DccChat addDccChat(DccChat chat) {
+	    allChats.add(chat);
+	    return chat;
+	}
+	
+	protected DccChat removeDccChat(DccChat chat) {
+	    if(!allChats.remove(chat))
+	       throw new RuntimeException("Attempted to forget about DccChat that doesn't exist");
+	   return chat;
+	}
+	
+	/**
+	 * Get all open DccChats
+	 * @return An unmodifiable list view of DccChats
+	 */
+	public List<DccChat> getAllChats() {
+	    return Collections.unmodifiableList(allChats);
 	}
 
 	protected boolean addAwaitingResume(DccFileTransfer transfer) {
@@ -188,7 +229,7 @@ public class DccManager {
 			throw new RuntimeException("Can't get InetAdrress version of int IP address " + rawInteger + " (bytes: " + Arrays.toString(addressBytes) + ")", ex);
 		}
 	}
-
+	
 	/**
 	 * A convenient method that accepts an IP address represented as a
 	 * long and returns an integer array of size 4 representing the same
