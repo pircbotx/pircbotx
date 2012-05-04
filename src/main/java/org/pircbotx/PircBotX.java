@@ -137,41 +137,41 @@ public class PircBotX {
      */
     public static final String VERSION = "1.7";
     protected static AtomicInteger botCount = new AtomicInteger();
-    protected Socket _socket;
+    protected Socket socket;
     // Connection stuff.
-    protected InputThread _inputThread = null;
-    protected OutputThread _outputThread = null;
-    protected Charset _charset = Charset.defaultCharset();
+    protected InputThread inputThread = null;
+    protected OutputThread outputThread = null;
+    protected Charset charset = Charset.defaultCharset();
     @Setter
     protected InetAddress inetAddress = null;
     // Details about the last server that we connected to.
-    protected String _server = null;
-    protected int _port = -1;
-    protected String _password = null;
-    protected long _messageDelay = 1000;
+    protected String server = null;
+    protected int port = -1;
+    protected String password = null;
+    protected long messageDelay = 1000;
     /*
      * A Many to Many map that links Users to Channels and channels to users. Modified
      * to remove each channel's and user's internal refrences to each other.
      */
-    protected ManyToManyMap<Channel, User> _userChanInfo = new UserChannelMap();
+    protected ManyToManyMap<Channel, User> userChanInfo = new UserChannelMap();
     /**
      * Map to provide extremely fast lookup of user object by nick
      */
     protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
     // DccManager to process and handle all DCC events.
-    protected DccManager _dccManager = new DccManager(this);
+    protected DccManager dccManager = new DccManager(this);
     @Setter(AccessLevel.PROTECTED)
     protected List<Integer> dccPorts = new ArrayList();
-    protected InetAddress _dccInetAddress = null;
+    protected InetAddress dccInetAddress = null;
     // Default settings for the PircBotX.
-    protected boolean _autoNickChange = false;
-    protected boolean _verbose = false;
-    protected String _name = "PircBotX";
-    protected String _nick = _name;
-    protected String _login = "PircBotX";
-    protected String _version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
-    protected String _finger = "You ought to be arrested for fingering a bot!";
-    protected String _channelPrefixes = "#&+!";
+    protected boolean autoNickChange = false;
+    protected boolean verbose = false;
+    protected String name = "PircBotX";
+    protected String nick = name;
+    protected String login = "PircBotX";
+    protected String version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
+    protected String finger = "You ought to be arrested for fingering a bot!";
+    protected String channelPrefixes = "#&+!";
     /**
      * The logging lock object preventing lines from being printed as other
      * lines are being printed
@@ -186,7 +186,7 @@ public class PircBotX {
     protected int socketTimeout = 1000 * 60 * 5;
     protected final ServerInfo serverInfo = new ServerInfo(this);
     protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
-    protected SocketFactory _socketFactory = null;
+    protected SocketFactory socketFactory = null;
     protected boolean loggedIn = false;
     @Setter
     @Getter
@@ -295,46 +295,46 @@ public class PircBotX {
      * @throws NickAlreadyInUseException if our nick is already in use on the server.
      */
     public synchronized void connect(String hostname, int port, String password, SocketFactory socketFactory) throws IOException, IrcException, NickAlreadyInUseException {
-	_server = hostname;
-	_port = port;
-	_password = password;
-	_socketFactory = socketFactory;
+	server = hostname;
+	this.port = port;
+	this.password = password;
+	this.socketFactory = socketFactory;
 
 	if (isConnected())
 	    throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
 
 	// Clear everything we may have know about channels.
-	_userChanInfo.clear();
+	userChanInfo.clear();
 
 	// Connect to the server.
 	if (socketFactory == null)
-	    _socket = new Socket(hostname, port, inetAddress, 0);
+	    socket = new Socket(hostname, port, inetAddress, 0);
 	else
-	    _socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
+	    socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
 
 	log("*** Connected to server.");
 
-	inetAddress = _socket.getLocalAddress();
+	inetAddress = socket.getLocalAddress();
 
-	InputStreamReader inputStreamReader = new InputStreamReader(_socket.getInputStream(), getEncoding());
-	OutputStreamWriter outputStreamWriter = new OutputStreamWriter(_socket.getOutputStream(), getEncoding());
+	InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), getEncoding());
+	OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
 
 	BufferedReader breader = new BufferedReader(inputStreamReader);
 	BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
 
 	//Construct the output and input threads
-	_inputThread = createInputThread(_socket, breader);
-	_outputThread = createOutputThread(bwriter);
-	_outputThread.start();
+	inputThread = createInputThread(socket, breader);
+	outputThread = createOutputThread(bwriter);
+	outputThread.start();
 
 	// Attempt to join the server.
 	if (webIrcPassword != null)
-	    _outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
+	    outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 	if (password != null && !password.trim().equals(""))
-	    _outputThread.sendRawLineNow("PASS " + password);
+	    outputThread.sendRawLineNow("PASS " + password);
 	String nick = getName();
-	_outputThread.sendRawLineNow("NICK " + nick);
-	_outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
+	outputThread.sendRawLineNow("NICK " + nick);
+	outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
 	// Read stuff back from the server to see if we connected.
 	String line = null;
@@ -355,35 +355,35 @@ public class PircBotX {
 		else if (code.equals("433"))
 		    //EXAMPLE: AnAlreadyUsedName :Nickname already in use
 		    //Nickname in use, rename
-		    if (_autoNickChange) {
+		    if (autoNickChange) {
 			tries++;
 			nick = getName() + tries;
-			_outputThread.sendRawLineNow("NICK " + nick);
+			outputThread.sendRawLineNow("NICK " + nick);
 		    } else {
-			_socket.close();
-			_inputThread = null;
+			socket.close();
+			inputThread = null;
 			throw new NickAlreadyInUseException(line);
 		    }
 		else if (code.equals("439")) {
 		    //EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 		    // No action required.
 		} else if (code.startsWith("5") || code.startsWith("4")) {
-		    _socket.close();
-		    _inputThread = null;
+		    socket.close();
+		    inputThread = null;
 		    throw new IrcException("Could not log into the IRC server: " + line);
 		}
 	    }
-	    _nick = nick;
+	    this.nick = nick;
 	}
 
 	loggedIn = true;
 	log("*** Logged onto server.");
 
 	// This makes the socket timeout on read operations after 5 minutes.
-	_socket.setSoTimeout(getSocketTimeout());
+	socket.setSoTimeout(getSocketTimeout());
 
 	//Start input to start accepting lines
-	_inputThread.start();
+	inputThread.start();
 
 	getListenerManager().dispatchEvent(new ConnectEvent(this));
     }
@@ -441,7 +441,7 @@ public class PircBotX {
      * during connection.
      */
     public void setAutoNickChange(boolean autoNickChange) {
-	_autoNickChange = autoNickChange;
+	this.autoNickChange = autoNickChange;
     }
 
     /**
@@ -602,7 +602,7 @@ public class PircBotX {
 	if (line == null)
 	    throw new NullPointerException("Cannot send null messages to server");
 	if (isConnected())
-	    _outputThread.send(line);
+	    outputThread.send(line);
     }
 
     /**
@@ -614,7 +614,7 @@ public class PircBotX {
 	if (line == null)
 	    throw new NullPointerException("Cannot send null messages to server");
 	if (isConnected())
-	    _outputThread.sendRawLineNow(line);
+	    outputThread.sendRawLineNow(line);
     }
 
     protected void sendRawLineSplit(String prefix, String message) {
@@ -1467,7 +1467,7 @@ public class PircBotX {
 	    throw new IllegalArgumentException("Can't send a null file");
 	if (reciever == null)
 	    throw new IllegalArgumentException("Can't send file to null user");
-	DccFileTransfer transfer = new DccFileTransfer(this, _dccManager, file, reciever, timeout);
+	DccFileTransfer transfer = new DccFileTransfer(this, dccManager, file, reciever, timeout);
 	transfer.doSend(true);
 	return transfer;
     }
@@ -1500,7 +1500,7 @@ public class PircBotX {
 	if (sender == null)
 	    throw new IllegalArgumentException("Can't send chat request to null user");
 	DccChat chat = null;
-	ServerSocket ss = _dccManager.createServerSocket();
+	ServerSocket ss = dccManager.createServerSocket();
 	ss.setSoTimeout(timeout);
 	int port = ss.getLocalPort();
 
@@ -1542,13 +1542,13 @@ public class PircBotX {
      */
     @Synchronized(value = "logLock")
     public void log(String line) {
-	if (_verbose)
+	if (verbose)
 	    System.out.println(System.currentTimeMillis() + " " + line);
     }
 
     @Synchronized(value = "logLock")
     public void logException(Throwable t) {
-	if (!_verbose)
+	if (!verbose)
 	    return;
 	StringWriter sw = new StringWriter();
 	PrintWriter pw = new PrintWriter(sw);
@@ -1637,7 +1637,7 @@ public class PircBotX {
 
 	User source = getUser(sourceNick);
 	//If the channel matches a prefix, then its a channel
-	Channel channel = (target.length() != 0 && _channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
+	Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
 	String message = (line.contains(" :")) ? line.substring(line.indexOf(" :") + 2) : "";
 	// Check for CTCP requests.
 	if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
@@ -1659,14 +1659,14 @@ public class PircBotX {
 		getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
 	    else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 		// This is a DCC request.
-		boolean success = _dccManager.processRequest(source, request);
+		boolean success = dccManager.processRequest(source, request);
 		if (!success)
 		    // The DccManager didn't know what to do with the line.
 		    getListenerManager().dispatchEvent(new UnknownEvent(this, line));
 	    } else
 		// An unknown CTCP message - ignore it.
 		getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-	} else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0)
+	} else if (command.equals("PRIVMSG") && channelPrefixes.indexOf(target.charAt(0)) >= 0)
 	    // This is a normal message to a channel.
 	    getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, message));
 	else if (command.equals("PRIVMSG"))
@@ -1674,23 +1674,23 @@ public class PircBotX {
 	    getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, message));
 	else if (command.equals("JOIN")) {
 	    // Someone is joining a channel.
-	    if (sourceNick.equalsIgnoreCase(_nick)) {
+	    if (sourceNick.equalsIgnoreCase(nick)) {
 		//Its us, do some setup (don't use channel var since channel doesn't exist yet)
 		sendRawLine("WHO " + target);
 		sendRawLine("MODE " + target);
 	    }
 	    source.setLogin(sourceLogin);
 	    source.setHostmask(sourceHostname);
-	    _userChanInfo.put(channel, source);
+	    userChanInfo.put(channel, source);
 	    getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
 	} else if (command.equals("PART"))
 	    // Someone is parting from a channel.
 	    if (sourceNick.equals(getNick()))
 		//We parted the channel
-		_userChanInfo.deleteA(channel);
+		userChanInfo.deleteA(channel);
 	    else {
 		//Just remove the user from memory
-		_userChanInfo.dissociate(channel, getUser(sourceNick));
+		userChanInfo.dissociate(channel, getUser(sourceNick));
 		getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
 	    }
 	else if (command.equals("NICK")) {
@@ -1709,20 +1709,20 @@ public class PircBotX {
 	    // Someone has quit from the IRC server.
 	    if (sourceNick.equals(getNick()))
 		//We just quit the server
-		_userChanInfo.clear();
+		userChanInfo.clear();
 	    else
 		//Someone else
-		_userChanInfo.deleteB(source);
+		userChanInfo.deleteB(source);
 	    getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, message));
 	} else if (command.equals("KICK")) {
 	    // Somebody has been kicked from a channel.
 	    User recipient = getUser(tokenizer.nextToken());
 	    if (recipient.getNick().equals(getNick()))
 		//We were just kicked
-		_userChanInfo.deleteA(channel);
+		userChanInfo.deleteA(channel);
 	    else
 		//Someone else
-		_userChanInfo.dissociate(channel, recipient, true);
+		userChanInfo.dissociate(channel, recipient, true);
 	    getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, message));
 	} else if (command.equals("MODE")) {
 	    // Somebody is changing the mode on a channel or user.
@@ -1745,7 +1745,7 @@ public class PircBotX {
 	    getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, message));
 	    //Delete user if not part of any of our channels
 	    if (source.getChannels().isEmpty())
-		_userChanInfo.deleteB(source);
+		userChanInfo.deleteB(source);
 	} else
 	    // If we reach this point, then we've found something that the PircBotX
 	    // Doesn't currently deal with.
@@ -1837,7 +1837,7 @@ public class PircBotX {
 	    curUser.setRealName(parsed[8]);
 
 	    //Associate with channel
-	    _userChanInfo.put(chan, curUser);
+	    userChanInfo.put(chan, curUser);
 	} else if (code == RPL_ENDOFWHO) {
 	    //EXAMPLE: PircBotX #aChannel :End of /WHO list
 	    //End of the WHO reply
@@ -1900,7 +1900,7 @@ public class PircBotX {
      */
     protected void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
 	User source = getUser(sourceNick);
-	if (_channelPrefixes.indexOf(target.charAt(0)) >= 0) {
+	if (channelPrefixes.indexOf(target.charAt(0)) >= 0) {
 	    // The mode of a channel is being changed.
 	    Channel channel = getChannel(target);
 	    channel.parseMode(mode);
@@ -2042,7 +2042,7 @@ public class PircBotX {
      * @param verbose true if verbose mode is to be used. Default is false.
      */
     public void setVerbose(boolean verbose) {
-	_verbose = verbose;
+	this.verbose = verbose;
     }
 
     /**
@@ -2060,7 +2060,7 @@ public class PircBotX {
     public void setName(String name) {
 	if (name == null)
 	    throw new IllegalArgumentException("Can't set name to null");
-	_name = name;
+	this.name = name;
     }
 
     /**
@@ -2072,10 +2072,10 @@ public class PircBotX {
      */
     protected void setNick(String nick) {
 	synchronized (userNickMap) {
-	    User user = getUser(_nick);
-	    userNickMap.remove(_nick);
+	    User user = getUser(this.nick);
+	    userNickMap.remove(this.nick);
 	    userNickMap.put(nick, user);
-	    _nick = nick;
+	    this.nick = nick;
 	}
     }
 
@@ -2088,7 +2088,7 @@ public class PircBotX {
     public void setLogin(String login) {
 	if (login == null)
 	    throw new IllegalArgumentException("Can't login to null");
-	_login = login;
+	this.login = login;
     }
 
     /**
@@ -2100,7 +2100,7 @@ public class PircBotX {
     public void setVersion(String version) {
 	if (version == null)
 	    throw new IllegalArgumentException("Can't version to null");
-	_version = version;
+	this.version = version;
     }
 
     /**
@@ -2112,7 +2112,7 @@ public class PircBotX {
     public void setFinger(String finger) {
 	if (finger == null)
 	    throw new IllegalArgumentException("Can't finger to null");
-	_finger = finger;
+	this.finger = finger;
     }
 
     /**
@@ -2122,7 +2122,7 @@ public class PircBotX {
      * @return The name of the PircBotX.
      */
     public String getName() {
-	return _name;
+	return name;
     }
 
     /**
@@ -2138,7 +2138,7 @@ public class PircBotX {
      * @return The current nick of the bot.
      */
     public String getNick() {
-	return _nick;
+	return nick;
     }
 
     /**
@@ -2147,7 +2147,7 @@ public class PircBotX {
      * @return The login of the PircBotX.
      */
     public String getLogin() {
-	return _login;
+	return login;
     }
 
     /**
@@ -2156,7 +2156,7 @@ public class PircBotX {
      * @return The version of the PircBotX.
      */
     public String getVersion() {
-	return _version;
+	return version;
     }
 
     /**
@@ -2165,7 +2165,7 @@ public class PircBotX {
      * @return The finger message of the PircBotX.
      */
     public String getFinger() {
-	return _finger;
+	return finger;
     }
 
     /**
@@ -2176,7 +2176,7 @@ public class PircBotX {
      * @return True if and only if the PircBotX is currently connected to a server.
      */
     public boolean isConnected() {
-	return _inputThread != null && _inputThread.isConnected();
+	return inputThread != null && inputThread.isConnected();
     }
 
     /**
@@ -2194,7 +2194,7 @@ public class PircBotX {
     public void setMessageDelay(long delay) {
 	if (delay < 0)
 	    throw new IllegalArgumentException("Cannot have a negative time.");
-	_messageDelay = delay;
+	messageDelay = delay;
     }
 
     /**
@@ -2204,7 +2204,7 @@ public class PircBotX {
      * @return Number of milliseconds.
      */
     public long getMessageDelay() {
-	return _messageDelay;
+	return messageDelay;
     }
 
     /**
@@ -2230,7 +2230,7 @@ public class PircBotX {
      * @return The number of lines in the outgoing message Queue.
      */
     public int getOutgoingQueueSize() {
-	return _outputThread.getQueueSize();
+	return outputThread.getQueueSize();
     }
 
     /**
@@ -2244,7 +2244,7 @@ public class PircBotX {
      * null if no connection attempts have ever been made.
      */
     public String getServer() {
-	return _server;
+	return server;
     }
 
     /**
@@ -2261,7 +2261,7 @@ public class PircBotX {
      * Returns -1 if no connection attempts have ever been made.
      */
     public int getPort() {
-	return _port;
+	return port;
     }
 
     /**
@@ -2277,7 +2277,7 @@ public class PircBotX {
      * Returns null if we have not previously connected using a password.
      */
     public String getPassword() {
-	return _password;
+	return password;
     }
 
     /**
@@ -2313,7 +2313,7 @@ public class PircBotX {
     public void setEncoding(Charset charset) {
 	if (charset == null)
 	    throw new NullPointerException("Can't set charset to null");
-	_charset = charset;
+	this.charset = charset;
     }
 
     /**
@@ -2326,7 +2326,7 @@ public class PircBotX {
      * @return The encoding used to send outgoing messages. Never null
      */
     public Charset getEncoding() {
-	return _charset;
+	return charset;
     }
 
     /**
@@ -2353,7 +2353,7 @@ public class PircBotX {
      * @param dccInetAddress The new InetAddress, or null to use the default.
      */
     public void setDccInetAddress(InetAddress dccInetAddress) {
-	_dccInetAddress = dccInetAddress;
+	this.dccInetAddress = dccInetAddress;
     }
 
     /**
@@ -2365,7 +2365,7 @@ public class PircBotX {
      * @return The current DCC InetAddress, or null if left as default.
      */
     public InetAddress getDccInetAddress() {
-	return _dccInetAddress;
+	return dccInetAddress;
     }
 
     /**
@@ -2406,11 +2406,11 @@ public class PircBotX {
      */
     @Override
     public String toString() {
-	return "Version{" + _version + "}"
+	return "Version{" + version + "}"
 		+ " Connected{" + isConnected() + "}"
-		+ " Server{" + _server + "}"
-		+ " Port{" + _port + "}"
-		+ " Password{" + _password + "}";
+		+ " Server{" + server + "}"
+		+ " Port{" + port + "}"
+		+ " Password{" + password + "}";
     }
 
     /**
@@ -2445,7 +2445,7 @@ public class PircBotX {
      * @return An <i>unmodifiable</i> Set of all channels were connected to
      */
     public Set<Channel> getChannels() {
-	return _userChanInfo.getAValues();
+	return userChanInfo.getAValues();
     }
 
     /**
@@ -2456,7 +2456,7 @@ public class PircBotX {
     public Set<Channel> getChannels(User user) {
 	if (user == null)
 	    throw new NullPointerException("Can't get a null user");
-	return _userChanInfo.getAValues(user);
+	return userChanInfo.getAValues(user);
     }
 
     /**
@@ -2467,13 +2467,13 @@ public class PircBotX {
     public Channel getChannel(String name) {
 	if (name == null)
 	    throw new NullPointerException("Can't get a null channel");
-	for (Channel curChan : _userChanInfo.getAValues())
+	for (Channel curChan : userChanInfo.getAValues())
 	    if (curChan.getName().equals(name))
 		return curChan;
 
 	//Channel does not exist, create one
 	Channel chan = new Channel(this, name);
-	_userChanInfo.putB(chan);
+	userChanInfo.putB(chan);
 	return chan;
     }
 
@@ -2484,7 +2484,7 @@ public class PircBotX {
     public Set<String> getChannelsNames() {
 	return Collections.unmodifiableSet(new HashSet<String>() {
 	    {
-		for (Channel curChan : _userChanInfo.getAValues())
+		for (Channel curChan : userChanInfo.getAValues())
 		    add(curChan.getName());
 	    }
 	});
@@ -2498,7 +2498,7 @@ public class PircBotX {
     public boolean channelExists(String channel) {
 	if (channel == null)
 	    throw new IllegalArgumentException("Can't check for null channel existing");
-	for (Channel curChan : _userChanInfo.getAValues())
+	for (Channel curChan : userChanInfo.getAValues())
 	    if (curChan.getName().equals(channel))
 		return true;
 	return false;
@@ -2535,7 +2535,7 @@ public class PircBotX {
     public Set<User> getUsers(Channel chan) {
 	if (chan == null)
 	    throw new NullPointerException("Can't get a null channel");
-	return _userChanInfo.getBValues(chan);
+	return userChanInfo.getBValues(chan);
     }
 
     /**
@@ -2551,7 +2551,7 @@ public class PircBotX {
 
 	//User does not exist, create one
 	User user = new User(this, nick);
-	_userChanInfo.putA(user);
+	userChanInfo.putA(user);
 	return user;
     }
 
@@ -2615,7 +2615,7 @@ public class PircBotX {
      * Returns null if we have not previously connected using a SocketFactory.
      */
     public SocketFactory getSocketFactory() {
-	return _socketFactory;
+	return socketFactory;
     }
 
     /**
@@ -2623,7 +2623,7 @@ public class PircBotX {
      * @return True if verbose is turned on, false if not
      */
     public boolean isVerbose() {
-	return _verbose;
+	return verbose;
     }
 
     /**
@@ -2631,7 +2631,7 @@ public class PircBotX {
      * @return True if auto nick change is turned on, false otherwise
      */
     public boolean isAutoNickChange() {
-	return _autoNickChange;
+	return autoNickChange;
     }
 
     /**
@@ -2682,15 +2682,15 @@ public class PircBotX {
     public void shutdown() {
 	//Close the socket from here and let the threads die
 	try {
-	    _socket.close();
+	    socket.close();
 	} catch (Exception e) {
 	    //Something went wrong, interrupt to make sure they are closed
-	    _outputThread.interrupt();
-	    _inputThread.interrupt();
+	    outputThread.interrupt();
+	    inputThread.interrupt();
 	}
 	
 	//Clear relevant variables of information
-	_userChanInfo.clear();
+	userChanInfo.clear();
 	userNickMap.clear();
 	channelListBuilder.finish();
 	
