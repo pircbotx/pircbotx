@@ -402,7 +402,7 @@ public class DccFileTransfer implements Closeable {
      *
      * @return the address of the sender
      */
-    public InetAddress getNumericalAddress() {
+    public InetAddress getAddress() {
 	return address;
     }
 
