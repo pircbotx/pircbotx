@@ -83,7 +83,7 @@ public class DccManager {
 				// Stick with the old value.
 			}
 
-			bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, new DccFileTransfer(bot, this, source, type, filename, address, port, size)));
+			bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, new DccFileTransfer(bot, source, type, filename, address, port, size)));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> <port> <position>
