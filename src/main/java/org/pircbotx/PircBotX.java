@@ -159,6 +159,7 @@ public class PircBotX {
      */
     protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
     // DccManager to process and handle all DCC events.
+    @Getter
     protected DccManager dccManager = new DccManager(this);
     @Setter(AccessLevel.PROTECTED)
     protected List<Integer> dccPorts = new ArrayList();
