@@ -185,6 +185,22 @@
 						<version>1.5</version>
 					</dependency>
 				</dependencies>
+				<configuration>
+					<reportPlugins>
+						<!--JavaDoc setup for Site-->
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>2.8</version>
+							<configuration>
+								<defaultAuthor>Leon Blakey</defaultAuthor>
+								<defaultVersion>${project.version}</defaultVersion>
+								<sourcepath>target/src-delomboked</sourcepath>
+								<show>public</show>
+							</configuration>
+						</plugin>
+					</reportPlugins> 
+				</configuration>
 			</plugin>
 			<!--Delombok sources for Javadoc-->
 			<plugin>
@@ -241,23 +257,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<reporting>
-		<plugins>
-			<!--JavaDoc setup for Site-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<defaultAuthor>Leon Blakey</defaultAuthor>
-					<defaultVersion>${project.version}</defaultVersion>
-					<sourcepath>target/src-delomboked</sourcepath>
-					<show>public</show>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 
 	<!--
 		Distribution
