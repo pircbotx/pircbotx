@@ -14,7 +14,7 @@
 	<groupId>org.pircbotx</groupId>
 	<artifactId>pircbotx</artifactId>
 	<packaging>jar</packaging>
-	<version>1.7-SNAPSHOT</version>
+	<version>1.7</version>
 	
 	<!--
 		Project information
