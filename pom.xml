@@ -21,7 +21,7 @@
 	-->
 	<name>pircbotx</name>
 	<description>A simple, easy to use, Java IRC Bot Framework based off of a fork of the popular PircBot 
-	framework, bringing in many new up to date things to the project in an official distribution.
+		framework, bringing in many new up to date things to the project in an official distribution.
 	</description>
 	<url>http://pircbotx.googlecode.com/</url>
 	<inceptionYear>2010</inceptionYear>
@@ -69,6 +69,10 @@
 			<archive>http://groups.google.com/group/pircbotx/</archive>
 		</mailingList>
 	</mailingLists>
+
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
