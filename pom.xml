@@ -82,14 +82,14 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.10.8</version>
+			<version>0.11.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.3.1</version>
+			<version>6.5.2</version>
 			<scope>test</scope>
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
