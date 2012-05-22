@@ -209,7 +209,7 @@ public class PircBotX {
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
 	 * to the default ListenerManager, {@link ThreadedListenerManager}. This also
 	 * adds a shutdown hook to the current runtime while will properly shutdown
-	 * the bot by calling {@link #disconnect() } and {@link #dispose() }
+	 * the bot by calling {@link #disconnect() } 
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
