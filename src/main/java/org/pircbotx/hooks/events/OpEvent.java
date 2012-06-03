@@ -55,7 +55,7 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUser
 		this.recipient = recipient;
 		this.isOp = isOp;
 	}
-	
+
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * (<b>Warning:</b> not to the user that got operator status!) in <code>user: message</code>

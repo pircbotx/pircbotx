@@ -47,7 +47,7 @@ public class MultiBotManagerTest {
 			if (curCharset != bot.getEncoding())
 				aCharset = curCharset;
 		assertNotNull(aCharset, "Couldn't find a charset that was't the default PircBotX one");
-		
+
 		//Make sure the encoding we set is the same that we get out
 		manager.setEncoding(aCharset.name());
 		assertEquals(manager.createBot("some.server").getEncoding(), aCharset, "Charset is different");

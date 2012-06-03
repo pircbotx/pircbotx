@@ -34,13 +34,13 @@ public interface GenericUserModeEvent<T extends PircBotX> extends GenericEvent<T
 	 * @return The affected channel
 	 */
 	public Channel getChannel();
-	
+
 	/**
 	 * The source of the mode change
 	 * @return The source user
 	 */
 	public User getSource();
-	
+
 	/**
 	 * The recipient of the mode change
 	 * @return The recipient user

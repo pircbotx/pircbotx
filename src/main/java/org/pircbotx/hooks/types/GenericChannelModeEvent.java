@@ -32,7 +32,7 @@ public interface GenericChannelModeEvent<T extends PircBotX> extends GenericEven
 	 * The channel that the mode changed occured in
 	 */
 	public Channel getChannel();
-	
+
 	/**
 	 * The source of the mode change
 	 */

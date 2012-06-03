@@ -38,7 +38,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> {
 	protected final User user;
 	protected final boolean changed;
 	protected final long date;
-	
+
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }

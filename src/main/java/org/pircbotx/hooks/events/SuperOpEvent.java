@@ -56,7 +56,7 @@ public class SuperOpEvent<T extends PircBotX> extends Event<T> implements Generi
 		this.recipient = recipient;
 		this.isSuperOp = isSuperOp;
 	}
-	
+
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * (<b>Warning:</b> not to the user that got SuperOp status!) in <code>user: message</code>

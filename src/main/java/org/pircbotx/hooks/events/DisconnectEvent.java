@@ -49,7 +49,7 @@ public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	public DisconnectEvent(T bot) {
 		super(bot);
 	}
-	
+
 	/**
 	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException} 
 	 * since we can't respond to a server we just disconnected from. 

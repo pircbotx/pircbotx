@@ -32,7 +32,7 @@ public interface GenericCTCPCommand<T extends PircBotX> extends GenericEvent<T> 
 	 * @return The user that sent the CTCP command
 	 */
 	public User getUser();
-	
+
 	/**
 	 * Gets the target channel of the CTCP command. If null, then the target was us. 
 	 * @return The target channel or null if the target was us

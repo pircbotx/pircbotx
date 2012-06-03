@@ -208,7 +208,7 @@ public class DccManager implements Closeable {
 	public void close() throws IOException {
 		List<Closeable> allDcc = new ArrayList(allChats);
 		allDcc.addAll(allFileTransfers);
-		for(Closeable curDcc : allDcc)
+		for (Closeable curDcc : allDcc)
 			curDcc.close();
 	}
 

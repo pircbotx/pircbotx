@@ -55,7 +55,7 @@ public class SetChannelKeyEvent<T extends PircBotX> extends Event<T> implements 
 		this.user = user;
 		this.key = key;
 	}
-	
+
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * in <code>user: message</code> format

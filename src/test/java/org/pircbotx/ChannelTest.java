@@ -116,19 +116,19 @@ public class ChannelTest {
 		channel.setMode("+lpmn 10");
 		assertEquals(channel.getChannelLimit(), 10, "Channel limit in mode +lpmn 10 doesn't match given");
 	}
-	
+
 	@Test
 	public void getChannelLimitMiddleTest() {
 		channel.setMode("+plmn 10");
 		assertEquals(channel.getChannelLimit(), 10, "Channel limit in mode +plmn 10 doesn't match given");
 	}
-	
+
 	@Test
 	public void getChannelLimitEndTest() {
 		channel.setMode("+pmnl 10");
 		assertEquals(channel.getChannelLimit(), 10, "Channel limit in mode +pmnl 10 doesn't match given");
 	}
-	
+
 	@Test
 	public void getChannelKeyUnusedTest() {
 		channel.setMode("+pmn someKey");
@@ -140,13 +140,13 @@ public class ChannelTest {
 		channel.setMode("+kpmn someKey");
 		assertEquals(channel.getChannelKey(), "someKey", "Channel Key in mode +lpmn 10 doesn't match given");
 	}
-	
+
 	@Test
 	public void getChannelKeyMiddleTest() {
 		channel.setMode("+pkmn someKey");
 		assertEquals(channel.getChannelKey(), "someKey", "Channel Key in mode +plmn 10 doesn't match given");
 	}
-	
+
 	@Test
 	public void getChannelKeyEndTest() {
 		channel.setMode("+pmnk someKey");

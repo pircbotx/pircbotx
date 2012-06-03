@@ -51,7 +51,7 @@ public class TemporaryListenerTest {
 			}
 		};
 		bot.getListenerManager().addListener(listener);
-		
+
 		//Make sure the listener is there
 		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener doesn't exist in ListenerManager");
 
@@ -62,11 +62,11 @@ public class TemporaryListenerTest {
 		//Verify event contents
 		assertNotNull(mevent, "MessageEvent not dispatched");
 		assertEquals(mevent.getMessage(), "Some very long message", "Message sent does not match");
-		
+
 		//Make sure the listner is still there
 		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener doesn't exist in ListenerManager");
 	}
-	
+
 	@Test
 	public void listenerGetsRemoved() {
 		TemporaryListener listener = new TemporaryListener(bot) {
@@ -76,7 +76,7 @@ public class TemporaryListenerTest {
 			}
 		};
 		bot.getListenerManager().addListener(listener);
-		
+
 		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener wasn't added to ListenerManager");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
 		assertFalse(bot.getListenerManager().listenerExists(listener), "Listener wasn't removed from ListenerManager");

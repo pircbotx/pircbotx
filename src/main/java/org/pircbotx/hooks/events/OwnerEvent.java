@@ -56,7 +56,7 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 		this.recipient = recipient;
 		this.isOwner = isOwner;
 	}
-	
+
 	/**
 	 * Gets the status of the mode change
 	 * @return True if founder status was given, false if removed
