@@ -204,6 +204,12 @@ public class PircBotX {
 	@Getter
 	protected boolean autoSplitMessage = true;
 	protected Thread shutdownHook;
+	@Getter
+	@Setter
+	protected boolean autoReconnect;
+	@Getter
+	@Setter
+	protected boolean autoReconnectChannels;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
@@ -1708,10 +1714,7 @@ public class PircBotX {
 		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
-			if (sourceNick.equals(getNick()))
-				//We just quit the server
-				userChanInfo.clear();
-			else
+			if (!sourceNick.equals(getNick()))
 				//Someone else
 				userChanInfo.deleteB(source);
 			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, message));
@@ -2663,7 +2666,7 @@ public class PircBotX {
 					PircBotX thisBot = thisBotRef.get();
 					if (thisBot != null && thisBot.isConnected()) {
 						thisBot.disconnect();
-						thisBot.shutdown();
+						thisBot.shutdown(true);
 					}
 				}
 			});
@@ -2676,11 +2679,21 @@ public class PircBotX {
 	}
 
 	/**
+	 * Calls shutdown allowing reconnect
+	 */
+	public void shutdown() {
+		shutdown(false);
+	}
+
+	/**
 	 * Fully shutdown the bot and all internal resources. This will close the
 	 * connections to the server, kill background threads, clear server specific
 	 * state, and dispatch a DisconnectedEvent
+	 * 
+	 * @param noReconnect Toggle whether to reconnect if enabled. Set to true to
+	 * 100% shutdown the bot
 	 */
-	public void shutdown() {
+	public void shutdown(boolean noReconnect) {
 		//Close the socket from here and let the threads die
 		try {
 			socket.close();
@@ -2689,13 +2702,20 @@ public class PircBotX {
 			outputThread.interrupt();
 			inputThread.interrupt();
 		}
-		
+
 		//Close the DCC Manager
 		try {
 			dccManager.close();
 		} catch (Exception ex) {
 			//Not much we can do with it here. And throwing it would not let other things shutdown
 			logException(ex);
+		}
+
+		//Cache channels for possible next reconnect
+		Map<String, String> previousChannels = new HashMap();
+		for (Channel curChannel : getChannels()) {
+			String key = (curChannel.getChannelKey() == null) ? "" : curChannel.getChannelKey();
+			previousChannels.put(curChannel.getName(), key);
 		}
 
 		//Clear relevant variables of information
@@ -2706,6 +2726,18 @@ public class PircBotX {
 		//Dispatch event
 		getListenerManager().dispatchEvent(new DisconnectEvent(this));
 		log("*** Disconnected.");
+
+		if (!autoReconnect || noReconnect)
+			return;
+		try {
+			reconnect();
+			if (autoReconnectChannels)
+				for (Map.Entry<String, String> curEntry : previousChannels.entrySet())
+					joinChannel(curEntry.getKey(), curEntry.getValue());
+		} catch (Exception e) {
+			//Not much we can do with it
+			logException(e);
+		}
 	}
 
 	/**
