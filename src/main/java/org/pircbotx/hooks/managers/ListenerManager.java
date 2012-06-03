@@ -85,7 +85,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
 	 */
 	public Set<Listener> getListeners();
-	
+
 	/**
 	 * Set the current id used by the ListenerManager
 	 * <p>
@@ -94,7 +94,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @param currentId The id to set this ListenerManager to
 	 */
 	public void setCurrentId(long currentId);
-	
+
 	/**
 	 * Gets the current id used by the ListenerManager
 	 * <p>
@@ -103,7 +103,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @return The current id
 	 */
 	public long getCurrentId();
-	
+
 	/**
 	 * Returns the current ID then increments by 1. This means that if the current
 	 * id is 0 and this method is called, this method returns 0 and {@link #getCurrentId()}

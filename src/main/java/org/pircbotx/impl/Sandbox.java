@@ -24,6 +24,5 @@ package org.pircbotx.impl;
  */
 public class Sandbox {
 	public static void main(String[] args) {
-		
 	}
 }

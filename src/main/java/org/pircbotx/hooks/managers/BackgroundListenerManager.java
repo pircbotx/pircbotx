@@ -56,7 +56,7 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 	public void dispatchEvent(Event event) {
 		//Dispatch to both standard listeners and background listeners
 		super.dispatchEvent(event);
-		for(Map.Entry<Listener,ExecutorService> curEntry : backgroundListeners.entrySet())
+		for (Map.Entry<Listener, ExecutorService> curEntry : backgroundListeners.entrySet())
 			submitEvent(curEntry.getValue(), curEntry.getKey(), event);
 	}
 
@@ -69,7 +69,7 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 
 	@Override
 	public boolean removeListener(Listener listener) {
-		if(backgroundListeners.containsKey(listener))
+		if (backgroundListeners.containsKey(listener))
 			return backgroundListeners.remove(listener) != null;
 		else
 			return super.removeListener(listener);
@@ -79,8 +79,9 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 		protected static AtomicInteger backgroundCount = new AtomicInteger();
 		protected AtomicInteger threadCount = new AtomicInteger();
 		protected String prefix;
+
 		public BackgroundThreadFactory(int poolNum) {
-			prefix = "pool-" + poolNum + "-backgroundThread-" + backgroundCount.getAndIncrement(); 
+			prefix = "pool-" + poolNum + "-backgroundThread-" + backgroundCount.getAndIncrement();
 		}
 
 		public Thread newThread(Runnable r) {

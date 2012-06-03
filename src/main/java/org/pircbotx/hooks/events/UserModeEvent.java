@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+
 /**
  * Called when the mode of a user is set.
  * @author Leon Blakey <lord.quackstar at gmail.com>

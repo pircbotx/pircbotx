@@ -123,7 +123,7 @@ public class PircBotXOutputTest {
 		bot.sendRawLineSplit(beginning, aString, ending);
 		checkOutput(beginning + aString + ending);
 	}
-	
+
 	@Test(description = "Verify sendRawLineSplit works correctly with long strings")
 	public void sendRawLineSplitLong() throws Exception {
 		//Generate string parts
@@ -131,24 +131,24 @@ public class PircBotXOutputTest {
 		String beginning = "BEGIN";
 		String ending = "END";
 		Random random = new Random();
-		while((beginning + "1" + seedString + ending).length() < bot.getMaxLineLength() - 2)
-			seedString = seedString + (char)(random.nextInt(26) + 'a');
+		while ((beginning + "1" + seedString + ending).length() < bot.getMaxLineLength() - 2)
+			seedString = seedString + (char) (random.nextInt(26) + 'a');
 		String[] stringParts = new String[]{
 			"1" + seedString,
 			"2" + seedString,
-			"3" + seedString.substring(0, bot.getMaxLineLength()/2)
+			"3" + seedString.substring(0, bot.getMaxLineLength() / 2)
 		};
-		
+
 		//Send the message, joining all the message parts into one big chunck
 		bot.sendRawLineSplit(beginning, StringUtils.join(stringParts, ""), ending);
-		
+
 		//Verify sent lines, making sure they come out in parts
 		checkOutput(beginning + stringParts[0] + ending);
 		//Verify further lines
 		assertEquals(botOut.readLine(), beginning + stringParts[1] + ending, "Second string part doesn't match");
 		assertEquals(botOut.readLine(), beginning + stringParts[2] + ending, "Third string part doesn't match");
 	}
-	
+
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
 		bot.sendAction(aUser, aString);

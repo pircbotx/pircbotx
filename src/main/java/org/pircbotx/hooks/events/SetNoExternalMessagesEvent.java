@@ -51,7 +51,7 @@ public class SetNoExternalMessagesEvent<T extends PircBotX> extends Event<T> imp
 		this.channel = channel;
 		this.user = user;
 	}
-	
+
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * in <code>user: message</code> format

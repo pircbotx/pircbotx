@@ -88,7 +88,7 @@ public class DCCTest {
 		String convertedAddress = DccManager.addressToInteger(address);
 		assertEquals(convertedAddress, expectedResult, "Converted address doesn't match given");
 	}
-	
+
 	@Test(dataProvider = "addressDataProvider")
 	public void integerToAddressTest(String rawAddress, String integerAddress) throws UnknownHostException {
 		InetAddress realAddress = InetAddress.getByName(rawAddress);

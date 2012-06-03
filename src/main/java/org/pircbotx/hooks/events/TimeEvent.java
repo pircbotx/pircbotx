@@ -54,7 +54,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 		this.user = user;
 		this.channel = channel;
 	}
-	
+
 	/**
 	 * Respond with a CTCP response to the user
 	 * @param response The response to send 

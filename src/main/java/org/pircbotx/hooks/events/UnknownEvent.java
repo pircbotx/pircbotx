@@ -42,7 +42,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 		super(bot);
 		this.line = line;
 	}
-	
+
 	/**
 	 * Responds by sending a <b>raw line</b> to the server.
 	 * @param response The response to send 

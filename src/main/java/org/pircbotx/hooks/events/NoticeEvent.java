@@ -51,7 +51,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 		this.channel = channel;
 		this.notice = notice;
 	}
-	
+
 	/**
 	 * Returns the notice the user sent
 	 * @return The notice the user sent

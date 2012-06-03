@@ -58,7 +58,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 		this.channel = channel;
 		this.pingValue = pingValue;
 	}
-	
+
 	/**
 	 * Respond with a CTCP response to the user
 	 * @param response The response to send 

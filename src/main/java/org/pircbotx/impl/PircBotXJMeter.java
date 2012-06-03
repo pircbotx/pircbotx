@@ -143,7 +143,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 		}.start();
 
 		//Setup this bot
-		bot.setName("PircBotX"); 
+		bot.setName("PircBotX");
 		//bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
 		bot.setMessageDelay(0);
 
