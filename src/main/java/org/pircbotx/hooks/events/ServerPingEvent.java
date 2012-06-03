@@ -47,7 +47,7 @@ public class ServerPingEvent<T extends PircBotX> extends Event<T> {
 		super(bot);
 		this.response = response;
 	}
-	
+
 	/**
 	 * Respond with a <i>raw line</i> to the server
 	 * @param response The response to send 

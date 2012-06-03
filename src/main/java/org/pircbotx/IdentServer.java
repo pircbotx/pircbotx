@@ -54,6 +54,7 @@ public class IdentServer extends Thread {
 	private PircBotX bot;
 	private String login;
 	private ServerSocket ss = null;
+
 	/**
 	 * Constructs and starts an instance of an IdentServer that will
 	 * respond to a client with the provided login.  Rather than calling

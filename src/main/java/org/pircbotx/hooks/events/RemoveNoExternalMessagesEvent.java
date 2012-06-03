@@ -51,7 +51,7 @@ public class RemoveNoExternalMessagesEvent<T extends PircBotX> extends Event<T> 
 		this.channel = channel;
 		this.user = user;
 	}
-	
+
 	/**
 	 * Respond by send a message in the channel to the user that removed the mode
 	 * in <code>user: message</code> format

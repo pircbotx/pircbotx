@@ -101,7 +101,7 @@ public class PircBotXConnectTest {
 			}
 		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
 	}
-	
+
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket

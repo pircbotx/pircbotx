@@ -28,7 +28,7 @@ public abstract class Event<T extends PircBotX> {
 	protected final long timestamp;
 	protected final T bot;
 	protected final long id;
-	
+
 	public Event(T bot) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
@@ -50,7 +50,7 @@ public abstract class Event<T extends PircBotX> {
 	public long getTimestamp() {
 		return timestamp;
 	}
-	
+
 	/**
 	 * Returns the id of this event. This id is guaranteed to be unique in the 
 	 * context of other events dispatched from the same listener managers
@@ -59,7 +59,7 @@ public abstract class Event<T extends PircBotX> {
 	public long getId() {
 		return id;
 	}
-	
+
 	/**
 	 * A simple abstract method that all events must implement to respond to an
 	 * event happening. All implementing classes should delegate to the sendMessage

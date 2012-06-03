@@ -27,5 +27,4 @@ import org.pircbotx.PircBotX;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericDCCEvent<T extends PircBotX> extends GenericEvent<T> {
-	
 }

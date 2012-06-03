@@ -50,7 +50,7 @@ public class PircBotXTest {
 	public void setup() {
 		smallBot = new PircBotX();
 	}
-	
+
 	@Test(description = "Make sure send* methods have appropiate variations")
 	public void sendMethodsNamingTests() {
 		//Get all send method variations in one list

@@ -40,7 +40,7 @@ public class TestUtils {
 
 		return params;
 	}
-	
+
 	public static String wrapClass(Class aClass, String message) {
 		return message + " in class " + aClass.toString();
 	}

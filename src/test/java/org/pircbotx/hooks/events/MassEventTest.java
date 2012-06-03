@@ -33,11 +33,11 @@ public class MassEventTest {
 	public void constructorTest(Class<?> event) {
 		//Is there only one constructor?
 		assertEquals(event.getDeclaredConstructors().length, 1, TestUtils.wrapClass(event, "No constructor or extra constructor found"));
-		
+
 		//Is the first parameter a bot refrence?
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		assertEquals(constructor.getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
-		
+
 		//Are the number of fields and constructor parameters equal?
 		//(subtract one parameter to account for bot)
 		assertEquals(constructor.getParameterTypes().length - 1, event.getDeclaredFields().length, TestUtils.wrapClass(event, "Number of constructor parameters don't match number of fields"));

@@ -30,7 +30,7 @@ public interface GenericEvent<T extends PircBotX> {
 	 * @param response The response to send
 	 */
 	public void respond(String response);
-	
+
 	/**
 	 * Returns the {@link PircBotX} instance that this event originally came from
 	 * @return A {@link PircBotX} instance

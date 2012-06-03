@@ -119,7 +119,6 @@ public class ServerInfo {
 	private boolean accept;
 	@Setter(AccessLevel.PACKAGE)
 	private String language = "";
-	
 	//Other information
 	@Setter(AccessLevel.PACKAGE)
 	private String motd = "";

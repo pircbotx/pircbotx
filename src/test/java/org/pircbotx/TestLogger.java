@@ -29,13 +29,11 @@ import org.testng.TestListenerAdapter;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestLogger extends TestListenerAdapter {
-
 	@Override
 	public void onTestStart(ITestResult result) {
 		log("START", result);
 	}
-	 
-	
+
 	@Override
 	public void onTestFailure(ITestResult tr) {
 		log("FAILURE", tr);
@@ -55,17 +53,17 @@ public class TestLogger extends TestListenerAdapter {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(status).append("] ");
 		sb.append(tr.getTestClass().getName()).append(":").append(tr.getName()).append(" - ");
-		
+
 		//Add description
 		if (StringUtils.isNotEmpty(tr.getMethod().getDescription()))
 			sb.append(tr.getMethod().getDescription());
 		else
 			sb.append("(no description)");
-		
+
 		//Add params
-		if(ArrayUtils.isNotEmpty(tr.getParameters()))
+		if (ArrayUtils.isNotEmpty(tr.getParameters()))
 			sb.append(" - Params: ").append(StringUtils.join(tr.getParameters(), ", "));
-		
+
 		System.out.println(sb.toString());
 	}
 }

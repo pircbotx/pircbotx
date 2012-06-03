@@ -30,6 +30,6 @@ public class UnknownEventException extends RuntimeException {
 	}
 
 	public UnknownEventException(Event event) {
-		this(event,null);
+		this(event, null);
 	}
 }

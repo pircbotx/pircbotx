@@ -58,7 +58,7 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 		this.recipient = recipient;
 		this.hasVoice = isVoice;
 	}
-	
+
 	/**
 	 * Checks if this is a set or remove voice operation
 	 * @return True if this was set, false if removed
@@ -69,7 +69,7 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 	public boolean isVoice() {
 		return hasVoice;
 	}
-	
+
 	public boolean hasVoice() {
 		return hasVoice;
 	}

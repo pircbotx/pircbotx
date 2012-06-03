@@ -53,7 +53,7 @@ public class RemoveChannelKeyEvent<T extends PircBotX> extends Event<T> implemen
 		this.user = user;
 		this.key = key;
 	}
-	
+
 	/**
 	 * Respond by send a message in the channel to the user that removed the mode
 	 * in <code>user: message</code> format

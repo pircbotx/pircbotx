@@ -60,31 +60,31 @@ public class User implements Comparable<User> {
 		this.bot = bot;
 		this.nick = nick;
 	}
-	
+
 	public void parseStatus(Channel chan, String prefix) {
-		if(prefix.contains("@"))
+		if (prefix.contains("@"))
 			chan.ops.add(this);
-		if(prefix.contains("+"))
+		if (prefix.contains("+"))
 			chan.voices.add(this);
-		if(prefix.contains("%"))
+		if (prefix.contains("%"))
 			chan.halfOps.add(this);
-		if(prefix.contains("~"))
+		if (prefix.contains("~"))
 			chan.owners.add(this);
-		if(prefix.contains("&"))
+		if (prefix.contains("&"))
 			chan.superOps.add(this);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
-	
+
 	void setNick(String nick) {
 		//Replace nick in nick map
-		synchronized(bot.userNickMap) {
+		synchronized (bot.userNickMap) {
 			bot.userNickMap.remove(this.nick);
 			bot.userNickMap.put(nick, this);
 			this.nick = nick;
 		}
 	}
-	
+
 	public UserSnapshot generateSnapshot() {
 		return new UserSnapshot(this);
 	}
@@ -96,7 +96,7 @@ public class User implements Comparable<User> {
 	public Set<Channel> getChannels() {
 		return bot.getChannels(this);
 	}
-	
+
 	/**
 	 * Get all channels user has Operator status in
 	 * Be careful when storing the result from this method as it may be out of date 
@@ -106,8 +106,8 @@ public class User implements Comparable<User> {
 	 */
 	public Set<Channel> getChannelsOpIn() {
 		Set<Channel> channels = new HashSet();
-		for(Channel curChannel : bot.getChannels()) 
-			if(curChannel.isOp(this))
+		for (Channel curChannel : bot.getChannels())
+			if (curChannel.isOp(this))
 				channels.add(curChannel);
 		return Collections.unmodifiableSet(channels);
 	}
@@ -121,12 +121,12 @@ public class User implements Comparable<User> {
 	 */
 	public Set<Channel> getChannelsVoiceIn() {
 		Set<Channel> channels = new HashSet();
-		for(Channel curChannel : bot.getChannels()) 
-			if(curChannel.hasVoice(this))
+		for (Channel curChannel : bot.getChannels())
+			if (curChannel.hasVoice(this))
 				channels.add(curChannel);
 		return Collections.unmodifiableSet(channels);
 	}
-	
+
 	/**
 	 * Get all channels user has Owner status in
 	 * Be careful when storing the result from this method as it may be out of date 
@@ -136,8 +136,8 @@ public class User implements Comparable<User> {
 	 */
 	public Set<Channel> getChannelsOwnerIn() {
 		Set<Channel> channels = new HashSet();
-		for(Channel curChannel : bot.getChannels()) 
-			if(curChannel.isOwner(this))
+		for (Channel curChannel : bot.getChannels())
+			if (curChannel.isOwner(this))
 				channels.add(curChannel);
 		return Collections.unmodifiableSet(channels);
 	}
@@ -151,12 +151,12 @@ public class User implements Comparable<User> {
 	 */
 	public Set<Channel> getChannelsHalfOpIn() {
 		Set<Channel> channels = new HashSet();
-		for(Channel curChannel : bot.getChannels()) 
-			if(curChannel.isHalfOp(this))
+		for (Channel curChannel : bot.getChannels())
+			if (curChannel.isHalfOp(this))
 				channels.add(curChannel);
 		return Collections.unmodifiableSet(channels);
 	}
-	
+
 	/**
 	 * Get all channels user has Super Operator status in
 	 * Be careful when storing the result from this method as it may be out of date 
@@ -166,8 +166,8 @@ public class User implements Comparable<User> {
 	 */
 	public Set<Channel> getChannelsSuperOpIn() {
 		Set<Channel> channels = new HashSet();
-		for(Channel curChannel : bot.getChannels()) 
-			if(curChannel.isSuperOp(this))
+		for (Channel curChannel : bot.getChannels())
+			if (curChannel.isSuperOp(this))
 				channels.add(curChannel);
 		return Collections.unmodifiableSet(channels);
 	}
