@@ -78,6 +78,7 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.ReconnectEvent;
 import org.pircbotx.hooks.events.RemoveChannelBanEvent;
 import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
 import org.pircbotx.hooks.events.RemoveChannelLimitEvent;
@@ -424,7 +425,17 @@ public class PircBotX {
 	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
 		if (getServer() == null)
 			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
-		connect(getServer(), getPort(), getPassword(), getSocketFactory());
+		try { 
+			connect(getServer(), getPort(), getPassword(), getSocketFactory());
+		} catch (IOException e) {
+			getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
+			throw e;
+		} catch (IrcException e) {
+			getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
+			throw e;
+		}
+		//Should be good
+		getListenerManager().dispatchEvent(new ReconnectEvent(this, true, null));
 	}
 
 	/**
