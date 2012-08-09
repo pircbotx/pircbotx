@@ -613,8 +613,7 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends a raw line to the IRC server as soon as possible, bypassing the
-	 * outgoing message queue.
+	 * Sends a raw line through the outgoing message queue.
 	 *
 	 * @param line The raw line to send to the IRC server.
 	 */
@@ -626,7 +625,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends a raw line through the outgoing message queue.
+	 * Sends a raw line to the IRC server as soon as possible, bypassing the
+	 * outgoing message queue.
 	 *
 	 * @param line The raw line to send to the IRC server.
 	 */
