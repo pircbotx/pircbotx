@@ -1894,6 +1894,10 @@ public class PircBotX {
 			//End of MOTD, clean it and dispatch MotdEvent
 			getServerInfo().setMotd(getServerInfo().getMotd().trim());
 			getListenerManager().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
+		} else if (code == 004 || code == 005) {
+			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
+			//Server info line, let ServerInfo class parse it
+			getServerInfo().parse(code, response);
 		}
 		//WARNING: Parsed array might be modified, recreate if you're going to use down here
 		getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, response));
