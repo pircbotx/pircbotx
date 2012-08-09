@@ -33,113 +33,96 @@ import lombok.Setter;
  * @author  Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
+@Setter(AccessLevel.PACKAGE)
 public class ServerInfo {
-	private final PircBotX bot;
+	protected final PircBotX bot;
 
-	public void parse(String input) {
+	public void parse(int code, String input) {
+		//Strip off name, irrelevant
+		String[] parts = input.split(" ", 2);
+		bot.log("---RECIEVED: " + input);
+		
+		//Pass off to speicific methods
+		if(parts[0].equals("004"))
+			parse004(parts[1]);
+		else if(parts[0].equals("005"))
+			parse005(parts[1]);
 	}
+	protected void parse004(String input) {
+		//004 PircBotX pratchett.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
+		String[] inputParts = input.split(" ");
+		serverName = inputParts[0];
+		serverVersion = inputParts[1];
+		userModes = inputParts[2];
+		channelModes = inputParts[3];
+	}
+	
+	protected void parse005(String input) {
+		//Freenode
+		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
+		//005 PircBotX CASEMAPPING=rfc1459 CHARSET=ascii NICKLEN=16 CHANNELLEN=50 TOPICLEN=390 ETRACE CPRIVMSG CNOTICE DEAF=D MONITOR=100 FNC TARGMAX=NAMES:1,LIST:1,KICK:1,WHOIS:1,PRIVMSG:4,NOTICE:4,ACCEPT:,MONITOR: :are supported by this server
+		//005 PircBotX EXTBAN=$,arx WHOX CLIENTVER=3.0 SAFELIST ELIST=CTU :are supported by this server
+		//Rizon
+		//005 PircBotX CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 TOPICLEN=390 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ NETWORK=Rizon MAXLIST=beI:100 TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1 CHANTYPES=# :are supported by this server
+		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
+	}
+	
+	//004 information
+	protected String serverName;
+	protected String serverVersion;
+	protected String userModes;
+	
 	//005 information
-	@Setter(AccessLevel.PACKAGE)
-	private String prefixes = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String channelTypes = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String channelModes = "";
-	@Setter(AccessLevel.PACKAGE)
-	private int modes;
-	@Setter(AccessLevel.PACKAGE)
-	private int maxChannels;
-	@Setter(AccessLevel.PACKAGE)
-	private int chanlimit;
-	@Setter(AccessLevel.PACKAGE)
-	private int maxNickLength;
-	@Setter(AccessLevel.PACKAGE)
-	private int maxBans;
-	@Setter(AccessLevel.PACKAGE)
-	private String maxList = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String network = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String exceptions = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String invites = "";
-	@Setter(AccessLevel.PACKAGE)
-	private boolean wallChOps = false;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean wallVoices = false;
-	@Setter(AccessLevel.PACKAGE)
-	private String statusMessage = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String caseMapping = "";
-	@Setter(AccessLevel.PACKAGE)
-	private String EList = "";
-	@Setter(AccessLevel.PACKAGE)
-	private int topicLength;
-	@Setter(AccessLevel.PACKAGE)
-	private int kickLength;
-	@Setter(AccessLevel.PACKAGE)
-	private int channelLength;
-	@Setter(AccessLevel.PACKAGE)
-	private int channelIDLength;
-	@Setter(AccessLevel.PACKAGE)
-	private String standard = "";
-	@Setter(AccessLevel.PACKAGE)
-	private int silence;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean RFC2812;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean penalty;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean forcedNickChanges;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean safeList;
-	@Setter(AccessLevel.PACKAGE)
-	private int awayLength;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean noQuit;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean userIPExists;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean cPrivMsgExists;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean cNoticeExists;
-	@Setter(AccessLevel.PACKAGE)
-	private int maxTargets;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean knockExists;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean vChannels;
-	@Setter(AccessLevel.PACKAGE)
-	private int watchMax;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean whoX;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean callerID;
-	@Setter(AccessLevel.PACKAGE)
-	private boolean accept;
-	@Setter(AccessLevel.PACKAGE)
-	private String language = "";
+	protected String prefixes = "";
+	protected String channelTypes = "";
+	protected String channelModes = "";
+	protected int modes;
+	protected int maxChannels;
+	protected int chanlimit;
+	protected int maxNickLength;
+	protected int maxBans;
+	protected String maxList = "";
+	protected String network = "";
+	protected String exceptions = "";
+	protected String invites = "";
+	protected boolean wallChOps = false;
+	protected boolean wallVoices = false;
+	protected String statusMessage = "";
+	protected String caseMapping = "";
+	protected String EList = "";
+	protected int topicLength;
+	protected int kickLength;
+	protected int channelLength;
+	protected int channelIDLength;
+	protected String standard = "";
+	protected int silence;
+	protected boolean RFC2812;
+	protected boolean penalty;
+	protected boolean forcedNickChanges;
+	protected boolean safeList;
+	protected int awayLength;
+	protected boolean noQuit;
+	protected boolean userIPExists;
+	protected boolean cPrivMsgExists;
+	protected boolean cNoticeExists;
+	protected int maxTargets;
+	protected boolean knockExists;
+	protected boolean vChannels;
+	protected int watchMax;
+	protected boolean whoX;
+	protected boolean callerID;
+	protected boolean accept;
+	protected String language = "";
 	//Other information
-	@Setter(AccessLevel.PACKAGE)
-	private String motd = "";
-	@Setter(AccessLevel.PACKAGE)
-	private int highestConnections;
-	@Setter(AccessLevel.PACKAGE)
-	private int highestClients;
-	@Setter(AccessLevel.PACKAGE)
-	private int totalUsers;
-	@Setter(AccessLevel.PACKAGE)
-	private int totalInvisibleUsers;
-	@Setter(AccessLevel.PACKAGE)
-	private int totalServers;
-	@Setter(AccessLevel.PACKAGE)
-	private int totalOperatorsOnline;
-	@Setter(AccessLevel.PACKAGE)
-	private int totalUnknownConnections;
-	@Setter(AccessLevel.PACKAGE)
-	private int totalChannelsFormed;
-	@Setter(AccessLevel.PACKAGE)
-	private int serverUsers;
-	@Setter(AccessLevel.PACKAGE)
-	private int connectedServers;
+	protected String motd = "";
+	protected int highestConnections;
+	protected int highestClients;
+	protected int totalUsers;
+	protected int totalInvisibleUsers;
+	protected int totalServers;
+	protected int totalOperatorsOnline;
+	protected int totalUnknownConnections;
+	protected int totalChannelsFormed;
+	protected int serverUsers;
+	protected int connectedServers;
 }
