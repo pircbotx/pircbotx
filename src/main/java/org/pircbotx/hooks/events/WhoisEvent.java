@@ -24,7 +24,6 @@ import java.util.List;
 import lombok.Data;
 import lombok.Delegate;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
@@ -47,6 +46,11 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 	@Override
 	public void respond(String response) {
 		bot.sendMessage(getNick(), response);
+	}
+	
+	public List<String> getChannels() {
+		//Project Lombok doesn't like Delagates with generics
+		return builder.getChannels();
 	}
 	
 	@Data
@@ -73,7 +77,6 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		public String getLogin();
 		public String getHostname();
 		public String getRealname();
-		public List<String> getChannels();
 		public String getServer();
 		public String getServerInfo();
 		@Override
