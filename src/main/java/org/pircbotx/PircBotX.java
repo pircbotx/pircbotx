@@ -58,55 +58,7 @@ import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.events.ChannelInfoEvent;
-import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.FingerEvent;
-import org.pircbotx.hooks.events.HalfOpEvent;
-import org.pircbotx.hooks.events.InviteEvent;
-import org.pircbotx.hooks.events.JoinEvent;
-import org.pircbotx.hooks.events.KickEvent;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.ModeEvent;
-import org.pircbotx.hooks.events.MotdEvent;
-import org.pircbotx.hooks.events.NickChangeEvent;
-import org.pircbotx.hooks.events.NoticeEvent;
-import org.pircbotx.hooks.events.OpEvent;
-import org.pircbotx.hooks.events.OwnerEvent;
-import org.pircbotx.hooks.events.PartEvent;
-import org.pircbotx.hooks.events.PingEvent;
-import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.pircbotx.hooks.events.QuitEvent;
-import org.pircbotx.hooks.events.ReconnectEvent;
-import org.pircbotx.hooks.events.RemoveChannelBanEvent;
-import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
-import org.pircbotx.hooks.events.RemoveChannelLimitEvent;
-import org.pircbotx.hooks.events.RemoveInviteOnlyEvent;
-import org.pircbotx.hooks.events.RemoveModeratedEvent;
-import org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent;
-import org.pircbotx.hooks.events.RemovePrivateEvent;
-import org.pircbotx.hooks.events.RemoveSecretEvent;
-import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
-import org.pircbotx.hooks.events.ServerPingEvent;
-import org.pircbotx.hooks.events.ServerResponseEvent;
-import org.pircbotx.hooks.events.SetChannelBanEvent;
-import org.pircbotx.hooks.events.SetChannelKeyEvent;
-import org.pircbotx.hooks.events.SetChannelLimitEvent;
-import org.pircbotx.hooks.events.SetInviteOnlyEvent;
-import org.pircbotx.hooks.events.SetModeratedEvent;
-import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
-import org.pircbotx.hooks.events.SetPrivateEvent;
-import org.pircbotx.hooks.events.SetSecretEvent;
-import org.pircbotx.hooks.events.SetTopicProtectionEvent;
-import org.pircbotx.hooks.events.SuperOpEvent;
-import org.pircbotx.hooks.events.TimeEvent;
-import org.pircbotx.hooks.events.TopicEvent;
-import org.pircbotx.hooks.events.UnknownEvent;
-import org.pircbotx.hooks.events.UserListEvent;
-import org.pircbotx.hooks.events.UserModeEvent;
-import org.pircbotx.hooks.events.VersionEvent;
-import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -211,6 +163,7 @@ public class PircBotX {
 	@Getter
 	@Setter
 	protected boolean autoReconnectChannels;
+	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
@@ -1899,6 +1852,30 @@ public class PircBotX {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, let ServerInfo class parse it
 			getServerInfo().parse(code, response);
+		} else if (code == RPL_WHOISUSER) {
+			//New whois is starting
+			//311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
+			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
+			builder.setNick(parsed[1]);
+			builder.setLogin(parsed[2]);
+			builder.setHostname(parsed[2]);
+			whoisBuilder.put(parsed[1], builder);
+		} else if (code == RPL_WHOISCHANNELS) {
+			//Channel list from whois
+			//319 TheLQ Plazma :+#freenode 
+			String chans = response.split(" ", 3)[2].substring(1);
+			whoisBuilder.get(parsed[1]).setChannels(Arrays.asList(chans.split(" ")));
+		} else if (code == RPL_WHOISSERVER) {
+			//Server info from whois
+			//312 TheLQ Plazma leguin.freenode.net :Ume?, SE, EU
+			String[] info = response.split(" ", 4);
+			whoisBuilder.get(parsed[1]).setServer(info[2]);
+			whoisBuilder.get(parsed[1]).setServerInfo(info[3]);
+		} else if (code == RPL_ENDOFWHOIS) {
+			//End of whois
+			//318 TheLQ Plazma :End of /WHOIS list.
+			getListenerManager().dispatchEvent(whoisBuilder.get(parsed[1]).generateEvent(this));
+			whoisBuilder.remove(parsed[1]);
 		}
 		//WARNING: Parsed array might be modified, recreate if you're going to use down here
 		getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, response));
