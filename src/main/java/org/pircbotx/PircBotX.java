@@ -1855,10 +1855,12 @@ public class PircBotX {
 		} else if (code == RPL_WHOISUSER) {
 			//New whois is starting
 			//311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
+			String[] parts = response.split(response, 6);
 			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
-			builder.setNick(parsed[1]);
-			builder.setLogin(parsed[2]);
-			builder.setHostname(parsed[2]);
+			builder.setNick(parts[1]);
+			builder.setLogin(parts[2]);
+			builder.setHostname(parts[3]);
+			builder.setRealname(parts[5]);
 			whoisBuilder.put(parsed[1], builder);
 		} else if (code == RPL_WHOISCHANNELS) {
 			//Channel list from whois
