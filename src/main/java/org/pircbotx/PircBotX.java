@@ -1860,7 +1860,7 @@ public class PircBotX {
 			builder.setNick(parts[1]);
 			builder.setLogin(parts[2]);
 			builder.setHostname(parts[3]);
-			builder.setRealname(parts[5]);
+			builder.setRealname(parts[5].substring(1));
 			whoisBuilder.put(parsed[1], builder);
 		} else if (code == RPL_WHOISCHANNELS) {
 			//Channel list from whois
