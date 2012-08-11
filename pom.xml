@@ -86,14 +86,14 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.11.0</version>
+			<version>0.11.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.5.2</version>
+			<version>6.7</version>
 			<scope>test</scope>
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
@@ -107,7 +107,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.9.0</version>
+			<version>1.9.5-rc1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -147,7 +147,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.4</version>
+				<version>2.5.1</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
@@ -245,7 +245,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12</version>
+				<version>2.12.2</version>
 				<configuration>
 					<properties>
 						<property>
