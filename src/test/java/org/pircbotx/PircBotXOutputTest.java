@@ -79,6 +79,7 @@ public class PircBotXOutputTest {
 		//Create an input stream that we'll kill later
 		in = new ByteArrayInputStream("".getBytes());
 		Socket socket = mock(Socket.class);
+		when(socket.isConnected()).thenReturn(true);
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(out);
 		socketFactory = mock(SocketFactory.class);
