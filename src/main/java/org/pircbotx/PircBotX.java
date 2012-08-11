@@ -1872,7 +1872,7 @@ public class PircBotX {
 			//312 TheLQ Plazma leguin.freenode.net :Ume?, SE, EU
 			String[] info = response.split(" ", 4);
 			whoisBuilder.get(parsed[1]).setServer(info[2]);
-			whoisBuilder.get(parsed[1]).setServerInfo(info[3]);
+			whoisBuilder.get(parsed[1]).setServerInfo(info[3].substring(1));
 		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
