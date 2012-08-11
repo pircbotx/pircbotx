@@ -1855,7 +1855,7 @@ public class PircBotX {
 		} else if (code == RPL_WHOISUSER) {
 			//New whois is starting
 			//311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
-			String[] parts = response.split(response, 6);
+			String[] parts = response.split(" ", 6);
 			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
 			builder.setNick(parts[1]);
 			builder.setLogin(parts[2]);
