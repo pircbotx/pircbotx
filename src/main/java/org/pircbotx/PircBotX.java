@@ -269,13 +269,31 @@ public class PircBotX {
 		// Clear everything we may have know about channels.
 		userChanInfo.clear();
 
-		// Connect to the server.
-		if (socketFactory == null)
-			socket = new Socket(hostname, port, inetAddress, 0);
-		else
-			socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
-
-		log("*** Connected to server.");
+		// Connect to the server by DNS server
+		Throwable lastException = null;
+		for (InetAddress curAddress : InetAddress.getAllByName(hostname)) {
+			System.out.println("Trying address " + curAddress);
+			try {
+				//Create socket from appropiate place
+				if (socketFactory == null)
+					socket = new Socket(hostname, port, inetAddress, 0);
+				else
+					socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
+				
+				//No exception, assume successful
+				break;
+			} catch (Throwable t) {
+				this.log("*** Unable to connect to " + hostname + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.");
+				lastException = t;
+			}
+		}
+		
+		//Make sure were connected
+		if (socket == null || (socket != null && !socket.isConnected())) {
+			this.log("*** Unable to connect to any working IP address for hostname " + hostname);
+			throw new IOException("Unable to connect to the IRC network " + hostname, lastException);
+		}
+		this.log("*** Connected to server.");
 
 		inetAddress = socket.getLocalAddress();
 
@@ -378,7 +396,7 @@ public class PircBotX {
 	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
 		if (getServer() == null)
 			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
-		try { 
+		try {
 			connect(getServer(), getPort(), getPassword(), getSocketFactory());
 		} catch (IOException e) {
 			getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
@@ -1848,11 +1866,11 @@ public class PircBotX {
 			//End of MOTD, clean it and dispatch MotdEvent
 			getServerInfo().setMotd(getServerInfo().getMotd().trim());
 			getListenerManager().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
-		} else if (code == 004 || code == 005) {
+		} else if (code == 004 || code == 005)
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, let ServerInfo class parse it
 			getServerInfo().parse(code, response);
-		} else if (code == RPL_WHOISUSER) {
+		else if (code == RPL_WHOISUSER) {
 			//New whois is starting
 			//311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
 			String[] parts = response.split(" ", 6);
