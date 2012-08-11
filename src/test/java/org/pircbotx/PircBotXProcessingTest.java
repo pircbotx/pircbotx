@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import bsh.StringUtil;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.OwnerEvent;
@@ -25,6 +26,7 @@ import org.pircbotx.hooks.events.SuperOpEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
@@ -56,6 +58,7 @@ import org.pircbotx.hooks.events.SetTopicProtectionEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
@@ -561,6 +564,28 @@ public class PircBotXProcessingTest {
 		MotdEvent event = getEvent(events, MotdEvent.class, "MotdEvent not dispatched");
 		String realMotd = aString + "\n\n" + aString;
 		assertEquals(event.getMotd(), realMotd, "Motd does not match given");
+	}
+	
+	@Test
+	public void whoisTest() {
+		bot.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		bot.handleLine(":irc.someserver.net 319 PircBotXUser OtherUser :+#aChannel ##anotherChannel");
+		bot.handleLine(":irc.someserver.net 312 PircBotXUser OtherUser irc2.someserver.net :" + aString + aString);
+		bot.handleLine(":irc.someserver.net 318 PircBotXUser OtherUser :End of /WHOIS list.");
+		
+		//Check event contents
+		WhoisEvent event = getEvent(events, WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getNick(), "OtherUser", "Nick does not match given");
+		assertEquals(event.getLogin(), "~OtherLogin", "Login does not match given");
+		assertEquals(event.getHostname(), "some.host1", "Hostname does not match given");
+		assertEquals(event.getRealname(), aString, "Real name does not match given");
+		assertEquals(event.getServer(), "irc2.someserver.net", "Server address wrong");
+		assertEquals(event.getServerInfo(), aString + aString, "Server info wrong");
+		
+		//Verify channels
+		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
+		assertTrue(event.getChannels().contains("##anotherChannel"), "Doesn't contain second given channel");
+		assertEquals(event.getChannels().size(), 2, "Channels list size wrong");
 	}
 
 	/**
