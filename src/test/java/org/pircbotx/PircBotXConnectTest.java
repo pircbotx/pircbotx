@@ -69,6 +69,7 @@ public class PircBotXConnectTest {
 		botIn = new ByteArrayInputStream(":ircd.test 004 ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
 		botOut = new ByteArrayOutputStream();
 		socket = mock(Socket.class);
+		when(socket.isConnected()).thenReturn(true);
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
