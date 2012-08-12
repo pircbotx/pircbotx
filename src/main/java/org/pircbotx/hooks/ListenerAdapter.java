@@ -154,7 +154,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onQuit(QuitEvent<T> event) throws Exception {
 	}
-	
+
 	public void onReconnect(ReconnectEvent<T> event) throws Exception {
 	}
 
@@ -241,7 +241,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onVoice(VoiceEvent<T> event) throws Exception {
 	}
-	
+
 	public void onWhois(WhoisEvent<T> event) throws Exception {
 	}
 
