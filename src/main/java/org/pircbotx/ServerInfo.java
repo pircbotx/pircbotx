@@ -41,13 +41,14 @@ public class ServerInfo {
 		//Strip off name, irrelevant
 		String[] parts = input.split(" ", 2);
 		bot.log("---RECIEVED: " + input);
-		
+
 		//Pass off to speicific methods
-		if(parts[0].equals("004"))
+		if (parts[0].equals("004"))
 			parse004(parts[1]);
-		else if(parts[0].equals("005"))
+		else if (parts[0].equals("005"))
 			parse005(parts[1]);
 	}
+
 	protected void parse004(String input) {
 		//004 PircBotX pratchett.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 		String[] inputParts = input.split(" ");
@@ -56,86 +57,86 @@ public class ServerInfo {
 		userModes = inputParts[2];
 		channelModes = inputParts[3];
 	}
-	
+
 	protected void parse005(String input) {
 		//REFERENCE: http://www.irc.org/tech_docs/005.html
-		
+
 		//Remove any comments at the end of the line
-		String cleanInput = input.split(" :",2)[0];
-		for(String curItem : cleanInput.split(" ")) {
+		String cleanInput = input.split(" :", 2)[0];
+		for (String curItem : cleanInput.split(" ")) {
 			String[] itemParts = curItem.split("=", 2);
 			String key = itemParts[0];
 			String value = (itemParts.length == 2) ? itemParts[1] : "";
-			if(key.equalsIgnoreCase("PREFIX"))
+			if (key.equalsIgnoreCase("PREFIX"))
 				prefixes = value;
-			else if(key.equalsIgnoreCase("CHANTYPES"))
+			else if (key.equalsIgnoreCase("CHANTYPES"))
 				channelTypes = value;
-			else if(key.equalsIgnoreCase("CHANMODES"))
+			else if (key.equalsIgnoreCase("CHANMODES"))
 				channelModes = value;
-			else if(key.equalsIgnoreCase("MODES"))
+			else if (key.equalsIgnoreCase("MODES"))
 				maxModes = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("MAXCHANNELS"))
+			else if (key.equalsIgnoreCase("MAXCHANNELS"))
 				maxChannels = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("CHANLIMIT"))
+			else if (key.equalsIgnoreCase("CHANLIMIT"))
 				chanlimit = value;
-			else if(key.equalsIgnoreCase("NICKLEN"))
+			else if (key.equalsIgnoreCase("NICKLEN"))
 				maxNickLength = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("MAXLIST"))
+			else if (key.equalsIgnoreCase("MAXLIST"))
 				maxBans = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("MAXLIST"))
+			else if (key.equalsIgnoreCase("MAXLIST"))
 				maxList = value;
-			else if(key.equalsIgnoreCase("NETWORK"))
+			else if (key.equalsIgnoreCase("NETWORK"))
 				network = value;
-			else if(key.equalsIgnoreCase("EXCEPTS"))
+			else if (key.equalsIgnoreCase("EXCEPTS"))
 				exceptBans = value;
-			else if(key.equalsIgnoreCase("INVEX"))
+			else if (key.equalsIgnoreCase("INVEX"))
 				exceptInvites = value;
-			else if(key.equalsIgnoreCase("WALLCHOPS"))
+			else if (key.equalsIgnoreCase("WALLCHOPS"))
 				wallOps = true;
-			else if(key.equalsIgnoreCase("WALLVOICES"))
+			else if (key.equalsIgnoreCase("WALLVOICES"))
 				wallVoices = true;
-			else if(key.equalsIgnoreCase("STATUSMSG"))
+			else if (key.equalsIgnoreCase("STATUSMSG"))
 				statusMessage = value;
-			else if(key.equalsIgnoreCase("CASEMAPPING"))
+			else if (key.equalsIgnoreCase("CASEMAPPING"))
 				caseMapping = value;
-			else if(key.equalsIgnoreCase("ELIST"))
+			else if (key.equalsIgnoreCase("ELIST"))
 				eList = value;
-			else if(key.equalsIgnoreCase("TOPICLEN"))
+			else if (key.equalsIgnoreCase("TOPICLEN"))
 				topicLength = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("KICKLEN"))
+			else if (key.equalsIgnoreCase("KICKLEN"))
 				kickLength = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("CHANNELLEN"))
+			else if (key.equalsIgnoreCase("CHANNELLEN"))
 				channelLength = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("CHIDLEN"))
+			else if (key.equalsIgnoreCase("CHIDLEN"))
 				channelIDLength = "!:" + Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("IDCHAN"))
+			else if (key.equalsIgnoreCase("IDCHAN"))
 				channelIDLength = value;
-			else if(key.equalsIgnoreCase("STD"))
+			else if (key.equalsIgnoreCase("STD"))
 				standard = value;
-			else if(key.equalsIgnoreCase("SILENCE"))
+			else if (key.equalsIgnoreCase("SILENCE"))
 				silence = Integer.parseInt(value);
-			else if(key.equalsIgnoreCase("RFC2812"))
+			else if (key.equalsIgnoreCase("RFC2812"))
 				RFC2812 = true;
-			else if(key.equalsIgnoreCase("PENALTY"))
+			else if (key.equalsIgnoreCase("PENALTY"))
 				penalty = true;
-			else if(key.equalsIgnoreCase("CPRIVMSG"))
+			else if (key.equalsIgnoreCase("CPRIVMSG"))
 				cPrivMsgExists = true;
-			else if(key.equalsIgnoreCase("CNOTICE"))
+			else if (key.equalsIgnoreCase("CNOTICE"))
 				cNoticeExists = true;
-			else if(key.equalsIgnoreCase("SAFELIST"))
+			else if (key.equalsIgnoreCase("SAFELIST"))
 				safeList = true;
-			else if(key.equalsIgnoreCase("KNOCK"))
+			else if (key.equalsIgnoreCase("KNOCK"))
 				knockExists = true;
-			else if(key.equalsIgnoreCase("WHOX"))
+			else if (key.equalsIgnoreCase("WHOX"))
 				whoX = true;
-			else if(key.equalsIgnoreCase("CALLERID") || key.equalsIgnoreCase("ACCEPT"))
-				callerID = true;	
-			else if(key.equalsIgnoreCase("USERIP"))
+			else if (key.equalsIgnoreCase("CALLERID") || key.equalsIgnoreCase("ACCEPT"))
+				callerID = true;
+			else if (key.equalsIgnoreCase("USERIP"))
 				userIPExists = true;
-			else if(key.equalsIgnoreCase("CNOTICE"))
+			else if (key.equalsIgnoreCase("CNOTICE"))
 				cNoticeExists = true;
-			
-			
+
+
 		}
 		//Freenode
 		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
@@ -145,12 +146,10 @@ public class ServerInfo {
 		//005 PircBotX CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 TOPICLEN=390 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ NETWORK=Rizon MAXLIST=beI:100 TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1 CHANTYPES=# :are supported by this server
 		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
 	}
-	
 	//004 information
 	protected String serverName;
 	protected String serverVersion;
 	protected String userModes;
-	
 	//005 information
 	protected String prefixes;
 	protected String channelTypes;

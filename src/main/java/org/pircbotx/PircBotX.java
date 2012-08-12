@@ -279,7 +279,7 @@ public class PircBotX {
 					socket = new Socket(hostname, port, inetAddress, 0);
 				else
 					socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
-				
+
 				//No exception, assume successful
 				break;
 			} catch (Throwable t) {
@@ -287,7 +287,7 @@ public class PircBotX {
 				lastException = t;
 			}
 		}
-		
+
 		//Make sure were connected
 		if (socket == null || (socket != null && !socket.isConnected())) {
 			this.log("*** Unable to connect to any working IP address for hostname " + hostname);

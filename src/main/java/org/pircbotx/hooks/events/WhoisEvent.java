@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks.events;
 
 import java.util.Collections;
@@ -35,24 +34,24 @@ import org.pircbotx.hooks.Event;
  */
 @EqualsAndHashCode(callSuper = true)
 public class WhoisEvent<T extends PircBotX> extends Event<T> {
-	@Delegate(types=WhoisEventBuilderIncludes.class)
+	@Delegate(types = WhoisEventBuilderIncludes.class)
 	protected WhoisEventBuilder builder;
 
 	public WhoisEvent(T bot, WhoisEventBuilder builder) {
 		super(bot);
 		this.builder = builder;
 	}
-	
+
 	@Override
 	public void respond(String response) {
 		bot.sendMessage(getNick(), response);
 	}
-	
+
 	public List<String> getChannels() {
 		//Project Lombok doesn't like Delagates with generics
 		return builder.getChannels();
 	}
-	
+
 	@Data
 	public static class WhoisEventBuilder<J extends PircBotX> {
 		protected String nick;
@@ -62,23 +61,29 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		protected List<String> channels;
 		protected String server;
 		protected String serverInfo;
-		
+
 		public List<String> getChannels() {
 			return Collections.unmodifiableList(channels);
 		}
-		
+
 		public WhoisEvent generateEvent(J bot) {
 			return new WhoisEvent(bot, this);
 		}
 	}
-	
+
 	protected static interface WhoisEventBuilderIncludes {
 		public String getNick();
+
 		public String getLogin();
+
 		public String getHostname();
+
 		public String getRealname();
+
 		public String getServer();
+
 		public String getServerInfo();
+
 		@Override
 		public String toString();
 	}
