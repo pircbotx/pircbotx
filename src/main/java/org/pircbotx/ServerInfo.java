@@ -58,6 +58,85 @@ public class ServerInfo {
 	}
 	
 	protected void parse005(String input) {
+		//REFERENCE: http://www.irc.org/tech_docs/005.html
+		
+		//Remove any comments at the end of the line
+		String cleanInput = input.split(" :",2)[0];
+		for(String curItem : cleanInput.split(" ")) {
+			String[] itemParts = curItem.split("=", 2);
+			String key = itemParts[0];
+			String value = (itemParts.length == 2) ? itemParts[1] : "";
+			if(key.equalsIgnoreCase("PREFIX"))
+				prefixes = value;
+			else if(key.equalsIgnoreCase("CHANTYPES"))
+				channelTypes = value;
+			else if(key.equalsIgnoreCase("CHANMODES"))
+				channelModes = value;
+			else if(key.equalsIgnoreCase("MODES"))
+				maxModes = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("MAXCHANNELS"))
+				maxChannels = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("CHANLIMIT"))
+				chanlimit = value;
+			else if(key.equalsIgnoreCase("NICKLEN"))
+				maxNickLength = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("MAXLIST"))
+				maxBans = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("MAXLIST"))
+				maxList = value;
+			else if(key.equalsIgnoreCase("NETWORK"))
+				network = value;
+			else if(key.equalsIgnoreCase("EXCEPTS"))
+				exceptBans = value;
+			else if(key.equalsIgnoreCase("INVEX"))
+				exceptInvites = value;
+			else if(key.equalsIgnoreCase("WALLCHOPS"))
+				wallOps = true;
+			else if(key.equalsIgnoreCase("WALLVOICES"))
+				wallVoices = true;
+			else if(key.equalsIgnoreCase("STATUSMSG"))
+				statusMessage = value;
+			else if(key.equalsIgnoreCase("CASEMAPPING"))
+				caseMapping = value;
+			else if(key.equalsIgnoreCase("ELIST"))
+				eList = value;
+			else if(key.equalsIgnoreCase("TOPICLEN"))
+				topicLength = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("KICKLEN"))
+				kickLength = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("CHANNELLEN"))
+				channelLength = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("CHIDLEN"))
+				channelIDLength = "!:" + Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("IDCHAN"))
+				channelIDLength = value;
+			else if(key.equalsIgnoreCase("STD"))
+				standard = value;
+			else if(key.equalsIgnoreCase("SILENCE"))
+				silence = Integer.parseInt(value);
+			else if(key.equalsIgnoreCase("RFC2812"))
+				RFC2812 = true;
+			else if(key.equalsIgnoreCase("PENALTY"))
+				penalty = true;
+			else if(key.equalsIgnoreCase("CPRIVMSG"))
+				cPrivMsgExists = true;
+			else if(key.equalsIgnoreCase("CNOTICE"))
+				cNoticeExists = true;
+			else if(key.equalsIgnoreCase("SAFELIST"))
+				safeList = true;
+			else if(key.equalsIgnoreCase("KNOCK"))
+				knockExists = true;
+			else if(key.equalsIgnoreCase("WHOX"))
+				whoX = true;
+			else if(key.equalsIgnoreCase("CALLERID") || key.equalsIgnoreCase("ACCEPT"))
+				callerID = true;	
+			else if(key.equalsIgnoreCase("USERIP"))
+				userIPExists = true;
+			else if(key.equalsIgnoreCase("CNOTICE"))
+				cNoticeExists = true;
+			
+			
+		}
 		//Freenode
 		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
 		//005 PircBotX CASEMAPPING=rfc1459 CHARSET=ascii NICKLEN=16 CHANNELLEN=50 TOPICLEN=390 ETRACE CPRIVMSG CNOTICE DEAF=D MONITOR=100 FNC TARGMAX=NAMES:1,LIST:1,KICK:1,WHOIS:1,PRIVMSG:4,NOTICE:4,ACCEPT:,MONITOR: :are supported by this server
@@ -73,28 +152,29 @@ public class ServerInfo {
 	protected String userModes;
 	
 	//005 information
-	protected String prefixes = "";
-	protected String channelTypes = "";
-	protected String channelModes = "";
-	protected int modes;
+	protected String prefixes;
+	protected String channelTypes;
+	protected String channelModes;
+	protected int maxModes;
 	protected int maxChannels;
-	protected int chanlimit;
+	protected String chanlimit;
 	protected int maxNickLength;
 	protected int maxBans;
-	protected String maxList = "";
-	protected String network = "";
-	protected String exceptions = "";
-	protected String invites = "";
-	protected boolean wallChOps = false;
-	protected boolean wallVoices = false;
-	protected String statusMessage = "";
-	protected String caseMapping = "";
-	protected String EList = "";
+	protected String maxList;
+	protected String network;
+	protected String exceptBans;
+	protected String exceptInvites;
+	protected String invites;
+	protected boolean wallOps;
+	protected boolean wallVoices;
+	protected String statusMessage;
+	protected String caseMapping;
+	protected String eList;
 	protected int topicLength;
 	protected int kickLength;
 	protected int channelLength;
-	protected int channelIDLength;
-	protected String standard = "";
+	protected String channelIDLength;
+	protected String standard;
 	protected int silence;
 	protected boolean RFC2812;
 	protected boolean penalty;
@@ -112,9 +192,9 @@ public class ServerInfo {
 	protected boolean whoX;
 	protected boolean callerID;
 	protected boolean accept;
-	protected String language = "";
+	protected String language;
 	//Other information
-	protected String motd = "";
+	protected String motd;
 	protected int highestConnections;
 	protected int highestClients;
 	protected int totalUsers;
