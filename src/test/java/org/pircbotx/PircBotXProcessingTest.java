@@ -565,14 +565,14 @@ public class PircBotXProcessingTest {
 		String realMotd = aString + "\n\n" + aString;
 		assertEquals(event.getMotd(), realMotd, "Motd does not match given");
 	}
-	
+
 	@Test
 	public void whoisTest() {
 		bot.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
 		bot.handleLine(":irc.someserver.net 319 PircBotXUser OtherUser :+#aChannel ##anotherChannel");
 		bot.handleLine(":irc.someserver.net 312 PircBotXUser OtherUser irc2.someserver.net :" + aString + aString);
 		bot.handleLine(":irc.someserver.net 318 PircBotXUser OtherUser :End of /WHOIS list.");
-		
+
 		//Check event contents
 		WhoisEvent event = getEvent(events, WhoisEvent.class, "WhoisEvent not dispatched");
 		assertEquals(event.getNick(), "OtherUser", "Nick does not match given");
@@ -581,7 +581,7 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getRealname(), aString, "Real name does not match given");
 		assertEquals(event.getServer(), "irc2.someserver.net", "Server address wrong");
 		assertEquals(event.getServerInfo(), aString + aString, "Server info wrong");
-		
+
 		//Verify channels
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
 		assertTrue(event.getChannels().contains("##anotherChannel"), "Doesn't contain second given channel");
