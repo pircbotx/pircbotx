@@ -113,7 +113,6 @@
 	</dependencies>
 	
 	<build>
-		<sourceDirectory>target/generated-sources/delombok</sourceDirectory>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
@@ -203,6 +202,7 @@
 					</reportPlugins> 
 				</configuration>
 			</plugin>
+			<!--Delombok sources for tools like javadoc-->
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
@@ -216,6 +216,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<addOutputDirectory>false</addOutputDirectory>
 					<sourceDirectory>src/main/java</sourceDirectory>
 				</configuration>
 			</plugin>
