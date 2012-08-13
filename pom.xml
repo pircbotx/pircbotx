@@ -228,7 +228,7 @@
 				<configuration>
 					<defaultAuthor>Leon Blakey</defaultAuthor>
 					<defaultVersion>${project.version}</defaultVersion>
-					<sourcepath>target/src-delomboked</sourcepath>
+					<sourcepath>target/generated-sources/delombok</sourcepath>
 				</configuration>
 			</plugin>
 			<!--Use very verbose logging while testing-->
