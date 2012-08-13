@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeMethod;
@@ -54,7 +55,7 @@ public class MultiBotManagerTest {
 	}
 
 	@Test(description = "Make sure the values are all copied correctly")
-	public void dummyBotTest() throws UnsupportedEncodingException {
+	public void dummyBotTest() throws UnsupportedEncodingException, UnknownHostException {
 		//Create a master bot to compare everything to
 		final PircBotX masterBot = new PircBotX();
 		masterBot.setListenerManager(new GenericListenerManager());
@@ -65,7 +66,7 @@ public class MultiBotManagerTest {
 		masterBot.setLogin("SomeLogin");
 		masterBot.setAutoNickChange(true);
 		masterBot.setEncoding(Charset.availableCharsets().firstKey());
-		masterBot.setDccInetAddress(InetAddress.getLoopbackAddress());
+		masterBot.setDccInetAddress(InetAddress.getByName("127.0.0.1"));
 		masterBot.getDccPorts().clear();
 		masterBot.getDccPorts().add(555);
 		masterBot.getDccPorts().add(666);
