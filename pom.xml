@@ -113,6 +113,7 @@
 	</dependencies>
 	
 	<build>
+		<sourceDirectory>target/generated-sources/delombok</sourceDirectory>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
@@ -195,39 +196,27 @@
 							<configuration>
 								<defaultAuthor>Leon Blakey</defaultAuthor>
 								<defaultVersion>${project.version}</defaultVersion>
-								<sourcepath>target/src-delomboked</sourcepath>
+								<sourcepath>target/generated-sources/delombok</sourcepath>
 								<show>public</show>
 							</configuration>
 						</plugin>
 					</reportPlugins> 
 				</configuration>
 			</plugin>
-			<!--Delombok sources for Javadoc-->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.2.1</version>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok-maven-plugin</artifactId>
+				<version>0.11.2.0</version>
 				<executions>
 					<execution>
-						<id>delombok-source</id>
 						<phase>generate-sources</phase>
 						<goals>
-							<goal>exec</goal>
+							<goal>delombok</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<executable>java</executable>
-					<classpathScope>compile</classpathScope>
-					<arguments>
-						<argument>-classpath</argument>
-						<classpath />
-						<argument>lombok.core.Main</argument>
-						<argument>delombok</argument>
-						<argument>src/main/java</argument>
-						<argument>-d</argument>
-						<argument>target/src-delomboked</argument>
-					</arguments>
+					<sourceDirectory>src/main/java</sourceDirectory>
 				</configuration>
 			</plugin>
 			<!--JavaDoc setup for Jars-->
@@ -268,4 +257,35 @@
 			<url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
 		</site>
 	</distributionManagement>
+	
+	<profiles>
+		<!--Lombok tools.jar config-->
+		<profile>
+			<id>lombok-needs-tools-jar</id>
+			<activation>
+				<file>
+					<exists>${java.home}/../lib/tools.jar</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok-maven-plugin</artifactId>
+						<version>0.11.2.0</version>
+						<dependencies>
+							<dependency>
+								<groupId>sun.jdk</groupId>
+								<artifactId>tools</artifactId>
+								<version>1.6</version>
+								<scope>system</scope>
+								<systemPath>${java.home}/../lib/tools.jar</systemPath>
+							</dependency>
+						</dependencies>        
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 </project>
