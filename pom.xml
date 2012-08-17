@@ -209,7 +209,7 @@
 				<version>0.11.2.0</version>
 				<executions>
 					<execution>
-						<phase>generate-sources</phase>
+						<phase>process-sources</phase>
 						<goals>
 							<goal>delombok</goal>
 						</goals>
