@@ -609,11 +609,11 @@ public class PircBotX {
 			outputThread.sendRawLineNow(line);
 	}
 
-	protected void sendRawLineSplit(String prefix, String message) {
+	public void sendRawLineSplit(String prefix, String message) {
 		sendRawLineSplit(prefix, message, "");
 	}
 
-	protected void sendRawLineSplit(String prefix, String message, String suffix) {
+	public void sendRawLineSplit(String prefix, String message, String suffix) {
 		//Make sure suffix is valid
 		if (suffix == null)
 			suffix = "";
