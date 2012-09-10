@@ -38,7 +38,6 @@ public class InputThread extends Thread {
 	private Socket socket;
 	private BufferedReader breader = null;
 	private boolean isConnected = true;
-	public static final int MAX_LINE_LENGTH = 512;
 
 	/**
 	 * The InputThread reads lines from the IRC server and allows the

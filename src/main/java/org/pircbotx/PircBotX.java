@@ -164,6 +164,11 @@ public class PircBotX {
 	@Setter
 	protected boolean autoReconnectChannels;
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
+	/**
+	 * @see #getMaxLineLength() 
+	 */
+	@Setter
+	protected int maxLineLength = 512;
 
 	/**
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
@@ -2227,14 +2232,13 @@ public class PircBotX {
 	/**
 	 * Gets the maximum length of any line that is sent via the IRC protocol.
 	 * The IRC RFC specifies that line lengths, including the trailing \r\n
-	 * must not exceed 512 bytes. Hence, there is currently no option to
-	 * change this value in PircBotX. All lines greater than this length
+	 * must not exceed 512 bytes. All lines greater than this length
 	 * will be truncated before being sent to the IRC server.
 	 *
-	 * @return The maximum line length (currently fixed at 512)
+	 * @return The maximum line length (default 512)
 	 */
 	public int getMaxLineLength() {
-		return InputThread.MAX_LINE_LENGTH;
+		return maxLineLength;
 	}
 
 	/**
