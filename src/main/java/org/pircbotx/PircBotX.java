@@ -622,7 +622,7 @@ public class PircBotX {
 		String finalMessage = prefix + message + suffix;
 		int realMaxLineLength = getMaxLineLength() - 2;
 		if (!autoSplitMessage || finalMessage.length() < realMaxLineLength) {
-			//Length is good (or auto split message is set), just go ahead and send it
+			//Length is good (or auto split message is false), just go ahead and send it
 			sendRawLine(finalMessage);
 			return;
 		}
