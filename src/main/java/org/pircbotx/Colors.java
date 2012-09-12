@@ -50,10 +50,9 @@ package org.pircbotx;
  *
  *
  * @since   PircBot 0.9.12
- * @author  Originally by:
- *          <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
- *          <p>Forked and Maintained by in <a href="http://pircbotx.googlecode.com">PircBotX</a>:
- *          Leon Blakey <lord.quackstar at gmail.com>
+ * @author Origionally by:
+ * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
+ * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 public final class Colors {
 	/**
