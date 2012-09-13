@@ -570,6 +570,7 @@ public class PircBotXProcessingTest {
 	public void whoisTest() {
 		bot.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
 		bot.handleLine(":irc.someserver.net 319 PircBotXUser OtherUser :+#aChannel ##anotherChannel");
+		bot.handleLine(":irc.someserver.net 317 PircBotXUser OtherUser 6077 1347373349 :seconds idle, signon time");
 		bot.handleLine(":irc.someserver.net 312 PircBotXUser OtherUser irc2.someserver.net :" + aString + aString);
 		bot.handleLine(":irc.someserver.net 318 PircBotXUser OtherUser :End of /WHOIS list.");
 
@@ -581,6 +582,8 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getRealname(), aString, "Real name does not match given");
 		assertEquals(event.getServer(), "irc2.someserver.net", "Server address wrong");
 		assertEquals(event.getServerInfo(), aString + aString, "Server info wrong");
+		assertEquals(event.getIdleSeconds(), 6077, "Idle time doesn't match given");
+		assertEquals(event.getSignOnTime(), 1347373349, "Sign on time doesn't match given");
 
 		//Verify channels
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
