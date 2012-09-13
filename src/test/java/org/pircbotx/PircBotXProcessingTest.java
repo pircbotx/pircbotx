@@ -594,7 +594,7 @@ public class PircBotXProcessingTest {
 	/**
 	 * After simulating a server response, call this to get a specific Event from
 	 * the Event set. Note that if the event does not exist an Assertion error will
-	 * be thrown. Also note that only the last occurence of the event will be fetched
+	 * be thrown. Also note that only the last occurrence of the event will be fetched
 	 * @param <B> The event type to be fetched
 	 * @param clazz The class of the event type
 	 * @param errorMessage An error message if the event type does not exist
