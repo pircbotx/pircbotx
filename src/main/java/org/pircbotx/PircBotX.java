@@ -276,7 +276,7 @@ public class PircBotX {
 		// Connect to the server by DNS server
 		Throwable lastException = null;
 		for (InetAddress curAddress : InetAddress.getAllByName(hostname)) {
-			System.out.println("Trying address " + curAddress);
+			log("*** Trying address " + curAddress);
 			try {
 				//Create socket from appropiate place
 				if (socketFactory == null)
