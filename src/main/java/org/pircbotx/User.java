@@ -197,4 +197,12 @@ public class User implements Comparable<User> {
 	public int getHops() {
 		return hops;
 	}
+
+	/**
+	 * Send a message to this user. See {@link PircBotX#sendMessage(org.pircbotx.User, java.lang.String)}
+	 * for more information
+	 */
+	public void sendMessage(String message) {
+		getBot().sendMessage(this, message);
+	}
 }

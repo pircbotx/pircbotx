@@ -474,4 +474,12 @@ public class Channel {
 		halfOps.remove(user);
 		owners.remove(user);
 	}
+
+	/**
+	 * Send a message to this channel. See {@link PircBotX#sendMessage(org.pircbotx.Channel, java.lang.String)}
+	 * for more information
+	 */
+	public void sendMessage(String message) {
+		getBot().sendMessage(this, message);
+	}
 }
