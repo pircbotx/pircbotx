@@ -2718,6 +2718,7 @@ public class PircBotX {
 		//Close the socket from here and let the threads die
 		try {
 			socket.close();
+			outputThread.interrupt();
 		} catch (Exception e) {
 			//Something went wrong, interrupt to make sure they are closed
 			outputThread.interrupt();
