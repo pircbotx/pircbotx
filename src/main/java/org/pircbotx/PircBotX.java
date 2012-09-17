@@ -2746,19 +2746,19 @@ public class PircBotX {
 		channelListBuilder.finish();
 
 		//Dispatch event
-		getListenerManager().dispatchEvent(new DisconnectEvent(this));
-		log("*** Disconnected.");
-
 		if (!autoReconnect || noReconnect)
-			return;
-		try {
-			reconnect();
-			if (autoReconnectChannels)
-				for (Map.Entry<String, String> curEntry : previousChannels.entrySet())
-					joinChannel(curEntry.getKey(), curEntry.getValue());
-		} catch (Exception e) {
-			//Not much we can do with it
-			logException(e);
+			try {
+				reconnect();
+				if (autoReconnectChannels)
+					for (Map.Entry<String, String> curEntry : previousChannels.entrySet())
+						joinChannel(curEntry.getKey(), curEntry.getValue());
+			} catch (Exception e) {
+				//Not much we can do with it
+				logException(e);
+			}
+		else {
+			getListenerManager().dispatchEvent(new DisconnectEvent(this));
+			log("*** Disconnected.");
 		}
 	}
 
