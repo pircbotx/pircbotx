@@ -2746,7 +2746,7 @@ public class PircBotX {
 		channelListBuilder.finish();
 
 		//Dispatch event
-		if (!autoReconnect || noReconnect)
+		if (!autoReconnect || !noReconnect)
 			try {
 				reconnect();
 				if (autoReconnectChannels)
