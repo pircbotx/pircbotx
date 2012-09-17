@@ -67,7 +67,7 @@ public class OutputThread extends Thread {
 				bot.log(">>>" + line);
 			} catch (Exception e) {
 				//Not much else we can do, but this requires attention of whatever is calling this
-				throw new RuntimeException("Exception encountered when writng to socket", e);
+				throw new RuntimeException("Exception encountered when writing to socket", e);
 			}
 		}
 	}
