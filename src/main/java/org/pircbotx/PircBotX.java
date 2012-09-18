@@ -2760,7 +2760,7 @@ public class PircBotX {
 						joinChannel(curEntry.getKey(), curEntry.getValue());
 			} catch (Exception e) {
 				//Not much we can do with it
-				logException(e);
+				throw new RuntimeException("Can't reconnect to server", e);
 			}
 		else {
 			getListenerManager().dispatchEvent(new DisconnectEvent(this));
