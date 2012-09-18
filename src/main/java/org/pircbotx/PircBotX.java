@@ -262,115 +262,121 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public synchronized void connect(String hostname, int port, String password, SocketFactory socketFactory) throws IOException, IrcException, NickAlreadyInUseException {
-		server = hostname;
-		this.port = port;
-		this.password = password;
-		this.socketFactory = socketFactory;
+		try {
+			server = hostname;
+			this.port = port;
+			this.password = password;
+			this.socketFactory = socketFactory;
 
-		if (isConnected())
-			throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
+			if (isConnected())
+				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
 
-		// Clear everything we may have know about channels.
-		userChanInfo.clear();
+			// Clear everything we may have know about channels.
+			userChanInfo.clear();
 
-		// Connect to the server by DNS server
-		Throwable lastException = null;
-		for (InetAddress curAddress : InetAddress.getAllByName(hostname)) {
-			log("*** Trying address " + curAddress);
-			try {
-				//Create socket from appropiate place
-				if (socketFactory == null)
-					socket = new Socket(hostname, port, inetAddress, 0);
-				else
-					socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
+			// Connect to the server by DNS server
+			Throwable lastException = null;
+			for (InetAddress curAddress : InetAddress.getAllByName(hostname)) {
+				log("*** Trying address " + curAddress);
+				try {
+					//Create socket from appropiate place
+					if (socketFactory == null)
+						socket = new Socket(hostname, port, inetAddress, 0);
+					else
+						socket = socketFactory.createSocket(hostname, port, inetAddress, 0);
 
-				//No exception, assume successful
-				break;
-			} catch (Throwable t) {
-				this.log("*** Unable to connect to " + hostname + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.");
-				lastException = t;
-			}
-		}
-
-		//Make sure were connected
-		if (socket == null || (socket != null && !socket.isConnected())) {
-			this.log("*** Unable to connect to any working IP address for hostname " + hostname);
-			throw new IOException("Unable to connect to the IRC network " + hostname, lastException);
-		}
-		this.log("*** Connected to server.");
-
-		inetAddress = socket.getLocalAddress();
-
-		InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), getEncoding());
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
-
-		BufferedReader breader = new BufferedReader(inputStreamReader);
-		BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
-
-		//Construct the output and input threads
-		inputThread = createInputThread(socket, breader);
-		outputThread = createOutputThread(bwriter);
-		outputThread.start();
-
-		// Attempt to join the server.
-		if (webIrcPassword != null)
-			outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
-		if (password != null && !password.trim().equals(""))
-			outputThread.sendRawLineNow("PASS " + password);
-		String tempNick = getName();
-		outputThread.sendRawLineNow("NICK " + tempNick);
-		outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
-
-		// Read stuff back from the server to see if we connected.
-		String line;
-		int tries = 1;
-		while ((line = breader.readLine()) != null) {
-			handleLine(line);
-
-			int firstSpace = line.indexOf(" ");
-			int secondSpace = line.indexOf(" ", firstSpace + 1);
-			if (secondSpace >= 0) {
-				String code = line.substring(firstSpace + 1, secondSpace);
-
-				//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
-				String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
-				if (Arrays.asList(codes).contains(code))
-					// We're connected to the server.
+					//No exception, assume successful
 					break;
-				else if (code.equals("433"))
-					//EXAMPLE: AnAlreadyUsedName :Nickname already in use
-					//Nickname in use, rename
-					if (autoNickChange) {
-						tries++;
-						tempNick = getName() + tries;
-						outputThread.sendRawLineNow("NICK " + tempNick);
-					} else {
-						socket.close();
-						inputThread = null;
-						throw new NickAlreadyInUseException(line);
-					}
-				else if (code.equals("439")) {
-					//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
-					// No action required.
-				} else if (code.startsWith("5") || code.startsWith("4")) {
-					socket.close();
-					inputThread = null;
-					throw new IrcException("Could not log into the IRC server: " + line);
+				} catch (Throwable t) {
+					this.log("*** Unable to connect to " + hostname + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.");
+					lastException = t;
 				}
 			}
-			this.nick = tempNick;
+
+			//Make sure were connected
+			if (socket == null || (socket != null && !socket.isConnected())) {
+				this.log("*** Unable to connect to any working IP address for hostname " + hostname);
+				throw new IOException("Unable to connect to the IRC network " + hostname, lastException);
+			}
+			this.log("*** Connected to server.");
+
+			inetAddress = socket.getLocalAddress();
+
+			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), getEncoding());
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
+
+			BufferedReader breader = new BufferedReader(inputStreamReader);
+			BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
+
+			//Construct the output and input threads
+			inputThread = createInputThread(socket, breader);
+			outputThread = createOutputThread(bwriter);
+			outputThread.start();
+
+			// Attempt to join the server.
+			if (webIrcPassword != null)
+				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
+			if (password != null && !password.trim().equals(""))
+				outputThread.sendRawLineNow("PASS " + password);
+			String tempNick = getName();
+			outputThread.sendRawLineNow("NICK " + tempNick);
+			outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
+
+			// Read stuff back from the server to see if we connected.
+			String line;
+			int tries = 1;
+			while ((line = breader.readLine()) != null) {
+				handleLine(line);
+
+				int firstSpace = line.indexOf(" ");
+				int secondSpace = line.indexOf(" ", firstSpace + 1);
+				if (secondSpace >= 0) {
+					String code = line.substring(firstSpace + 1, secondSpace);
+
+					//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
+					String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
+					if (Arrays.asList(codes).contains(code))
+						// We're connected to the server.
+						break;
+					else if (code.equals("433"))
+						//EXAMPLE: AnAlreadyUsedName :Nickname already in use
+						//Nickname in use, rename
+						if (autoNickChange) {
+							tries++;
+							tempNick = getName() + tries;
+							outputThread.sendRawLineNow("NICK " + tempNick);
+						} else {
+							socket.close();
+							inputThread = null;
+							throw new NickAlreadyInUseException(line);
+						}
+					else if (code.equals("439")) {
+						//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
+						// No action required.
+					} else if (code.startsWith("5") || code.startsWith("4")) {
+						socket.close();
+						inputThread = null;
+						throw new IrcException("Could not log into the IRC server: " + line);
+					}
+				}
+				this.nick = tempNick;
+			}
+
+			loggedIn = true;
+			log("*** Logged onto server.");
+
+			// This makes the socket timeout on read operations after 5 minutes.
+			socket.setSoTimeout(getSocketTimeout());
+
+			//Start input to start accepting lines
+			inputThread.start();
+
+			getListenerManager().dispatchEvent(new ConnectEvent(this));
+		} catch (IOException e) {
+			socket.close();
+			outputThread.interrupt();
+			throw new IOException("Can't connect to server", e);
 		}
-
-		loggedIn = true;
-		log("*** Logged onto server.");
-
-		// This makes the socket timeout on read operations after 5 minutes.
-		socket.setSoTimeout(getSocketTimeout());
-
-		//Start input to start accepting lines
-		inputThread.start();
-
-		getListenerManager().dispatchEvent(new ConnectEvent(this));
 	}
 
 	protected InputThread createInputThread(Socket socket, BufferedReader breader) {
