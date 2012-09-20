@@ -414,6 +414,9 @@ public class PircBotX {
 		} catch (IrcException e) {
 			getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
 			throw e;
+		} catch (RuntimeException e) {
+			getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
+			throw e;
 		}
 		//Should be good
 		getListenerManager().dispatchEvent(new ReconnectEvent(this, true, null));
