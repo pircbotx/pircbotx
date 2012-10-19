@@ -196,7 +196,7 @@
 							<configuration>
 								<defaultAuthor>Leon Blakey</defaultAuthor>
 								<defaultVersion>${project.version}</defaultVersion>
-								<sourcepath>target/generated-sources/delombok</sourcepath>
+								<sourcepath>target/delombok</sourcepath>
 								<show>public</show>
 							</configuration>
 						</plugin>
@@ -219,6 +219,8 @@
 				<configuration>
 					<addOutputDirectory>false</addOutputDirectory>
 					<sourceDirectory>src/main/java</sourceDirectory>
+					<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
+					<outputDirectory>target/delombok</outputDirectory>
 				</configuration>
 			</plugin>
 			<!--JavaDoc setup for Jars-->
@@ -229,7 +231,7 @@
 				<configuration>
 					<defaultAuthor>Leon Blakey</defaultAuthor>
 					<defaultVersion>${project.version}</defaultVersion>
-					<sourcepath>target/generated-sources/delombok</sourcepath>
+					<sourcepath>target/delombok</sourcepath>
 				</configuration>
 			</plugin>
 			<!--Use very verbose logging while testing-->
