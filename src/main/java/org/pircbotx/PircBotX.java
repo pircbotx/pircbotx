@@ -1910,6 +1910,10 @@ public class PircBotX {
 			//317 TheLQ md_5 6077 1347373349 :seconds idle, signon time
 			whoisBuilder.get(parsed[1]).setIdleSeconds(Long.parseLong(parsed[2]));
 			whoisBuilder.get(parsed[1]).setSignOnTime(Long.parseLong(parsed[3]));
+		} else if (code == 330) { 
+			//RPL_WHOISACCOUNT: Extra Whois info
+			//330 TheLQ Utoxin Utoxin :is logged in as
+			whoisBuilder.get(parsed[1]).setRegisteredAs(parsed[2]);
 		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
