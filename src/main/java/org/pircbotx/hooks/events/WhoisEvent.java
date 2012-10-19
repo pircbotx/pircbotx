@@ -63,6 +63,7 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		protected String serverInfo;
 		protected long idleSeconds;
 		protected long signOnTime;
+		protected String registeredAs;
 
 		public List<String> getChannels() {
 			return Collections.unmodifiableList(channels);
@@ -89,6 +90,8 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		public long getIdleSeconds();
 		
 		public long getSignOnTime();
+		
+		public String getRegisteredAs();
 
 		@Override
 		public String toString();
