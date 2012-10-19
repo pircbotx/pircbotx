@@ -40,7 +40,6 @@ public class ServerInfo {
 	public void parse(int code, String input) {
 		//Strip off name, irrelevant
 		String[] parts = input.split(" ", 2);
-		bot.log("---RECIEVED: " + input);
 
 		//Pass off to speicific methods
 		if (parts[0].equals("004"))
