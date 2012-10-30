@@ -296,7 +296,7 @@ public class PircBotX {
 			//Make sure were connected
 			if (socket == null || (socket != null && !socket.isConnected())) {
 				this.log("*** Unable to connect to any working IP address for hostname " + hostname);
-				throw new IOException("Unable to connect to the IRC network " + hostname, lastException);
+				throw new IOException("Unable to connect to the IRC network " + hostname + " (last connection attempt exception attached)", lastException);
 			}
 			this.log("*** Connected to server.");
 
