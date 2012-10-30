@@ -1,4 +1,4 @@
-/**
+ /**
  * Copyright (C) 2010-2011 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
@@ -262,6 +262,24 @@ public class PircBotXOutputTest {
 	public void sendNoticeStringTest() throws Exception {
 		bot.sendNotice("aUser", aString);
 		checkOutput("NOTICE aUser :" + aString);
+	}
+
+	@Test(description = "Verify quit")
+	public void sendDisconnect() throws Exception {
+		bot.disconnect();
+		checkOutput("QUIT :");
+	}
+
+	@Test
+	public void sendQuit() throws Exception {
+		bot.quitServer();
+		checkOutput("QUIT :");
+	}
+
+	@Test
+	public void sendQuitMessage() throws Exception {
+		bot.quitServer(aString);
+		checkOutput("QUIT :" + aString);
 	}
 
 	/**
