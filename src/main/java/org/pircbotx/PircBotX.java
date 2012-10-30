@@ -375,7 +375,8 @@ public class PircBotX {
 		} catch (IOException e) {
 			if (socket != null)
 				socket.close();
-			outputThread.interrupt();
+			if (outputThread != null)
+				outputThread.interrupt();
 			throw new IOException("Can't connect to server", e);
 		}
 	}
