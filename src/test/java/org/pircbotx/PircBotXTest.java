@@ -116,7 +116,7 @@ public class PircBotXTest {
 		//Create user by getting an known one
 		smallBot.getUser("SomeUser");
 		//Make sure it exists
-		smallBot.userExists("SomeUser");
+		assertTrue(smallBot.userExists("SomeUser"));
 	}
 
 	@Test(dependsOnMethods = "getChannelTest", description = "Make sure channelExists works")
@@ -124,7 +124,7 @@ public class PircBotXTest {
 		//Create channel by getting an unknown one
 		smallBot.getChannel("#aChannel");
 		//Make sure it exists
-		smallBot.channelExists("#aChannel");
+		assertTrue(smallBot.channelExists("#aChannel"));
 	}
 
 	@Test(description = "Verify getting the bots own user object works")
