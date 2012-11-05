@@ -200,6 +200,11 @@
 								<show>public</show>
 							</configuration>
 						</plugin>
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>cobertura-maven-plugin</artifactId>
+							<version>2.5.2</version>
+						</plugin>
 					</reportPlugins> 
 				</configuration>
 			</plugin>
