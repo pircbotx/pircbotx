@@ -29,16 +29,20 @@ import org.testng.annotations.Test;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MassEventTest {
-	@Test(dataProvider = "getEvents", dataProviderClass = TestUtils.class, description = "Verify constructor of Events")
-	public void constructorTest(Class<?> event) {
-		//Is there only one constructor?
+	@Test(description = "Verify event has a single constructor", dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	public void singleConstructorTest(Class<?> event) {
 		assertEquals(event.getDeclaredConstructors().length, 1, TestUtils.wrapClass(event, "No constructor or extra constructor found"));
+	}
 
-		//Is the first parameter a bot refrence?
+	@Test(description = "Verify event has a single constructor", dependsOnMethods = "singleConstructorTest", dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	public void firstConstructorArgBotTest(Class<?> event) {
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		assertEquals(constructor.getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
+	}
 
-		//Are the number of fields and constructor parameters equal?
+	@Test(description = "Verify number of class fields and number of constructor params match", dependsOnMethods = "singleConstructorTest", dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	public void constructorParamToFieldTest(Class<?> event) {
+		Constructor constructor = event.getDeclaredConstructors()[0];
 		//(subtract one parameter to account for bot)
 		assertEquals(constructor.getParameterTypes().length - 1, event.getDeclaredFields().length, TestUtils.wrapClass(event, "Number of constructor parameters don't match number of fields"));
 	}
