@@ -2579,6 +2579,14 @@ public class PircBotX {
 	}
 
 	/**
+	 * Get all users that this bot knows about.
+	 * @return An immutable view of all current users
+	 */
+	public Set<User> getUsers() {
+		return userChanInfo.getBValues();
+	}
+
+	/**
 	 * Gets an existing user or creates a new one.
 	 * @param nick
 	 * @return The requested User. Never is null
