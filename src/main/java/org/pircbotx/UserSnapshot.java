@@ -52,7 +52,6 @@ public class UserSnapshot extends User {
 		super.setAway(user.isAway());
 		super.setHops(user.getHops());
 		super.setHostmask(user.getHostmask());
-		super.setIdentified(user.isIdentified());
 		super.setIrcop(user.isIrcop());
 		super.setLogin(user.getLogin());
 		super.setRealName(user.getRealName());
@@ -83,11 +82,6 @@ public class UserSnapshot extends User {
 
 	@Override
 	void setHostmask(String hostmask) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
-	}
-
-	@Override
-	void setIdentified(boolean identified) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}
 
