@@ -41,7 +41,7 @@ public class ConnectEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Responds by sending a <b>raw line</b> to the server.
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

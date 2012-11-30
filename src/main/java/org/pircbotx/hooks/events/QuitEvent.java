@@ -26,7 +26,7 @@ import org.pircbotx.UserSnapshot;
 
 /**
  * This event is dispatched whenever someone (possibly us) quits from the
- * server.  We will only observe this if the user was in one of the
+ * server. We will only observe this if the user was in one of the
  * channels to which we are connected.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -49,9 +49,9 @@ public class QuitEvent<T extends PircBotX> extends Event<T> {
 	}
 
 	/**
-	 * Does NOT respond! This will throw an {@link UnsupportedOperationException} 
+	 * Does NOT respond! This will throw an {@link UnsupportedOperationException}
 	 * since we can't respond to a user that just quit
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

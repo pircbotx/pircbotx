@@ -52,9 +52,10 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 	}
 
 	/**
-	 * Respond with a channel message in <code>user: message</code> format to
+	 * Respond with a channel message in
+	 * <code>user: message</code> format to
 	 * the user that sent the message
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

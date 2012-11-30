@@ -47,7 +47,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> {
 	 * @param user The user that set the topic.
 	 * @param date When the topic was set (milliseconds since the epoch).
 	 * @param changed True if the topic has just been changed, false if
-	 *                the topic was already there.
+	 * the topic was already there.
 	 */
 	public TopicEvent(T bot, Channel channel, String topic, User user, long date, boolean changed) {
 		super(bot);
@@ -59,9 +59,10 @@ public class TopicEvent<T extends PircBotX> extends Event<T> {
 	}
 
 	/**
-	 * Respond with a channel message in <code>user: message</code> format to the
+	 * Respond with a channel message in
+	 * <code>user: message</code> format to the
 	 * user that set the message
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

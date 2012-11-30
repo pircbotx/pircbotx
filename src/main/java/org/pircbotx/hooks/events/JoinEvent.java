@@ -49,9 +49,10 @@ public class JoinEvent<T extends PircBotX> extends Event<T> {
 	}
 
 	/**
-	 * Respond with a channel message in <code>user: message</code> format to
+	 * Respond with a channel message in
+	 * <code>user: message</code> format to
 	 * the user that joined
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

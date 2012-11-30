@@ -27,13 +27,13 @@ import org.pircbotx.PircBotX;
 
 /**
  * Used when the mode of a channel is set.
- *  <p>
+ * <p>
  * You may find it more convenient to decode the meaning of the mode
  * string by using instead {@link OpEvent}, {@link VoiceEvent},
  * {@link SetChannelKeyEvent}, {@link RemoveChannelKeyEvent},
- * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent}, 
+ * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent},
  * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
- *  <p>
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -59,8 +59,9 @@ public class ModeEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
-	 * in <code>user: message</code> format
-	 * @param response The response to send 
+	 * in
+	 * <code>user: message</code> format
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

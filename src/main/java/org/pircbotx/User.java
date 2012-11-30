@@ -31,9 +31,9 @@ import lombok.Setter;
 
 /**
  * Represents a User on the server. Contains all the available information about
- * the user as well as some useful delegate methods. 
+ * the user as well as some useful delegate methods.
  * status.
- * @since   PircBot 1.0.0
+ * @since PircBot 1.0.0
  * @author Origionally by:
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
@@ -98,10 +98,10 @@ public class User implements Comparable<User> {
 
 	/**
 	 * Get all channels user has Operator status in
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
-	 *         channels user has Operator status in
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
+	 * channels user has Operator status in
 	 */
 	public Set<Channel> getChannelsOpIn() {
 		Set<Channel> channels = new HashSet();
@@ -113,10 +113,10 @@ public class User implements Comparable<User> {
 
 	/**
 	 * Get all channels user has Voice status in
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
-	 *         channels user has Voice status in
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
+	 * channels user has Voice status in
 	 */
 	public Set<Channel> getChannelsVoiceIn() {
 		Set<Channel> channels = new HashSet();
@@ -128,10 +128,10 @@ public class User implements Comparable<User> {
 
 	/**
 	 * Get all channels user has Owner status in
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
-	 *         channels user has Owner status in
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
+	 * channels user has Owner status in
 	 */
 	public Set<Channel> getChannelsOwnerIn() {
 		Set<Channel> channels = new HashSet();
@@ -143,10 +143,10 @@ public class User implements Comparable<User> {
 
 	/**
 	 * Get all channels user has Half Operator status in
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
-	 *         channels user has Half Operator status in
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
+	 * channels user has Half Operator status in
 	 */
 	public Set<Channel> getChannelsHalfOpIn() {
 		Set<Channel> channels = new HashSet();
@@ -158,10 +158,10 @@ public class User implements Comparable<User> {
 
 	/**
 	 * Get all channels user has Super Operator status in
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all 
-	 *         channels user has Super Operator status in
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
+	 * channels user has Super Operator status in
 	 */
 	public Set<Channel> getChannelsSuperOpIn() {
 		Set<Channel> channels = new HashSet();

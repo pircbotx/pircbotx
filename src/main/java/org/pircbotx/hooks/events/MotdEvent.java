@@ -25,7 +25,8 @@ import org.pircbotx.PircBotX;
 
 /**
  * This event is dispatched when the Motd is finished being sent. Motd lines are
- * separated by <code>\n</code>
+ * separated by
+ * <code>\n</code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -45,7 +46,7 @@ public class MotdEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Responds by sending a <b>raw line</b> to the server.
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

@@ -32,11 +32,11 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
 /**
- * Represents a Channel that we're joined to. Contains all the available 
+ * Represents a Channel that we're joined to. Contains all the available
  * information about the channel, as well as delegate methods for useful functions
- * like {@link #op(org.pircbotx.User) giving op} or 
+ * like {@link #op(org.pircbotx.User) giving op} or
  * {@link #voice(org.pircbotx.User) voice} status.
- * @author  Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 @ToString(exclude = {"ops", "voices"}, doNotUseGetters = true)
@@ -84,7 +84,7 @@ public class Channel {
 
 	protected void parseMode(String rawMode) {
 		if (rawMode.contains(" ")) {
-			//Mode contains arguments which are impossible to parse. 
+			//Mode contains arguments which are impossible to parse.
 			//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
 			//Need to ask server
 			modeStale = true;
@@ -106,13 +106,13 @@ public class Channel {
 
 	/**
 	 * Gets the channel mode. If mode is simple (no arguments), this will return immediately.
-	 * If its not (mode with arguments, eg channel key), then asks the server for the 
+	 * If its not (mode with arguments, eg channel key), then asks the server for the
 	 * correct mode, waiting until it gets a response
 	 * <p>
 	 * <b>WARNING:</b> Because of the last checking, a threaded listener manager like
 	 * {@link ThreadedListenerManager} is required. Using a single threaded listener
 	 * manager like {@link GenericListenerManager} will mean this method <i>never returns</i>!
-	 * @return A known good mode, either immediatly or soon. 
+	 * @return A known good mode, either immediatly or soon.
 	 */
 	public String getMode() {
 		if (!modeStale)
@@ -242,7 +242,7 @@ public class Channel {
 	/**
 	 * Get all users that don't have any special status in this channel. This means
 	 * that they aren't ops, have voice, superops, halops, or owners in this channel
-	 * @return An <i>unmodifiable</i> Set (IE snapshot)  of non-special users in the channel
+	 * @return An <i>unmodifiable</i> Set (IE snapshot) of non-special users in the channel
 	 */
 	public Set<User> getNormalUsers() {
 		//Build set
@@ -256,8 +256,8 @@ public class Channel {
 	}
 
 	/**
-	 * Gets all opped users in this channel. 
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Gets all opped users in this channel.
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
@@ -266,8 +266,8 @@ public class Channel {
 	}
 
 	/**
-	 * Gets all voiced users in this channel. 
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Gets all voiced users in this channel.
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
@@ -276,8 +276,8 @@ public class Channel {
 	}
 
 	/**
-	 * Gets all users with Owner status in this channel. 
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Gets all users with Owner status in this channel.
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Owner status
 	 */
@@ -286,8 +286,8 @@ public class Channel {
 	}
 
 	/**
-	 * Gets all users with Half Operator status in this channel. 
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Gets all users with Half Operator status in this channel.
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Half Operator status
 	 */
@@ -296,8 +296,8 @@ public class Channel {
 	}
 
 	/**
-	 * Gets all users with Super Operator status in this channel. 
-	 * Be careful when storing the result from this method as it may be out of date 
+	 * Gets all users with Super Operator status in this channel.
+	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Super Operator status
 	 */
@@ -307,8 +307,8 @@ public class Channel {
 
 	/**
 	 * Sets the mode of the channel. If there is a getMode() waiting on this,
-	 * fire it. 
-	 * @param mode 
+	 * fire it.
+	 * @param mode
 	 */
 	void setMode(String mode) {
 		this.mode = mode;
@@ -342,7 +342,7 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Operator status to the given user in this channel. Simply 
+	 * Attempts to give Operator status to the given user in this channel. Simply
 	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to Op
 	 */
@@ -351,7 +351,7 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Operator status from the given user in this channel. 
+	 * Attempts to remove Operator status from the given user in this channel.
 	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to remove Operator status from
 	 */
@@ -368,7 +368,7 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Voice status to the given user in this channel. Simply 
+	 * Attempts to give Voice status to the given user in this channel. Simply
 	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to voice
 	 */
@@ -386,7 +386,7 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Super Operator status to the given user in this channel. Simply 
+	 * Attempts to give Super Operator status to the given user in this channel. Simply
 	 * calls {@link PircBotX#superOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to give Super Operator status
 	 */
@@ -403,8 +403,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Super Operator status from the given user in this channel. 
-	 * Simply calls {@link PircBotX#deSuperOp(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * Attempts to remove Super Operator status from the given user in this channel.
+	 * Simply calls {@link PircBotX#deSuperOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to remove Super Operator status from
 	 */
 	public void deSuperOp(User user) {
@@ -412,7 +412,7 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Owner status to the given user in this channel. Simply 
+	 * Attempts to give Owner status to the given user in this channel. Simply
 	 * calls {@link PircBotX#owner(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to give Owner status to
 	 */
@@ -429,8 +429,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Owner status from the given user in this channel. 
-	 * Simply calls {@link PircBotX#deOwner(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * Attempts to remove Owner status from the given user in this channel.
+	 * Simply calls {@link PircBotX#deOwner(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to remove Owner status from
 	 */
 	public void deOwner(User user) {
@@ -438,8 +438,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Half Operator status to the given user in this channel. Simply 
-	 * calls {@link PircBotX#halfOp(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * Attempts to give Half Operator status to the given user in this channel. Simply
+	 * calls {@link PircBotX#halfOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to give Half Operator status to
 	 */
 	public void halfOp(User user) {
@@ -455,8 +455,8 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Half Operator status from the given user in this channel. 
-	 * Simply calls {@link PircBotX#deHalfOp(org.pircbotx.Channel, org.pircbotx.User)  }
+	 * Attempts to remove Half Operator status from the given user in this channel.
+	 * Simply calls {@link PircBotX#deHalfOp(org.pircbotx.Channel, org.pircbotx.User) }
 	 * @param user The user to attempt to remove Half Operator status from
 	 */
 	public void deHalfOp(User user) {

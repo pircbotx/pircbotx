@@ -27,11 +27,11 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
- * Called when a channel is set to 'invite only' mode.  A user may only
+ * Called when a channel is set to 'invite only' mode. A user may only
  * join the channel if they are invited by someone who is already in the
  * channel.
- *  <p>
- * This is a type of mode change and therefor is also dispatched in a 
+ * <p>
+ * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -55,8 +55,9 @@ public class SetInviteOnlyEvent<T extends PircBotX> extends Event<T> implements 
 
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
-	 * in <code>user: message</code> format
-	 * @param response The response to send 
+	 * in
+	 * <code>user: message</code> format
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

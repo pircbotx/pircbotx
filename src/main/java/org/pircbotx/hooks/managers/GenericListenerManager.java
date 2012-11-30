@@ -30,18 +30,18 @@ import org.pircbotx.PircBotX;
 
 /**
  * Generic ListenerManager based off of a normal event system. This is backed
- * by a simple {@link HashSet} 
- *  <p>
- * Please note: This is a very basic manager offering little security and 
+ * by a simple {@link HashSet}
+ * <p>
+ * Please note: This is a very basic manager offering little security and
  * features. Any long running listener will block all bot operations since its
- * executed in the same thread. Adding any listeners during bot operation 
+ * executed in the same thread. Adding any listeners during bot operation
  * ( Eg {@link PircBotX#waitFor(java.lang.Class) PircBotX's waitFor method}) in
- * another thread is risky since the set might be in use already, throwing a 
- * {@link ConcurrentModificationException}. 
- * 
- * @deprecated  Due to multiple new functions of PircBotX theat depend on multiple 
- * threads, this class is deprecated and is only kept for legacy reasons or special 
- * cases. Use of this class will have unexpected results. All bots should now 
+ * another thread is risky since the set might be in use already, throwing a
+ * {@link ConcurrentModificationException}.
+ * <p/>
+ * @deprecated Due to multiple new functions of PircBotX theat depend on multiple
+ * threads, this class is deprecated and is only kept for legacy reasons or special
+ * cases. Use of this class will have unexpected results. All bots should now
  * use {@link ThreadedListenerManager}.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see ThreadedListenerManager

@@ -29,7 +29,7 @@ import org.pircbotx.hooks.types.GenericCTCPCommand;
 
 /**
  * This event is dispatched whenever we receive a FINGER request.
- *  <p>
+ * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
  * Listeners of this event should <b>not</b> send a response as the user will get
@@ -46,7 +46,7 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param user The user that sent the FINGER request.
-	 * @param channel The target channel of the FINGER request 
+	 * @param channel The target channel of the FINGER request
 	 */
 	public FingerEvent(T bot, User user, Channel channel) {
 		super(bot);
@@ -56,7 +56,7 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 
 	/**
 	 * Respond with a CTCP response to the user
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

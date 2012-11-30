@@ -25,15 +25,15 @@ import org.pircbotx.PircBotX;
 
 /**
  * This event is dispatched when we get disconnected. It is meant for the bot
- * to carry out actions upon disconnection.  This may happen if the PircBotX quits from the
+ * to carry out actions upon disconnection. This may happen if the PircBotX quits from the
  * server, or if the connection is unexpectedly lost.
- *  <p>
+ * <p>
  * Disconnection from the IRC server is detected immediately if either
  * we or the server close the connection normally. If the connection to
  * the server is lost, but neither we nor the server have explicitly closed
  * the connection, then it may take a few minutes to detect (this is
  * commonly referred to as a "ping timeout").
- *  <p>
+ * <p>
  * If you wish to get your IRC bot to automatically rejoin a server after
  * the connection has been lost, then this is probably the ideal event listen for
  * to implement such functionality.
@@ -51,9 +51,9 @@ public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	}
 
 	/**
-	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException} 
-	 * since we can't respond to a server we just disconnected from. 
-	 * @param response The response to send 
+	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException}
+	 * since we can't respond to a server we just disconnected from.
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

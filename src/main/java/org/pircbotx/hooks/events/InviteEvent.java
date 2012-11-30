@@ -39,9 +39,9 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param user The user that sent the invitation. Provided as a string since
-	 *             the user may or may not be in a channel were in
+	 * the user may or may not be in a channel were in
 	 * @param channel The channel that we're being invited to. Provided as a string
-	 *                since we are not joined to the channel yet
+	 * since we are not joined to the channel yet
 	 */
 	public InviteEvent(T bot, String user, String channel) {
 		super(bot);
@@ -51,7 +51,7 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond with a private message to the user who sent the invite
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

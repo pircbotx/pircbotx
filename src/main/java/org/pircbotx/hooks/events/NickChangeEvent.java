@@ -52,7 +52,7 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond by sending a <i>private message</i> to the user's new nick
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

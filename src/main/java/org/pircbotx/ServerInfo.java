@@ -26,11 +26,11 @@ import lombok.Setter;
 /**
  * This is a giant info bean of various things about the server. This is separate
  * from the {@link PircBotX} class due to its length
- * 
+ * <p/>
  * Most info thanks to <a href="www.irc.org/tech_docs/005.html">this great website
  * </a> on what each one does
  *
- * @author  Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 @Setter(AccessLevel.PACKAGE)
