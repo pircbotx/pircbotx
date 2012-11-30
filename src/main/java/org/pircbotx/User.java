@@ -66,7 +66,7 @@ public class User implements Comparable<User> {
 			chan.voices.add(this);
 		if (prefix.contains("%"))
 			chan.halfOps.add(this);
-		if (prefix.contains("~"))
+		if (prefix.contains("r"))
 			chan.owners.add(this);
 		if (prefix.contains("&"))
 			chan.superOps.add(this);
