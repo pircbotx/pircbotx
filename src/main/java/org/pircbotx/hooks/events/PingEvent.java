@@ -49,7 +49,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param user The user that sent the PING request.
 	 * @param channel The channel that received the ping request. A value of <code>null</code>
-	 *               means the target was us.
+	 * means the target was us.
 	 * @param pingValue The value that was supplied as an argument to the PING command.
 	 */
 	public PingEvent(T bot, User user, Channel channel, String pingValue) {
@@ -61,7 +61,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 
 	/**
 	 * Respond with a CTCP response to the user
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

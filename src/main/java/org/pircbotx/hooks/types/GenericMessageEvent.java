@@ -25,7 +25,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
 
 /**
  * Generic event for an incoming message from a user, whether it be a private
- * message, channel message, channel action, etc. 
+ * message, channel message, channel action, etc.
  * <p>
  * Used in {@link MessageEvent} and {@link PrivateMessageEvent}
  * @author Leon Blakey <lord.quackstar@gmail.com>

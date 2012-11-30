@@ -42,7 +42,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param user The nick of the user that sent the notice.
 	 * @param channel The target channel of the notice. A value of <code>null</code>
-	 *               means that the target is us
+	 * means that the target is us
 	 * @param notice The notice message.
 	 */
 	public NoticeEvent(T bot, User user, Channel channel, String notice) {
@@ -61,9 +61,10 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	}
 
 	/**
-	 * Respond by sending a message to the channel in <code>user: message</code>
+	 * Respond by sending a message to the channel in
+	 * <code>user: message</code>
 	 * format.
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

@@ -47,7 +47,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param user The nick of the user that sent the VERSION request.
 	 * @param channel The target channel of the VERSION request. A value of <code>null</code>
-	 *               means that that the target is us.
+	 * means that that the target is us.
 	 */
 	public VersionEvent(T bot, User user, Channel channel) {
 		super(bot);
@@ -57,7 +57,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 
 	/**
 	 * Respond with a CTCP response to the user
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

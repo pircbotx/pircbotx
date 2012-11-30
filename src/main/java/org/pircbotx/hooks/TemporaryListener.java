@@ -29,7 +29,7 @@ import org.pircbotx.PircBotX;
  * will be removed.
  * <p>
  * Note: The reason the {@link #done()} method is used instead of automatically
- * removing is that you may need to check for something before executing. 
+ * removing is that you may need to check for something before executing.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TemporaryListener extends ListenerAdapter {

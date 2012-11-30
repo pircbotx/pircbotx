@@ -284,7 +284,7 @@ public class PircBotXOutputTest {
 
 	/**
 	 * Check the output for one line that equals the expected value.
-	 * @param expected 
+	 * @param expected
 	 */
 	protected void checkOutput(String expected) throws IOException {
 		//Handle the first 2 lines from the bot

@@ -164,7 +164,7 @@ public class PircBotX {
 	protected boolean autoReconnectChannels;
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	/**
-	 * @see #getMaxLineLength() 
+	 * @see #getMaxLineLength()
 	 */
 	@Setter
 	protected int maxLineLength = 512;
@@ -173,7 +173,7 @@ public class PircBotX {
 	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
 	 * to the default ListenerManager, {@link ThreadedListenerManager}. This also
 	 * adds a shutdown hook to the current runtime while will properly shutdown
-	 * the bot by calling {@link #disconnect() } 
+	 * the bot by calling {@link #disconnect() }
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
@@ -1897,7 +1897,7 @@ public class PircBotX {
 			whoisBuilder.put(parsed[1], builder);
 		} else if (code == RPL_WHOISCHANNELS) {
 			//Channel list from whois
-			//319 TheLQ Plazma :+#freenode 
+			//319 TheLQ Plazma :+#freenode
 			String chans = response.split(" ", 3)[2].substring(1);
 			whoisBuilder.get(parsed[1]).setChannels(Arrays.asList(chans.split(" ")));
 		} else if (code == RPL_WHOISSERVER) {
@@ -1911,11 +1911,11 @@ public class PircBotX {
 			//317 TheLQ md_5 6077 1347373349 :seconds idle, signon time
 			whoisBuilder.get(parsed[1]).setIdleSeconds(Long.parseLong(parsed[2]));
 			whoisBuilder.get(parsed[1]).setSignOnTime(Long.parseLong(parsed[3]));
-		} else if (code == 330) { 
+		} else if (code == 330)
 			//RPL_WHOISACCOUNT: Extra Whois info
 			//330 TheLQ Utoxin Utoxin :is logged in as
 			whoisBuilder.get(parsed[1]).setRegisteredAs(parsed[2]);
-		} else if (code == RPL_ENDOFWHOIS) {
+		else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			getListenerManager().dispatchEvent(whoisBuilder.get(parsed[1]).generateEvent(this));
@@ -2677,7 +2677,7 @@ public class PircBotX {
 	/**
 	 * Checks if there is an active shutdown hook for this bot
 	 * @return True if there is, false if not
-	 * @see #useShutdownHook(boolean) 
+	 * @see #useShutdownHook(boolean)
 	 */
 	public boolean hasShutdownHook() {
 		return shutdownHook != null;
@@ -2725,7 +2725,7 @@ public class PircBotX {
 	 * Fully shutdown the bot and all internal resources. This will close the
 	 * connections to the server, kill background threads, clear server specific
 	 * state, and dispatch a DisconnectedEvent
-	 * 
+	 * <p/>
 	 * @param noReconnect Toggle whether to reconnect if enabled. Set to true to
 	 * 100% shutdown the bot
 	 */

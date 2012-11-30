@@ -26,15 +26,17 @@ import java.util.Set;
 
 /**
  * This is a small custom map that supports a Many to Many relationship, based on
- * 2 core <code>HashMap</code>'s with nested <code>HashSet</code>'s for performance.
+ * 2 core
+ * <code>HashMap</code>'s with nested
+ * <code>HashSet</code>'s for performance.
  * <p>
  * A good example of a Many to Many relationship is this IRC bot where you have
  * users and channels. A channel has many users, and users can join many channels.
  * This can be really confusing to store and keep updated manually. This map greatly
  * simplifies this process
- *<P>
- * This class is internally synchronized and fully thread safe. 
- * @author  Leon Blakey <lord.quackstar at gmail.com>
+ * <P>
+ * This class is internally synchronized and fully thread safe.
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ManyToManyMap<A, B> {
 	protected final Map<A, Set<B>> AMap = new HashMap<A, Set<B>>();
@@ -114,7 +116,7 @@ public class ManyToManyMap<A, B> {
 	}
 
 	/**
-	 * Gets an <b>immutable</b> view of the B entries associated with the A entry. 
+	 * Gets an <b>immutable</b> view of the B entries associated with the A entry.
 	 * Passing a key that doesn't exist will return an empty set instead of null.
 	 * @param key The A entry to use
 	 * @return An <b>immutable</b> view of the B entries associated with the A entry.
@@ -186,7 +188,7 @@ public class ManyToManyMap<A, B> {
 	 * @param a
 	 * @param b
 	 * @return True if values where dissociated, false if not. False should only
-	 *              happen if one of the entries doesn't exist
+	 * happen if one of the entries doesn't exist
 	 */
 	public boolean dissociate(A a, B b) {
 		return dissociate(a, b, false);
@@ -197,7 +199,7 @@ public class ManyToManyMap<A, B> {
 	 * @param a
 	 * @param b
 	 * @return True if values where dissociated, false if not. False should only
-	 *              happen if one of the entries doesn't exist
+	 * happen if one of the entries doesn't exist
 	 */
 	public boolean dissociate(A a, B b, boolean delete) {
 		synchronized (lockObject) {

@@ -36,7 +36,7 @@ import org.pircbotx.hooks.Listener;
  * in their own dedicated single threads separate from the rest
  * <p>
  * This class is useful for logging listeners or any other listener that needs
- * to process events one at a time instead of simultaneously. 
+ * to process events one at a time instead of simultaneously.
  * <p>
  * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean) }
  * with isBackground set to true

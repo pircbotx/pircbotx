@@ -30,8 +30,8 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
  * Called when a user (possibly us) gets voice status granted in a channel.
- *  <p>
- * This is a type of mode change and therefor is also dispatched in a 
+ * <p>
+ * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -63,7 +63,7 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 	 * Checks if this is a set or remove voice operation
 	 * @return True if this was set, false if removed
 	 * @deprecated Use the better named hasVoice method. Will be removed in future versions
-	 * @see #hasVoice() 
+	 * @see #hasVoice()
 	 */
 	@Deprecated
 	public boolean isVoice() {

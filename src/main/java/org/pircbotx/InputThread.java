@@ -23,7 +23,7 @@ import java.io.InterruptedIOException;
 import java.net.Socket;
 
 /**
- * A Thread which reads lines from the IRC server.  It then
+ * A Thread which reads lines from the IRC server. It then
  * passes these lines to the PircBotX without changing them.
  * This running Thread also detects disconnection from the server
  * and is thus used by the OutputThread to send lines to the server.
@@ -67,9 +67,9 @@ public class InputThread extends Thread {
 	 * Called to start this Thread reading lines from the IRC server.
 	 * When a line is read, this method calls the handleLine method
 	 * in the PircBotX, which may subsequently call an 'onXxx' method
-	 * in the PircBotX subclass.  If any subclass of Throwable (i.e.
+	 * in the PircBotX subclass. If any subclass of Throwable (i.e.
 	 * any Exception or Error) is thrown by your method, then this
-	 * method will print the stack trace to the standard output.  It
+	 * method will print the stack trace to the standard output. It
 	 * is probable that the PircBotX may still be functioning normally
 	 * after such a problem, but the existence of any uncaught exceptions
 	 * in your code is something you should really fix.

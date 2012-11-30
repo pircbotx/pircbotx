@@ -44,9 +44,9 @@ public class ReconnectEvent<T extends PircBotX> extends Event<T> {
 	}
 
 	/**
-	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException} 
-	 * since we can't respond to a server we might not be connected to yet. 
-	 * @param response The response to send 
+	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException}
+	 * since we can't respond to a server we might not be connected to yet.
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

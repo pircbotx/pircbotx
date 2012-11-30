@@ -20,7 +20,7 @@ package org.pircbotx.impl;
 
 /**
  *
- * @author  Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Sandbox {
 	public static void main(String[] args) {

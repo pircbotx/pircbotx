@@ -33,10 +33,10 @@ import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 
 /**
- * This class is used to administer a DCC file transfer. <b>Note:</b> Unlike 
+ * This class is used to administer a DCC file transfer. <b>Note:</b> Unlike
  * PircBot, the methods here do <i>not</i> execute in different threads.
  *
- * @since   PircBot 1.2.0
+ * @since PircBot 1.2.0
  * @author Origionally by:
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
@@ -105,7 +105,7 @@ public class DccFileTransfer implements Closeable {
 	 *
 	 * @param file The file to write to.
 	 * @param resume True if you wish to try and resume the download instead
-	 *               of overwriting an existing file.
+	 * of overwriting an existing file.
 	 *
 	 */
 	public synchronized void receive(File file, boolean resume) {
@@ -263,7 +263,7 @@ public class DccFileTransfer implements Closeable {
 	}
 
 	/**
-	 *  Delay between packets.
+	 * Delay between packets.
 	 */
 	protected void delay() {
 		if (packetDelay > 0)
@@ -343,7 +343,7 @@ public class DccFileTransfer implements Closeable {
 	 * Returns the size (in bytes) of the file being transfered.
 	 *
 	 * @return the size of the file. Returns -1 if the sender did not
-	 *         specify this value.
+	 * specify this value.
 	 */
 	public long getSize() {
 		return size;

@@ -31,7 +31,7 @@ import lombok.Getter;
 /**
  * This class is used to allow the bot to interact with a DCC Chat session.
  *
- * @since   PircBot 0.9c
+ * @since PircBot 0.9c
  * @author Origionally by:
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
@@ -107,11 +107,11 @@ public class DccChat implements Closeable {
 
 	/**
 	 * Reads the next line of text from the client at the other end of our DCC Chat
-	 * connection.  This method blocks until something can be returned.
+	 * connection. This method blocks until something can be returned.
 	 * If the connection has closed, null is returned.
 	 *
-	 * @return The next line of text from the client.  Returns null if the
-	 *          connection has closed normally.
+	 * @return The next line of text from the client. Returns null if the
+	 * connection has closed normally.
 	 *
 	 * @throws IOException If an I/O error occurs.
 	 */
@@ -125,8 +125,8 @@ public class DccChat implements Closeable {
 	 * Sends a line of text to the client at the other end of our DCC Chat
 	 * connection.
 	 *
-	 * @param line The line of text to be sent.  This should not include
-	 *             linefeed characters.
+	 * @param line The line of text to be sent. This should not include
+	 * linefeed characters.
 	 *
 	 * @throws IOException If an I/O error occurs.
 	 */

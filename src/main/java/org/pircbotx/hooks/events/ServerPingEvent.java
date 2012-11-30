@@ -26,7 +26,7 @@ import org.pircbotx.hooks.CoreHooks;
 
 /**
  * The actions to perform when a PING request comes from the server.
- *  <p>
+ * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
  * Listeners of this event should <b>not</b> send a response as the user will get
@@ -50,7 +50,7 @@ public class ServerPingEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond with a <i>raw line</i> to the server
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

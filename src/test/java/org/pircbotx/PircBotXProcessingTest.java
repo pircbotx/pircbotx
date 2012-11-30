@@ -70,7 +70,7 @@ import static org.testng.Assert.*;
 /**
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
  * Any other tests not involving processing lines should be in PircBotXTest
- * 
+ * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(singleThreaded = true)
@@ -391,7 +391,7 @@ public class PircBotXProcessingTest {
 	}
 
 	/**
-	 * Simulate WHO response. 
+	 * Simulate WHO response.
 	 */
 	@Test(description = "Verify WHO response handling + UserListEvent")
 	public void whoTest() {
