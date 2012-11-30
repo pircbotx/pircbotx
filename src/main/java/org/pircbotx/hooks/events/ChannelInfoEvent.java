@@ -30,12 +30,12 @@ import org.pircbotx.hooks.Event;
  * will start to send us information about each channel on the
  * server. You may listen for this event in order to receive the
  * information about each channel as soon as it is received.
- *  <p>
+ * <p>
  * Note that certain channels, such as those marked as hidden,
  * may not appear in channel listings.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see PircBotX#listChannels()
- * @see PircBotX#listChannels(java.lang.String) 
+ * @see PircBotX#listChannels(java.lang.String)
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -54,7 +54,7 @@ public class ChannelInfoEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond by sending a <b>raw line</b> to the server.
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

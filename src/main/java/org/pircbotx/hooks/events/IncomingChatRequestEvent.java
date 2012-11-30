@@ -34,15 +34,15 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * or any operators of the server being able to "spy" on what is being
  * said. By default there are no {@link Listener} for this event,
  * which means that all DCC CHAT requests will be ignored by default.
- *  <p>
+ * <p>
  * If you wish to accept the connection, then you listen for this event
  * and call the {@link DccChat#accept()} method, which
  * connects to the sender of the chat request and allows lines to be
  * sent to and from the bot.
- *  <p>
+ * <p>
  * Your bot must be able to connect directly to the user that sent the
  * request.
- *  <p>
+ * <p>
  * Example:
  * <pre>
  *     DccChat chat = event.getChat();
@@ -71,9 +71,9 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	}
 
 	/**
-	 * Respond with a <i>private message</i> to the user that sent the request, 
+	 * Respond with a <i>private message</i> to the user that sent the request,
 	 * <b>not a message over dcc</b> since it might not of been accepted yet
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

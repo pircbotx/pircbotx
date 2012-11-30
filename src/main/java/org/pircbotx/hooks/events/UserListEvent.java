@@ -29,15 +29,15 @@ import org.pircbotx.PircBotX;
 /**
  * This event is dispatched when we receive a user list from the server
  * after joining a channel.
- *  <p>
+ * <p>
  * Shortly after joining a channel, the IRC server sends a list of all
  * users in that channel. The PircBotX collects this information and
  * dispatched this event as soon as it has the full list.
- *  <p>
+ * <p>
  * To obtain the nick of each user in the channel, call the {@link User#getNick()}
  * method on each User object in the {@link Set}.
- *  <p>
- * At a later time, you may call {@link PircBotX#getUsers(org.pircbotx.Channel) } 
+ * <p>
+ * At a later time, you may call {@link PircBotX#getUsers(org.pircbotx.Channel) }
  * to obtain an up to date list of the users in the channel.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
@@ -62,7 +62,7 @@ public class UserListEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond with a message to the channel that the userlist was from
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

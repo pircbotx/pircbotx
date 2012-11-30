@@ -29,7 +29,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * This event gets dispatched when a DccFileTransfer has finished.
  * If there was a problem, the Exception will say what went wrong.
  * If the file was sent successfully, the Exception will be null.
- *  <p>
+ * <p>
  * Both incoming and outgoing file transfers are passed to this event.
  * You can determine the type by calling the isIncoming or isOutgoing
  * methods on the DccFileTransfer object.
@@ -47,7 +47,7 @@ public class FileTransferFinishedEvent<T extends PircBotX> extends Event<T> impl
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DccFileTransfer that has finished.
 	 * @param e null if the file was transfered successfully, otherwise this
-	 *          will report what went wrong.
+	 * will report what went wrong.
 	 */
 	public FileTransferFinishedEvent(T bot, DccFileTransfer transfer, Exception e) {
 		super(bot);
@@ -57,7 +57,7 @@ public class FileTransferFinishedEvent<T extends PircBotX> extends Event<T> impl
 
 	/**
 	 * Respond by sending a private message to the user that started the file transfer.
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

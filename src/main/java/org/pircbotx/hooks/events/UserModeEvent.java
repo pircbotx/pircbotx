@@ -51,7 +51,7 @@ public class UserModeEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond with a private message to the source user
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

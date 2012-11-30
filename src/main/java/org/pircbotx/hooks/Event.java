@@ -52,7 +52,7 @@ public abstract class Event<T extends PircBotX> {
 	}
 
 	/**
-	 * Returns the id of this event. This id is guaranteed to be unique in the 
+	 * Returns the id of this event. This id is guaranteed to be unique in the
 	 * context of other events dispatched from the same listener managers
 	 * @return The id of this event
 	 */

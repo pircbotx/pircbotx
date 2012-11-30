@@ -23,7 +23,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
- * Any event dealing with CTCP. 
+ * Any event dealing with CTCP.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericCTCPCommand<T extends PircBotX> extends GenericEvent<T> {
@@ -34,7 +34,7 @@ public interface GenericCTCPCommand<T extends PircBotX> extends GenericEvent<T> 
 	public User getUser();
 
 	/**
-	 * Gets the target channel of the CTCP command. If null, then the target was us. 
+	 * Gets the target channel of the CTCP command. If null, then the target was us.
 	 * @return The target channel or null if the target was us
 	 */
 	public Channel getChannel();

@@ -29,12 +29,12 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 /**
  * This event is dispatched whenever a DCC SEND request is sent to the PircBotX.
  * This means that a client has requested to send a file to us.
- * By default there are no {@link Listener listeners} for this event, which means 
+ * By default there are no {@link Listener listeners} for this event, which means
  * that all DCC SEND requests will be ignored by default. If you wish to receive
  * the file, then you must listen for this event and call the receive method
  * on the DccFileTransfer object, which connects to the sender and downloads
  * the file.
- *  <p>
+ * <p>
  * Example:
  * <pre>
  *     DccFileTransfer transfer = event.getTransfer();
@@ -43,17 +43,17 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  *     // Receive the transfer and save it to the file, allowing resuming.
  *     transfer.receive(file, true);
  * </pre>
- *  <p>
+ * <p>
  * <b>Warning:</b> Receiving an incoming file transfer will cause a file
  * to be written to disk. Please ensure that you make adequate security
  * checks so that this file does not overwrite anything important!
- *  <p>
+ * <p>
  * If you allow resuming and the file already partly exists, it will
- * be appended to instead of overwritten.  If resuming is not enabled,
+ * be appended to instead of overwritten. If resuming is not enabled,
  * the file will be overwritten if it already exists.
- *  <p>
- * You can throttle the speed of the transfer by calling 
- * {@link DccFileTransfer#setPacketDelay(long) } method on the DccFileTransfer 
+ * <p>
+ * You can throttle the speed of the transfer by calling
+ * {@link DccFileTransfer#setPacketDelay(long) } method on the DccFileTransfer
  * object, either before you receive the file or at any moment during the transfer.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see DccFileTransfer
@@ -75,7 +75,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 
 	/**
 	 * Respond with a <i>private message</i> to the user that sent the request
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

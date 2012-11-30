@@ -29,8 +29,8 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 /**
  * Called when a channel is set to allow messages from any user, even
  * if they are not actually in the channel.
- *  <p>
- * This is a type of mode change and therefor is also dispatched in a 
+ * <p>
+ * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -54,8 +54,9 @@ public class RemoveNoExternalMessagesEvent<T extends PircBotX> extends Event<T> 
 
 	/**
 	 * Respond by send a message in the channel to the user that removed the mode
-	 * in <code>user: message</code> format
-	 * @param response The response to send 
+	 * in
+	 * <code>user: message</code> format
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

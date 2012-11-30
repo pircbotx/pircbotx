@@ -52,7 +52,7 @@ public class PartEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond by sending a message to the channel
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

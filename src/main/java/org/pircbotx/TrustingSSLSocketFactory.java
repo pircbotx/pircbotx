@@ -33,15 +33,15 @@ import javax.net.ssl.TrustManager;
 
 /**
  * An SSLSocketFactory implementation that treats all certificates as valid. Use with care.
- * 
+ * <p/>
  * @deprecated This class has been superseded by {@link UtilSSLSocketFactory}, which
  * provides much more flexibility and ease of use. This class is kept for backwards
  * compatability only.
- * @author Originally by: 
- *         <a href="http://www.brudvik.org/projects/development/pircbot-with-ssl/">Kjell Arne Brudvik from brudvik.org</a>
- *         <p>Implemented and Maintained in PircBotX by: 
- *         Leon Blakey <lord.quackstar at gmail.com>
- *         
+ * @author Originally by:
+ * <a href="http://www.brudvik.org/projects/development/pircbot-with-ssl/">Kjell Arne Brudvik from brudvik.org</a>
+ * <p>Implemented and Maintained in PircBotX by:
+ * Leon Blakey <lord.quackstar at gmail.com>
+ * <p/>
  */
 @Deprecated
 public class TrustingSSLSocketFactory extends SSLSocketFactory {

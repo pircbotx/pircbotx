@@ -24,7 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * A Thread which is responsible for sending messages to the IRC server.
  * Messages are obtained from the outgoing message queue and sent
- * immediately if possible.  If there is a flood of messages, then to
+ * immediately if possible. If there is a flood of messages, then to
  * avoid getting kicked from a channel, we put a small delay between
  * each one.
  *
@@ -38,9 +38,9 @@ public class OutputThread extends Thread {
 	protected final BufferedWriter bwriter;
 
 	/**
-	 * Constructs an OutputThread for the underlying PircBotX.  All messages
+	 * Constructs an OutputThread for the underlying PircBotX. All messages
 	 * sent to the IRC server are sent by this OutputThread to avoid hammering
-	 * the server.  Messages are sent immediately if possible.  If there are
+	 * the server. Messages are sent immediately if possible. If there are
 	 * multiple messages queued, then there is a delay imposed.
 	 *
 	 * @param bot The underlying PircBotX instance.

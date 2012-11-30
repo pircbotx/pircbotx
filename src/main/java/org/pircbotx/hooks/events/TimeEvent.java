@@ -29,7 +29,7 @@ import org.pircbotx.hooks.types.GenericCTCPCommand;
 
 /**
  * This event is dispatched whenever we receive a TIME request.
- *  <p>
+ * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
  * Listeners of this event should <b>not</b> send a response as the user will get
@@ -47,7 +47,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param user The user that sent the TIME request.
 	 * @param channel The target channel of the TIME request. A value of <code>null</code>
-	 *               means that target is us
+	 * means that target is us
 	 */
 	public TimeEvent(T bot, User user, Channel channel) {
 		super(bot);
@@ -57,7 +57,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 
 	/**
 	 * Respond with a CTCP response to the user
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

@@ -34,7 +34,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * <p>
  * <b>Warning:</b> Removing CoreHooks without providing a replacement will produce
  * undesired results like server timeouts due to not responding to pings.
- * 
+ * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class CoreHooks implements Listener {

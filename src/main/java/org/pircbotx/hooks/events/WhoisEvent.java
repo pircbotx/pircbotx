@@ -86,11 +86,11 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		public String getServer();
 
 		public String getServerInfo();
-		
+
 		public long getIdleSeconds();
-		
+
 		public long getSignOnTime();
-		
+
 		public String getRegisteredAs();
 
 		@Override

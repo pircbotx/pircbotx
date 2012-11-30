@@ -49,7 +49,7 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 
 	/**
 	 * Respond with a private message to the user that sent the message
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

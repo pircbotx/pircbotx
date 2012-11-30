@@ -29,8 +29,8 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 /**
  * Called when a user (possibly us) gets owner status granted in a channel. Note
  * that this isn't supported on all servers or may be used for something else
- *  <p>
- * This is a type of mode change and therefor is also dispatched in a 
+ * <p>
+ * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -69,9 +69,10 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
-	 * (<b>Warning:</b> not to the user that got owner status!) in <code>user: message</code>
+	 * (<b>Warning:</b> not to the user that got owner status!) in
+	 * <code>user: message</code>
 	 * format
-	 * @param response The response to send 
+	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {

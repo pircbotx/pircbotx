@@ -21,7 +21,7 @@ package org.pircbotx.hooks.types;
 import org.pircbotx.PircBotX;
 
 /**
- * Base interface that all Generic event interfaces must extend from. 
+ * Base interface that all Generic event interfaces must extend from.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericEvent<T extends PircBotX> {

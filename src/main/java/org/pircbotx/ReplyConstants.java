@@ -20,13 +20,13 @@ package org.pircbotx;
 
 /**
  * This interface contains the values of all numeric replies specified
- * in section 6 of RFC 1459.  Refer to RFC 1459 for further information.
- *  <p>
+ * in section 6 of RFC 1459. Refer to RFC 1459 for further information.
+ * <p>
  * If you override the onServerResponse method in the PircBot class,
  * you may find these constants useful when comparing the numeric
  * value of a given code.
- * 
- * @since   PircBot 1.0.0
+ * <p/>
+ * @since PircBot 1.0.0
  * @author Origionally by:
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
