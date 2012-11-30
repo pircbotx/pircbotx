@@ -1830,7 +1830,6 @@ public class PircBotX {
 			//Setup user
 			User curUser = getUser(parsed[5]);
 			curUser.setLogin(parsed[2]);
-			curUser.setIdentified(!parsed[2].startsWith("~"));
 			curUser.setHostmask(parsed[3]);
 			curUser.setServer(parsed[4]);
 			curUser.setNick(parsed[5]);

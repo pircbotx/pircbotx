@@ -18,7 +18,6 @@
  */
 package org.pircbotx;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +27,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.pircbotx.hooks.events.WhoisEvent;
 
 /**
  * Represents a User on the server. Contains all the available information about
@@ -49,7 +49,6 @@ public class User implements Comparable<User> {
 	private boolean away = false;
 	private boolean ircop = false;
 	private String server = "";
-	private boolean identified = true;
 	private int hops = 0;
 	private final PircBotX bot;
 	@Getter(AccessLevel.NONE)
@@ -81,6 +80,22 @@ public class User implements Comparable<User> {
 			bot.userNickMap.remove(this.nick);
 			bot.userNickMap.put(nick, this);
 			this.nick = nick;
+		}
+	}
+
+	/**
+	 * Query the user with WHOIS to determine if they are verified *EXPENSIVE*.
+	 * This is intended to be a quick utility method, if you need more specific
+	 * info from the Whois then its recommended to listen for or use
+	 * {@link PircBotX#waitFor(java.lang.Class) }
+	 * @return True if the user is verified
+	 */
+	public boolean isVerified() {
+		try {
+			WhoisEvent event = getBot().waitFor(WhoisEvent.class);
+			return event.getRegisteredAs() != null && !event.getRegisteredAs().isEmpty();
+		} catch (InterruptedException ex) {
+			throw new RuntimeException("Couldn't finish querying user for verified status", ex);
 		}
 	}
 
