@@ -92,6 +92,7 @@ public class User implements Comparable<User> {
 	 */
 	public boolean isVerified() {
 		try {
+			bot.sendRawLine("WHOIS " + getNick() + " " + getNick());
 			WhoisEvent event = getBot().waitFor(WhoisEvent.class);
 			return event.getRegisteredAs() != null && !event.getRegisteredAs().isEmpty();
 		} catch (InterruptedException ex) {
