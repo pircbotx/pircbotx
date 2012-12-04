@@ -51,7 +51,7 @@ public class MultiBotManagerTest {
 
 		//Make sure the encoding we set is the same that we get out
 		manager.setEncoding(aCharset.name());
-		assertEquals(manager.createBot("some.server").getEncoding(), aCharset, "Charset is different");
+		assertEquals(manager.createBot("some.server").getBot().getEncoding(), aCharset, "Charset is different");
 	}
 
 	@Test(description = "Make sure the values are all copied correctly")
