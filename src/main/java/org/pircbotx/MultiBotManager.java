@@ -23,13 +23,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.net.SocketFactory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -43,6 +46,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * <b>Note:</b> Setting any value after connectAll() is invoked will NOT update
  * all existing bots. You will need to loop over the bots and call the set methods
  * manually
+ * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -97,7 +101,7 @@ public class MultiBotManager {
 	 * Create a bot using the specified hostname, 6667 for port, and no password or socketfactory
 	 * @param hostname The hostname of the server to connect to.
 	 */
-	public PircBotX createBot(String hostname) {
+	public BotBuilder createBot(String hostname) {
 		return createBot(hostname, 6667, null, null);
 	}
 
@@ -108,7 +112,7 @@ public class MultiBotManager {
 	 * @param hostname The hostname of the server to connect to.
 	 * @param port The port number to connect to on the server.
 	 */
-	public PircBotX createBot(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
+	public BotBuilder createBot(String hostname, int port) throws IOException, IrcException, NickAlreadyInUseException {
 		return createBot(hostname, port, null, null);
 	}
 
@@ -118,7 +122,7 @@ public class MultiBotManager {
 	 * @param port The port number to connect to on the server.
 	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 */
-	public PircBotX createBot(String hostname, int port, SocketFactory socketFactory) {
+	public BotBuilder createBot(String hostname, int port, SocketFactory socketFactory) {
 		return createBot(hostname, port, null, socketFactory);
 	}
 
@@ -129,7 +133,7 @@ public class MultiBotManager {
 	 * @param password The password to use to join the server.
 	 * @param socketFactory The factory to use for creating sockets, including secure sockets
 	 */
-	public PircBotX createBot(String hostname, int port, String password, SocketFactory socketFactory) {
+	public BotBuilder createBot(String hostname, int port, String password, SocketFactory socketFactory) {
 		//Create bot with all of the global settings
 		PircBotX bot = new PircBotX();
 		bot.setListenerManager(listenerManager);
@@ -144,8 +148,9 @@ public class MultiBotManager {
 		bot.setDccPorts(dccports);
 
 		//Add to bot set
-		bots.add(new BotEntry(bot, hostname, port, password, socketFactory));
-		return bot;
+		BotBuilder builder = new BotBuilder(bot);
+		bots.add(new BotEntry(bot, hostname, port, password, socketFactory, builder));
+		return builder;
 	}
 
 	/**
@@ -158,6 +163,10 @@ public class MultiBotManager {
 		for (BotEntry curEntry : bots) {
 			PircBotX bot = curEntry.getBot();
 			bot.connect(curEntry.getHostname(), curEntry.getPort(), curEntry.getPassword(), curEntry.getSocketFactory());
+
+			//Join channels
+			for (Map.Entry<String, String> curChannel : curEntry.getBuilder().getChannels().entrySet())
+				bot.joinChannel(curChannel.getKey(), curChannel.getValue());
 		}
 	}
 
@@ -199,5 +208,24 @@ public class MultiBotManager {
 		protected final int port;
 		protected final String password;
 		protected final SocketFactory socketFactory;
+		protected final BotBuilder builder;
+	}
+
+	@RequiredArgsConstructor
+	public static class BotBuilder {
+		@Getter
+		protected final PircBotX bot;
+		@Getter(AccessLevel.PROTECTED)
+		protected Map<String, String> channels = new HashMap();
+
+		public BotBuilder addChannel(String channelName) {
+			channels.put(channelName, "");
+			return this;
+		}
+
+		public BotBuilder addChannel(String channelName, String key) {
+			channels.put(channelName, key);
+			return this;
+		}
 	}
 }
