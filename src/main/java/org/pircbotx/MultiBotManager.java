@@ -69,10 +69,10 @@ public class MultiBotManager {
 	 * Setup MultiBotManager with all bots being called the specified name
 	 * @param name The name that all bots will have by default
 	 */
-	public MultiBotManager(final String name) {
+	public MultiBotManager(final String givenName) {
 		this(new PircBotX() {
 			{
-				setName(name);
+				setName(givenName);
 			}
 		});
 	}
