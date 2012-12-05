@@ -1688,16 +1688,16 @@ public class PircBotX {
 			source.setHostmask(sourceHostname);
 			userChanInfo.put(channel, source);
 			getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
-		} else if (command.equals("PART"))
+		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			if (sourceNick.equals(getNick()))
 				//We parted the channel
 				userChanInfo.deleteA(channel);
-			else {
+			else
 				//Just remove the user from memory
 				userChanInfo.dissociate(channel, getUser(sourceNick));
-				getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
-			}
+			getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
+		}
 		else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
