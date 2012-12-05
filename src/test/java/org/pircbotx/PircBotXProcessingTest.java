@@ -551,6 +551,20 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
 	}
+	
+	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part with us")
+	public void partUs() {
+		User otherUser = bot.getUser("PircBotXBot");
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.handleLine(":PircBotXBot!PircBotX@some.host1 JOIN :#aChannel");
+		bot.handleLine(":PircBotXBot!PircBotX@some.host1 PART #aChannel");
+
+		//Check event contents
+		PartEvent event = getEvent(events, PartEvent.class, "PartEvent not dispatched for this bot");
+		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given for this bot");
+		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given for this bot");
+		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given for this bot");
+	}
 
 	@Test()
 	public void motdTest() {
