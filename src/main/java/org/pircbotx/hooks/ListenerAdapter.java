@@ -217,6 +217,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onSetTopicProtection(SetTopicProtectionEvent<T> event) throws Exception {
 	}
+	
+	public void onSocketConnect(SocketConnectEvent<T> event) throws Exception {
+	}
 
 	public void onSuperOp(SuperOpEvent<T> event) throws Exception {
 	}
