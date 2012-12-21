@@ -312,6 +312,8 @@ public class PircBotX {
 			inputThread = createInputThread(socket, breader);
 			outputThread = createOutputThread(bwriter);
 			outputThread.start();
+			
+			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 			// Attempt to join the server.
 			if (webIrcPassword != null)

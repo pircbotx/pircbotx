@@ -36,6 +36,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
+import org.pircbotx.hooks.events.SocketConnectEvent;
 
 /**
  * Do various connect tests. Note that this is in a seperate class since PircBotXOutputTest
@@ -91,16 +92,24 @@ public class PircBotXConnectTest {
 		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 
 		//Make sure there's a ConnectEvent dispatched
-		int ran = 0;
+		int rance = 0;
+		int ransce = 0;
 		for (Event curEvent : events)
 			if (curEvent instanceof ConnectEvent) {
 				ConnectEvent cevent = (ConnectEvent) curEvent;
-				ran++;
+				rance++;
 
 				//Verify values
 				assertEquals(cevent.getBot(), bot);
+			} else if (curEvent instanceof SocketConnectEvent) {
+				SocketConnectEvent scevent = (SocketConnectEvent) curEvent;
+				ransce++;
+
+				//Verify values
+				assertEquals(scevent.getBot(), bot);
 			}
-		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
+		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
+		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
 	}
 
 	@Test(dependsOnMethods = "connectTest")
@@ -119,16 +128,24 @@ public class PircBotXConnectTest {
 		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 
 		//Make sure there's a ConnectEvent dispatched
-		int ran = 0;
+		int rance = 0;
+		int ransce = 0;
 		for (Event curEvent : events)
 			if (curEvent instanceof ConnectEvent) {
 				ConnectEvent cevent = (ConnectEvent) curEvent;
-				ran++;
+				rance++;
 
 				//Verify values
 				assertEquals(cevent.getBot(), bot);
-			}
-		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
+			} else if (curEvent instanceof SocketConnectEvent) {
+				SocketConnectEvent scevent = (SocketConnectEvent) curEvent;
+				ransce++;
+
+				//Verify values
+				assertEquals(scevent.getBot(), bot);
+			} 
+		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
+		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
 	}
 
 	@Test(dependsOnMethods = "connectTest")
@@ -146,15 +163,23 @@ public class PircBotXConnectTest {
 		assertEquals(lines[1], "NICK PircBotXBot");
 
 		//Make sure there's a ConnectEvent dispatched
-		int ran = 0;
+		int rance = 0;
+		int ransce = 0;
 		for (Event curEvent : events)
 			if (curEvent instanceof ConnectEvent) {
 				ConnectEvent cevent = (ConnectEvent) curEvent;
-				ran++;
+				rance++;
 
 				//Verify values
 				assertEquals(cevent.getBot(), bot);
-			}
-		assertEquals(ran, 1, "ConnectEvent not dispatched/dispatched more than once");
+			} else if (curEvent instanceof SocketConnectEvent) {
+				SocketConnectEvent scevent = (SocketConnectEvent) curEvent;
+				ransce++;
+
+				//Verify values
+				assertEquals(scevent.getBot(), bot);
+			} 
+		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
+		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
 	}
 }

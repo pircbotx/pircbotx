@@ -29,6 +29,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.SocketConnectEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
@@ -81,6 +82,11 @@ public class PircBotXJMeter extends ListenerAdapter {
 		System.out.println("Unknown line: " + event.getLine());
 	}
 
+	@Override
+	public void onSocketConnect(SocketConnectEvent event) throws Exception {
+		System.out.println("Connected to socket");
+	}
+	
 	@Override
 	public void onConnect(ConnectEvent event) throws Exception {
 		System.out.println("Connected to server");
