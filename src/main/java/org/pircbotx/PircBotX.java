@@ -554,7 +554,7 @@ public class PircBotX {
 		partChannel(chan);
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
-		listenerManager.addListener(new ListenerAdapter() {
+		getListenerManager().addListener(new ListenerAdapter() {
 			@Override
 			public void onPart(PartEvent event) throws Exception {
 				//Make sure this bot is us to prevent nasty errors in multi bot sitations
@@ -900,7 +900,7 @@ public class PircBotX {
 		if (loggedIn)
 			sendRawLine("NICKSERV IDENTIFY " + password);
 		else
-			listenerManager.addListener(new ListenerAdapter() {
+			getListenerManager().addListener(new ListenerAdapter() {
 				@Override
 				public void onConnect(ConnectEvent event) throws Exception {
 					//Make sure this bot is us to prevent nasty errors in multi bot sitations
@@ -2795,13 +2795,13 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't wait for null event");
 		//Create a WaitListener for getting the event
 		WaitListener waitListener = new WaitListener();
-		listenerManager.addListener(waitListener);
+		getListenerManager().addListener(waitListener);
 
 		//Call waitFor which blocks until the desired event is captured
 		Event finalEvent = waitListener.waitFor(eventClass);
 
 		//Remove listener since its no longer needed
-		listenerManager.removeListener(waitListener);
+		getListenerManager().removeListener(waitListener);
 
 		//Return requested listener
 		return (E) finalEvent;
