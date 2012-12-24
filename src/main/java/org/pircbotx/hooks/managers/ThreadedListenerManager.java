@@ -129,7 +129,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	protected static class ListenerThreadFactory implements ThreadFactory {
 		protected final AtomicInteger threadCount = new AtomicInteger();
-		protected String prefix = "pool-listenerThread-";
+		protected String prefix;
 
 		public ListenerThreadFactory(int poolNum) {
 			prefix = "pool-" + poolNum + "-listenerThread-";
