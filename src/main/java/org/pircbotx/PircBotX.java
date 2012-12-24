@@ -177,7 +177,6 @@ public class PircBotX {
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
-		listenerManager.addListener(new CoreHooks());
 		useShutdownHook(true);
 	}
 
@@ -2622,8 +2621,10 @@ public class PircBotX {
 	 * @return Current ListenerManager
 	 */
 	public ListenerManager<? extends PircBotX> getListenerManager() {
-		if (listenerManager == null)
+		if (listenerManager == null) {
 			listenerManager = new ThreadedListenerManager();
+			listenerManager.addListener(new CoreHooks());
+		}
 		return listenerManager;
 	}
 
