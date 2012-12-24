@@ -51,15 +51,13 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 	protected AtomicLong currentId = new AtomicLong();
-	protected static AtomicInteger poolCount = new AtomicInteger();
 
 	/**
 	 * Configures with default options: perHook is false and a
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) 
-				Executors.newCachedThreadPool(new ListenerThreadFactory(poolCount.getAndIncrement()));
+		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) Executors.newCachedThreadPool(new ListenerThreadFactory());
 		defaultPool.allowCoreThreadTimeOut(true);
 		this.pool = defaultPool;
 	}
@@ -144,10 +142,11 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	protected static class ListenerThreadFactory implements ThreadFactory {
 		protected final AtomicInteger threadCount = new AtomicInteger();
+		protected static AtomicInteger poolCount = new AtomicInteger();
 		protected String prefix;
 
-		public ListenerThreadFactory(int poolNum) {
-			prefix = "pool-" + poolNum + "-listenerThread-";
+		public ListenerThreadFactory() {
+			prefix = "pool-" + poolCount.getAndIncrement() + "-listenerThread-";
 		}
 
 		public Thread newThread(Runnable r) {
