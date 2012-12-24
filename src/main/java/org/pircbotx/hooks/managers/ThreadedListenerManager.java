@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.Synchronized;
@@ -56,7 +57,10 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		pool = Executors.newCachedThreadPool(new ListenerThreadFactory(poolCount.getAndIncrement()));
+		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) 
+				Executors.newCachedThreadPool(new ListenerThreadFactory(poolCount.getAndIncrement()));
+		defaultPool.allowCoreThreadTimeOut(true);
+		this.pool = defaultPool;
 	}
 
 	/**
