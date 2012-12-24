@@ -549,7 +549,7 @@ public class PircBotX {
 				//Make sure this bot is us to prevent nasty errors in multi bot sitations
 				if (event.getBot() == PircBotX.this)
 					event.getBot().joinChannel(chan.getName());
-				//Self destrust, this listener has no more porpose
+				//Self distrust, this listener has no more purpose
 				event.getBot().getListenerManager().removeListener(this);
 			}
 		});
