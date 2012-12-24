@@ -44,11 +44,13 @@ import org.pircbotx.hooks.Listener;
  */
 public class BackgroundListenerManager extends ThreadedListenerManager {
 	protected Map<Listener, ExecutorService> backgroundListeners = new HashMap();
+	protected AtomicInteger backgroundCount = new AtomicInteger();
 
 	public boolean addListener(Listener listener, boolean isBackground) {
 		if (!isBackground)
 			return super.addListener(listener);
-		backgroundListeners.put(listener, Executors.newSingleThreadExecutor(new BackgroundThreadFactory(poolCount.get())));
+		ThreadFactory factory = new ListenerThreadFactory("backgroundPool" + backgroundCount.getAndIncrement());
+		backgroundListeners.put(listener, Executors.newSingleThreadExecutor(factory));
 		return true;
 	}
 
@@ -73,21 +75,5 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 			return backgroundListeners.remove(listener) != null;
 		else
 			return super.removeListener(listener);
-	}
-
-	protected static class BackgroundThreadFactory implements ThreadFactory {
-		protected static AtomicInteger backgroundCount = new AtomicInteger();
-		protected AtomicInteger threadCount = new AtomicInteger();
-		protected String prefix;
-
-		public BackgroundThreadFactory(int poolNum) {
-			prefix = "pool-" + poolNum + "-backgroundThread-" + backgroundCount.getAndIncrement();
-		}
-
-		public Thread newThread(Runnable r) {
-			Thread thread = new Thread(r, prefix + threadCount.getAndIncrement());
-			thread.setDaemon(true);
-			return thread;
-		}
 	}
 }
