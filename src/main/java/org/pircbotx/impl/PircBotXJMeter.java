@@ -42,64 +42,43 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 public class PircBotXJMeter extends ListenerAdapter {
 	@Override
 	public void onGenericMessage(GenericMessageEvent event) throws Exception {
-		doBefore();
 		event.respond(event.getMessage().trim());
-		doAfter();
 	}
 
 	@Override
 	public void onGenericChannelMode(GenericChannelModeEvent event) throws Exception {
-		doBefore();
 		event.respond(event.getUser().getNick());
-		doAfter();
 	}
 
 	@Override
 	public void onGenericUserMode(GenericUserModeEvent event) throws Exception {
-		doBefore();
 		event.respond(event.getSource().getNick());
-		doAfter();
 	}
 
 	@Override
 	public void onKick(KickEvent event) throws Exception {
-		doBefore();
 		event.respond(event.getReason().trim());
-		doAfter();
 	}
 
 	@Override
 	public void onQuit(QuitEvent event) throws Exception {
 		//Send dummy line
-		doBefore();
 		event.getBot().sendRawLine(event.getReason().trim());
-		doAfter();
 	}
 
 	@Override
 	public void onJoin(JoinEvent event) throws Exception {
-		doBefore();
 		event.respond(event.getUser().getNick());
-		doAfter();
 	}
 
 	@Override
 	public void onPart(PartEvent event) throws Exception {
-		doBefore();
 		event.respond(event.getUser().getNick());
-		doAfter();
 	}
 
 	@Override
 	public void onUnknown(UnknownEvent event) throws Exception {
 		System.out.println("Unknown line: " + event.getLine());
-	}
-
-	public void doBefore() throws InterruptedException {
-		//Thread.sleep(4000);
-	}
-
-	public void doAfter() {
 	}
 
 	@Override
