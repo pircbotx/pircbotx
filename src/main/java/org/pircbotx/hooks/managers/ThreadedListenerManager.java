@@ -132,6 +132,11 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		return currentId.getAndIncrement();
 	}
 	
+	/**
+	 * Shutdown the internal Threadpool. If you need to do more a advanced shutdown,
+	 * the pool is returned.
+	 * @return The internal thread pool the ThreadedListenerManager uses
+	 */
 	public ExecutorService shutdown() {
 		pool.shutdown();
 		return pool;
