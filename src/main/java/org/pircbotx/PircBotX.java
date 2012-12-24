@@ -132,7 +132,7 @@ public class PircBotX {
 	 * lines are being printed
 	 */
 	protected final Object logLock = new Object();
-	protected ListenerManager<? extends PircBotX> listenerManager = new ThreadedListenerManager();
+	protected ListenerManager<? extends PircBotX> listenerManager;
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
 	 * operations. This does not mean the socket is invalid. By default its 5
@@ -312,7 +312,7 @@ public class PircBotX {
 			inputThread = createInputThread(socket, breader);
 			outputThread = createOutputThread(bwriter);
 			outputThread.start();
-			
+
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 			// Attempt to join the server.
@@ -1687,8 +1687,7 @@ public class PircBotX {
 				//Just remove the user from memory
 				userChanInfo.dissociate(channel, getUser(sourceNick));
 			getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
-		}
-		else if (command.equals("NICK")) {
+		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
 			getUser(sourceNick).setNick(newNick);
@@ -2617,10 +2616,14 @@ public class PircBotX {
 	}
 
 	/**
-	 * Returns the current ListenerManager in use by this bot.
+	 * Returns the current ListenerManager in use by this bot. Note that the default
+	 * listener manager ({@link ListenerManager}) is lazy loaded here unless one 
+	 * was already set
 	 * @return Current ListenerManager
 	 */
 	public ListenerManager<? extends PircBotX> getListenerManager() {
+		if (listenerManager == null)
+			listenerManager = new ThreadedListenerManager();
 		return listenerManager;
 	}
 
