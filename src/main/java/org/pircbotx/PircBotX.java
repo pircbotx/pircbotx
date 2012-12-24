@@ -540,19 +540,7 @@ public class PircBotX {
 	 * be invalid after this method executes and a new one will be created
 	 */
 	public void cycle(final Channel chan) {
-		partChannel(chan);
-		//As we might not immediatly part and you can't join a channel that your
-		//already joined to, wait for the PART event before rejoining
-		listenerManager.addListener(new ListenerAdapter() {
-			@Override
-			public void onPart(PartEvent event) throws Exception {
-				//Make sure this bot is us to prevent nasty errors in multi bot sitations
-				if (event.getBot() == PircBotX.this)
-					event.getBot().joinChannel(chan.getName());
-				//Self distrust, this listener has no more purpose
-				event.getBot().getListenerManager().removeListener(this);
-			}
-		});
+		cycle(chan, "");
 	}
 
 	/**
