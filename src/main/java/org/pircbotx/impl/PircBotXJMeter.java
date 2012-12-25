@@ -128,7 +128,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 		}.start();
 
 		//Setup this bot
-		bot.setName("PircBotX");
+		bot.setName("jmeterBot");
 		//bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
 		bot.setMessageDelay(0);
 
@@ -140,7 +140,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 			//Connect to the freenode IRC network
 			bot.connect(server);
 			//Join the #quackbot channel
-			bot.joinChannel("#quackbot");
+			bot.joinChannel("#jmeter");
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {
