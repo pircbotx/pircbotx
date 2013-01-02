@@ -36,6 +36,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
+import org.pircbotx.hooks.events.CapabilityEvent;
+import org.pircbotx.hooks.events.CapabilityEvent.CAPType;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 
 /**
@@ -67,7 +69,7 @@ public class PircBotXConnectTest {
 		bot.setName("PircBotXBot");
 
 		//Setup stream
-		botIn = new ByteArrayInputStream(":ircd.test 004 ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
+		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
 		botOut = new ByteArrayOutputStream();
 		socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
@@ -76,24 +78,13 @@ public class PircBotXConnectTest {
 		socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
 	}
-
-	@Test
-	public void connectTest() throws Exception {
-		//Connect the bot to the socket
-		bot.connect("example.com", 6667, null, socketFactory);
-
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667, null, 0);
-
-		//Verify lines
-		String[] lines = botOut.toString().split("\r\n");
-		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		assertEquals(lines[0], "NICK PircBotXBot");
-		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
-
-		//Make sure there's a ConnectEvent dispatched
+	
+	private void validateEvents() throws Exception {
+		//Make sure events are dispatched
 		int rance = 0;
 		int ransce = 0;
+		int rancape = 0;
+		
 		for (Event curEvent : events)
 			if (curEvent instanceof ConnectEvent) {
 				ConnectEvent cevent = (ConnectEvent) curEvent;
@@ -107,9 +98,39 @@ public class PircBotXConnectTest {
 
 				//Verify values
 				assertEquals(scevent.getBot(), bot);
+			} else if (curEvent instanceof CapabilityEvent) {
+				CapabilityEvent capevent = (CapabilityEvent) curEvent;
+				rancape++;
+
+				//Verify values
+				assertEquals(capevent.getBot(), bot);
+				assertEquals(capevent.getType(), CAPType.LS);
 			}
+		
 		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
 		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
+		assertEquals(rancape, 1, "CapabilityEvent not dispatched/dispatched more than once");
+	}
+
+	@Test
+	public void connectTest() throws Exception {
+		//Connect the bot to the socket
+		bot.connect("example.com", 6667, null, socketFactory);
+
+		//Make sure the bot is connected
+		verify(socketFactory).createSocket("example.com", 6667, null, 0);
+		
+		//Verify lines
+		String[] lines = botOut.toString().split("\r\n");
+		
+		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		
+		assertEquals(lines[0], "CAP LS");
+		assertEquals(lines[1], "NICK PircBotXBot");
+		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[3], "CAP END");
+		
+		validateEvents();
 	}
 
 	@Test(dependsOnMethods = "connectTest")
@@ -120,32 +141,18 @@ public class PircBotXConnectTest {
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 25622, null, 0);
-
+		
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
-		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		assertEquals(lines[0], "NICK PircBotXBot");
-		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
-
-		//Make sure there's a ConnectEvent dispatched
-		int rance = 0;
-		int ransce = 0;
-		for (Event curEvent : events)
-			if (curEvent instanceof ConnectEvent) {
-				ConnectEvent cevent = (ConnectEvent) curEvent;
-				rance++;
-
-				//Verify values
-				assertEquals(cevent.getBot(), bot);
-			} else if (curEvent instanceof SocketConnectEvent) {
-				SocketConnectEvent scevent = (SocketConnectEvent) curEvent;
-				ransce++;
-
-				//Verify values
-				assertEquals(scevent.getBot(), bot);
-			} 
-		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
-		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
+		
+		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		
+		assertEquals(lines[0], "CAP LS");
+		assertEquals(lines[1], "NICK PircBotXBot");
+		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[3], "CAP END");
+		
+		validateEvents();
 	}
 
 	@Test(dependsOnMethods = "connectTest")
@@ -158,28 +165,15 @@ public class PircBotXConnectTest {
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
-		assertEquals(lines.length, 3);
-		assertEquals(lines[0], "PASS pa55w0rd");
-		assertEquals(lines[1], "NICK PircBotXBot");
-
-		//Make sure there's a ConnectEvent dispatched
-		int rance = 0;
-		int ransce = 0;
-		for (Event curEvent : events)
-			if (curEvent instanceof ConnectEvent) {
-				ConnectEvent cevent = (ConnectEvent) curEvent;
-				rance++;
-
-				//Verify values
-				assertEquals(cevent.getBot(), bot);
-			} else if (curEvent instanceof SocketConnectEvent) {
-				SocketConnectEvent scevent = (SocketConnectEvent) curEvent;
-				ransce++;
-
-				//Verify values
-				assertEquals(scevent.getBot(), bot);
-			} 
-		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
-		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
+		
+		assertEquals(lines.length, 5, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		
+		assertEquals(lines[0], "CAP LS");
+		assertEquals(lines[1], "PASS pa55w0rd");
+		assertEquals(lines[2], "NICK PircBotXBot");
+		assertEquals(lines[3], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[4], "CAP END");
+		
+		validateEvents();
 	}
 }
