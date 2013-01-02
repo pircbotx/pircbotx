@@ -287,13 +287,15 @@ public class PircBotXOutputTest {
 	 * @param expected
 	 */
 	protected void checkOutput(String expected) throws IOException {
-		//Handle the first 2 lines from the bot
+		//Handle the first 3 lines from the bot
+		System.out.println("Reading first line (should be CAP line)");
+		assertEquals(botOut.readLine(), "CAP LS", "Unexpected first line");
 		System.out.println("Reading first line");
-		assertEquals(botOut.readLine(), "NICK PircBotXBot", "Unexecpted first line");
+		assertEquals(botOut.readLine(), "NICK PircBotXBot", "Unexecpted second line");
 		System.out.println("Reading second line");
 		String line = botOut.readLine();
 		assertNotNull(line, "Second output line is null");
-		assertTrue(line.startsWith("USER PircBotX 8 * :"), "Unexpected second line: " + line);
+		assertTrue(line.startsWith("USER PircBotX 8 * :"), "Unexpected third line: ");
 
 		//Make sure the remaining line is okay
 		System.out.println("Reading third line");
