@@ -295,7 +295,7 @@ public class PircBotXOutputTest {
 		System.out.println("Reading second line");
 		String line = botOut.readLine();
 		assertNotNull(line, "Second output line is null");
-		assertTrue(line.startsWith("USER PircBotX 8 * :"), "Unexpected third line: ");
+		assertTrue(line.startsWith("USER PircBotX 8 * :"), "Unexpected third line");
 
 		//Make sure the remaining line is okay
 		System.out.println("Reading third line");
