@@ -208,6 +208,29 @@
 					</reportPlugins> 
 				</configuration>
 			</plugin>
+			<!-- Update version in PircBotX.java -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>maven-replacer-plugin</artifactId>
+				<version>1.4.1</version>
+				<executions>                
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>src/main/java/org/pircbotx/PircBotX.java</file>
+					<replacements>
+						<replacement>
+							<token>public static final String VERSION .+</token>
+							<value>public static final String VERSION = "${project.version}";</value>
+						</replacement>
+					</replacements>                        
+				</configuration>
+			</plugin>
 			<!--Delombok sources for tools like javadoc-->
 			<plugin>
 				<groupId>org.projectlombok</groupId>
