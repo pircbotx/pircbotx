@@ -143,6 +143,9 @@ public class PircBotX {
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
 	protected SocketFactory socketFactory = null;
 	protected boolean loggedIn = false;
+	@Getter
+	@Setter
+	protected String webIrcUsername = null;
 	@Setter
 	@Getter
 	protected String webIrcHostname = null;
@@ -319,7 +322,8 @@ public class PircBotX {
 			
 			// Attempt to join the server.
 			if (webIrcPassword != null)
-				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " cgiirc " + webIrcHostname + " " + webIrcAddress.getHostAddress());
+				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " " + webIrcUsername
+						 + " " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 			if (password != null && !password.trim().equals(""))
 				outputThread.sendRawLineNow("PASS " + password);
 			String tempNick = getName();
