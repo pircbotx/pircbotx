@@ -163,7 +163,7 @@ public class Utils {
 	 * @param input A string in the format [:]item [item] ... [:item [item] ...]
 	 * @return List of strings.
 	 */
-	public static List<String> tokenize(String input) {
+	public static List<String> tokenizeLine(String input) {
 		List<String> retn = new ArrayList<String>();
 		
 		if (input == null || input.length() == 0)
@@ -171,7 +171,7 @@ public class Utils {
 		
 		String temp = input;
 		
-		while (temp.contains(" ")) {
+		while (true) {
 			if (temp.startsWith(":") && retn.size() > 0) {
 				retn.add(temp.substring(1));
 				
@@ -183,6 +183,8 @@ public class Utils {
 			
 			if (split.length > 1)
 				temp = split[1];
+			else
+				break;
 		}
 		
 		return retn;
