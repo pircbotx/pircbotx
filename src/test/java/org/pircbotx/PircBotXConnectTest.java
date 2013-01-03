@@ -58,6 +58,7 @@ public class PircBotXConnectTest {
 	public void botProvider() throws Exception {
 		//Setup bot
 		bot = new PircBotX();
+		bot.enableCAP();
 		events = new ArrayList<Event>();
 		bot.setListenerManager(new GenericListenerManager() {
 			@Override
