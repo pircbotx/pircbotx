@@ -121,6 +121,8 @@ public class PircBotX {
 	// Default settings for the PircBotX.
 	protected boolean autoNickChange = false;
 	protected boolean verbose = false;
+	@Getter
+	protected boolean capEnabled = false;
 	protected String name = "PircBotX";
 	protected String nick = name;
 	protected String login = "PircBotX";
@@ -314,8 +316,9 @@ public class PircBotX {
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 			
-			// Attempt to initiate a CAP transaction.
-			outputThread.sendRawLineNow("CAP LS");
+			if (capEnabled)
+				// Attempt to initiate a CAP transaction.
+				outputThread.sendRawLineNow("CAP LS");
 			
 			// Attempt to join the server.
 			if (webIrcPassword != null)
@@ -330,12 +333,11 @@ public class PircBotX {
 			// Read stuff back from the server to see if we connected.
 			String line;
 			int tries = 1;
-			boolean hascap = false;
 			
 			while ((line = breader.readLine()) != null) {
 				handleLine(line);
 
-				List<String> params = Utils.tokenize(line);
+				List<String> params = Utils.tokenizeLine(line);
 				if (params.size() >= 2) {
 					String sender = "";
 					if (params.get(0).startsWith(":")) {
@@ -368,15 +370,10 @@ public class PircBotX {
 						socket.close();
 						inputThread = null;
 						throw new IrcException("Could not log into the IRC server: " + line);
-					} else if (code.equalsIgnoreCase("CAP")) {
-						hascap = true;
 					}
 				}
 				this.nick = tempNick;
 			}
-
-			if (hascap)
-				outputThread.sendRawLineNow("CAP END");
 			
 			loggedIn = true;
 			log("*** Logged onto server.");
@@ -451,6 +448,17 @@ public class PircBotX {
 	 */
 	public synchronized void disconnect() {
 		quitServer();
+	}
+	
+	/**
+	 * Enable CAP ability for this instance of the bot.
+	 * As CAP functionality is used only during connection and registration,
+	 * there is really no need to permit disabling this once it is enabled.
+	 * Once CAP is enabled, it is an exercise for the reader to ensure 
+	 * proper CAP termination by sending CAP END to the server.
+	 */
+	public void enableCAP() {
+		capEnabled = true;
 	}
 
 	/**
@@ -1584,9 +1592,19 @@ public class PircBotX {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log("<<<" + line);
+		
+		List<String> parts = Utils.tokenizeLine(line);
+		
+		String senderInfo = "";
+		
+		if (parts.get(0).startsWith(":")) {
+			senderInfo = parts.remove(0);
+		}
+		
+		String command = parts.remove(0).toUpperCase();
 
 		// Check for server pings.
-		if (line.startsWith("PING ")) {
+		if (command.equals("PING")) {
 			// Respond to the ping and return immediately.
 			getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
 			return;
@@ -1595,10 +1613,6 @@ public class PircBotX {
 		String sourceNick = "";
 		String sourceLogin = "";
 		String sourceHostname = "";
-
-		StringTokenizer tokenizer = new StringTokenizer(line);
-		String senderInfo = tokenizer.nextToken();
-		String command = tokenizer.nextToken();
 		String target = null;
 
 		int exclamation = senderInfo.indexOf("!");
@@ -1608,7 +1622,7 @@ public class PircBotX {
 				sourceNick = senderInfo.substring(1, exclamation);
 				sourceLogin = senderInfo.substring(exclamation + 1, at);
 				sourceHostname = senderInfo.substring(at + 1);
-			} else if (tokenizer.hasMoreTokens()) {
+			} else {
 				String token = command;
 
 				int code = -1;
@@ -1635,22 +1649,27 @@ public class PircBotX {
 				// Return from the method;
 				return;
 			}
-
-		command = command.toUpperCase();
+		
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
+		
 		if (target == null)
-			target = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : "";
+			target = !parts.isEmpty() ? parts.get(0) : "";
+		
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
 		User source = getUser(sourceNick);
+		
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
 		String message = (line.contains(" :")) ? line.substring(line.indexOf(" :") + 2) : "";
+		
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
+			StringTokenizer tokenizer = new StringTokenizer(request);
+			
 			if (request.equals("VERSION"))
 				// VERSION request
 				getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
@@ -1666,7 +1685,7 @@ public class PircBotX {
 			else if (request.equals("FINGER"))
 				// FINGER request
 				getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
-			else if ((tokenizer = new StringTokenizer(request)).countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
+			else if (tokenizer.countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 				// This is a DCC request.
 				boolean success = dccManager.processRequest(source, request);
 				if (!success)
@@ -1713,13 +1732,9 @@ public class PircBotX {
 			// Someone is sending a notice.
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
 		else if (command.equals("CAP")){
-			// CAP request
-			// We really shouldn't get this outside of pre-registration with the server
-			// but tests flop otherwise.
-			String capcmd = tokenizer.nextToken();
+			String capcmd = parts.get(1);
 			getListenerManager().dispatchEvent(new CapabilityEvent(this, capcmd, message));
-		}
-		else if (command.equals("QUIT")) {
+		} else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(getNick()))
@@ -1728,7 +1743,8 @@ public class PircBotX {
 			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, message));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
-			User recipient = getUser(tokenizer.nextToken());
+			User recipient = getUser(parts.get(1));
+			
 			if (recipient.getNick().equals(getNick()))
 				//We were just kicked
 				userChanInfo.deleteA(channel);
