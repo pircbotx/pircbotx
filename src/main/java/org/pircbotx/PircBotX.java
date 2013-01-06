@@ -316,18 +316,18 @@ public class PircBotX {
 			outputThread.start();
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
-			
+
 			// Attempt to initiate a CAP transaction.
 			outputThread.sendRawLineNow("CAP LS");
-			
+
 			// Attempt to join the server.
 			if (webIrcPassword != null)
 				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " " + webIrcUsername
-						 + " " + webIrcHostname + " " + webIrcAddress.getHostAddress());
+						+ " " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 			if (password != null && !password.trim().equals(""))
 				outputThread.sendRawLineNow("PASS " + password);
 			String tempNick = getName();
-			
+
 			outputThread.sendRawLineNow("NICK " + tempNick);
 			outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
@@ -335,19 +335,18 @@ public class PircBotX {
 			String line;
 			int tries = 1;
 			boolean hascap = false;
-			
+
 			while ((line = breader.readLine()) != null) {
 				handleLine(line);
 
 				List<String> params = Utils.tokenize(line);
 				if (params.size() >= 2) {
 					String sender = "";
-					if (params.get(0).startsWith(":")) {
+					if (params.get(0).startsWith(":"))
 						sender = params.remove(0);
-					}
-					
+
 					String code = params.remove(0);
-					
+
 					//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
 					String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
 					if (Arrays.asList(codes).contains(code))
@@ -372,19 +371,18 @@ public class PircBotX {
 						socket.close();
 						inputThread = null;
 						throw new IrcException("Could not log into the IRC server: " + line);
-					} else if (code.equalsIgnoreCase("CAP")) {
+					} else if (code.equalsIgnoreCase("CAP"))
 						hascap = true;
-					}
 				}
 				this.nick = tempNick;
 			}
 
 			if (hascap)
 				outputThread.sendRawLineNow("CAP END");
-			
+
 			loggedIn = true;
 			log("*** Logged onto server.");
-			
+
 			// This makes the socket timeout on read operations after 5 minutes.
 			socket.setSoTimeout(getSocketTimeout());
 
@@ -1716,14 +1714,13 @@ public class PircBotX {
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
-		else if (command.equals("CAP")){
+		else if (command.equals("CAP")) {
 			// CAP request
 			// We really shouldn't get this outside of pre-registration with the server
 			// but tests flop otherwise.
 			String capcmd = tokenizer.nextToken();
 			getListenerManager().dispatchEvent(new CapabilityEvent(this, capcmd, message));
-		}
-		else if (command.equals("QUIT")) {
+		} else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(getNick()))
@@ -2642,7 +2639,7 @@ public class PircBotX {
 
 	/**
 	 * Returns the current ListenerManager in use by this bot. Note that the default
-	 * listener manager ({@link ListenerManager}) is lazy loaded here unless one 
+	 * listener manager ({@link ListenerManager}) is lazy loaded here unless one
 	 * was already set
 	 * @return Current ListenerManager
 	 */
