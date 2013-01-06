@@ -457,8 +457,8 @@ public class PircBotX {
 	 * Once CAP is enabled, it is an exercise for the reader to ensure 
 	 * proper CAP termination by sending CAP END to the server.
 	 */
-	public void enableCAP() {
-		capEnabled = true;
+	public void setCapEnabled(boolean capEnabled) {
+		this.capEnabled = capEnabled;
 	}
 
 	/**
