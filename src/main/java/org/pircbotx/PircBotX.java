@@ -165,6 +165,9 @@ public class PircBotX {
 	@Getter
 	@Setter
 	protected boolean autoReconnectChannels;
+	@Getter
+	@Setter
+	protected boolean capEnabled = false;
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	/**
 	 * @see #getMaxLineLength()
@@ -317,8 +320,9 @@ public class PircBotX {
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
-			// Attempt to initiate a CAP transaction.
-			outputThread.sendRawLineNow("CAP LS");
+			if (capEnabled)
+				// Attempt to initiate a CAP transaction.
+				outputThread.sendRawLineNow("CAP LS");
 
 			// Attempt to join the server.
 			if (webIrcPassword != null)
@@ -377,7 +381,7 @@ public class PircBotX {
 				this.nick = tempNick;
 			}
 
-			if (hascap)
+			if (capEnabled && hascap)
 				outputThread.sendRawLineNow("CAP END");
 
 			loggedIn = true;
