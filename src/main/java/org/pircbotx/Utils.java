@@ -156,7 +156,7 @@ public class Utils {
 			return ((VoiceEvent) event).getSource();
 		return null;
 	}
-	
+
 	/**
 	 * Tokenize IRC raw input into it's components, keeping the
 	 * 'sender' and 'message' fields intact.
@@ -165,26 +165,26 @@ public class Utils {
 	 */
 	public static List<String> tokenize(String input) {
 		List<String> retn = new ArrayList<String>();
-		
+
 		if (input == null || input.length() == 0)
 			return retn;
-		
+
 		String temp = input;
-		
+
 		while (temp.contains(" ")) {
 			if (temp.startsWith(":") && retn.size() > 0) {
 				retn.add(temp.substring(1));
-				
+
 				return retn;
 			}
-			
+
 			String[] split = temp.split(" ", 2);
 			retn.add(split[0]);
-			
+
 			if (split.length > 1)
 				temp = split[1];
 		}
-		
+
 		return retn;
 	}
 }
