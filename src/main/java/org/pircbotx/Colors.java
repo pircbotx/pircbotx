@@ -33,7 +33,8 @@ package org.pircbotx;
  * Here are some examples of how to use the contants from within a
  * class that extends PircBot and imports org.jibble.pircbot.*;
  * <p/>
- * <pre> sendMessage("#cs", Colors.BOLD + "A bold hello!");
+ * <
+ * pre> sendMessage("#cs", Colors.BOLD + "A bold hello!");
  *     <b>A bold hello!</b>
  * sendMessage("#cs", Colors.RED + "Red" + Colors.NORMAL + " text");
  *     <font color="red">Red</font> text

@@ -551,7 +551,7 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
 	}
-	
+
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part with us")
 	public void partUs() {
 		User otherUser = bot.getUser("PircBotXBot");
