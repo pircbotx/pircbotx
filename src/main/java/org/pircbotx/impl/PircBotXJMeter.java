@@ -86,7 +86,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 	public void onSocketConnect(SocketConnectEvent event) throws Exception {
 		System.out.println("Connected to socket");
 	}
-	
+
 	@Override
 	public void onConnect(ConnectEvent event) throws Exception {
 		System.out.println("Connected to server");
