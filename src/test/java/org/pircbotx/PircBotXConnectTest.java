@@ -78,13 +78,13 @@ public class PircBotXConnectTest {
 		socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
 	}
-	
+
 	private void validateEvents() throws Exception {
 		//Make sure events are dispatched
 		int rance = 0;
 		int ransce = 0;
 		int rancape = 0;
-		
+
 		for (Event curEvent : events)
 			if (curEvent instanceof ConnectEvent) {
 				ConnectEvent cevent = (ConnectEvent) curEvent;
@@ -106,7 +106,7 @@ public class PircBotXConnectTest {
 				assertEquals(capevent.getBot(), bot);
 				assertEquals(capevent.getType(), CAPType.LS);
 			}
-		
+
 		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
 		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
 		assertEquals(rancape, 1, "CapabilityEvent not dispatched/dispatched more than once");
@@ -119,17 +119,17 @@ public class PircBotXConnectTest {
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 6667, null, 0);
-		
+
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
-		
+
 		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		
+
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "NICK PircBotXBot");
 		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 		assertEquals(lines[3], "CAP END");
-		
+
 		validateEvents();
 	}
 
@@ -141,17 +141,17 @@ public class PircBotXConnectTest {
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 25622, null, 0);
-		
+
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
-		
+
 		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		
+
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "NICK PircBotXBot");
 		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 		assertEquals(lines[3], "CAP END");
-		
+
 		validateEvents();
 	}
 
@@ -165,15 +165,15 @@ public class PircBotXConnectTest {
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
-		
+
 		assertEquals(lines.length, 5, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		
+
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "PASS pa55w0rd");
 		assertEquals(lines[2], "NICK PircBotXBot");
 		assertEquals(lines[3], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 		assertEquals(lines[4], "CAP END");
-		
+
 		validateEvents();
 	}
 }
