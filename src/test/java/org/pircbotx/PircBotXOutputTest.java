@@ -69,7 +69,7 @@ public class PircBotXOutputTest {
 				};
 			}
 		};
-		bot.enableCAP();
+		bot.setCapEnabled(true);
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
