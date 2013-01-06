@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010-2011 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
@@ -58,6 +58,7 @@ public class PircBotXConnectTest {
 	public void botProvider() throws Exception {
 		//Setup bot
 		bot = new PircBotX();
+		bot.enableCAP();
 		events = new ArrayList<Event>();
 		bot.setListenerManager(new GenericListenerManager() {
 			@Override
