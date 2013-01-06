@@ -1612,6 +1612,10 @@ public class PircBotX {
 			// Respond to the ping and return immediately.
 			getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
 			return;
+		} else if (line.startsWith("ERROR ")) {
+			//Server is shutting us down
+			shutdown(true);
+			return;
 		}
 
 		String sourceNick = "";
