@@ -69,7 +69,6 @@ public class PircBotXOutputTest {
 				};
 			}
 		};
-		bot.setCapEnabled(true);
 		bot.setListenerManager(new GenericListenerManager());
 		bot.setNick("PircBotXBot");
 		bot.setName("PircBotXBot");
@@ -289,8 +288,6 @@ public class PircBotXOutputTest {
 	 */
 	protected void checkOutput(String expected) throws IOException {
 		//Handle the first 3 lines from the bot
-		System.out.println("Reading first line (should be CAP line)");
-		assertEquals(botOut.readLine(), "CAP LS", "Unexpected first line");
 		System.out.println("Reading first line");
 		assertEquals(botOut.readLine(), "NICK PircBotXBot", "Unexecpted second line");
 		System.out.println("Reading second line");
