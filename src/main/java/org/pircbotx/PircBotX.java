@@ -913,10 +913,11 @@ public class PircBotX {
 				@Override
 				public void onConnect(ConnectEvent event) throws Exception {
 					//Make sure this bot is us to prevent nasty errors in multi bot sitations
-					if (event.getBot() == PircBotX.this)
+					if (event.getBot() == PircBotX.this) {
 						sendRawLine("NICKSERV IDENTIFY " + password);
-					//Self destrust, this listener has no more porpose
-					event.getBot().getListenerManager().removeListener(this);
+						//Self destrust, this listener has no more porpose
+						event.getBot().getListenerManager().removeListener(this);
+					}
 				}
 			});
 	}
