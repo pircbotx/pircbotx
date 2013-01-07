@@ -121,8 +121,6 @@ public class PircBotX {
 	// Default settings for the PircBotX.
 	protected boolean autoNickChange = false;
 	protected boolean verbose = false;
-	@Getter
-	protected boolean capEnabled = false;
 	protected String name = "PircBotX";
 	protected String nick = name;
 	protected String login = "PircBotX";
@@ -318,11 +316,7 @@ public class PircBotX {
 			outputThread.start();
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
-			
-			if (capEnabled)
-				// Attempt to initiate a CAP transaction.
-				outputThread.sendRawLineNow("CAP LS");
-			
+
 			// Attempt to join the server.
 			if (webIrcPassword != null)
 				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " " + webIrcUsername
@@ -452,17 +446,6 @@ public class PircBotX {
 	 */
 	public synchronized void disconnect() {
 		quitServer();
-	}
-	
-	/**
-	 * Enable CAP ability for this instance of the bot.
-	 * As CAP functionality is used only during connection and registration,
-	 * there is really no need to permit disabling this once it is enabled.
-	 * Once CAP is enabled, it is an exercise for the reader to ensure 
-	 * proper CAP termination by sending CAP END to the server.
-	 */
-	public void setCapEnabled(boolean capEnabled) {
-		this.capEnabled = capEnabled;
 	}
 
 	/**
@@ -1739,10 +1722,7 @@ public class PircBotX {
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
-		else if (command.equals("CAP")){
-			String capcmd = parts.get(1);
-			getListenerManager().dispatchEvent(new CapabilityEvent(this, capcmd, message));
-		} else if (command.equals("QUIT")) {
+		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(getNick()))
