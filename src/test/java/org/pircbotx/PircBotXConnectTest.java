@@ -36,8 +36,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
-import org.pircbotx.hooks.events.CapabilityEvent;
-import org.pircbotx.hooks.events.CapabilityEvent.CAPType;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 
 /**
@@ -115,8 +113,8 @@ public class PircBotXConnectTest {
 
 		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
 
-		assertEquals(lines[1], "NICK PircBotXBot");
-		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[0], "NICK PircBotXBot");
+		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 
 		validateEvents();
 	}
@@ -135,8 +133,8 @@ public class PircBotXConnectTest {
 
 		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
 
-		assertEquals(lines[1], "NICK PircBotXBot");
-		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[0], "NICK PircBotXBot");
+		assertEquals(lines[1], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 
 		validateEvents();
 	}
@@ -154,9 +152,9 @@ public class PircBotXConnectTest {
 
 		assertEquals(lines.length, 3, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
 
-		assertEquals(lines[1], "PASS pa55w0rd");
-		assertEquals(lines[2], "NICK PircBotXBot");
-		assertEquals(lines[3], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[0], "PASS pa55w0rd");
+		assertEquals(lines[1], "NICK PircBotXBot");
+		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 
 		validateEvents();
 	}
