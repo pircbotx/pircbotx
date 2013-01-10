@@ -54,9 +54,6 @@ public class ReplayServer {
 		Socket client = server.accept();
 		System.out.println("*** Client connected");
 
-		//Don't need the server anymore
-		server.close();
-
 		//Open up the streams
 		BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -89,6 +86,10 @@ public class ReplayServer {
 			output.flush();
 			System.out.println(">>>" + line);
 		}
+		
+		//Done, clear input from the client so we don't cause a recv error
+		while(input.ready())
+			input.readLine();
 
 		//Close
 		System.out.println("*** Done replaying file, closing");
@@ -96,5 +97,6 @@ public class ReplayServer {
 		output.close();
 		fileStream.close();
 		client.close();
+		server.close();
 	}
 }
