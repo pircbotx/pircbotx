@@ -370,9 +370,9 @@ public class PircBotX {
 						throw new IrcException("Could not log into the IRC server: " + line);
 					}
 				}
-				this.nick = tempNick;
 			}
 			
+			this.nick = tempNick;
 			loggedIn = true;
 			log("*** Logged onto server.");
 			
