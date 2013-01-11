@@ -390,9 +390,13 @@ public class PircBotX {
 							for (CapHandler curCapHandler : capHandlers)
 								curCapHandler.handleNAK(this, capParams);
 						else
-							//Uhhh....
-							log("*** Unknown CAP response " + params.get(1));
-					}
+							//Maybe the CapHandlers know how to use it
+							for (CapHandler curCapHandler : capHandlers)
+								curCapHandler.handleUnknown(this, line);
+					} else
+						//Pass to CapHandlers, could be important
+						for (CapHandler curCapHandler : capHandlers)
+							curCapHandler.handleUnknown(this, line);
 				}
 			}
 
@@ -895,7 +899,7 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't send CTCP response to null user");
 		sendCTCPResponse(target.getNick(), message);
 	}
-	
+
 	public void sendCAPREQ(String... capability) {
 		sendRawLine("CAP REQ :" + Utils.join(Arrays.asList(capability), " "));
 	}
