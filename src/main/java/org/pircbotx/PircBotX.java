@@ -50,6 +50,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
 import static org.pircbotx.ReplyConstants.*;
+import org.pircbotx.cap.CapHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
@@ -120,7 +121,9 @@ public class PircBotX {
 	protected boolean autoNickChange = false;
 	protected boolean verbose = false;
 	@Getter
-	protected boolean capEnabled = false;
+	protected boolean capEnabled = true;
+	@Getter
+	protected final List<CapHandler> capHandlers = new ArrayList();
 	protected String name = "PircBotX";
 	protected String nick = name;
 	protected String login = "PircBotX";
@@ -371,6 +374,24 @@ public class PircBotX {
 						socket.close();
 						inputThread = null;
 						throw new IrcException("Could not log into the IRC server: " + line);
+					} else if (code.equals("CAP")) {
+						//Handle CAP Code; remove extra from params
+						List<String> capParams = new ArrayList(params);
+						capParams.remove(0); //*
+						capParams.remove(0); //LS
+						capParams.set(0, capParams.get(0).substring(1)); //First colon
+						if (params.get(1).equals("LS"))
+							for (CapHandler curCapHandler : capHandlers)
+								curCapHandler.handleLS(this, capParams);
+						else if (params.get(1).equals("ACK"))
+							for (CapHandler curCapHandler : capHandlers)
+								curCapHandler.handleACK(this, capParams);
+						else if (params.get(1).equals("NAK"))
+							for (CapHandler curCapHandler : capHandlers)
+								curCapHandler.handleNAK(this, capParams);
+						else
+							//Uhhh....
+							log("*** Unknown CAP response " + params.get(1));
 					}
 				}
 			}
