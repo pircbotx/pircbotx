@@ -11,4 +11,5 @@ public interface CapHandler {
 	public void handleLS(PircBotX bot, List<String> capabilities) throws Exception;
 	public void handleACK(PircBotX bot, List<String> capabilities) throws Exception;
 	public void handleNAK(PircBotX bot, List<String> capabilities) throws Exception;
+	public void handleUnknwon(PircBotX bot, String rawLine) throws Exception;
 }
