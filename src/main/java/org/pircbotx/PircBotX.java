@@ -895,6 +895,10 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't send CTCP response to null user");
 		sendCTCPResponse(target.getNick(), message);
 	}
+	
+	public void sendCAPREQ(String... capability) {
+		sendRawLine("CAP REQ :" + Utils.join(Arrays.asList(capability), " "));
+	}
 
 	/**
 	 * Attempt to change the current nick (nickname) of the bot when it
