@@ -89,6 +89,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	public void onAction(ActionEvent<T> event) throws Exception {
 	}
 
+	public void onCapability(CapabilityEvent<T> event) throws Exception {
+	}
+
 	public void onChannelInfo(ChannelInfoEvent<T> event) throws Exception {
 	}
 
