@@ -420,10 +420,7 @@ public class PircBotX {
 
 			getListenerManager().dispatchEvent(new ConnectEvent(this));
 		} catch (IOException e) {
-			if (socket != null)
-				socket.close();
-			if (outputThread != null)
-				outputThread.interrupt();
+			shutdown(true);
 			throw new IOException("Can't connect to server", e);
 		}
 	}
