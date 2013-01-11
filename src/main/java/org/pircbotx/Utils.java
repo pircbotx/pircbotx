@@ -19,6 +19,8 @@
 package org.pircbotx;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.FileTransferFinishedEvent;
@@ -156,7 +158,18 @@ public class Utils {
 			return ((VoiceEvent) event).getSource();
 		return null;
 	}
-	
+
+	public static String join(Collection<String> strings, String sep) {
+		StringBuilder builder = new StringBuilder();
+		Iterator<String> itr = strings.iterator();
+		while (itr.hasNext()) {
+			builder.append(itr.next());
+			if (itr.hasNext())
+				builder.append(sep);
+		}
+		return builder.toString();
+	}
+
 	/**
 	 * Tokenize IRC raw input into it's components, keeping the
 	 * 'sender' and 'message' fields intact.
@@ -165,28 +178,28 @@ public class Utils {
 	 */
 	public static List<String> tokenizeLine(String input) {
 		List<String> retn = new ArrayList<String>();
-		
+
 		if (input == null || input.length() == 0)
 			return retn;
-		
+
 		String temp = input;
-		
+
 		while (true) {
 			if (temp.startsWith(":") && retn.size() > 0) {
 				retn.add(temp.substring(1));
-				
+
 				return retn;
 			}
-			
+
 			String[] split = temp.split(" ", 2);
 			retn.add(split[0]);
-			
+
 			if (split.length > 1)
 				temp = split[1];
 			else
 				break;
 		}
-		
+
 		return retn;
 	}
 }
