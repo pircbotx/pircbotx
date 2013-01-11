@@ -316,38 +316,37 @@ public class PircBotX {
 			outputThread.start();
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
-			
+
 			if (capEnabled)
 				// Attempt to initiate a CAP transaction.
 				outputThread.sendRawLineNow("CAP LS");
-			
+
 			// Attempt to join the server.
 			if (webIrcPassword != null)
 				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " " + webIrcUsername
-						 + " " + webIrcHostname + " " + webIrcAddress.getHostAddress());
+						+ " " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 			if (password != null && !password.trim().equals(""))
 				outputThread.sendRawLineNow("PASS " + password);
 			String tempNick = getName();
-			
+
 			outputThread.sendRawLineNow("NICK " + tempNick);
 			outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
 			// Read stuff back from the server to see if we connected.
 			String line;
 			int tries = 1;
-			
+
 			while ((line = breader.readLine()) != null) {
 				handleLine(line);
 
 				List<String> params = Utils.tokenizeLine(line);
 				if (params.size() >= 2) {
 					String sender = "";
-					if (params.get(0).startsWith(":")) {
+					if (params.get(0).startsWith(":"))
 						sender = params.remove(0);
-					}
-					
+
 					String code = params.remove(0);
-					
+
 					//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
 					String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
 					if (Arrays.asList(codes).contains(code))
@@ -375,11 +374,11 @@ public class PircBotX {
 					}
 				}
 			}
-			
+
 			this.nick = tempNick;
 			loggedIn = true;
 			log("*** Logged onto server.");
-			
+
 			// This makes the socket timeout on read operations after 5 minutes.
 			socket.setSoTimeout(getSocketTimeout());
 
@@ -451,12 +450,12 @@ public class PircBotX {
 	public synchronized void disconnect() {
 		quitServer();
 	}
-	
+
 	/**
 	 * Enable CAP ability for this instance of the bot.
 	 * As CAP functionality is used only during connection and registration,
 	 * there is really no need to permit disabling this once it is enabled.
-	 * Once CAP is enabled, it is an exercise for the reader to ensure 
+	 * Once CAP is enabled, it is an exercise for the reader to ensure
 	 * proper CAP termination by sending CAP END to the server.
 	 */
 	public void setCapEnabled(boolean capEnabled) {
@@ -1595,15 +1594,14 @@ public class PircBotX {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log("<<<" + line);
-		
+
 		List<String> parts = Utils.tokenizeLine(line);
-		
+
 		String senderInfo = "";
-		
-		if (parts.get(0).startsWith(":")) {
+
+		if (parts.get(0).startsWith(":"))
 			senderInfo = parts.remove(0);
-		}
-		
+
 		String command = parts.remove(0).toUpperCase();
 
 		// Check for server pings.
@@ -1650,33 +1648,34 @@ public class PircBotX {
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
 					sourceNick = senderInfo; //WARNING: Changed from origional PircBot. Instead of command as target, use channel/user (setup later)
-			} else {
-				// We don't know what this line means.
-				getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-				// Return from the method;
-				return;
 			}
-		
+		else {
+			// We don't know what this line means.
+			getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+			// Return from the method;
+			return;
+		}
+
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
-		
+
 		if (target == null)
 			target = !parts.isEmpty() ? parts.get(0) : "";
-		
+
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
 		User source = getUser(sourceNick);
-		
+
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
 		String message = (line.contains(" :")) ? line.substring(line.indexOf(" :") + 2) : "";
-		
+
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
 			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
 			StringTokenizer tokenizer = new StringTokenizer(request);
-			
+
 			if (request.equals("VERSION"))
 				// VERSION request
 				getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
@@ -1738,7 +1737,7 @@ public class PircBotX {
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
-		else if (command.equals("CAP")){
+		else if (command.equals("CAP")) {
 			String capcmd = parts.get(1);
 			getListenerManager().dispatchEvent(new CapabilityEvent(this, capcmd, message));
 		} else if (command.equals("QUIT")) {
@@ -1751,7 +1750,7 @@ public class PircBotX {
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			User recipient = getUser(parts.get(1));
-			
+
 			if (recipient.getNick().equals(getNick()))
 				//We were just kicked
 				userChanInfo.deleteA(channel);
@@ -2661,7 +2660,7 @@ public class PircBotX {
 
 	/**
 	 * Returns the current ListenerManager in use by this bot. Note that the default
-	 * listener manager ({@link ListenerManager}) is lazy loaded here unless one 
+	 * listener manager ({@link ListenerManager}) is lazy loaded here unless one
 	 * was already set
 	 * @return Current ListenerManager
 	 */
