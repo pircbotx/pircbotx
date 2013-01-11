@@ -87,14 +87,14 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.11.2</version>
+			<version>0.11.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--Use TestNG as testing framework-->
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.7</version>
+			<version>6.8</version>
 			<scope>test</scope>
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
@@ -108,7 +108,7 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>1.9.5-rc1</version>
+			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
