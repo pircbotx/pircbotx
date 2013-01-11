@@ -380,23 +380,31 @@ public class PircBotX {
 						capParams.remove(0); //*
 						capParams.remove(0); //LS
 						capParams.set(0, capParams.get(0).substring(1)); //First colon
-						if (params.get(1).equals("LS"))
-							for (CapHandler curCapHandler : capHandlers)
-								curCapHandler.handleLS(this, capParams);
-						else if (params.get(1).equals("ACK"))
-							for (CapHandler curCapHandler : capHandlers)
-								curCapHandler.handleACK(this, capParams);
-						else if (params.get(1).equals("NAK"))
-							for (CapHandler curCapHandler : capHandlers)
-								curCapHandler.handleNAK(this, capParams);
-						else
-							//Maybe the CapHandlers know how to use it
+						try {
+							if (params.get(1).equals("LS"))
+								for (CapHandler curCapHandler : capHandlers)
+									curCapHandler.handleLS(this, capParams);
+							else if (params.get(1).equals("ACK"))
+								for (CapHandler curCapHandler : capHandlers)
+									curCapHandler.handleACK(this, capParams);
+							else if (params.get(1).equals("NAK"))
+								for (CapHandler curCapHandler : capHandlers)
+									curCapHandler.handleNAK(this, capParams);
+							else
+								//Maybe the CapHandlers know how to use it
+								for (CapHandler curCapHandler : capHandlers)
+									curCapHandler.handleUnknown(this, line);
+						} catch (Exception e) {
+							throw new RuntimeException("Exception during CAP handling", e);
+						}
+					} else
+						try {
+							//Pass to CapHandlers, could be important
 							for (CapHandler curCapHandler : capHandlers)
 								curCapHandler.handleUnknown(this, line);
-					} else
-						//Pass to CapHandlers, could be important
-						for (CapHandler curCapHandler : capHandlers)
-							curCapHandler.handleUnknown(this, line);
+						} catch (Exception e) {
+							throw new RuntimeException("Exception during CAP handling", e);
+						}
 				}
 			}
 
