@@ -2746,10 +2746,12 @@ public class PircBotX {
 				@Override
 				public void run() {
 					PircBotX thisBot = thisBotRef.get();
-					if (thisBot != null && thisBot.isConnected()) {
-						thisBot.disconnect();
-						thisBot.shutdown(true);
-					}
+					if (thisBot != null && thisBot.isConnected())
+						try {
+							thisBot.disconnect();
+						} finally {
+							thisBot.shutdown(true);
+						}
 				}
 			});
 			shutdownHook.setName("bot" + botCount + "-shutdownhook");
