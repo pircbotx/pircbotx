@@ -2826,14 +2826,19 @@ public class PircBotX {
 	 * 100% shutdown the bot
 	 */
 	public void shutdown(boolean noReconnect) {
-		//Close the socket from here and let the threads die
 		try {
-			socket.close();
-			outputThread.interrupt();
-		} catch (Exception e) {
-			//Something went wrong, interrupt to make sure they are closed
 			outputThread.interrupt();
 			inputThread.interrupt();
+		} catch (Exception e) {
+			logException(e);
+		}
+
+		//Close the socket from here and let the threads die
+		try {
+			socket.shutdownInput();
+			socket.close();
+		} catch (Exception e) {
+			logException(e);
 		}
 
 		//Close the DCC Manager
