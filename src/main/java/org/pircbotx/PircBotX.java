@@ -406,6 +406,17 @@ public class PircBotX {
 							throw new RuntimeException("Exception during CAP handling", e);
 						}
 				}
+				//Send CAP END if all CapHandlers are finished
+				if(capEnabled) {
+					boolean allDone = true;
+					for(CapHandler curCapHandler : capHandlers)
+						if(!curCapHandler.isDone()) {
+							allDone = false;
+							break;
+						}
+					if(allDone)
+						outputThread.sendRawLineNow("CAP END");
+				}
 			}
 
 			this.nick = tempNick;
