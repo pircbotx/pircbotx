@@ -376,10 +376,7 @@ public class PircBotX {
 						throw new IrcException("Could not log into the IRC server: " + line);
 					} else if (code.equals("CAP")) {
 						//Handle CAP Code; remove extra from params
-						List<String> capParams = new ArrayList(params);
-						capParams.remove(0); //*
-						capParams.remove(0); //LS
-						capParams.set(0, capParams.get(0).substring(1)); //First colon
+						List<String> capParams = Arrays.asList(params.get(2).split(" "));
 						try {
 							if (params.get(1).equals("LS"))
 								for (CapHandler curCapHandler : capHandlers)
