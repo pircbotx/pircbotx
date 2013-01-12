@@ -338,6 +338,7 @@ public class PircBotX {
 			// Read stuff back from the server to see if we connected.
 			String line;
 			int tries = 1;
+			boolean capEndSent = false;
 
 			while ((line = breader.readLine()) != null) {
 				handleLine(line);
@@ -404,15 +405,17 @@ public class PircBotX {
 						}
 				}
 				//Send CAP END if all CapHandlers are finished
-				if(capEnabled) {
+				if(capEnabled && !capEndSent) {
 					boolean allDone = true;
 					for(CapHandler curCapHandler : capHandlers)
 						if(!curCapHandler.isDone()) {
 							allDone = false;
 							break;
 						}
-					if(allDone)
-						outputThread.sendRawLineNow("CAP END");
+					if(allDone) {
+						outputThread.sendRawLineNow("CAP END"); 
+						capEndSent = true;
+					}
 				}
 			}
 
