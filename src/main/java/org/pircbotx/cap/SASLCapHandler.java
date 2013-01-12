@@ -77,7 +77,7 @@ public class SASLCapHandler implements CapHandler {
 
 				if (!ignoreFail)
 					throw new RuntimeException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
-				
+
 				//Pretend like nothing happened
 				done = true;
 			} else if (parsedLine[1].equals("900") || parsedLine[1].equals("903"))
