@@ -104,6 +104,12 @@ public class InputThread extends Thread {
 				//Exception in client code. Just log and continue
 				bot.logException(e);
 			}
+
+			//Do nothing if this thread is being interrupted (meaning shutdown() was run)
+			if (Thread.interrupted()) {
+				isConnected = false;
+				return;
+			}
 		}
 
 		//Now that the socket is definatly closed call event, log, and kill the OutputThread
