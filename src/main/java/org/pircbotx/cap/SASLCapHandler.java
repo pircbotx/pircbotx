@@ -66,19 +66,22 @@ public class SASLCapHandler implements CapHandler {
 			//Server ackowledges our request to use plain authentication
 			String encodedAuth = Base64.encodeToString((username + '\0' + username + '\0' + password).getBytes("UTF-8"), false);
 			bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
-			done = true;
 		}
 
 		//Check for 904 and 905 
 		String[] parsedLine = rawLine.split(" ", 4);
-		if (parsedLine.length >= 1 && (parsedLine[1].equals("904") || parsedLine[1].equals("905"))) {
-			//Remove sasl as an enabled capability
-			bot.getEnabledCapabilities().remove("sasl");
+		if (parsedLine.length >= 1)
+			if (parsedLine[1].equals("904") || parsedLine[1].equals("905")) {
+				//Remove sasl as an enabled capability
+				bot.getEnabledCapabilities().remove("sasl");
 
-			if (!ignoreFail)
-				throw new RuntimeException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
-		}
-
+				if (!ignoreFail)
+					throw new RuntimeException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
+				
+				//Pretend like nothing happened
+				done = true;
+			} else if (parsedLine[1].equals("900") || parsedLine[1].equals("903"))
+				done = true;
 	}
 
 	public void handleNAK(PircBotX bot, List<String> capabilities) {
