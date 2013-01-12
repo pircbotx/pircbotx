@@ -32,8 +32,21 @@ import org.pircbotx.PircBotX;
 public class SASLCapHandler implements CapHandler {
 	protected final String username;
 	protected final String password;
+	protected final boolean ignoreFail;
 	@Getter
 	protected boolean done = false;
+
+	/**
+	 * Create SASLCapHandler not ignoring failed authentication and throwing
+	 * a RuntimeException
+	 * @param username
+	 * @param password
+	 */
+	public SASLCapHandler(String username, String password) {
+		this.username = username;
+		this.password = password;
+		this.ignoreFail = false;
+	}
 
 	public void handleLS(PircBotX bot, List<String> capabilities) {
 		if (capabilities.contains("sasl"))
@@ -55,6 +68,17 @@ public class SASLCapHandler implements CapHandler {
 			bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
 			done = true;
 		}
+
+		//Check for 904 and 905 
+		String[] parsedLine = rawLine.split(" ", 4);
+		if (parsedLine.length >= 1 && (parsedLine[1].equals("904") || parsedLine[1].equals("905"))) {
+			//Remove sasl as an enabled capability
+			bot.getEnabledCapabilities().remove("sasl");
+
+			if (!ignoreFail)
+				throw new RuntimeException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
+		}
+
 	}
 
 	public void handleNAK(PircBotX bot, List<String> capabilities) {
