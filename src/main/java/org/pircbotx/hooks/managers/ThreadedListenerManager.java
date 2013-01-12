@@ -145,8 +145,8 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		protected static AtomicInteger poolCount = new AtomicInteger();
 		protected String prefix;
 
-		public ListenerThreadFactory(String threadName) {
-			prefix = "pool-" + poolCount.getAndIncrement() + "-" + threadName + "-";
+		public ListenerThreadFactory(String poolName) {
+			prefix = "pool-" + poolCount.getAndIncrement() + "-" + poolName + "-";
 		}
 
 		public Thread newThread(Runnable r) {
