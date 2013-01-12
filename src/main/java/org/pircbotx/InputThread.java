@@ -106,14 +106,6 @@ public class InputThread extends Thread {
 			}
 		}
 
-		//Disconnected at this point, close the socket
-		try {
-			socket.close();
-		} catch (Exception e) {
-			//There's not much we can do here besides log that we couldn't properly close
-			bot.logException(e);
-		}
-
 		//Now that the socket is definatly closed call event, log, and kill the OutputThread
 		isConnected = false;
 		bot.shutdown();
