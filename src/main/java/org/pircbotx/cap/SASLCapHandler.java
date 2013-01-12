@@ -44,7 +44,7 @@ public class SASLCapHandler implements CapHandler {
 	public void handleACK(PircBotX bot, List<String> capabilities) {
 		if (capabilities.contains("sasl"))
 			//Server acknowledges our request to use sasl 
-			bot.sendRawLine("AUTHENTICATE PLAIN");
+			bot.sendRawLineNow("AUTHENTICATE PLAIN");
 
 	}
 
@@ -52,7 +52,7 @@ public class SASLCapHandler implements CapHandler {
 		if (rawLine.equals("AUTHENTICATE +")) {
 			//Server ackowledges our request to use plain authentication
 			String encodedAuth = Base64.encodeToString((username + '\0' + username + '\0' + password).getBytes("UTF-8"), false);
-			bot.sendRawLine("AUTHENTICATE " + encodedAuth);
+			bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
 			done = true;
 		}
 	}
