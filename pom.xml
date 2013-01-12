@@ -132,6 +132,8 @@
 						<exclude>**/*.txt</exclude>
 						<exclude>**/*.log</exclude>
 						<exclude>**/nbactions.xml</exclude>
+						<!-- This is licensed seperately -->
+						<exclude>src/main/java/org/pircbotx/Base64.java</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
 				</configuration>
