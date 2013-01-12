@@ -35,11 +35,11 @@ package org.pircbotx;
  * <p/>
  * <
  * pre> sendMessage("#cs", Colors.BOLD + "A bold hello!");
- *     <b>A bold hello!</b>
+ * <b>A bold hello!</b>
  * sendMessage("#cs", Colors.RED + "Red" + Colors.NORMAL + " text");
- *     <font color="red">Red</font> text
+ * <font color="red">Red</font> text
  * sendMessage("#cs", Colors.BOLD + Colors.RED + "Bold and red");
- *     <b><font color="red">Bold and red</font></b></pre>
+ * <b><font color="red">Bold and red</font></b></pre>
  * <p/>
  * Please note that some IRC channels may be configured to reject any
  * messages that use colours. Also note that older IRC clients may be
