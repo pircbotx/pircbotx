@@ -280,7 +280,7 @@ public class PircBotX {
 
 			// Clear everything we may have know about channels.
 			userChanInfo.clear();
-			
+
 			//Reset capabilities
 			enabledCapabilities = new ArrayList();
 
@@ -390,11 +390,10 @@ public class PircBotX {
 							else if (params.get(1).equals("ACK")) {
 								//Server is enabling a capability, store that
 								getEnabledCapabilities().addAll(capParams);
-								
+
 								for (CapHandler curCapHandler : capHandlers)
 									curCapHandler.handleACK(this, capParams);
-							}
-							else if (params.get(1).equals("NAK"))
+							} else if (params.get(1).equals("NAK"))
 								for (CapHandler curCapHandler : capHandlers)
 									curCapHandler.handleNAK(this, capParams);
 							else
@@ -414,17 +413,17 @@ public class PircBotX {
 						}
 				}
 				//Send CAP END if all CapHandlers are finished
-				if(capEnabled && !capEndSent) {
+				if (capEnabled && !capEndSent) {
 					boolean allDone = true;
-					for(CapHandler curCapHandler : capHandlers)
-						if(!curCapHandler.isDone()) {
+					for (CapHandler curCapHandler : capHandlers)
+						if (!curCapHandler.isDone()) {
 							allDone = false;
 							break;
 						}
-					if(allDone) {
-						outputThread.sendRawLineNow("CAP END"); 
+					if (allDone) {
+						outputThread.sendRawLineNow("CAP END");
 						capEndSent = true;
-						
+
 						//Make capabilities unmodifiable for the future
 						enabledCapabilities = Collections.unmodifiableList(enabledCapabilities);
 					}
@@ -443,7 +442,7 @@ public class PircBotX {
 
 			getListenerManager().dispatchEvent(new ConnectEvent(this));
 		} catch (Exception e) {
-			if(!(e instanceof IrcException) || !(e instanceof NickAlreadyInUseException))
+			if (!(e instanceof IrcException) || !(e instanceof NickAlreadyInUseException))
 				shutdown(true);
 			throw new IOException("Can't connect to server", e);
 		}
