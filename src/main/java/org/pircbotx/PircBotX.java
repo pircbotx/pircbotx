@@ -124,6 +124,8 @@ public class PircBotX {
 	protected boolean capEnabled = true;
 	@Getter
 	protected final List<CapHandler> capHandlers = new ArrayList();
+	@Getter
+	protected List<String> enabledCapabilities = new ArrayList();
 	protected String name = "PircBotX";
 	protected String nick = name;
 	protected String login = "PircBotX";
@@ -278,6 +280,9 @@ public class PircBotX {
 
 			// Clear everything we may have know about channels.
 			userChanInfo.clear();
+			
+			//Reset capabilities
+			enabledCapabilities = new ArrayList();
 
 			// Connect to the server by DNS server
 			Throwable lastException = null;
@@ -382,9 +387,13 @@ public class PircBotX {
 							if (params.get(1).equals("LS"))
 								for (CapHandler curCapHandler : capHandlers)
 									curCapHandler.handleLS(this, capParams);
-							else if (params.get(1).equals("ACK"))
+							else if (params.get(1).equals("ACK")) {
+								//Server is enabling a capability, store that
+								getEnabledCapabilities().addAll(capParams);
+								
 								for (CapHandler curCapHandler : capHandlers)
 									curCapHandler.handleACK(this, capParams);
+							}
 							else if (params.get(1).equals("NAK"))
 								for (CapHandler curCapHandler : capHandlers)
 									curCapHandler.handleNAK(this, capParams);
@@ -415,6 +424,9 @@ public class PircBotX {
 					if(allDone) {
 						outputThread.sendRawLineNow("CAP END"); 
 						capEndSent = true;
+						
+						//Make capabilities unmodifiable for the future
+						enabledCapabilities = Collections.unmodifiableList(enabledCapabilities);
 					}
 				}
 			}
