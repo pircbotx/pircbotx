@@ -22,6 +22,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
@@ -59,18 +60,20 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 		//WaitTest has started
 		event.respond("Started...");
+		WaitForQueue queue = new WaitForQueue(event.getBot());
 		//Infinate loop since we might recieve messages that aren't WaitTest's.
 		while (true) {
 			//Use the waitFor() method to wait for a MessageEvent.
 			//This will block (wait) until a message event comes in, ignoring
 			//everything else
-			MessageEvent currentEvent = event.getBot().waitFor(MessageEvent.class);
+			MessageEvent currentEvent = queue.waitFor(MessageEvent.class);
 			//Check if this message is the "ping" command
 			if (currentEvent.getMessage().startsWith("?waitTest ping"))
 				event.respond("pong");
 			//Check if this message is the "end" command
 			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
 				event.respond("Stopping");
+				queue.done();
 				//Very important that we end the infinate loop or else the test
 				//will continue forever!
 				return;
