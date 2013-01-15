@@ -60,8 +60,11 @@ public class EnableCapHandler implements CapHandler {
 	}
 
 	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException {
-		if (capabilities.contains(cap))
+		if (capabilities.contains(cap)) {
+			//Make sure the bot didn't register this capability
+			bot.getEnabledCapabilities().remove(cap);
 			throw new CAPException("Server does not support the " + cap + " capability");
+		}
 	}
 
 	public void handleUnknown(PircBotX bot, String rawLine) {

@@ -92,7 +92,10 @@ public class SASLCapHandler implements CapHandler {
 	}
 
 	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException {
-		if (!ignoreFail && capabilities.contains("sasl"))
+		if (!ignoreFail && capabilities.contains("sasl")) {
+			//Make sure the bot didn't register this capability
+			bot.getEnabledCapabilities().remove("sasl");
 			throw new CAPException("Server does not support SASL");
+		}
 	}
 }
