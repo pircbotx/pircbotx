@@ -75,8 +75,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onEvent(Event<T> event) throws Exception {
 		try {
-			for (Method curMethod : eventToMethod.get(event.getClass()))
-				curMethod.invoke(this, event);
+			if (eventToMethod.containsKey(event.getClass()))
+				for (Method curMethod : eventToMethod.get(event.getClass()))
+					curMethod.invoke(this, event);
 		} catch (InvocationTargetException ex) {
 			Throwable cause = ex.getCause();
 			if (cause instanceof Exception)

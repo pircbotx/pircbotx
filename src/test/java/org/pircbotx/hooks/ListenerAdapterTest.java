@@ -108,6 +108,20 @@ public class ListenerAdapterTest {
 		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
 	}
 
+	@Test(description = "Test with an unknown Event to make sure it doesn't throw an exception")
+	public void unknownEventTest() throws Exception {
+		Event customEvent = new Event(null) {
+			@Override
+			public void respond(String response) {
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+		};
+		ListenerAdapter customListener = new ListenerAdapter() {
+		};
+
+		customListener.onEvent(customEvent);
+	}
+
 	protected static List<String> getClasses(Class<?> clazz) throws IOException {
 		String sep = System.getProperty("file.separator");
 		//Since dumping path in getResources() fails, extract path from root
