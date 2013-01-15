@@ -20,19 +20,20 @@ package org.pircbotx.cap;
 
 import java.util.List;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.CAPException;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface CapHandler {
-	public void handleLS(PircBotX bot, List<String> capabilities) throws Exception;
+	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException;
 
-	public void handleACK(PircBotX bot, List<String> capabilities) throws Exception;
+	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException;
 
-	public void handleNAK(PircBotX bot, List<String> capabilities) throws Exception;
+	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException;
 
-	public void handleUnknown(PircBotX bot, String rawLine) throws Exception;
+	public void handleUnknown(PircBotX bot, String rawLine) throws CAPException;
 
 	public boolean isDone();
 }
