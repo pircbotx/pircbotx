@@ -2794,7 +2794,7 @@ public class PircBotX {
 				@Override
 				public void run() {
 					PircBotX thisBot = thisBotRef.get();
-					if (thisBot != null && thisBot.isConnected())
+					if (thisBot != null && thisBot.isConnected() && !thisBot.socket.isClosed())
 						try {
 							thisBot.disconnect();
 						} finally {
