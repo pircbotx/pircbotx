@@ -18,11 +18,13 @@
  */
 package org.pircbotx.cap;
 
+import java.io.UnsupportedEncodingException;
 import org.pircbotx.Base64;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.CAPException;
 
 /**
  *
@@ -48,12 +50,12 @@ public class SASLCapHandler implements CapHandler {
 		this.ignoreFail = false;
 	}
 
-	public void handleLS(PircBotX bot, List<String> capabilities) {
+	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (capabilities.contains("sasl"))
 			//Server supports sasl, send request to use it
 			bot.sendCAPREQ("sasl");
 		else
-			throw new RuntimeException("Server does not support SASL");
+			throw new CAPException("Server does not support SASL");
 	}
 
 	public void handleACK(PircBotX bot, List<String> capabilities) {
@@ -62,11 +64,15 @@ public class SASLCapHandler implements CapHandler {
 			bot.sendRawLineNow("AUTHENTICATE PLAIN");
 	}
 
-	public void handleUnknown(PircBotX bot, String rawLine) throws Exception {
-		if (rawLine.equals("AUTHENTICATE +")) {
-			//Server ackowledges our request to use plain authentication
-			String encodedAuth = Base64.encodeToString((username + '\0' + username + '\0' + password).getBytes("UTF-8"), false);
-			bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
+	public void handleUnknown(PircBotX bot, String rawLine) throws CAPException {
+		try {
+			if (rawLine.equals("AUTHENTICATE +")) {
+				//Server ackowledges our request to use plain authentication
+				String encodedAuth = Base64.encodeToString((username + '\0' + username + '\0' + password).getBytes("UTF-8"), false);
+				bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
+			}
+		} catch (Exception e) {
+			throw new CAPException("Exception encountered during authentication", e);
 		}
 
 		//Check for 904 and 905 
@@ -77,7 +83,7 @@ public class SASLCapHandler implements CapHandler {
 				bot.getEnabledCapabilities().remove("sasl");
 
 				if (!ignoreFail)
-					throw new RuntimeException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
+					throw new CAPException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
 
 				//Pretend like nothing happened
 				done = true;
@@ -85,8 +91,8 @@ public class SASLCapHandler implements CapHandler {
 				done = true;
 	}
 
-	public void handleNAK(PircBotX bot, List<String> capabilities) {
+	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (!ignoreFail && capabilities.contains("sasl"))
-			throw new RuntimeException("Server does not support SASL");
+			throw new CAPException("Server does not support SASL");
 	}
 }
