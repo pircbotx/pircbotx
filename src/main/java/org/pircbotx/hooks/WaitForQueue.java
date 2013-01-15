@@ -16,13 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.pircbotx.hooks;
 
-import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.pircbotx.PircBotX;
