@@ -52,13 +52,14 @@ public class SASLCapHandler implements CapHandler {
 		if (capabilities.contains("sasl"))
 			//Server supports sasl, send request to use it
 			bot.sendCAPREQ("sasl");
+		else
+			throw new RuntimeException("Server does not support SASL");
 	}
 
 	public void handleACK(PircBotX bot, List<String> capabilities) {
 		if (capabilities.contains("sasl"))
 			//Server acknowledges our request to use sasl 
 			bot.sendRawLineNow("AUTHENTICATE PLAIN");
-
 	}
 
 	public void handleUnknown(PircBotX bot, String rawLine) throws Exception {
