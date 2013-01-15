@@ -39,8 +39,8 @@ import static org.mockito.Mockito.*;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 
 /**
- * Do various connect tests. Note that this is in a seperate class since PircBotXOutputTest
- * relys on a working mock implementation
+ * Do various connect tests. Note that this is in a separate class since PircBotXOutputTest
+ * relies on a working mock implementation
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(groups = "ConnectTests", singleThreaded = true)
