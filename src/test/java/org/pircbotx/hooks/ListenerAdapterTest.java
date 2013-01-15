@@ -110,7 +110,8 @@ public class ListenerAdapterTest {
 
 	@Test(description = "Test with an unknown Event to make sure it doesn't throw an exception")
 	public void unknownEventTest() throws Exception {
-		Event customEvent = new Event(null) {
+		PircBotX bot = new PircBotX();
+		Event customEvent = new Event(bot) {
 			@Override
 			public void respond(String response) {
 				throw new UnsupportedOperationException("Not supported yet.");
