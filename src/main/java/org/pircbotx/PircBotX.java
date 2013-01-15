@@ -1786,10 +1786,7 @@ public class PircBotX {
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
-		else if (command.equals("CAP")) {
-			String capcmd = parts.get(1);
-			getListenerManager().dispatchEvent(new CapabilityEvent(this, capcmd, message));
-		} else if (command.equals("QUIT")) {
+		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(getNick()))
