@@ -22,6 +22,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.CAPException;
 
 /**
  * Enables the specified capability with the server. This handler should cover
@@ -44,25 +45,25 @@ public class EnableCapHandler implements CapHandler {
 		this.ignoreFail = false;
 	}
 
-	public void handleLS(PircBotX bot, List<String> capabilities) throws Exception {
+	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
 			//Server supports sasl, send request to use it
 			bot.sendCAPREQ(cap);
 		else
-			throw new RuntimeException("Server does not support the " + cap + " capability");
+			throw new CAPException("Server does not support the " + cap + " capability");
 	}
 
-	public void handleACK(PircBotX bot, List<String> capabilities) throws Exception {
+	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
 			//Capability is now enabled
 			done = true;
 	}
 
-	public void handleNAK(PircBotX bot, List<String> capabilities) throws Exception {
+	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
-			throw new RuntimeException("Server does not support the " + cap + " capability");
+			throw new CAPException("Server does not support the " + cap + " capability");
 	}
 
-	public void handleUnknown(PircBotX bot, String rawLine) throws Exception {
+	public void handleUnknown(PircBotX bot, String rawLine) {
 	}
 }
