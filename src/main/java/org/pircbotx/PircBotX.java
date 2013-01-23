@@ -376,6 +376,9 @@ public class PircBotX {
 					else if (code.equals("439")) {
 						//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 						// No action required.
+					} else if (capEnabled && code.equals("451")) {
+						//EXAMPLE: 451 CAP :You have not registered
+						//Ignore, this is from servers that don't support CAP
 					} else if (code.startsWith("5") || code.startsWith("4")) {
 						socket.close();
 						inputThread = null;
