@@ -379,11 +379,9 @@ public class PircBotX {
 					} else if (capEnabled && code.equals("451")) {
 						//EXAMPLE: 451 CAP :You have not registered
 						//Ignore, this is from servers that don't support CAP
-					} else if (code.startsWith("5") || code.startsWith("4")) {
-						socket.close();
-						inputThread = null;
+					} else if (code.startsWith("5") || code.startsWith("4"))
 						throw new IrcException("Could not log into the IRC server: " + line);
-					} else if (code.equals("CAP")) {
+					else if (code.equals("CAP")) {
 						//Handle CAP Code; remove extra from params
 						List<String> capParams = Arrays.asList(params.get(2).split(" "));
 						if (params.get(1).equals("LS"))
