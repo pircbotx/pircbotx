@@ -121,7 +121,7 @@ public class PircBotX {
 	protected boolean autoNickChange = false;
 	protected boolean verbose = false;
 	@Getter
-	protected boolean capEnabled = true;
+	protected boolean capEnabled = false;
 	@Getter
 	protected final List<CapHandler> capHandlers = new ArrayList();
 	@Getter
