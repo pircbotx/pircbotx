@@ -50,7 +50,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			if (curMethod.getName().equals("onEvent"))
 				continue;
 			//Make sure this is an event method
-			if (curMethod.getParameterTypes().length != 1)
+			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
 				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
 			if (curClass.isAssignableFrom(GenericEvent.class))
@@ -64,8 +64,11 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 		}
 		//Now that we have all the events, start mapping interfaces
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			//Make sure this is an event method
+			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
+				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if (curClass.isInterface())
+			if (curClass.isInterface() && GenericEvent.class.isAssignableFrom(curClass))
 				//Add this interface method to all events that implement it
 				for (Class curEvent : eventToMethod.keySet())
 					if (curClass.isAssignableFrom(curEvent))
