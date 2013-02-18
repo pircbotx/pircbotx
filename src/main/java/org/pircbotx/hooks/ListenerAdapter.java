@@ -48,6 +48,18 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 		updateEventMethodMapping(ListenerAdapter.class);
 	}
 
+	/**
+	 * Adds custom event listeners created by the specified class to the internal
+	 * event to method map so onEvent is aware of them. The methods must follow 
+	 * the same naming and parameter convention as the {@Link ListenerAdapter ListenerAdapter class} 
+	 * in order to guarantee they are added
+	 * <p>
+	 * This is needed because onEvent is only aware of methods that have been added
+	 * to its internal map. It is only needed to be called once on a class that
+	 * has the methods
+	 * @param clazz A class that has event listener methods that conform to the
+	 * ListenerAdapter class convention
+	 */
 	protected static void updateEventMethodMapping(Class<? extends ListenerAdapter> clazz) {
 		//Map events to methods
 		for (Method curMethod : clazz.getDeclaredMethods()) {
