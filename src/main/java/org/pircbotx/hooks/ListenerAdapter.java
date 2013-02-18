@@ -51,20 +51,18 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	protected static void updateEventMethodMapping(Class<? extends ListenerAdapter> clazz) {
 		//Map events to methods
 		for (Method curMethod : clazz.getDeclaredMethods()) {
-			if (curMethod.getName().equals("onEvent"))
-				continue;
-			//Make sure this is an event method
-			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
+			//Filter out methods by basic criteria
+			if (curMethod.getName().equals("onEvent") || curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
 				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if (curClass.isAssignableFrom(GenericEvent.class))
+			//Filter out methods that don't have the right param or are already added
+			if (curClass.isAssignableFrom(GenericEvent.class) || !curClass.isInterface()
+					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
 				continue;
-			//Good, add to eventToMethod
-			if (!curClass.isInterface()) {
-				Set methods = new HashSet();
-				methods.add(curMethod);
-				eventToMethod.put((Class<? extends Event>) curClass, methods);
-			}
+			Set methods = new HashSet();
+			methods.add(curMethod);
+			eventToMethod.put((Class<? extends Event>) curClass, methods);
+
 		}
 		//Now that we have all the events, start mapping interfaces
 		for (Method curMethod : clazz.getDeclaredMethods()) {
@@ -73,10 +71,11 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
 			if (curClass.isInterface() && GenericEvent.class.isAssignableFrom(curClass))
-				//Add this interface method to all events that implement it
-				for (Class curEvent : eventToMethod.keySet())
-					if (curClass.isAssignableFrom(curEvent))
-						eventToMethod.get(curEvent).add(curMethod);
+				continue;
+			//Add this interface method to all events that implement it
+			for (Class curEvent : eventToMethod.keySet())
+				if (curClass.isAssignableFrom(curEvent) && eventToMethod.get(curEvent).contains(curMethod))
+					eventToMethod.get(curEvent).add(curMethod);
 		}
 	}
 
