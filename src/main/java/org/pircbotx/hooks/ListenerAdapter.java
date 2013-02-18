@@ -45,8 +45,12 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	protected static final Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
 
 	static {
+		updateEventMethodMapping(ListenerAdapter.class);
+	}
+
+	protected static void updateEventMethodMapping(Class<? extends ListenerAdapter> clazz) {
 		//Map events to methods
-		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+		for (Method curMethod : clazz.getDeclaredMethods()) {
 			if (curMethod.getName().equals("onEvent"))
 				continue;
 			//Make sure this is an event method
@@ -63,7 +67,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			}
 		}
 		//Now that we have all the events, start mapping interfaces
-		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+		for (Method curMethod : clazz.getDeclaredMethods()) {
 			//Make sure this is an event method
 			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
 				continue;
