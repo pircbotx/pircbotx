@@ -312,6 +312,7 @@ public class Channel {
 	 */
 	void setMode(String mode) {
 		this.mode = mode;
+		this.modeStale = false;
 		if (modeLatch != null && modeLatch.getCount() == 1)
 			modeLatch.countDown();
 	}
