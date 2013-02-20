@@ -87,7 +87,7 @@ public class ListenerAdapterTest {
 	@Test(description = "Verify all methods in ListenerAdapter throw an exception")
 	public void throwsExceptionTest() {
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
-			if(curMethod.getName().equals("scanEventMethodMapping"))
+			if (!curMethod.getName().startsWith("on"))
 				continue;
 			Class<?>[] exceptions = curMethod.getExceptionTypes();
 			assertEquals(exceptions.length, 1, "Method " + curMethod + " in ListenerManager doesn't throw an exception or thows too many");
