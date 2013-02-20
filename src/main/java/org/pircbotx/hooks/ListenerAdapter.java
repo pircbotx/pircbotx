@@ -68,7 +68,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
 			//Filter out methods that don't have the right param or are already added
-			if (curClass.isAssignableFrom(GenericEvent.class) || !curClass.isInterface()
+			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
 					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
 				continue;
 			Set methods = new HashSet();
@@ -82,11 +82,11 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
 				continue;
 			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if (curClass.isInterface() && GenericEvent.class.isAssignableFrom(curClass))
+			if (!curClass.isInterface() || !GenericEvent.class.isAssignableFrom(curClass))
 				continue;
 			//Add this interface method to all events that implement it
 			for (Class curEvent : eventToMethod.keySet())
-				if (curClass.isAssignableFrom(curEvent) && eventToMethod.get(curEvent).contains(curMethod))
+				if (curClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
 					eventToMethod.get(curEvent).add(curMethod);
 		}
 	}
