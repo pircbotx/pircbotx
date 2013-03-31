@@ -69,7 +69,13 @@ public class DccManager implements Closeable {
 		//Skip the DCC part of the line
 		tokenizer.nextToken();
 		String type = tokenizer.nextToken();
+		
+		//Parse filename, removing quotes
 		String filename = tokenizer.nextToken();
+		if (filename.startsWith("\""))
+			filename = filename.substring(1);
+		if (filename.endsWith("\""))
+			filename = filename.substring(0, filename.length() - 1);
 
 		if (type.equals("SEND")) {
 			//Someone is trying to send a file to us
