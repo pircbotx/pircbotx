@@ -79,7 +79,7 @@ public class DccManager implements Closeable {
 
 		if (type.equals("SEND")) {
 			//Someone is trying to send a file to us
-			//Example: DCC SEND <filename> <ip> <port> <file size> (note File size is optional)
+			//Example: DCC SEND <filename> <ip> <port> <file size> <passive(random,optional)> (note File size is optional)
 			InetAddress address = integerToAddress(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 			long size = -1;
@@ -180,7 +180,7 @@ public class DccManager implements Closeable {
 		return awaitingResume.add(transfer);
 	}
 
-	protected boolean removeAwaitingResume(DccFileTransfer transfer) {
+	public boolean removeAwaitingResume(DccFileTransfer transfer) {
 		return awaitingResume.remove(transfer);
 	}
 
