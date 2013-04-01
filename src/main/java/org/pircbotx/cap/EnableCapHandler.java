@@ -33,6 +33,7 @@ import org.pircbotx.exception.CAPException;
 public class EnableCapHandler implements CapHandler {
 	@Getter
 	protected boolean done = false;
+	@Getter
 	protected final String cap;
 	protected final boolean ignoreFail;
 
