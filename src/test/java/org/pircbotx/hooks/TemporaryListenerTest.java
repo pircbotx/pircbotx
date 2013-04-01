@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks;
 
+import java.io.IOException;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.PircBotX;
@@ -42,7 +43,7 @@ public class TemporaryListenerTest {
 	}
 
 	@Test
-	public void eventDispatched() {
+	public void eventDispatched() throws IOException {
 		final MutableObject<MessageEvent> mutableEvent = new MutableObject();
 		Listener listener = new TemporaryListener(bot) {
 			@Override
@@ -68,7 +69,7 @@ public class TemporaryListenerTest {
 	}
 
 	@Test
-	public void listenerGetsRemoved() {
+	public void listenerGetsRemoved() throws IOException {
 		TemporaryListener listener = new TemporaryListener(bot) {
 			@Override
 			public void onMessage(MessageEvent event) throws Exception {
@@ -88,7 +89,7 @@ public class TemporaryListenerTest {
 		 * make it public
 		 */
 		@Override
-		public void handleLine(String line) {
+		public void handleLine(String line) throws IOException{
 			super.handleLine(line);
 		}
 	}
