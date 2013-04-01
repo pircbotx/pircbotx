@@ -55,6 +55,10 @@
 		<system>Google Code</system>
 		<url>http://code.google.com/p/pircbotx/issues/list/</url>
 	</issueManagement>
+        
+        <ciManagement>
+                <url>https://drone.io/emilymabrey93/pircbotx</url>
+        </ciManagement>
 
 	<scm>
 		<connection>scm:hg:http://code.google.com/p/pircbotx/</connection>
