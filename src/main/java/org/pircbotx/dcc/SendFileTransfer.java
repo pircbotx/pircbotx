@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.dcc;
 
 import java.io.BufferedInputStream;
@@ -27,10 +26,12 @@ import java.io.IOException;
 import java.net.Socket;
 import lombok.AccessLevel;
 import lombok.Cleanup;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import static org.pircbotx.DccFileTransfer.BUFFER_SIZE;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.exception.DccException;
 
 /**
  * Sends a file to a user
@@ -43,11 +44,24 @@ public class SendFileTransfer {
 	protected final String filename;
 	protected final Socket socket;
 	protected long progress;
-	
+	@Getter
+	protected boolean sending = false;
+	@Getter
+	protected boolean done = false;
+
 	public void sendFile(File source) throws IOException {
-		@Cleanup BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
-		@Cleanup BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
-		@Cleanup BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(source));
+		if (sending)
+			throw new DccException("Already sending data");
+		if (done)
+			throw new DccException("Already sent file");
+		sending = true;
+
+		@Cleanup
+		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
+		@Cleanup
+		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
+		@Cleanup
+		BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(source));
 
 		// Check for resuming.
 		if (progress > 0) {
@@ -65,5 +79,7 @@ public class SendFileTransfer {
 			socketInput.read(inBuffer, 0, inBuffer.length);
 			progress += bytesRead;
 		}
+		sending = false;
+		done = true;
 	}
 }
