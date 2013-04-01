@@ -50,7 +50,7 @@ public class EnableCapHandler implements CapHandler {
 		if (capabilities.contains(cap))
 			//Server supports sasl, send request to use it
 			bot.sendCAPREQ(cap);
-		else
+		else if (!ignoreFail)
 			throw new CAPException("Server does not support the " + cap + " capability");
 	}
 
@@ -64,7 +64,8 @@ public class EnableCapHandler implements CapHandler {
 		if (capabilities.contains(cap)) {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove(cap);
-			throw new CAPException("Server does not support the " + cap + " capability");
+			if (!ignoreFail)
+				throw new CAPException("Server does not support the " + cap + " capability");
 		}
 	}
 
