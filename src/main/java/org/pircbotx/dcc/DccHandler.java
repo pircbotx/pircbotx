@@ -1,5 +1,6 @@
 package org.pircbotx.dcc;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -19,7 +20,7 @@ import org.pircbotx.exception.DccException;
  * @author Leon
  */
 @RequiredArgsConstructor
-public class DccManager2 {
+public class DccHandler {
 	protected final PircBotX bot;
 	protected List<SendFileTransfer> sendFileTransfers = Collections.synchronizedList(new ArrayList<SendFileTransfer>());
 	protected List<ReceiveFileTransfer> recieveFileTransfers = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
@@ -28,7 +29,7 @@ public class DccManager2 {
 	public boolean processDcc(User user, String line) {
 		return true;
 	}
-	
+
 	protected ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;
 		List<Integer> ports = bot.getDccPorts();
@@ -50,9 +51,8 @@ public class DccManager2 {
 		}
 		return ss;
 	}
-	
+
 	public void close() {
-		
 	}
 
 	public static String addressToInteger(InetAddress address) {
