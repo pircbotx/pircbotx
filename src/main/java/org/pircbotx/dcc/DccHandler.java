@@ -57,7 +57,7 @@ public class DccHandler {
 	 * Send a file request, returning a ready SendFileTransfer upon success
 	 * @param receiver The receiver 
 	 * @param safeFilename The filename to send. Must have no spaces or be in quotes
-	 * @param timeout The timeout value. 0 means infinite
+	 * @param timeout The timeout value. 0 means infinite.  120000 is recommended
 	 * @return
 	 * @throws IOException
 	 * @throws DccException 
