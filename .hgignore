@@ -2,3 +2,8 @@ target/
 glob:nbactions.xml
 glob:nb-configuration.xml
 
+\.orig\..*$
+\.orig$
+\.chg\..*$
+\.rej$
+\.conflict\~$
