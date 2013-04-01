@@ -102,7 +102,7 @@ public class PircBotX {
 	protected String server = null;
 	protected int port = -1;
 	protected String password = null;
-	protected long messageDelay = 1000;
+	protected long messageDelay;
 	/*
 	 * A Many to Many map that links Users to Channels and channels to users. Modified
 	 * to remove each channel's and user's internal refrences to each other.
@@ -118,11 +118,10 @@ public class PircBotX {
 	@Setter(AccessLevel.PROTECTED)
 	protected List<Integer> dccPorts = new ArrayList();
 	protected InetAddress dccInetAddress = null;
-	// Default settings for the PircBotX.
-	protected boolean autoNickChange = false;
-	protected boolean verbose = false;
+	protected boolean autoNickChange;
+	protected boolean verbose;
 	@Getter
-	protected boolean capEnabled = false;
+	protected boolean capEnabled;
 	@Getter
 	protected final List<CapHandler> capHandlers = new ArrayList();
 	@Getter
@@ -141,10 +140,9 @@ public class PircBotX {
 	protected ListenerManager<? extends PircBotX> listenerManager;
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
-	 * operations. This does not mean the socket is invalid. By default its 5
-	 * minutes
+	 * operations. This does not mean the socket is invalid. 
 	 */
-	protected int socketTimeout = 1000 * 60 * 5;
+	protected int socketTimeout;
 	protected final ServerInfo serverInfo = new ServerInfo(this);
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
 	protected SocketFactory socketFactory = null;
@@ -180,15 +178,26 @@ public class PircBotX {
 
 	/**
 	 * Constructs a PircBotX with the default settings and 
-	 * <ul><li>Adding {@link CoreHooks} to the default ListenerManager, {@link ThreadedListenerManager}</li>
+	 * <ul><li>Add {@link CoreHooks} to the default ListenerManager, {@link ThreadedListenerManager}</li>
 	 * <li>Add a shutdown hook (See {@link #useShutdownHook(boolean) })</li>
 	 * <li>Add an {@link EnableCapHandler} to enable multi-prefix, ignoring it if it fails</li>
+	 * <li>Set {@link #getSocketTimeout() default socket timeout} to 5 minutes</li>
+	 * <li>Set {@link #getMessageDelay() message delay} to 1 second</li>
+	 * <li>Turn off {@link #isAutoNickChange() auto nick changing}</li>
+	 * <li>Turn off {@link #isVerbose() verbose} logging</li>
+	 * <li>Turn off {@link #isCapEnabled() () CAP handling}</li>
 	 * </ul>
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
 		useShutdownHook(true);
 		getCapHandlers().add(new EnableCapHandler("multi-prefix", true));
+		//5 minutes
+		socketTimeout = 1000 * 60 * 5;
+		autoNickChange = false;
+		verbose = false;
+		capEnabled = false;
+		messageDelay = 1000;
 	}
 
 	/**
