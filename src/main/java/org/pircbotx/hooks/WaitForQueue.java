@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks;
 
+import java.io.Closeable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.pircbotx.PircBotX;
@@ -37,7 +38,7 @@ import org.pircbotx.PircBotX;
  * </code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class WaitForQueue {
+public class WaitForQueue implements Closeable {
 	protected final PircBotX bot;
 	protected BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
 	protected WaitForQueueListener listener;
@@ -76,7 +77,8 @@ public class WaitForQueue {
 	 * stores every dispatched event, failure to close will eventually cause you
 	 * to run out of memory
 	 */
-	public void done() {
+	@Override
+	public void close() {
 		bot.getListenerManager().removeListener(listener);
 		eventQueue.clear();
 	}
