@@ -51,6 +51,7 @@ import lombok.Setter;
 import lombok.Synchronized;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
+import org.pircbotx.dcc.DccManager2;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
@@ -113,7 +114,7 @@ public class PircBotX {
 	protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
 	// DccManager to process and handle all DCC events.
 	@Getter
-	protected DccManager dccManager = new DccManager(this);
+	protected DccManager2 dccManager = new DccManager2(this);
 	@Setter(AccessLevel.PROTECTED)
 	protected List<Integer> dccPorts = new ArrayList();
 	protected InetAddress dccInetAddress = null;
@@ -1743,7 +1744,7 @@ public class PircBotX {
 				getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
 			else if (tokenizer.countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 				// This is a DCC request.
-				boolean success = dccManager.processRequest(source, request);
+				boolean success = dccManager.processDcc(source, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
 					getListenerManager().dispatchEvent(new UnknownEvent(this, line));
@@ -2151,6 +2152,10 @@ public class PircBotX {
 			getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(userNick), source, mode));
 		}
 	}
+	
+	protected void processDcc(User source, String request) {
+		
+	}
 
 	/**
 	 * Sets the verbose mode. If verbose mode is set to true, then log entries
@@ -2197,7 +2202,7 @@ public class PircBotX {
 			this.nick = nick;
 		}
 	}
-
+	
 	/**
 	 * Sets the internal login of the Bot. This should be set before joining
 	 * any servers.
