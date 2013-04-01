@@ -129,12 +129,20 @@ public class PircBotXOutputTest {
 	@Test(description = "Verify sendRawLineSplit works correctly with long strings")
 	public void sendRawLineSplitLong() throws Exception {
 		//Generate string parts
-		String seedString = " - ";
+		String seedString = null;
 		String beginning = "BEGIN";
 		String ending = "END";
 		Random random = new Random();
-		while ((beginning + "1" + seedString + ending).length() < bot.getMaxLineLength() - 2)
-			seedString = seedString + (char) (random.nextInt(26) + 'a');
+                
+                StringBuilder seedStringBuilder = new StringBuilder(128);
+                
+                seedStringBuilder.append(" - ");
+                
+                while ((beginning.length() + "1".length() + seedStringBuilder.length() + ending.length()) < bot.getMaxLineLength() - 2)
+			seedStringBuilder.append((char) (random.nextInt(26) + 'a'));
+                
+                seedString = seedStringBuilder.toString();
+                
 		String[] stringParts = new String[]{
 			"1" + seedString,
 			"2" + seedString,
