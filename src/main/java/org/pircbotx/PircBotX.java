@@ -1533,7 +1533,7 @@ public class PircBotX {
 	 * @see DccFileTransfer
 	 *
 	 */
-	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) {
+	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) throws IOException{
 		if (file == null)
 			throw new IllegalArgumentException("Can't send a null file");
 		if (reciever == null)
@@ -1640,7 +1640,7 @@ public class PircBotX {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	protected void handleLine(String line) {
+	protected void handleLine(String line) throws IOException{
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log("<<<" + line);
