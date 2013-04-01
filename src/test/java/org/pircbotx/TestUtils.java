@@ -32,7 +32,7 @@ public class TestUtils {
 	protected static final List<Class<? extends Event>> eventClasses = HookUtils.getAllEvents();
 
 	@DataProvider(name = "getEvents")
-	public static Object[][] EventDataProvider() {
+	public static Object[][] eventDataProvider() {
 		int eventSize = eventClasses.size();
 		Object[][] params = new Object[eventSize][];
 		for (int i = 0; i < eventSize; i++)
