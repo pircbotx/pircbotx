@@ -184,7 +184,7 @@ public class DccManager implements Closeable {
 		return awaitingResume.remove(transfer);
 	}
 
-	protected ServerSocket createServerSocket() throws IOException, DccException {
+	public ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;
 		List<Integer> ports = bot.getDccPorts();
 		if (ports.isEmpty())
