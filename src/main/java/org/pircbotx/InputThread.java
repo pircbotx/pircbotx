@@ -34,7 +34,6 @@ import java.net.Socket;
  */
 public class InputThread extends Thread {
 	private final PircBotX bot;
-	private Socket socket;
 	private BufferedReader breader = null;
 	private boolean isConnected = true;
 
@@ -48,7 +47,6 @@ public class InputThread extends Thread {
 	 */
 	protected InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
 		this.bot = bot;
-		this.socket = socket;
 		this.breader = breader;
 	}
 
