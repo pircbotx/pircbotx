@@ -51,7 +51,7 @@ public class SendFileTransfer {
 		
 		//Make a server that the user can connect to
 		ServerSocket server = bot.getDccManager().createServerSocket();
-		String ipNum = DccManager2.addressToInteger(server.getInetAddress());
+		String ipNum = DccHandler.addressToInteger(server.getInetAddress());
 
 		// Send the message to the user, telling them where to connect to in order to get the file.
 		bot.sendCTCPCommand(user.getNick(), "DCC SEND " + safeFilename + " " + ipNum + " " + server.getLocalPort() + " " + source.length());
