@@ -41,7 +41,7 @@ public class SendFileTransfer {
 	protected final PircBotX bot;
 	protected final User user;
 	protected final String filename;
-	protected Socket socket;
+	protected final Socket socket;
 	protected long progress;
 	
 	public void sendFile(File source) throws IOException {

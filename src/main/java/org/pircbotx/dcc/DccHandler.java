@@ -82,7 +82,7 @@ public class DccHandler {
 		Socket userSocket = serverSocket.accept();
 		serverSocket.close();
 		
-		return new SendFileTransfer(bot, receiver, safeFilename);
+		return new SendFileTransfer(bot, receiver, safeFilename, userSocket);
 	}
 
 
