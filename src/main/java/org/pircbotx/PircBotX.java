@@ -2911,7 +2911,7 @@ public class PircBotX {
 	 * A listener that waits for the specified event before returning. Used in
 	 * {@link PircBotX#waitFor(java.lang.Class) }
 	 */
-	protected class WaitListener implements Listener {
+	protected static class WaitListener implements Listener {
 		protected CountDownLatch signal = new CountDownLatch(1);
 		protected Class<? extends Event> eventClass;
 		protected Event endEvent;
@@ -2939,7 +2939,7 @@ public class PircBotX {
 		}
 	}
 
-	protected class ListBuilder<A> {
+	protected static class ListBuilder<A> {
 		@Getter
 		@Setter
 		private boolean running = false;
