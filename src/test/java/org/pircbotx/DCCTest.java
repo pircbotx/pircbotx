@@ -57,7 +57,6 @@ public class DCCTest {
 	public void incommingDccChatTest() throws IOException, InterruptedException {
 		//Start a server that the bot can connect to
 		Inet6Address localhost6 = (Inet6Address) InetAddress.getByName("::1");
-		ServerSocket server = new ServerSocket(0, 50, localhost6);
 
 		//Create listener to handle everything
 		final CountDownLatch latch = new CountDownLatch(1);
