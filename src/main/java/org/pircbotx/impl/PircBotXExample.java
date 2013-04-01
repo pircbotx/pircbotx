@@ -73,7 +73,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			//Check if this message is the "end" command
 			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
 				event.respond("Stopping");
-				queue.done();
+				queue.close();
 				//Very important that we end the infinate loop or else the test
 				//will continue forever!
 				return;
@@ -125,6 +125,8 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		bot.setLogin("LQ"); //login part of hostmask, eg name:login@host
 		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
 		bot.setAutoNickChange(true); //Automatically change nick when the current one is in use
+		bot.setCapEnabled(true);
+//		//bot.getCapHandlers().add(new EnableCapHandler("multi-"));
 
 		//This class is a listener, so add it to the bots known listeners
 		bot.getListenerManager().addListener(new PircBotXExample());
@@ -132,7 +134,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		//bot.connect throws various exceptions for failures
 		try {
 			//Connect to the freenode IRC network
-			bot.connect("irc.freenode.org");
+			bot.connect("irc.swiftirc.net");
 			//Join the #quackbot channel
 			bot.joinChannel("#pircbotx");
 		} //In your code you should catch and handle each exception seperately,
