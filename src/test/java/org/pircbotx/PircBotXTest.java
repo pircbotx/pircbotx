@@ -44,7 +44,6 @@ import static org.testng.Assert.*;
 @Test(singleThreaded = true)
 public class PircBotXTest {
 	protected PircBotX smallBot;
-	final String aString = "I'm some super long string that has multiple words";
 
 	@BeforeMethod
 	public void setup() {

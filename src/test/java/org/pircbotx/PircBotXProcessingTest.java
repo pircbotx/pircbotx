@@ -76,7 +76,9 @@ import static org.testng.Assert.*;
  */
 @Test(singleThreaded = true)
 public class PircBotXProcessingTest {
-	final String aString = "I'm some super long string that has multiple words";
+    
+	final static String aString = "I'm some super long string that has multiple words";
+        
 	protected List<Event> events;
 	protected PircBotX bot;
 
