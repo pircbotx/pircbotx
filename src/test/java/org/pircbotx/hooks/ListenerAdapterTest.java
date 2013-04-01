@@ -153,7 +153,7 @@ public class ListenerAdapterTest {
 
 	@Data
 	@EqualsAndHashCode(callSuper = false)
-	protected class TestListenerAdapter extends ListenerAdapter {
+	protected static class TestListenerAdapter extends ListenerAdapter {
 		protected boolean called = false;
 
 		@Override
