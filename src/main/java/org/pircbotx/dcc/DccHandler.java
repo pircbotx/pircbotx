@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.DccException;
@@ -26,24 +28,27 @@ public class DccHandler {
 	protected List<SendFileTransfer> sendFileTransfers = Collections.synchronizedList(new ArrayList<SendFileTransfer>());
 	protected List<ReceiveFileTransfer> recieveFileTransfers = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
 	protected List<ReceiveFileTransfer> chats = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
+	@Getter
+	@Setter
+	protected boolean useQuotes = false;
 
 	public boolean processDcc(User user, String line) {
 		return true;
 	}
-	
+
 	/**
 	 * Send the specified file to the user
 	 * @see #sendFileTransfers
 	 */
-	public void sendFile(User receiver, File source, int timeout, boolean noSpaces) throws IOException, DccException {
+	public void sendFile(User receiver, File source, int timeout) throws IOException, DccException {
 		//Make the filename safe to send
 		String safeFilename = source.getName();
-		if(safeFilename.contains(" ")) {
-			if(noSpaces)
-				safeFilename = safeFilename.replace(" ", "_");
-			else
+		if (safeFilename.contains(" "))
+			if (useQuotes)
 				safeFilename = "\"" + safeFilename + "\"";
-		}
+			else
+				safeFilename = safeFilename.replace(" ", "_");
+
 		SendFileTransfer fileTransfer = sendFileRequest(receiver, safeFilename, timeout);
 		try {
 			sendFileTransfers.add(fileTransfer);
@@ -52,7 +57,7 @@ public class DccHandler {
 			sendFileTransfers.remove(fileTransfer);
 		}
 	}
-	
+
 	/**
 	 * Send a file request, returning a ready SendFileTransfer upon success
 	 * @param receiver The receiver 
@@ -65,26 +70,25 @@ public class DccHandler {
 	public SendFileTransfer sendFileRequest(User receiver, String safeFilename, int timeout) throws IOException, DccException {
 		if (safeFilename == null)
 			throw new IllegalArgumentException("Can't send a null file");
-		if(safeFilename.contains(" ") && !(safeFilename.startsWith("\"") && safeFilename.endsWith("\"")))
+		if (safeFilename.contains(" ") && !(safeFilename.startsWith("\"") && safeFilename.endsWith("\"")))
 			throw new IllegalArgumentException("Filenames with spaces must be in quotes");
 		if (receiver == null)
 			throw new IllegalArgumentException("Can't send file to null user");
 		if (timeout < 0)
 			throw new IllegalArgumentException("Timeout " + timeout + " can't be negative");
-		
+
 		//Try to get the user to connect to us
 		ServerSocket serverSocket = createServerSocket();
 		String ipNum = DccHandler.addressToInteger(serverSocket.getInetAddress());
 		bot.sendCTCPCommand(receiver, "DCC SEND " + safeFilename + " " + ipNum + " " + serverSocket.getLocalPort() + " " + safeFilename.length());
-		
+
 		//Wait for the user to connect
 		serverSocket.setSoTimeout(timeout);
 		Socket userSocket = serverSocket.accept();
 		serverSocket.close();
-		
+
 		return new SendFileTransfer(bot, receiver, safeFilename, userSocket);
 	}
-
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;
