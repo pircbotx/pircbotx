@@ -202,7 +202,7 @@ public class MultiBotManager {
 	}
 
 	@Data
-	protected class BotEntry {
+	protected static class BotEntry {
 		protected final PircBotX bot;
 		protected final String hostname;
 		protected final int port;
