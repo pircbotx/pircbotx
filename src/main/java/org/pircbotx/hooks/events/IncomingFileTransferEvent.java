@@ -63,15 +63,17 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	protected final ReceiveFileTransfer transfer;
+	protected final Exception exception;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public IncomingFileTransferEvent(T bot, ReceiveFileTransfer transfer) {
+	public IncomingFileTransferEvent(T bot, ReceiveFileTransfer transfer, Exception exception) {
 		super(bot);
 		this.transfer = transfer;
+		this.exception = exception;
 	}
 
 	/**
