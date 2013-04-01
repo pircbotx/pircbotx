@@ -64,7 +64,7 @@ public class DccManager implements Closeable {
 	 *
 	 * @return True if the type of request was handled successfully.
 	 */
-	protected boolean processRequest(User source, String request) throws DccException {
+	protected boolean processRequest(User source, String request) throws DccException, IOException {
 		StringTokenizer tokenizer = new StringTokenizer(request);
 		//Skip the DCC part of the line
 		tokenizer.nextToken();
