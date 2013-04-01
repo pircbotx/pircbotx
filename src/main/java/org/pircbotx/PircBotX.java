@@ -58,6 +58,7 @@ import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -2896,6 +2897,13 @@ public class PircBotX {
 	}
 
 	/**
+	 * @deprecated Replaced by {@link WaitForQueue} due to racing issues. For
+	 * slightly busy bots there is a high chance this will return an unrelated
+	 * event. Trying to solve that by calling this multiple times could miss 
+	 * events dispatched between waitFor calls. WaitForQueue however saves all
+	 * events it receives for later processing. See {@link WaitForQueue} for more 
+	 * information
+	 * <p>
 	 * Using the specified eventClass, block until the Event occurs. Eg wait for
 	 * a response from a user, capturing the MessageEvent or PrivateMessageEvent.
 	 * <p>
@@ -2908,6 +2916,7 @@ public class PircBotX {
 	 * @throws InterruptedException If the thread is interrupted, this exception
 	 * is thrown
 	 */
+	@Deprecated
 	public <E extends Event> E waitFor(Class<? extends E> eventClass) throws InterruptedException {
 		if (eventClass == null)
 			throw new IllegalArgumentException("Can't wait for null event");
