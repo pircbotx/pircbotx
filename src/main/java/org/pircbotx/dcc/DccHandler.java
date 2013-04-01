@@ -25,7 +25,6 @@ import org.pircbotx.exception.DccException;
 @RequiredArgsConstructor
 public class DccHandler {
 	protected final PircBotX bot;
-	protected List<SendFileTransfer> sendFileTransfers = Collections.synchronizedList(new ArrayList<SendFileTransfer>());
 	protected List<ReceiveFileTransfer> recieveFileTransfers = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
 	protected List<ReceiveFileTransfer> chats = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
 	@Getter
@@ -50,12 +49,7 @@ public class DccHandler {
 				safeFilename = safeFilename.replace(" ", "_");
 
 		SendFileTransfer fileTransfer = sendFileRequest(receiver, safeFilename, timeout);
-		try {
-			sendFileTransfers.add(fileTransfer);
-			fileTransfer.sendFile(source);
-		} finally {
-			sendFileTransfers.remove(fileTransfer);
-		}
+		fileTransfer.sendFile(source);
 	}
 
 	/**
