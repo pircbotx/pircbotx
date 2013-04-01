@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.dcc;
 
 import java.io.BufferedInputStream;
@@ -46,11 +45,14 @@ public class ReceiveFileTransfer {
 	protected final long startPos;
 	@Getter
 	protected long bytesReceived;
-	
+
 	public void receiveFile(File destination) throws IOException {
-		@Cleanup BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
-		@Cleanup BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
-		@Cleanup BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destination.getCanonicalPath()));
+		@Cleanup
+		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
+		@Cleanup
+		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
+		@Cleanup
+		BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destination.getCanonicalPath()));
 
 		//Recieve file
 		byte[] inBuffer = new byte[BUFFER_SIZE];
@@ -69,7 +71,7 @@ public class ReceiveFileTransfer {
 			socketOutput.write(outBuffer);
 			socketOutput.flush();
 		}
-		
+
 		//Finished recieving file
 		fileOutput.flush();
 	}
