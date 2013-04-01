@@ -24,8 +24,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
+import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.RequiredArgsConstructor;
 import static org.pircbotx.DccFileTransfer.BUFFER_SIZE;
@@ -36,7 +36,7 @@ import org.pircbotx.User;
  * Sends a file to a user
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class SendFileTransfer {
 	protected final PircBotX bot;
 	protected final User user;
