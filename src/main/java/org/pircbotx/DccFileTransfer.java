@@ -186,6 +186,7 @@ public class DccFileTransfer implements Closeable {
 	 */
 	protected void doSend(final boolean allowResume) {
 		BufferedInputStream finput = null;
+		Exception exception = null;
 		try {
 			ServerSocket ss = bot.getDccManager().createServerSocket();
 			ss.setSoTimeout(timeout);
