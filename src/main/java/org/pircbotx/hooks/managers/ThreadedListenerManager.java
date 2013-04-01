@@ -142,7 +142,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 
 	protected static class ListenerThreadFactory implements ThreadFactory {
 		protected final AtomicInteger threadCount = new AtomicInteger();
-		protected static AtomicInteger poolCount = new AtomicInteger();
+		protected static final AtomicInteger poolCount = new AtomicInteger();
 		protected String prefix;
 
 		public ListenerThreadFactory(String poolName) {

@@ -25,6 +25,7 @@ import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.Arrays;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSocket;
@@ -75,7 +76,7 @@ public class TrustingSSLSocketFactory extends SSLSocketFactory {
 	 */
 	@Override
 	public String[] getDefaultCipherSuites() {
-		return ciphers;
+		return Arrays.copyOf(ciphers, ciphers.length);
 	}
 
 	/*
@@ -84,7 +85,7 @@ public class TrustingSSLSocketFactory extends SSLSocketFactory {
 	 */
 	@Override
 	public String[] getSupportedCipherSuites() {
-		return ciphers;
+		return Arrays.copyOf(ciphers, ciphers.length);
 	}
 
 	/*
