@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,61 @@ public class DccHandler {
 	public boolean processDcc(User user, String line) {
 		return true;
 	}
+	
+	/**
+	 * Send the specified file to the user
+	 * @see #sendFileTransfers
+	 */
+	public void sendFile(User receiver, File source, int timeout, boolean noSpaces) throws IOException, DccException {
+		//Make the filename safe to send
+		String safeFilename = source.getName();
+		if(safeFilename.contains(" ")) {
+			if(noSpaces)
+				safeFilename = safeFilename.replace(" ", "_");
+			else
+				safeFilename = "\"" + safeFilename + "\"";
+		}
+		SendFileTransfer fileTransfer = sendFileRequest(receiver, safeFilename, timeout);
+		try {
+			sendFileTransfers.add(fileTransfer);
+			fileTransfer.sendFile(source);
+		} finally {
+			sendFileTransfers.remove(fileTransfer);
+		}
+	}
+	
+	/**
+	 * Send a file request, returning a ready SendFileTransfer upon success
+	 * @param receiver The receiver 
+	 * @param safeFilename The filename to send. Must have no spaces or be in quotes
+	 * @param timeout The timeout value. 0 means infinite
+	 * @return
+	 * @throws IOException
+	 * @throws DccException 
+	 */
+	public SendFileTransfer sendFileRequest(User receiver, String safeFilename, int timeout) throws IOException, DccException {
+		if (safeFilename == null)
+			throw new IllegalArgumentException("Can't send a null file");
+		if(safeFilename.contains(" ") && !(safeFilename.startsWith("\"") && safeFilename.endsWith("\"")))
+			throw new IllegalArgumentException("Filenames with spaces must be in quotes");
+		if (receiver == null)
+			throw new IllegalArgumentException("Can't send file to null user");
+		if (timeout < 0)
+			throw new IllegalArgumentException("Timeout " + timeout + " can't be negative");
+		
+		//Try to get the user to connect to us
+		ServerSocket serverSocket = createServerSocket();
+		String ipNum = DccHandler.addressToInteger(serverSocket.getInetAddress());
+		bot.sendCTCPCommand(receiver, "DCC SEND " + safeFilename + " " + ipNum + " " + serverSocket.getLocalPort() + " " + safeFilename.length());
+		
+		//Wait for the user to connect
+		serverSocket.setSoTimeout(timeout);
+		Socket userSocket = serverSocket.accept();
+		serverSocket.close();
+		
+		return new SendFileTransfer(bot, receiver, safeFilename);
+	}
+
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;

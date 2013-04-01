@@ -45,24 +45,6 @@ public class SendFileTransfer {
 	protected long progress;
 	
 	public void sendFile(File source) throws IOException {
-		// Rename the filename so it has no whitespace in it when we send it
-		String safeFilename = source.getName().replace(' ', '_').trim();
-		safeFilename = safeFilename.replace('\t', '_');
-		
-		//Make a server that the user can connect to
-		ServerSocket server = bot.getDccManager().createServerSocket();
-		String ipNum = DccHandler.addressToInteger(server.getInetAddress());
-
-		// Send the message to the user, telling them where to connect to in order to get the file.
-		bot.sendCTCPCommand(user.getNick(), "DCC SEND " + safeFilename + " " + ipNum + " " + server.getLocalPort() + " " + source.length());
-
-		// The client may now connect to us and download the file.
-		socket = server.accept();
-		socket.setSoTimeout(30000);
-
-		// Might as well close the server socket now; it's finished with.
-		server.close();
-
 		@Cleanup BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(source));
