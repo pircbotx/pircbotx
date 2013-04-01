@@ -19,6 +19,7 @@
 package org.pircbotx;
 
 import bsh.StringUtil;
+import java.io.IOException;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.OwnerEvent;
@@ -98,7 +99,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verifies UserModeEvent from user mode being changed")
-	public void userModeTest() {
+	public void userModeTest() throws IOException {
 		//Use two users to differentiate between source and target
 		User aUser = bot.getUser("PircBotXUser");
 		User aUser2 = bot.getUser("PircBotXUser2");
@@ -112,7 +113,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verifies ChannelInfoEvent from /LIST command with 3 channels")
-	public void listTest() {
+	public void listTest() throws IOException {
 		bot.handleLine(":irc.someserver.net 321 Channel :Users Name");
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel 99 :" + aString);
 		bot.handleLine(":irc.someserver.net 322 PircBotXUser #PircBotXChannel1 100 :" + aString + aString);
@@ -135,7 +136,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verifies InviteEvent from incomming invite")
-	public void inviteTest() {
+	public void inviteTest() throws IOException {
 		bot.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 
 		//Verify event values
@@ -149,7 +150,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verifies JoinEvent from user joining our channel")
-	public void joinTest() {
+	public void joinTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
@@ -176,14 +177,14 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
-	public void topicTest() {
+	public void topicTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
 	}
 
 	@Test(description = "Verify TopicEvent's extended information from line sent after TOPIC line")
-	public void topicInfoTest() {
+	public void topicInfoTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
 		assertEquals(aChannel.getTopicSetter(), "AUser");
@@ -194,7 +195,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verify MessageEvent from channel message")
-	public void messageTest() {
+	public void messageTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + aString);
@@ -207,7 +208,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verify PrivateMessage from random user")
-	public void privateMessageTest() {
+	public void privateMessageTest() throws IOException {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
 
@@ -218,7 +219,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(description = "Verify NoticeEvent from NOTICE in channel")
-	public void channelNoticeTest() {
+	public void channelNoticeTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE #aChannel :" + aString);
@@ -234,7 +235,7 @@ public class PircBotXProcessingTest {
 	 * Simulate a NOTICE sent directly to us
 	 */
 	@Test(description = "Verify NoticeEvent from NOTICE from a user in PM")
-	public void userNoticeTest() {
+	public void userNoticeTest() throws IOException {
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
 
@@ -251,7 +252,7 @@ public class PircBotXProcessingTest {
 	 * @param events
 	 * @param mode
 	 */
-	protected void initModeTest(String mode, boolean checkChannelMode) {
+	protected void initModeTest(String mode, boolean checkChannelMode) throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
@@ -330,7 +331,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
-	public void genericChannelModeTest(String mode, String parentMode, Class<?> modeClass) {
+	public void genericChannelModeTest(String mode, String parentMode, Class<?> modeClass) throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		if (mode.startsWith("-"))
@@ -359,7 +360,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelKeyEvent has the correct key")
-	public void setChannelKeyEventTest() {
+	public void setChannelKeyEventTest() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
 		SetChannelKeyEvent event = getEvent(events, SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
@@ -367,7 +368,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
-	public void removeChannelKeyEventEmptyTest() {
+	public void removeChannelKeyEventEmptyTest() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k");
 		RemoveChannelKeyEvent event = getEvent(events, RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
@@ -375,7 +376,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
-	public void removeChannelKeyEventTest() {
+	public void removeChannelKeyEventTest() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k testPassword");
 		RemoveChannelKeyEvent event = getEvent(events, RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
@@ -383,7 +384,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelLimitEvent has the correct limit")
-	public void setChannelLimitEvent() {
+	public void setChannelLimitEvent() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +l 10");
 		SetChannelLimitEvent event = getEvent(events, SetChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
@@ -394,7 +395,7 @@ public class PircBotXProcessingTest {
 	 * Simulate WHO response.
 	 */
 	@Test(description = "Verify WHO response handling + UserListEvent")
-	public void whoTest() {
+	public void whoTest() throws IOException {
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		bot.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
 		bot.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
@@ -441,7 +442,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
-	public void kickTest() {
+	public void kickTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		User otherUser = bot.getUser("OtherUser");
@@ -463,7 +464,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
-	public void quitWithMessageTest() {
+	public void quitWithMessageTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -487,7 +488,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
-	public void quitWithoutMessageTest() {
+	public void quitWithoutMessageTest() throws IOException {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
@@ -499,7 +500,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
-	public void quitWithoutMessageAndColonTest() {
+	public void quitWithoutMessageAndColonTest() throws IOException {
 		User otherUser = bot.getUser("OtherUser");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT");
@@ -511,7 +512,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify part with message")
-	public void partWithMessageTest() {
+	public void partWithMessageTest() throws IOException {
 		User otherUser = bot.getUser("OtherUser");
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -525,7 +526,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
-	public void partWithoutMessageTest() {
+	public void partWithoutMessageTest() throws IOException {
 		User otherUser = bot.getUser("OtherUser");
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -539,7 +540,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
-	public void partWithoutMessageAndColonTest() {
+	public void partWithoutMessageAndColonTest() throws IOException {
 		User otherUser = bot.getUser("OtherUser");
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -553,7 +554,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part with us")
-	public void partUs() {
+	public void partUs() throws IOException {
 		User otherUser = bot.getUser("PircBotXBot");
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":PircBotXBot!PircBotX@some.host1 JOIN :#aChannel");
@@ -567,7 +568,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test()
-	public void motdTest() {
+	public void motdTest() throws IOException {
 		bot.handleLine(":irc.someserver.net 375 PircBotXUser :- pratchett.freenode.net Message of the Day - ");
 		bot.handleLine(":irc.someserver.net 372 PircBotXUser :- " + aString);
 		bot.handleLine(":irc.someserver.net 372 PircBotXUser :- ");
@@ -581,7 +582,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test
-	public void whoisTest() {
+	public void whoisTest() throws IOException {
 		bot.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
 		bot.handleLine(":irc.someserver.net 319 PircBotXUser OtherUser :+#aChannel ##anotherChannel");
 		bot.handleLine(":irc.someserver.net 317 PircBotXUser OtherUser 6077 1347373349 :seconds idle, signon time");
