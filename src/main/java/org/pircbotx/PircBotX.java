@@ -51,6 +51,7 @@ import lombok.Setter;
 import lombok.Synchronized;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
+import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
@@ -178,14 +179,16 @@ public class PircBotX {
 	protected int maxLineLength = 512;
 
 	/**
-	 * Constructs a PircBotX with the default settings and adding {@link CoreHooks}
-	 * to the default ListenerManager, {@link ThreadedListenerManager}. This also
-	 * adds a shutdown hook to the current runtime while will properly shutdown
-	 * the bot by calling {@link #disconnect() }
+	 * Constructs a PircBotX with the default settings and 
+	 * <ul><li>Adding {@link CoreHooks} to the default ListenerManager, {@link ThreadedListenerManager}</li>
+	 * <li>Add a shutdown hook (See {@link #useShutdownHook(boolean) })</li>
+	 * <li>Add an {@link EnableCapHandler} to enable multi-prefix, ignoring it if it fails</li>
+	 * </ul>
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
 		useShutdownHook(true);
+		getCapHandlers().add(new EnableCapHandler("multi-prefix", true));
 	}
 
 	/**
