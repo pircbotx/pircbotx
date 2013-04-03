@@ -78,7 +78,7 @@ public class PircBotXConnectTest {
 		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
 	}
 
-	private void validateEvents() throws Exception {
+	protected void validateEvents() throws Exception {
 		//Make sure events are dispatched
 		int rance = 0;
 		int ransce = 0;
