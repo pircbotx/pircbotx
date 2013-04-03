@@ -29,6 +29,8 @@ import org.testng.TestListenerAdapter;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestLogger extends TestListenerAdapter {
+	protected static boolean disableLogging = Boolean.valueOf(System.getProperty("pircbotx.disableTestDetail", "false"));
+	
 	@Override
 	public void onTestStart(ITestResult result) {
 		log("START", result);
@@ -50,6 +52,8 @@ public class TestLogger extends TestListenerAdapter {
 	}
 
 	protected void log(String status, ITestResult tr) {
+		if(disableLogging)
+			return;
 		StringBuilder sb = new StringBuilder();
 		sb.append("[").append(status).append("] ");
 		sb.append(tr.getTestClass().getName()).append(":").append(tr.getName()).append(" - ");
