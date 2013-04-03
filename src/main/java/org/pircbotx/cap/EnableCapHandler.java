@@ -52,6 +52,9 @@ public class EnableCapHandler implements CapHandler {
 			bot.sendCAPREQ(cap);
 		else if (!ignoreFail)
 			throw new CAPException("Server does not support the " + cap + " capability");
+		else
+			//Nothing more to do
+			done = true;
 	}
 
 	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException {
@@ -66,6 +69,9 @@ public class EnableCapHandler implements CapHandler {
 			bot.getEnabledCapabilities().remove(cap);
 			if (!ignoreFail)
 				throw new CAPException("Server does not support the " + cap + " capability");
+			else
+				//Nothing more to do
+				done = true;
 		}
 	}
 
