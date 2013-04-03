@@ -36,6 +36,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
+import org.pircbotx.cap.CapHandler;
+import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 
 /**
@@ -163,6 +165,30 @@ public class PircBotXConnectTest {
 		assertEquals(lines[2], "NICK PircBotXBot");
 		assertEquals(lines[3], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
 		assertEquals(lines[4], "CAP END");
+
+		validateEvents();
+	}
+	
+	@Test(dependsOnMethods = "connectTest")
+	public void connectTestWithUnknownCap() throws Exception {
+		bot.getCapHandlers().clear();
+		bot.getCapHandlers().add(new EnableCapHandler("jdshflkashfalksjh", true));
+		
+		//Connect the bot to the socket
+		bot.connect("example.com", 6667, null, socketFactory);
+
+		//Make sure the bot is connected
+		verify(socketFactory).createSocket("example.com", 6667, null, 0);
+
+		//Verify lines
+		String[] lines = botOut.toString().split("\r\n");
+
+		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+
+		assertEquals(lines[0], "CAP LS");
+		assertEquals(lines[1], "NICK PircBotXBot");
+		assertEquals(lines[2], "USER " + bot.getLogin() + " 8 * :" + bot.getVersion());
+		assertEquals(lines[3], "CAP END");
 
 		validateEvents();
 	}
