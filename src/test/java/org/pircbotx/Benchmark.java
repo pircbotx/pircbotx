@@ -27,9 +27,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
 
 /**
  *
@@ -41,6 +42,16 @@ public class Benchmark {
 	protected final static int MAX_ITERATIONS = 50;
 
 	public static void main(String[] args) throws Exception {
+		if (args.length != 1) {
+			System.err.println("Must specify thread count");
+			return;
+		}
+		int threadCount = Integer.parseInt(args[0]);
+		if (threadCount < 0) {
+			System.out.println("Cannot have a negative thread count");
+			return;
+		}
+
 		//Init
 		List<List<String>> responseTemplateGroups = new ArrayList();
 		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} ?jmeter ${thisNick}"));
@@ -68,7 +79,7 @@ public class Benchmark {
 			Collections.shuffle(responseTemplateGroups, sortRandom);
 			for (int channelNum = 0; channelNum < MAX_CHANNELS; channelNum++) {
 				String[] replaceList = new String[]{"umark" + userNum, "#cbench" + channelNum};
-				for (int iterationNum = 0; iterationNum < MAX_ITERATIONS; iterationNum++) {
+				for (int iterationNum = 0; iterationNum < MAX_ITERATIONS; iterationNum++)
 					//Parse template
 					for (List<String> curTemplateGroup : responseTemplateGroups) {
 						String[] responseGroup = new String[curTemplateGroup.size()];
@@ -77,7 +88,6 @@ public class Benchmark {
 							responseGroup[responseCounter++] = StringUtils.replaceEachRepeatedly(curTemplate, searchList, replaceList);
 						responseGroups.add(responseGroup);
 					}
-				}
 			}
 		}
 
@@ -87,6 +97,11 @@ public class Benchmark {
 		//Init other objects
 		StopWatch stopWatch = new StopWatch();
 		PircBotX bot = new PircBotX();
+		if (threadCount == 0)
+			bot.setListenerManager(new ThreadedListenerManager(Executors.newCachedThreadPool()));
+		else
+			bot.setListenerManager(new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount)));
+
 		int counter = 0;
 
 		System.out.println("Waiting 5 seconds");
@@ -103,7 +118,7 @@ public class Benchmark {
 		stopWatch.stop();
 
 		System.out.println("Parsed " + counter + " enteries in " + stopWatch.toString());
-		System.out.println("Average parse speed: " + ((float)counter / (stopWatch.getTime() / 1000)) + " per second");
+		System.out.println("Average parse speed: " + ((float) counter / (stopWatch.getTime() / 1000)) + " per second");
 
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 	}
