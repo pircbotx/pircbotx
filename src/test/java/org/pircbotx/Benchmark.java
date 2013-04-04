@@ -121,5 +121,8 @@ public class Benchmark {
 		System.out.println("Average parse speed: " + ((float) counter / (stopWatch.getTime() / 1000)) + " per second");
 
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
+
+		//Kill the listener manager so the JVM can shutdown
+		((ThreadedListenerManager) bot.getListenerManager()).shutdown();
 	}
 }
