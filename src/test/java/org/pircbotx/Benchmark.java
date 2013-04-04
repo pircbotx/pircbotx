@@ -106,6 +106,7 @@ public class Benchmark {
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
 
+		System.out.println("Executing with " + responseGroups.size());
 		stopWatch.start();
 		for (String[] curGroup : responseGroups) {
 			int size = curGroup.length;
@@ -116,6 +117,7 @@ public class Benchmark {
 		stopWatch.stop();
 
 		System.out.println("Parsed " + counter + " enteries in " + stopWatch.toString());
+		System.out.println("Average parse speed: " + ((float)counter / (stopWatch.getTime() / 1000)) + " per second");
 
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 	}
