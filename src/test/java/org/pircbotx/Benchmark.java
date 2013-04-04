@@ -92,7 +92,7 @@ public class Benchmark {
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
 
-		System.out.println("Executing with " + responseGroups.size());
+		System.out.println("Executing with " + responseGroups.size() + " response groups");
 		stopWatch.start();
 		for (String[] curGroup : responseGroups) {
 			int size = curGroup.length;
