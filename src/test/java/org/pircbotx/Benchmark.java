@@ -39,22 +39,8 @@ public class Benchmark {
 	protected final static int MAX_USERS = 200;
 	protected final static int MAX_CHANNELS = 20;
 	protected final static int MAX_ITERATIONS = 50;
-	protected static int classCount = 0; // keep track of classes created
-	protected int botNumber;
-	protected int lastItem = -1;
-	protected List<String> responseItems = new ArrayList();
-	protected String thisNick;
-	protected StringBuilder requestData;
-	protected int requestDataLength;
-	protected CountDownLatch latch;
-	protected String responseLine;
 
-	static {
-	}
-
-	public Benchmark() throws Exception {
-		botNumber = classCount++;
-
+	public static void main(String[] args) throws Exception {
 		//Init
 		List<List<String>> responseTemplateGroups = new ArrayList();
 		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} ?jmeter ${thisNick}"));
@@ -120,9 +106,5 @@ public class Benchmark {
 		System.out.println("Average parse speed: " + ((float)counter / (stopWatch.getTime() / 1000)) + " per second");
 
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
-	}
-
-	public static void main(String[] args) throws Exception {
-		new Benchmark();
 	}
 }
