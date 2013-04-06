@@ -22,6 +22,7 @@
  */
 package org.pircbotx;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.impl.PircBotXJMeter;
 
 /**
  *
@@ -39,9 +41,12 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
 public class Benchmark {
 	protected final static int MAX_USERS = 200;
 	protected final static int MAX_CHANNELS = 20;
-	protected final static int MAX_ITERATIONS = 50;
+	protected final static int MAX_ITERATIONS = 5;
+	protected static List<String[]> responseGroups;
+	protected static PircBotX bot;
 
 	public static void main(String[] args) throws Exception {
+		args = new String[]{"3"};
 		if (args.length != 1) {
 			System.err.println("Must specify thread count");
 			return;
@@ -72,7 +77,7 @@ public class Benchmark {
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 
 		System.out.println("Building responses");
-		List<String[]> responseGroups = new ArrayList(MAX_USERS * MAX_CHANNELS * MAX_ITERATIONS * responseTemplateGroups.size());
+		responseGroups = new ArrayList(MAX_USERS * MAX_CHANNELS * MAX_ITERATIONS * responseTemplateGroups.size());
 		SecureRandom sortRandom = new SecureRandom();
 		String[] searchList = new String[]{"${thisNick}", "${channel}"};
 		for (int userNum = 0; userNum < MAX_USERS; userNum++) {
@@ -96,27 +101,19 @@ public class Benchmark {
 
 		//Init other objects
 		StopWatch stopWatch = new StopWatch();
-		PircBotX bot = new PircBotX();
+		bot = new PircBotX();
 		if (threadCount == 0)
 			bot.setListenerManager(new ThreadedListenerManager(Executors.newCachedThreadPool()));
 		else
 			bot.setListenerManager(new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount)));
-
-		int counter = 0;
+		bot.getListenerManager().addListener(new PircBotXJMeter());
 
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
 
 		System.out.println("Executing with " + responseGroups.size() + " response groups");
-		stopWatch.start();
-		for (String[] curGroup : responseGroups) {
-			int size = curGroup.length;
-			counter += size;
-			for (int i = 0; i < size; i++)
-				bot.handleLine(curGroup[i]);
-		}
-		stopWatch.stop();
-
+		int counter = run(stopWatch);
+		
 		System.out.println("Parsed " + counter + " enteries in " + stopWatch.toString());
 		System.out.println("Average parse speed: " + ((float) counter / (stopWatch.getTime() / 1000)) + " per second");
 
@@ -124,5 +121,19 @@ public class Benchmark {
 
 		//Kill the listener manager so the JVM can shutdown
 		((ThreadedListenerManager) bot.getListenerManager()).shutdown();
+	}
+	
+	private static final int run(StopWatch stopWatch) throws IOException {
+		int counter = 0;
+		stopWatch.start();
+		for (String[] curGroup : responseGroups) {
+			int size = curGroup.length;
+			counter += size;
+			for (int i = 0; i < size; i++)
+				bot.handleLine(curGroup[i]);
+		}
+		
+		stopWatch.stop();
+		return counter;
 	}
 }
