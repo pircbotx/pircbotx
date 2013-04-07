@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.8</version>
+			<version>6.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
