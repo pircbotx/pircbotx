@@ -2985,9 +2985,6 @@ public class PircBotX {
 	}
 
 	protected class UserChannelMap<C extends Channel, U extends User> extends ManyToManyMap<C, U> {
-		public UserChannelMap() {
-		}
-
 		@Override
 		public boolean put(C a, U b) {
 			//Add to nick map
