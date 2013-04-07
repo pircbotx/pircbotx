@@ -564,8 +564,8 @@ public class PircBotX {
 	 * @since PircBot 0.9c
 	 */
 	public IdentServer startIdentServer() {
-                IdentServer startedIdentServer = new IdentServer(this, getLogin());
-                startedIdentServer .start();
+		IdentServer startedIdentServer = new IdentServer(this, getLogin());
+		startedIdentServer.start();
 		return startedIdentServer;
 	}
 
@@ -1548,7 +1548,7 @@ public class PircBotX {
 	 * @see DccFileTransfer
 	 *
 	 */
-	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) throws IOException{
+	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) throws IOException {
 		if (file == null)
 			throw new IllegalArgumentException("Can't send a null file");
 		if (reciever == null)
@@ -1655,7 +1655,7 @@ public class PircBotX {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	protected void handleLine(String line) throws IOException{
+	protected void handleLine(String line) throws IOException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log("<<<" + line);
@@ -2166,9 +2166,8 @@ public class PircBotX {
 			getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(userNick), source, mode));
 		}
 	}
-	
+
 	protected void processDcc(User source, String request) {
-		
 	}
 
 	/**
@@ -2216,7 +2215,7 @@ public class PircBotX {
 			this.nick = nick;
 		}
 	}
-	
+
 	/**
 	 * Sets the internal login of the Bot. This should be set before joining
 	 * any servers.

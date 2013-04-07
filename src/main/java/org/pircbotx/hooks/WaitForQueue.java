@@ -71,7 +71,7 @@ public class WaitForQueue implements Closeable {
 				return (E) curEvent;
 		}
 	}
-	
+
 	/**
 	 * Shuts down the queue; VERY important to call when finished. Since this class 
 	 * stores every dispatched event, failure to close will eventually cause you
