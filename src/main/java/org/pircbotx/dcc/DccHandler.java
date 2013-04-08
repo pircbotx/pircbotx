@@ -35,9 +35,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.pircbotx.DccChat;
-import org.pircbotx.DccManager;
-import static org.pircbotx.DccManager.integerToAddress;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.DccException;
@@ -50,6 +47,7 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
  */
 @RequiredArgsConstructor
 public class DccHandler {
+	public static final int TRANSFER_BUFFER_SIZE = 1024;
 	protected int socketTimeout;
 	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
@@ -156,7 +154,7 @@ public class DccHandler {
 		ss.setSoTimeout(socketTimeout);
 		
 		int serverPort = ss.getLocalPort();
-		String ipNum = DccManager.addressToInteger(ss.getInetAddress());
+		String ipNum = addressToInteger(ss.getInetAddress());
 		bot.sendCTCPCommand(receiver, "DCC CHAT chat " + ipNum + " " + serverPort);
 		
 		Socket userSocket = ss.accept();
