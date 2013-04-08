@@ -416,7 +416,7 @@ public class PircBotXProcessingTest {
 	}
 
 	@Test(dataProvider = "channelModeProvider")
-	public void genericChannelModeTest(String mode, String parentMode, Class<?> modeClass) throws IOException {
+	public void channelModeChangeTest(String mode, String parentMode, Class<?> modeClass) throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		if (mode.startsWith("-"))
@@ -444,7 +444,7 @@ public class PircBotXProcessingTest {
 				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
 	}
 
-	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelKeyEvent has the correct key")
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify SetChannelKeyEvent has the correct key")
 	public void setChannelKeyEventTest() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
@@ -452,7 +452,7 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
 	}
 
-	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
 	public void removeChannelKeyEventEmptyTest() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k");
@@ -460,7 +460,7 @@ public class PircBotXProcessingTest {
 		assertNull(event.getKey(), "RemoveChannelKeyEvent key doesn't match given");
 	}
 
-	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
 	public void removeChannelKeyEventTest() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k testPassword");
@@ -468,7 +468,7 @@ public class PircBotXProcessingTest {
 		assertEquals(event.getKey(), "testPassword", "RemoveChannelKeyEvent key doesn't match given");
 	}
 
-	@Test(dependsOnMethods = "genericChannelModeTest", description = "Verify SetChannelLimitEvent has the correct limit")
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify SetChannelLimitEvent has the correct limit")
 	public void setChannelLimitEvent() throws IOException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
 		bot.handleLine(":AUser!~ALogin@some.host MODE #aChannel +l 10");
