@@ -18,7 +18,6 @@
  */
 package org.pircbotx;
 
-import bsh.StringUtil;
 import java.io.IOException;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
@@ -27,10 +26,11 @@ import org.pircbotx.hooks.events.SuperOpEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
+import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
@@ -39,6 +39,7 @@ import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
@@ -56,8 +57,10 @@ import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
 import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
+import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
+import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -76,9 +79,7 @@ import static org.testng.Assert.*;
  */
 @Test(singleThreaded = true)
 public class PircBotXProcessingTest {
-    
 	final static String aString = "I'm some super long string that has multiple words";
-        
 	protected List<Event> events;
 	protected PircBotX bot;
 
@@ -88,6 +89,7 @@ public class PircBotXProcessingTest {
 	 */
 	@BeforeMethod
 	public void setUp() {
+		System.out.println("Setting up");
 		bot = new PircBotX();
 		events = new ArrayList<Event>();
 		bot.setListenerManager(new GenericListenerManager());
@@ -220,11 +222,17 @@ public class PircBotXProcessingTest {
 		assertEquals(pevent.getMessage(), aString, "Message sent does not match");
 	}
 
-	@Test(description = "Verify NoticeEvent from NOTICE in channel")
-	public void channelNoticeTest() throws IOException {
-		Channel aChannel = bot.getChannel("#aChannel");
+	@DataProvider
+	public Object[][] channelOrUserDataProvider() {
+		System.out.println("Generating data");
+		return new Object[][]{{"#aChannel"}, {"PircBotXUser"}};
+	}
+
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify NoticeEvent from NOTICE")
+	public void noticeTest(String target) throws IOException {
+		Channel aChannel = target.startsWith("#") ? bot.getChannel(target) : null;
 		User aUser = bot.getUser("AUser");
-		bot.handleLine(":AUser!~ALogin@some.host NOTICE #aChannel :" + aString);
+		bot.handleLine(":AUser!~ALogin@some.host NOTICE " + target + " :" + aString);
 
 		//Verify event contents
 		NoticeEvent nevent = getEvent(events, NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
@@ -233,19 +241,67 @@ public class PircBotXProcessingTest {
 		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
 	}
 
-	/**
-	 * Simulate a NOTICE sent directly to us
-	 */
-	@Test(description = "Verify NoticeEvent from NOTICE from a user in PM")
-	public void userNoticeTest() throws IOException {
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify ActionEvent from /me from a user in a channel")
+	public void actionTest(String target) throws IOException {
+		Channel aChannel = target.startsWith("#") ? bot.getChannel(target) : null;
 		User aUser = bot.getUser("AUser");
-		bot.handleLine(":AUser!~ALogin@some.host NOTICE PircBotXUser :" + aString);
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001ACTION " + aString + "\u0001");
 
 		//Verify event contents
-		NoticeEvent nevent = getEvent(events, NoticeEvent.class, "NoticeEvent not dispatched for channel notice");
-		assertNull(nevent.getChannel(), "NoticeEvent's channel isn't null during private notice");
-		assertEquals(nevent.getUser(), aUser, "NoticeEvent's user does not match given");
-		assertEquals(nevent.getNotice(), aString, "NoticeEvent's notice message does not match given");
+		ActionEvent aevent = getEvent(events, ActionEvent.class, "ActionEvent not dispatched for channel action");
+		assertEquals(aevent.getChannel(), aChannel, "ActionEvent's channel doesn't match given");
+		assertEquals(aevent.getUser(), aUser, "ActionEvent's user doesn't match given");
+		assertEquals(aevent.getMessage(), aString, "ActionEvent's message doesn't match given");
+	}
+
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	public void versionTest(String target) throws IOException {
+		Channel aChannel = target.startsWith("#") ? bot.getChannel(target) : null;
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001VERSION\u0001");
+
+		//Verify event contents
+		VersionEvent vevent = getEvent(events, VersionEvent.class, "VersionEvent not dispatched for version");
+		assertEquals(vevent.getUser(), aUser, "VersionEvent's user doesn't match given");
+		assertEquals(vevent.getChannel(), aChannel, "VersionEvent's channel doesn't match given");
+	}
+
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	public void pingTest(String target) throws IOException {
+		Channel aChannel = target.startsWith("#") ? bot.getChannel(target) : null;
+		User aUser = bot.getUser("AUser");
+		String pingValue = "2435fdfd3f3d";
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001PING " + pingValue + "\u0001");
+
+		//Verify event contents
+		PingEvent pevent = getEvent(events, PingEvent.class, "PingEvent not dispatched for version");
+		assertEquals(pevent.getUser(), aUser, "PingEvent's user doesn't match given");
+		assertEquals(pevent.getChannel(), aChannel, "PingEvent's channel doesn't match given");
+		assertEquals(pevent.getPingValue(), pingValue, "PingEvent's ping value doesn't match given");
+	}
+
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	public void timeTest(String target) throws IOException {
+		Channel aChannel = target.startsWith("#") ? bot.getChannel(target) : null;
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001TIME\u0001");
+
+		//Verify event contents
+		TimeEvent tevent = getEvent(events, TimeEvent.class, "TimeEvent not dispatched for version");
+		assertEquals(tevent.getUser(), aUser, "TimeEvent's user doesn't match given");
+		assertEquals(tevent.getChannel(), aChannel, "TimeEvent's channel doesn't match given");
+	}
+
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	public void fingerTest(String target) throws IOException {
+		Channel aChannel = target.startsWith("#") ? bot.getChannel(target) : null;
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001FINGER\u0001");
+
+		//Verify event contents
+		FingerEvent fevent = getEvent(events, FingerEvent.class, "FingerEvent not dispatched for version");
+		assertEquals(fevent.getUser(), aUser, "FingerEvent's user doesn't match given");
+		assertEquals(fevent.getChannel(), aChannel, "FingerEvent's channel doesn't match given");
 	}
 
 	/**
@@ -276,15 +332,15 @@ public class PircBotXProcessingTest {
 	@DataProvider
 	public Object[][] channelUserModeProvider() {
 		return new Object[][]{{"+o", OpEvent.class, "isOp"},
-					{"-o", OpEvent.class, "isOp"},
-					{"+v", VoiceEvent.class, "hasVoice"},
-					{"-v", VoiceEvent.class, "hasVoice"},
-					{"+q", OwnerEvent.class, "isOwner"},
-					{"-q", OwnerEvent.class, "isOwner"},
-					{"+h", HalfOpEvent.class, "isHalfOp"},
-					{"-h", HalfOpEvent.class, "isHalfOp"},
-					{"+a", SuperOpEvent.class, "isSuperOp"},
-					{"-a", SuperOpEvent.class, "isSuperOp"}};
+			{"-o", OpEvent.class, "isOp"},
+			{"+v", VoiceEvent.class, "hasVoice"},
+			{"-v", VoiceEvent.class, "hasVoice"},
+			{"+q", OwnerEvent.class, "isOwner"},
+			{"-q", OwnerEvent.class, "isOwner"},
+			{"+h", HalfOpEvent.class, "isHalfOp"},
+			{"-h", HalfOpEvent.class, "isHalfOp"},
+			{"+a", SuperOpEvent.class, "isSuperOp"},
+			{"-a", SuperOpEvent.class, "isSuperOp"}};
 	}
 
 	@Test(dataProvider = "channelUserModeProvider", description = "Test setting various user modes and verifying events")
@@ -316,20 +372,20 @@ public class PircBotXProcessingTest {
 	@DataProvider
 	protected Object[][] channelModeProvider() {
 		return new Object[][]{{"+l 10", null, SetChannelLimitEvent.class},
-					{"-l", "l 10", RemoveChannelLimitEvent.class},
-					{"+k testPassword", null, SetChannelKeyEvent.class},
-					{"-k", "k testPassword", RemoveChannelKeyEvent.class},
-					{"-k testPassword", "k testPassword", RemoveChannelKeyEvent.class},
-					{"+i", null, SetInviteOnlyEvent.class},
-					{"-i", null, RemoveInviteOnlyEvent.class},
-					{"+n", null, SetNoExternalMessagesEvent.class},
-					{"-n", null, RemoveNoExternalMessagesEvent.class},
-					{"+s", null, SetSecretEvent.class},
-					{"-s", null, RemoveSecretEvent.class},
-					{"+t", null, SetTopicProtectionEvent.class},
-					{"-t", null, RemoveTopicProtectionEvent.class},
-					{"+p", null, SetPrivateEvent.class},
-					{"-p", null, RemovePrivateEvent.class}};
+			{"-l", "l 10", RemoveChannelLimitEvent.class},
+			{"+k testPassword", null, SetChannelKeyEvent.class},
+			{"-k", "k testPassword", RemoveChannelKeyEvent.class},
+			{"-k testPassword", "k testPassword", RemoveChannelKeyEvent.class},
+			{"+i", null, SetInviteOnlyEvent.class},
+			{"-i", null, RemoveInviteOnlyEvent.class},
+			{"+n", null, SetNoExternalMessagesEvent.class},
+			{"-n", null, RemoveNoExternalMessagesEvent.class},
+			{"+s", null, SetSecretEvent.class},
+			{"-s", null, RemoveSecretEvent.class},
+			{"+t", null, SetTopicProtectionEvent.class},
+			{"-t", null, RemoveTopicProtectionEvent.class},
+			{"+p", null, SetPrivateEvent.class},
+			{"-p", null, RemovePrivateEvent.class}};
 	}
 
 	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
