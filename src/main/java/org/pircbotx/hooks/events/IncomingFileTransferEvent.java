@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
 
@@ -61,16 +62,18 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
-	protected final DccFileTransfer transfer;
+	protected final ReceiveFileTransfer transfer;
+	protected final Exception exception;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public IncomingFileTransferEvent(T bot, DccFileTransfer transfer) {
+	public IncomingFileTransferEvent(T bot, ReceiveFileTransfer transfer, Exception exception) {
 		super(bot);
 		this.transfer = transfer;
+		this.exception = exception;
 	}
 
 	/**
