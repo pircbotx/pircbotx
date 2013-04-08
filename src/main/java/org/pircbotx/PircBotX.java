@@ -174,6 +174,7 @@ public class PircBotX {
 	@Setter
 	protected boolean autoReconnectChannels;
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
+	protected StringBuilder motdBuilder;
 	/**
 	 * @see #getMaxLineLength()
 	 */
@@ -1610,21 +1611,20 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't process null line");
 		log("<<<" + line);
 
-		List<String> parts = Utils.tokenizeLine(line);
+		List<String> parsedLine = Utils.tokenizeLine(line);
 
 		String senderInfo = "";
+		if (parsedLine.get(0).startsWith(":"))
+			senderInfo = parsedLine.remove(0);
 
-		if (parts.get(0).startsWith(":"))
-			senderInfo = parts.remove(0);
-
-		String command = parts.remove(0).toUpperCase();
+		String command = parsedLine.remove(0).toUpperCase();
 
 		// Check for server pings.
 		if (command.equals("PING")) {
 			// Respond to the ping and return immediately.
 			getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
 			return;
-		} else if (line.startsWith("ERROR ")) {
+		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
 			shutdown(true);
 			return;
@@ -1643,13 +1643,9 @@ public class PircBotX {
 				sourceLogin = senderInfo.substring(exclamation + 1, at);
 				sourceHostname = senderInfo.substring(at + 1);
 			} else {
-				String token = command;
-
-				int code = Utils.tryParseInt(token, -1);
+				int code = Utils.tryParseInt(command, -1);
 				if (code != -1) {
-					String errorStr = token;
-					String response = line.substring(line.indexOf(errorStr, senderInfo.length()) + 4, line.length());
-					processServerResponse(code, response);
+					processServerResponse(code, line, parsedLine);
 					// Return from the method.
 					return;
 				} else
@@ -1668,8 +1664,7 @@ public class PircBotX {
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
 
-		if (target == null)
-			target = !parts.isEmpty() ? parts.get(0) : "";
+		target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
 
 		if (target.startsWith(":"))
 			target = target.substring(1);
@@ -1678,13 +1673,11 @@ public class PircBotX {
 
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
-		String message = (line.contains(" :")) ? line.substring(line.indexOf(" :") + 2) : "";
+		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
-		if (command.equals("PRIVMSG") && line.indexOf(":\u0001") > 0 && line.endsWith("\u0001")) {
-			String request = line.substring(line.indexOf(":\u0001") + 2, line.length() - 1);
-			StringTokenizer tokenizer = new StringTokenizer(request);
-
+		if (command.equals("PRIVMSG") && message.startsWith("\u0001") && message.endsWith("\u0001")) {
+			String request = message.substring(1, message.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
 				getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
@@ -1700,7 +1693,7 @@ public class PircBotX {
 			else if (request.equals("FINGER"))
 				// FINGER request
 				getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
-			else if (tokenizer.countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
+			else if (request.startsWith("DCC ")) {
 				// This is a DCC request.
 				boolean success = dccHandler.processDcc(source, request);
 				if (!success)
@@ -1718,7 +1711,7 @@ public class PircBotX {
 		else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(nick)) {
-				//Its us, do some setup (don't use channel var since channel doesn't exist yet)
+				//Its us, get channel info
 				sendRawLine("WHO " + target);
 				sendRawLine("MODE " + target);
 			}
@@ -1738,7 +1731,7 @@ public class PircBotX {
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
-			getUser(sourceNick).setNick(newNick);
+			source.setNick(newNick);
 			if (sourceNick.equals(getNick()))
 				// Update our nick if it was us that changed nick.
 				setNick(newNick);
@@ -1748,14 +1741,15 @@ public class PircBotX {
 			getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
 		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
+			String reason = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(getNick()))
 				//Someone else
 				userChanInfo.deleteB(source);
-			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, message));
+			getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
-			User recipient = getUser(parts.get(1));
+			User recipient = getUser(message);
 
 			if (recipient.getNick().equals(getNick()))
 				//We were just kicked
@@ -1763,22 +1757,21 @@ public class PircBotX {
 			else
 				//Someone else
 				userChanInfo.dissociate(channel, recipient, true);
-			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, message));
+			getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
-			// Somebody is changing the mode on a channel or user.
+			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
 			if (mode.startsWith(":"))
 				mode = mode.substring(1);
-			processMode(target, sourceNick, sourceLogin, sourceHostname, mode);
+			processMode(source, target, mode);
 		} else if (command.equals("TOPIC")) {
 			// Someone is changing the topic.
-			String topic = line.substring(line.indexOf(" :") + 2);
 			long currentTime = System.currentTimeMillis();
-			channel.setTopic(topic);
+			channel.setTopic(message);
 			channel.setTopicSetter(sourceNick);
 			channel.setTopicTimestamp(currentTime);
 
-			getListenerManager().dispatchEvent(new TopicEvent(this, channel, topic, source, currentTime, true));
+			getListenerManager().dispatchEvent(new TopicEvent(this, channel, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
@@ -1804,11 +1797,11 @@ public class PircBotX {
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
-	protected void processServerResponse(int code, String response) {
-		if (response == null)
+	protected void processServerResponse(int code, String rawResponse, List<String> parsedResponse) {
+		if (parsedResponse == null)
 			throw new IllegalArgumentException("Can't process null response");
-		//NOTE: Update tests if adding support for a new code
-		String[] parsed = response.split(" ");
+		//Parsed response format: Everything after code
+		//eg: Response 321 Channel :Users Name gives us [Channel, Users Name]
 		if (code == RPL_LISTSTART)
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
@@ -1816,13 +1809,9 @@ public class PircBotX {
 		else if (code == RPL_LIST) {
 			//This is part of a full channel listing as part of /LIST
 			//EXAMPLE: 322 lordquackstar #xomb 12 :xomb exokernel project @ www.xomb.org
-			int firstSpace = response.indexOf(' ');
-			int secondSpace = response.indexOf(' ', firstSpace + 1);
-			int thirdSpace = response.indexOf(' ', secondSpace + 1);
-			int colon = response.indexOf(':');
-			String channel = response.substring(firstSpace + 1, secondSpace);
-			int userCount = Utils.tryParseInt(response.substring(secondSpace + 1, thirdSpace), 0);
-			String topic = response.substring(colon + 1);
+			String channel = parsedResponse.get(1);
+			int userCount = Utils.tryParseInt(parsedResponse.get(2), -1);
+			String topic = parsedResponse.get(3);
 			channelListBuilder.add(new ChannelListEntry(channel, userCount, topic));
 		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
@@ -1832,131 +1821,132 @@ public class PircBotX {
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
-			parsed = response.split(" ", 3);
-			String channel = parsed[1];
-			String topic = parsed[2].substring(1);
+			Channel channel = getChannel(parsedResponse.get(1));
+			String topic = parsedResponse.get(2);
 
-			getChannel(channel).setTopic(topic);
+			channel.setTopic(topic);
 		} else if (code == RPL_TOPICINFO) {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
-			String channel = parsed[1];
-			User setBy = getUser(parsed[2]);
-			long date = 0;
-			try {
-				date = Long.parseLong(parsed[3]) * 1000;
-			} catch (NumberFormatException e) {
-				// Stick with the default value of zero.
-			}
+			Channel channel = getChannel(parsedResponse.get(1));
+			User setBy = getUser(parsedResponse.get(2));
+			long date = Utils.tryParseLong(parsedResponse.get(3), -1);
 
-			Channel chan = getChannel(channel);
-			chan.setTopicTimestamp(date);
-			chan.setTopicSetter(setBy.getNick());
+			channel.setTopicTimestamp(date * 1000);
+			channel.setTopicSetter(setBy.getNick());
 
-			getListenerManager().dispatchEvent(new TopicEvent(this, chan, chan.getTopic(), setBy, date, false));
+			getListenerManager().dispatchEvent(new TopicEvent(this, channel, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
-			//EXAMPLE: PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
+			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
-			parsed = response.split(" ", 9);
-			Channel chan = getChannel(parsed[1]);
+			Channel channel = getChannel(parsedResponse.get(1));
 
 			//Setup user
-			User curUser = getUser(parsed[5]);
-			curUser.setLogin(parsed[2]);
-			curUser.setHostmask(parsed[3]);
-			curUser.setServer(parsed[4]);
-			curUser.setNick(parsed[5]);
-			curUser.parseStatus(chan, parsed[6]);
-			curUser.setHops(Integer.parseInt(parsed[7].substring(1)));
-			curUser.setRealName(parsed[8]);
+			User curUser = getUser(parsedResponse.get(5));
+			curUser.setLogin(parsedResponse.get(2));
+			curUser.setHostmask(parsedResponse.get(3));
+			curUser.setServer(parsedResponse.get(4));
+			curUser.setNick(parsedResponse.get(5));
+			curUser.parseStatus(channel, parsedResponse.get(6));
+			//Extra parsing needed since tokenizer stopped at :
+			String rawEnding = parsedResponse.get(7);
+			int rawEndingSpaceIndex = rawEnding.indexOf(' ');
+			curUser.setHops(Integer.parseInt(rawEnding.substring(0, rawEndingSpaceIndex)));
+			curUser.setRealName(rawEnding.substring(rawEndingSpaceIndex + 1));
 
 			//Associate with channel
-			userChanInfo.put(chan, curUser);
+			userChanInfo.put(channel, curUser);
 		} else if (code == RPL_ENDOFWHO) {
-			//EXAMPLE: PircBotX #aChannel :End of /WHO list
+			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
-			Channel channel = getChannel(response.split(" ")[1]);
+			Channel channel = getChannel(parsedResponse.get(1));
 			getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
-			//EXAMPLE: PircBotX #aChannel +cnt
+			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			Channel channel = getChannel(parsed[1]);
-			channel.setMode(parsed[2]);
-			getListenerManager().dispatchEvent(new ModeEvent(this, channel, null, parsed[2]));
+			Channel channel = getChannel(parsedResponse.get(1));
+			String mode = parsedResponse.get(2);
+			
+			channel.setMode(mode);
+			getListenerManager().dispatchEvent(new ModeEvent(this, channel, null, mode));
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
-			//Tells when channel was created. Note mIRC says lordquackstar shouldn't be there while Freenode
-			//displays it. From /JOIN(?)
-			int createDate;
-			String channel;
-
-			//Freenode version
-			try {
-				createDate = Integer.parseInt(parsed[2]);
-				channel = parsed[1];
-			} catch (NumberFormatException e) {
-				//mIRC version
-				createDate = Integer.parseInt(parsed[1]);
-				channel = parsed[0];
-			}
+			//Tells when channel was created. From /JOIN
+			Channel channel = getChannel(parsedResponse.get(1));
+			int createDate = Utils.tryParseInt(parsedResponse.get(2), -1);
 
 			//Set in channel
-			getChannel(channel).setCreateTimestamp(createDate);
+			channel.setCreateTimestamp(createDate);
 		} else if (code == RPL_MOTDSTART)
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
-			getServerInfo().setMotd("");
+			motdBuilder = new StringBuilder();
 		else if (code == RPL_MOTD)
-			//Example: PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
+			//Example: 372 PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
 			//This is part of the MOTD, add a new line
-			getServerInfo().setMotd(getServerInfo().getMotd() + response.split(" ", 3)[2].trim() + "\n");
+			motdBuilder.append(parsedResponse.get(1).substring(2)).append("\n");
 		else if (code == RPL_ENDOFMOTD) {
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, clean it and dispatch MotdEvent
-			getServerInfo().setMotd(getServerInfo().getMotd().trim());
+			getServerInfo().setMotd(motdBuilder.toString().trim());
+			motdBuilder = null;
 			getListenerManager().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
-		} else if (code == 004 || code == 005)
+		} else if (code == 004 || code == 005) {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
-			//Server info line, let ServerInfo class parse it
-			getServerInfo().parse(code, response);
-		else if (code == RPL_WHOISUSER) {
+			//Server info line, remove ending comment and let ServerInfo class parse it
+			int endCommentIndex = rawResponse.lastIndexOf(" :");
+			if(endCommentIndex > 1) {
+				String endComment = rawResponse.substring(endCommentIndex + 2);
+				int parsedResponseSize = parsedResponse.size();
+				if(endComment.equals(parsedResponse.get(parsedResponseSize)))
+					parsedResponse.remove(parsedResponseSize);
+			}
+			getServerInfo().parse(code, parsedResponse);
+		} else if (code == RPL_WHOISUSER) {
+			//Example: 311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
 			//New whois is starting
-			//311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
-			String[] parts = response.split(" ", 6);
+			String whoisNick = parsedResponse.get(1);
+			
 			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
-			builder.setNick(parts[1]);
-			builder.setLogin(parts[2]);
-			builder.setHostname(parts[3]);
-			builder.setRealname(parts[5].substring(1));
-			whoisBuilder.put(parsed[1], builder);
+			builder.setNick(whoisNick);
+			builder.setLogin(parsedResponse.get(2));
+			builder.setHostname(parsedResponse.get(3));
+			builder.setRealname(parsedResponse.get(5));
+			whoisBuilder.put(whoisNick, builder);
 		} else if (code == RPL_WHOISCHANNELS) {
-			//Channel list from whois
-			//319 TheLQ Plazma :+#freenode
-			String chans = response.split(" ", 3)[2].substring(1);
-			whoisBuilder.get(parsed[1]).setChannels(Arrays.asList(chans.split(" ")));
+			//Example: 319 TheLQ Plazma :+#freenode
+			//Channel list from whois. Re-tokenize since they're after the :
+			String whoisNick = parsedResponse.get(1);
+			List<String> parsedChannels = Utils.tokenizeLine(parsedResponse.get(2));
+			
+			whoisBuilder.get(whoisNick).setChannels(parsedChannels);
 		} else if (code == RPL_WHOISSERVER) {
 			//Server info from whois
 			//312 TheLQ Plazma leguin.freenode.net :Ume?, SE, EU
-			String[] info = response.split(" ", 4);
-			whoisBuilder.get(parsed[1]).setServer(info[2]);
-			whoisBuilder.get(parsed[1]).setServerInfo(info[3].substring(1));
+			String whoisNick = parsedResponse.get(1);
+			
+			whoisBuilder.get(whoisNick).setServer(parsedResponse.get(2));
+			whoisBuilder.get(whoisNick).setServerInfo(parsedResponse.get(3));
 		} else if (code == RPL_WHOISIDLE) {
 			//Idle time from whois
 			//317 TheLQ md_5 6077 1347373349 :seconds idle, signon time
-			whoisBuilder.get(parsed[1]).setIdleSeconds(Long.parseLong(parsed[2]));
-			whoisBuilder.get(parsed[1]).setSignOnTime(Long.parseLong(parsed[3]));
+			String whoisNick = parsedResponse.get(1);
+			
+			whoisBuilder.get(whoisNick).setIdleSeconds(Long.parseLong(parsedResponse.get(2)));
+			whoisBuilder.get(whoisNick).setSignOnTime(Long.parseLong(parsedResponse.get(3)));
 		} else if (code == 330)
 			//RPL_WHOISACCOUNT: Extra Whois info
 			//330 TheLQ Utoxin Utoxin :is logged in as
-			whoisBuilder.get(parsed[1]).setRegisteredAs(parsed[2]);
+			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs(parsedResponse.get(2));
 		else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
-			getListenerManager().dispatchEvent(whoisBuilder.get(parsed[1]).generateEvent(this));
-			whoisBuilder.remove(parsed[1]);
+			String whoisNick = parsedResponse.get(1);
+			
+			getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(this));
+			whoisBuilder.remove(whoisNick);
 		}
-		//WARNING: Parsed array might be modified, recreate if you're going to use down here
-		getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, response));
+		getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, rawResponse, parsedResponse));
 	}
 
 	/**
@@ -1973,8 +1963,7 @@ public class PircBotX {
 	 * @param sourceHostname The hostname of the user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	protected void processMode(String target, String sourceNick, String sourceLogin, String sourceHostname, String mode) {
-		User source = getUser(sourceNick);
+	protected void processMode(User user, String target, String mode) {
 		if (channelPrefixes.indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
 			Channel channel = getChannel(target);
@@ -2002,20 +1991,20 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.ops.add(reciepeint);
-						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint, true));
+						getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.ops.remove(reciepeint);
-						getListenerManager().dispatchEvent(new OpEvent(this, channel, source, reciepeint, false));
+						getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.voices.add(reciepeint);
-						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, true));
+						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.voices.remove(reciepeint);
-						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, source, reciepeint, false));
+						getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'h') {
@@ -2023,10 +2012,10 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.halfOps.add(reciepeint);
-						getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, source, reciepeint, true));
+						getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.halfOps.remove(reciepeint);
-						getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, source, reciepeint, false));
+						getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'a') {
@@ -2034,10 +2023,10 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.superOps.add(reciepeint);
-						getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, source, reciepeint, true));
+						getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.superOps.remove(reciepeint);
-						getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, source, reciepeint, false));
+						getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'q') {
@@ -2045,70 +2034,66 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.owners.add(reciepeint);
-						getListenerManager().dispatchEvent(new OwnerEvent(this, channel, source, reciepeint, true));
+						getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.owners.remove(reciepeint);
-						getListenerManager().dispatchEvent(new OwnerEvent(this, channel, source, reciepeint, false));
+						getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'k') {
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetChannelKeyEvent(this, channel, source, params[p]));
+						getListenerManager().dispatchEvent(new SetChannelKeyEvent(this, channel, user, params[p]));
 					else
-						getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(this, channel, source, (p < params.length) ? params[p] : null));
+						getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(this, channel, user, (p < params.length) ? params[p] : null));
 					p++;
 				} else if (atPos == 'l')
 					if (pn == '+') {
-						getListenerManager().dispatchEvent(new SetChannelLimitEvent(this, channel, source, Integer.parseInt(params[p])));
+						getListenerManager().dispatchEvent(new SetChannelLimitEvent(this, channel, user, Integer.parseInt(params[p])));
 						p++;
 					} else
-						getListenerManager().dispatchEvent(new RemoveChannelLimitEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemoveChannelLimitEvent(this, channel, user));
 				else if (atPos == 'b') {
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetChannelBanEvent(this, channel, source, params[p]));
+						getListenerManager().dispatchEvent(new SetChannelBanEvent(this, channel, user, params[p]));
 					else
-						getListenerManager().dispatchEvent(new RemoveChannelBanEvent(this, channel, source, params[p]));
+						getListenerManager().dispatchEvent(new RemoveChannelBanEvent(this, channel, user, params[p]));
 					p++;
 				} else if (atPos == 't')
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetTopicProtectionEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new SetTopicProtectionEvent(this, channel, user));
 					else
-						getListenerManager().dispatchEvent(new RemoveTopicProtectionEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemoveTopicProtectionEvent(this, channel, user));
 				else if (atPos == 'n')
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetNoExternalMessagesEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new SetNoExternalMessagesEvent(this, channel, user));
 					else
-						getListenerManager().dispatchEvent(new RemoveNoExternalMessagesEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemoveNoExternalMessagesEvent(this, channel, user));
 				else if (atPos == 'i')
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetInviteOnlyEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new SetInviteOnlyEvent(this, channel, user));
 					else
-						getListenerManager().dispatchEvent(new RemoveInviteOnlyEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemoveInviteOnlyEvent(this, channel, user));
 				else if (atPos == 'm')
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetModeratedEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new SetModeratedEvent(this, channel, user));
 					else
-						getListenerManager().dispatchEvent(new RemoveModeratedEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemoveModeratedEvent(this, channel, user));
 				else if (atPos == 'p')
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetPrivateEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new SetPrivateEvent(this, channel, user));
 					else
-						getListenerManager().dispatchEvent(new RemovePrivateEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemovePrivateEvent(this, channel, user));
 				else if (atPos == 's')
 					if (pn == '+')
-						getListenerManager().dispatchEvent(new SetSecretEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new SetSecretEvent(this, channel, user));
 					else
-						getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, source));
+						getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, user));
 			}
-			getListenerManager().dispatchEvent(new ModeEvent(this, channel, source, mode));
+			getListenerManager().dispatchEvent(new ModeEvent(this, channel, user, mode));
 		} else {
 			// The mode of a user is being changed.
-			String userNick = target;
-			getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(userNick), source, mode));
+			getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(target), user, mode));
 		}
-	}
-
-	protected void processDcc(User source, String request) {
 	}
 
 	/**

@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
@@ -53,18 +54,19 @@ import org.pircbotx.ReplyConstants;
 @EqualsAndHashCode(callSuper = true)
 public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
 	protected final int code;
-	protected final String response;
+	protected final String rawLine;
+	protected final List<String> parsedResponse;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param code The three-digit numerical code for the response.
-	 * @param response The full response from the IRC server.
 	 */
-	public ServerResponseEvent(T bot, int code, String response) {
+	public ServerResponseEvent(T bot, int code, String rawLine, List<String> parsedResponse) {
 		super(bot);
 		this.code = code;
-		this.response = response;
+		this.rawLine = rawLine;
+		this.parsedResponse = parsedResponse;
 	}
 
 	/**
