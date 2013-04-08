@@ -43,6 +43,10 @@ public class ReceiveFileTransfer {
 	protected final Socket socket;
 	@Getter
 	protected final long size;
+	@Getter
+	protected final String filename;
+	@Getter
+	protected final File destinationFile;
 	protected boolean resume;
 	protected long startPos;
 	@Getter
@@ -50,21 +54,29 @@ public class ReceiveFileTransfer {
 	@Getter
 	protected DccState state = DccState.INIT;
 
-	public void receiveFile(File destination) throws IOException {
+	public ReceiveFileTransfer(User user, Socket socket, long size, String filename) {
+		this.user = user;
+		this.socket = socket;
+		this.size = size;
+		this.filename = filename;
+		this.destinationFile = null;
+	}
+
+	public void receiveFile() throws IOException {
 		//Prevent being called multiple times
-		if(state != DccState.INIT)
-			synchronized(state) {
-				if(state != DccState.INIT)
+		if (state != DccState.INIT)
+			synchronized (state) {
+				if (state != DccState.INIT)
 					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
 			}
 		state = DccState.RUNNING;
-		
+
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
-		BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destination.getCanonicalPath()));
+		BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destinationFile.getCanonicalPath()));
 
 		//Recieve file
 		byte[] inBuffer = new byte[BUFFER_SIZE];
@@ -86,7 +98,7 @@ public class ReceiveFileTransfer {
 
 		//Finished recieving file
 		fileOutput.flush();
-		
+
 		state = DccState.DONE;
 	}
 }
