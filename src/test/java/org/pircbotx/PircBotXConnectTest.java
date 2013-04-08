@@ -70,7 +70,7 @@ public class PircBotXConnectTest {
 		bot.setName("PircBotXBot");
 
 		//Setup stream
-		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
+		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
 		botOut = new ByteArrayOutputStream();
 		socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
