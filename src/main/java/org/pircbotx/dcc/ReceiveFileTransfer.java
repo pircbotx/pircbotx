@@ -23,7 +23,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.nio.channels.FileChannel;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +47,8 @@ public class ReceiveFileTransfer {
 	protected final long size;
 	@Getter
 	protected final String filename;
-	protected boolean resume;
-	protected long startPos;
+	@Getter
+	protected final long startPos;
 	@Getter
 	protected long bytesReceived;
 	@Getter
@@ -66,7 +68,8 @@ public class ReceiveFileTransfer {
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
-		BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destination.getCanonicalPath()));
+		RandomAccessFile fileOutput = new RandomAccessFile(destination.getCanonicalPath(), "w");
+		fileOutput.seek(startPos);
 
 		//Recieve file
 		byte[] inBuffer = new byte[BUFFER_SIZE];
@@ -85,9 +88,6 @@ public class ReceiveFileTransfer {
 			socketOutput.write(outBuffer);
 			socketOutput.flush();
 		}
-
-		//Finished recieving file
-		fileOutput.flush();
 
 		state = DccState.DONE;
 	}
