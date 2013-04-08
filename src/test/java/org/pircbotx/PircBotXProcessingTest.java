@@ -90,7 +90,6 @@ public class PircBotXProcessingTest {
 	 */
 	@BeforeMethod
 	public void setUp() {
-		System.out.println("Setting up");
 		bot = new PircBotX();
 		events = new ArrayList<Event>();
 		bot.setListenerManager(new GenericListenerManager());
