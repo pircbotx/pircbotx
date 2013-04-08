@@ -27,10 +27,14 @@ import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -52,6 +56,7 @@ public class DCCTest {
 	public void setup() throws UnknownHostException {
 		bot = new PircBotX();
 		bot.inetAddress = InetAddress.getByName("::1");
+		bot.setListenerManager(new GenericListenerManager());
 	}
 
 	@Test
@@ -59,13 +64,11 @@ public class DCCTest {
 		Inet6Address localhost6 = (Inet6Address) InetAddress.getByName("::1");
 
 		//Create listener to handle everything
-		final CountDownLatch latch = new CountDownLatch(1);
 		final MutableObject<IncomingChatRequestEvent> mutableEvent = new MutableObject<IncomingChatRequestEvent>();
 		bot.getListenerManager().addListener(new ListenerAdapter() {
 			@Override
 			public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
 				mutableEvent.setValue(event);
-				latch.countDown();
 			}
 		});
 
@@ -73,7 +76,6 @@ public class DCCTest {
 		System.out.println("localhost6 int: " + new BigInteger(localhost6.getAddress()));
 
 		bot.handleLine(":ANick!~ALogin@::2 PRIVMSG Quackbot5 :DCC CHAT chat 1 35589");
-		latch.await();
 		IncomingChatRequestEvent event = mutableEvent.getValue();
 		assertNotNull(event, "No IncomingChatRequestEvent dispatched");
 
