@@ -180,8 +180,24 @@ public class PircBotXProcessingTest {
 		assertTrue(bot.userExists("AUser"));
 	}
 
+	@Test(description = "Verify TopicEvent by user changing topic")
+	public void topicChangeTest() throws IOException {
+		Channel aChannel = bot.getChannel("#aChannel");
+		User aUser = bot.getUser("AUser");
+		bot.handleLine(":AUser!~ALogin@some.host TOPIC #aChannel :" + aString);
+		
+		//Verify event contents
+		TopicEvent tevent = getEvent(events, TopicEvent.class, "No topic event dispatched");
+		assertEquals(tevent.getUser(), aUser, "TopicEvent's user doesn't match given");
+		assertEquals(tevent.getChannel(), aChannel, "TopicEvent's channel doesn't match given");
+		assertEquals(tevent.getTopic(), aString, "TopicEvent's topic doesn't match given");
+		//Just make sure the time is reasonable since its based off of System.currentTimeMillis
+		if(tevent.getDate() < 100 || tevent.getDate() > System.currentTimeMillis())
+			throw new AssertionError("Expected TopicEvent date to be greater than 100 and less than current time, got " + tevent.getDate());
+	}
+	
 	@Test(description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
-	public void topicTest() throws IOException {
+	public void topicResponseTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
