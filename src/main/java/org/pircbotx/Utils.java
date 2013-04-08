@@ -187,9 +187,11 @@ public class Utils {
 			pos = end + 1;
 			if (input.charAt(pos) == ':') {
 				stringParts.add(input.substring(pos + 1));
-				break;
+				return stringParts;
 			}
 		}
+		//No more spaces, add last part of line
+		stringParts.add(input.substring(pos));
 		return stringParts;
 	}
 }
