@@ -88,7 +88,7 @@ public class DccHandler {
 						try {
 							Socket userSocket = serverSocket.accept();
 							serverSocket.close();
-							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize(), pendingTransfer.filename());
+							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize(), pendingTransfer.filename(), pendingTransfer.position());
 							//Remove the pending transfer
 							pendingReceiveTransfers.remove(pendingTransfer);
 						} catch (Exception e) {
@@ -103,7 +103,7 @@ public class DccHandler {
 				ReceiveFileTransfer fileTransfer = null;
 				try {
 					Socket userSocket = new Socket(address, port, bot.getDccInetAddress(), 0);
-					fileTransfer = new ReceiveFileTransfer(user, userSocket, size, filename);
+					fileTransfer = new ReceiveFileTransfer(user, userSocket, size, filename, 0);
 				} catch (Exception e) {
 					exception = e;
 				}
@@ -124,13 +124,16 @@ public class DccHandler {
 			}
 			String transferToken = tokenizer.nextToken();
 
-
-			//for(PendingRecieveFileTransfer transfer : pendingReceiveTransfers)
-			//if(transfer.us()transfer.getToken().equals(transferToken))
-			//if (transfer == null)
-			//	throw new DccException("No Dcc File Transfer to resume recieving (filename: " + filename + ", source: " + source + ", port: " + port + ")");
-			//transfer.setProgress(progress);
-			//bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
+			PendingRecieveFileTransfer transfer = null;
+			for (PendingRecieveFileTransfer curTransfer : pendingReceiveTransfers)
+				if (curTransfer.user() == user && curTransfer.token().equals(transferToken)) {
+					transfer = curTransfer;
+					break;
+				}
+			if (transfer == null)
+				throw new DccException("No Dcc File Transfer to resume recieving (user: " + user.getNick()
+						+ ", filename: " + filename + ", position: " + progress + ", token: " + transferToken + ")");
+			bot.sendCTCPCommand(user, "DCC ACCEPT " + filename + " " + port + " " + progress + " " + transferToken);
 		} else
 			return false;
 		return true;
