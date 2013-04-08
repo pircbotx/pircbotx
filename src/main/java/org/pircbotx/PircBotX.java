@@ -1645,13 +1645,7 @@ public class PircBotX {
 			} else {
 				String token = command;
 
-				int code = -1;
-				try {
-					code = Integer.parseInt(token);
-				} catch (NumberFormatException e) {
-					// Keep the existing value.
-				}
-
+				int code = Utils.tryParseInt(token, -1);
 				if (code != -1) {
 					String errorStr = token;
 					String response = line.substring(line.indexOf(errorStr, senderInfo.length()) + 4, line.length());
@@ -1827,12 +1821,7 @@ public class PircBotX {
 			int thirdSpace = response.indexOf(' ', secondSpace + 1);
 			int colon = response.indexOf(':');
 			String channel = response.substring(firstSpace + 1, secondSpace);
-			int userCount = 0;
-			try {
-				userCount = Integer.parseInt(response.substring(secondSpace + 1, thirdSpace));
-			} catch (NumberFormatException e) {
-				// Stick with the value of zero.
-			}
+			int userCount = Utils.tryParseInt(response.substring(secondSpace + 1, thirdSpace), 0);
 			String topic = response.substring(colon + 1);
 			channelListBuilder.add(new ChannelListEntry(channel, userCount, topic));
 		} else if (code == RPL_LISTEND) {
