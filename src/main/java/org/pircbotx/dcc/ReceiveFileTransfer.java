@@ -38,7 +38,9 @@ import org.pircbotx.User;
 @RequiredArgsConstructor
 public class ReceiveFileTransfer {
 	protected final PircBotX bot;
+	@Getter
 	protected final User user;
+	@Getter
 	protected final String filename;
 	protected final Socket socket;
 	protected final boolean resume;
