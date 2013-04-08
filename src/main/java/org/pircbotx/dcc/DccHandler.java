@@ -127,6 +127,7 @@ public class DccHandler {
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
+			tokenizer.nextToken();
 			InetAddress address = integerToAddress(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
 
