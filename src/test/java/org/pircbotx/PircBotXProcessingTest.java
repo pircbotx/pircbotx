@@ -415,7 +415,7 @@ public class PircBotXProcessingTest {
 			{"-p", null, RemovePrivateEvent.class}};
 	}
 
-	@Test(dataProvider = "channelModeProvider", timeOut = 1000)
+	@Test(dataProvider = "channelModeProvider")
 	public void genericChannelModeTest(String mode, String parentMode, Class<?> modeClass) throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
