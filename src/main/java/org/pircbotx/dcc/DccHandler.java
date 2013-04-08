@@ -37,6 +37,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.Utils;
 import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
@@ -68,13 +69,7 @@ public class DccHandler {
 			String filename = tokenizer.nextToken();
 			InetAddress address = integerToAddress(tokenizer.nextToken());
 			int port = Integer.parseInt(tokenizer.nextToken());
-			long size = -1;
-			try {
-				if (tokenizer.hasMoreTokens())
-					size = Long.parseLong(tokenizer.nextToken());
-			} catch (Exception e) {
-				// Stick with the old value.
-			}
+			long size = tokenizer.hasMoreTokens() ? Utils.tryParseInt(tokenizer.nextToken(), -1) : -1;
 			String transferToken = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
 
 			if (port == 0 || transferToken != null) {
@@ -116,13 +111,7 @@ public class DccHandler {
 			//Reply with: DCC ACCEPT <filename> 0 <position> <token>
 			String filename = tokenizer.nextToken();
 			int port = Integer.parseInt(tokenizer.nextToken());
-			long progress = -1;
-			try {
-				if (tokenizer.hasMoreTokens())
-					progress = Long.parseLong(tokenizer.nextToken());
-			} catch (Exception e) {
-				// Stick with the old value.
-			}
+			long progress = tokenizer.hasMoreTokens() ? Utils.tryParseLong(tokenizer.nextToken(), -1) : -1;
 			String transferToken = tokenizer.nextToken();
 
 			PendingRecieveFileTransfer transfer = null;

@@ -218,12 +218,7 @@ public class Channel {
 	 * If its not set, returns -1.
 	 */
 	public int getChannelLimit() {
-		try {
-			return Integer.parseInt(getModeArgument('l'));
-		} catch (NumberFormatException e) {
-			//Can't parse it or null, return -1
-			return -1;
-		}
+		return Utils.tryParseInt(getModeArgument('l'), -1);
 	}
 
 	/**

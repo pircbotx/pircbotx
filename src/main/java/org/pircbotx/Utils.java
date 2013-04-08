@@ -166,6 +166,32 @@ public class Utils {
 		}
 		return builder.toString();
 	}
+	
+	/**
+	 * Try to parse int string, returning -1 if it fails
+	 * @param longString
+	 * @return The string as an int or -1
+	 */
+	public static int tryParseInt(String intString, int defaultValue) {
+		try {
+			return Integer.parseInt(intString);
+		} catch(NumberFormatException e) {
+			return defaultValue;
+		}
+	}
+	
+	/**
+	 * Try to parse long string, returning -1 if it fails
+	 * @param longString
+	 * @return The string as a long or -1
+	 */
+	public static long tryParseLong(String longString, int defaultValue) {
+		try {
+			return Long.parseLong(longString);
+		} catch(NumberFormatException e) {
+			return defaultValue;
+		}
+	}
 
 	/**
 	 * Tokenize IRC raw input into it's components, keeping the
