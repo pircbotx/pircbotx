@@ -303,6 +303,17 @@ public class PircBotXProcessingTest {
 		assertEquals(fevent.getUser(), aUser, "FingerEvent's user doesn't match given");
 		assertEquals(fevent.getChannel(), aChannel, "FingerEvent's channel doesn't match given");
 	}
+	
+	@Test
+	public void modeResponseTest() throws IOException {
+		Channel aChannel = bot.getChannel("#aChannel");
+		bot.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +cnt");
+		
+		ModeEvent mevent = getEvent(events, ModeEvent.class, "ModeEvent not dispatched for mode response");
+		assertEquals(mevent.getMode(), "+cnt", "ModeEvent's mode doesn't equal given");
+		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel doesn't match given");
+		assertNull(mevent.getUser(), "ModeEvent's user not null for mode response");
+	}
 
 	/**
 	 * Do setup and basic verification of channel modes
