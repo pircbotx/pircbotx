@@ -46,9 +46,18 @@ public class ReceiveFileTransfer {
 	protected boolean resume;
 	protected long startPos;
 	@Getter
-	protected long bytesReceived;	
+	protected long bytesReceived;
+	protected Boolean receivingFile = false;
 
 	public void receiveFile(File destination) throws IOException {
+		//Prevent being called multiple times
+		if(receivingFile)
+			synchronized(receivingFile) {
+				if(receivingFile)
+					throw new RuntimeException("Already receiving file");
+			}
+		receivingFile = true;
+		
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup
