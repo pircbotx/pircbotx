@@ -28,10 +28,8 @@ import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import static org.pircbotx.DccFileTransfer.BUFFER_SIZE;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.exception.DccException;
 
 /**
  * Sends a file to a user
@@ -70,7 +68,7 @@ public class SendFileTransfer {
 				bytesSkipped += fileInput.skip(progress - bytesSkipped);
 		}
 
-		byte[] outBuffer = new byte[BUFFER_SIZE];
+		byte[] outBuffer = new byte[DccHandler.TRANSFER_BUFFER_SIZE];
 		byte[] inBuffer = new byte[4];
 		int bytesRead = 0;
 		while ((bytesRead = fileInput.read(outBuffer, 0, outBuffer.length)) != -1) {
