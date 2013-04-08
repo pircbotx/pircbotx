@@ -32,21 +32,21 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
- * Handle everything related to receiving a file from an IRC user
+ * Handle everything related to receiving a file from another IRC user
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 public class ReceiveFileTransfer {
-	protected final PircBotX bot;
 	@Getter
 	protected final User user;
 	@Getter
-	protected final String filename;
 	protected final Socket socket;
-	protected final boolean resume;
-	protected final long startPos;
 	@Getter
-	protected long bytesReceived;
+	protected final long size;
+	protected boolean resume;
+	protected long startPos;
+	@Getter
+	protected long bytesReceived;	
 
 	public void receiveFile(File destination) throws IOException {
 		@Cleanup
