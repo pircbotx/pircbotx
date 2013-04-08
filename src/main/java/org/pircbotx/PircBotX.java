@@ -52,6 +52,7 @@ import lombok.Synchronized;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.dcc.Chat;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.IrcException;
@@ -1543,50 +1544,15 @@ public class PircBotX {
 	}
 
 	/**
-	 * Attempts to establish a DCC CHAT session with a client. This method
-	 * issues the connection request to the client and then waits for the
-	 * client to respond. If the connection is successfully made, then a
-	 * DccChat object is returned by this method. If the connection is not
-	 * made within the time limit specified by the timeout value, then null
-	 * is returned.
-	 * <p>
-	 * Note that this method blocks until the user accepts the DCC chat request
-	 *
-	 * @throws IOException If any issue occurs with creating the connection
-	 * @throws SocketTimeoutException If the user does not connect within the
-	 * specified timeout period
-	 * @param sender The user object representing the user we are trying to
-	 * establish a chat with.
-	 * @param timeout The number of milliseconds to wait for the recipient to
-	 * accept the chat connection (we recommend about 120000).
-	 *
-	 * @return a DccChat object that can be used to send and recieve lines of
-	 * text. Returns <b>null</b> if the connection could not be made.
-	 *
-	 * @see DccChat
-	 * @since PircBot 0.9.8
+	 * Utility method to send a chat request to a user. Simply calls
+	 * {@link DccHandler#sendChatRequest(org.pircbotx.User) }
+	 * 
+	 * @return An open {@link Chat}
+	 * @see DccHandler#sendChatRequest(org.pircbotx.User) 
+	 * @see Chat
 	 */
-	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
-		if (sender == null)
-			throw new IllegalArgumentException("Can't send chat request to null user");
-		ServerSocket ss = null;//dccManager.createServerSocket();
-		ss.setSoTimeout(timeout);
-		int serverPort = ss.getLocalPort();
-
-		InetAddress ourAddress = getDccInetAddress();
-		if (ourAddress == null)
-			ourAddress = getInetAddress();
-		String ipNum = DccManager.addressToInteger(ourAddress);
-
-		sendCTCPCommand(sender, "DCC CHAT chat " + ipNum + " " + serverPort);
-
-		// The client may now connect to us to chat.
-		Socket userSocket = ss.accept();
-
-		// Close the server socket now that we've finished with it.
-		ss.close();
-
-		return new DccChat(this, sender, userSocket);
+	public Chat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
+		return dccHandler.sendChatRequest(sender);
 	}
 
 	/**

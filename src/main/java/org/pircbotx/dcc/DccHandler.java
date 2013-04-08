@@ -35,10 +35,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.pircbotx.DccChat;
+import org.pircbotx.DccManager;
 import static org.pircbotx.DccManager.integerToAddress;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.DccException;
+import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
 /**
@@ -134,9 +137,31 @@ public class DccHandler {
 				throw new DccException("No Dcc File Transfer to resume recieving (user: " + user.getNick()
 						+ ", filename: " + filename + ", position: " + progress + ", token: " + transferToken + ")");
 			bot.sendCTCPCommand(user, "DCC ACCEPT " + filename + " " + port + " " + progress + " " + transferToken);
+		} else if (type.equals("CHAT")) {
+			//Someone is trying to chat with us
+			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
+			InetAddress address = integerToAddress(tokenizer.nextToken());
+			int port = Integer.parseInt(tokenizer.nextToken());
+
+			bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
 		} else
 			return false;
 		return true;
+	}
+	
+	public Chat sendChatRequest(User receiver) throws IOException {
+		if(receiver == null)
+			throw new NullPointerException("Cannot send chat request to null user");
+		ServerSocket ss = createServerSocket();
+		ss.setSoTimeout(socketTimeout);
+		
+		int serverPort = ss.getLocalPort();
+		String ipNum = DccManager.addressToInteger(ss.getInetAddress());
+		bot.sendCTCPCommand(receiver, "DCC CHAT chat " + ipNum + " " + serverPort);
+		
+		Socket userSocket = ss.accept();
+		ss.close();
+		return new Chat().init(userSocket);
 	}
 
 	/**

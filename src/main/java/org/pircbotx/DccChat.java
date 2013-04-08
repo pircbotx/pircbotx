@@ -137,8 +137,8 @@ public class DccChat implements Closeable {
 		writer.write(line + "\r\n");
 		writer.flush();
 	}
-
-	/**
+	
+/**
 	 * Closes the DCC Chat connection.
 	 *
 	 * @throws IOException If an I/O error occurs.
