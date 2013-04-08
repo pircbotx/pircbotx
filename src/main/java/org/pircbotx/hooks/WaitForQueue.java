@@ -18,24 +18,50 @@
  */
 package org.pircbotx.hooks;
 
+import java.io.Closeable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.pircbotx.PircBotX;
 
 /**
- *
+ * Stores all events in a queue for processing. This is useful for sequential 
+ * processing of many similar events.
+ * <p>
+ * Example:
+ * <code>
+ * WaitForQueue queue = new WaitForQueue();
+ * while(true) {
+ *     MessageEvent mevent = queue.waitFor(MessageEvent.class);
+ *     //Process event
+ * }
+ * queue.done();
+ * </code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class WaitForQueue {
+public class WaitForQueue implements Closeable {
 	protected final PircBotX bot;
 	protected BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
 	protected WaitForQueueListener listener;
 
+	/**
+	 * Create and store a queue listener in the specified bot's ListenerManager.
+	 * It will be removed when {@link #done()} is called
+	 * @param bot 
+	 */
 	public WaitForQueue(PircBotX bot) {
 		this.bot = bot;
 		bot.getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
 
+	/**
+	 * Wait for events of the specified event class to appear in the queue. If 
+	 * the event was dispatched before this is called, it will return immediately. 
+	 * Events that do not match the specified event class are discarded
+	 * @param <E>
+	 * @param eventClass
+	 * @return
+	 * @throws InterruptedException 
+	 */
 	public <E extends Event> E waitFor(Class<E> eventClass) throws InterruptedException {
 		if (eventClass == null)
 			throw new IllegalArgumentException("Can't wait for null event");
@@ -45,8 +71,14 @@ public class WaitForQueue {
 				return (E) curEvent;
 		}
 	}
-	
-	public void done() {
+
+	/**
+	 * Shuts down the queue; VERY important to call when finished. Since this class 
+	 * stores every dispatched event, failure to close will eventually cause you
+	 * to run out of memory
+	 */
+	@Override
+	public void close() {
 		bot.getListenerManager().removeListener(listener);
 		eventQueue.clear();
 	}

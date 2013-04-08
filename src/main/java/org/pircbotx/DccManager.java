@@ -69,7 +69,7 @@ public class DccManager implements Closeable {
 		//Skip the DCC part of the line
 		tokenizer.nextToken();
 		String type = tokenizer.nextToken();
-		
+
 		//Parse filename, removing quotes
 		String filename = tokenizer.nextToken();
 		if (filename.startsWith("\""))
@@ -184,7 +184,7 @@ public class DccManager implements Closeable {
 		return awaitingResume.remove(transfer);
 	}
 
-	public ServerSocket createServerSocket() throws IOException, DccException {
+	protected ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;
 		List<Integer> ports = bot.getDccPorts();
 		if (ports.isEmpty())
