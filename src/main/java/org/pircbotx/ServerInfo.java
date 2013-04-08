@@ -18,9 +18,9 @@
  */
 package org.pircbotx;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -37,32 +37,26 @@ import lombok.Setter;
 public class ServerInfo {
 	protected final PircBotX bot;
 
-	public void parse(int code, String input) {
-		//Strip off name, irrelevant
-		String[] parts = input.split(" ", 2);
-
+	public void parse(int code, List<String> parsedLine) {
 		//Pass off to speicific methods
-		if (parts[0].equals("004"))
-			parse004(parts[1]);
-		else if (parts[0].equals("005"))
-			parse005(parts[1]);
+		if (code == 004)
+			parse004(parsedLine);
+		else if (code == 005)
+			parse005(parsedLine);
 	}
 
-	protected void parse004(String input) {
+	protected void parse004(List<String> parsedLine) {
 		//004 PircBotX pratchett.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
-		String[] inputParts = input.split(" ");
-		serverName = inputParts[0];
-		serverVersion = inputParts[1];
-		userModes = inputParts[2];
-		channelModes = inputParts[3];
+		System.out.println("Parse004: " + parsedLine);
+		serverName = parsedLine.get(1);
+		serverVersion = parsedLine.get(2);
+		userModes = parsedLine.get(3);
+		channelModes = parsedLine.get(4);
 	}
 
-	protected void parse005(String input) {
+	protected void parse005(List<String> parsedLine) {
 		//REFERENCE: http://www.irc.org/tech_docs/005.html
-
-		//Remove any comments at the end of the line
-		String cleanInput = input.split(" :", 2)[0];
-		for (String curItem : cleanInput.split(" ")) {
+		for (String curItem : parsedLine) {
 			String[] itemParts = curItem.split("=", 2);
 			String key = itemParts[0];
 			String value = (itemParts.length == 2) ? itemParts[1] : "";
@@ -134,8 +128,6 @@ public class ServerInfo {
 				userIPExists = true;
 			else if (key.equalsIgnoreCase("CNOTICE"))
 				cNoticeExists = true;
-
-
 		}
 		//Freenode
 		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
