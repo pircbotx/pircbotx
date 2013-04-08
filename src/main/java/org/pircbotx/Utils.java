@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.events.FileTransferFinishedEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
@@ -80,8 +79,6 @@ public class Utils {
 			return null;
 		else if (event instanceof ActionEvent)
 			return ((ActionEvent) event).getUser();
-		else if (event instanceof FileTransferFinishedEvent)
-			return ((FileTransferFinishedEvent) event).getTransfer().getUser();
 		else if (event instanceof FingerEvent)
 			return ((FingerEvent) event).getUser();
 		else if (event instanceof IncomingChatRequestEvent)
@@ -177,29 +174,22 @@ public class Utils {
 	 * @return List of strings.
 	 */
 	public static List<String> tokenizeLine(String input) {
-		List<String> retn = new ArrayList<String>();
-
+		List<String> stringParts = new ArrayList<String>();
 		if (input == null || input.length() == 0)
-			return retn;
+			return stringParts;
 
-		String temp = input;
-
-		while (true) {
-			if (temp.startsWith(":") && retn.size() > 0) {
-				retn.add(temp.substring(1));
-
-				return retn;
-			}
-
-			String[] split = temp.split(" ", 2);
-			retn.add(split[0]);
-
-			if (split.length > 1)
-				temp = split[1];
-			else
+		//Heavily optimized version string split by space with all characters after :
+		//added as a single entry. Under benchmarks, its faster than StringTokenizer,
+		//String.split, toCharArray, and charAt
+		int pos = 0, end;
+		while ((end = input.indexOf(' ', pos)) >= 0) {
+			stringParts.add(input.substring(pos, end));
+			pos = end + 1;
+			if (input.charAt(pos) == ':') {
+				stringParts.add(input.substring(pos + 1));
 				break;
+			}
 		}
-
-		return retn;
+		return stringParts;
 	}
 }

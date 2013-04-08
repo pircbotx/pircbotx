@@ -117,9 +117,6 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	public void onDisconnect(DisconnectEvent<T> event) throws Exception {
 	}
 
-	public void onFileTransferFinished(FileTransferFinishedEvent<T> event) throws Exception {
-	}
-
 	public void onFinger(FingerEvent<T> event) throws Exception {
 	}
 
