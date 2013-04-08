@@ -54,14 +54,6 @@ public class ReceiveFileTransfer {
 	@Getter
 	protected DccState state = DccState.INIT;
 
-	public ReceiveFileTransfer(User user, Socket socket, long size, String filename) {
-		this.user = user;
-		this.socket = socket;
-		this.size = size;
-		this.filename = filename;
-		this.destinationFile = null;
-	}
-
 	public void receiveFile() throws IOException {
 		//Prevent being called multiple times
 		if (state != DccState.INIT)
