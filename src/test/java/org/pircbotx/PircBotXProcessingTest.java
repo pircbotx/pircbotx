@@ -70,6 +70,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+import org.testng.annotations.Parameters;
 
 /**
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
@@ -178,6 +179,16 @@ public class PircBotXProcessingTest {
 				chanUser = curUser;
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
 		assertTrue(bot.userExists("AUser"));
+	}
+	
+	@Test(description = "Verify Channel creation date is set - Freenode")
+	public void channelCreationDateFreenode(String endLine) throws IOException {
+		Channel aChannel = bot.getChannel("#aChannel");
+		long creationTime = 1328490732;
+		bot.handleLine(":irc.someserver.net 329 PircBotXUser #aChannel " + creationTime);
+		
+		//Verify channel creation date was set
+		assertEquals(aChannel.getCreateTimestamp(), creationTime, "Channel creation time doesn't match given");
 	}
 
 	@Test(description = "Verify TopicEvent by user changing topic")
