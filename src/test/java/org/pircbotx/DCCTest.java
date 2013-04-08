@@ -28,6 +28,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.testng.annotations.BeforeClass;
@@ -82,14 +83,14 @@ public class DCCTest {
 	@Test(dataProvider = "addressDataProvider")
 	public void addressToIntegerTest(String rawAddress, String expectedResult) throws UnknownHostException {
 		InetAddress address = InetAddress.getByName(rawAddress);
-		String convertedAddress = DccManager.addressToInteger(address);
+		String convertedAddress = DccHandler.addressToInteger(address);
 		assertEquals(convertedAddress, expectedResult, "Converted address doesn't match given");
 	}
 
 	@Test(dataProvider = "addressDataProvider")
 	public void integerToAddressTest(String rawAddress, String integerAddress) throws UnknownHostException {
 		InetAddress realAddress = InetAddress.getByName(rawAddress);
-		InetAddress convertedAddress = DccManager.integerToAddress(integerAddress);
+		InetAddress convertedAddress = DccHandler.integerToAddress(integerAddress);
 		assertEquals(convertedAddress, realAddress, "Converted address doesn't match given");
 	}
 
