@@ -88,7 +88,7 @@ public class DccHandler {
 						try {
 							Socket userSocket = serverSocket.accept();
 							serverSocket.close();
-							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize());
+							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize(), pendingTransfer.filename());
 							//Remove the pending transfer
 							pendingReceiveTransfers.remove(pendingTransfer);
 						} catch (Exception e) {
@@ -103,7 +103,7 @@ public class DccHandler {
 				ReceiveFileTransfer fileTransfer = null;
 				try {
 					Socket userSocket = new Socket(address, port, bot.getDccInetAddress(), 0);
-					fileTransfer = new ReceiveFileTransfer(user, userSocket, size);
+					fileTransfer = new ReceiveFileTransfer(user, userSocket, size, filename);
 				} catch (Exception e) {
 					exception = e;
 				}
