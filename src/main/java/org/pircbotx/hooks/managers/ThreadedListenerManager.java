@@ -104,7 +104,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	protected static void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
-		pool.submit(new Runnable() {
+		pool.execute(new Runnable() {
 			public void run() {
 				try {
 					listener.onEvent(event);
