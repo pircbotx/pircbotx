@@ -18,14 +18,11 @@
  */
 package org.pircbotx.impl;
 
-import java.io.File;
-import org.pircbotx.DccFileTransfer;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
-import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
@@ -76,7 +73,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			//Check if this message is the "end" command
 			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
 				event.respond("Stopping");
-				queue.done();
+				queue.close();
 				//Very important that we end the infinate loop or else the test
 				//will continue forever!
 				return;
@@ -118,23 +115,6 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		}
 
 	}
-        
-        @Override
-        public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
-                //Get the DccFileTransfer object from the event
-                DccFileTransfer transfer = event.getTransfer();
- 
-                //Generate a file prefix
-                String prefix = "pircbotx" + System.currentTimeMillis() + "-";
-                //File suffix is the original filename plus .txt to prevent executables
-                String suffix = transfer.getFilename() + ".txt";
-                event.getBot().sendMessage("#pircbotx", "Downloading file " + transfer.getFilename() + " to " + prefix + suffix);
-                //Create this file in the temp directory
-                File file = File.createTempFile(prefix, suffix);
-                //Receive the file from the user. The true is important to get the transfer started
-                transfer.receive(file, true);
-                event.getBot().sendMessage("#pircbotx", "Finished downloading file " + transfer.getFilename() + " to " + file.getAbsolutePath());
-        }
 
 	public static void main(String[] args) {
 		//Create a new bot
@@ -145,6 +125,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		bot.setLogin("LQ"); //login part of hostmask, eg name:login@host
 		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
 		bot.setAutoNickChange(true); //Automatically change nick when the current one is in use
+		bot.setCapEnabled(true); //Enable CAP features
 
 		//This class is a listener, so add it to the bots known listeners
 		bot.getListenerManager().addListener(new PircBotXExample());
@@ -152,8 +133,8 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		//bot.connect throws various exceptions for failures
 		try {
 			//Connect to the freenode IRC network
-			bot.connect("irc.freenode.org");
-			//Join the #quackbot channel
+			bot.connect("irc.freenode.net");
+			//Join the official #pircbotx channel
 			bot.joinChannel("#pircbotx");
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy

@@ -33,6 +33,7 @@ import org.pircbotx.exception.CAPException;
 public class EnableCapHandler implements CapHandler {
 	@Getter
 	protected boolean done = false;
+	@Getter
 	protected final String cap;
 	protected final boolean ignoreFail;
 
@@ -49,8 +50,11 @@ public class EnableCapHandler implements CapHandler {
 		if (capabilities.contains(cap))
 			//Server supports sasl, send request to use it
 			bot.sendCAPREQ(cap);
-		else
+		else if (!ignoreFail)
 			throw new CAPException("Server does not support the " + cap + " capability");
+		else
+			//Nothing more to do
+			done = true;
 	}
 
 	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException {
@@ -63,7 +67,11 @@ public class EnableCapHandler implements CapHandler {
 		if (capabilities.contains(cap)) {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove(cap);
-			throw new CAPException("Server does not support the " + cap + " capability");
+			if (!ignoreFail)
+				throw new CAPException("Server does not support the " + cap + " capability");
+			else
+				//Nothing more to do
+				done = true;
 		}
 	}
 
