@@ -52,6 +52,8 @@ import lombok.Synchronized;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
@@ -115,7 +117,7 @@ public class PircBotX {
 	protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
 	// DccManager to process and handle all DCC events.
 	@Getter
-	protected DccManager dccManager = new DccManager(this);
+	protected DccHandler dccHandler = new DccHandler(this);
 	@Setter(AccessLevel.PROTECTED)
 	protected List<Integer> dccPorts = new ArrayList();
 	protected InetAddress dccInetAddress = null;
@@ -1529,33 +1531,14 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends a file to another user. Resuming is supported.
-	 * The other user must be able to connect directly to your bot to be
-	 * able to receive the file.
-	 * <p>
-	 * You may throttle the speed of this file transfer by calling the
-	 * setPacketDelay method on the DccFileTransfer that is returned.
-	 *
-	 * @since PircBot 0.9c
-	 *
-	 * @param file The file to send.
-	 * @param reciever The user to whom the file is to be sent.
-	 * @param timeout The number of milliseconds to wait for the recipient to
-	 * accept the file (we recommend about 120000).
-	 *
-	 * @return The DccFileTransfer that can be used to monitor this transfer.
-	 *
-	 * @see DccFileTransfer
-	 *
+	 * Sends a file to another user. Simply calls {@link DccHandler#sendFile(java.io.File, org.pircbotx.User, int) }
+	 * 
+	 * @return When the transfer is finished returns the {@link SendFileTransfer} used
+	 * @see DccHandler#sendFile(java.io.File, org.pircbotx.User, int) 
+	 * @see DccHandler#sendFileRequest(java.lang.String, org.pircbotx.User, int) 
 	 */
-	public DccFileTransfer dccSendFile(File file, User reciever, int timeout) throws IOException {
-		if (file == null)
-			throw new IllegalArgumentException("Can't send a null file");
-		if (reciever == null)
-			throw new IllegalArgumentException("Can't send file to null user");
-		DccFileTransfer transfer = new DccFileTransfer(this, file, reciever, timeout);
-		transfer.doSend(true);
-		return transfer;
+	public SendFileTransfer dccSendFile(File file, User reciever, int timeout) throws IOException {
+		return dccHandler.sendFile(file, reciever, timeout);
 	}
 
 	/**
@@ -1585,7 +1568,7 @@ public class PircBotX {
 	public DccChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
 		if (sender == null)
 			throw new IllegalArgumentException("Can't send chat request to null user");
-		ServerSocket ss = dccManager.createServerSocket();
+		ServerSocket ss = null;//dccManager.createServerSocket();
 		ss.setSoTimeout(timeout);
 		int serverPort = ss.getLocalPort();
 
@@ -1758,7 +1741,7 @@ public class PircBotX {
 				getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
 			else if (tokenizer.countTokens() >= 5 && tokenizer.nextToken().equals("DCC")) {
 				// This is a DCC request.
-				boolean success = dccManager.processRequest(source, request);
+				boolean success = dccHandler.processDcc(source, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
 					getListenerManager().dispatchEvent(new UnknownEvent(this, line));
@@ -2860,7 +2843,7 @@ public class PircBotX {
 
 		//Close the DCC Manager
 		try {
-			dccManager.close();
+			dccHandler.close();
 		} catch (Exception ex) {
 			//Not much we can do with it here. And throwing it would not let other things shutdown
 			logException(ex);
