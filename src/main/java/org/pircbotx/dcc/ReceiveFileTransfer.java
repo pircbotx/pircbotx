@@ -45,8 +45,6 @@ public class ReceiveFileTransfer {
 	protected final long size;
 	@Getter
 	protected final String filename;
-	@Getter
-	protected final File destinationFile;
 	protected boolean resume;
 	protected long startPos;
 	@Getter
@@ -54,7 +52,7 @@ public class ReceiveFileTransfer {
 	@Getter
 	protected DccState state = DccState.INIT;
 
-	public void receiveFile() throws IOException {
+	public void receiveFile(File destination) throws IOException {
 		//Prevent being called multiple times
 		if (state != DccState.INIT)
 			synchronized (state) {
@@ -68,7 +66,7 @@ public class ReceiveFileTransfer {
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
-		BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destinationFile.getCanonicalPath()));
+		BufferedOutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(destination.getCanonicalPath()));
 
 		//Recieve file
 		byte[] inBuffer = new byte[BUFFER_SIZE];
