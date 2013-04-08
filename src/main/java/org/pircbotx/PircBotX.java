@@ -2616,11 +2616,12 @@ public class PircBotX {
 	public User getUser(String nick) {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
-		if (userNickMap.containsKey(nick))
-			return userNickMap.get(nick);
+		User user = userNickMap.get(nick);
+		if (user != null)
+			return user;
 
 		//User does not exist, create one
-		User user = new User(this, nick);
+		user = new User(this, nick);
 		userChanInfo.putA(user);
 		return user;
 	}
