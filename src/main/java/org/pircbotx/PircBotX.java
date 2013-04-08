@@ -1877,11 +1877,13 @@ public class PircBotX {
 			//End of the WHO reply
 			Channel channel = getChannel(response.split(" ")[1]);
 			getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
-		} else if (code == RPL_CHANNELMODEIS)
+		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			getChannel(parsed[1]).setMode(parsed[2]);
-		else if (code == 329) {
+			Channel channel = getChannel(parsed[1]);
+			channel.setMode(parsed[2]);
+			getListenerManager().dispatchEvent(new ModeEvent(this, channel, null, parsed[2]));
+		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. Note mIRC says lordquackstar shouldn't be there while Freenode
 			//displays it. From /JOIN(?)
