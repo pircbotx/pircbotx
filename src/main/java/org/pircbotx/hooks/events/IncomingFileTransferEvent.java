@@ -18,7 +18,6 @@
  */
 package org.pircbotx.hooks.events;
 
-import org.pircbotx.DccFileTransfer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
