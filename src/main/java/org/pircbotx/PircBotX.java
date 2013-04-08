@@ -1531,7 +1531,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * Sends a file to another user. Simply calls {@link DccHandler#sendFile(java.io.File, org.pircbotx.User, int) }
+	 * Utility method to send a file to a user. Simply calls 
+	 * {@link DccHandler#sendFile(java.io.File, org.pircbotx.User, int) }
 	 * 
 	 * @return When the transfer is finished returns the {@link SendFileTransfer} used
 	 * @see DccHandler#sendFile(java.io.File, org.pircbotx.User, int) 
