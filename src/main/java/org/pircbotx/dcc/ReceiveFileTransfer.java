@@ -47,16 +47,17 @@ public class ReceiveFileTransfer {
 	protected long startPos;
 	@Getter
 	protected long bytesReceived;
-	protected Boolean receivingFile = false;
+	@Getter
+	protected DccState state = DccState.INIT;
 
 	public void receiveFile(File destination) throws IOException {
 		//Prevent being called multiple times
-		if(receivingFile)
-			synchronized(receivingFile) {
-				if(receivingFile)
-					throw new RuntimeException("Already receiving file");
+		if(state != DccState.INIT)
+			synchronized(state) {
+				if(state != DccState.INIT)
+					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
 			}
-		receivingFile = true;
+		state = DccState.RUNNING;
 		
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
@@ -85,5 +86,7 @@ public class ReceiveFileTransfer {
 
 		//Finished recieving file
 		fileOutput.flush();
+		
+		state = DccState.DONE;
 	}
 }

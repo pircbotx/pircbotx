@@ -45,16 +45,16 @@ public class SendFileTransfer {
 	protected final Socket socket;
 	protected long progress;
 	@Getter
-	protected boolean sending = false;
-	@Getter
-	protected boolean done = false;
+	protected DccState state = DccState.INIT;
 
 	public void sendFile(File source) throws IOException {
-		if (sending)
-			throw new DccException("Already sending data");
-		if (done)
-			throw new DccException("Already sent file");
-		sending = true;
+		//Prevent being called multiple times
+		if(state != DccState.INIT)
+			synchronized(state) {
+				if(state != DccState.INIT)
+					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
+			}
+		state = DccState.RUNNING;
 
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
@@ -79,7 +79,7 @@ public class SendFileTransfer {
 			socketInput.read(inBuffer, 0, inBuffer.length);
 			progress += bytesRead;
 		}
-		sending = false;
-		done = true;
+		
+		state = DccState.DONE;
 	}
 }
