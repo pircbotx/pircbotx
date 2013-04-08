@@ -29,12 +29,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import static org.pircbotx.DccManager.integerToAddress;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.exception.DccException;
+import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 
 /**
  *
@@ -42,14 +47,92 @@ import org.pircbotx.exception.DccException;
  */
 @RequiredArgsConstructor
 public class DccHandler {
+	protected int socketTimeout;
 	protected final PircBotX bot;
-	protected List<ReceiveFileTransfer> recieveFileTransfers = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
+	@Getter(AccessLevel.PROTECTED)
+	protected List<PendingRecieveFileTransfer> pendingReceiveTransfers = Collections.synchronizedList(new ArrayList<PendingRecieveFileTransfer>());
 	protected List<ReceiveFileTransfer> chats = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
 	@Getter
 	@Setter
 	protected boolean useQuotes = false;
 
-	public boolean processDcc(User user, String line) {
+	public boolean processDcc(final User user, String request) throws IOException {
+		StringTokenizer tokenizer = new StringTokenizer(request);
+		//Skip the DCC part of the line
+		tokenizer.nextToken();
+		String type = tokenizer.nextToken();
+		if (type.equals("SEND")) {
+			//Someone is trying to send a file to us
+			//Example: DCC SEND <filename> <ip> <port> <file size> <passive(random,optional)> (note File size is optional)
+			String filename = tokenizer.nextToken();
+			InetAddress address = integerToAddress(tokenizer.nextToken());
+			int port = Integer.parseInt(tokenizer.nextToken());
+			long size = -1;
+			try {
+				if (tokenizer.hasMoreTokens())
+					size = Long.parseLong(tokenizer.nextToken());
+			} catch (Exception e) {
+				// Stick with the old value.
+			}
+			String transferToken = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+
+			if (port == 0 || transferToken != null) {
+				//User is trying to use Passive DCC
+				final ServerSocket serverSocket = createServerSocket();
+				final PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(filename, address, size, transferToken, serverSocket);
+				pendingReceiveTransfers.add(pendingTransfer);
+				runReverseDccServer(new Runnable() {
+					public void run() {
+						Exception exception = null;
+						ReceiveFileTransfer transfer = null;
+						try {
+							Socket userSocket = serverSocket.accept();
+							serverSocket.close();
+							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize());
+							//Remove the pending transfer
+							pendingReceiveTransfers.remove(pendingTransfer);
+						} catch (Exception e) {
+							exception = e;
+						}
+						bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
+					}
+				});
+			} else {
+				//User is using normal DCC, connect to them
+				Exception exception = null;
+				ReceiveFileTransfer fileTransfer = null;
+				try {
+					Socket userSocket = new Socket(address, port, bot.getDccInetAddress(), 0);
+					fileTransfer = new ReceiveFileTransfer(user, userSocket, size);
+				} catch (Exception e) {
+					exception = e;
+				}
+				bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, fileTransfer, exception));
+			}
+		} else if (type.equals("RESUME")) {
+			//Someone is trying to resume sending a file to us
+			//Example: DCC RESUME <filename> 0 <position> <token>
+			//Reply with: DCC ACCEPT <filename> 0 <position> <token>
+			String filename = tokenizer.nextToken();
+			int port = Integer.parseInt(tokenizer.nextToken());
+			long progress = -1;
+			try {
+				if (tokenizer.hasMoreTokens())
+					progress = Long.parseLong(tokenizer.nextToken());
+			} catch (Exception e) {
+				// Stick with the old value.
+			}
+			String transferToken = tokenizer.nextToken();
+
+
+			//for(PendingRecieveFileTransfer transfer : pendingReceiveTransfers)
+			//if(transfer.us()transfer.getToken().equals(transferToken))
+			//if (transfer == null)
+			//	throw new DccException("No Dcc File Transfer to resume recieving (filename: " + filename + ", source: " + source + ", port: " + port + ")");
+			//transfer.setProgress(progress);
+			//bot.sendCTCPCommand(source, "DCC ACCEPT file.ext " + port + " " + progress);
+		} else
+			return false;
 		return true;
 	}
 
@@ -57,17 +140,18 @@ public class DccHandler {
 	 * Send the specified file to the user
 	 * @see #sendFileTransfers
 	 */
-	public void sendFile(User receiver, File source, int timeout) throws IOException, DccException {
+	public SendFileTransfer sendFile(File file, User receiver, int timeout) throws IOException, DccException {
 		//Make the filename safe to send
-		String safeFilename = source.getName();
+		String safeFilename = file.getName();
 		if (safeFilename.contains(" "))
 			if (useQuotes)
 				safeFilename = "\"" + safeFilename + "\"";
 			else
 				safeFilename = safeFilename.replace(" ", "_");
 
-		SendFileTransfer fileTransfer = sendFileRequest(receiver, safeFilename, timeout);
-		fileTransfer.sendFile(source);
+		SendFileTransfer fileTransfer = sendFileRequest(safeFilename, receiver, timeout);
+		fileTransfer.sendFile(file);
+		return fileTransfer;
 	}
 
 	/**
@@ -79,7 +163,7 @@ public class DccHandler {
 	 * @throws IOException
 	 * @throws DccException 
 	 */
-	public SendFileTransfer sendFileRequest(User receiver, String safeFilename, int timeout) throws IOException, DccException {
+	public SendFileTransfer sendFileRequest(String safeFilename, User receiver, int timeout) throws IOException, DccException {
 		if (safeFilename == null)
 			throw new IllegalArgumentException("Can't send a null file");
 		if (safeFilename.contains(" ") && !(safeFilename.startsWith("\"") && safeFilename.endsWith("\"")))
@@ -124,6 +208,10 @@ public class DccHandler {
 		return ss;
 	}
 
+	protected void runReverseDccServer(Runnable run) {
+		new Thread(run).start();
+	}
+
 	public void close() {
 	}
 
@@ -154,6 +242,26 @@ public class DccHandler {
 			return InetAddress.getByAddress(addressBytes);
 		} catch (UnknownHostException ex) {
 			throw new RuntimeException("Can't get InetAdrress version of int IP address " + rawInteger + " (bytes: " + Arrays.toString(addressBytes) + ")", ex);
+		}
+	}
+
+	@Accessors(fluent = true)
+	@Getter
+	protected static class PendingRecieveFileTransfer {
+		protected String filename;
+		protected InetAddress userAddress;
+		protected long filesize;
+		protected long position;
+		protected ServerSocket serverSocket;
+		protected String token;
+		protected User user;
+
+		public PendingRecieveFileTransfer(String filename, InetAddress userAddress, long filesize, String token, ServerSocket serverSocket) {
+			this.filename = filename;
+			this.userAddress = userAddress;
+			this.filesize = filesize;
+			this.token = token;
+			this.serverSocket = serverSocket;
 		}
 	}
 }
