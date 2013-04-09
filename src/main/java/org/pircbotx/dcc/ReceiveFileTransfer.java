@@ -67,7 +67,7 @@ public class ReceiveFileTransfer {
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
-		RandomAccessFile fileOutput = new RandomAccessFile(destination.getCanonicalPath(), "w");
+		RandomAccessFile fileOutput = new RandomAccessFile(destination.getCanonicalPath(), "rw");
 		fileOutput.seek(startPos);
 
 		//Recieve file
