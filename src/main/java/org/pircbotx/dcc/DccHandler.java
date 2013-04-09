@@ -61,19 +61,17 @@ public class DccHandler {
 	protected boolean useQuotes = false;
 
 	public boolean processDcc(final User user, String request) throws IOException {
-		StringTokenizer tokenizer = new StringTokenizer(request);
-		//Skip the DCC part of the line
-		tokenizer.nextToken();
-		String type = tokenizer.nextToken();
+		List<String> requestParts = tokenizeDccRequest(request);
+		String type = requestParts.get(1);
 		if (type.equals("SEND")) {
 			//Someone is trying to send a file to us
 			//Example: DCC SEND <filename> <ip> <port> <file size> <passive(random,optional)> (note File size is optional)
-			String filename = tokenizer.nextToken();
-			InetAddress address = integerToAddress(tokenizer.nextToken());
-			int port = Integer.parseInt(tokenizer.nextToken());
-			long size = tokenizer.hasMoreTokens() ? Utils.tryParseInt(tokenizer.nextToken(), -1) : -1;
-			String transferToken = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
-
+			String filename = requestParts.get(2);
+			InetAddress address = integerToAddress(requestParts.get(3));
+			int port = Integer.parseInt(requestParts.get(4));
+			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
+			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
+			
 			if (port == 0 || transferToken != null) {
 				//User is trying to use Passive DCC
 				final ServerSocket serverSocket = createServerSocket();
@@ -111,10 +109,10 @@ public class DccHandler {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
 			//Reply with: DCC ACCEPT <filename> 0 <position> <token>
-			String filename = tokenizer.nextToken();
-			int port = Integer.parseInt(tokenizer.nextToken());
-			long progress = tokenizer.hasMoreTokens() ? Utils.tryParseLong(tokenizer.nextToken(), -1) : -1;
-			String transferToken = tokenizer.nextToken();
+			String filename = requestParts.get(2);
+			int port = Integer.parseInt(requestParts.get(3));
+			long progress = Integer.parseInt(requestParts.get(4));
+			String transferToken = requestParts.get(5);
 
 			PendingRecieveFileTransfer transfer = null;
 			for (PendingRecieveFileTransfer curTransfer : pendingReceiveTransfers)
@@ -129,9 +127,8 @@ public class DccHandler {
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
-			tokenizer.nextToken();
-			InetAddress address = integerToAddress(tokenizer.nextToken());
-			int port = Integer.parseInt(tokenizer.nextToken());
+			InetAddress address = integerToAddress(requestParts.get(3));
+			int port = Integer.parseInt(requestParts.get(4));
 
 			bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
 		} else
@@ -227,6 +224,37 @@ public class DccHandler {
 
 	protected void runReverseDccServer(Runnable run) {
 		new Thread(run).start();
+	}
+
+
+	protected static List<String> tokenizeDccRequest(String request) {
+		int quotesIndexBegin = request.indexOf('"');
+		if(quotesIndexBegin == -1)
+			//Just use tokenizeLine
+			return Utils.tokenizeLine(request);
+		
+		//This is a slightly modified version of Utils.tokenizeLine to parse
+		//potential quotes in filenames
+		int quotesIndexEnd = request.lastIndexOf('"');
+		List<String> stringParts = new ArrayList();
+		int pos = 0, end;
+		while ((end = request.indexOf(' ', pos)) >= 0) {
+			if(pos >= quotesIndexBegin && end < quotesIndexEnd) {
+				//We've entered the filename. Add and skip
+				stringParts.add(request.substring(quotesIndexBegin + 1, quotesIndexEnd));
+				pos = quotesIndexEnd + 2;
+				continue;
+			}
+			stringParts.add(request.substring(pos, end));
+			pos = end + 1;
+			if (request.charAt(pos) == ':') {
+				stringParts.add(request.substring(pos + 1));
+				return stringParts;
+			}
+		}
+		//No more spaces, add last part of line
+		stringParts.add(request.substring(pos));
+		return stringParts;
 	}
 
 	public void close() {
