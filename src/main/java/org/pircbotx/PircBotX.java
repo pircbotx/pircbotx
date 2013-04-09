@@ -1897,9 +1897,9 @@ public class PircBotX {
 			int endCommentIndex = rawResponse.lastIndexOf(" :");
 			if(endCommentIndex > 1) {
 				String endComment = rawResponse.substring(endCommentIndex + 2);
-				int parsedResponseSize = parsedResponse.size();
-				if(endComment.equals(parsedResponse.get(parsedResponseSize)))
-					parsedResponse.remove(parsedResponseSize);
+				int lastIndex = parsedResponse.size() - 1;
+				if(endComment.equals(parsedResponse.get(lastIndex)))
+					parsedResponse.remove(lastIndex);
 			}
 			getServerInfo().parse(code, parsedResponse);
 		} else if (code == RPL_WHOISUSER) {
