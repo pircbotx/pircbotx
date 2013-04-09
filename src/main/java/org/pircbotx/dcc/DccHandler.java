@@ -67,6 +67,8 @@ public class DccHandler {
 			//Someone is trying to send a file to us
 			//Example: DCC SEND <filename> <ip> <port> <file size> <passive(random,optional)> (note File size is optional)
 			String filename = requestParts.get(2);
+			final String safeFilename = (filename.startsWith("\"") && filename.endsWith("\"")) 
+					? filename.substring(1, filename.length() - 1) : filename;
 			InetAddress address = integerToAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
@@ -84,7 +86,7 @@ public class DccHandler {
 						try {
 							Socket userSocket = serverSocket.accept();
 							serverSocket.close();
-							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize(), pendingTransfer.filename(), pendingTransfer.position());
+							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize(), safeFilename, pendingTransfer.position());
 							//Remove the pending transfer
 							pendingReceiveTransfers.remove(pendingTransfer);
 						} catch (Exception e) {
