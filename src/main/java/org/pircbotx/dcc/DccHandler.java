@@ -93,6 +93,8 @@ public class DccHandler {
 						bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
 					}
 				});
+				bot.sendCTCPCommand(user, "DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
+						+ " " + size + " " + transferToken);
 			} else {
 				//User is using normal DCC, connect to them
 				Exception exception = null;
