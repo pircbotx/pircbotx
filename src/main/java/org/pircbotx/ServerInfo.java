@@ -18,7 +18,10 @@
  */
 package org.pircbotx;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -74,11 +77,13 @@ public class ServerInfo {
 				chanlimit = value;
 			else if (key.equalsIgnoreCase("NICKLEN"))
 				maxNickLength = Integer.parseInt(value);
-			else if (key.equalsIgnoreCase("MAXLIST"))
+			else if (key.equalsIgnoreCase("MAXBANS"))
 				maxBans = Integer.parseInt(value);
-			else if (key.equalsIgnoreCase("MAXLIST"))
-				maxList = value;
-			else if (key.equalsIgnoreCase("NETWORK"))
+			else if (key.equalsIgnoreCase("MAXLIST")) {
+				StringTokenizer maxListTokens = new StringTokenizer(value, ":,");
+				while (maxListTokens.hasMoreTokens())
+					maxList.put(maxListTokens.nextToken(), Integer.parseInt(maxListTokens.nextToken()));
+			} else if (key.equalsIgnoreCase("NETWORK"))
 				network = value;
 			else if (key.equalsIgnoreCase("EXCEPTS"))
 				exceptBans = value;
@@ -150,7 +155,7 @@ public class ServerInfo {
 	protected String chanlimit;
 	protected int maxNickLength;
 	protected int maxBans;
-	protected String maxList;
+	protected Map<String, Integer> maxList = new HashMap();
 	protected String network;
 	protected String exceptBans;
 	protected String exceptInvites;
