@@ -241,7 +241,7 @@ public class DccHandler {
 		while ((end = request.indexOf(' ', pos)) >= 0) {
 			if(pos >= quotesIndexBegin && end < quotesIndexEnd) {
 				//We've entered the filename. Add and skip
-				stringParts.add(request.substring(quotesIndexBegin + 1, quotesIndexEnd));
+				stringParts.add(request.substring(quotesIndexBegin, quotesIndexEnd + 1));
 				pos = quotesIndexEnd + 2;
 				continue;
 			}
