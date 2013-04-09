@@ -202,14 +202,15 @@ public class DccHandler {
 	}
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
+		InetAddress address = (dccInetAddress != null) ? dccInetAddress : bot.getInetAddress();
 		ServerSocket ss = null;
 		if (dccPorts.isEmpty())
 			// Use any free port.
-			ss = new ServerSocket(0);
+			ss = new ServerSocket(0, 1, address);
 		else {
 			for (int currentPort : dccPorts)
 				try {
-					ss = new ServerSocket(currentPort);
+					ss = new ServerSocket(currentPort, 1, address);
 					// Found a port number we could use.
 					break;
 				} catch (Exception e) {
