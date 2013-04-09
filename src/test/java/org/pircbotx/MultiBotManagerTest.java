@@ -66,11 +66,11 @@ public class MultiBotManagerTest {
 		masterBot.setLogin("SomeLogin");
 		masterBot.setAutoNickChange(true);
 		masterBot.setEncoding(Charset.availableCharsets().firstKey());
-		masterBot.setDccInetAddress(InetAddress.getByName("127.0.0.1"));
-		masterBot.getDccPorts().clear();
-		masterBot.getDccPorts().add(555);
-		masterBot.getDccPorts().add(666);
-		masterBot.getDccPorts().add(777);
+		masterBot.getDccHandler().setDccInetAddress(InetAddress.getByName("127.0.0.1"));
+		masterBot.getDccHandler().getDccPorts().clear();
+		masterBot.getDccHandler().getDccPorts().add(555);
+		masterBot.getDccHandler().getDccPorts().add(666);
+		masterBot.getDccHandler().getDccPorts().add(777);
 
 		//Setup the manager to clone it
 		manager = new MultiBotManager(masterBot);
@@ -90,8 +90,8 @@ public class MultiBotManagerTest {
 			assertEquals(curBot.getLogin(), masterBot.getLogin(), "Login in subbot is different from master");
 			assertEquals(curBot.isAutoNickChange(), masterBot.isAutoNickChange(), "AutoNickChange in subbot is different from master");
 			assertEquals(curBot.getEncoding(), masterBot.getEncoding(), " in subbot is different from master");
-			assertEquals(curBot.getDccInetAddress(), masterBot.getDccInetAddress(), "DccInetAddress in subbot is different from master");
-			assertEquals(curBot.getDccPorts(), masterBot.getDccPorts(), "DccPorts in subbot is different from master");
+			assertEquals(curBot.getDccHandler().getDccInetAddress(), masterBot.getDccHandler().getDccInetAddress(), "DccInetAddress in subbot is different from master");
+			assertEquals(curBot.getDccHandler().getDccPorts(), masterBot.getDccHandler().getDccPorts(), "DccPorts in subbot is different from master");
 		}
 	}
 

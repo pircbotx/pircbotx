@@ -119,9 +119,6 @@ public class PircBotX {
 	// DccManager to process and handle all DCC events.
 	@Getter
 	protected DccHandler dccHandler = new DccHandler(this);
-	@Setter(AccessLevel.PROTECTED)
-	protected List<Integer> dccPorts = new ArrayList();
-	protected InetAddress dccInetAddress = null;
 	protected boolean autoNickChange;
 	protected boolean verbose;
 	@Getter
@@ -2402,49 +2399,6 @@ public class PircBotX {
 	 */
 	public InetAddress getInetAddress() {
 		return inetAddress;
-	}
-
-	/**
-	 * Sets the InetAddress to be used when sending DCC chat or file transfers.
-	 * This can be very useful when you are running a bot on a machine which
-	 * is behind a firewall and you need to tell receiving clients to connect
-	 * to a NAT/router, which then forwards the connection.
-	 *
-	 * @since PircBot 1.4.4
-	 *
-	 * @param dccInetAddress The new InetAddress, or null to use the default.
-	 */
-	public void setDccInetAddress(InetAddress dccInetAddress) {
-		this.dccInetAddress = dccInetAddress;
-	}
-
-	/**
-	 * Returns the InetAddress used when sending DCC chat or file transfers.
-	 * If this is null, the default InetAddress will be used.
-	 *
-	 * @since PircBot 1.4.4
-	 *
-	 * @return The current DCC InetAddress, or null if left as default.
-	 */
-	public InetAddress getDccInetAddress() {
-		return dccInetAddress;
-	}
-
-	/**
-	 * Returns the list of port numbers to be used when sending a DCC chat
-	 * or file transfer. This is useful when you are behind a firewall and
-	 * need to set up port forwarding. The array of port numbers is traversed
-	 * in sequence until a free port is found to listen on. A DCC tranfer will
-	 * fail if all ports are already in use.
-	 * If empty, <i>any</i> free port number will be used.
-	 *
-	 * @since PircBot 1.4.4
-	 *
-	 * @return An array of port numbers that PircBotX can use to send DCC
-	 * transfers, or null if any port is allowed.
-	 */
-	public List<Integer> getDccPorts() {
-		return dccPorts;
 	}
 
 	/**

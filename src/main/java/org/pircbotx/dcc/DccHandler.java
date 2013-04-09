@@ -49,6 +49,8 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 @RequiredArgsConstructor
 public class DccHandler {
 	public static final int TRANSFER_BUFFER_SIZE = 1024;
+	protected List<Integer> dccPorts = new ArrayList();
+	protected InetAddress dccInetAddress = null;
 	protected int socketTimeout;
 	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
@@ -98,7 +100,7 @@ public class DccHandler {
 				Exception exception = null;
 				ReceiveFileTransfer fileTransfer = null;
 				try {
-					Socket userSocket = new Socket(address, port, bot.getDccInetAddress(), 0);
+					Socket userSocket = new Socket(address, port, getDccInetAddress(), 0);
 					fileTransfer = new ReceiveFileTransfer(user, userSocket, size, filename, 0);
 				} catch (Exception e) {
 					exception = e;
@@ -136,17 +138,17 @@ public class DccHandler {
 			return false;
 		return true;
 	}
-	
+
 	public Chat sendChatRequest(User receiver) throws IOException {
-		if(receiver == null)
+		if (receiver == null)
 			throw new NullPointerException("Cannot send chat request to null user");
 		ServerSocket ss = createServerSocket();
 		ss.setSoTimeout(socketTimeout);
-		
+
 		int serverPort = ss.getLocalPort();
 		String ipNum = addressToInteger(ss.getInetAddress());
 		bot.sendCTCPCommand(receiver, "DCC CHAT chat " + ipNum + " " + serverPort);
-		
+
 		Socket userSocket = ss.accept();
 		ss.close();
 		return new Chat().init(userSocket);
@@ -204,12 +206,11 @@ public class DccHandler {
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
 		ServerSocket ss = null;
-		List<Integer> ports = bot.getDccPorts();
-		if (ports.isEmpty())
+		if (dccPorts.isEmpty())
 			// Use any free port.
 			ss = new ServerSocket(0);
 		else {
-			for (int currentPort : ports)
+			for (int currentPort : dccPorts)
 				try {
 					ss = new ServerSocket(currentPort);
 					// Found a port number we could use.
@@ -219,7 +220,7 @@ public class DccHandler {
 				}
 			if (ss == null)
 				// No ports could be used.
-				throw new DccException("All ports returned by getDccPorts() " + ports.toString() + "are in use.");
+				throw new DccException("All ports returned by getDccPorts() " + dccPorts.toString() + "are in use.");
 		}
 		return ss;
 	}
@@ -229,6 +230,49 @@ public class DccHandler {
 	}
 
 	public void close() {
+	}
+
+	/**
+	 * Sets the InetAddress to be used when sending DCC chat or file transfers.
+	 * This can be very useful when you are running a bot on a machine which
+	 * is behind a firewall and you need to tell receiving clients to connect
+	 * to a NAT/router, which then forwards the connection.
+	 *
+	 * @since PircBot 1.4.4
+	 *
+	 * @param dccInetAddress The new InetAddress, or null to use the default.
+	 */
+	public void setDccInetAddress(InetAddress dccInetAddress) {
+		this.dccInetAddress = dccInetAddress;
+	}
+
+	/**
+	 * Returns the InetAddress used when sending DCC chat or file transfers.
+	 * If this is null, the default InetAddress will be used.
+	 *
+	 * @since PircBot 1.4.4
+	 *
+	 * @return The current DCC InetAddress, or null if left as default.
+	 */
+	public InetAddress getDccInetAddress() {
+		return dccInetAddress;
+	}
+
+	/**
+	 * Returns the list of port numbers to be used when sending a DCC chat
+	 * or file transfer. This is useful when you are behind a firewall and
+	 * need to set up port forwarding. The array of port numbers is traversed
+	 * in sequence until a free port is found to listen on. A DCC tranfer will
+	 * fail if all ports are already in use.
+	 * If empty, <i>any</i> free port number will be used.
+	 *
+	 * @since PircBot 1.4.4
+	 *
+	 * @return An array of port numbers that PircBotX can use to send DCC
+	 * transfers, or null if any port is allowed.
+	 */
+	public List<Integer> getDccPorts() {
+		return dccPorts;
 	}
 
 	public static String addressToInteger(InetAddress address) {
