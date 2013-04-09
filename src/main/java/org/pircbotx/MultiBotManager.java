@@ -93,8 +93,8 @@ public class MultiBotManager {
 		login = dummyBot.getLogin();
 		autoNickChange = dummyBot.isAutoNickChange();
 		encoding = dummyBot.getEncoding();
-		dcciNetAddress = dummyBot.getDccInetAddress();
-		dccports = dummyBot.getDccPorts();
+		dcciNetAddress = dummyBot.getDccHandler().getDccInetAddress();
+		dccports = dummyBot.getDccHandler().getDccPorts();
 	}
 
 	/**
@@ -144,8 +144,9 @@ public class MultiBotManager {
 		bot.setLogin(login);
 		bot.setAutoNickChange(autoNickChange);
 		bot.setEncoding(encoding);
-		bot.setDccInetAddress(dcciNetAddress);
-		bot.setDccPorts(dccports);
+		bot.getDccHandler().setDccInetAddress(dcciNetAddress);
+		bot.getDccHandler().getDccPorts().clear();
+		bot.getDccHandler().getDccPorts().addAll(dccports);
 
 		//Add to bot set
 		BotBuilder builder = new BotBuilder(bot);
