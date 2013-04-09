@@ -192,6 +192,13 @@ public class Utils {
 			return defaultValue;
 		}
 	}
+	
+	public static <V> V tryGetIndex(List<V> list, int index, V defaultValue) {
+		if(index < list.size())
+			return list.get(index);
+		else
+			return defaultValue;
+	}
 
 	/**
 	 * Tokenize IRC raw input into it's components, keeping the
