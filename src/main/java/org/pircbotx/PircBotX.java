@@ -450,7 +450,7 @@ public class PircBotX {
 
 			getListenerManager().dispatchEvent(new ConnectEvent(this));
 		} catch (Exception e) {
-			if (!(e instanceof IrcException) || !(e instanceof NickAlreadyInUseException))
+			if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
 				shutdown(true);
 			throw new IOException("Can't connect to server", e);
 		}
