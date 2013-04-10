@@ -29,7 +29,6 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
@@ -43,9 +42,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.net.SocketFactory;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
@@ -98,7 +99,9 @@ public class PircBotX {
 	protected Socket socket;
 	// Connection stuff.
 	protected InputThread inputThread = null;
-	protected OutputThread outputThread = null;
+	protected BufferedWriter bufferedWriter;
+	protected ReentrantLock writeLock = new ReentrantLock(true);
+	protected Condition writeNowCondition = writeLock.newCondition();
 	protected Charset charset = Charset.defaultCharset();
 	@Setter
 	protected InetAddress inetAddress = null;
@@ -330,29 +333,27 @@ public class PircBotX {
 			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
 
 			BufferedReader breader = new BufferedReader(inputStreamReader);
-			BufferedWriter bwriter = new BufferedWriter(outputStreamWriter);
+			bufferedWriter = new BufferedWriter(outputStreamWriter);
 
 			//Construct the output and input threads
 			inputThread = createInputThread(socket, breader);
-			outputThread = createOutputThread(bwriter);
-			outputThread.start();
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 			if (capEnabled)
 				// Attempt to initiate a CAP transaction.
-				outputThread.sendRawLineNow("CAP LS");
+				sendRawLineNow("CAP LS");
 
 			// Attempt to join the server.
 			if (webIrcPassword != null)
-				outputThread.sendRawLineNow("WEBIRC " + webIrcPassword + " " + webIrcUsername
+				sendRawLineNow("WEBIRC " + webIrcPassword + " " + webIrcUsername
 						+ " " + webIrcHostname + " " + webIrcAddress.getHostAddress());
 			if (password != null && !password.trim().equals(""))
-				outputThread.sendRawLineNow("PASS " + password);
+				sendRawLineNow("PASS " + password);
 			String tempNick = getName();
 
-			outputThread.sendRawLineNow("NICK " + tempNick);
-			outputThread.sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
+			sendRawLineNow("NICK " + tempNick);
+			sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
 			// Read stuff back from the server to see if we connected.
 			String line;
@@ -381,7 +382,7 @@ public class PircBotX {
 						if (autoNickChange) {
 							tries++;
 							tempNick = getName() + tries;
-							outputThread.sendRawLineNow("NICK " + tempNick);
+							sendRawLineNow("NICK " + tempNick);
 						} else {
 							socket.close();
 							inputThread = null;
@@ -428,7 +429,7 @@ public class PircBotX {
 							break;
 						}
 					if (allDone) {
-						outputThread.sendRawLineNow("CAP END");
+						sendRawLineNow("CAP END");
 						capEndSent = true;
 
 						//Make capabilities unmodifiable for the future
@@ -459,12 +460,6 @@ public class PircBotX {
 		InputThread input = new InputThread(this, socket, breader);
 		input.setName("bot" + botCount + "-input");
 		return input;
-	}
-
-	protected OutputThread createOutputThread(BufferedWriter bwriter) {
-		OutputThread output = new OutputThread(this, bwriter);
-		output.setName("bot" + botCount + "-output");
-		return output;
 	}
 
 	/**
@@ -682,21 +677,73 @@ public class PircBotX {
 	public void sendRawLine(String line) {
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
-		if (isConnected())
-			outputThread.send(line);
+		if (isConnected()) {
+			writeLock.lock();
+			try {
+				sendRawLineToServer(line);
+				//Block for messageDelay. If sendRawLineNow is called with resetDelay
+				//the condition is tripped and we wait again
+				while (writeNowCondition.await(messageDelay, TimeUnit.MILLISECONDS)) {
+				}
+			} catch (Exception e) {
+				throw new RuntimeException("Couldn't pause thread for message delay", e);
+			} finally {
+				writeLock.unlock();
+			}
+		}
 	}
 
 	/**
-	 * Sends a raw line to the IRC server as soon as possible, bypassing the
-	 * outgoing message queue.
+	 * Sends a raw line to the IRC server as soon as possible without resetting
+	 * the message delay for messages waiting to send
 	 *
 	 * @param line The raw line to send to the IRC server.
+	 * @see #sendRawLineNow(java.lang.String, boolean) 
 	 */
 	public void sendRawLineNow(String line) {
+		sendRawLineNow(line, false);
+	}
+
+	/**
+	 * Sends a raw line to the IRC server as soon as possible
+	 * @param line The raw line to send to the IRC server
+	 * @param resetDelay If true, pending messages will reset their delay.
+	 */
+	public void sendRawLineNow(String line, boolean resetDelay) {
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
 		if (isConnected())
-			outputThread.sendRawLineNow(line);
+			if (resetDelay)
+				sendRawLineToServer(line);
+			else {
+				writeLock.lock();
+				try {
+					sendRawLineToServer(line);
+					if (resetDelay)
+						//Reset the 
+						writeNowCondition.signalAll();
+				} finally {
+					writeLock.unlock();
+				}
+			}
+	}
+
+	/**
+	 * Actually sends the raw line to the server. This method is NOT SYNCHRONIZED 
+	 * since it's only called from methods that handle locking
+	 * @param line 
+	 */
+	protected void sendRawLineToServer(String line) {
+		if (line.length() > getMaxLineLength() - 2)
+			line = line.substring(0, getMaxLineLength() - 2);
+		try {
+			bufferedWriter.write(line + "\r\n");
+			bufferedWriter.flush();
+			log(">>>" + line);
+		} catch (Exception e) {
+			//Not much else we can do, but this requires attention of whatever is calling this
+			throw new RuntimeException("Exception encountered when writing to socket", e);
+		}
 	}
 
 	public void sendRawLineSplit(String prefix, String message) {
@@ -1863,7 +1910,7 @@ public class PircBotX {
 			//Full channel mode (In response to MODE <channel>)
 			Channel channel = getChannel(parsedResponse.get(1));
 			String mode = parsedResponse.get(2);
-			
+
 			channel.setMode(mode);
 			getListenerManager().dispatchEvent(new ModeEvent(this, channel, null, mode));
 		} else if (code == 329) {
@@ -1892,10 +1939,10 @@ public class PircBotX {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, remove ending comment and let ServerInfo class parse it
 			int endCommentIndex = rawResponse.lastIndexOf(" :");
-			if(endCommentIndex > 1) {
+			if (endCommentIndex > 1) {
 				String endComment = rawResponse.substring(endCommentIndex + 2);
 				int lastIndex = parsedResponse.size() - 1;
-				if(endComment.equals(parsedResponse.get(lastIndex)))
+				if (endComment.equals(parsedResponse.get(lastIndex)))
 					parsedResponse.remove(lastIndex);
 			}
 			getServerInfo().parse(code, parsedResponse);
@@ -1903,7 +1950,7 @@ public class PircBotX {
 			//Example: 311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
 			//New whois is starting
 			String whoisNick = parsedResponse.get(1);
-			
+
 			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
 			builder.setNick(whoisNick);
 			builder.setLogin(parsedResponse.get(2));
@@ -1915,20 +1962,20 @@ public class PircBotX {
 			//Channel list from whois. Re-tokenize since they're after the :
 			String whoisNick = parsedResponse.get(1);
 			List<String> parsedChannels = Utils.tokenizeLine(parsedResponse.get(2));
-			
+
 			whoisBuilder.get(whoisNick).setChannels(parsedChannels);
 		} else if (code == RPL_WHOISSERVER) {
 			//Server info from whois
 			//312 TheLQ Plazma leguin.freenode.net :Ume?, SE, EU
 			String whoisNick = parsedResponse.get(1);
-			
+
 			whoisBuilder.get(whoisNick).setServer(parsedResponse.get(2));
 			whoisBuilder.get(whoisNick).setServerInfo(parsedResponse.get(3));
 		} else if (code == RPL_WHOISIDLE) {
 			//Idle time from whois
 			//317 TheLQ md_5 6077 1347373349 :seconds idle, signon time
 			String whoisNick = parsedResponse.get(1);
-			
+
 			whoisBuilder.get(whoisNick).setIdleSeconds(Long.parseLong(parsedResponse.get(2)));
 			whoisBuilder.get(whoisNick).setSignOnTime(Long.parseLong(parsedResponse.get(3)));
 		} else if (code == 330)
@@ -1939,7 +1986,7 @@ public class PircBotX {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
-			
+
 			getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(this));
 			whoisBuilder.remove(whoisNick);
 		}
@@ -2087,10 +2134,9 @@ public class PircBotX {
 						getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, user));
 			}
 			getListenerManager().dispatchEvent(new ModeEvent(this, channel, user, mode));
-		} else {
+		} else
 			// The mode of a user is being changed.
 			getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(target), user, mode));
-		}
 	}
 
 	/**
@@ -2289,7 +2335,7 @@ public class PircBotX {
 	 * @return The number of lines in the outgoing message Queue.
 	 */
 	public int getOutgoingQueueSize() {
-		return outputThread.getQueueSize();
+		return writeLock.getHoldCount();
 	}
 
 	/**
@@ -2724,7 +2770,6 @@ public class PircBotX {
 	 */
 	public void shutdown(boolean noReconnect) {
 		try {
-			outputThread.interrupt();
 			inputThread.interrupt();
 		} catch (Exception e) {
 			logException(e);
