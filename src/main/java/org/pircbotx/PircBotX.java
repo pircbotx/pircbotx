@@ -335,9 +335,6 @@ public class PircBotX {
 			BufferedReader breader = new BufferedReader(inputStreamReader);
 			bufferedWriter = new BufferedWriter(outputStreamWriter);
 
-			//Construct the output and input threads
-			inputThread = createInputThread(socket, breader);
-
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 			if (capEnabled)
@@ -443,6 +440,7 @@ public class PircBotX {
 			socket.setSoTimeout(getSocketTimeout());
 
 			//Start input to start accepting lines
+			inputThread = createInputThread(socket, breader);
 			inputThread.start();
 
 			getListenerManager().dispatchEvent(new ConnectEvent(this));
