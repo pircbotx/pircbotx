@@ -383,11 +383,8 @@ public class PircBotX {
 							tries++;
 							tempNick = getName() + tries;
 							sendRawLineNow("NICK " + tempNick);
-						} else {
-							socket.close();
-							inputThread = null;
+						} else
 							throw new NickAlreadyInUseException(line);
-						}
 					else if (code.equals("439")) {
 						//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 						// No action required.
