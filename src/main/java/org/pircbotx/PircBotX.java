@@ -672,19 +672,19 @@ public class PircBotX {
 	public void sendRawLine(String line) {
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
-		if (isConnected()) {
-			writeLock.lock();
-			try {
-				sendRawLineToServer(line);
-				//Block for messageDelay. If sendRawLineNow is called with resetDelay
-				//the condition is tripped and we wait again
-				while (writeNowCondition.await(messageDelay, TimeUnit.MILLISECONDS)) {
-				}
-			} catch (Exception e) {
-				throw new RuntimeException("Couldn't pause thread for message delay", e);
-			} finally {
-				writeLock.unlock();
+		if (!isConnected())
+			throw new RuntimeException("Not connected to server");
+		writeLock.lock();
+		try {
+			sendRawLineToServer(line);
+			//Block for messageDelay. If sendRawLineNow is called with resetDelay
+			//the condition is tripped and we wait again
+			while (writeNowCondition.await(messageDelay, TimeUnit.MILLISECONDS)) {
 			}
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't pause thread for message delay", e);
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
@@ -707,16 +707,16 @@ public class PircBotX {
 	public void sendRawLineNow(String line, boolean resetDelay) {
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
-		if (isConnected()) {
-			writeLock.lock();
-			try {
-				sendRawLineToServer(line);
-				if (resetDelay)
-					//Reset the 
-					writeNowCondition.signalAll();
-			} finally {
-				writeLock.unlock();
-			}
+		if (!isConnected())
+			throw new RuntimeException("Not connected to server");
+		writeLock.lock();
+		try {
+			sendRawLineToServer(line);
+			if (resetDelay)
+				//Reset the 
+				writeNowCondition.signalAll();
+		} finally {
+			writeLock.unlock();
 		}
 	}
 
