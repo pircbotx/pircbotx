@@ -68,6 +68,7 @@ public class PircBotXTest {
 		sendMethods.remove("sendRawLineNow");
 		sendMethods.remove("sendRawLine");
 		sendMethods.remove("sendCAPREQ");
+		sendMethods.remove("sendRawLineToServer");
 
 		for (Map.Entry<String, List<Method>> entry : sendMethods.entrySet()) {
 			List<Method> methods = entry.getValue();
