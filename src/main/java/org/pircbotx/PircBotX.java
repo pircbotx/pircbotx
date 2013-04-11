@@ -707,20 +707,17 @@ public class PircBotX {
 	public void sendRawLineNow(String line, boolean resetDelay) {
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
-		if (isConnected())
-			if (resetDelay)
+		if (isConnected()) {
+			writeLock.lock();
+			try {
 				sendRawLineToServer(line);
-			else {
-				writeLock.lock();
-				try {
-					sendRawLineToServer(line);
-					if (resetDelay)
-						//Reset the 
-						writeNowCondition.signalAll();
-				} finally {
-					writeLock.unlock();
-				}
+				if (resetDelay)
+					//Reset the 
+					writeNowCondition.signalAll();
+			} finally {
+				writeLock.unlock();
 			}
+		}
 	}
 
 	/**
