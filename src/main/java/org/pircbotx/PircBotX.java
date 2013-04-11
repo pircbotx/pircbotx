@@ -2274,7 +2274,7 @@ public class PircBotX {
 	 * @return True if and only if the PircBotX is currently connected to a server.
 	 */
 	public boolean isConnected() {
-		return !socket.isClosed();
+		return socket != null && !socket.isClosed();
 	}
 
 	/**
