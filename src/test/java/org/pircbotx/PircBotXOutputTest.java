@@ -22,12 +22,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -48,7 +48,7 @@ public class PircBotXOutputTest {
 	protected final String aString = "I'm some super long string that has multiple words";
 	protected PircBotX bot;
 	protected SocketFactory socketFactory;
-	protected BufferedReader botOut;
+	protected ByteArrayOutputStream botOut;
 	protected User aUser;
 	protected Channel aChannel;
 	protected CountDownLatch inputLatch;
@@ -76,18 +76,14 @@ public class PircBotXOutputTest {
 		bot.setMessageDelay(0L);
 
 		//Setup streams for bot
-		PipedOutputStream out = new PipedOutputStream();
-		//Create an input stream that we'll kill later
+		botOut = new ByteArrayOutputStream();
 		in = new ByteArrayInputStream("".getBytes());
 		Socket socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
 		when(socket.getInputStream()).thenReturn(in);
-		when(socket.getOutputStream()).thenReturn(out);
+		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
-
-		//Setup ability to read from bots output
-		botOut = new BufferedReader(new InputStreamReader(new PipedInputStream(out)));
 
 		//Connect the bot to the socket
 		bot.connect("example.com", 6667, null, socketFactory);
@@ -149,10 +145,10 @@ public class PircBotXOutputTest {
 		bot.sendRawLineSplit(beginning, StringUtils.join(stringParts, ""), ending);
 
 		//Verify sent lines, making sure they come out in parts
-		checkOutput(beginning + stringParts[0] + ending);
+		Iterator<String> outputItr = checkOutput(beginning + stringParts[0] + ending);
 		//Verify further lines
-		assertEquals(botOut.readLine(), beginning + stringParts[1] + ending, "Second string part doesn't match");
-		assertEquals(botOut.readLine(), beginning + stringParts[2] + ending, "Third string part doesn't match");
+		assertEquals(tryGetNextLine(outputItr), beginning + stringParts[1] + ending, "Second string part doesn't match");
+		assertEquals(tryGetNextLine(outputItr), beginning + stringParts[2] + ending, "Third string part doesn't match");
 	}
 
 	@Test(description = "Verify sendAction to user")
@@ -291,22 +287,23 @@ public class PircBotXOutputTest {
 	 * Check the output for one line that equals the expected value.
 	 * @param expected
 	 */
-	protected void checkOutput(String expected) throws IOException {
+	protected Iterator<String> checkOutput(String expected) throws IOException {
+		List<String> outputLines = Arrays.asList(StringUtils.split(botOut.toString(), "\n\r"));
+		Iterator<String> outputItr = outputLines.iterator();
 		//Handle the first 3 lines from the bot
-		System.out.println("Reading first line (should be CAP line)");
-		assertEquals(botOut.readLine(), "CAP LS", "Unexpected first line");
-		System.out.println("Reading first line");
-		assertEquals(botOut.readLine(), "NICK PircBotXBot", "Unexecpted second line");
-		System.out.println("Reading second line");
-		String line = botOut.readLine();
-		assertNotNull(line, "Second output line is null");
-		assertTrue(line.startsWith("USER PircBotX 8 * :"), "Unexpected third line");
+		assertEquals(tryGetNextLine(outputItr), "CAP LS", "Unexpected first line");
+		assertEquals(tryGetNextLine(outputItr), "NICK PircBotXBot", "Unexecpted second line");
+		assertTrue(tryGetNextLine(outputItr).startsWith("USER PircBotX 8 * :"), "Unexpected third line");
 
 		//Make sure the remaining line is okay
-		System.out.println("Reading third line");
-		line = botOut.readLine();
-		System.out.println("Finished reading lines");
+		assertEquals(tryGetNextLine(outputItr), expected);
 		//assertEquals(lines.length, 1, "Too many/few lines: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		assertEquals(line, expected);
+		
+		return outputItr;
+	}
+	
+	protected static String tryGetNextLine(Iterator<String> itr) {
+		assertTrue(itr.hasNext(), "No more lines to get");
+		return itr.next();
 	}
 }
