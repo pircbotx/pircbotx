@@ -35,7 +35,6 @@ import java.net.Socket;
 public class InputThread extends Thread {
 	private final PircBotX bot;
 	private BufferedReader breader = null;
-	private boolean isConnected = true;
 
 	/**
 	 * The InputThread reads lines from the IRC server and allows the
@@ -48,17 +47,6 @@ public class InputThread extends Thread {
 	protected InputThread(PircBotX bot, Socket socket, BufferedReader breader) {
 		this.bot = bot;
 		this.breader = breader;
-	}
-
-	/**
-	 * Returns true if this InputThread is connected to an IRC server.
-	 * The result of this method should only act as a rough guide,
-	 * as the result may not be valid by the time you act upon it.
-	 *
-	 * @return True if still connected.
-	 */
-	boolean isConnected() {
-		return isConnected;
 	}
 
 	/**
@@ -104,14 +92,11 @@ public class InputThread extends Thread {
 			}
 
 			//Do nothing if this thread is being interrupted (meaning shutdown() was run)
-			if (Thread.interrupted()) {
-				isConnected = false;
+			if (Thread.interrupted())
 				return;
-			}
 		}
 
 		//Now that the socket is definatly closed call event, log, and kill the OutputThread
-		isConnected = false;
 		bot.shutdown();
 	}
 }
