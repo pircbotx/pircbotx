@@ -47,6 +47,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
@@ -332,7 +334,7 @@ public class PircBotX {
 			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), getEncoding());
 			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
 
-			BufferedReader breader = new BufferedReader(inputStreamReader);
+			BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 			bufferedWriter = new BufferedWriter(outputStreamWriter);
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
@@ -352,12 +354,14 @@ public class PircBotX {
 			sendRawLineNow("NICK " + tempNick);
 			sendRawLineNow("USER " + getLogin() + " 8 * :" + getVersion());
 
+
+
 			// Read stuff back from the server to see if we connected.
 			String line;
 			int tries = 1;
 			boolean capEndSent = false;
 
-			while ((line = breader.readLine()) != null) {
+			while ((line = bufferedReader.readLine()) != null) {
 				handleLine(line);
 
 				List<String> params = Utils.tokenizeLine(line);
@@ -390,7 +394,16 @@ public class PircBotX {
 						//Ignore, this is from servers that don't support CAP
 					} else if (code.startsWith("5") || code.startsWith("4"))
 						throw new IrcException("Could not log into the IRC server: " + line);
-					else if (code.equals("CAP")) {
+					else if (code.equals("670")) {
+						//Server is saying that we can upgrade to TLS
+						socket = ((SSLSocketFactory) SSLSocketFactory.getDefault()).createSocket(
+								socket,
+								socket.getInetAddress().getHostAddress(),
+								socket.getPort(),
+								true);
+						bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), getEncoding()));
+						bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), getEncoding()));
+					} else if (code.equals("CAP")) {
 						//Handle CAP Code; remove extra from params
 						List<String> capParams = Arrays.asList(params.get(2).split(" "));
 						if (params.get(1).equals("LS"))
@@ -398,10 +411,14 @@ public class PircBotX {
 								curCapHandler.handleLS(this, capParams);
 						else if (params.get(1).equals("ACK")) {
 							//Server is enabling a capability, store that
+							boolean existingTls = getEnabledCapabilities().contains("tls");
 							getEnabledCapabilities().addAll(capParams);
 
 							for (CapHandler curCapHandler : capHandlers)
 								curCapHandler.handleACK(this, capParams);
+
+							if (!existingTls && getEnabledCapabilities().contains("tls"))
+								sendRawLineNow("STARTTLS");
 						} else if (params.get(1).equals("NAK"))
 							for (CapHandler curCapHandler : capHandlers)
 								curCapHandler.handleNAK(this, capParams);
@@ -440,7 +457,7 @@ public class PircBotX {
 			socket.setSoTimeout(getSocketTimeout());
 
 			//Start input to start accepting lines
-			inputThread = createInputThread(socket, breader);
+			inputThread = createInputThread(socket, bufferedReader);
 			inputThread.start();
 
 			getListenerManager().dispatchEvent(new ConnectEvent(this));
@@ -2771,7 +2788,6 @@ public class PircBotX {
 		//Close the socket from here and let the threads die
 		if (socket != null && !socket.isClosed())
 			try {
-				socket.shutdownInput();
 				socket.close();
 			} catch (Exception e) {
 				logException(e);
