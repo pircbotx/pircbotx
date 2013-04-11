@@ -2771,7 +2771,6 @@ public class PircBotX {
 		//Close the socket from here and let the threads die
 		if (socket != null && !socket.isClosed())
 			try {
-				socket.shutdownInput();
 				socket.close();
 			} catch (Exception e) {
 				logException(e);
