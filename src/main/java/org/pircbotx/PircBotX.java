@@ -47,12 +47,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.dcc.Chat;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.dcc.SendFileTransfer;
@@ -390,7 +393,25 @@ public class PircBotX {
 						//Ignore, this is from servers that don't support CAP
 					} else if (code.startsWith("5") || code.startsWith("4"))
 						throw new IrcException("Could not log into the IRC server: " + line);
-					else if (code.equals("CAP")) {
+					else if (code.equals("670")) {
+						//Server is saying that we can upgrade to TLS
+						SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
+						for (CapHandler curCapHandler : capHandlers)
+							if (curCapHandler instanceof TLSCapHandler)
+								sslSocketFactory = ((TLSCapHandler) curCapHandler).getSslSocketFactory();
+						SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(
+								socket,
+								socket.getInetAddress().getHostName(),
+								socket.getPort(),
+								true);
+						sslSocket.startHandshake();
+						breader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), getEncoding()));
+						bufferedWriter = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), getEncoding()));
+						socket = sslSocket;
+						//Notify CAP Handlers
+						for (CapHandler curCapHandler : capHandlers)
+							curCapHandler.handleUnknown(this, line);
+					} else if (code.equals("CAP")) {
 						//Handle CAP Code; remove extra from params
 						List<String> capParams = Arrays.asList(params.get(2).split(" "));
 						if (params.get(1).equals("LS"))
