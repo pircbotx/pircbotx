@@ -27,6 +27,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -102,7 +103,7 @@ public class PircBotX {
 	protected Socket socket;
 	// Connection stuff.
 	protected InputThread inputThread = null;
-	protected BufferedWriter bufferedWriter;
+	protected Writer outputWriter;
 	protected ReentrantLock writeLock = new ReentrantLock(true);
 	protected Condition writeNowCondition = writeLock.newCondition();
 	protected Charset charset = Charset.defaultCharset();
@@ -333,10 +334,9 @@ public class PircBotX {
 			inetAddress = socket.getLocalAddress();
 
 			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), getEncoding());
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
+			outputWriter = new OutputStreamWriter(socket.getOutputStream(), getEncoding());
 
 			BufferedReader breader = new BufferedReader(inputStreamReader);
-			bufferedWriter = new BufferedWriter(outputStreamWriter);
 
 			getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
@@ -406,7 +406,7 @@ public class PircBotX {
 								true);
 						sslSocket.startHandshake();
 						breader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), getEncoding()));
-						bufferedWriter = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), getEncoding()));
+						outputWriter = new OutputStreamWriter(sslSocket.getOutputStream(), getEncoding());
 						socket = sslSocket;
 						//Notify CAP Handlers
 						for (CapHandler curCapHandler : capHandlers)
@@ -750,8 +750,8 @@ public class PircBotX {
 		if (line.length() > getMaxLineLength() - 2)
 			line = line.substring(0, getMaxLineLength() - 2);
 		try {
-			bufferedWriter.write(line + "\r\n");
-			bufferedWriter.flush();
+			outputWriter.write(line + "\r\n");
+			outputWriter.flush();
 			log(">>>" + line);
 		} catch (Exception e) {
 			//Not much else we can do, but this requires attention of whatever is calling this
