@@ -44,7 +44,7 @@ public class ListenerAdapterTest {
 	 * Makes sure adapter uses all events
 	 * @throws Exception
 	 */
-	@Test(description = "Verify ListenerAdapter supports all events")
+	@Test(description = "Verify ListenerAdapter has methods for all events")
 	public void eventImplementTest() throws Exception {
 		//Get all file names
 		List<String> classFiles = getClasses(VoiceEvent.class);
@@ -64,7 +64,7 @@ public class ListenerAdapterTest {
 		assertEquals(classFiles.size(), 0, "ListenerAdapter does not implement " + leftOver);
 	}
 
-	@Test(description = "Verify ListenerAdapter supports all event interfaces")
+	@Test(description = "Verify ListenerAdapter has methods for all interfaces")
 	public void interfaceImplementTest() throws IOException {
 		List<String> classFiles = getClasses(GenericMessageEvent.class);
 
