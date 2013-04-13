@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -38,7 +39,7 @@ public class Benchmark {
 	protected final static int MAX_USERS = 200;
 	protected final static int MAX_CHANNELS = 20;
 	protected final static int MAX_ITERATIONS = 5;
-	protected static List<String[]> responseGroups;
+	protected static String[][] responseGroups;
 	protected static PircBotX bot;
 
 	public static void main(String[] args) throws Exception {
@@ -73,7 +74,8 @@ public class Benchmark {
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 
 		System.out.println("Building responses");
-		responseGroups = new ArrayList(MAX_USERS * MAX_CHANNELS * MAX_ITERATIONS * responseTemplateGroups.size());
+		responseGroups = new String[MAX_USERS * MAX_CHANNELS * MAX_ITERATIONS * responseTemplateGroups.size()][];
+		int responseGroupsCounter = 0;
 		SecureRandom sortRandom = new SecureRandom();
 		String[] searchList = new String[]{"${thisNick}", "${channel}"};
 		for (int userNum = 0; userNum < MAX_USERS; userNum++) {
@@ -87,13 +89,13 @@ public class Benchmark {
 						int responseCounter = 0;
 						for (String curTemplate : curTemplateGroup)
 							responseGroup[responseCounter++] = StringUtils.replaceEachRepeatedly(curTemplate, searchList, replaceList);
-						responseGroups.add(responseGroup);
+						responseGroups[responseGroupsCounter++] = responseGroup;
 					}
 			}
 		}
 
 		System.out.println("Sorting");
-		Collections.shuffle(responseGroups);
+		shuffleArray(responseGroups, sortRandom);
 
 		//Init other objects
 		StopWatch stopWatch = new StopWatch();
@@ -107,9 +109,9 @@ public class Benchmark {
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
 
-		System.out.println("Executing with " + responseGroups.size() + " response groups");
+		System.out.println("Executing with " + responseGroups.length + " response groups");
 		int counter = run(stopWatch);
-		
+
 		System.out.println("Parsed " + counter + " enteries in " + stopWatch.toString());
 		System.out.println("Average parse speed: " + ((float) counter / (stopWatch.getTime() / 1000)) + " per second");
 
@@ -118,7 +120,22 @@ public class Benchmark {
 		//Kill the listener manager so the JVM can shutdown
 		((ThreadedListenerManager) bot.getListenerManager()).shutdown();
 	}
-	
+
+	/**
+	 * Copied from Collections.shuffle and Collections.swap, this is actually what 
+	 * they do, just on Collections instead of arrays
+	 * @param array
+	 * @return 
+	 */
+	private static final void shuffleArray(String[][] array, Random rnd) {
+		for (int i = array.length; i > 1; i--) {
+			int j = rnd.nextInt(i);
+			String[] tmp = array[i - 1];
+			array[i - 1] = array[j];
+			array[j] = tmp;
+		}
+	}
+
 	private static final int run(StopWatch stopWatch) throws IOException {
 		int counter = 0;
 		stopWatch.start();
@@ -128,7 +145,7 @@ public class Benchmark {
 			for (int i = 0; i < size; i++)
 				bot.handleLine(curGroup[i]);
 		}
-		
+
 		stopWatch.stop();
 		return counter;
 	}
