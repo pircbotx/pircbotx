@@ -264,7 +264,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	public void onWhois(WhoisEvent<T> event) throws Exception {
 	}
 
-	public void onGenericCTCPCommand(GenericCTCPCommand<T> event) throws Exception {
+	public void onGenericCTCPEvent(GenericCTCPEvent<T> event) throws Exception {
 	}
 
 	public void onGenericUserMode(GenericUserModeEvent<T> event) throws Exception {

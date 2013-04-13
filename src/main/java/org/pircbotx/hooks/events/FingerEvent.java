@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericCTCPCommand;
+import org.pircbotx.hooks.types.GenericCTCPEvent;
 
 /**
  * This event is dispatched whenever we receive a FINGER request.
@@ -38,7 +38,7 @@ import org.pircbotx.hooks.types.GenericCTCPCommand;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericCTCPCommand<T> {
+public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
 	protected final User user;
 	protected final Channel channel;
 
