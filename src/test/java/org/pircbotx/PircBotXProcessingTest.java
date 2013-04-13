@@ -18,7 +18,9 @@
  */
 package org.pircbotx;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.OwnerEvent;
@@ -70,7 +72,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
-import org.testng.annotations.Parameters;
 
 /**
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
@@ -90,7 +91,13 @@ public class PircBotXProcessingTest {
 	 */
 	@BeforeMethod
 	public void setUp() {
-		bot = new PircBotX();
+		bot = new PircBotX() {
+			@Override
+			public boolean isConnected() {
+				return true;
+			}
+		};
+		bot.outputWriter = new OutputStreamWriter(new ByteArrayOutputStream());
 		events = new ArrayList<Event>();
 		bot.setListenerManager(new GenericListenerManager());
 		bot.getListenerManager().addListener(new Listener() {
