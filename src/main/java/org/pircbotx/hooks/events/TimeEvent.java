@@ -25,7 +25,7 @@ import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericCTCPCommand;
+import org.pircbotx.hooks.types.GenericCTCPEvent;
 
 /**
  * This event is dispatched whenever we receive a TIME request.
@@ -38,7 +38,7 @@ import org.pircbotx.hooks.types.GenericCTCPCommand;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCTCPCommand<T> {
+public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
 	protected final User user;
 	protected final Channel channel;
 
