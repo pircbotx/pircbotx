@@ -34,7 +34,7 @@ import org.pircbotx.impl.PircBotXJMeter;
 public class Benchmark {
 	protected final static int MAX_USERS = 200;
 	protected final static int MAX_CHANNELS = 20;
-	protected final static int MAX_ITERATIONS = 5;
+	protected final static int MAX_ITERATIONS = 50;
 	protected static String[][] responseGroups;
 	protected static PircBotX bot;
 
