@@ -55,40 +55,41 @@ public class Benchmark {
 		}
 
 		//Init
-		List<List<String>> responseTemplateGroups = new ArrayList();
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} ?jmeter ${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${targetNick} ?jmeter ${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} :${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} :\u0001ACTION ${thisNick}\u0001"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter NOTICE ${channel} :${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${targetNick} :${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${targetNick} :\u0001ACTION ${thisNick}\u0001"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +o ${thisNick}", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -o ${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +v ${thisNick}", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -v ${thisNick}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter KICK ${channel} ${targetNick}: ${thisNick}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +b ${thisNick}!*@*", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -b ${thisNick}!*@*"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter PART ${channel}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"));
-		responseTemplateGroups.add(Arrays.asList(":${thisNick}!~jmeter@bots.jmeter QUIT :${thisNick}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"));
-
+		String[][] responseTemplateGroups = new String[13][];
+		responseTemplateGroups[0] = new String[]{":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} ?jmeter ${thisNick}"};
+		responseTemplateGroups[1] = new String[]{":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${targetNick} ?jmeter ${thisNick}"};
+		responseTemplateGroups[2] = new String[]{":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} :${thisNick}"};
+		responseTemplateGroups[3] = new String[]{":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${channel} :\u0001ACTION ${thisNick}\u0001"};
+		responseTemplateGroups[4] = new String[]{":${thisNick}!~jmeter@bots.jmeter NOTICE ${channel} :${thisNick}"};
+		responseTemplateGroups[5] = new String[]{":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${targetNick} :${thisNick}"};
+		responseTemplateGroups[6] = new String[]{":${thisNick}!~jmeter@bots.jmeter PRIVMSG ${targetNick} :\u0001ACTION ${thisNick}\u0001"};
+		responseTemplateGroups[7] = new String[]{":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +o ${thisNick}", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -o ${thisNick}"};
+		responseTemplateGroups[8] = new String[]{":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +v ${thisNick}", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -v ${thisNick}"};
+		responseTemplateGroups[9] = new String[]{":${thisNick}!~jmeter@bots.jmeter KICK ${channel} ${targetNick}: ${thisNick}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"};
+		responseTemplateGroups[10] = new String[]{":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +b ${thisNick}!*@*", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -b ${thisNick}!*@*"};
+		responseTemplateGroups[11] = new String[]{":${thisNick}!~jmeter@bots.jmeter PART ${channel}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"};
+		responseTemplateGroups[12] = new String[]{":${thisNick}!~jmeter@bots.jmeter QUIT :${thisNick}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"};
+		
 		Runtime runtime = Runtime.getRuntime();
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 
 		System.out.println("Building responses");
-		responseGroups = new String[MAX_USERS * MAX_CHANNELS * MAX_ITERATIONS * responseTemplateGroups.size()][];
+		responseGroups = new String[MAX_USERS * MAX_CHANNELS * MAX_ITERATIONS * responseTemplateGroups.length][];
 		int responseGroupsCounter = 0;
 		SecureRandom sortRandom = new SecureRandom();
 		String[] searchList = new String[]{"${thisNick}", "${channel}"};
 		for (int userNum = 0; userNum < MAX_USERS; userNum++) {
-			Collections.shuffle(responseTemplateGroups, sortRandom);
+			shuffleArray(responseTemplateGroups, sortRandom);
 			for (int channelNum = 0; channelNum < MAX_CHANNELS; channelNum++) {
 				String[] replaceList = new String[]{"umark" + userNum, "#cbench" + channelNum};
 				for (int iterationNum = 0; iterationNum < MAX_ITERATIONS; iterationNum++)
 					//Parse template
-					for (List<String> curTemplateGroup : responseTemplateGroups) {
-						String[] responseGroup = new String[curTemplateGroup.size()];
+					for (int templateNum = 0, templateSize = responseTemplateGroups.length; templateNum < templateSize; templateNum++) {
+						String[] templateGroup = responseTemplateGroups[templateNum];
+						String[] responseGroup = new String[templateGroup.length];
 						int responseCounter = 0;
-						for (String curTemplate : curTemplateGroup)
-							responseGroup[responseCounter++] = StringUtils.replaceEachRepeatedly(curTemplate, searchList, replaceList);
+						for (int templateLineNum = 0, templateLineSize = templateGroup.length; templateLineNum < templateLineSize; templateLineNum++)
+							responseGroup[responseCounter++] = StringUtils.replaceEachRepeatedly(templateGroup[templateLineNum], searchList, replaceList);
 						responseGroups[responseGroupsCounter++] = responseGroup;
 					}
 			}
