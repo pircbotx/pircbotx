@@ -26,7 +26,7 @@ import org.pircbotx.User;
  * Any event dealing with CTCP.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericCTCPCommand<T extends PircBotX> extends GenericEvent<T> {
+public interface GenericCTCPEvent<T extends PircBotX> extends GenericEvent<T> {
 	/**
 	 * Gets the user that sent the CTCP command
 	 * @return The user that sent the CTCP command
