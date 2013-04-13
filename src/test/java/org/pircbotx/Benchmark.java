@@ -20,10 +20,6 @@ package org.pircbotx;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
