@@ -21,19 +21,30 @@ package org.pircbotx.hooks;
 import java.lang.reflect.Method;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+import static org.mockito.Mockito.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.pircbotx.hooks.types.GenericEvent;
+import org.testng.annotations.DataProvider;
 
 /**
  *
@@ -123,6 +134,86 @@ public class ListenerAdapterTest {
 		};
 
 		customListener.onEvent(customEvent);
+	}
+
+	@DataProvider
+	public static Object[][] onEventTestDataProvider() {
+		//Map events to methods
+		Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			//Filter out methods by basic criteria
+			if (curMethod.getName().equals("onEvent") || curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
+				continue;
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			//Filter out methods that don't have the right param or are already added
+			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
+					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
+				continue;
+			Set methods = new HashSet();
+			methods.add(curMethod);
+			eventToMethod.put((Class<? extends Event>) curClass, methods);
+
+		}
+		//Now that we have all the events, start mapping interfaces
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			//Make sure this is an event method
+			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
+				continue;
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if (!curClass.isInterface() || !GenericEvent.class.isAssignableFrom(curClass))
+				continue;
+			//Add this interface method to all events that implement it
+			for (Class curEvent : eventToMethod.keySet())
+				if (curClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
+					eventToMethod.get(curEvent).add(curMethod);
+		}
+
+		//Build object array that TestNG understands
+		Object[][] params = new Object[eventToMethod.size()][];
+		int paramsCounter = 0;
+		for (Map.Entry<Class<? extends Event>, Set<Method>> curEntry : eventToMethod.entrySet())
+			params[paramsCounter++] = new Object[]{curEntry.getKey(), curEntry.getValue()};
+		return params;
+	}
+
+	@Test(dependsOnMethods = {"eventImplementTest", "interfaceImplementTest"}, dataProvider = "onEventTestDataProvider",
+			description = "Tests onEvent's completness")
+	public void onEventTest(Class<? extends Event> eventClass, Set<Method> methodsToCall) throws Exception {
+		//Init, using mocks to store method calls
+		final Set<Method> calledMethods = new HashSet();
+		ListenerAdapter mockListener = mock(ListenerAdapter.class, new Answer() {
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				calledMethods.add(invocation.getMethod());
+				return null;
+			}
+		});
+		doCallRealMethod().when(mockListener).onEvent(any(Event.class));
+		PircBotX bot = new PircBotX();
+
+		//Call the constructor in the Event, trying to give as many default values as possible
+		Constructor[] eventConstructors = eventClass.getConstructors();
+		assertEquals(eventConstructors.length, 1, "Unexpected number of event constructors in " + eventClass);
+		Constructor eventConstructor = eventClass.getConstructors()[0];
+		Class[] eventConstructorParamTypes = eventConstructor.getParameterTypes();
+		Object[] eventConstructorParams = new Object[eventConstructorParamTypes.length];
+		for (int i = 0; i < eventConstructorParams.length; i++)
+			if (eventConstructorParamTypes[i] == int.class || eventConstructorParamTypes[i] == long.class)
+				eventConstructorParams[i] = 0;
+			else if (eventConstructorParamTypes[i] == boolean.class)
+				eventConstructorParams[i] = false;
+		eventConstructorParams[0] = bot;
+		Event eventObject = (Event) eventConstructor.newInstance(eventConstructorParams);
+
+		//Execute onEvent
+		mockListener.onEvent(eventObject);
+
+		//Make sure our methods were called
+		assertEquals(methodsToCall, calledMethods, "Event " + eventClass + " doesn't call expected methods:" + SystemUtils.LINE_SEPARATOR
+				+ "Expected: " + SystemUtils.LINE_SEPARATOR
+				+ StringUtils.join(methodsToCall, SystemUtils.LINE_SEPARATOR)
+				+ SystemUtils.LINE_SEPARATOR
+				+ "Called: " + SystemUtils.LINE_SEPARATOR
+				+ StringUtils.join(calledMethods, SystemUtils.LINE_SEPARATOR));
 	}
 
 	protected static List<String> getClasses(Class<?> clazz) throws IOException {
