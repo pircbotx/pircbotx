@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.impl.PircBotXJMeter;
 
@@ -39,16 +40,11 @@ public class Benchmark {
 	protected static PircBotX bot;
 
 	public static void main(String[] args) throws Exception {
-		args = new String[]{"3"};
 		if (args.length != 1) {
 			System.err.println("Must specify thread count");
 			return;
 		}
 		int threadCount = Integer.parseInt(args[0]);
-		if (threadCount < 0) {
-			System.out.println("Cannot have a negative thread count");
-			return;
-		}
 
 		//Init
 		String[][] responseTemplateGroups = new String[13][];
@@ -65,7 +61,7 @@ public class Benchmark {
 		responseTemplateGroups[10] = new String[]{":${thisNick}!~jmeter@bots.jmeter MODE ${channel} +b ${thisNick}!*@*", ":${thisNick}!~jmeter@bots.jmeter MODE ${channel} -b ${thisNick}!*@*"};
 		responseTemplateGroups[11] = new String[]{":${thisNick}!~jmeter@bots.jmeter PART ${channel}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"};
 		responseTemplateGroups[12] = new String[]{":${thisNick}!~jmeter@bots.jmeter QUIT :${thisNick}", ":${thisNick}!~jmeter@bots.jmeter JOIN :${channel}"};
-		
+
 		Runtime runtime = Runtime.getRuntime();
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 
@@ -97,7 +93,9 @@ public class Benchmark {
 		//Init other objects
 		StopWatch stopWatch = new StopWatch();
 		bot = new PircBotX();
-		if (threadCount == 0)
+		if (threadCount == -1)
+			bot.setListenerManager(new GenericListenerManager());
+		else if (threadCount == 0)
 			bot.setListenerManager(new ThreadedListenerManager(Executors.newCachedThreadPool()));
 		else
 			bot.setListenerManager(new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount)));
