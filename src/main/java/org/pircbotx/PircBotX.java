@@ -1824,11 +1824,12 @@ public class PircBotX {
 		} else if (command.equals("TOPIC")) {
 			// Someone is changing the topic.
 			long currentTime = System.currentTimeMillis();
+			String oldTopic = channel.getTopic();
 			channel.setTopic(message);
 			channel.setTopicSetter(sourceNick);
 			channel.setTopicTimestamp(currentTime);
 
-			getListenerManager().dispatchEvent(new TopicEvent(this, channel, message, source, currentTime, true));
+			getListenerManager().dispatchEvent(new TopicEvent(this, channel, oldTopic, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
@@ -1892,7 +1893,7 @@ public class PircBotX {
 			channel.setTopicTimestamp(date * 1000);
 			channel.setTopicSetter(setBy.getNick());
 
-			getListenerManager().dispatchEvent(new TopicEvent(this, channel, channel.getTopic(), setBy, date, false));
+			getListenerManager().dispatchEvent(new TopicEvent(this, channel, null, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
