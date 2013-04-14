@@ -18,12 +18,6 @@
  */
 package org.pircbotx.hooks;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.types.*;
@@ -42,67 +36,125 @@ import org.pircbotx.hooks.types.*;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
-	protected static final Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
-
-	static {
-		updateEventMethodMapping(ListenerAdapter.class);
-	}
-
-	/**
-	 * Adds custom event listeners created by the specified class to the internal
-	 * event to method map so onEvent is aware of them. The methods must follow 
-	 * the same naming and parameter convention as the {@Link ListenerAdapter ListenerAdapter class} 
-	 * in order to guarantee they are added
-	 * <p>
-	 * This is needed because onEvent is only aware of methods that have been added
-	 * to its internal map. It is only needed to be called once on a class that
-	 * has the methods
-	 * @param clazz A class that has event listener methods that conform to the
-	 * ListenerAdapter class convention
-	 */
-	protected static void updateEventMethodMapping(Class<? extends ListenerAdapter> clazz) {
-		//Map events to methods
-		for (Method curMethod : clazz.getDeclaredMethods()) {
-			//Filter out methods by basic criteria
-			if (curMethod.getName().equals("onEvent") || curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
-				continue;
-			Class<?> curClass = curMethod.getParameterTypes()[0];
-			//Filter out methods that don't have the right param or are already added
-			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
-					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
-				continue;
-			Set methods = new HashSet();
-			methods.add(curMethod);
-			eventToMethod.put((Class<? extends Event>) curClass, methods);
-
-		}
-		//Now that we have all the events, start mapping interfaces
-		for (Method curMethod : clazz.getDeclaredMethods()) {
-			//Make sure this is an event method
-			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
-				continue;
-			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if (!curClass.isInterface() || !GenericEvent.class.isAssignableFrom(curClass))
-				continue;
-			//Add this interface method to all events that implement it
-			for (Class curEvent : eventToMethod.keySet())
-				if (curClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
-					eventToMethod.get(curEvent).add(curMethod);
-		}
-	}
-
 	public void onEvent(Event<T> event) throws Exception {
-		try {
-			if (eventToMethod.containsKey(event.getClass()))
-				for (Method curMethod : eventToMethod.get(event.getClass()))
-					curMethod.invoke(this, event);
-		} catch (InvocationTargetException ex) {
-			Throwable cause = ex.getCause();
-			if (cause instanceof Exception)
-				throw (Exception) ex.getCause();
-			//Wrap in RuntimeException and throw it instead
-			throw new RuntimeException("Error in executing ListenerAdapter", cause);
-		}
+		if (event instanceof ActionEvent)
+			onAction((ActionEvent) event);
+		else if (event instanceof ChannelInfoEvent)
+			onChannelInfo((ChannelInfoEvent) event);
+		else if (event instanceof ConnectEvent)
+			onConnect((ConnectEvent) event);
+		else if (event instanceof DisconnectEvent)
+			onDisconnect((DisconnectEvent) event);
+		else if (event instanceof FingerEvent)
+			onFinger((FingerEvent) event);
+		else if (event instanceof HalfOpEvent)
+			onHalfOp((HalfOpEvent) event);
+		else if (event instanceof IncomingChatRequestEvent)
+			onIncomingChatRequest((IncomingChatRequestEvent) event);
+		else if (event instanceof IncomingFileTransferEvent)
+			onIncomingFileTransfer((IncomingFileTransferEvent) event);
+		else if (event instanceof InviteEvent)
+			onInvite((InviteEvent) event);
+		else if (event instanceof JoinEvent)
+			onJoin((JoinEvent) event);
+		else if (event instanceof KickEvent)
+			onKick((KickEvent) event);
+		else if (event instanceof MessageEvent)
+			onMessage((MessageEvent) event);
+		else if (event instanceof ModeEvent)
+			onMode((ModeEvent) event);
+		else if (event instanceof MotdEvent)
+			onMotd((MotdEvent) event);
+		else if (event instanceof NickChangeEvent)
+			onNickChange((NickChangeEvent) event);
+		else if (event instanceof NoticeEvent)
+			onNotice((NoticeEvent) event);
+		else if (event instanceof OpEvent)
+			onOp((OpEvent) event);
+		else if (event instanceof OwnerEvent)
+			onOwner((OwnerEvent) event);
+		else if (event instanceof PartEvent)
+			onPart((PartEvent) event);
+		else if (event instanceof PingEvent)
+			onPing((PingEvent) event);
+		else if (event instanceof PrivateMessageEvent)
+			onPrivateMessage((PrivateMessageEvent) event);
+		else if (event instanceof QuitEvent)
+			onQuit((QuitEvent) event);
+		else if (event instanceof ReconnectEvent)
+			onReconnect((ReconnectEvent) event);
+		else if (event instanceof RemoveChannelBanEvent)
+			onRemoveChannelBan((RemoveChannelBanEvent) event);
+		else if (event instanceof RemoveChannelKeyEvent)
+			onRemoveChannelKey((RemoveChannelKeyEvent) event);
+		else if (event instanceof RemoveChannelLimitEvent)
+			onRemoveChannelLimit((RemoveChannelLimitEvent) event);
+		else if (event instanceof RemoveInviteOnlyEvent)
+			onRemoveInviteOnly((RemoveInviteOnlyEvent) event);
+		else if (event instanceof RemoveModeratedEvent)
+			onRemoveModerated((RemoveModeratedEvent) event);
+		else if (event instanceof RemoveNoExternalMessagesEvent)
+			onRemoveNoExternalMessages((RemoveNoExternalMessagesEvent) event);
+		else if (event instanceof RemovePrivateEvent)
+			onRemovePrivate((RemovePrivateEvent) event);
+		else if (event instanceof RemoveSecretEvent)
+			onRemoveSecret((RemoveSecretEvent) event);
+		else if (event instanceof RemoveTopicProtectionEvent)
+			onRemoveTopicProtection((RemoveTopicProtectionEvent) event);
+		else if (event instanceof ServerPingEvent)
+			onServerPing((ServerPingEvent) event);
+		else if (event instanceof ServerResponseEvent)
+			onServerResponse((ServerResponseEvent) event);
+		else if (event instanceof SetChannelBanEvent)
+			onSetChannelBan((SetChannelBanEvent) event);
+		else if (event instanceof SetChannelKeyEvent)
+			onSetChannelKey((SetChannelKeyEvent) event);
+		else if (event instanceof SetChannelLimitEvent)
+			onSetChannelLimit((SetChannelLimitEvent) event);
+		else if (event instanceof SetInviteOnlyEvent)
+			onSetInviteOnly((SetInviteOnlyEvent) event);
+		else if (event instanceof SetModeratedEvent)
+			onSetModerated((SetModeratedEvent) event);
+		else if (event instanceof SetNoExternalMessagesEvent)
+			onSetNoExternalMessages((SetNoExternalMessagesEvent) event);
+		else if (event instanceof SetPrivateEvent)
+			onSetPrivate((SetPrivateEvent) event);
+		else if (event instanceof SetSecretEvent)
+			onSetSecret((SetSecretEvent) event);
+		else if (event instanceof SetTopicProtectionEvent)
+			onSetTopicProtection((SetTopicProtectionEvent) event);
+		else if (event instanceof SocketConnectEvent)
+			onSocketConnect((SocketConnectEvent) event);
+		else if (event instanceof SuperOpEvent)
+			onSuperOp((SuperOpEvent) event);
+		else if (event instanceof TimeEvent)
+			onTime((TimeEvent) event);
+		else if (event instanceof TopicEvent)
+			onTopic((TopicEvent) event);
+		else if (event instanceof UnknownEvent)
+			onUnknown((UnknownEvent) event);
+		else if (event instanceof UserListEvent)
+			onUserList((UserListEvent) event);
+		else if (event instanceof UserModeEvent)
+			onUserMode((UserModeEvent) event);
+		else if (event instanceof VersionEvent)
+			onVersion((VersionEvent) event);
+		else if (event instanceof VoiceEvent)
+			onVoice((VoiceEvent) event);
+		else if (event instanceof WhoisEvent)
+			onWhois((WhoisEvent) event);
+		
+		//Generic methods
+		if (event instanceof GenericCTCPEvent)
+			onGenericCTCPEvent((GenericCTCPEvent) event);
+		if (event instanceof GenericUserModeEvent)
+			onGenericUserMode((GenericUserModeEvent) event);
+		if (event instanceof GenericChannelModeEvent)
+			onGenericChannelMode((GenericChannelModeEvent) event);
+		if (event instanceof GenericDCCEvent)
+			onGenericDCC((GenericDCCEvent) event);
+		if (event instanceof GenericMessageEvent)
+			onGenericMessage((GenericMessageEvent) event);
 	}
 
 	public void onAction(ActionEvent<T> event) throws Exception {
