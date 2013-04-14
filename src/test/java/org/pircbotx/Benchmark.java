@@ -41,7 +41,10 @@ public class Benchmark {
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
-			System.err.println("Must specify thread count");
+			System.err.println("Must specify thread count:");
+			System.err.println(" -1: GenericListenerManager");
+			System.err.println(" 0: ThreadedListenerManager (default threads)");
+			System.err.println(" 1+: ThreadedListenerManager (specified threads)");
 			return;
 		}
 		int threadCount = Integer.parseInt(args[0]);
