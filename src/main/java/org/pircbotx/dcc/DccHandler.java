@@ -76,7 +76,7 @@ public class DccHandler {
 			if (port == 0 || transferToken != null) {
 				//User is trying to use Passive DCC
 				final ServerSocket serverSocket = createServerSocket();
-				final PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(filename, address, size, transferToken, serverSocket);
+				final PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(user, filename, address, size, transferToken, serverSocket);
 				pendingReceiveTransfers.add(pendingTransfer);
 				runReverseDccServer(new Runnable() {
 					public void run() {
@@ -348,7 +348,8 @@ public class DccHandler {
 		protected String token;
 		protected User user;
 
-		public PendingRecieveFileTransfer(String filename, InetAddress userAddress, long filesize, String token, ServerSocket serverSocket) {
+		public PendingRecieveFileTransfer(User user, String filename, InetAddress userAddress, long filesize, String token, ServerSocket serverSocket) {
+			this.user = user;
 			this.filename = filename;
 			this.userAddress = userAddress;
 			this.filesize = filesize;
