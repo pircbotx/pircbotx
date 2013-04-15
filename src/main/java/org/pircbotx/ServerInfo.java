@@ -50,7 +50,6 @@ public class ServerInfo {
 
 	protected void parse004(List<String> parsedLine) {
 		//004 PircBotX pratchett.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
-		System.out.println("Parse004: " + parsedLine);
 		serverName = parsedLine.get(1);
 		serverVersion = parsedLine.get(2);
 		userModes = parsedLine.get(3);
