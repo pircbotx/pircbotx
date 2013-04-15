@@ -55,7 +55,6 @@ public class DccHandler {
 	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
 	protected List<PendingRecieveFileTransfer> pendingReceiveTransfers = Collections.synchronizedList(new ArrayList<PendingRecieveFileTransfer>());
-	protected List<ReceiveFileTransfer> chats = Collections.synchronizedList(new ArrayList<ReceiveFileTransfer>());
 	@Getter
 	@Setter
 	protected boolean useQuotes = false;
