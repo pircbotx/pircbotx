@@ -21,6 +21,7 @@ package org.pircbotx;
 import java.io.BufferedReader;
 import java.io.InterruptedIOException;
 import java.net.Socket;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A Thread which reads lines from the IRC server. It then
@@ -32,6 +33,7 @@ import java.net.Socket;
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
+@Slf4j
 public class InputThread extends Thread {
 	private final PircBotX bot;
 	private BufferedReader breader = null;
@@ -75,7 +77,7 @@ public class InputThread extends Thread {
 				continue;
 			} catch (Exception e) {
 				//Something is wrong. Assume its bad and begin disconnect
-				bot.logException(e);
+				log.error("Exception encountered when reading next line from server", e);
 				line = null;
 			}
 
@@ -88,7 +90,7 @@ public class InputThread extends Thread {
 				bot.handleLine(line);
 			} catch (Exception e) {
 				//Exception in client code. Just log and continue
-				bot.logException(e);
+				log.error("Exception encountered when parsing line", e);
 			}
 
 			//Do nothing if this thread is being interrupted (meaning shutdown() was run)

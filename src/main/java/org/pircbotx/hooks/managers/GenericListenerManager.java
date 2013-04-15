@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.PircBotX;
@@ -47,6 +48,7 @@ import org.pircbotx.PircBotX;
  * @see ThreadedListenerManager
  */
 @Deprecated
+@Slf4j
 public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected Set<Listener> listeners = new HashSet<Listener>();
 	@Getter
@@ -69,8 +71,8 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 		try {
 			for (Listener curListener : listeners)
 				curListener.onEvent(event);
-		} catch (Throwable t) {
-			event.getBot().logException(t);
+		} catch (Exception e) {
+			log.error("Exception encountered when dispatching event " + event, e);
 		}
 	}
 
