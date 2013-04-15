@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -47,6 +48,7 @@ import org.pircbotx.hooks.Listener;
  * </ul>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
@@ -108,8 +110,8 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 			public void run() {
 				try {
 					listener.onEvent(event);
-				} catch (Throwable t) {
-					event.getBot().logException(t);
+				} catch (Exception e) {
+					log.error("Exception encountered when executing event " + event + " on listener " + listener);
 				}
 			}
 		});

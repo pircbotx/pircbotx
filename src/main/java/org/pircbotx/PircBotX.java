@@ -53,6 +53,7 @@ import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
@@ -71,6 +72,7 @@ import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.slf4j.MarkerFactory;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -93,6 +95,7 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
+@Slf4j
 public class PircBotX {
 	/**
 	 * The definitive version number of this release of PircBotX.
@@ -140,11 +143,6 @@ public class PircBotX {
 	protected String version = "PircBotX " + VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 	protected String finger = "You ought to be arrested for fingering a bot!";
 	protected String channelPrefixes = "#&+!";
-	/**
-	 * The logging lock object preventing lines from being printed as other
-	 * lines are being printed
-	 */
-	protected final Object logLock = new Object();
 	protected ListenerManager<? extends PircBotX> listenerManager;
 	/**
 	 * The number of milliseconds to wait before the socket times out on read
@@ -306,9 +304,8 @@ public class PircBotX {
 			enabledCapabilities = new ArrayList();
 
 			// Connect to the server by DNS server
-			Throwable lastException = null;
 			for (InetAddress curAddress : InetAddress.getAllByName(hostname)) {
-				log("*** Trying address " + curAddress);
+				log.debug("Trying address " + curAddress);
 				try {
 					//Create socket from appropiate place
 					if (socketFactory == null)
@@ -318,18 +315,15 @@ public class PircBotX {
 
 					//No exception, assume successful
 					break;
-				} catch (Throwable t) {
-					this.log("*** Unable to connect to " + hostname + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.");
-					lastException = t;
+				} catch (Exception e) {
+					log.debug("Unable to connect to " + hostname + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
 				}
 			}
 
 			//Make sure were connected
-			if (socket == null || (socket != null && !socket.isConnected())) {
-				this.log("*** Unable to connect to any working IP address for hostname " + hostname);
-				throw new IOException("Unable to connect to the IRC network " + hostname + " (last connection attempt exception attached)", lastException);
-			}
-			this.log("*** Connected to server.");
+			if (socket == null || (socket != null && !socket.isConnected()))
+				throw new IOException("Unable to connect to the IRC network " + hostname + " (last connection attempt exception attached)");
+			log.info("Connected to server.");
 
 			inetAddress = socket.getLocalAddress();
 
@@ -455,7 +449,7 @@ public class PircBotX {
 
 			this.nick = tempNick;
 			loggedIn = true;
-			log("*** Logged onto server.");
+			log.info("Logged onto server.");
 
 			// This makes the socket timeout on read operations after 5 minutes.
 			socket.setSoTimeout(getSocketTimeout());
@@ -752,7 +746,7 @@ public class PircBotX {
 		try {
 			outputWriter.write(line + "\r\n");
 			outputWriter.flush();
-			log(">>>" + line);
+			logServerSend(line);
 		} catch (Exception e) {
 			//Not much else we can do, but this requires attention of whatever is calling this
 			throw new RuntimeException("Exception encountered when writing to socket", e);
@@ -1614,46 +1608,18 @@ public class PircBotX {
 	}
 
 	/**
-	 * Adds a line to the log. This log is currently output to the standard
-	 * output and is in the correct format for use by tools such as pisg, the
-	 * Perl IRC Statistics Generator. You may override this method if you wish
-	 * to do something else with log entries.
-	 * Each line in the log begins with a number which
-	 * represents the logging time (as the number of milliseconds since the
-	 * epoch). This timestamp and the following log entry are separated by
-	 * a single space character, " ". Outgoing messages are distinguishable
-	 * by a log entry that has ">>>" immediately following the space character
-	 * after the timestamp. DCC events use "+++" and warnings about unhandled
-	 * Exceptions and Errors use "###".
-	 * <p>
-	 * This implementation of the method will only cause log entries to be
-	 * output if the PircBotX has had its verbose mode turned on by calling
-	 * setVerbose(true);
+	 * Logs a line received from the server
 	 *
 	 * @param line The line to add to the log.
 	 */
-	@Synchronized(value = "logLock")
-	public void log(String line) {
+	protected void logServerReceive(String line) {
 		if (verbose)
-			System.out.println(System.currentTimeMillis() + " " + line);
+			log.info("<<<" + line);
 	}
-
-	@Synchronized(value = "logLock")
-	public void logException(Throwable t) {
-		if (!verbose)
-			return;
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		t.printStackTrace(pw);
-		pw.flush();
-		StringTokenizer tokenizer = new StringTokenizer(sw.toString(), "\r\n");
-		log("### Your implementation of PircBotX is faulty and you have");
-		log("### allowed an uncaught Exception or Error to propagate in your");
-		log("### code. It may be possible for PircBotX to continue operating");
-		log("### normally. Here is the stack trace that was produced: -");
-		log("### ");
-		while (tokenizer.hasMoreTokens())
-			log("### " + tokenizer.nextToken());
+	
+	protected void logServerSend(String line) {
+		if(verbose)
+			log.info(">>>" + line);
 	}
 
 	/**
@@ -1666,7 +1632,7 @@ public class PircBotX {
 	protected void handleLine(String line) throws IOException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
-		log("<<<" + line);
+		logServerReceive(line);
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
@@ -2787,7 +2753,7 @@ public class PircBotX {
 			if (inputThread != null)
 				inputThread.interrupt();
 		} catch (Exception e) {
-			logException(e);
+			log.error("Cannot interrupt inputThread", e);
 		}
 
 		//Close the socket from here and let the threads die
@@ -2795,7 +2761,7 @@ public class PircBotX {
 			try {
 				socket.close();
 			} catch (Exception e) {
-				logException(e);
+				log.error("Cannot close socket", e);
 			}
 
 		//Close the DCC Manager
@@ -2803,7 +2769,7 @@ public class PircBotX {
 			dccHandler.close();
 		} catch (Exception ex) {
 			//Not much we can do with it here. And throwing it would not let other things shutdown
-			logException(ex);
+			log.error("Cannot close dccHandler", ex);
 		}
 
 		//Cache channels for possible next reconnect
@@ -2831,7 +2797,7 @@ public class PircBotX {
 			}
 		else {
 			getListenerManager().dispatchEvent(new DisconnectEvent(this));
-			log("*** Disconnected.");
+			log.debug("Disconnected.");
 		}
 	}
 

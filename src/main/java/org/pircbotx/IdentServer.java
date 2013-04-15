@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A simple IdentServer (also know as "The Identification Protocol").
@@ -49,6 +50,7 @@ import java.net.Socket;
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
+@Slf4j
 public class IdentServer extends Thread {
 	private PircBotX bot;
 	private String login;
@@ -78,7 +80,7 @@ public class IdentServer extends Thread {
 			throw new RuntimeException("Could not start the ident server on port 113", e);
 		}
 
-		bot.log("*** Ident server running on port 113 for the next 60 seconds...");
+		log.debug("Ident server running on port 113 for the next 60 seconds...");
 		this.setName(this.getClass() + "-Thread");
 	}
 
@@ -97,11 +99,11 @@ public class IdentServer extends Thread {
 
 			String line = reader.readLine();
 			if (line != null) {
-				bot.log("*** Ident request received: " + line);
+				log.debug("*** Ident request received: " + line);
 				line = line + " : USERID : UNIX : " + login;
 				writer.write(line + "\r\n");
 				writer.flush();
-				bot.log("*** Ident reply sent: " + line);
+				log.debug("*** Ident reply sent: " + line);
 				writer.close();
 			}
 		} catch (Exception e) {
@@ -114,6 +116,6 @@ public class IdentServer extends Thread {
 			// Doesn't really matter...
 		}
 
-		bot.log("*** The Ident server has been shut down.");
+		log.debug("*** The Ident server has been shut down.");
 	}
 }
