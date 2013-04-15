@@ -18,11 +18,20 @@
  */
 package org.pircbotx.impl;
 
+import java.io.File;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.cap.TLSCapHandler;
+import org.pircbotx.dcc.Chat;
+import org.pircbotx.dcc.ReceiveChat;
+import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
+import org.pircbotx.hooks.events.IncomingChatRequestEvent;
+import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
@@ -52,6 +61,21 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		//This way to handle commands is useful for listeners that listen for multiple commands
 		if (event.getMessage().startsWith("?hello"))
 			event.respond("Hello World!");
+
+		if (event.getMessage().startsWith("?dccSendFile")) {
+			File file = new File("C:\\Users\\Leon\\Downloads\\pircbotx-1.9.jar");
+			event.getBot().dccSendFile(file, event.getUser(), 20000);
+			event.respond("Done sending you a file!");
+		}
+
+		if (event.getMessage().startsWith("?dccChat")) {
+			Chat chat = event.getBot().dccSendChatRequest(event.getUser(), 20000);
+			System.out.println("Chat");
+			chat.sendLine("Hello!");
+			String line;
+			while ((line = chat.readLine()) != null)
+				chat.sendLine("You said " + line);
+		}
 
 		//If this isn't a waittest, ignore
 		//This way to handle commands is useful for listers that only listen for one command
@@ -116,6 +140,32 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 	}
 
+	@Override
+	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
+		ReceiveChat chat = event.getChat();
+		chat.accept();
+		chat.sendLine("Hello incomming request!");
+		String line;
+		while ((line = chat.readLine()) != null)
+			chat.sendLine("You said " + line);
+		System.out.println("Chat ended");
+	}
+
+	@Override
+	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
+		ReceiveFileTransfer transfer = event.getTransfer();
+		if (event.getException() != null) {
+			event.getException().printStackTrace();
+			return;
+		}
+		//Create temporary file
+		event.respond("Receiving file " + transfer.getFilename());
+		File file = File.createTempFile("pircbotx-dcc", transfer.getFilename());
+		transfer.receiveFile(file);
+
+		event.respond("Received file " + transfer.getFilename() + " to " + file.getAbsolutePath());
+	}
+
 	public static void main(String[] args) {
 		//Create a new bot
 		PircBotX bot = new PircBotX();
@@ -126,6 +176,8 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
 		bot.setAutoNickChange(true); //Automatically change nick when the current one is in use
 		bot.setCapEnabled(true); //Enable CAP features
+		bot.getCapHandlers().add(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true));
+		bot.useShutdownHook(false);
 
 		//This class is a listener, so add it to the bots known listeners
 		bot.getListenerManager().addListener(new PircBotXExample());
