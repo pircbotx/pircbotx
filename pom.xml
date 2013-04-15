@@ -206,10 +206,14 @@
 								<show>public</show>
 							</configuration>
 						</plugin>
+						<!-- Checkstyle site -->
 						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.5.2</version>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>2.10</version>
+							<configuration>
+								<configLocation>src/etc/checkstyle.xml</configLocation>
+							</configuration>
 						</plugin>
 					</reportPlugins> 
 				</configuration>
@@ -325,5 +329,4 @@
 			</build>
 		</profile>
 	</profiles>
-	
 </project>
