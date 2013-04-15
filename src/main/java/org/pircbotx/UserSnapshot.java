@@ -63,6 +63,7 @@ public class UserSnapshot extends User {
 		channelsVoiceIn = user.getChannelsVoiceIn();
 		channelsSuperOpIn = user.getChannelsSuperOpIn();
 		channelsHalfOpIn = user.getChannelsHalfOpIn();
+		channelsOwnerIn = user.getChannelsOwnerIn();
 	}
 
 	@Override
