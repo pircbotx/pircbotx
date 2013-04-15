@@ -67,7 +67,7 @@ public class IdentServer extends Thread {
 	 * @param bot The PircBotX instance that will be used to log to.
 	 * @param login The login that the ident server will respond with.
 	 */
-	IdentServer(PircBotX bot, String login) {
+	protected IdentServer(PircBotX bot, String login) {
 		this.bot = bot;
 		this.login = login;
 
