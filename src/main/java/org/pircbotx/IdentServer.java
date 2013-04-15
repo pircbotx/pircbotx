@@ -75,8 +75,7 @@ public class IdentServer extends Thread {
 			ss = new ServerSocket(113);
 			ss.setSoTimeout(60000);
 		} catch (Exception e) {
-			bot.log("*** Could not start the ident server on port 113.");
-			return;
+			throw new RuntimeException("Could not start the ident server on port 113", e);
 		}
 
 		bot.log("*** Ident server running on port 113 for the next 60 seconds...");
