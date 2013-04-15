@@ -43,10 +43,11 @@ public class Chat {
 	@Getter
 	protected Socket socket;
 	protected Boolean inited = false;
+	protected final Object initedLock = new Object();
 
 	protected Chat init(Socket socket) throws IOException {
 		if (inited)
-			synchronized (inited) {
+			synchronized (initedLock) {
 				if (inited)
 					throw new RuntimeException("Already inited Chat");
 			}

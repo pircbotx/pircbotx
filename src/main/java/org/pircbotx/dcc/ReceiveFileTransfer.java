@@ -52,11 +52,12 @@ public class ReceiveFileTransfer {
 	protected long bytesReceived;
 	@Getter
 	protected DccState state = DccState.INIT;
+	protected final Object stateLock = new Object();
 
 	public void receiveFile(File destination) throws IOException {
 		//Prevent being called multiple times
 		if (state != DccState.INIT)
-			synchronized (state) {
+			synchronized (stateLock) {
 				if (state != DccState.INIT)
 					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
 			}
