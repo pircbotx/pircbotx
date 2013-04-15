@@ -66,6 +66,11 @@ public class UserSnapshot extends User {
 	}
 
 	@Override
+	public UserSnapshot generateSnapshot() {
+		throw new UnsupportedOperationException("Attempting to generate user snapshot from a snapshot");
+	}
+
+	@Override
 	public void parseStatus(Channel chan, String prefix) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}
