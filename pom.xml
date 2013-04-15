@@ -87,25 +87,24 @@
 		Dependancies and Plugins
 	-->
 	<dependencies>
-		<!--Project Lombok for annotation processing-->
+		<!-- Project Lombok for annotation processing -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>0.11.6</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--Use TestNG as testing framework-->
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.8</version>
-			<scope>test</scope>
-		</dependency>
-		<!--Don't want any dependancies in project, but tests don't matter. Commons Lang is helpful-->
+		<!-- Commons Lang for useful utilities -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
+		</dependency>
+		<!-- Use TestNG as testing framework -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Mockito for mocking test objects-->
