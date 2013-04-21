@@ -18,11 +18,10 @@
  */
 package org.pircbotx.cap;
 
-import java.io.UnsupportedEncodingException;
-import org.pircbotx.Base64;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.binary.Base64;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
@@ -68,7 +67,7 @@ public class SASLCapHandler implements CapHandler {
 		try {
 			if (rawLine.equals("AUTHENTICATE +")) {
 				//Server ackowledges our request to use plain authentication
-				String encodedAuth = Base64.encodeToString((username + '\0' + username + '\0' + password).getBytes("UTF-8"), false);
+				String encodedAuth = Base64.encodeBase64String((username + '\0' + username + '\0' + password).getBytes("UTF-8"));
 				bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
 			}
 		} catch (Exception e) {
