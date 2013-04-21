@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
@@ -44,12 +45,15 @@ import org.pircbotx.hooks.Listener;
  */
 public class BackgroundListenerManager extends ThreadedListenerManager {
 	protected Map<Listener, ExecutorService> backgroundListeners = new HashMap();
-	protected AtomicInteger backgroundCount = new AtomicInteger();
+	protected final AtomicInteger backgroundCount = new AtomicInteger();
 
 	public boolean addListener(Listener listener, boolean isBackground) {
 		if (!isBackground)
 			return super.addListener(listener);
-		ThreadFactory factory = new ListenerThreadFactory("backgroundPool" + backgroundCount.getAndIncrement());
+		BasicThreadFactory factory = new BasicThreadFactory.Builder()
+				.namingPattern("backgroundPool" + managerNumber + "-backgroundThread" + backgroundCount.getAndIncrement() + "-%d")
+				.daemon(true)
+				.build();
 		backgroundListeners.put(listener, Executors.newSingleThreadExecutor(factory));
 		return true;
 	}
