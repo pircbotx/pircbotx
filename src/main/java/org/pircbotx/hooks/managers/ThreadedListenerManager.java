@@ -25,11 +25,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -50,6 +50,8 @@ import org.pircbotx.hooks.Listener;
  */
 @Slf4j
 public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
+	protected static final AtomicInteger managerCount = new AtomicInteger();
+	protected final int managerNumber;
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 	protected AtomicLong currentId = new AtomicLong();
@@ -59,7 +61,12 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) Executors.newCachedThreadPool(new ListenerThreadFactory("listenerThread"));
+		managerNumber = managerCount.getAndIncrement();
+		BasicThreadFactory factory = new BasicThreadFactory.Builder()
+				.namingPattern("listenerPool" + managerNumber + "-thread%d")
+				.daemon(true)
+				.build();
+		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) Executors.newCachedThreadPool(factory);
 		defaultPool.allowCoreThreadTimeOut(true);
 		this.pool = defaultPool;
 	}
@@ -70,6 +77,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * @param pool
 	 */
 	public ThreadedListenerManager(ExecutorService pool) {
+		managerNumber = managerCount.getAndIncrement();
 		this.pool = pool;
 	}
 
@@ -140,21 +148,5 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	public ExecutorService shutdown() {
 		pool.shutdown();
 		return pool;
-	}
-
-	protected static class ListenerThreadFactory implements ThreadFactory {
-		protected final AtomicInteger threadCount = new AtomicInteger();
-		protected static final AtomicInteger poolCount = new AtomicInteger();
-		protected String prefix;
-
-		public ListenerThreadFactory(String poolName) {
-			prefix = "pool-" + poolCount.getAndIncrement() + "-" + poolName + "-";
-		}
-
-		public Thread newThread(Runnable r) {
-			Thread thread = new Thread(r, prefix + threadCount.getAndIncrement());
-			thread.setDaemon(true);
-			return thread;
-		}
 	}
 }
