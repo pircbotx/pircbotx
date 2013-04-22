@@ -359,8 +359,8 @@ public class PircBotX {
 	}
 
 	/**
-	 * Reconnects to the IRC server that we were previously connected to.
-	 * If necessary, the appropriate port number and password will be used.
+	 * Reconnects to the IRC server that we were previously connected to using 
+	 * the same {@link Configuration}
 	 * This method will throw an IrcException if we have never connected
 	 * to an IRC server previously.
 	 *
