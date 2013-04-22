@@ -39,7 +39,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  */
 public class CoreHooks implements Listener {
 	public void onFinger(FingerEvent event) {
-		event.getBot().sendCTCPResponse(event.getUser(), "FINGER " + event.getBot().getFinger());
+		event.getBot().sendCTCPResponse(event.getUser(), "FINGER " + event.getBot().getConfig().getFinger());
 	}
 
 	public void onPing(PingEvent event) {
@@ -55,7 +55,7 @@ public class CoreHooks implements Listener {
 	}
 
 	public void onVersion(VersionEvent event) {
-		event.getBot().sendCTCPResponse(event.getUser(), "VERSION " + event.getBot().getVersion());
+		event.getBot().sendCTCPResponse(event.getUser(), "VERSION " + event.getBot().getConfig().getVersion());
 	}
 
 	public void onEvent(Event event) {
