@@ -91,7 +91,7 @@ public class DccHandler {
 						} catch (Exception e) {
 							exception = e;
 						}
-						bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
+						bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
 					}
 				});
 				bot.sendCTCPCommand(user, "DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
@@ -106,7 +106,7 @@ public class DccHandler {
 				} catch (Exception e) {
 					exception = e;
 				}
-				bot.getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, fileTransfer, exception));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, fileTransfer, exception));
 			}
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
@@ -133,7 +133,7 @@ public class DccHandler {
 			InetAddress address = integerToAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 
-			bot.getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
+			bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
 		} else
 			return false;
 		return true;
@@ -205,7 +205,7 @@ public class DccHandler {
 	}
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
-		InetAddress address = (dccInetAddress != null) ? dccInetAddress : bot.getConfig().getLocalAddress();
+		InetAddress address = (dccInetAddress != null) ? dccInetAddress : bot.getConfiguration().getLocalAddress();
 		ServerSocket ss = null;
 		if (dccPorts.isEmpty())
 			// Use any free port.
