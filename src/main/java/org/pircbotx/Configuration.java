@@ -183,22 +183,22 @@ public class Configuration {
 		};
 		
 		public Builder addCapHandler(CapHandler handler) {
-			capHandlers.add(handler);
+			getCapHandlers().add(handler);
 			return this;
 		}
 		
 		public Builder addListener(Listener listener) {
-			listenerManager.addListener(listener);
+			getListenerManager().addListener(listener);
 			return this;
 		}
 		
 		public Builder addAutoJoinChannel(String channel) {
-			autoJoinChannels.put(channel, null);
+			getAutoJoinChannels().put(channel, null);
 			return this;
 		}
 		
 		public Builder addAutoJoinChannel(String channel, String key) {
-			autoJoinChannels.put(channel, null);
+			getAutoJoinChannels().put(channel, null);
 			return this;
 		}
 		
