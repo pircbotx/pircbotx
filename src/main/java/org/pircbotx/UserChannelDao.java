@@ -1,0 +1,192 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.pircbotx;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Setter;
+import lombok.Synchronized;
+import org.pircbotx.hooks.events.UserListEvent;
+
+/**
+ *
+ * @author Leon
+ */
+public class UserChannelDao {
+	@Setter(AccessLevel.PROTECTED)
+	protected PircBotX bot;
+	protected final Object accessLock = new Object();
+	protected final Multimap<User, Channel> userChannelMap = HashMultimap.create();
+	protected final Multimap<Channel, User> channelUserMap = HashMultimap.create();
+	protected final HashBiMap<String, User> userNickMap = HashBiMap.create();
+	protected final HashBiMap<String, Channel> channelNameMap = HashBiMap.create();
+	protected final Set<User> privateUsers = new HashSet();
+
+	@Synchronized("accessLock")
+	public void init(PircBotX bot) {
+		if (bot != null)
+			throw new RuntimeException("Already inited UserChannelDao with " + bot);
+		this.bot = bot;
+	}
+
+	@Synchronized("accessLock")
+	public User getUser(String nick) {
+		if (nick == null)
+			throw new NullPointerException("Can't get a null user");
+		User user = userNickMap.get(nick);
+		if (user != null)
+			return user;
+
+		//Create new user
+		user = new User(bot, nick);
+		userNickMap.put(nick, user);
+		return user;
+	}
+
+	@Synchronized("accessLock")
+	public boolean userExists(User user) {
+		return userNickMap.containsValue(user);
+	}
+
+	/**
+	 * Get all user's in the channel. There are some important things to note about this method:
+	 * <ul>
+	 * <li>This method may not return a full list of users if you call it
+	 * before the complete nick list has arrived from the IRC server.</li>
+	 * <li>If you wish to find out which users are in a channel as soon
+	 * as you join it, then you should listen for a {@link UserListEvent}
+	 * instead of calling this method, as the {@link UserListEvent} is only
+	 * dispatched as soon as the full user list has been received.</li>
+	 * <li>This method will return immediately, as it does not require any
+	 * interaction with the IRC server.</li>
+	 * </ul>
+	 *
+	 * @since PircBot 1.0.0
+	 *
+	 * @param chan The channel object to search in
+	 * @return A Set of all user's in the channel
+	 *
+	 * @see UserListEvent
+	 */
+	@Synchronized("accessLock")
+	public Set<User> getAllUsers() {
+		return ImmutableSet.copyOf(userChannelMap.keySet());
+	}
+
+	@Synchronized("accessLock")
+	public void addUserToChannel(User user, Channel chan) {
+		if (!channelUserMap.containsEntry(chan, user)) {
+			//First user in channel, assume not created
+			userChannelMap.put(user, chan);
+			channelUserMap.put(chan, user);
+		}
+	}
+
+	@Synchronized("accessLock")
+	public void addUserToPrivate(User user) {
+		privateUsers.add(user);
+	}
+
+	@Synchronized("accessLock")
+	public void removeUserFromChannel(User user, Channel channel) {
+		if (userChannelMap.get(user).size() == 1)
+			//This is the users last channel, completely remove them
+			removeUser(user);
+		else {
+			//Simply unassociate 
+			userChannelMap.remove(user, channel);
+			channelUserMap.remove(channel, user);
+		}
+	}
+
+	@Synchronized("accessLock")
+	public void removeUser(User user) {
+		//Remove the user from its channels
+		for (Channel channel : userChannelMap.removeAll(user))
+			channelUserMap.remove(channel, user);
+
+		//Remove remaining locations
+		userNickMap.inverse().remove(user);
+		privateUsers.remove(user);
+	}
+
+	@Synchronized("accessLock")
+	public void renameUser(User user, String newNick) {
+		user.setNick(newNick);
+		userNickMap.inverse().put(user, newNick);
+	}
+
+	@Synchronized("accessLock")
+	public Channel getChannel(String name) {
+		if (name == null)
+			throw new NullPointerException("Can't get a null channel");
+		Channel chan = channelNameMap.get(name);
+		if (chan != null)
+			return chan;
+
+		//Channel does not exist, create one
+		chan = new Channel(bot, name);
+		channelNameMap.put(name, chan);
+		return chan;
+	}
+
+	/**
+	 * Check if the bot is currently in the given channel.
+	 * @param name A channel name as a string
+	 * @return True if we are still connected to the channel, false if not
+	 */
+	@Synchronized
+	public boolean channelExists(String name) {
+		return channelNameMap.containsKey(name);
+	}
+
+	@Synchronized("accessLock")
+	public Set<User> getChannelUsers(Channel channel) {
+		return ImmutableSet.copyOf(channelUserMap.get(channel));
+	}
+
+	public Set<Channel> getAllChannels() {
+		return ImmutableSet.copyOf(channelNameMap.values());
+	}
+
+	@Synchronized("accessLock")
+	public Set<Channel> getUsersChannels(User user) {
+		if (user == null)
+			throw new NullPointerException("Can't get a null user");
+		return ImmutableSet.copyOf(userChannelMap.get(user));
+	}
+
+	@Synchronized("accessLock")
+	public void removeChannel(Channel channel) {
+		//Remove channel from each user
+		for (User user : channelUserMap.removeAll(channel))
+			if (userChannelMap.get(user).size() == 1)
+				//This is the users last channel, remove them completely
+				removeUser(user);
+			else
+				//Simply unassociate
+				userChannelMap.remove(user, channel);
+
+		//Remove remaining locations
+		channelNameMap.remove(channel.getName());
+	}
+
+	@Synchronized("accessLock")
+	public void reset() {
+		bot = null;
+		channelNameMap.clear();
+		channelUserMap.clear();
+		privateUsers.clear();
+		userChannelMap.clear();
+		userNickMap.clear();
+	}
+}
