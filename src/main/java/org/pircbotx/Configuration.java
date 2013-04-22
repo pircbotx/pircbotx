@@ -186,12 +186,13 @@ public class Configuration {
 		 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
 		 * @param listenerManager The listener manager
 		 */
-		public void setListenerManager(ListenerManager<? extends PircBotX> listenerManager) {
+		public Builder setListenerManager(ListenerManager<? extends PircBotX> listenerManager) {
 			this.listenerManager = listenerManager;
 			for (Listener curListener : listenerManager.getListeners())
 				if (curListener instanceof CoreHooks)
-					return;
+					return this;
 			listenerManager.addListener(new CoreHooks());
+			return this;
 		}
 
 		/**
