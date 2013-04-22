@@ -19,9 +19,12 @@
 package org.pircbotx.impl;
 
 import java.io.File;
+import javax.net.SocketFactory;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.cap.SASLCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.dcc.Chat;
 import org.pircbotx.dcc.ReceiveChat;
@@ -167,25 +170,20 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	}
 
 	public static void main(String[] args) {
-		//Create a new bot
-		PircBotX bot = new PircBotX();
-
 		//Setup this bot
-		bot.setName("PircBotX"); //Set the nick of the bot. CHANGE IN YOUR CODE
-		bot.setLogin("LQ"); //login part of hostmask, eg name:login@host
-		bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
-		bot.setAutoNickChange(true); //Automatically change nick when the current one is in use
-		bot.setCapEnabled(true); //Enable CAP features
-		bot.getCapHandlers().add(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true));
-		bot.useShutdownHook(false);
-
-		//This class is a listener, so add it to the bots known listeners
-		bot.getListenerManager().addListener(new PircBotXExample());
+		Configuration.Builder builder = new Configuration.Builder()
+				.setName("PircBotX") //Set the nick of the bot. CHANGE IN YOUR CODE
+				.setLogin("LQ") //login part of hostmask, eg name:login@host
+				.setAutoNickChange(true) //Automatically change nick when the current one is in use
+				.setCapEnabled(true) //Enable CAP features
+				.addCapHandler(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true))
+				.addListener(new PircBotXExample()); //This class is a listener, so add it to the bots known listeners
 
 		//bot.connect throws various exceptions for failures
 		try {
+			PircBotX bot = new PircBotX();
 			//Connect to the freenode IRC network
-			bot.connect("irc.freenode.net");
+			bot.connect(builder.buildConfiguration());
 			//Join the official #pircbotx channel
 			bot.joinChannel("#pircbotx");
 		} //In your code you should catch and handle each exception seperately,
