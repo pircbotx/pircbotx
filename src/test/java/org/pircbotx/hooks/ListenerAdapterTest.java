@@ -34,7 +34,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -43,7 +42,10 @@ import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.pircbotx.Configuration;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -51,6 +53,16 @@ import org.testng.annotations.DataProvider;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ListenerAdapterTest {
+	protected PublicPircBotX bot;
+	
+	@BeforeMethod
+	public void setUp() {
+		bot = new PublicPircBotX();
+		bot.setConfiguration(new Configuration.Builder()
+				.setListenerManager(new GenericListenerManager())
+				.buildConfiguration());
+	}
+	
 	/**
 	 * Makes sure adapter uses all events
 	 * @throws Exception
@@ -109,7 +121,6 @@ public class ListenerAdapterTest {
 	@Test(description = "Do an actual test with a sample ListenerAdapter")
 	public void usabilityTest() throws Exception {
 		TestListenerAdapter listener = new TestListenerAdapter();
-		PircBotX bot = new PircBotX();
 
 		//Test if onMessage got called
 		listener.onEvent(new MessageEvent(bot, null, null, null));
@@ -123,7 +134,6 @@ public class ListenerAdapterTest {
 
 	@Test(description = "Test with an unknown Event to make sure it doesn't throw an exception")
 	public void unknownEventTest() throws Exception {
-		PircBotX bot = new PircBotX();
 		Event customEvent = new Event(bot) {
 			@Override
 			public void respond(String response) {
@@ -188,7 +198,6 @@ public class ListenerAdapterTest {
 			}
 		});
 		doCallRealMethod().when(mockListener).onEvent(any(Event.class));
-		PircBotX bot = new PircBotX();
 
 		//Call the constructor in the Event, trying to give as many default values as possible
 		Constructor[] eventConstructors = eventClass.getConstructors();
