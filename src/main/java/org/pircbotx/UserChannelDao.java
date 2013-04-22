@@ -4,12 +4,9 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -25,8 +22,12 @@ public class UserChannelDao {
 	@Setter(AccessLevel.PROTECTED)
 	protected PircBotX bot;
 	protected final Object accessLock = new Object();
-	protected final Multimap<User, Channel> userChannelMap = HashMultimap.create();
-	protected final Multimap<Channel, User> channelUserMap = HashMultimap.create();
+	protected final ChannelToUserMap mainMap = new ChannelToUserMap();
+	protected final ChannelToUserMap opsMap = new ChannelToUserMap();
+	protected final ChannelToUserMap voiceMap = new ChannelToUserMap();
+	protected final ChannelToUserMap superOpsMap = new ChannelToUserMap();
+	protected final ChannelToUserMap halfOpsMap = new ChannelToUserMap();
+	protected final ChannelToUserMap ownersMap = new ChannelToUserMap();
 	protected final HashBiMap<String, User> userNickMap = HashBiMap.create();
 	protected final HashBiMap<String, Channel> channelNameMap = HashBiMap.create();
 	protected final Set<User> privateUsers = new HashSet();
@@ -47,7 +48,7 @@ public class UserChannelDao {
 			return user;
 
 		//Create new user
-		user = new User(bot, nick);
+		user = new User(bot, this, nick);
 		userNickMap.put(nick, user);
 		return user;
 	}
@@ -79,16 +80,12 @@ public class UserChannelDao {
 	 */
 	@Synchronized("accessLock")
 	public Set<User> getAllUsers() {
-		return ImmutableSet.copyOf(userChannelMap.keySet());
+		return ImmutableSet.copyOf(userNickMap.values());
 	}
 
 	@Synchronized("accessLock")
-	public void addUserToChannel(User user, Channel chan) {
-		if (!channelUserMap.containsEntry(chan, user)) {
-			//First user in channel, assume not created
-			userChannelMap.put(user, chan);
-			channelUserMap.put(chan, user);
-		}
+	public void addUserToChannel(User user, Channel channel) {
+		mainMap.addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
@@ -98,21 +95,22 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public void removeUserFromChannel(User user, Channel channel) {
-		if (userChannelMap.get(user).size() == 1)
-			//This is the users last channel, completely remove them
-			removeUser(user);
-		else {
-			//Simply unassociate 
-			userChannelMap.remove(user, channel);
-			channelUserMap.remove(channel, user);
-		}
+		mainMap.removeUserFromChannel(user, channel);
+		opsMap.removeUserFromChannel(user, channel);
+		voiceMap.removeUserFromChannel(user, channel);
+		halfOpsMap.removeUserFromChannel(user, channel);
+		superOpsMap.removeUserFromChannel(user, channel);
+		ownersMap.removeUserFromChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
 	public void removeUser(User user) {
-		//Remove the user from its channels
-		for (Channel channel : userChannelMap.removeAll(user))
-			channelUserMap.remove(channel, user);
+		mainMap.removeUser(user);
+		opsMap.removeUser(user);
+		voiceMap.removeUser(user);
+		halfOpsMap.removeUser(user);
+		superOpsMap.removeUser(user);
+		ownersMap.removeUser(user);
 
 		//Remove remaining locations
 		userNickMap.inverse().remove(user);
@@ -151,7 +149,7 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public Set<User> getChannelUsers(Channel channel) {
-		return ImmutableSet.copyOf(channelUserMap.get(channel));
+		return ImmutableSet.copyOf(mainMap.getUsers(channel));
 	}
 
 	public Set<Channel> getAllChannels() {
@@ -160,21 +158,17 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public Set<Channel> getUsersChannels(User user) {
-		if (user == null)
-			throw new NullPointerException("Can't get a null user");
-		return ImmutableSet.copyOf(userChannelMap.get(user));
+		return ImmutableSet.copyOf(mainMap.getChannels(user));
 	}
 
 	@Synchronized("accessLock")
 	public void removeChannel(Channel channel) {
-		//Remove channel from each user
-		for (User user : channelUserMap.removeAll(channel))
-			if (userChannelMap.get(user).size() == 1)
-				//This is the users last channel, remove them completely
-				removeUser(user);
-			else
-				//Simply unassociate
-				userChannelMap.remove(user, channel);
+		mainMap.removeChannel(channel);
+		opsMap.removeChannel(channel);
+		voiceMap.removeChannel(channel);
+		halfOpsMap.removeChannel(channel);
+		superOpsMap.removeChannel(channel);
+		ownersMap.removeChannel(channel);
 
 		//Remove remaining locations
 		channelNameMap.remove(channel.getName());
@@ -183,10 +177,65 @@ public class UserChannelDao {
 	@Synchronized("accessLock")
 	public void reset() {
 		bot = null;
+		mainMap.clear();
+		opsMap.clear();
+		voiceMap.clear();
+		halfOpsMap.clear();
+		superOpsMap.clear();
+		ownersMap.clear();
 		channelNameMap.clear();
-		channelUserMap.clear();
 		privateUsers.clear();
-		userChannelMap.clear();
 		userNickMap.clear();
+	}
+
+	protected static class ChannelToUserMap {
+		protected final HashMultimap<Channel, User> channelToUserMap = HashMultimap.create();
+		protected final HashMultimap<User, Channel> userToChannelMap = HashMultimap.create();
+
+		public void addUserToChannel(User user, Channel channel) {
+			userToChannelMap.put(user, channel);
+			channelToUserMap.put(channel, user);
+		}
+
+		public void removeUserFromChannel(User user, Channel channel) {
+			if (userToChannelMap.get(user).size() == 1)
+				//Remove user completely, that was the only channel they were in
+				userToChannelMap.removeAll(user);
+			else
+				//Just remove the relationship
+				userToChannelMap.remove(user, channel);
+			//Only need to remove the user since empty channels do exist
+			channelToUserMap.remove(channel, user);
+		}
+
+		public void removeUser(User user) {
+			//Remove from all mappings
+			for (Channel curChannel : userToChannelMap.removeAll(user))
+				channelToUserMap.remove(curChannel, user);
+		}
+
+		public void removeChannel(Channel channel) {
+			//Remove from all mappings
+			for (User curUser : channelToUserMap.removeAll(channel))
+				userToChannelMap.remove(channel, curUser);
+		}
+
+		public Set<User> getUsers(Channel channel) {
+			return ImmutableSet.copyOf(channelToUserMap.get(channel));
+		}
+
+		public Set<Channel> getChannels(User user) {
+			return ImmutableSet.copyOf(userToChannelMap.get(user));
+		}
+
+		public boolean containsEntry(User user, Channel channel) {
+			return channelToUserMap.containsEntry(channel, user)
+					&& userToChannelMap.containsEntry(user, channel);
+		}
+
+		public void clear() {
+			userToChannelMap.clear();
+			channelToUserMap.clear();
+		}
 	}
 }
