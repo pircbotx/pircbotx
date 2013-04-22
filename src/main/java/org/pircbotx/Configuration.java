@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.net.SocketFactory;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
@@ -149,22 +150,36 @@ public class Configuration {
 	public static class Builder {
 		//WebIRC
 		protected boolean webIrcEnabled = false;
+		@NonNull
 		protected String webIrcUsername = null;
+		@NonNull
 		protected String webIrcHostname = null;
+		@NonNull
 		protected InetAddress webIrcAddress = null;
+		@NonNull
 		protected String webIrcPassword = null;
 		//Bot information
+		@NonNull
 		protected String name = "PircBotX";
+		@NonNull
 		protected String login = "PircBotX";
+		@NonNull
 		protected String version = "PircBotX " + PircBotX.VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
+		@NonNull
 		protected String finger = "You ought to be arrested for fingering a bot!";
+		@NonNull
 		protected String channelPrefixes = "#&+!";
 		//Connect information
+		@NonNull
 		protected String serverHostname = null;
 		protected int serverPort = 6667;
+		@NonNull
 		protected String serverPassword = null;
+		@NonNull
 		protected SocketFactory socketFactory = SocketFactory.getDefault();
+		@NonNull
 		protected InetAddress localAddress = null;
+		@NonNull
 		protected Charset encoding = Charset.defaultCharset();
 		protected int socketTimeout = 1000 * 60 * 5;
 		protected int maxLineLength = 512;
@@ -174,6 +189,7 @@ public class Configuration {
 		protected boolean shutdownHookEnabled = true;
 		protected final Map<String, String> autoJoinChannels = new HashMap();
 		//Bot classes
+		@NonNull
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
 		protected final List<CapHandler> capHandlers = new ArrayList() {
