@@ -84,17 +84,17 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	public void addUserToChannel(User user, Channel channel) {
+	protected void addUserToChannel(User user, Channel channel) {
 		mainMap.addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	public void addUserToPrivate(User user) {
+	protected void addUserToPrivate(User user) {
 		privateUsers.add(user);
 	}
 
 	@Synchronized("accessLock")
-	public void removeUserFromChannel(User user, Channel channel) {
+	protected void removeUserFromChannel(User user, Channel channel) {
 		mainMap.removeUserFromChannel(user, channel);
 		opsMap.removeUserFromChannel(user, channel);
 		voiceMap.removeUserFromChannel(user, channel);
@@ -104,7 +104,7 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	public void removeUser(User user) {
+	protected void removeUser(User user) {
 		mainMap.removeUser(user);
 		opsMap.removeUser(user);
 		voiceMap.removeUser(user);
@@ -118,7 +118,7 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	public void renameUser(User user, String newNick) {
+	protected void renameUser(User user, String newNick) {
 		user.setNick(newNick);
 		userNickMap.inverse().put(user, newNick);
 	}
@@ -162,7 +162,7 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	public void removeChannel(Channel channel) {
+	protected void removeChannel(Channel channel) {
 		mainMap.removeChannel(channel);
 		opsMap.removeChannel(channel);
 		voiceMap.removeChannel(channel);
@@ -175,7 +175,7 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	public void reset() {
+	protected void reset() {
 		bot = null;
 		mainMap.clear();
 		opsMap.clear();
