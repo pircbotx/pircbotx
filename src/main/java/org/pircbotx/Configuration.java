@@ -28,6 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.experimental.Value;
 import lombok.experimental.Wither;
 import org.pircbotx.cap.CapHandler;
@@ -137,8 +138,8 @@ public class Configuration {
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = builder.getCapHandlers();
 	}
-	
-	
+
+	@Accessors(chain = true)
 	@Data
 	public static class Builder {
 		//WebIRC
@@ -173,8 +174,6 @@ public class Configuration {
 				add(new EnableCapHandler("multi-prefix", true));
 			}
 		};
-		
-		
 
 		/**
 		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
@@ -203,7 +202,7 @@ public class Configuration {
 			}
 			return listenerManager;
 		}
-		
+
 		public Configuration build() {
 			return new Configuration(this);
 		}
