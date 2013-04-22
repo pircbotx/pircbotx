@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.impl.PircBotXJMeter;
 
@@ -96,12 +97,14 @@ public class Benchmark {
 		//Init other objects
 		StopWatch stopWatch = new StopWatch();
 		bot = new PircBotX();
+		ListenerManager listenerManager;
 		if (threadCount == -1)
-			bot.setListenerManager(new GenericListenerManager());
+			listenerManager = new GenericListenerManager();
 		else if (threadCount == 0)
-			bot.setListenerManager(new ThreadedListenerManager(Executors.newCachedThreadPool()));
+			listenerManager = new ThreadedListenerManager(Executors.newCachedThreadPool());
 		else
-			bot.setListenerManager(new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount)));
+			listenerManager = new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount));
+		bot.config = new Configuration.Builder().setListenerManager(listenerManager).build();
 		bot.getListenerManager().addListener(new PircBotXJMeter());
 
 		System.out.println("Waiting 5 seconds");
