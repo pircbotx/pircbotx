@@ -99,14 +99,16 @@ public class PircBotXProcessingTest {
 		};
 		bot.outputWriter = new OutputStreamWriter(new ByteArrayOutputStream());
 		events = new ArrayList<Event>();
-		bot.setListenerManager(new GenericListenerManager());
-		bot.getListenerManager().addListener(new Listener() {
+		bot.nick = "PircBotXBot";
+		bot.configuration = new Configuration.Builder()
+			.setListenerManager(new GenericListenerManager())
+			.addListener(new Listener() {
 			public void onEvent(Event event) throws Exception {
 				events.add(event);
 			}
-		});
-		bot.setNick("PircBotXBot");
-		bot.setName("PircBotXBot");
+		})
+			.setName("PircBotXBot")
+			.buildConfiguration();
 	}
 
 	@Test(description = "Verifies UserModeEvent from user mode being changed")
@@ -186,13 +188,13 @@ public class PircBotXProcessingTest {
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
 		assertTrue(bot.userExists("AUser"));
 	}
-	
+
 	@Test(description = "Verify Channel creation date is set - Freenode")
 	public void channelCreationDateFreenode(String endLine) throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		long creationTime = 1328490732;
 		bot.handleLine(":irc.someserver.net 329 PircBotXUser #aChannel " + creationTime);
-		
+
 		//Verify channel creation date was set
 		assertEquals(aChannel.getCreateTimestamp(), creationTime, "Channel creation time doesn't match given");
 	}
@@ -202,17 +204,17 @@ public class PircBotXProcessingTest {
 		Channel aChannel = bot.getChannel("#aChannel");
 		User aUser = bot.getUser("AUser");
 		bot.handleLine(":AUser!~ALogin@some.host TOPIC #aChannel :" + aString);
-		
+
 		//Verify event contents
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
 		assertEquals(tevent.getUser(), aUser, "TopicEvent's user doesn't match given");
 		assertEquals(tevent.getChannel(), aChannel, "TopicEvent's channel doesn't match given");
 		assertEquals(tevent.getTopic(), aString, "TopicEvent's topic doesn't match given");
 		//Just make sure the time is reasonable since its based off of System.currentTimeMillis
-		if(tevent.getDate() < 100 || tevent.getDate() > System.currentTimeMillis())
+		if (tevent.getDate() < 100 || tevent.getDate() > System.currentTimeMillis())
 			throw new AssertionError("Expected TopicEvent date to be greater than 100 and less than current time, got " + tevent.getDate());
 	}
-	
+
 	@Test(description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
 	public void topicResponseTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
@@ -336,12 +338,12 @@ public class PircBotXProcessingTest {
 		assertEquals(fevent.getUser(), aUser, "FingerEvent's user doesn't match given");
 		assertEquals(fevent.getChannel(), aChannel, "FingerEvent's channel doesn't match given");
 	}
-	
+
 	@Test
 	public void modeResponseTest() throws IOException {
 		Channel aChannel = bot.getChannel("#aChannel");
 		bot.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +cnt");
-		
+
 		ModeEvent mevent = getEvent(ModeEvent.class, "ModeEvent not dispatched for mode response");
 		assertEquals(mevent.getMode(), "+cnt", "ModeEvent's mode doesn't equal given");
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel doesn't match given");
