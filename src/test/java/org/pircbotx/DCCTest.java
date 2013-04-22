@@ -55,8 +55,10 @@ public class DCCTest {
 	@BeforeMethod
 	public void setup() throws UnknownHostException {
 		bot = new PircBotX();
-		bot.inetAddress = InetAddress.getByName("::1");
-		bot.setListenerManager(new GenericListenerManager());
+		bot.configuration = new Configuration.Builder()
+				.setLocalAddress(InetAddress.getByName("::1"))
+				.setListenerManager(new GenericListenerManager())
+				.buildConfiguration();
 	}
 
 	@Test
@@ -65,7 +67,7 @@ public class DCCTest {
 
 		//Create listener to handle everything
 		final MutableObject<IncomingChatRequestEvent> mutableEvent = new MutableObject<IncomingChatRequestEvent>();
-		bot.getListenerManager().addListener(new ListenerAdapter() {
+		bot.getConfiguration().getListenerManager().addListener(new ListenerAdapter() {
 			@Override
 			public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
 				mutableEvent.setValue(event);
