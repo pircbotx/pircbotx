@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.HashBiMap;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -104,15 +105,6 @@ public class PircBotX {
 	protected Writer outputWriter;
 	protected ReentrantLock writeLock = new ReentrantLock(true);
 	protected Condition writeNowCondition = writeLock.newCondition();
-	/*
-	 * A Many to Many map that links Users to Channels and channels to users. Modified
-	 * to remove each channel's and user's internal refrences to each other.
-	 */
-	protected ManyToManyMap<Channel, User> userChanInfo = new UserChannelMap();
-	/**
-	 * Map to provide extremely fast lookup of user object by nick
-	 */
-	protected final Map<String, User> userNickMap = Collections.synchronizedMap(new HashMap());
 	// DccManager to process and handle all DCC events.
 	@Getter
 	protected DccHandler dccHandler = new DccHandler(this);
@@ -169,9 +161,8 @@ public class PircBotX {
 			if (isConnected())
 				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
 			this.configuration = config;
-			
-			// Clear everything we may have know about channels.
-			userChanInfo.clear();
+			config.getUserChannelDao().reset();
+			config.getUserChannelDao().init(this);
 
 			//Reset capabilities
 			enabledCapabilities = new ArrayList();
@@ -1558,10 +1549,10 @@ public class PircBotX {
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
-		User source = getUser(sourceNick);
+		User source = getConfiguration().getUserChannelDao().getUser(sourceNick);
 
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
+		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) ? getConfiguration().getUserChannelDao().getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
@@ -1596,6 +1587,7 @@ public class PircBotX {
 			configuration.getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, message));
 		else if (command.equals("PRIVMSG"))
 			// This is a private message to us.
+			//TODO: add to private
 			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, message));
 		else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
@@ -1606,16 +1598,16 @@ public class PircBotX {
 			}
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
-			userChanInfo.put(channel, source);
+			getConfiguration().getUserChannelDao().addUserToChannel(source, channel);
 			configuration.getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			if (sourceNick.equals(getNick()))
 				//We parted the channel
-				userChanInfo.deleteA(channel);
+				getConfiguration().getUserChannelDao().removeChannel(channel);
 			else
 				//Just remove the user from memory
-				userChanInfo.dissociate(channel, getUser(sourceNick));
+				getConfiguration().getUserChannelDao().removeUserFromChannel(source, channel);
 			configuration.getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
@@ -1634,18 +1626,18 @@ public class PircBotX {
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(getNick()))
 				//Someone else
-				userChanInfo.deleteB(source);
+				getConfiguration().getUserChannelDao().removeUser(source);
 			configuration.getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
-			User recipient = getUser(message);
+			User recipient = getConfiguration().getUserChannelDao().getUser(message);
 
 			if (recipient.getNick().equals(getNick()))
 				//We were just kicked
-				userChanInfo.deleteA(channel);
+				getConfiguration().getUserChannelDao().removeChannel(channel);
 			else
 				//Someone else
-				userChanInfo.dissociate(channel, recipient, true);
+				getConfiguration().getUserChannelDao().removeUserFromChannel(source, channel);
 			configuration.getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
@@ -1666,9 +1658,7 @@ public class PircBotX {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
 			configuration.getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, message));
-			//Delete user if not part of any of our channels
-			if (source.getChannels().isEmpty())
-				userChanInfo.deleteB(source);
+			getConfiguration().getUserChannelDao().addUserToPrivate(source);
 		} else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
@@ -1711,15 +1701,15 @@ public class PircBotX {
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
-			Channel channel = getChannel(parsedResponse.get(1));
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
 			String topic = parsedResponse.get(2);
 
 			channel.setTopic(topic);
 		} else if (code == RPL_TOPICINFO) {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
-			Channel channel = getChannel(parsedResponse.get(1));
-			User setBy = getUser(parsedResponse.get(2));
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
+			User setBy = getConfiguration().getUserChannelDao().getUser(parsedResponse.get(2));
 			long date = Utils.tryParseLong(parsedResponse.get(3), -1);
 
 			channel.setTopicTimestamp(date * 1000);
@@ -1729,10 +1719,10 @@ public class PircBotX {
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
-			Channel channel = getChannel(parsedResponse.get(1));
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
 
 			//Setup user
-			User curUser = getUser(parsedResponse.get(5));
+			User curUser = getConfiguration().getUserChannelDao().getUser(parsedResponse.get(5));
 			curUser.setLogin(parsedResponse.get(2));
 			curUser.setHostmask(parsedResponse.get(3));
 			curUser.setServer(parsedResponse.get(4));
@@ -1745,16 +1735,16 @@ public class PircBotX {
 			curUser.setRealName(rawEnding.substring(rawEndingSpaceIndex + 1));
 
 			//Associate with channel
-			userChanInfo.put(channel, curUser);
+			getConfiguration().getUserChannelDao().addUserToChannel(curUser, channel);
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
-			Channel channel = getChannel(parsedResponse.get(1));
-			configuration.getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
+			configuration.getListenerManager().dispatchEvent(new UserListEvent(this, channel, getConfiguration().getUserChannelDao().getChannelUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			Channel channel = getChannel(parsedResponse.get(1));
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
 			String mode = parsedResponse.get(2);
 
 			channel.setMode(mode);
@@ -1762,7 +1752,7 @@ public class PircBotX {
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
-			Channel channel = getChannel(parsedResponse.get(1));
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
 			int createDate = Utils.tryParseInt(parsedResponse.get(2), -1);
 
 			//Set in channel
@@ -1856,7 +1846,7 @@ public class PircBotX {
 	protected void processMode(User user, String target, String mode) {
 		if (configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
-			Channel channel = getChannel(target);
+			Channel channel = getConfiguration().getUserChannelDao().getChannel(target);
 			channel.parseMode(mode);
 			StringTokenizer tok = new StringTokenizer(mode);
 			String[] params = new String[tok.countTokens()];
@@ -1878,7 +1868,7 @@ public class PircBotX {
 				if (atPos == '+' || atPos == '-')
 					pn = atPos;
 				else if (atPos == 'o') {
-					User reciepeint = getUser(params[p]);
+					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
 						channel.ops.add(reciepeint);
 						configuration.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, true));
@@ -1888,7 +1878,7 @@ public class PircBotX {
 					}
 					p++;
 				} else if (atPos == 'v') {
-					User reciepeint = getUser(params[p]);
+					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
 						channel.voices.add(reciepeint);
 						configuration.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, true));
@@ -1899,7 +1889,7 @@ public class PircBotX {
 					p++;
 				} else if (atPos == 'h') {
 					//Half-op change
-					User reciepeint = getUser(params[p]);
+					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
 						channel.halfOps.add(reciepeint);
 						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, true));
@@ -1910,7 +1900,7 @@ public class PircBotX {
 					p++;
 				} else if (atPos == 'a') {
 					//SuperOp change
-					User reciepeint = getUser(params[p]);
+					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
 						channel.superOps.add(reciepeint);
 						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, true));
@@ -1921,7 +1911,7 @@ public class PircBotX {
 					p++;
 				} else if (atPos == 'q') {
 					//Owner change
-					User reciepeint = getUser(params[p]);
+					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
 						channel.owners.add(reciepeint);
 						configuration.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, true));
@@ -1982,7 +1972,7 @@ public class PircBotX {
 			configuration.getListenerManager().dispatchEvent(new ModeEvent(this, channel, user, mode));
 		} else
 			// The mode of a user is being changed.
-			configuration.getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(target), user, mode));
+			configuration.getListenerManager().dispatchEvent(new UserModeEvent(this, getConfiguration().getUserChannelDao().getUser(target), user, mode));
 	}
 
 	/**
@@ -2005,10 +1995,9 @@ public class PircBotX {
 	 * @param nick The new nick.
 	 */
 	protected void setNick(String nick) {
-		synchronized (userNickMap) {
-			User user = getUser(this.nick);
-			userNickMap.remove(this.nick);
-			userNickMap.put(nick, user);
+		synchronized (getConfiguration().getUserChannelDao().accessLock) {
+			User user = getConfiguration().getUserChannelDao().getUser(this.nick);
+			getConfiguration().getUserChannelDao().renameUser(user, nick);
 			this.nick = nick;
 		}
 	}
@@ -2079,151 +2068,11 @@ public class PircBotX {
 	}
 
 	/**
-	 * Returns an array of all channels that we are in. Note that if you
-	 * call this method immediately after joining a new channel, the new
-	 * channel may not appear in this array as it is not possible to tell
-	 * if the join was successful until a response is received from the
-	 * IRC server.
-	 *
-	 * @since PircBot 1.0.0
-	 *
-	 * @return An <i>unmodifiable</i> Set of all channels were connected to
-	 */
-	public Set<Channel> getChannels() {
-		return userChanInfo.getAValues();
-	}
-
-	/**
-	 * Get all channels that the given user is connected to
-	 * @param user The user to lookup
-	 * @return An <i>unmodifiable</i> Set of user's in the channel
-	 */
-	public Set<Channel> getChannels(User user) {
-		if (user == null)
-			throw new NullPointerException("Can't get a null user");
-		return userChanInfo.getAValues(user);
-	}
-
-	/**
-	 * Gets a channel or creates a <u>new</u> one. Never returns null
-	 * @param name The name of the channel
-	 * @return The channel object requested, never null
-	 */
-	public Channel getChannel(String name) {
-		if (name == null)
-			throw new NullPointerException("Can't get a null channel");
-		for (Channel curChan : userChanInfo.getAValues())
-			if (curChan.getName().equals(name))
-				return curChan;
-
-		//Channel does not exist, create one
-		Channel chan = new Channel(this, name);
-		userChanInfo.putB(chan);
-		return chan;
-	}
-
-	/**
-	 * Gets all the name's of all the channels that we are connected to
-	 * @return An <i>Unmodifiable</i> set of Channel names
-	 */
-	public Set<String> getChannelsNames() {
-		return Collections.unmodifiableSet(new HashSet<String>() {
-			{
-				for (Channel curChan : userChanInfo.getAValues())
-					add(curChan.getName());
-			}
-		});
-	}
-
-	/**
-	 * Check if we are still connected to given channel by string.
-	 * @param channel A channel name as a string
-	 * @return True if we are still connected to the channel, false if not
-	 */
-	public boolean channelExists(String channel) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't check for null channel existing");
-		for (Channel curChan : userChanInfo.getAValues())
-			if (curChan.getName().equals(channel))
-				return true;
-		return false;
-	}
-
-	/**
-	 * Get all user's in the channel.
-	 *
-	 * There are some important things to note about this method:-
-	 * <ul>
-	 * <li>This method may not return a full list of users if you call it
-	 * before the complete nick list has arrived from the IRC server.
-	 * </li>
-	 * <li>If you wish to find out which users are in a channel as soon
-	 * as you join it, then you should listen for a {@link UserListEvent}
-	 * instead of calling this method, as the {@link UserListEvent} is only
-	 * dispatched as soon as the full user list has been received.
-	 * </li>
-	 * <li>This method will return immediately, as it does not require any
-	 * interaction with the IRC server.
-	 * </li>
-	 * <li>The bot must be in a channel to be able to know which users are
-	 * in it.
-	 * </li>
-	 * </ul>
-	 *
-	 * @since PircBot 1.0.0
-	 *
-	 * @param chan The channel object to search in
-	 * @return A Set of all user's in the channel
-	 *
-	 * @see UserListEvent
-	 */
-	public Set<User> getUsers(Channel chan) {
-		if (chan == null)
-			throw new NullPointerException("Can't get a null channel");
-		return userChanInfo.getBValues(chan);
-	}
-
-	/**
-	 * Get all users that this bot knows about.
-	 * @return An immutable view of all current users
-	 */
-	public Set<User> getUsers() {
-		return userChanInfo.getBValues();
-	}
-
-	/**
-	 * Gets an existing user or creates a new one.
-	 * @param nick
-	 * @return The requested User. Never is null
-	 */
-	public User getUser(String nick) {
-		if (nick == null)
-			throw new NullPointerException("Can't get a null user");
-		User user = userNickMap.get(nick);
-		if (user != null)
-			return user;
-
-		//User does not exist, create one
-		user = new User(this, nick);
-		userChanInfo.putA(user);
-		return user;
-	}
-
-	/**
 	 * Gets the bots own user object
 	 * @return The user object representing this bot
 	 */
 	public User getUserBot() {
-		return getUser(getNick());
-	}
-
-	/**
-	 * Check if a user exists
-	 * @param nick The nick of the user to lookup
-	 * @return True if they exist, false if not
-	 */
-	public boolean userExists(String nick) {
-		return userNickMap.containsKey(nick);
+		return getConfiguration().getUserChannelDao().getUser(getNick());
 	}
 
 	/**
@@ -2282,14 +2131,13 @@ public class PircBotX {
 
 		//Cache channels for possible next reconnect
 		Map<String, String> previousChannels = new HashMap();
-		for (Channel curChannel : getChannels()) {
+		for (Channel curChannel : getConfiguration().getUserChannelDao().getAllChannels()) {
 			String key = (curChannel.getChannelKey() == null) ? "" : curChannel.getChannelKey();
 			previousChannels.put(curChannel.getName(), key);
 		}
 
 		//Clear relevant variables of information
-		userChanInfo.clear();
-		userNickMap.clear();
+		getConfiguration().getUserChannelDao().reset();
 		channelListBuilder.finish();
 
 		//Dispatch event
@@ -2395,35 +2243,6 @@ public class PircBotX {
 		public void add(A entry) {
 			running = true;
 			channels.add(entry);
-		}
-	}
-
-	protected class UserChannelMap<C extends Channel, U extends User> extends ManyToManyMap<C, U> {
-		@Override
-		public boolean put(C a, U b) {
-			//Add to nick map
-			if (b != null)
-				userNickMap.put(b.getNick(), b);
-			return super.put(a, b);
-		}
-
-		@Override
-		public Set<C> deleteB(U b) {
-			//Remove the Channels internal reference to the User
-			synchronized (lockObject) {
-				for (Channel curChan : BMap.get(b))
-					curChan.removeUser(b);
-			}
-			//Remove from nick map
-			userNickMap.remove(b.getNick());
-			return super.deleteB(b);
-		}
-
-		@Override
-		public boolean dissociate(C a, U b, boolean remove) {
-			//Remove the Channels internal reference to the User
-			a.removeUser(b);
-			return super.dissociate(a, b, remove);
 		}
 	}
 }
