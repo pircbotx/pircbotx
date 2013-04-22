@@ -27,7 +27,9 @@ import java.util.List;
 import org.pircbotx.hooks.Event;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import javax.net.SocketFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -36,9 +38,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
-import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.events.SocketConnectEvent;
+import org.testng.annotations.BeforeClass;
 
 /**
  * Do various connect tests. Note that this is in a separate class since PircBotXOutputTest
@@ -54,6 +56,12 @@ public class PircBotXConnectTest {
 	protected ByteArrayInputStream botIn;
 	protected ByteArrayOutputStream botOut;
 	protected List<Event> events;
+	protected InetAddress address;
+
+	@BeforeClass
+	public void setUp() throws UnknownHostException {
+		address = InetAddress.getLocalHost();
+	}
 
 	@BeforeMethod
 	public void botProvider() throws Exception {
@@ -61,14 +69,14 @@ public class PircBotXConnectTest {
 		events = new ArrayList<Event>();
 		bot = new PircBotX();
 		configurationBuilder = new Configuration.Builder()
-			.setCapEnabled(true)
-			.setListenerManager(new GenericListenerManager() {
+				.setCapEnabled(true)
+				.setListenerManager(new GenericListenerManager() {
 			@Override
 			public void dispatchEvent(Event event) {
 				events.add(event);
 			}
 		})
-			.setName("PircBotXBot");
+				.setName("PircBotXBot");
 
 		//Setup stream
 		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
@@ -78,7 +86,7 @@ public class PircBotXConnectTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
+		when(socketFactory.createSocket(address, 6667, null, 0)).thenReturn(socket);
 	}
 
 	protected void validateEvents() throws Exception {
@@ -110,13 +118,13 @@ public class PircBotXConnectTest {
 		//TODO: Test getNick()
 		//Connect the bot to the socket
 		bot.connect(configurationBuilder
-				.setServer("example.com", 6667)
+				.setServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667, null, 0);
+		verify(socketFactory).createSocket(address, 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -134,15 +142,15 @@ public class PircBotXConnectTest {
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket
-		when(socketFactory.createSocket("example.com", 25622, null, 0)).thenReturn(socket);
+		when(socketFactory.createSocket(address, 25622, null, 0)).thenReturn(socket);
 		bot.connect(configurationBuilder
-				.setServer("example.com", 25622)
+				.setServer(address.getHostName(), 25622)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 25622, null, 0);
+		verify(socketFactory).createSocket(address, 25622, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -161,13 +169,13 @@ public class PircBotXConnectTest {
 	public void connectWithPasswordTest() throws Exception {
 		//Connect the bot to the socket
 		bot.connect(configurationBuilder
-				.setServer("example.com", 6667)
+				.setServer(address.getHostName(), 6667)
 				.setServerPassword("pa55w0rd")
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667, null, 0);
+		verify(socketFactory).createSocket(address, 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -190,13 +198,13 @@ public class PircBotXConnectTest {
 
 		//Connect the bot to the socket
 		bot.connect(configurationBuilder
-				.setServer("example.com", 6667)
+				.setServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667, null, 0);
+		verify(socketFactory).createSocket(address, 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
