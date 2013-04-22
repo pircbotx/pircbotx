@@ -167,7 +167,8 @@ public class PircBotX {
 		try {
 			if (isConnected())
 				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
-
+			this.configuration = config;
+			
 			// Clear everything we may have know about channels.
 			userChanInfo.clear();
 
@@ -349,8 +350,8 @@ public class PircBotX {
 			for(Map.Entry<String, String> channelEntry : config.getAutoJoinChannels().entrySet())
 				joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} catch (Exception e) {
-			if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
-				shutdown(true);
+			//if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
+			//	shutdown(true);
 			throw new IOException("Can't connect to server", e);
 		}
 	}
