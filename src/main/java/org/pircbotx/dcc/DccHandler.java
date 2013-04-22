@@ -205,7 +205,7 @@ public class DccHandler {
 	}
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
-		InetAddress address = (dccInetAddress != null) ? dccInetAddress : bot.getInetAddress();
+		InetAddress address = (dccInetAddress != null) ? dccInetAddress : bot.getConfig().getLocalAddress();
 		ServerSocket ss = null;
 		if (dccPorts.isEmpty())
 			// Use any free port.
