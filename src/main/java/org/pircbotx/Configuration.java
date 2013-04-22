@@ -112,6 +112,11 @@ public class Configuration {
 	protected final boolean capEnabled;
 	protected final List<CapHandler> capHandlers;
 
+	/**
+	 * Use {@link Configuration.Builder#build() }
+	 * @param builder 
+	 * @see Configuration.Builder#build()
+	 */
 	public Configuration(Builder builder) {
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
