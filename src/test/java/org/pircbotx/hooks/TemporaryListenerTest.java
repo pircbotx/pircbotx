@@ -85,19 +85,4 @@ public class TemporaryListenerTest {
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
 		assertFalse(listenerManager.listenerExists(listener), "Listener wasn't removed from ListenerManager");
 	}
-
-	public static class PublicPircBotX extends PircBotX {
-		/**
-		 * Since we need this for testing but aren't in the right package
-		 * make it public
-		 */
-		@Override
-		public void handleLine(String line) throws IOException{
-			super.handleLine(line);
-		}
-		
-		public void setConfiguration(Configuration configuration) {
-			this.configuration = configuration;
-		}
-	}
 }
