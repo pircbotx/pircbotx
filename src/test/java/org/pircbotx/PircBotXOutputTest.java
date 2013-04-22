@@ -72,7 +72,6 @@ public class PircBotXOutputTest {
 		//Configure and connect bot
 		bot = new PircBotX() {
 			@Override
-			//TODO: Needed?
 			protected InputThread createInputThread(Socket socket, BufferedReader breader) {
 				return new InputThread(bot, socket, breader) {
 					@Override
