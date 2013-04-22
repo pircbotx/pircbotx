@@ -47,6 +47,7 @@ import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
@@ -210,8 +211,7 @@ public class PircBotX {
 						+ " " + config.getWebIrcUsername()
 						+ " " + config.getWebIrcHostname()
 						+ " " + config.getWebIrcAddress().getHostAddress());
-			//TODO: Replace with StringUtils.isBlank
-			if (config.getServerPassword() != null && !config.getServerPassword().trim().equals(""))
+			if (!StringUtils.isBlank(config.getServerPassword()))
 				sendRawLineNow("PASS " + config.getServerPassword());
 			String tempNick = config.getName();
 
