@@ -212,7 +212,7 @@ public class Configuration {
 			return listenerManager;
 		}
 
-		public Configuration build() {
+		public Configuration buildConfiguration() {
 			return new Configuration(this);
 		}
 	}
