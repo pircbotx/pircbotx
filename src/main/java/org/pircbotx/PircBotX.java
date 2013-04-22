@@ -96,7 +96,7 @@ public class PircBotX {
 	public static final String VERSION = "2.0-SNAPSHOT";
 	protected static final AtomicInteger botCount = new AtomicInteger();
 	@Getter
-	protected Configuration config;
+	protected Configuration configuration;
 	protected Socket socket;
 	// Connection stuff.
 	protected InputThread inputThread = null;
@@ -371,22 +371,22 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
-		if (config == null)
+		if (configuration == null)
 			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
 		try {
-			connect(config);
+			connect(configuration);
 		} catch (IOException e) {
-			config.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
+			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
 			throw e;
 		} catch (IrcException e) {
-			config.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
+			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
 			throw e;
 		} catch (RuntimeException e) {
-			config.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
+			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
 			throw e;
 		}
 		//Should be good
-		config.getListenerManager().dispatchEvent(new ReconnectEvent(this, true, null));
+		configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, true, null));
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class PircBotX {
 	 * @since PircBot 0.9c
 	 */
 	public IdentServer startIdentServer() {
-		IdentServer startedIdentServer = new IdentServer(this, config.getLogin());
+		IdentServer startedIdentServer = new IdentServer(this, configuration.getLogin());
 		startedIdentServer.start();
 		return startedIdentServer;
 	}
@@ -506,14 +506,14 @@ public class PircBotX {
 		partChannel(chan);
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
-		config.getListenerManager().addListener(new ListenerAdapter() {
+		configuration.getListenerManager().addListener(new ListenerAdapter() {
 			@Override
 			public void onPart(PartEvent event) throws Exception {
 				//Make sure this bot is us to prevent nasty errors in multi bot sitations
 				if (event.getBot() == PircBotX.this) {
 					event.getBot().joinChannel(chan.getName(), key);
 					//Self destrust, this listener has no more porpose
-					event.getBot().config.getListenerManager().removeListener(this);
+					event.getBot().configuration.getListenerManager().removeListener(this);
 				}
 			}
 		});
@@ -556,7 +556,7 @@ public class PircBotX {
 			sendRawLineToServer(line);
 			//Block for messageDelay. If sendRawLineNow is called with resetDelay
 			//the condition is tripped and we wait again
-			while (writeNowCondition.await(config.getMessageDelay(), TimeUnit.MILLISECONDS)) {
+			while (writeNowCondition.await(configuration.getMessageDelay(), TimeUnit.MILLISECONDS)) {
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't pause thread for message delay", e);
@@ -603,8 +603,8 @@ public class PircBotX {
 	 * @param line 
 	 */
 	protected void sendRawLineToServer(String line) {
-		if (line.length() > config.getMaxLineLength() - 2)
-			line = line.substring(0, config.getMaxLineLength() - 2);
+		if (line.length() > configuration.getMaxLineLength() - 2)
+			line = line.substring(0, configuration.getMaxLineLength() - 2);
 		try {
 			outputWriter.write(line + "\r\n");
 			outputWriter.flush();
@@ -626,8 +626,8 @@ public class PircBotX {
 
 		//Find if final line is going to be shorter than the max line length
 		String finalMessage = prefix + message + suffix;
-		int realMaxLineLength = config.getMaxLineLength() - 2;
-		if (!config.isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
+		int realMaxLineLength = configuration.getMaxLineLength() - 2;
+		if (!configuration.isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
 			//Length is good (or auto split message is false), just go ahead and send it
 			sendRawLine(finalMessage);
 			return;
@@ -905,14 +905,14 @@ public class PircBotX {
 		if (loggedIn)
 			sendRawLine("NICKSERV IDENTIFY " + password);
 		else
-			config.getListenerManager().addListener(new ListenerAdapter() {
+			configuration.getListenerManager().addListener(new ListenerAdapter() {
 				@Override
 				public void onConnect(ConnectEvent event) throws Exception {
 					//Make sure this bot is us to prevent nasty errors in multi bot sitations
 					if (event.getBot() == PircBotX.this) {
 						sendRawLine("NICKSERV IDENTIFY " + password);
 						//Self destrust, this listener has no more porpose
-						event.getBot().config.getListenerManager().removeListener(this);
+						event.getBot().configuration.getListenerManager().removeListener(this);
 					}
 				}
 			});
@@ -1507,7 +1507,7 @@ public class PircBotX {
 		// Check for server pings.
 		if (command.equals("PING")) {
 			// Respond to the ping and return immediately.
-			config.getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
+			configuration.getListenerManager().dispatchEvent(new ServerPingEvent(this, line.substring(5)));
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
@@ -1541,7 +1541,7 @@ public class PircBotX {
 			}
 		else {
 			// We don't know what this line means.
-			config.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+			configuration.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
 			// Return from the method;
 			return;
 		}
@@ -1557,7 +1557,7 @@ public class PircBotX {
 		User source = getUser(sourceNick);
 
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && config.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
+		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) ? getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
@@ -1565,34 +1565,34 @@ public class PircBotX {
 			String request = message.substring(1, message.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
-				config.getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
+				configuration.getListenerManager().dispatchEvent(new VersionEvent(this, source, channel));
 			else if (request.startsWith("ACTION "))
 				// ACTION request
-				config.getListenerManager().dispatchEvent(new ActionEvent(this, source, channel, request.substring(7)));
+				configuration.getListenerManager().dispatchEvent(new ActionEvent(this, source, channel, request.substring(7)));
 			else if (request.startsWith("PING "))
 				// PING request
-				config.getListenerManager().dispatchEvent(new PingEvent(this, source, channel, request.substring(5)));
+				configuration.getListenerManager().dispatchEvent(new PingEvent(this, source, channel, request.substring(5)));
 			else if (request.equals("TIME"))
 				// TIME request
-				config.getListenerManager().dispatchEvent(new TimeEvent(this, source, channel));
+				configuration.getListenerManager().dispatchEvent(new TimeEvent(this, source, channel));
 			else if (request.equals("FINGER"))
 				// FINGER request
-				config.getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
+				configuration.getListenerManager().dispatchEvent(new FingerEvent(this, source, channel));
 			else if (request.startsWith("DCC ")) {
 				// This is a DCC request.
 				boolean success = dccHandler.processDcc(source, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
-					config.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+					configuration.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
 			} else
 				// An unknown CTCP message - ignore it.
-				config.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
-		} else if (command.equals("PRIVMSG") && config.getChannelPrefixes().indexOf(target.charAt(0)) >= 0)
+				configuration.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+		} else if (command.equals("PRIVMSG") && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0)
 			// This is a normal message to a channel.
-			config.getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, message));
+			configuration.getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, message));
 		else if (command.equals("PRIVMSG"))
 			// This is a private message to us.
-			config.getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, message));
+			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, message));
 		else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(nick)) {
@@ -1603,7 +1603,7 @@ public class PircBotX {
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
 			userChanInfo.put(channel, source);
-			config.getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
+			configuration.getListenerManager().dispatchEvent(new JoinEvent(this, channel, source));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			if (sourceNick.equals(getNick()))
@@ -1612,7 +1612,7 @@ public class PircBotX {
 			else
 				//Just remove the user from memory
 				userChanInfo.dissociate(channel, getUser(sourceNick));
-			config.getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
+			configuration.getListenerManager().dispatchEvent(new PartEvent(this, channel, source, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
@@ -1620,10 +1620,10 @@ public class PircBotX {
 			if (sourceNick.equals(getNick()))
 				// Update our nick if it was us that changed nick.
 				setNick(newNick);
-			config.getListenerManager().dispatchEvent(new NickChangeEvent(this, sourceNick, newNick, source));
+			configuration.getListenerManager().dispatchEvent(new NickChangeEvent(this, sourceNick, newNick, source));
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
-			config.getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
+			configuration.getListenerManager().dispatchEvent(new NoticeEvent(this, source, channel, message));
 		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
 			String reason = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
@@ -1631,7 +1631,7 @@ public class PircBotX {
 			if (!sourceNick.equals(getNick()))
 				//Someone else
 				userChanInfo.deleteB(source);
-			config.getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, reason));
+			configuration.getListenerManager().dispatchEvent(new QuitEvent(this, snapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			User recipient = getUser(message);
@@ -1642,7 +1642,7 @@ public class PircBotX {
 			else
 				//Someone else
 				userChanInfo.dissociate(channel, recipient, true);
-			config.getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, parsedLine.get(2)));
+			configuration.getListenerManager().dispatchEvent(new KickEvent(this, channel, source, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -1657,18 +1657,18 @@ public class PircBotX {
 			channel.setTopicSetter(sourceNick);
 			channel.setTopicTimestamp(currentTime);
 
-			config.getListenerManager().dispatchEvent(new TopicEvent(this, channel, oldTopic, message, source, currentTime, true));
+			configuration.getListenerManager().dispatchEvent(new TopicEvent(this, channel, oldTopic, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
-			config.getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, message));
+			configuration.getListenerManager().dispatchEvent(new InviteEvent(this, sourceNick, message));
 			//Delete user if not part of any of our channels
 			if (source.getChannels().isEmpty())
 				userChanInfo.deleteB(source);
 		} else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
-			config.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
+			configuration.getListenerManager().dispatchEvent(new UnknownEvent(this, line));
 	}
 
 	/**
@@ -1702,7 +1702,7 @@ public class PircBotX {
 		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
-			config.getListenerManager().dispatchEvent(new ChannelInfoEvent(this, channelListBuilder.finish()));
+			configuration.getListenerManager().dispatchEvent(new ChannelInfoEvent(this, channelListBuilder.finish()));
 			channelListBuilder.setRunning(false);
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
@@ -1721,7 +1721,7 @@ public class PircBotX {
 			channel.setTopicTimestamp(date * 1000);
 			channel.setTopicSetter(setBy.getNick());
 
-			config.getListenerManager().dispatchEvent(new TopicEvent(this, channel, null, channel.getTopic(), setBy, date, false));
+			configuration.getListenerManager().dispatchEvent(new TopicEvent(this, channel, null, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
@@ -1746,7 +1746,7 @@ public class PircBotX {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			Channel channel = getChannel(parsedResponse.get(1));
-			config.getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
+			configuration.getListenerManager().dispatchEvent(new UserListEvent(this, channel, getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -1754,7 +1754,7 @@ public class PircBotX {
 			String mode = parsedResponse.get(2);
 
 			channel.setMode(mode);
-			config.getListenerManager().dispatchEvent(new ModeEvent(this, channel, null, mode));
+			configuration.getListenerManager().dispatchEvent(new ModeEvent(this, channel, null, mode));
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
@@ -1776,7 +1776,7 @@ public class PircBotX {
 			//End of MOTD, clean it and dispatch MotdEvent
 			getServerInfo().setMotd(motdBuilder.toString().trim());
 			motdBuilder = null;
-			config.getListenerManager().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
+			configuration.getListenerManager().dispatchEvent(new MotdEvent(this, (getServerInfo().getMotd())));
 		} else if (code == 004 || code == 005) {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, remove ending comment and let ServerInfo class parse it
@@ -1829,10 +1829,10 @@ public class PircBotX {
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
 
-			config.getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(this));
+			configuration.getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(this));
 			whoisBuilder.remove(whoisNick);
 		}
-		config.getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, rawResponse, parsedResponse));
+		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent(this, code, rawResponse, parsedResponse));
 	}
 
 	/**
@@ -1850,7 +1850,7 @@ public class PircBotX {
 	 * @param mode The mode that has been set.
 	 */
 	protected void processMode(User user, String target, String mode) {
-		if (config.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) {
+		if (configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
 			Channel channel = getChannel(target);
 			channel.parseMode(mode);
@@ -1877,20 +1877,20 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.ops.add(reciepeint);
-						config.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, true));
+						configuration.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.ops.remove(reciepeint);
-						config.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, false));
+						configuration.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.voices.add(reciepeint);
-						config.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, true));
+						configuration.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.voices.remove(reciepeint);
-						config.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, false));
+						configuration.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'h') {
@@ -1898,10 +1898,10 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.halfOps.add(reciepeint);
-						config.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, true));
+						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.halfOps.remove(reciepeint);
-						config.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, false));
+						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'a') {
@@ -1909,10 +1909,10 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.superOps.add(reciepeint);
-						config.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, true));
+						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.superOps.remove(reciepeint);
-						config.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, false));
+						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'q') {
@@ -1920,65 +1920,65 @@ public class PircBotX {
 					User reciepeint = getUser(params[p]);
 					if (pn == '+') {
 						channel.owners.add(reciepeint);
-						config.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, true));
+						configuration.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, true));
 					} else {
 						channel.owners.remove(reciepeint);
-						config.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, false));
+						configuration.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'k') {
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetChannelKeyEvent(this, channel, user, params[p]));
+						configuration.getListenerManager().dispatchEvent(new SetChannelKeyEvent(this, channel, user, params[p]));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(this, channel, user, (p < params.length) ? params[p] : null));
+						configuration.getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(this, channel, user, (p < params.length) ? params[p] : null));
 					p++;
 				} else if (atPos == 'l')
 					if (pn == '+') {
-						config.getListenerManager().dispatchEvent(new SetChannelLimitEvent(this, channel, user, Integer.parseInt(params[p])));
+						configuration.getListenerManager().dispatchEvent(new SetChannelLimitEvent(this, channel, user, Integer.parseInt(params[p])));
 						p++;
 					} else
-						config.getListenerManager().dispatchEvent(new RemoveChannelLimitEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveChannelLimitEvent(this, channel, user));
 				else if (atPos == 'b') {
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetChannelBanEvent(this, channel, user, params[p]));
+						configuration.getListenerManager().dispatchEvent(new SetChannelBanEvent(this, channel, user, params[p]));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveChannelBanEvent(this, channel, user, params[p]));
+						configuration.getListenerManager().dispatchEvent(new RemoveChannelBanEvent(this, channel, user, params[p]));
 					p++;
 				} else if (atPos == 't')
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetTopicProtectionEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetTopicProtectionEvent(this, channel, user));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveTopicProtectionEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveTopicProtectionEvent(this, channel, user));
 				else if (atPos == 'n')
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetNoExternalMessagesEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetNoExternalMessagesEvent(this, channel, user));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveNoExternalMessagesEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveNoExternalMessagesEvent(this, channel, user));
 				else if (atPos == 'i')
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetInviteOnlyEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetInviteOnlyEvent(this, channel, user));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveInviteOnlyEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveInviteOnlyEvent(this, channel, user));
 				else if (atPos == 'm')
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetModeratedEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetModeratedEvent(this, channel, user));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveModeratedEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveModeratedEvent(this, channel, user));
 				else if (atPos == 'p')
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetPrivateEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetPrivateEvent(this, channel, user));
 					else
-						config.getListenerManager().dispatchEvent(new RemovePrivateEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemovePrivateEvent(this, channel, user));
 				else if (atPos == 's')
 					if (pn == '+')
-						config.getListenerManager().dispatchEvent(new SetSecretEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetSecretEvent(this, channel, user));
 					else
-						config.getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveSecretEvent(this, channel, user));
 			}
-			config.getListenerManager().dispatchEvent(new ModeEvent(this, channel, user, mode));
+			configuration.getListenerManager().dispatchEvent(new ModeEvent(this, channel, user, mode));
 		} else
 			// The mode of a user is being changed.
-			config.getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(target), user, mode));
+			configuration.getListenerManager().dispatchEvent(new UserModeEvent(this, getUser(target), user, mode));
 	}
 
 	/**
@@ -2067,11 +2067,11 @@ public class PircBotX {
 	 */
 	@Override
 	public String toString() {
-		return "Version{" + config.getVersion() + "}"
+		return "Version{" + configuration.getVersion() + "}"
 				+ " Connected{" + isConnected() + "}"
-				+ " Server{" + config.getServerHostname() + "}"
-				+ " Port{" + config.getServerPort() + "}"
-				+ " Password{" + config.getServerPassword() + "}";
+				+ " Server{" + configuration.getServerHostname() + "}"
+				+ " Port{" + configuration.getServerPort() + "}"
+				+ " Password{" + configuration.getServerPassword() + "}";
 	}
 
 	/**
@@ -2300,7 +2300,7 @@ public class PircBotX {
 				throw new RuntimeException("Can't reconnect to server", e);
 			}
 		else {
-			config.getListenerManager().dispatchEvent(new DisconnectEvent(this));
+			configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this));
 			log.debug("Disconnected.");
 		}
 	}
@@ -2331,13 +2331,13 @@ public class PircBotX {
 			throw new IllegalArgumentException("Can't wait for null event");
 		//Create a WaitListener for getting the event
 		WaitListener waitListener = new WaitListener();
-		config.getListenerManager().addListener(waitListener);
+		configuration.getListenerManager().addListener(waitListener);
 
 		//Call waitFor which blocks until the desired event is captured
 		Event finalEvent = waitListener.waitFor(eventClass);
 
 		//Remove listener since its no longer needed
-		config.getListenerManager().removeListener(waitListener);
+		configuration.getListenerManager().removeListener(waitListener);
 
 		//Return requested listener
 		return (E) finalEvent;
