@@ -182,6 +182,16 @@ public class Configuration {
 				add(new EnableCapHandler("multi-prefix", true));
 			}
 		};
+		
+		public Builder addCapHandler(CapHandler handler) {
+			capHandlers.add(handler);
+			return this;
+		}
+		
+		public Builder addListener(Listener listener) {
+			listenerManager.addListener(listener);
+			return this;
+		}
 
 		/**
 		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
