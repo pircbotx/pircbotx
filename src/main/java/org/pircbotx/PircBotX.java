@@ -345,6 +345,9 @@ public class PircBotX {
 			inputThread.start();
 
 			config.getListenerManager().dispatchEvent(new ConnectEvent(this));
+			
+			for(Map.Entry<String, String> channelEntry : config.getAutoJoinChannels().entrySet())
+				joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} catch (Exception e) {
 			if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
 				shutdown(true);

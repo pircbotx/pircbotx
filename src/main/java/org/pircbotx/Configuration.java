@@ -21,16 +21,12 @@ package org.pircbotx;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.net.SocketFactory;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
-import lombok.experimental.Value;
-import lombok.experimental.Wither;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.CoreHooks;
@@ -108,6 +104,7 @@ public class Configuration {
 	protected final boolean autoNickChange;
 	protected final long messageDelay;
 	protected final boolean shutdownHookEnabled;
+	protected final Map<String, String> autoJoinChannels;
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
@@ -141,6 +138,7 @@ public class Configuration {
 		this.autoNickChange = builder.isAutoNickChange();
 		this.messageDelay = builder.getMessageDelay();
 		this.listenerManager = builder.getListenerManager();
+		this.autoJoinChannels = builder.getAutoJoinChannels();
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = builder.getCapHandlers();
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
@@ -174,6 +172,7 @@ public class Configuration {
 		protected boolean autoNickChange = false;
 		protected long messageDelay = 1000;
 		protected boolean shutdownHookEnabled = true;
+		protected final Map<String, String> autoJoinChannels = new HashMap();
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
@@ -190,6 +189,16 @@ public class Configuration {
 		
 		public Builder addListener(Listener listener) {
 			listenerManager.addListener(listener);
+			return this;
+		}
+		
+		public Builder addAutoJoinChannel(String channel) {
+			autoJoinChannels.put(channel, null);
+			return this;
+		}
+		
+		public Builder addAutoJoinChannel(String channel, String key) {
+			autoJoinChannels.put(channel, null);
 			return this;
 		}
 
