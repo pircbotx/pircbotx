@@ -201,6 +201,15 @@ public class Configuration {
 			autoJoinChannels.put(channel, null);
 			return this;
 		}
+		
+		public Builder setServer(String hostname, int port) {
+			return setServerHostname(hostname)
+					.setServerPort(port);
+		}
+		
+		public Builder setServer(String hostname, int port, String password) {
+			return setServer(hostname, port).setServerPassword(password);
+		}
 
 		/**
 		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
