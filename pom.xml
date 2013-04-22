@@ -126,6 +126,13 @@
 			<version>1.9.5</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Logback for logging to console when testing -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.9</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<build>
