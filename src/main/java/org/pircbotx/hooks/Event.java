@@ -32,7 +32,7 @@ public abstract class Event<T extends PircBotX> {
 	public Event(T bot) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
-		this.id = bot.getListenerManager().incrementCurrentId();
+		this.id = bot.getConfiguration().getListenerManager().incrementCurrentId();
 	}
 
 	/**
