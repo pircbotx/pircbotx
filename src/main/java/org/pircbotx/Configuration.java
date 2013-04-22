@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import javax.net.SocketFactory;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
@@ -146,6 +147,7 @@ public class Configuration {
 
 	@Accessors(chain = true)
 	@Data
+	@NoArgsConstructor
 	public static class Builder {
 		//WebIRC
 		protected boolean webIrcEnabled = false;
@@ -181,6 +183,41 @@ public class Configuration {
 				add(new EnableCapHandler("multi-prefix", true));
 			}
 		};
+
+		/**
+		 * Copy values from another builder. 
+		 * @param otherBuilder 
+		 */
+		public Builder(Builder otherBuilder) {
+			this.webIrcEnabled = otherBuilder.isWebIrcEnabled();
+			this.webIrcUsername = otherBuilder.getWebIrcUsername();
+			this.webIrcHostname = otherBuilder.getWebIrcHostname();
+			this.webIrcAddress = otherBuilder.getWebIrcAddress();
+			this.webIrcPassword = otherBuilder.getWebIrcPassword();
+			this.name = otherBuilder.getName();
+			this.login = otherBuilder.getLogin();
+			this.version = otherBuilder.getVersion();
+			this.finger = otherBuilder.getFinger();
+			this.channelPrefixes = otherBuilder.getChannelPrefixes();
+			this.serverHostname = otherBuilder.getServerHostname();
+			this.serverPort = otherBuilder.getServerPort();
+			this.serverPassword = otherBuilder.getServerPassword();
+			this.socketFactory = otherBuilder.getSocketFactory();
+			this.localAddress = otherBuilder.getLocalAddress();
+			this.encoding = otherBuilder.getEncoding();
+			this.socketTimeout = otherBuilder.getSocketTimeout();
+			this.maxLineLength = otherBuilder.getMaxLineLength();
+			this.autoSplitMessage = otherBuilder.isAutoSplitMessage();
+			this.autoNickChange = otherBuilder.isAutoNickChange();
+			this.messageDelay = otherBuilder.getMessageDelay();
+			this.listenerManager = otherBuilder.getListenerManager();
+			this.autoJoinChannels.clear();
+			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
+			this.capEnabled = otherBuilder.isCapEnabled();
+			this.capHandlers.clear();
+			this.capHandlers.addAll(otherBuilder.getCapHandlers());
+			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
+		}
 
 		public Builder addCapHandler(CapHandler handler) {
 			getCapHandlers().add(handler);
