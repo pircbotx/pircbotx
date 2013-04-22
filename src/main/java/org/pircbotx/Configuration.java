@@ -110,6 +110,7 @@ public class Configuration {
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
 	protected final List<CapHandler> capHandlers;
+	protected final UserChannelDao userChannelDao;
 
 	/**
 	 * Use {@link Configuration.Builder#build() }
@@ -143,6 +144,7 @@ public class Configuration {
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = builder.getCapHandlers();
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
+		this.userChannelDao = builder.getUserChannelDao();
 	}
 
 	@Accessors(chain = true)
@@ -183,6 +185,7 @@ public class Configuration {
 				add(new EnableCapHandler("multi-prefix", true));
 			}
 		};
+		protected UserChannelDao userChannelDao = new UserChannelDao();
 
 		/**
 		 * Copy values from another builder. 
