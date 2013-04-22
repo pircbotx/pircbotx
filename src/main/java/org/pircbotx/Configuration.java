@@ -177,7 +177,7 @@ public class Configuration {
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
-		protected List<CapHandler> capHandlers = new ArrayList() {
+		protected final List<CapHandler> capHandlers = new ArrayList() {
 			{
 				add(new EnableCapHandler("multi-prefix", true));
 			}
