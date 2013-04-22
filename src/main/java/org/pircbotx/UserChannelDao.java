@@ -152,6 +152,26 @@ public class UserChannelDao {
 	public Set<User> getChannelOwners(Channel channel) {
 		return ImmutableSet.copyOf(ownersMap.getUsers(channel));
 	}
+	
+	public Set<Channel> getUsersOps(User user) {
+		return ImmutableSet.copyOf(opsMap.getChannels(user));
+	}
+	
+	public Set<Channel> getUsersVoices(User user) {
+		return ImmutableSet.copyOf(voiceMap.getChannels(user));
+	}
+	
+	public Set<Channel> getUsersHalfOps(User user) {
+		return ImmutableSet.copyOf(halfOpsMap.getChannels(user));
+	}
+	
+	public Set<Channel> getUsersSuperOps(User user) {
+		return ImmutableSet.copyOf(superOpsMap.getChannels(user));
+	}
+	
+	public Set<Channel> getUsersOwners(User user) {
+		return ImmutableSet.copyOf(ownersMap.getChannels(user));
+	}
 
 	@Synchronized("accessLock")
 	protected void removeUserFromChannel(User user, Channel channel) {
