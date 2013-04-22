@@ -136,18 +136,4 @@ public class PircBotXTest {
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
 	}
-
-	@Test(description = "Verify setEncoding behaves correctly when passed null", expectedExceptions = NullPointerException.class)
-	public void setEncodingCharsetNullTest() {
-		//Since plain null is ambiguous, use a null variable.
-		Charset charset = null;
-		smallBot.setEncoding(charset);
-	}
-
-	@Test(description = "Verify setEncoding behaves correctly when passed null", expectedExceptions = NullPointerException.class)
-	public void setEncodingStringNullTest() throws UnsupportedEncodingException {
-		//Since plain null is ambiguous, use a null variable.
-		String charset = null;
-		smallBot.setEncoding(charset);
-	}
 }
