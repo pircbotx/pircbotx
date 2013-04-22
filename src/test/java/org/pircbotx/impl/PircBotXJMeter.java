@@ -21,6 +21,7 @@ package org.pircbotx.impl;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
@@ -105,13 +106,9 @@ public class PircBotXJMeter extends ListenerAdapter {
 		String server = args[0];
 		System.out.println("Connecting to server: " + server);
 
-		//Create a new bot
-		PircBotX bot = new PircBotX();
-
 		//Our custom thread pool (copied Executors.newCachedThreadPool)
 		final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-		bot.setListenerManager(new ThreadedListenerManager(executor));
-
+		
 		//Print thread count every 2 seconds
 		new Thread() {
 			@Override
@@ -126,21 +123,20 @@ public class PircBotXJMeter extends ListenerAdapter {
 				}
 			}
 		}.start();
-
-		//Setup this bot
-		bot.setName("jmeterBot");
-		//bot.setVerbose(true); //Print everything, which is what you want to do 90% of the time
-		bot.setMessageDelay(0);
-
-		//This class is a listener, so add it to the bots known listeners
-		bot.getListenerManager().addListener(new PircBotXJMeter());
+		
+		Configuration config = new Configuration.Builder()
+				.setName("jmeterBot")
+				.setMessageDelay(0)
+				.setListenerManager(new ThreadedListenerManager(executor))
+				.addListener(new PircBotXJMeter())
+				.addAutoJoinChannel("#jmeter")
+				.buildConfiguration();
 
 		//bot.connect throws various exceptions for failures
 		try {
+			PircBotX bot = new PircBotX();
 			//Connect to the freenode IRC network
-			bot.connect(server);
-			//Join the #quackbot channel
-			bot.joinChannel("#jmeter");
+			bot.connect(config);
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {

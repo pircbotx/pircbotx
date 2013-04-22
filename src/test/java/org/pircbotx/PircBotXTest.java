@@ -131,7 +131,6 @@ public class PircBotXTest {
 	@Test(description = "Verify getting the bots own user object works")
 	public void getUserBotTest() {
 		smallBot.setNick("BotNick");
-		smallBot.setName("BotNick");
 		assertNotNull(smallBot.getUser("BotNick"), "Getting bots user with getUser returns null");
 		assertNotNull(smallBot.getUser("BotNick"), "Getting existing bots user with getUser returns null");
 		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
