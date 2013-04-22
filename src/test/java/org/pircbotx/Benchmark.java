@@ -104,8 +104,8 @@ public class Benchmark {
 			listenerManager = new ThreadedListenerManager(Executors.newCachedThreadPool());
 		else
 			listenerManager = new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount));
-		bot.config = new Configuration.Builder().setListenerManager(listenerManager).build();
-		bot.getListenerManager().addListener(new PircBotXJMeter());
+		listenerManager.addListener(new PircBotXJMeter());
+		bot.configuration = new Configuration.Builder().setListenerManager(listenerManager).buildConfiguration();
 
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
@@ -119,7 +119,8 @@ public class Benchmark {
 		System.out.println("Memory usage: " + (runtime.totalMemory() / 1024));
 
 		//Kill the listener manager so the JVM can shutdown
-		((ThreadedListenerManager) bot.getListenerManager()).shutdown();
+		if (listenerManager instanceof ThreadedListenerManager)
+			((ThreadedListenerManager) listenerManager).shutdown();
 	}
 
 	/**
