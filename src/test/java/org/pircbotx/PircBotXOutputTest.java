@@ -24,7 +24,7 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.PipedOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -56,6 +56,8 @@ public class PircBotXOutputTest {
 
 	@BeforeMethod
 	public void botSetup() throws Exception {
+		InetAddress localhost = InetAddress.getLocalHost();
+		
 		//Setup streams for bot
 		inputLatch = new CountDownLatch(1);
 		botOut = new ByteArrayOutputStream();
@@ -65,7 +67,7 @@ public class PircBotXOutputTest {
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
+		when(socketFactory.createSocket(localhost, 6667, null, 0)).thenReturn(socket);
 
 		//Configure and connect bot
 		bot = new PircBotX() {
@@ -85,13 +87,13 @@ public class PircBotXOutputTest {
 				.setListenerManager(new GenericListenerManager())
 				.setName("PircBotXBot")
 				.setMessageDelay(0)
-				.setServer("example.com", 6667)
+				.setServer(localhost.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
 
 		//Make sure the bot is connected
-		verify(socketFactory).createSocket("example.com", 6667, null, 0);
+		verify(socketFactory).createSocket(localhost, 6667, null, 0);
 
 		//Setup useful vars
 		aUser = bot.getUser("aUser");
