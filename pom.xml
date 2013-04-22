@@ -112,6 +112,12 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.7</version>
 		</dependency>
+		<!-- Guava for collections -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-collections</artifactId>
+			<version>r03</version>
+		</dependency>
 		<!-- Use TestNG as testing framework -->
 		<dependency>
 			<groupId>org.testng</groupId>
