@@ -115,7 +115,6 @@ public class PircBotXConnectTest {
 
 	@Test
 	public void connectTest() throws Exception {
-		//TODO: Test getNick()
 		//Connect the bot to the socket
 		bot.connect(configurationBuilder
 				.setServer(address.getHostName(), 6667)
