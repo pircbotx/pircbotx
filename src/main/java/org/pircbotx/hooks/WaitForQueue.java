@@ -50,7 +50,7 @@ public class WaitForQueue implements Closeable {
 	 */
 	public WaitForQueue(PircBotX bot) {
 		this.bot = bot;
-		bot.getListenerManager().addListener(listener = new WaitForQueueListener());
+		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class WaitForQueue implements Closeable {
 	 */
 	@Override
 	public void close() {
-		bot.getListenerManager().removeListener(listener);
+		bot.getConfiguration().getListenerManager().removeListener(listener);
 		eventQueue.clear();
 	}
 

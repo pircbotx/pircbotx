@@ -46,6 +46,6 @@ public class TemporaryListener extends ListenerAdapter {
 	}
 
 	public void done() {
-		bot.getListenerManager().removeListener(this);
+		bot.getConfiguration().getListenerManager().removeListener(this);
 	}
 }
