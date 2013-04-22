@@ -171,21 +171,22 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 	public static void main(String[] args) {
 		//Setup this bot
-		Configuration.Builder builder = new Configuration.Builder()
+		Configuration configuration = new Configuration.Builder()
 				.setName("PircBotX") //Set the nick of the bot. CHANGE IN YOUR CODE
 				.setLogin("LQ") //login part of hostmask, eg name:login@host
 				.setAutoNickChange(true) //Automatically change nick when the current one is in use
 				.setCapEnabled(true) //Enable CAP features
 				.addCapHandler(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true))
-				.addListener(new PircBotXExample()); //This class is a listener, so add it to the bots known listeners
+				.addListener(new PircBotXExample()) //This class is a listener, so add it to the bots known listeners
+				.setServerHostname("irc.freenode.net")
+				.addAutoJoinChannel("#pircbotx") //Join the official #pircbotx channel
+				.buildConfiguration();
 
 		//bot.connect throws various exceptions for failures
 		try {
 			PircBotX bot = new PircBotX();
 			//Connect to the freenode IRC network
-			bot.connect(builder.buildConfiguration());
-			//Join the official #pircbotx channel
-			bot.joinChannel("#pircbotx");
+			bot.connect(configuration);
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {

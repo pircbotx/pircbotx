@@ -56,26 +56,8 @@ public class PircBotXOutputTest {
 
 	@BeforeMethod
 	public void botSetup() throws Exception {
-		//Setup bot
-		inputLatch = new CountDownLatch(1);
-		bot = new PircBotX() {
-			@Override
-			protected InputThread createInputThread(Socket socket, BufferedReader breader) {
-				return new InputThread(bot, socket, breader) {
-					@Override
-					public void run() {
-						//Do nothing
-					}
-				};
-			}
-		};
-		bot.setCapEnabled(true);
-		bot.setListenerManager(new GenericListenerManager());
-		bot.setNick("PircBotXBot");
-		bot.setName("PircBotXBot");
-		bot.setMessageDelay(0L);
-
 		//Setup streams for bot
+		inputLatch = new CountDownLatch(1);
 		botOut = new ByteArrayOutputStream();
 		in = new ByteArrayInputStream("".getBytes());
 		Socket socket = mock(Socket.class);
@@ -85,8 +67,28 @@ public class PircBotXOutputTest {
 		socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket("example.com", 6667, null, 0)).thenReturn(socket);
 
-		//Connect the bot to the socket
-		bot.connect("example.com", 6667, null, socketFactory);
+		//Configure and connect bot
+		bot = new PircBotX() {
+			@Override
+			//TODO: Needed?
+			protected InputThread createInputThread(Socket socket, BufferedReader breader) {
+				return new InputThread(bot, socket, breader) {
+					@Override
+					public void run() {
+						//Do nothing
+					}
+				};
+			}
+		};
+		bot.connect(new Configuration.Builder()
+				.setCapEnabled(true)
+				.setListenerManager(new GenericListenerManager())
+				.setName("PircBotXBot")
+				.setMessageDelay(0)
+				.setServer("example.com", 6667)
+				.setServerPassword(null)
+				.setSocketFactory(socketFactory)
+				.buildConfiguration());
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket("example.com", 6667, null, 0);
@@ -130,15 +132,16 @@ public class PircBotXOutputTest {
 
 		//Build a randomly generated seed string
 		Random random = new Random();
+		int botMaxLineLength = bot.getConfiguration().getMaxLineLength();
 		StringBuilder seedStringBuilder = new StringBuilder(128);
 		seedStringBuilder.append(" - ");
-		while ((beginning.length() + "1".length() + seedStringBuilder.length() + ending.length()) < bot.getMaxLineLength() - 2)
+		while ((beginning.length() + "1".length() + seedStringBuilder.length() + ending.length()) < botMaxLineLength - 2)
 			seedStringBuilder.append((char) (random.nextInt(26) + 'a'));
 		String seedString = seedStringBuilder.toString();
 		String[] stringParts = new String[]{
 			"1" + seedString,
 			"2" + seedString,
-			"3" + seedString.substring(0, bot.getMaxLineLength() / 2)
+			"3" + seedString.substring(0, botMaxLineLength / 2)
 		};
 
 		//Send the message, joining all the message parts into one big chunck

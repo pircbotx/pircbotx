@@ -21,6 +21,7 @@ package org.pircbotx.hooks;
 import java.io.IOException;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -39,7 +40,9 @@ public class TemporaryListenerTest {
 	@BeforeMethod
 	public void setup() {
 		bot = new PublicPircBotX();
-		bot.setListenerManager(listenerManager = new GenericListenerManager());
+		bot.setConfiguration(new Configuration.Builder()
+				.setListenerManager(listenerManager = new GenericListenerManager())
+				.buildConfiguration());
 	}
 
 	@Test
@@ -51,10 +54,10 @@ public class TemporaryListenerTest {
 				mutableEvent.setValue(event);
 			}
 		};
-		bot.getListenerManager().addListener(listener);
+		listenerManager.addListener(listener);
 
 		//Make sure the listener is there
-		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener doesn't exist in ListenerManager");
+		assertTrue(listenerManager.listenerExists(listener), "Listener doesn't exist in ListenerManager");
 
 		//Send some arbitrary line
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
@@ -65,7 +68,7 @@ public class TemporaryListenerTest {
 		assertEquals(mevent.getMessage(), "Some very long message", "Message sent does not match");
 
 		//Make sure the listner is still there
-		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener doesn't exist in ListenerManager");
+		assertTrue(listenerManager.listenerExists(listener), "Listener doesn't exist in ListenerManager");
 	}
 
 	@Test
@@ -76,11 +79,11 @@ public class TemporaryListenerTest {
 				done();
 			}
 		};
-		bot.getListenerManager().addListener(listener);
+		listenerManager.addListener(listener);
 
-		assertTrue(bot.getListenerManager().listenerExists(listener), "Listener wasn't added to ListenerManager");
+		assertTrue(listenerManager.listenerExists(listener), "Listener wasn't added to ListenerManager");
 		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
-		assertFalse(bot.getListenerManager().listenerExists(listener), "Listener wasn't removed from ListenerManager");
+		assertFalse(listenerManager.listenerExists(listener), "Listener wasn't removed from ListenerManager");
 	}
 
 	public static class PublicPircBotX extends PircBotX {
@@ -91,6 +94,10 @@ public class TemporaryListenerTest {
 		@Override
 		public void handleLine(String line) throws IOException{
 			super.handleLine(line);
+		}
+		
+		public void setConfiguration(Configuration configuration) {
+			this.configuration = configuration;
 		}
 	}
 }
