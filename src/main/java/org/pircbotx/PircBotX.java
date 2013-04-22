@@ -1585,10 +1585,12 @@ public class PircBotX {
 		} else if (command.equals("PRIVMSG") && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0)
 			// This is a normal message to a channel.
 			configuration.getListenerManager().dispatchEvent(new MessageEvent(this, channel, source, message));
-		else if (command.equals("PRIVMSG"))
+		else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
-			//TODO: add to private
+			//Add to private message
+			configuration.getUserChannelDao().addUserToPrivate(source);
 			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent(this, source, message));
+		}
 		else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(nick)) {
