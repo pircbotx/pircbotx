@@ -115,7 +115,6 @@ public class PircBotX {
 	// DccManager to process and handle all DCC events.
 	@Getter
 	protected DccHandler dccHandler = new DccHandler(this);
-	
 	protected boolean verbose;
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
@@ -147,7 +146,6 @@ public class PircBotX {
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
-		useShutdownHook(true);
 		verbose = false;
 	}
 
@@ -323,6 +321,24 @@ public class PircBotX {
 
 			// This makes the socket timeout on read operations after 5 minutes.
 			socket.setSoTimeout(config.getSocketTimeout());
+
+			if (config.isShutdownHookEnabled()) {
+				//Add a shutdown hook, using weakreference so PircBotX can be GC'd
+				final WeakReference<PircBotX> thisBotRef = new WeakReference(this);
+				Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
+					@Override
+					public void run() {
+						PircBotX thisBot = thisBotRef.get();
+						if (thisBot != null && thisBot.isConnected() && thisBot.socket != null && !thisBot.socket.isClosed())
+							try {
+								thisBot.disconnect();
+							} finally {
+								thisBot.shutdown(true);
+							}
+					}
+				});
+				shutdownHook.setName("bot" + botCount + "-shutdownhook");
+			}
 
 			//Start input to start accepting lines
 			inputThread = createInputThread(socket, breader);
@@ -610,7 +626,7 @@ public class PircBotX {
 
 		//Find if final line is going to be shorter than the max line length
 		String finalMessage = prefix + message + suffix;
-		int realMaxLineLength = config.getMaxLineLength()- 2;
+		int realMaxLineLength = config.getMaxLineLength() - 2;
 		if (!config.isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
 			//Length is good (or auto split message is false), just go ahead and send it
 			sendRawLine(finalMessage);
@@ -2212,7 +2228,7 @@ public class PircBotX {
 	public ServerInfo getServerInfo() {
 		return serverInfo;
 	}
-	
+
 	public ListenerManager getListenerManager() {
 		return config.getListenerManager();
 	}
@@ -2223,48 +2239,6 @@ public class PircBotX {
 	 */
 	public boolean isVerbose() {
 		return verbose;
-	}
-
-	/**
-	 * Checks if there is an active shutdown hook for this bot
-	 * @return True if there is, false if not
-	 * @see #useShutdownHook(boolean)
-	 */
-	public boolean hasShutdownHook() {
-		return shutdownHook != null;
-	}
-
-	/**
-	 * Configure if a shutdown hook is used or not.
-	 * <p>
-	 * For reference, a shutdown hook will properly disconnect a bot from the
-	 * server. This is useful in cases where the JVM doesn't properly close the
-	 * socket meaning the bot still appears online to the IRC server.
-	 * @param use True to create a shutdown hook if one doesn't exist, or false
-	 * to remove the shutdown hook if it exists
-	 */
-	public void useShutdownHook(boolean use) {
-		if (use && shutdownHook == null) {
-			//Define as a weakreference so PircBotX can be GC'd
-			final WeakReference<PircBotX> thisBotRef = new WeakReference(this);
-			Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
-				@Override
-				public void run() {
-					PircBotX thisBot = thisBotRef.get();
-					if (thisBot != null && thisBot.isConnected() && thisBot.socket != null && !thisBot.socket.isClosed())
-						try {
-							thisBot.disconnect();
-						} finally {
-							thisBot.shutdown(true);
-						}
-				}
-			});
-			shutdownHook.setName("bot" + botCount + "-shutdownhook");
-		} else if (!use && shutdownHook != null) {
-			//Remove the shutdownHook, if it exists
-			Runtime.getRuntime().removeShutdownHook(shutdownHook);
-			shutdownHook = null;
-		}
 	}
 
 	/**

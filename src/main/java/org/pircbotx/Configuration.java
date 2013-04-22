@@ -107,6 +107,7 @@ public class Configuration {
 	protected final boolean autoSplitMessage;
 	protected final boolean autoNickChange;
 	protected final long messageDelay;
+	protected final boolean shutdownHookEnabled;
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
@@ -142,6 +143,7 @@ public class Configuration {
 		this.listenerManager = builder.getListenerManager();
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = builder.getCapHandlers();
+		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
 	}
 
 	@Accessors(chain = true)
@@ -171,6 +173,7 @@ public class Configuration {
 		protected boolean autoSplitMessage = true;
 		protected boolean autoNickChange = false;
 		protected long messageDelay = 1000;
+		protected boolean shutdownHookEnabled = true;
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
