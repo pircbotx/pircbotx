@@ -78,7 +78,7 @@ public class InputParser {
 	protected BufferedReader inputReader;
 	protected ListenerManager listenerManager;
 	protected UserChannelDao dao;
-	protected List<String> channelPrefixes;
+	protected String channelPrefixes;
 	protected ServerInfo serverInfo;
 	protected DccHandler dccHandler;
 	//Builders
