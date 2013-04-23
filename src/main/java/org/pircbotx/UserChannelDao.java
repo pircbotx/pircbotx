@@ -132,43 +132,63 @@ public class UserChannelDao {
 	protected void removeUserFromOwners(User user, Channel channel) {
 		ownersMap.removeUserFromChannel(user, channel);
 	}
-	
+
+	public Set<User> getChannelNormals(Channel channel) {
+		Set<User> remainingUsers = new HashSet(mainMap.getUsers(channel));
+		remainingUsers.removeAll(opsMap.getUsers(channel));
+		remainingUsers.removeAll(voiceMap.getUsers(channel));
+		remainingUsers.removeAll(halfOpsMap.getUsers(channel));
+		remainingUsers.removeAll(superOpsMap.getUsers(channel));
+		remainingUsers.removeAll(ownersMap.getUsers(channel));
+		return ImmutableSet.copyOf(remainingUsers);
+	}
+
 	public Set<User> getChannelOps(Channel channel) {
 		return ImmutableSet.copyOf(opsMap.getUsers(channel));
 	}
-	
+
 	public Set<User> getChannelVoices(Channel channel) {
 		return ImmutableSet.copyOf(voiceMap.getUsers(channel));
 	}
-	
+
 	public Set<User> getChannelHalfOps(Channel channel) {
 		return ImmutableSet.copyOf(halfOpsMap.getUsers(channel));
 	}
-	
+
 	public Set<User> getChannelSuperOps(Channel channel) {
 		return ImmutableSet.copyOf(superOpsMap.getUsers(channel));
 	}
-	
+
 	public Set<User> getChannelOwners(Channel channel) {
 		return ImmutableSet.copyOf(ownersMap.getUsers(channel));
 	}
-	
+
+	public Set<Channel> getUsersNormals(User user) {
+		Set<Channel> remainingChannels = new HashSet(mainMap.getChannels(user));
+		remainingChannels.removeAll(opsMap.getChannels(user));
+		remainingChannels.removeAll(voiceMap.getChannels(user));
+		remainingChannels.removeAll(halfOpsMap.getChannels(user));
+		remainingChannels.removeAll(superOpsMap.getChannels(user));
+		remainingChannels.removeAll(ownersMap.getChannels(user));
+		return ImmutableSet.copyOf(remainingChannels);
+	}
+
 	public Set<Channel> getUsersOps(User user) {
 		return ImmutableSet.copyOf(opsMap.getChannels(user));
 	}
-	
+
 	public Set<Channel> getUsersVoices(User user) {
 		return ImmutableSet.copyOf(voiceMap.getChannels(user));
 	}
-	
+
 	public Set<Channel> getUsersHalfOps(User user) {
 		return ImmutableSet.copyOf(halfOpsMap.getChannels(user));
 	}
-	
+
 	public Set<Channel> getUsersSuperOps(User user) {
 		return ImmutableSet.copyOf(superOpsMap.getChannels(user));
 	}
-	
+
 	public Set<Channel> getUsersOwners(User user) {
 		return ImmutableSet.copyOf(ownersMap.getChannels(user));
 	}
