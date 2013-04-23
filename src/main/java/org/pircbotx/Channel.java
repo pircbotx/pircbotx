@@ -44,41 +44,24 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
 @Setter(AccessLevel.PACKAGE)
 public class Channel {
 	private final String name;
+	protected final UserChannelDao dao;
+	protected final PircBotX bot;
 	private String mode = "";
 	private String topic = "";
 	private long topicTimestamp;
 	private long createTimestamp;
 	private String topicSetter = "";
-	protected final PircBotX bot;
+	
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
-	/**
-	 * Set of half op users in this channel
-	 */
-	protected final Set<User> halfOps = Collections.synchronizedSet(new HashSet<User>());
-	/**
-	 * Set of super ops users in this channel
-	 */
-	protected final Set<User> superOps = Collections.synchronizedSet(new HashSet<User>());
-	/**
-	 * Set of opped users in this channel
-	 */
-	protected final Set<User> ops = Collections.synchronizedSet(new HashSet<User>());
-	/**
-	 * Set of voiced users in this channel
-	 */
-	protected final Set<User> voices = Collections.synchronizedSet(new HashSet<User>());
-	/**
-	 * Set of super owner users in this channel
-	 */
-	protected final Set<User> owners = Collections.synchronizedSet(new HashSet<User>());
 
-	protected Channel(PircBotX bot, String name) {
+	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
 		this.bot = bot;
+		this.dao = dao;
 		this.name = name;
 	}
 
@@ -240,14 +223,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of non-special users in the channel
 	 */
 	public Set<User> getNormalUsers() {
-		//Build set
-		Set<User> normalUsers = new HashSet(bot.getUsers(this));
-		normalUsers.removeAll(ops);
-		normalUsers.removeAll(voices);
-		normalUsers.removeAll(halfOps);
-		normalUsers.removeAll(superOps);
-		normalUsers.removeAll(owners);
-		return Collections.unmodifiableSet(normalUsers);
+		return dao.getChannelNormals(this);
 	}
 
 	/**
@@ -257,7 +233,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
 	public Set<User> getOps() {
-		return Collections.unmodifiableSet(ops);
+		return dao.getChannelOps(this);
 	}
 
 	/**
@@ -267,7 +243,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
 	public Set<User> getVoices() {
-		return Collections.unmodifiableSet(voices);
+		return dao.getChannelVoices(this);
 	}
 
 	/**
@@ -277,7 +253,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Owner status
 	 */
 	public Set<User> getOwners() {
-		return Collections.unmodifiableSet(owners);
+		return dao.getChannelOwners(this);
 	}
 
 	/**
@@ -287,7 +263,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Half Operator status
 	 */
 	public Set<User> getHalfOps() {
-		return Collections.unmodifiableSet(halfOps);
+		return dao.getChannelHalfOps(this);
 	}
 
 	/**
@@ -297,7 +273,7 @@ public class Channel {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Super Operator status
 	 */
 	public Set<User> getSuperOps() {
-		return Collections.unmodifiableSet(superOps);
+		return dao.getChannelSuperOps(this);
 	}
 
 	/**
@@ -317,7 +293,7 @@ public class Channel {
 	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
 	public Set<User> getUsers() {
-		return bot.getUsers(this);
+		return dao.getUsers(this);
 	}
 
 	/**
@@ -334,7 +310,7 @@ public class Channel {
 	 * @return True if the user is an Operator, false if not
 	 */
 	public boolean isOp(User user) {
-		return ops.contains(user);
+		return dao.getChannelOps(this).contains(user);
 	}
 
 	/**
@@ -360,7 +336,7 @@ public class Channel {
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
-		return voices.contains(user);
+		return dao.getChannelVoices(this).contains(user);
 	}
 
 	/**
@@ -395,7 +371,7 @@ public class Channel {
 	 * @return True if the user is a Super Operator, false if not
 	 */
 	public boolean isSuperOp(User user) {
-		return superOps.contains(user);
+		return dao.getChannelSuperOps(this).contains(user);
 	}
 
 	/**
@@ -421,7 +397,7 @@ public class Channel {
 	 * @return True if the user is an Owner, false if not
 	 */
 	public boolean isOwner(User user) {
-		return owners.contains(user);
+		return dao.getChannelOwners(this).contains(user);
 	}
 
 	/**
@@ -447,7 +423,7 @@ public class Channel {
 	 * @return True if the user is a Half Operator, false if not
 	 */
 	public boolean isHalfOp(User user) {
-		return halfOps.contains(user);
+		return dao.getChannelHalfOps(this).contains(user);
 	}
 
 	/**
@@ -457,18 +433,6 @@ public class Channel {
 	 */
 	public void deHalfOp(User user) {
 		bot.deHalfOp(this, user);
-	}
-
-	/**
-	 * Removes user from op and voice lists
-	 * @param user
-	 */
-	protected void removeUser(User user) {
-		ops.remove(user);
-		voices.remove(user);
-		superOps.remove(user);
-		halfOps.remove(user);
-		owners.remove(user);
 	}
 
 	/**
