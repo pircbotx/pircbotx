@@ -4,6 +4,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -84,7 +85,8 @@ public class InputParser {
 	//Builders
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
-	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
+	protected boolean channelListRunning = false;
+	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
 	
 	public void initParser(PircBotX bot) {
 		this.bot = bot;
@@ -343,11 +345,12 @@ public class InputParser {
 			throw new IllegalArgumentException("Can't process null response");
 		//Parsed response format: Everything after code
 		//eg: Response 321 Channel :Users Name gives us [Channel, Users Name]
-		if (code == RPL_LISTSTART)
+		if (code == RPL_LISTSTART) {
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
-			channelListBuilder.setRunning(true);
-		else if (code == RPL_LIST) {
+			channelListBuilder = ImmutableSet.builder();
+			channelListRunning = true;
+		} else if (code == RPL_LIST) {
 			//This is part of a full channel listing as part of /LIST
 			//EXAMPLE: 322 lordquackstar #xomb 12 :xomb exokernel project @ www.xomb.org
 			String channel = parsedResponse.get(1);
@@ -357,8 +360,9 @@ public class InputParser {
 		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
-			listenerManager.dispatchEvent(new ChannelInfoEvent(bot, channelListBuilder.finish()));
-			channelListBuilder.setRunning(false);
+			listenerManager.dispatchEvent(new ChannelInfoEvent(bot, channelListBuilder.build()));
+			channelListBuilder = null;
+			channelListRunning = false;
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
@@ -634,24 +638,5 @@ public class InputParser {
 		} else
 			// The mode of a user is being changed.
 			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
-	}
-
-	protected static class ListBuilder<A> {
-		@Getter
-		@Setter
-		private boolean running = false;
-		private Set<A> channels = new HashSet();
-
-		public Set<A> finish() {
-			running = false;
-			Set<A> copy = new HashSet(channels);
-			channels.clear();
-			return copy;
-		}
-
-		public void add(A entry) {
-			running = true;
-			channels.add(entry);
-		}
 	}
 }
