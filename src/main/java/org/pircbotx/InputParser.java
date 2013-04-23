@@ -134,7 +134,7 @@ public class InputParser {
 	protected void handleLine(String line) throws IOException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
-		logServerReceive(line);
+		log.info(line);
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
