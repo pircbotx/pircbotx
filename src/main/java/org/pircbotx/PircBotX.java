@@ -101,7 +101,7 @@ public class PircBotX {
 	protected Configuration configuration;
 	protected Socket socket;
 	// Connection stuff.
-	protected InputThread inputThread = null;
+	protected Thread inputParserThread;
 	protected Writer outputWriter;
 	protected ReentrantLock writeLock = new ReentrantLock(true);
 	protected Condition writeNowCondition = writeLock.newCondition();
@@ -210,9 +210,9 @@ public class PircBotX {
 			String line;
 			int tries = 1;
 			boolean capEndSent = false;
-
+			config.getInputParser().initParser(this);
 			while ((line = breader.readLine()) != null) {
-				handleLine(line);
+				config.getInputParser().handleLine(line);
 
 				List<String> params = Utils.tokenizeLine(line);
 				if (params.size() >= 2) {
@@ -330,8 +330,7 @@ public class PircBotX {
 			}
 
 			//Start input to start accepting lines
-			inputThread = createInputThread(socket, breader);
-			inputThread.start();
+			startInputParser(config.getInputParser(), breader);
 
 			config.getListenerManager().dispatchEvent(new ConnectEvent(this));
 
@@ -344,10 +343,14 @@ public class PircBotX {
 		}
 	}
 
-	protected InputThread createInputThread(Socket socket, BufferedReader breader) {
-		InputThread input = new InputThread(this, socket, breader);
-		input.setName("bot" + botCount + "-input");
-		return input;
+	protected void startInputParser(final InputParser parser, final BufferedReader inputReader) {
+		inputParserThread = new Thread() {
+			@Override
+			public void run() {
+				parser.startLineProcessing(inputReader);
+			}
+		};
+		inputParserThread.start();
 	}
 
 	/**
@@ -1608,8 +1611,8 @@ public class PircBotX {
 	 */
 	public void shutdown(boolean noReconnect) {
 		try {
-			if (inputThread != null)
-				inputThread.interrupt();
+			if (inputParserThread != null)
+				inputParserThread.interrupt();
 		} catch (Exception e) {
 			log.error("Cannot interrupt inputThread", e);
 		}
