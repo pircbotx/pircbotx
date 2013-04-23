@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import static org.pircbotx.ReplyConstants.*;
+import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.FingerEvent;
@@ -80,6 +81,7 @@ public class InputParser {
 	protected final BufferedReader inputReader;
 	protected final List<String> channelPrefixes;
 	protected final ServerInfo serverInfo;
+	protected final DccHandler dccHandler;
 	//Builders
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
