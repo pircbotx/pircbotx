@@ -93,46 +93,57 @@ public class UserChannelDao {
 		privateUsers.add(user);
 	}
 
+	@Synchronized("accessLock")
 	protected void addUserToOps(User user, Channel channel) {
 		opsMap.addUserToChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void addUserToVoices(User user, Channel channel) {
 		voiceMap.addUserToChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void addUserToHalfOps(User user, Channel channel) {
 		halfOpsMap.addUserToChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void addUserToSuperOps(User user, Channel channel) {
 		superOpsMap.addUserToChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void addUserToOwners(User user, Channel channel) {
 		ownersMap.addUserToChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void removeUserFromOps(User user, Channel channel) {
 		opsMap.removeUserFromChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void removeUserFromVoices(User user, Channel channel) {
 		voiceMap.removeUserFromChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void removeUserFromHalfOps(User user, Channel channel) {
 		halfOpsMap.removeUserFromChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void removeUserFromSuperOps(User user, Channel channel) {
 		superOpsMap.removeUserFromChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	protected void removeUserFromOwners(User user, Channel channel) {
 		ownersMap.removeUserFromChannel(user, channel);
 	}
 
+	@Synchronized("accessLock")
 	public Set<User> getChannelNormals(Channel channel) {
 		Set<User> remainingUsers = new HashSet(mainMap.getUsers(channel));
 		remainingUsers.removeAll(opsMap.getUsers(channel));
@@ -143,26 +154,32 @@ public class UserChannelDao {
 		return ImmutableSet.copyOf(remainingUsers);
 	}
 
+	@Synchronized("accessLock")
 	public Set<User> getChannelOps(Channel channel) {
 		return ImmutableSet.copyOf(opsMap.getUsers(channel));
 	}
 
+	@Synchronized("accessLock")
 	public Set<User> getChannelVoices(Channel channel) {
 		return ImmutableSet.copyOf(voiceMap.getUsers(channel));
 	}
 
+	@Synchronized("accessLock")
 	public Set<User> getChannelHalfOps(Channel channel) {
 		return ImmutableSet.copyOf(halfOpsMap.getUsers(channel));
 	}
 
+	@Synchronized("accessLock")
 	public Set<User> getChannelSuperOps(Channel channel) {
 		return ImmutableSet.copyOf(superOpsMap.getUsers(channel));
 	}
 
+	@Synchronized("accessLock")
 	public Set<User> getChannelOwners(Channel channel) {
 		return ImmutableSet.copyOf(ownersMap.getUsers(channel));
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getUsersNormals(User user) {
 		Set<Channel> remainingChannels = new HashSet(mainMap.getChannels(user));
 		remainingChannels.removeAll(opsMap.getChannels(user));
@@ -173,22 +190,27 @@ public class UserChannelDao {
 		return ImmutableSet.copyOf(remainingChannels);
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getUsersOps(User user) {
 		return ImmutableSet.copyOf(opsMap.getChannels(user));
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getUsersVoices(User user) {
 		return ImmutableSet.copyOf(voiceMap.getChannels(user));
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getUsersHalfOps(User user) {
 		return ImmutableSet.copyOf(halfOpsMap.getChannels(user));
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getUsersSuperOps(User user) {
 		return ImmutableSet.copyOf(superOpsMap.getChannels(user));
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getUsersOwners(User user) {
 		return ImmutableSet.copyOf(ownersMap.getChannels(user));
 	}
@@ -252,6 +274,7 @@ public class UserChannelDao {
 		return ImmutableSet.copyOf(mainMap.getUsers(channel));
 	}
 
+	@Synchronized("accessLock")
 	public Set<Channel> getAllChannels() {
 		return ImmutableSet.copyOf(channelNameMap.values());
 	}
