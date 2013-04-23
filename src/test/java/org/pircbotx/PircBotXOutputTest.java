@@ -95,8 +95,8 @@ public class PircBotXOutputTest {
 		verify(socketFactory).createSocket(localhost, 6667, null, 0);
 
 		//Setup useful vars
-		aUser = bot.getUser("aUser");
-		aChannel = bot.getChannel("#aChannel");
+		aUser = bot.getConfiguration().getUserChannelDao().getUser("aUser");
+		aChannel = bot.getConfiguration().getUserChannelDao().getChannel("#aChannel");
 	}
 
 	@AfterMethod
@@ -211,7 +211,7 @@ public class PircBotXOutputTest {
 
 	@Test(description = "Verify sendInvite to channel")
 	public void sendInviteChannelChannelTest() throws Exception {
-		bot.sendInvite(aChannel, bot.getChannel("#otherChannel"));
+		bot.sendInvite(aChannel, bot.getConfiguration().getUserChannelDao().getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
 
