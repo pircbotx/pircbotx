@@ -84,7 +84,7 @@ public class InputParser {
 	protected ServerInfo serverInfo;
 	protected DccHandler dccHandler;
 	//Builders
-	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
+	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
 	@Getter(AccessLevel.PROTECTED)
 	protected boolean channelListRunning = false;
