@@ -1742,7 +1742,7 @@ public class PircBotX {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			Channel channel = getConfiguration().getUserChannelDao().getChannel(parsedResponse.get(1));
-			configuration.getListenerManager().dispatchEvent(new UserListEvent(this, channel, getConfiguration().getUserChannelDao().getChannelUsers(channel)));
+			configuration.getListenerManager().dispatchEvent(new UserListEvent(this, channel, getConfiguration().getUserChannelDao().getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
