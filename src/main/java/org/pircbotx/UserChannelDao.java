@@ -232,7 +232,7 @@ public class UserChannelDao {
 			return chan;
 
 		//Channel does not exist, create one
-		chan = new Channel(bot, name);
+		chan = new Channel(bot, this, name);
 		channelNameMap.put(name, chan);
 		return chan;
 	}
