@@ -196,15 +196,14 @@ public class InputParser {
 		if (target.startsWith(":"))
 			target = target.substring(1);
 		
-		
-		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
-		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, message, parsedLine);
+		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
 	}
 
-	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, String message, List<String> parsedLine) throws IOException {
+	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
 		User source = dao.getUser(sourceNick);
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? dao.getChannel(target) : null;
+		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && message.startsWith("\u0001") && message.endsWith("\u0001")) {
@@ -245,8 +244,8 @@ public class InputParser {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
-				bot.sendRawLine("WHO " + channel.getName());
-				bot.sendRawLine("MODE " + channel.getName());
+				bot.sendRawLine("WHO " + target);
+				bot.sendRawLine("MODE " + target);
 			}
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
@@ -274,7 +273,8 @@ public class InputParser {
 			listenerManager.dispatchEvent(new NoticeEvent(bot, source, channel, message));
 		else if (command.equals("QUIT")) {
 			UserSnapshot snapshot = source.generateSnapshot();
-			String reason = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
+			//A real target is missing, so index is off
+			String reason = target;
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(bot.getNick()))
 				//Someone else
