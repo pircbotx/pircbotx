@@ -89,7 +89,7 @@ public class InputParser {
 	@Getter(AccessLevel.PROTECTED)
 	protected boolean channelListRunning = false;
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
-	
+
 	public void initParser(PircBotX bot) {
 		this.bot = bot;
 		this.listenerManager = bot.getConfiguration().getListenerManager();
@@ -640,5 +640,19 @@ public class InputParser {
 		} else
 			// The mode of a user is being changed.
 			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
+	}
+
+	public void reset() {
+		bot = null;
+		inputReader = null;
+		listenerManager = null;
+		dao = null;
+		channelPrefixes = null;
+		serverInfo = null;
+		dccHandler = null;
+		whoisBuilder.clear();
+		motdBuilder = null;
+		channelListRunning = false;
+		channelListBuilder = null;
 	}
 }
