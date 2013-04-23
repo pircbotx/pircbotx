@@ -111,6 +111,7 @@ public class Configuration {
 	protected final boolean capEnabled;
 	protected final List<CapHandler> capHandlers;
 	protected final UserChannelDao userChannelDao;
+	protected final InputParser inputParser;
 
 	/**
 	 * Use {@link Configuration.Builder#build() }
@@ -145,6 +146,7 @@ public class Configuration {
 		this.capHandlers = builder.getCapHandlers();
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
 		this.userChannelDao = builder.getUserChannelDao();
+		this.inputParser = builder.getInputParser();
 	}
 
 	@Accessors(chain = true)
@@ -186,6 +188,7 @@ public class Configuration {
 			}
 		};
 		protected UserChannelDao userChannelDao = new UserChannelDao();
+		protected InputParser inputParser = new InputParser();
 
 		/**
 		 * Copy values from another builder. 
@@ -220,6 +223,7 @@ public class Configuration {
 			this.capHandlers.clear();
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
+			this.inputParser = otherBuilder.getInputParser();
 		}
 
 		public Builder addCapHandler(CapHandler handler) {
