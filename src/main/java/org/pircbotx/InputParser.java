@@ -96,7 +96,7 @@ public class InputParser {
 		this.dccHandler = bot.getDccHandler();
 	}
 
-	public void startInputParser() {
+	public void startLineProcessing() {
 		while (true) {
 			//Get line from the server
 			String line = null;
