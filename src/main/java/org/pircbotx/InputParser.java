@@ -86,7 +86,7 @@ public class InputParser {
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
-
+	
 	public void startInputParser() {
 		while (true) {
 			//Get line from the server
@@ -137,13 +137,13 @@ public class InputParser {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log.info(line);
-
+		
 		List<String> parsedLine = Utils.tokenizeLine(line);
-
+		
 		String senderInfo = "";
 		if (parsedLine.get(0).startsWith(":"))
 			senderInfo = parsedLine.remove(0);
-
+		
 		String command = parsedLine.remove(0).toUpperCase();
 
 		// Check for server pings.
@@ -156,12 +156,12 @@ public class InputParser {
 			bot.shutdown(true);
 			return;
 		}
-
+		
 		String sourceNick = "";
 		String sourceLogin = "";
 		String sourceHostname = "";
 		String target = null;
-
+		
 		int exclamation = senderInfo.indexOf("!");
 		int at = senderInfo.indexOf("@");
 		if (senderInfo.startsWith(":"))
@@ -187,20 +187,24 @@ public class InputParser {
 			// Return from the method;
 			return;
 		}
-
+		
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
-
+		
 		target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
-
+		
 		if (target.startsWith(":"))
 			target = target.substring(1);
+		
+		
+		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
+		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, message, parsedLine);
+	}
 
+	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, String message, List<String> parsedLine) throws IOException {
 		User source = dao.getUser(sourceNick);
-
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? dao.getChannel(target) : null;
-		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && message.startsWith("\u0001") && message.endsWith("\u0001")) {
@@ -229,7 +233,7 @@ public class InputParser {
 			} else
 				// An unknown CTCP message - ignore it.
 				listenerManager.dispatchEvent(new UnknownEvent(bot, line));
-		} else if (command.equals("PRIVMSG") && channelPrefixes.indexOf(target.charAt(0)) >= 0)
+		} else if (command.equals("PRIVMSG") && channel != null)
 			// This is a normal message to a channel.
 			listenerManager.dispatchEvent(new MessageEvent(bot, channel, source, message));
 		else if (command.equals("PRIVMSG")) {
@@ -241,8 +245,8 @@ public class InputParser {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
-				bot.sendRawLine("WHO " + target);
-				bot.sendRawLine("MODE " + target);
+				bot.sendRawLine("WHO " + channel.getName());
+				bot.sendRawLine("MODE " + channel.getName());
 			}
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
@@ -279,7 +283,7 @@ public class InputParser {
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			User recipient = dao.getUser(message);
-
+			
 			if (recipient.getNick().equals(bot.getNick()))
 				//We were just kicked
 				dao.removeChannel(channel);
@@ -300,7 +304,7 @@ public class InputParser {
 			channel.setTopic(message);
 			channel.setTopicSetter(sourceNick);
 			channel.setTopicTimestamp(currentTime);
-
+			
 			listenerManager.dispatchEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
@@ -351,7 +355,7 @@ public class InputParser {
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
 			Channel channel = dao.getChannel(parsedResponse.get(1));
 			String topic = parsedResponse.get(2);
-
+			
 			channel.setTopic(topic);
 		} else if (code == RPL_TOPICINFO) {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
@@ -359,10 +363,10 @@ public class InputParser {
 			Channel channel = dao.getChannel(parsedResponse.get(1));
 			User setBy = dao.getUser(parsedResponse.get(2));
 			long date = Utils.tryParseLong(parsedResponse.get(3), -1);
-
+			
 			channel.setTopicTimestamp(date * 1000);
 			channel.setTopicSetter(setBy.getNick());
-
+			
 			listenerManager.dispatchEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
@@ -394,7 +398,7 @@ public class InputParser {
 			//Full channel mode (In response to MODE <channel>)
 			Channel channel = dao.getChannel(parsedResponse.get(1));
 			String mode = parsedResponse.get(2);
-
+			
 			channel.setMode(mode);
 			listenerManager.dispatchEvent(new ModeEvent(bot, channel, null, mode));
 		} else if (code == 329) {
@@ -434,7 +438,7 @@ public class InputParser {
 			//Example: 311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
 			//New whois is starting
 			String whoisNick = parsedResponse.get(1);
-
+			
 			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
 			builder.setNick(whoisNick);
 			builder.setLogin(parsedResponse.get(2));
@@ -446,20 +450,20 @@ public class InputParser {
 			//Channel list from whois. Re-tokenize since they're after the :
 			String whoisNick = parsedResponse.get(1);
 			List<String> parsedChannels = Utils.tokenizeLine(parsedResponse.get(2));
-
+			
 			whoisBuilder.get(whoisNick).setChannels(parsedChannels);
 		} else if (code == RPL_WHOISSERVER) {
 			//Server info from whois
 			//312 TheLQ Plazma leguin.freenode.net :Ume?, SE, EU
 			String whoisNick = parsedResponse.get(1);
-
+			
 			whoisBuilder.get(whoisNick).setServer(parsedResponse.get(2));
 			whoisBuilder.get(whoisNick).setServerInfo(parsedResponse.get(3));
 		} else if (code == RPL_WHOISIDLE) {
 			//Idle time from whois
 			//317 TheLQ md_5 6077 1347373349 :seconds idle, signon time
 			String whoisNick = parsedResponse.get(1);
-
+			
 			whoisBuilder.get(whoisNick).setIdleSeconds(Long.parseLong(parsedResponse.get(2)));
 			whoisBuilder.get(whoisNick).setSignOnTime(Long.parseLong(parsedResponse.get(3)));
 		} else if (code == 330)
@@ -470,7 +474,7 @@ public class InputParser {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
-
+			
 			listenerManager.dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
 		}
@@ -498,13 +502,13 @@ public class InputParser {
 			channel.parseMode(mode);
 			StringTokenizer tok = new StringTokenizer(mode);
 			String[] params = new String[tok.countTokens()];
-
+			
 			int t = 0;
 			while (tok.hasMoreTokens()) {
 				params[t] = tok.nextToken();
 				t++;
 			}
-
+			
 			char pn = ' ';
 			int p = 1;
 
@@ -512,7 +516,7 @@ public class InputParser {
 			// what the users want :-/
 			for (int i = 0; i < params[0].length(); i++) {
 				char atPos = params[0].charAt(i);
-
+				
 				if (atPos == '+' || atPos == '-')
 					pn = atPos;
 				else if (atPos == 'o') {
@@ -623,20 +627,19 @@ public class InputParser {
 			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
 	}
 	
-	
 	protected static class ListBuilder<A> {
 		@Getter
 		@Setter
 		private boolean running = false;
 		private Set<A> channels = new HashSet();
-
+		
 		public Set<A> finish() {
 			running = false;
 			Set<A> copy = new HashSet(channels);
 			channels.clear();
 			return copy;
 		}
-
+		
 		public void add(A entry) {
 			running = true;
 			channels.add(entry);
