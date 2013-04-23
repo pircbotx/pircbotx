@@ -86,8 +86,9 @@ public class InputParser {
 	protected StringBuilder motdBuilder;
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
 
-	public void startInputParser(PircBotX bot) {
+	public void startInputParser(PircBotX bot, BufferedReader inputReader) {
 		this.bot = bot;
+		this.inputReader = inputReader;
 		this.listenerManager = bot.getConfiguration().getListenerManager();
 		this.dao = bot.getConfiguration().getUserChannelDao();
 		this.channelPrefixes = bot.getConfiguration().getChannelPrefixes();
