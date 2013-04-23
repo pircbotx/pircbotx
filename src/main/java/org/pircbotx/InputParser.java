@@ -153,7 +153,7 @@ public class InputParser {
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
-			shutdown(true);
+			bot.shutdown(true);
 			return;
 		}
 
@@ -239,10 +239,10 @@ public class InputParser {
 			listenerManager.dispatchEvent(new PrivateMessageEvent(bot, source, message));
 		} else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
-			if (sourceNick.equalsIgnoreCase(nick)) {
+			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
-				sendRawLine("WHO " + target);
-				sendRawLine("MODE " + target);
+				bot.sendRawLine("WHO " + target);
+				bot.sendRawLine("MODE " + target);
 			}
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
@@ -250,7 +250,7 @@ public class InputParser {
 			listenerManager.dispatchEvent(new JoinEvent(bot, channel, source));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
-			if (sourceNick.equals(getNick()))
+			if (sourceNick.equals(bot.getNick()))
 				//We parted the channel
 				dao.removeChannel(channel);
 			else
@@ -261,9 +261,9 @@ public class InputParser {
 			// Somebody is changing their nick.
 			String newNick = target;
 			source.setNick(newNick);
-			if (sourceNick.equals(getNick()))
+			if (sourceNick.equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
-				setNick(newNick);
+				bot.setNick(newNick);
 			listenerManager.dispatchEvent(new NickChangeEvent(bot, sourceNick, newNick, source));
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
@@ -272,7 +272,7 @@ public class InputParser {
 			UserSnapshot snapshot = source.generateSnapshot();
 			String reason = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
 			// Someone has quit from the IRC server.
-			if (!sourceNick.equals(getNick()))
+			if (!sourceNick.equals(bot.getNick()))
 				//Someone else
 				dao.removeUser(source);
 			listenerManager.dispatchEvent(new QuitEvent(bot, snapshot, reason));
@@ -280,7 +280,7 @@ public class InputParser {
 			// Somebody has been kicked from a channel.
 			User recipient = dao.getUser(message);
 
-			if (recipient.getNick().equals(getNick()))
+			if (recipient.getNick().equals(bot.getNick()))
 				//We were just kicked
 				dao.removeChannel(channel);
 			else
