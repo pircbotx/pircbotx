@@ -121,6 +121,8 @@ public class PircBotX {
 	@Getter
 	@Setter
 	protected boolean autoReconnectChannels;
+	protected boolean shutdownCalled;
+	protected final Object shutdownCalledLock = new Object();
 
 	/**
 	 * Constructs a PircBotX with the default settings and 
@@ -157,6 +159,11 @@ public class PircBotX {
 		try {
 			if (isConnected())
 				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
+			synchronized(shutdownCalledLock) {
+				if(shutdownCalled)
+					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
+				shutdownCalled = false;
+			}
 			this.configuration = config;
 			config.getUserChannelDao().reset();
 			config.getUserChannelDao().init(this);
@@ -1610,6 +1617,13 @@ public class PircBotX {
 	 * 100% shutdown the bot
 	 */
 	public void shutdown(boolean noReconnect) {
+		//Guard against multiple calls
+		if(shutdownCalled)
+			synchronized(shutdownCalledLock) {
+				if(shutdownCalled)
+					throw new RuntimeException("Shutdown has already been called");
+			}
+		
 		try {
 			if (inputParserThread != null)
 				inputParserThread.interrupt();
