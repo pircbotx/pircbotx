@@ -108,7 +108,6 @@ public class PircBotX {
 	// DccManager to process and handle all DCC events.
 	@Getter
 	protected DccHandler dccHandler = new DccHandler(this);
-	protected boolean verbose;
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
 	protected String nick = "";
@@ -138,7 +137,6 @@ public class PircBotX {
 	 */
 	public PircBotX() {
 		botCount.getAndIncrement();
-		verbose = false;
 	}
 
 	/**
@@ -159,8 +157,8 @@ public class PircBotX {
 		try {
 			if (isConnected())
 				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
-			synchronized(shutdownCalledLock) {
-				if(shutdownCalled)
+			synchronized (shutdownCalledLock) {
+				if (shutdownCalled)
 					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
 				shutdownCalled = false;
 			}
@@ -1471,31 +1469,8 @@ public class PircBotX {
 		return dccHandler.sendChatRequest(sender);
 	}
 
-	/**
-	 * Logs a line received from the server
-	 *
-	 * @param line The line to add to the log.
-	 */
-	protected void logServerReceive(String line) {
-		if (verbose)
-			log.info("<<<" + line);
-	}
-
 	protected void logServerSend(String line) {
-		if (verbose)
-			log.info(">>>" + line);
-	}
-
-	/**
-	 * Sets the verbose mode. If verbose mode is set to true, then log entries
-	 * will be printed to the standard output. The default value is false and
-	 * will result in no output. For general development, we strongly recommend
-	 * setting the verbose mode to true.
-	 *
-	 * @param verbose true if verbose mode is to be used. Default is false.
-	 */
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
+		log.info(">>>" + line);
 	}
 
 	/**
@@ -1594,14 +1569,6 @@ public class PircBotX {
 	}
 
 	/**
-	 * Get current verbose mode
-	 * @return True if verbose is turned on, false if not
-	 */
-	public boolean isVerbose() {
-		return verbose;
-	}
-
-	/**
 	 * Calls shutdown allowing reconnect
 	 */
 	public void shutdown() {
@@ -1618,12 +1585,12 @@ public class PircBotX {
 	 */
 	public void shutdown(boolean noReconnect) {
 		//Guard against multiple calls
-		if(shutdownCalled)
-			synchronized(shutdownCalledLock) {
-				if(shutdownCalled)
+		if (shutdownCalled)
+			synchronized (shutdownCalledLock) {
+				if (shutdownCalled)
 					throw new RuntimeException("Shutdown has already been called");
 			}
-		
+
 		try {
 			if (inputParserThread != null)
 				inputParserThread.interrupt();
