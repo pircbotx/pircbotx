@@ -85,8 +85,8 @@ public class InputParser {
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
 	protected final ListBuilder<ChannelListEntry> channelListBuilder = new ListBuilder();
-
-	public void startInputParser(PircBotX bot, BufferedReader inputReader) {
+	
+	public void initParser(PircBotX bot, BufferedReader inputReader) {
 		this.bot = bot;
 		this.inputReader = inputReader;
 		this.listenerManager = bot.getConfiguration().getListenerManager();
@@ -94,6 +94,9 @@ public class InputParser {
 		this.channelPrefixes = bot.getConfiguration().getChannelPrefixes();
 		this.serverInfo = bot.getServerInfo();
 		this.dccHandler = bot.getDccHandler();
+	}
+
+	public void startInputParser() {
 		while (true) {
 			//Get line from the server
 			String line = null;
