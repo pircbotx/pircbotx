@@ -1440,7 +1440,7 @@ public class PircBotX {
 	 * @see ChannelInfoEvent
 	 */
 	public void listChannels(String parameters) {
-		if (!channelListBuilder.isRunning())
+		if (!configuration.getInputParser().isChannelListRunning())
 			if (parameters == null)
 				sendRawLine("LIST");
 			else
@@ -1656,7 +1656,6 @@ public class PircBotX {
 
 		//Clear relevant variables of information
 		getConfiguration().getUserChannelDao().reset();
-		channelListBuilder.finish();
 
 		//Dispatch event
 		if (autoReconnect && !noReconnect)
