@@ -1656,6 +1656,7 @@ public class PircBotX {
 
 		//Clear relevant variables of information
 		getConfiguration().getUserChannelDao().reset();
+		getConfiguration().getInputParser().reset();
 
 		//Dispatch event
 		if (autoReconnect && !noReconnect)
