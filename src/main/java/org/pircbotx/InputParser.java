@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -85,6 +86,7 @@ public class InputParser {
 	//Builders
 	protected Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
+	@Getter(AccessLevel.PROTECTED)
 	protected boolean channelListRunning = false;
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
 	
