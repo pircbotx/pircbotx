@@ -32,7 +32,7 @@ public class ChannelTest {
 
 	@BeforeMethod
 	public void setup() {
-		channel = new Channel(null, "#testChannel");
+		channel = new Channel(null, null, "#testChannel");
 	}
 
 	protected void setUsedModes() {

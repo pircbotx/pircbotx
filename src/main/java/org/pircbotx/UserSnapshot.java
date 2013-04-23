@@ -45,7 +45,7 @@ public class UserSnapshot extends User {
 	protected final User generatedFrom;
 
 	public UserSnapshot(User user) {
-		super(user.getBot(), user.getNick());
+		super(user.getBot(), user.getDao(), user.getNick());
 		generatedFrom = user;
 
 		//Clone fields
