@@ -50,26 +50,29 @@ public class User implements Comparable<User> {
 	private boolean ircop = false;
 	private String server = "";
 	private int hops = 0;
-	private final PircBotX bot;
+	protected final PircBotX bot;
+	protected final UserChannelDao dao;
 	@Getter(AccessLevel.NONE)
 	protected final UUID uuid = UUID.randomUUID();
 
-	protected User(PircBotX bot, String nick) {
+	protected User(PircBotX bot, UserChannelDao dao, String nick) {
 		this.bot = bot;
+		this.dao = dao;
 		this.nick = nick;
 	}
 
 	public void parseStatus(Channel chan, String prefix) {
+		//TODO: Move into InputThread
 		if (prefix.contains("@"))
-			chan.ops.add(this);
+			dao.addUserToOps(this, chan);
 		if (prefix.contains("+"))
-			chan.voices.add(this);
+			dao.addUserToVoices(this, chan);
 		if (prefix.contains("%"))
-			chan.halfOps.add(this);
+			dao.addUserToHalfOps(this, chan);
 		if (prefix.contains("~"))
-			chan.owners.add(this);
+			dao.addUserToOwners(this, chan);
 		if (prefix.contains("&"))
-			chan.superOps.add(this);
+			dao.addUserToSuperOps(this, chan);
 		setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		setIrcop(prefix.contains("*"));
 	}
@@ -100,7 +103,7 @@ public class User implements Comparable<User> {
 	 * @return All channels this user is a part of
 	 */
 	public Set<Channel> getChannels() {
-		return bot.getChannels(this);
+		return dao.getChannels(this);
 	}
 
 	/**
@@ -111,11 +114,7 @@ public class User implements Comparable<User> {
 	 * channels user has Operator status in
 	 */
 	public Set<Channel> getChannelsOpIn() {
-		Set<Channel> channels = new HashSet();
-		for (Channel curChannel : bot.getChannels())
-			if (curChannel.isOp(this))
-				channels.add(curChannel);
-		return Collections.unmodifiableSet(channels);
+		return dao.getUsersOps(this);
 	}
 
 	/**
@@ -126,11 +125,7 @@ public class User implements Comparable<User> {
 	 * channels user has Voice status in
 	 */
 	public Set<Channel> getChannelsVoiceIn() {
-		Set<Channel> channels = new HashSet();
-		for (Channel curChannel : bot.getChannels())
-			if (curChannel.hasVoice(this))
-				channels.add(curChannel);
-		return Collections.unmodifiableSet(channels);
+		return dao.getUsersVoices(this);
 	}
 
 	/**
@@ -141,11 +136,7 @@ public class User implements Comparable<User> {
 	 * channels user has Owner status in
 	 */
 	public Set<Channel> getChannelsOwnerIn() {
-		Set<Channel> channels = new HashSet();
-		for (Channel curChannel : bot.getChannels())
-			if (curChannel.isOwner(this))
-				channels.add(curChannel);
-		return Collections.unmodifiableSet(channels);
+		return dao.getUsersOwners(this);
 	}
 
 	/**
@@ -156,26 +147,18 @@ public class User implements Comparable<User> {
 	 * channels user has Half Operator status in
 	 */
 	public Set<Channel> getChannelsHalfOpIn() {
-		Set<Channel> channels = new HashSet();
-		for (Channel curChannel : bot.getChannels())
-			if (curChannel.isHalfOp(this))
-				channels.add(curChannel);
-		return Collections.unmodifiableSet(channels);
+		return dao.getUsersHalfOps(this);
 	}
 
 	/**
-	 * Get all channels user has Super Operator status in
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
+	 * Get all channels user has Super Operator status in. Simply calls 
+	 * {@link UserChannelDao#getUsersSuperOps(org.pircbotx.User) }
+	 * 
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Super Operator status in
 	 */
 	public Set<Channel> getChannelsSuperOpIn() {
-		Set<Channel> channels = new HashSet();
-		for (Channel curChannel : bot.getChannels())
-			if (curChannel.isSuperOp(this))
-				channels.add(curChannel);
-		return Collections.unmodifiableSet(channels);
+		return dao.getUsersSuperOps(this);
 	}
 
 	/**
