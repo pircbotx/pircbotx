@@ -1872,20 +1872,20 @@ public class PircBotX {
 				else if (atPos == 'o') {
 					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
-						channel.ops.add(reciepeint);
+						getConfiguration().getUserChannelDao().addUserToOps(user, channel);
 						configuration.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, true));
 					} else {
-						channel.ops.remove(reciepeint);
+						getConfiguration().getUserChannelDao().removeUserFromOps(user, channel);
 						configuration.getListenerManager().dispatchEvent(new OpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
-						channel.voices.add(reciepeint);
+						getConfiguration().getUserChannelDao().addUserToVoices(user, channel);
 						configuration.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, true));
 					} else {
-						channel.voices.remove(reciepeint);
+						getConfiguration().getUserChannelDao().removeUserFromVoices(user, channel);
 						configuration.getListenerManager().dispatchEvent(new VoiceEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
@@ -1893,10 +1893,10 @@ public class PircBotX {
 					//Half-op change
 					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
-						channel.halfOps.add(reciepeint);
+						getConfiguration().getUserChannelDao().addUserToHalfOps(user, channel);
 						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, true));
 					} else {
-						channel.halfOps.remove(reciepeint);
+						getConfiguration().getUserChannelDao().removeUserFromHalfOps(user, channel);
 						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
@@ -1904,10 +1904,10 @@ public class PircBotX {
 					//SuperOp change
 					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
-						channel.superOps.add(reciepeint);
+						getConfiguration().getUserChannelDao().addUserToSuperOps(user, channel);
 						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, true));
 					} else {
-						channel.superOps.remove(reciepeint);
+						getConfiguration().getUserChannelDao().removeUserFromSuperOps(user, channel);
 						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
@@ -1915,10 +1915,10 @@ public class PircBotX {
 					//Owner change
 					User reciepeint = getConfiguration().getUserChannelDao().getUser(params[p]);
 					if (pn == '+') {
-						channel.owners.add(reciepeint);
+						getConfiguration().getUserChannelDao().addUserToOwners(user, channel);
 						configuration.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, true));
 					} else {
-						channel.owners.remove(reciepeint);
+						getConfiguration().getUserChannelDao().removeUserFromOwners(user, channel);
 						configuration.getListenerManager().dispatchEvent(new OwnerEvent(this, channel, user, reciepeint, false));
 					}
 					p++;
