@@ -93,7 +93,7 @@ public class Configuration {
 	protected final String version;
 	protected final String finger;
 	protected final String channelPrefixes;
-	protected final boolean useFilenameQuotes;
+	protected final boolean dccFilenameQuotes;
 	//Connect information
 	protected final String serverHostname;
 	protected final int serverPort;
@@ -135,7 +135,7 @@ public class Configuration {
 		this.version = builder.getVersion();
 		this.finger = builder.getFinger();
 		this.channelPrefixes = builder.getChannelPrefixes();
-		this.useFilenameQuotes = builder.isUseFilenameQuotes();
+		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
 		this.serverPassword = builder.getServerPassword();
@@ -178,7 +178,7 @@ public class Configuration {
 		protected String version = "PircBotX " + PircBotX.VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 		protected String finger = "You ought to be arrested for fingering a bot!";
 		protected String channelPrefixes = "#&+!";
-		protected boolean useFilenameQuotes = false;
+		protected boolean dccFilenameQuotes = false;
 		//Connect information
 		protected String serverHostname = null;
 		protected int serverPort = 6667;
@@ -218,7 +218,7 @@ public class Configuration {
 			this.version = otherBuilder.getVersion();
 			this.finger = otherBuilder.getFinger();
 			this.channelPrefixes = otherBuilder.getChannelPrefixes();
-			this.useFilenameQuotes = otherBuilder.isUseFilenameQuotes();
+			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
 			this.serverPassword = otherBuilder.getServerPassword();
