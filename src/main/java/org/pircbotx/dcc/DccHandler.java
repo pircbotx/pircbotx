@@ -58,9 +58,6 @@ public class DccHandler {
 	protected int socketTimeout;
 	@Getter(AccessLevel.PROTECTED)
 	protected List<PendingRecieveFileTransfer> pendingReceiveTransfers = Collections.synchronizedList(new ArrayList<PendingRecieveFileTransfer>());
-	@Getter
-	@Setter
-	protected boolean useQuotes = false;
 
 	public boolean processDcc(final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
@@ -165,7 +162,7 @@ public class DccHandler {
 		//Make the filename safe to send
 		String safeFilename = file.getName();
 		if (safeFilename.contains(" "))
-			if (useQuotes)
+			if (configuration.isDccFilenameQuotes())
 				safeFilename = "\"" + safeFilename + "\"";
 			else
 				safeFilename = safeFilename.replace(" ", "_");
