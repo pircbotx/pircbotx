@@ -98,16 +98,14 @@ public class PircBotX {
 	public static final String VERSION = "2.0-SNAPSHOT";
 	protected static final AtomicInteger botCount = new AtomicInteger();
 	@Getter
-	protected Configuration configuration;
+	protected final Configuration configuration;
+	protected final DccHandler dccHandler;
 	protected Socket socket;
 	// Connection stuff.
 	protected Thread inputParserThread;
 	protected Writer outputWriter;
 	protected ReentrantLock writeLock = new ReentrantLock(true);
 	protected Condition writeNowCondition = writeLock.newCondition();
-	// DccManager to process and handle all DCC events.
-	@Getter
-	protected DccHandler dccHandler = new DccHandler(this);
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
 	protected String nick = "";
@@ -135,8 +133,10 @@ public class PircBotX {
 	 * <li>Turn off {@link #isCapEnabled() () CAP handling}</li>
 	 * </ul>
 	 */
-	public PircBotX() {
+	public PircBotX(Configuration configuration, DccHandler dccHandler) {
 		botCount.getAndIncrement();
+		this.configuration = configuration;
+		this.dccHandler = dccHandler;
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public synchronized void connect(Configuration config) throws IOException, IrcException, NickAlreadyInUseException {
+	public void connect() throws IOException, IrcException, NickAlreadyInUseException {
 		try {
 			if (isConnected())
 				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
@@ -162,62 +162,58 @@ public class PircBotX {
 					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
 				shutdownCalled = false;
 			}
-			this.configuration = config;
-			config.getUserChannelDao().reset();
-			config.getUserChannelDao().init(this);
 
 			//Reset capabilities
 			enabledCapabilities = new ArrayList();
 
 			// Connect to the server by DNS server
-			for (InetAddress curAddress : InetAddress.getAllByName(config.getServerHostname())) {
+			for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
 				log.debug("Trying address " + curAddress);
 				try {
-					socket = config.getSocketFactory().createSocket(curAddress, config.getServerPort(), config.getLocalAddress(), 0);
+					socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
 
 					//No exception, assume successful
 					break;
 				} catch (Exception e) {
-					log.debug("Unable to connect to " + config.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
+					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
 				}
 			}
 
 			//Make sure were connected
 			if (socket == null || (socket != null && !socket.isConnected()))
-				throw new IOException("Unable to connect to the IRC network " + config.getServerHostname() + " (last connection attempt exception attached)");
+				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
 			log.info("Connected to server.");
 
-			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), config.getEncoding());
-			outputWriter = new OutputStreamWriter(socket.getOutputStream(), config.getEncoding());
+			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), configuration.getEncoding());
+			outputWriter = new OutputStreamWriter(socket.getOutputStream(), configuration.getEncoding());
 
 			BufferedReader breader = new BufferedReader(inputStreamReader);
 
-			config.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
+			configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
-			if (config.isCapEnabled())
+			if (configuration.isCapEnabled())
 				// Attempt to initiate a CAP transaction.
 				sendRawLineNow("CAP LS");
 
 			// Attempt to join the server.
-			if (config.isWebIrcEnabled())
-				sendRawLineNow("WEBIRC " + config.getWebIrcPassword()
-						+ " " + config.getWebIrcUsername()
-						+ " " + config.getWebIrcHostname()
-						+ " " + config.getWebIrcAddress().getHostAddress());
-			if (!StringUtils.isBlank(config.getServerPassword()))
-				sendRawLineNow("PASS " + config.getServerPassword());
-			String tempNick = config.getName();
+			if (configuration.isWebIrcEnabled())
+				sendRawLineNow("WEBIRC " + configuration.getWebIrcPassword()
+						+ " " + configuration.getWebIrcUsername()
+						+ " " + configuration.getWebIrcHostname()
+						+ " " + configuration.getWebIrcAddress().getHostAddress());
+			if (!StringUtils.isBlank(configuration.getServerPassword()))
+				sendRawLineNow("PASS " + configuration.getServerPassword());
+			String tempNick = configuration.getName();
 
 			sendRawLineNow("NICK " + tempNick);
-			sendRawLineNow("USER " + config.getLogin() + " 8 * :" + config.getVersion());
+			sendRawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
 
 			// Read stuff back from the server to see if we connected.
 			String line;
 			int tries = 1;
 			boolean capEndSent = false;
-			config.getInputParser().initParser(this);
 			while ((line = breader.readLine()) != null) {
-				config.getInputParser().handleLine(line);
+				configuration.getInputParser().handleLine(line);
 
 				List<String> params = Utils.tokenizeLine(line);
 				if (params.size() >= 2) {
@@ -235,16 +231,16 @@ public class PircBotX {
 					else if (code.equals("433"))
 						//EXAMPLE: AnAlreadyUsedName :Nickname already in use
 						//Nickname in use, rename
-						if (config.isAutoNickChange()) {
+						if (configuration.isAutoNickChange()) {
 							tries++;
-							tempNick = config.getName() + tries;
+							tempNick = configuration.getName() + tries;
 							sendRawLineNow("NICK " + tempNick);
 						} else
 							throw new NickAlreadyInUseException(line);
 					else if (code.equals("439")) {
 						//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 						// No action required.
-					} else if (config.isCapEnabled() && code.equals("451") && params.get(0).equals("CAP")) {
+					} else if (configuration.isCapEnabled() && code.equals("451") && params.get(0).equals("CAP")) {
 						//EXAMPLE: 451 CAP :You have not registered
 						//Ignore, this is from servers that don't support CAP
 					} else if (code.startsWith("5") || code.startsWith("4"))
@@ -252,7 +248,7 @@ public class PircBotX {
 					else if (code.equals("670")) {
 						//Server is saying that we can upgrade to TLS
 						SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
-						for (CapHandler curCapHandler : config.getCapHandlers())
+						for (CapHandler curCapHandler : configuration.getCapHandlers())
 							if (curCapHandler instanceof TLSCapHandler)
 								sslSocketFactory = ((TLSCapHandler) curCapHandler).getSslSocketFactory();
 						SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(
@@ -261,40 +257,40 @@ public class PircBotX {
 								socket.getPort(),
 								true);
 						sslSocket.startHandshake();
-						breader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), config.getEncoding()));
-						outputWriter = new OutputStreamWriter(sslSocket.getOutputStream(), config.getEncoding());
+						breader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), configuration.getEncoding()));
+						outputWriter = new OutputStreamWriter(sslSocket.getOutputStream(), configuration.getEncoding());
 						socket = sslSocket;
 						//Notify CAP Handlers
-						for (CapHandler curCapHandler : config.getCapHandlers())
+						for (CapHandler curCapHandler : configuration.getCapHandlers())
 							curCapHandler.handleUnknown(this, line);
 					} else if (code.equals("CAP")) {
 						//Handle CAP Code; remove extra from params
 						List<String> capParams = Arrays.asList(params.get(2).split(" "));
 						if (params.get(1).equals("LS"))
-							for (CapHandler curCapHandler : config.getCapHandlers())
+							for (CapHandler curCapHandler : configuration.getCapHandlers())
 								curCapHandler.handleLS(this, capParams);
 						else if (params.get(1).equals("ACK")) {
 							//Server is enabling a capability, store that
 							getEnabledCapabilities().addAll(capParams);
 
-							for (CapHandler curCapHandler : config.getCapHandlers())
+							for (CapHandler curCapHandler : configuration.getCapHandlers())
 								curCapHandler.handleACK(this, capParams);
 						} else if (params.get(1).equals("NAK"))
-							for (CapHandler curCapHandler : config.getCapHandlers())
+							for (CapHandler curCapHandler : configuration.getCapHandlers())
 								curCapHandler.handleNAK(this, capParams);
 						else
 							//Maybe the CapHandlers know how to use it
-							for (CapHandler curCapHandler : config.getCapHandlers())
+							for (CapHandler curCapHandler : configuration.getCapHandlers())
 								curCapHandler.handleUnknown(this, line);
 					} else
 						//Pass to CapHandlers, could be important
-						for (CapHandler curCapHandler : config.getCapHandlers())
+						for (CapHandler curCapHandler : configuration.getCapHandlers())
 							curCapHandler.handleUnknown(this, line);
 				}
 				//Send CAP END if all CapHandlers are finished
-				if (config.isCapEnabled() && !capEndSent) {
+				if (configuration.isCapEnabled() && !capEndSent) {
 					boolean allDone = true;
-					for (CapHandler curCapHandler : config.getCapHandlers())
+					for (CapHandler curCapHandler : configuration.getCapHandlers())
 						if (!curCapHandler.isDone()) {
 							allDone = false;
 							break;
@@ -314,9 +310,9 @@ public class PircBotX {
 			log.info("Logged onto server.");
 
 			// This makes the socket timeout on read operations after 5 minutes.
-			socket.setSoTimeout(config.getSocketTimeout());
+			socket.setSoTimeout(configuration.getSocketTimeout());
 
-			if (config.isShutdownHookEnabled()) {
+			if (configuration.isShutdownHookEnabled()) {
 				//Add a shutdown hook, using weakreference so PircBotX can be GC'd
 				final WeakReference<PircBotX> thisBotRef = new WeakReference(this);
 				Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
@@ -335,11 +331,11 @@ public class PircBotX {
 			}
 
 			//Start input to start accepting lines
-			startInputParser(config.getInputParser(), breader);
+			startInputParser(configuration.getInputParser(), breader);
 
-			config.getListenerManager().dispatchEvent(new ConnectEvent(this));
+			configuration.getListenerManager().dispatchEvent(new ConnectEvent(this));
 
-			for (Map.Entry<String, String> channelEntry : config.getAutoJoinChannels().entrySet())
+			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
 				joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} catch (Exception e) {
 			//if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
@@ -374,7 +370,7 @@ public class PircBotX {
 		if (configuration == null)
 			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
 		try {
-			connect(configuration);
+			connect();
 		} catch (IOException e) {
 			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
 			throw e;
@@ -1622,8 +1618,8 @@ public class PircBotX {
 		}
 
 		//Clear relevant variables of information
-		getConfiguration().getUserChannelDao().reset();
-		getConfiguration().getInputParser().reset();
+		getConfiguration().getUserChannelDao().shutdown();
+		getConfiguration().getInputParser().shutdown();
 
 		//Dispatch event
 		if (autoReconnect && !noReconnect)
