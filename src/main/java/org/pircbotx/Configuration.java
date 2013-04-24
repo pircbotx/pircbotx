@@ -30,6 +30,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -111,7 +112,11 @@ public class Configuration {
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
 	protected final List<CapHandler> capHandlers;
+	protected final BotFactory botFactory;
+	protected final PircBotX bot;
 	protected final UserChannelDao userChannelDao;
+	protected final DccHandler dccHandler;
+	protected final ServerInfo serverInfo;
 	protected final InputParser inputParser;
 
 	/**
@@ -147,8 +152,14 @@ public class Configuration {
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = builder.getCapHandlers();
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
-		this.userChannelDao = builder.getUserChannelDao();
-		this.inputParser = builder.getInputParser();
+
+		//Build
+		botFactory = builder.getBotFactory();
+		bot = botFactory.createPircBotX(this);
+		userChannelDao = botFactory.createUserChannelDao(this);
+		dccHandler = botFactory.createDccHandler(this);
+		serverInfo = botFactory.createServerInfo(this);
+		inputParser = botFactory.createInputParser(this);
 	}
 
 	@Accessors(chain = true)
@@ -190,8 +201,7 @@ public class Configuration {
 				add(new EnableCapHandler("multi-prefix", true));
 			}
 		};
-		protected UserChannelDao userChannelDao = new UserChannelDao();
-		protected InputParser inputParser = new InputParser();
+		protected BotFactory botFactory;
 
 		/**
 		 * Copy values from another builder. 
@@ -227,7 +237,7 @@ public class Configuration {
 			this.capHandlers.clear();
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
-			this.inputParser = otherBuilder.getInputParser();
+			this.botFactory = otherBuilder.getBotFactory();
 		}
 
 		public Builder addCapHandler(CapHandler handler) {
@@ -290,6 +300,41 @@ public class Configuration {
 
 		public Configuration buildConfiguration() {
 			return new Configuration(this);
+		}
+	}
+
+	public static class BotFactory {
+		public PircBotX createPircBotX(Configuration configuration) {
+			return new PircBotX(configuration, configuration.getDccHandler());
+		}
+
+		public UserChannelDao createUserChannelDao(Configuration configuration) {
+			return new UserChannelDao(configuration, configuration.getBot(), configuration.getBotFactory());
+		}
+
+		public InputParser createInputParser(Configuration configuration) {
+			return new InputParser(configuration.getBot(),
+					configuration.getListenerManager(),
+					configuration.getUserChannelDao(),
+					configuration.getChannelPrefixes(),
+					configuration.getServerInfo(),
+					configuration.getDccHandler());
+		}
+
+		public DccHandler createDccHandler(Configuration configuration) {
+			return new DccHandler(configuration, configuration.getBot(), configuration.getListenerManager());
+		}
+
+		public ServerInfo createServerInfo(Configuration configuration) {
+			return new ServerInfo(configuration.getBot());
+		}
+
+		public User createUser(Configuration configuration, String nick) {
+			return new User(configuration.getBot(), configuration.getUserChannelDao(), nick);
+		}
+
+		public Channel createChannel(Configuration configuration, String name) {
+			return new Channel(configuration.getBot(), configuration.getUserChannelDao(), name);
 		}
 	}
 }

@@ -74,30 +74,22 @@ import org.pircbotx.hooks.managers.ListenerManager;
  *
  * @author Leon
  */
+@RequiredArgsConstructor
 @Slf4j
 public class InputParser {
-	protected PircBotX bot;
+	protected final PircBotX bot;
+	protected final ListenerManager listenerManager;
+	protected final UserChannelDao dao;
+	protected final String channelPrefixes;
+	protected final ServerInfo serverInfo;
+	protected final DccHandler dccHandler;
 	protected BufferedReader inputReader;
-	protected ListenerManager listenerManager;
-	protected UserChannelDao dao;
-	protected String channelPrefixes;
-	protected ServerInfo serverInfo;
-	protected DccHandler dccHandler;
 	//Builders
 	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
 	@Getter(AccessLevel.PROTECTED)
 	protected boolean channelListRunning = false;
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
-
-	public void initParser(PircBotX bot) {
-		this.bot = bot;
-		this.listenerManager = bot.getConfiguration().getListenerManager();
-		this.dao = bot.getConfiguration().getUserChannelDao();
-		this.channelPrefixes = bot.getConfiguration().getChannelPrefixes();
-		this.serverInfo = bot.getServerInfo();
-		this.dccHandler = bot.getDccHandler();
-	}
 
 	public void startLineProcessing(BufferedReader inputReader) {
 		this.inputReader = inputReader;
@@ -642,14 +634,8 @@ public class InputParser {
 			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
 	}
 
-	public void reset() {
-		bot = null;
+	public void shutdown() {
 		inputReader = null;
-		listenerManager = null;
-		dao = null;
-		channelPrefixes = null;
-		serverInfo = null;
-		dccHandler = null;
 		whoisBuilder.clear();
 		motdBuilder = null;
 		channelListRunning = false;
