@@ -54,8 +54,8 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	public boolean userExists(User user) {
-		return userNickMap.containsValue(user);
+	public boolean userExists(String nick) {
+		return userNickMap.containsKey(nick);
 	}
 
 	/**
