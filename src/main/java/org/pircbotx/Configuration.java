@@ -48,6 +48,13 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
  * 
  * WebIRC:
  * 
+ * DCC:
+ * <ul><li>dccLocalAddress - Sets the InetAddress to be used when sending DCC chat or file transfers.
+ * This can be very useful when you are running a bot on a machine which
+ * is behind a firewall and you need to tell receiving clients to connect
+ * to a NAT/router, which then forwards the connection.</li>
+ * </ul>
+ * 
  * Connect information
  * <ul><li>serverHostname - The hostname of the server (eg irc.freenode.net)
  * <li>serverPort - The port of the IRC server (default: 6667)
@@ -93,7 +100,10 @@ public class Configuration {
 	protected final String version;
 	protected final String finger;
 	protected final String channelPrefixes;
+	//DCC
 	protected final boolean dccFilenameQuotes;
+	protected List<Integer> dccPorts = new ArrayList();
+	protected InetAddress dccLocalAddress = null;
 	//Connect information
 	protected final String serverHostname;
 	protected final int serverPort;
@@ -136,6 +146,7 @@ public class Configuration {
 		this.finger = builder.getFinger();
 		this.channelPrefixes = builder.getChannelPrefixes();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
+		this.dccPorts.addAll(builder.getDccPorts());
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
 		this.serverPassword = builder.getServerPassword();
@@ -178,7 +189,10 @@ public class Configuration {
 		protected String version = "PircBotX " + PircBotX.VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 		protected String finger = "You ought to be arrested for fingering a bot!";
 		protected String channelPrefixes = "#&+!";
+		//DCC
 		protected boolean dccFilenameQuotes = false;
+		protected List<Integer> dccPorts = new ArrayList();
+		protected InetAddress dccLocalAddress = null;
 		//Connect information
 		protected String serverHostname = null;
 		protected int serverPort = 6667;
@@ -219,6 +233,8 @@ public class Configuration {
 			this.finger = otherBuilder.getFinger();
 			this.channelPrefixes = otherBuilder.getChannelPrefixes();
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
+			this.dccPorts.addAll(otherBuilder.getDccPorts());
+			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
 			this.serverPassword = otherBuilder.getServerPassword();
@@ -238,6 +254,10 @@ public class Configuration {
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
 			this.botFactory = otherBuilder.getBotFactory();
+		}
+
+		public InetAddress getDccLocalAddress() {
+			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
 		}
 
 		public Builder addCapHandler(CapHandler handler) {
