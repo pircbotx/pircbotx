@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.Synchronized;
 import org.pircbotx.hooks.events.UserListEvent;
@@ -18,9 +19,11 @@ import org.pircbotx.hooks.events.UserListEvent;
  *
  * @author Leon
  */
+@RequiredArgsConstructor
 public class UserChannelDao {
-	@Setter(AccessLevel.PROTECTED)
-	protected PircBotX bot;
+	protected final Configuration configuration;
+	protected final PircBotX bot;
+	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
 	protected final ChannelToUserMap mainMap = new ChannelToUserMap();
 	protected final ChannelToUserMap opsMap = new ChannelToUserMap();
@@ -33,13 +36,6 @@ public class UserChannelDao {
 	protected final Set<User> privateUsers = new HashSet();
 
 	@Synchronized("accessLock")
-	public void init(PircBotX bot) {
-		if (bot != null)
-			throw new RuntimeException("Already inited UserChannelDao with " + bot);
-		this.bot = bot;
-	}
-
-	@Synchronized("accessLock")
 	public User getUser(String nick) {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
@@ -48,7 +44,7 @@ public class UserChannelDao {
 			return user;
 
 		//Create new user
-		user = new User(bot, this, nick);
+		user = botFactory.createUser(configuration, nick);
 		userNickMap.put(nick, user);
 		return user;
 	}
@@ -254,7 +250,7 @@ public class UserChannelDao {
 			return chan;
 
 		//Channel does not exist, create one
-		chan = new Channel(bot, this, name);
+		chan = botFactory.createChannel(configuration, name);
 		channelNameMap.put(name, chan);
 		return chan;
 	}
@@ -298,8 +294,7 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	protected void reset() {
-		bot = null;
+	protected void shutdown() {
 		mainMap.clear();
 		opsMap.clear();
 		voiceMap.clear();
