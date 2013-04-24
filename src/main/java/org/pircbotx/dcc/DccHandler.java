@@ -29,18 +29,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.Utils;
 import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
+import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
  *
@@ -49,10 +50,12 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 @RequiredArgsConstructor
 public class DccHandler {
 	public static final int TRANSFER_BUFFER_SIZE = 1024;
+	protected final Configuration configuration;
+	protected final PircBotX bot;
+	protected final ListenerManager listenerManager;
 	protected List<Integer> dccPorts = new ArrayList();
 	protected InetAddress dccInetAddress = null;
 	protected int socketTimeout;
-	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
 	protected List<PendingRecieveFileTransfer> pendingReceiveTransfers = Collections.synchronizedList(new ArrayList<PendingRecieveFileTransfer>());
 	@Getter
@@ -91,7 +94,7 @@ public class DccHandler {
 						} catch (Exception e) {
 							exception = e;
 						}
-						bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
+						listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
 					}
 				});
 				bot.sendCTCPCommand(user, "DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
@@ -106,7 +109,7 @@ public class DccHandler {
 				} catch (Exception e) {
 					exception = e;
 				}
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, fileTransfer, exception));
+				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, fileTransfer, exception));
 			}
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
@@ -133,7 +136,7 @@ public class DccHandler {
 			InetAddress address = integerToAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 
-			bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
+			listenerManager.dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
 		} else
 			return false;
 		return true;
@@ -205,7 +208,7 @@ public class DccHandler {
 	}
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
-		InetAddress address = (dccInetAddress != null) ? dccInetAddress : bot.getConfiguration().getLocalAddress();
+		InetAddress address = (dccInetAddress != null) ? dccInetAddress : configuration.getLocalAddress();
 		ServerSocket ss = null;
 		if (dccPorts.isEmpty())
 			// Use any free port.
