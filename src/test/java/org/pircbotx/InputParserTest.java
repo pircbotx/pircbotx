@@ -310,7 +310,7 @@ public class InputParserTest {
 		assertEquals(vevent.getChannel(), aChannel, "VersionEvent's channel doesn't match given");
 	}
 
-	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify PingEvent from a user")
 	public void pingTest(String target) throws IOException {
 		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
 		User aUser = dao.getUser("AUser");
@@ -324,7 +324,7 @@ public class InputParserTest {
 		assertEquals(pevent.getPingValue(), pingValue, "PingEvent's ping value doesn't match given");
 	}
 
-	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify TimeEvent from a user")
 	public void timeTest(String target) throws IOException {
 		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
 		User aUser = dao.getUser("AUser");
@@ -336,7 +336,7 @@ public class InputParserTest {
 		assertEquals(tevent.getChannel(), aChannel, "TimeEvent's channel doesn't match given");
 	}
 
-	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
+	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify FingerEvent from a user")
 	public void fingerTest(String target) throws IOException {
 		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
 		User aUser = dao.getUser("AUser");
