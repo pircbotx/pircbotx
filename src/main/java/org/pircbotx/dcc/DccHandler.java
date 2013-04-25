@@ -258,6 +258,7 @@ public class DccHandler {
 	}
 
 	public void close() {
+		pendingReceiveTransfers.clear();
 	}
 
 	public static String addressToInteger(InetAddress address) {
