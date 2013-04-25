@@ -103,7 +103,7 @@ public class Configuration {
 	//DCC
 	protected final boolean dccFilenameQuotes;
 	protected List<Integer> dccPorts = new ArrayList();
-	protected InetAddress dccLocalAddress = null;
+	protected InetAddress dccLocalAddress;
 	protected int dccSocketTimeout;
 	//Connect information
 	protected final String serverHostname;
@@ -148,6 +148,7 @@ public class Configuration {
 		this.channelPrefixes = builder.getChannelPrefixes();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts.addAll(builder.getDccPorts());
+		this.dccLocalAddress = builder.getDccLocalAddress();
 		this.dccSocketTimeout = builder.getDccSocketTimeout();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
