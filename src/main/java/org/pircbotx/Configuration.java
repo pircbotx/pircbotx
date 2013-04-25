@@ -212,7 +212,7 @@ public class Configuration {
 				add(new EnableCapHandler("multi-prefix", true));
 			}
 		};
-		protected BotFactory botFactory;
+		protected BotFactory botFactory = new BotFactory();
 
 		/**
 		 * Copy values from another builder. 
