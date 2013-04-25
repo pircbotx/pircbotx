@@ -107,6 +107,7 @@ public class Configuration {
 	protected List<Integer> dccPorts;
 	protected InetAddress dccLocalAddress;
 	protected int dccSocketTimeout;
+	protected final int dccTransferBufferSize;
 	//Connect information
 	protected final String serverHostname;
 	protected final int serverPort;
@@ -152,6 +153,7 @@ public class Configuration {
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
 		this.dccSocketTimeout = builder.getDccSocketTimeout();
+		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
 		this.serverPassword = builder.getServerPassword();
@@ -199,6 +201,7 @@ public class Configuration {
 		protected List<Integer> dccPorts = new ArrayList();
 		protected InetAddress dccLocalAddress = null;
 		protected int dccSocketTimeout = -1;
+		protected int dccTransferBufferSize = 1024;
 		//Connect information
 		protected String serverHostname = null;
 		protected int serverPort = 6667;
@@ -242,6 +245,7 @@ public class Configuration {
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
 			this.dccSocketTimeout = otherBuilder.getDccSocketTimeout();
+			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
 			this.serverPassword = otherBuilder.getServerPassword();
