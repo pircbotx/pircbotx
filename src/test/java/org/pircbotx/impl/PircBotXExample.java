@@ -26,7 +26,7 @@ import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.SASLCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
-import org.pircbotx.dcc.Chat;
+import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Event;
@@ -72,7 +72,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		}
 
 		if (event.getMessage().startsWith("?dccChat")) {
-			Chat chat = event.getBot().dccSendChatRequest(event.getUser(), 20000);
+			SendChat chat = event.getBot().dccSendChatRequest(event.getUser(), 20000);
 			System.out.println("Chat");
 			chat.sendLine("Hello!");
 			String line;
