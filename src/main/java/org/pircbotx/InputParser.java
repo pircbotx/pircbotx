@@ -544,20 +544,20 @@ public class InputParser {
 				else if (atPos == 'o') {
 					User reciepeint = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToOps(user, channel);
+						dao.addUserToOps(reciepeint, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, reciepeint, true));
 					} else {
-						dao.removeUserFromOps(user, channel);
+						dao.removeUserFromOps(reciepeint, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, reciepeint, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User reciepeint = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToVoices(user, channel);
+						dao.addUserToVoices(reciepeint, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, reciepeint, true));
 					} else {
-						dao.removeUserFromVoices(user, channel);
+						dao.removeUserFromVoices(reciepeint, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, reciepeint, false));
 					}
 					p++;
@@ -565,10 +565,10 @@ public class InputParser {
 					//Half-op change
 					User reciepeint = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToHalfOps(user, channel);
+						dao.addUserToHalfOps(reciepeint, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, reciepeint, true));
 					} else {
-						dao.removeUserFromHalfOps(user, channel);
+						dao.removeUserFromHalfOps(reciepeint, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, reciepeint, false));
 					}
 					p++;
@@ -576,10 +576,10 @@ public class InputParser {
 					//SuperOp change
 					User reciepeint = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToSuperOps(user, channel);
+						dao.addUserToSuperOps(reciepeint, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, reciepeint, true));
 					} else {
-						dao.removeUserFromSuperOps(user, channel);
+						dao.removeUserFromSuperOps(reciepeint, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, reciepeint, false));
 					}
 					p++;
@@ -587,10 +587,10 @@ public class InputParser {
 					//Owner change
 					User reciepeint = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToOwners(user, channel);
+						dao.addUserToOwners(reciepeint, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, reciepeint, true));
 					} else {
-						dao.removeUserFromOwners(user, channel);
+						dao.removeUserFromOwners(reciepeint, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, reciepeint, false));
 					}
 					p++;
