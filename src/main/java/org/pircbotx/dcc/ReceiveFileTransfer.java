@@ -29,6 +29,7 @@ import java.nio.channels.FileChannel;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
@@ -38,6 +39,7 @@ import org.pircbotx.User;
  */
 @RequiredArgsConstructor
 public class ReceiveFileTransfer {
+	protected final Configuration configuration;
 	@Getter
 	protected final User user;
 	@Getter
@@ -72,7 +74,7 @@ public class ReceiveFileTransfer {
 		fileOutput.seek(startPos);
 
 		//Recieve file
-		byte[] inBuffer = new byte[DccHandler.TRANSFER_BUFFER_SIZE];
+		byte[] inBuffer = new byte[configuration.getDccTransferBufferSize()];
 		byte[] outBuffer = new byte[4];
 		int bytesRead = 0;
 		while ((bytesRead = socketInput.read(inBuffer, 0, inBuffer.length)) != -1) {

@@ -28,6 +28,7 @@ import lombok.AccessLevel;
 import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
@@ -37,7 +38,7 @@ import org.pircbotx.User;
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class SendFileTransfer {
-	protected final PircBotX bot;
+	protected final Configuration configuration;
 	protected final User user;
 	protected final String filename;
 	protected final Socket socket;
@@ -69,7 +70,7 @@ public class SendFileTransfer {
 				bytesSkipped += fileInput.skip(progress - bytesSkipped);
 		}
 
-		byte[] outBuffer = new byte[DccHandler.TRANSFER_BUFFER_SIZE];
+		byte[] outBuffer = new byte[configuration.getDccTransferBufferSize()];
 		byte[] inBuffer = new byte[4];
 		int bytesRead = 0;
 		while ((bytesRead = fileInput.read(outBuffer, 0, outBuffer.length)) != -1) {
