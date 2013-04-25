@@ -21,6 +21,7 @@ package org.pircbotx;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import java.io.Closeable;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -34,7 +35,7 @@ import org.pircbotx.hooks.events.UserListEvent;
  * @author Leon
  */
 @RequiredArgsConstructor
-public class UserChannelDao {
+public class UserChannelDao implements Closeable {
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
@@ -311,7 +312,7 @@ public class UserChannelDao {
 	}
 
 	@Synchronized("accessLock")
-	protected void shutdown() {
+	public void close() {
 		mainMap.clear();
 		opsMap.clear();
 		voiceMap.clear();
