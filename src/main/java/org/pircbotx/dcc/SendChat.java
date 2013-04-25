@@ -33,7 +33,7 @@ import org.pircbotx.User;
  * @author Leon
  */
 @RequiredArgsConstructor
-public class SendChat {
+public class SendChat implements Chat {
 	@Getter
 	protected User user;
 	@Getter
