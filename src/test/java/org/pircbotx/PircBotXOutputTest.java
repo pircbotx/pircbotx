@@ -57,7 +57,7 @@ public class PircBotXOutputTest {
 	@BeforeMethod
 	public void botSetup() throws Exception {
 		InetAddress localhost = InetAddress.getLocalHost();
-		
+
 		//Setup streams for bot
 		inputLatch = new CountDownLatch(1);
 		botOut = new ByteArrayOutputStream();
@@ -70,18 +70,7 @@ public class PircBotXOutputTest {
 		when(socketFactory.createSocket(localhost, 6667, null, 0)).thenReturn(socket);
 
 		//Configure and connect bot
-		bot = new PircBotX() {
-			@Override
-			protected InputThread createInputThread(Socket socket, BufferedReader breader) {
-				return new InputThread(bot, socket, breader) {
-					@Override
-					public void run() {
-						//Do nothing
-					}
-				};
-			}
-		};
-		bot.connect(new Configuration.Builder()
+		bot = new PircBotX(new Configuration.Builder()
 				.setCapEnabled(true)
 				.setListenerManager(new GenericListenerManager())
 				.setName("PircBotXBot")
@@ -89,14 +78,20 @@ public class PircBotXOutputTest {
 				.setServer(localhost.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
-				.buildConfiguration());
+				.buildConfiguration()) {
+			@Override
+			protected void startInputParser(InputParser parser, BufferedReader inputReader) {
+				//Do nothing
+			}
+		};
+		bot.connect();
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket(localhost, 6667, null, 0);
 
 		//Setup useful vars
-		aUser = bot.getConfiguration().getUserChannelDao().getUser("aUser");
-		aChannel = bot.getConfiguration().getUserChannelDao().getChannel("#aChannel");
+		aUser = bot.getUserChannelDao().getUser("aUser");
+		aChannel = bot.getUserChannelDao().getChannel("#aChannel");
 	}
 
 	@AfterMethod
@@ -211,7 +206,7 @@ public class PircBotXOutputTest {
 
 	@Test(description = "Verify sendInvite to channel")
 	public void sendInviteChannelChannelTest() throws Exception {
-		bot.sendInvite(aChannel, bot.getConfiguration().getUserChannelDao().getChannel("#otherChannel"));
+		bot.sendInvite(aChannel, bot.getUserChannelDao().getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
 
@@ -302,10 +297,10 @@ public class PircBotXOutputTest {
 		//Make sure the remaining line is okay
 		assertEquals(tryGetNextLine(outputItr), expected);
 		//assertEquals(lines.length, 1, "Too many/few lines: " + StringUtils.join(lines, System.getProperty("line.separator")));
-		
+
 		return outputItr;
 	}
-	
+
 	protected static String tryGetNextLine(Iterator<String> itr) {
 		assertTrue(itr.hasNext(), "No more lines to get");
 		return itr.next();

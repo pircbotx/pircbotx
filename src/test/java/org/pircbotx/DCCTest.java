@@ -54,11 +54,10 @@ public class DCCTest {
 
 	@BeforeMethod
 	public void setup() throws UnknownHostException {
-		bot = new PircBotX();
-		bot.configuration = new Configuration.Builder()
+		bot = new PircBotX(new Configuration.Builder()
 				.setLocalAddress(InetAddress.getByName("::1"))
 				.setListenerManager(new GenericListenerManager())
-				.buildConfiguration();
+				.buildConfiguration());
 	}
 
 	@Test
@@ -77,7 +76,7 @@ public class DCCTest {
 		System.out.println("localhost6 byte array: " + Arrays.toString(localhost6.getAddress()));
 		System.out.println("localhost6 int: " + new BigInteger(localhost6.getAddress()));
 
-		bot.handleLine(":ANick!~ALogin@::2 PRIVMSG Quackbot5 :DCC CHAT chat 1 35589");
+		bot.getInputParser().handleLine(":ANick!~ALogin@::2 PRIVMSG Quackbot5 :DCC CHAT chat 1 35589");
 		IncomingChatRequestEvent event = mutableEvent.getValue();
 		assertNotNull(event, "No IncomingChatRequestEvent dispatched");
 

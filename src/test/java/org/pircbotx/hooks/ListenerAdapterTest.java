@@ -43,6 +43,7 @@ import static org.mockito.Mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.testng.annotations.BeforeMethod;
@@ -53,12 +54,11 @@ import org.testng.annotations.DataProvider;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ListenerAdapterTest {
-	protected PublicPircBotX bot;
+	protected PircBotX bot;
 	
 	@BeforeMethod
 	public void setUp() {
-		bot = new PublicPircBotX();
-		bot.setConfiguration(new Configuration.Builder()
+		bot = new PircBotX(new Configuration.Builder()
 				.setListenerManager(new GenericListenerManager())
 				.buildConfiguration());
 	}
@@ -162,8 +162,8 @@ public class ListenerAdapterTest {
 			Set methods = new HashSet();
 			methods.add(curMethod);
 			eventToMethod.put((Class<? extends Event>) curClass, methods);
-
 		}
+		
 		//Now that we have all the events, start mapping interfaces
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			//Make sure this is an event method

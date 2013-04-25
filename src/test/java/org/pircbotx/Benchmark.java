@@ -38,7 +38,7 @@ public class Benchmark {
 	protected final static int MAX_CHANNELS = 20;
 	protected final static int MAX_ITERATIONS = 50;
 	protected static String[][] responseGroups;
-	protected static PircBotX bot;
+	protected static InputParser inputParser;
 
 	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
@@ -96,7 +96,6 @@ public class Benchmark {
 
 		//Init other objects
 		StopWatch stopWatch = new StopWatch();
-		bot = new PircBotX();
 		ListenerManager listenerManager;
 		if (threadCount == -1)
 			listenerManager = new GenericListenerManager();
@@ -104,8 +103,11 @@ public class Benchmark {
 			listenerManager = new ThreadedListenerManager(Executors.newCachedThreadPool());
 		else
 			listenerManager = new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount));
-		listenerManager.addListener(new PircBotXJMeter());
-		bot.configuration = new Configuration.Builder().setListenerManager(listenerManager).buildConfiguration();
+		PircBotX bot = new PircBotX(new Configuration.Builder()
+				.setListenerManager(listenerManager)
+				.addListener(new PircBotXJMeter())
+				.buildConfiguration());
+		
 
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
@@ -145,7 +147,7 @@ public class Benchmark {
 			int size = curGroup.length;
 			counter += size;
 			for (int i = 0; i < size; i++)
-				bot.handleLine(curGroup[i]);
+				inputParser.handleLine(curGroup[i]);
 		}
 
 		stopWatch.stop();
