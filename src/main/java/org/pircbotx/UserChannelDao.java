@@ -232,6 +232,10 @@ public class UserChannelDao {
 		halfOpsMap.removeUserFromChannel(user, channel);
 		superOpsMap.removeUserFromChannel(user, channel);
 		ownersMap.removeUserFromChannel(user, channel);
+		
+		if(!privateUsers.contains(user) && !mainMap.containsUser(user))
+			//Completely remove user
+			userNickMap.inverse().remove(user);
 	}
 
 	@Synchronized("accessLock")
@@ -363,6 +367,17 @@ public class UserChannelDao {
 		public boolean containsEntry(User user, Channel channel) {
 			return channelToUserMap.containsEntry(channel, user)
 					&& userToChannelMap.containsEntry(user, channel);
+		}
+		
+		public boolean containsUser(User user) {
+			boolean channelToUserContains = channelToUserMap.containsValue(user);
+			boolean userToChannelContains = userToChannelMap.containsKey(user);
+			
+			if(channelToUserContains != userToChannelContains)
+				throw new RuntimeException("Map inconsistent! User: " + user 
+						+ " | channelToUserMap: " + channelToUserContains
+						+ " | userToChannelMap: " + userToChannelContains);
+			return channelToUserContains;
 		}
 
 		public void clear() {
