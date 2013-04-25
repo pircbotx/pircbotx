@@ -114,6 +114,10 @@ public class InputParserTest {
 			}
 		};
 		bot.nick = "PircBotXBot";
+		
+		//Save objects into fields for easier access
+		this.dao = bot.getUserChannelDao();
+		this.inputParser = bot.getInputParser();
 	}
 
 	@Test(description = "Verifies UserModeEvent from user mode being changed")
