@@ -51,7 +51,6 @@ public class Channel {
 	private long topicTimestamp;
 	private long createTimestamp;
 	private String topicSetter = "";
-	
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;

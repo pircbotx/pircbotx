@@ -1,4 +1,3 @@
-
 package org.pircbotx.dcc;
 
 import java.io.BufferedReader;
@@ -12,7 +11,10 @@ import org.pircbotx.User;
  */
 public interface Chat {
 	public User getUser();
+
 	public Socket getSocket();
+
 	public BufferedReader getBufferedReader();
+
 	public BufferedWriter getBufferedWriter();
 }

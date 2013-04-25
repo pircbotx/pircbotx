@@ -258,7 +258,7 @@ public class Configuration {
 		public InetAddress getDccLocalAddress() {
 			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
 		}
-		
+
 		public int getDccSocketTimeout() {
 			return (dccSocketTimeout != -1) ? dccSocketTimeout : socketTimeout;
 		}

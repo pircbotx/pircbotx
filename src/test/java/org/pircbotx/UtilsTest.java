@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx;
 
 import java.util.List;
@@ -29,21 +28,22 @@ import static org.testng.Assert.*;
  */
 public class UtilsTest {
 	protected static final String testString = "Hi there: how are you?";
+
 	@Test
 	public void tokenizeChannelMessageTest() {
 		List<String> tokens = Utils.tokenizeLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + testString);
-		
+
 		assertEquals(tokens.size(), 4, "Unexpected length: " + tokens);
 		assertEquals(tokens.get(0), ":AUser!~ALogin@some.host");
 		assertEquals(tokens.get(1), "PRIVMSG");
 		assertEquals(tokens.get(2), "#aChannel");
 		assertEquals(tokens.get(3), testString);
 	}
-	
+
 	@Test
 	public void tokenizePing() {
 		List<String> tokens = Utils.tokenizeLine("PING sa3214323");
-		
+
 		assertEquals(tokens.size(), 2, "Unexpected length: " + tokens);
 		assertEquals(tokens.get(0), "PING");
 		assertEquals(tokens.get(1), "sa3214323");
