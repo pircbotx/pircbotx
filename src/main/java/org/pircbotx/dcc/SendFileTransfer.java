@@ -45,7 +45,7 @@ public class SendFileTransfer implements FileTransfer {
 	protected final String filename;
 	protected final Socket socket;
 	@Getter
-	protected final long startPosition;
+	protected long startPosition;
 	@Getter
 	protected long filesize;
 	@Getter
@@ -55,6 +55,10 @@ public class SendFileTransfer implements FileTransfer {
 	protected final Object stateLock = new Object();
 
 	public void sendFile(File source) throws IOException {
+		sendFile(source, 0);
+	}
+	
+	public void sendFile(File source, long startPosition) throws IOException {
 		//Prevent being called multiple times
 		if(state != DccState.INIT)
 			synchronized(stateLock) {
@@ -63,7 +67,8 @@ public class SendFileTransfer implements FileTransfer {
 			}
 		state = DccState.RUNNING;
 		
-		filesize = source.length();
+		this.filesize = source.length();
+		this.startPosition = startPosition;
 
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
