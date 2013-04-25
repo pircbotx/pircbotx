@@ -340,15 +340,16 @@ public class UserChannelDao {
 		}
 
 		public void removeUser(User user) {
-			//Remove from all mappings
+			//Remove the user from each channel
 			for (Channel curChannel : userToChannelMap.removeAll(user))
 				channelToUserMap.remove(curChannel, user);
 		}
 
 		public void removeChannel(Channel channel) {
-			//Remove from all mappings
+			//Remove the channel from each user
 			for (User curUser : channelToUserMap.removeAll(channel))
-				userToChannelMap.remove(channel, curUser);
+				//This will automatically remove the user if they have no more channels
+				userToChannelMap.remove(curUser, channel);
 		}
 
 		public Set<User> getUsers(Channel channel) {
