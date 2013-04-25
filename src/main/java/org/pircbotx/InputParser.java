@@ -308,7 +308,7 @@ public class InputParser {
 				dao.removeChannel(channel);
 			else
 				//Someone else
-				dao.removeUserFromChannel(source, channel);
+				dao.removeUserFromChannel(recipient, channel);
 			listenerManager.dispatchEvent(new KickEvent(bot, channel, source, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
