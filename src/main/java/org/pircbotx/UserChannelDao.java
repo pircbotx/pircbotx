@@ -38,12 +38,12 @@ public class UserChannelDao {
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
-	protected final ChannelToUserMap mainMap = new ChannelToUserMap();
-	protected final ChannelToUserMap opsMap = new ChannelToUserMap();
-	protected final ChannelToUserMap voiceMap = new ChannelToUserMap();
-	protected final ChannelToUserMap superOpsMap = new ChannelToUserMap();
-	protected final ChannelToUserMap halfOpsMap = new ChannelToUserMap();
-	protected final ChannelToUserMap ownersMap = new ChannelToUserMap();
+	protected final UserChannelMap mainMap = new UserChannelMap();
+	protected final UserChannelMap opsMap = new UserChannelMap();
+	protected final UserChannelMap voiceMap = new UserChannelMap();
+	protected final UserChannelMap superOpsMap = new UserChannelMap();
+	protected final UserChannelMap halfOpsMap = new UserChannelMap();
+	protected final UserChannelMap ownersMap = new UserChannelMap();
 	protected final HashBiMap<String, User> userNickMap = HashBiMap.create();
 	protected final HashBiMap<String, Channel> channelNameMap = HashBiMap.create();
 	protected final Set<User> privateUsers = new HashSet();
@@ -319,7 +319,7 @@ public class UserChannelDao {
 		userNickMap.clear();
 	}
 
-	protected static class ChannelToUserMap {
+	protected static class UserChannelMap {
 		protected final HashMultimap<Channel, User> channelToUserMap = HashMultimap.create();
 		protected final HashMultimap<User, Channel> userToChannelMap = HashMultimap.create();
 
