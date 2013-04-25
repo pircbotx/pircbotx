@@ -18,6 +18,7 @@
  */
 package org.pircbotx.dcc;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -48,7 +49,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * @author Leon
  */
 @RequiredArgsConstructor
-public class DccHandler {
+public class DccHandler implements Closeable {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;

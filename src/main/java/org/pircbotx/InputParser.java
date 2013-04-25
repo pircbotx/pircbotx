@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class InputParser {
+public class InputParser implements Closeable {
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
 	protected final UserChannelDao dao;
@@ -665,7 +666,7 @@ public class InputParser {
 		user.setIrcop(prefix.contains("*"));
 	}
 
-	public void shutdown() {
+	public void close() {
 		inputReader = null;
 		whoisBuilder.clear();
 		motdBuilder = null;
