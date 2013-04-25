@@ -199,7 +199,7 @@ public class InputParserTest {
 	}
 
 	@Test(description = "Verify Channel creation date is set - Freenode")
-	public void channelCreationDateFreenode(String endLine) throws IOException {
+	public void channelCreationDateFreenode() throws IOException {
 		Channel aChannel = dao.getChannel("#aChannel");
 		long creationTime = 1328490732;
 		inputParser.handleLine(":irc.someserver.net 329 PircBotXUser #aChannel " + creationTime);
