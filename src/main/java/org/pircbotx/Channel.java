@@ -39,7 +39,7 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
-@ToString(exclude = {"ops", "voices"}, doNotUseGetters = true)
+@ToString(doNotUseGetters = true)
 @EqualsAndHashCode(of = {"name", "bot"})
 @Setter(AccessLevel.PACKAGE)
 public class Channel {
