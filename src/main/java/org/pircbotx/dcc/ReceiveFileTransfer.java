@@ -38,20 +38,20 @@ import org.pircbotx.User;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
-public class ReceiveFileTransfer {
+public class ReceiveFileTransfer implements FileTransfer {
 	protected final Configuration configuration;
 	@Getter
 	protected final User user;
 	@Getter
 	protected final Socket socket;
 	@Getter
-	protected final long size;
+	protected final long filesize;
 	@Getter
 	protected final String filename;
 	@Getter
-	protected final long startPos;
+	protected final long startPosition;
 	@Getter
-	protected long bytesReceived;
+	protected long bytesTransfered;
 	@Getter
 	protected DccState state = DccState.INIT;
 	protected final Object stateLock = new Object();
@@ -71,7 +71,7 @@ public class ReceiveFileTransfer {
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
 		RandomAccessFile fileOutput = new RandomAccessFile(destination.getCanonicalPath(), "rw");
-		fileOutput.seek(startPos);
+		fileOutput.seek(startPosition);
 
 		//Recieve file
 		byte[] inBuffer = new byte[configuration.getDccTransferBufferSize()];
@@ -79,14 +79,14 @@ public class ReceiveFileTransfer {
 		int bytesRead = 0;
 		while ((bytesRead = socketInput.read(inBuffer, 0, inBuffer.length)) != -1) {
 			fileOutput.write(inBuffer, 0, bytesRead);
-			bytesReceived += bytesRead;
+			bytesTransfered += bytesRead;
 			//Send back an acknowledgement of how many bytes we have got so far.
 			//TODO: What does this actually do?
-			outBuffer[0] = (byte) ((bytesReceived >> 24) & 0xff);
-			outBuffer[1] = (byte) ((bytesReceived >> 16) & 0xff);
-			outBuffer[2] = (byte) ((bytesReceived >> 8) & 0xff);
+			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
+			outBuffer[1] = (byte) ((bytesTransfered >> 16) & 0xff);
+			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
 			//TODO: Why does netbeans say this does nothing?
-			outBuffer[3] = (byte) ((bytesReceived >> 0) & 0xff);
+			outBuffer[3] = (byte) ((bytesTransfered >> 0) & 0xff);
 			socketOutput.write(outBuffer);
 			socketOutput.flush();
 		}
