@@ -400,7 +400,7 @@ public class InputParser {
 			curUser.setHostmask(parsedResponse.get(3));
 			curUser.setServer(parsedResponse.get(4));
 			curUser.setNick(parsedResponse.get(5));
-			curUser.parseStatus(channel, parsedResponse.get(6));
+			processUserStatus(channel, curUser, parsedResponse.get(6));
 			//Extra parsing needed since tokenizer stopped at :
 			String rawEnding = parsedResponse.get(7);
 			int rawEndingSpaceIndex = rawEnding.indexOf(' ');
@@ -646,6 +646,22 @@ public class InputParser {
 		} else
 			// The mode of a user is being changed.
 			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
+	}
+	
+	public void processUserStatus(Channel chan, User user, String prefix) {
+		//TODO: Move into InputThread
+		if (prefix.contains("@"))
+			dao.addUserToOps(user, chan);
+		if (prefix.contains("+"))
+			dao.addUserToVoices(user, chan);
+		if (prefix.contains("%"))
+			dao.addUserToHalfOps(user, chan);
+		if (prefix.contains("~"))
+			dao.addUserToOwners(user, chan);
+		if (prefix.contains("&"))
+			dao.addUserToSuperOps(user, chan);
+		user.setAway(prefix.contains("G")); //Assume here (H) if there is no G
+		user.setIrcop(prefix.contains("*"));
 	}
 
 	public void shutdown() {
