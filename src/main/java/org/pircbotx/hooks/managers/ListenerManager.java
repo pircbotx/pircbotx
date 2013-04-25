@@ -113,5 +113,5 @@ public interface ListenerManager<E extends PircBotX> {
 	public long incrementCurrentId();
 	
 	
-	public void shutdown(PircBotX bot) throws Exception;
+	public void shutdown(PircBotX bot);
 }
