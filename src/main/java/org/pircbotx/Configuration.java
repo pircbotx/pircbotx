@@ -18,6 +18,8 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ public class Configuration {
 	protected final String channelPrefixes;
 	//DCC
 	protected final boolean dccFilenameQuotes;
-	protected List<Integer> dccPorts = new ArrayList();
+	protected List<Integer> dccPorts;
 	protected InetAddress dccLocalAddress;
 	protected int dccSocketTimeout;
 	//Connect information
@@ -147,7 +149,7 @@ public class Configuration {
 		this.finger = builder.getFinger();
 		this.channelPrefixes = builder.getChannelPrefixes();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
-		this.dccPorts.addAll(builder.getDccPorts());
+		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
 		this.dccSocketTimeout = builder.getDccSocketTimeout();
 		this.serverHostname = builder.getServerHostname();
@@ -162,9 +164,9 @@ public class Configuration {
 		this.autoNickChange = builder.isAutoNickChange();
 		this.messageDelay = builder.getMessageDelay();
 		this.listenerManager = builder.getListenerManager();
-		this.autoJoinChannels = builder.getAutoJoinChannels();
+		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
-		this.capHandlers = builder.getCapHandlers();
+		this.capHandlers = ImmutableList.copyOf(builder.getCapHandlers());
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
 
 		//Build
