@@ -49,7 +49,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
-import org.pircbotx.dcc.Chat;
+import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.IrcException;
@@ -1466,7 +1466,7 @@ public class PircBotX {
 	 * @see DccHandler#sendChatRequest(org.pircbotx.User) 
 	 * @see Chat
 	 */
-	public Chat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
+	public SendChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
 		return dccHandler.sendChatRequest(sender);
 	}
 
