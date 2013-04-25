@@ -329,7 +329,8 @@ public class InputParser {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
 			listenerManager.dispatchEvent(new InviteEvent(bot, sourceNick, message));
-			dao.addUserToPrivate(source);
+			if(dao.getChannels(source).isEmpty())
+				dao.removeUser(source);
 		} else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
