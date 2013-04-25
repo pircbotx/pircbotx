@@ -37,12 +37,19 @@ import org.pircbotx.User;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class SendFileTransfer {
+public class SendFileTransfer implements FileTransfer {
 	protected final Configuration configuration;
+	@Getter
 	protected final User user;
+	@Getter
 	protected final String filename;
 	protected final Socket socket;
-	protected long progress;
+	@Getter
+	protected final long startPosition;
+	@Getter
+	protected long filesize;
+	@Getter
+	protected long bytesTransfered;
 	@Getter
 	protected DccState state = DccState.INIT;
 	protected final Object stateLock = new Object();
@@ -55,6 +62,8 @@ public class SendFileTransfer {
 					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
 			}
 		state = DccState.RUNNING;
+		
+		filesize = source.length();
 
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
@@ -64,10 +73,10 @@ public class SendFileTransfer {
 		BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(source));
 
 		// Check for resuming.
-		if (progress > 0) {
+		if (startPosition > 0) {
 			long bytesSkipped = 0;
-			while (bytesSkipped < progress)
-				bytesSkipped += fileInput.skip(progress - bytesSkipped);
+			while (bytesSkipped < startPosition)
+				bytesSkipped += fileInput.skip(startPosition - bytesSkipped);
 		}
 
 		byte[] outBuffer = new byte[configuration.getDccTransferBufferSize()];
@@ -77,7 +86,7 @@ public class SendFileTransfer {
 			socketOutput.write(outBuffer, 0, bytesRead);
 			socketOutput.flush();
 			socketInput.read(inBuffer, 0, inBuffer.length);
-			progress += bytesRead;
+			bytesTransfered += bytesRead;
 		}
 		
 		state = DccState.DONE;
