@@ -107,7 +107,7 @@ public class Benchmark {
 				.setListenerManager(listenerManager)
 				.addListener(new PircBotXJMeter())
 				.buildConfiguration());
-		
+
 
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);

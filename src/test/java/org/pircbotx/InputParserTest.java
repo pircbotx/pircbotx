@@ -115,7 +115,7 @@ public class InputParserTest {
 			}
 		};
 		bot.nick = "PircBotXBot";
-		
+
 		//Save objects into fields for easier access
 		this.dao = bot.getUserChannelDao();
 		this.inputParser = bot.getInputParser();
@@ -719,12 +719,12 @@ public class InputParserTest {
 		assertTrue(event.getChannels().contains("##anotherChannel"), "Doesn't contain second given channel");
 		assertEquals(event.getChannels().size(), 2, "Channels list size wrong");
 	}
-	
+
 	@Test
 	public void serverPingTest() throws IOException {
 		String pingString = "FDS9AG65FH32";
 		inputParser.handleLine("PING " + pingString);
-		
+
 		//Check event contents
 		ServerPingEvent event = getEvent(ServerPingEvent.class, "ServerPingEvent not dispatched");
 		assertEquals(event.getResponse(), pingString, "Ping string doesn't match given");

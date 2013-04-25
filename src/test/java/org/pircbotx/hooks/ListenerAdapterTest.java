@@ -55,14 +55,14 @@ import org.testng.annotations.DataProvider;
  */
 public class ListenerAdapterTest {
 	protected PircBotX bot;
-	
+
 	@BeforeMethod
 	public void setUp() {
 		bot = new PircBotX(new Configuration.Builder()
 				.setListenerManager(new GenericListenerManager())
 				.buildConfiguration());
 	}
-	
+
 	/**
 	 * Makes sure adapter uses all events
 	 * @throws Exception
@@ -163,7 +163,7 @@ public class ListenerAdapterTest {
 			methods.add(curMethod);
 			eventToMethod.put((Class<? extends Event>) curClass, methods);
 		}
-		
+
 		//Now that we have all the events, start mapping interfaces
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			//Make sure this is an event method

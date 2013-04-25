@@ -29,7 +29,6 @@ import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
@@ -57,16 +56,16 @@ public class SendFileTransfer implements FileTransfer {
 	public void sendFile(File source) throws IOException {
 		sendFile(source, 0);
 	}
-	
+
 	public void sendFile(File source, long startPosition) throws IOException {
 		//Prevent being called multiple times
-		if(state != DccState.INIT)
-			synchronized(stateLock) {
-				if(state != DccState.INIT)
+		if (state != DccState.INIT)
+			synchronized (stateLock) {
+				if (state != DccState.INIT)
 					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
 			}
 		state = DccState.RUNNING;
-		
+
 		this.filesize = source.length();
 		this.startPosition = startPosition;
 
@@ -93,7 +92,7 @@ public class SendFileTransfer implements FileTransfer {
 			socketInput.read(inBuffer, 0, inBuffer.length);
 			bytesTransfered += bytesRead;
 		}
-		
+
 		state = DccState.DONE;
 	}
 }

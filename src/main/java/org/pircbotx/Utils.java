@@ -166,7 +166,7 @@ public class Utils {
 		}
 		return builder.toString();
 	}
-	
+
 	/**
 	 * Try to parse int string, returning -1 if it fails
 	 * @param longString
@@ -175,11 +175,11 @@ public class Utils {
 	public static int tryParseInt(String intString, int defaultValue) {
 		try {
 			return Integer.parseInt(intString);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			return defaultValue;
 		}
 	}
-	
+
 	/**
 	 * Try to parse long string, returning -1 if it fails
 	 * @param longString
@@ -188,13 +188,13 @@ public class Utils {
 	public static long tryParseLong(String longString, int defaultValue) {
 		try {
 			return Long.parseLong(longString);
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			return defaultValue;
 		}
 	}
-	
+
 	public static <V> V tryGetIndex(List<V> list, int index, V defaultValue) {
-		if(index < list.size())
+		if (index < list.size())
 			return list.get(index);
 		else
 			return defaultValue;

@@ -1629,10 +1629,10 @@ public class PircBotX {
 			configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this));
 			log.debug("Disconnected.");
 		}
-		
+
 		//Shutdown listener manager
 		configuration.getListenerManager().shutdown(this);
-		
+
 		//Clear relevant variables of information
 		userChannelDao.close();
 		inputParser.close();

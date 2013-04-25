@@ -108,7 +108,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 
 		//Our custom thread pool (copied Executors.newCachedThreadPool)
 		final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-		
+
 		//Print thread count every 2 seconds
 		new Thread() {
 			@Override
@@ -123,7 +123,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 				}
 			}
 		}.start();
-		
+
 		Configuration configuration = new Configuration.Builder()
 				.setName("jmeterBot")
 				.setMessageDelay(0)

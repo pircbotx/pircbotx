@@ -330,7 +330,7 @@ public class InputParser implements Closeable {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
 			listenerManager.dispatchEvent(new InviteEvent(bot, sourceNick, message));
-			if(dao.getChannels(source).isEmpty())
+			if (dao.getChannels(source).isEmpty())
 				dao.removeUser(source);
 		} else
 			// If we reach this point, then we've found something that the PircBotX
@@ -649,7 +649,7 @@ public class InputParser implements Closeable {
 			// The mode of a user is being changed.
 			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
 	}
-	
+
 	public void processUserStatus(Channel chan, User user, String prefix) {
 		//TODO: Move into InputThread
 		if (prefix.contains("@"))

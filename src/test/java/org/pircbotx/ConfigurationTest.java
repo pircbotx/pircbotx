@@ -88,7 +88,7 @@ public class ConfigurationTest {
 		System.out.println("Builder:   " + builderFields);
 		Map<String, Field> configureFields = Maps.uniqueIndex(Arrays.asList(Configuration.Builder.class.getDeclaredFields()), function);
 		System.out.println("Configure: " + configureFields);
-		
+
 		MapDifference<String, Field> fieldsDiff = Maps.difference(builderFields, configureFields);
 		assertTrue(fieldsDiff.entriesOnlyOnLeft().isEmpty(), "Configuration has some fields that Builder doesn't: "
 				+ fieldsDiff.entriesOnlyOnLeft());

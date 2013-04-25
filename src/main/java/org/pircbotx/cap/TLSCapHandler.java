@@ -54,10 +54,8 @@ public class TLSCapHandler extends EnableCapHandler {
 
 	@Override
 	public void handleUnknown(PircBotX bot, String rawLine) {
-		if(rawLine.contains(" 670 "))
+		if (rawLine.contains(" 670 "))
 			//We have upgraded the socket, say were done
 			done = true;
 	}
-	
-	
 }
