@@ -61,22 +61,6 @@ public class User implements Comparable<User> {
 		this.nick = nick;
 	}
 
-	public void parseStatus(Channel chan, String prefix) {
-		//TODO: Move into InputThread
-		if (prefix.contains("@"))
-			dao.addUserToOps(this, chan);
-		if (prefix.contains("+"))
-			dao.addUserToVoices(this, chan);
-		if (prefix.contains("%"))
-			dao.addUserToHalfOps(this, chan);
-		if (prefix.contains("~"))
-			dao.addUserToOwners(this, chan);
-		if (prefix.contains("&"))
-			dao.addUserToSuperOps(this, chan);
-		setAway(prefix.contains("G")); //Assume here (H) if there is no G
-		setIrcop(prefix.contains("*"));
-	}
-
 	/**
 	 * Query the user with WHOIS to determine if they are verified *EXPENSIVE*.
 	 * This is intended to be a quick utility method, if you need more specific
