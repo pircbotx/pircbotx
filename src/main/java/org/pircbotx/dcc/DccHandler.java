@@ -33,7 +33,6 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -63,13 +62,13 @@ public class DccHandler implements Closeable {
 			//Someone is trying to send a file to us
 			//Example: DCC SEND <filename> <ip> <port> <file size> <passive(random,optional)> (note File size is optional)
 			String filename = requestParts.get(2);
-			final String safeFilename = (filename.startsWith("\"") && filename.endsWith("\"")) 
+			final String safeFilename = (filename.startsWith("\"") && filename.endsWith("\""))
 					? filename.substring(1, filename.length() - 1) : filename;
 			InetAddress address = integerToAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
 			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
-			
+
 			if (port == 0 || transferToken != null) {
 				//User is trying to use Passive DCC
 				final ServerSocket serverSocket = createServerSocket();
@@ -227,20 +226,19 @@ public class DccHandler implements Closeable {
 		new Thread(run).start();
 	}
 
-
 	protected static List<String> tokenizeDccRequest(String request) {
 		int quotesIndexBegin = request.indexOf('"');
-		if(quotesIndexBegin == -1)
+		if (quotesIndexBegin == -1)
 			//Just use tokenizeLine
 			return Utils.tokenizeLine(request);
-		
+
 		//This is a slightly modified version of Utils.tokenizeLine to parse
 		//potential quotes in filenames
 		int quotesIndexEnd = request.lastIndexOf('"');
 		List<String> stringParts = new ArrayList();
 		int pos = 0, end;
 		while ((end = request.indexOf(' ', pos)) >= 0) {
-			if(pos >= quotesIndexBegin && end < quotesIndexEnd) {
+			if (pos >= quotesIndexBegin && end < quotesIndexEnd) {
 				//We've entered the filename. Add and skip
 				stringParts.add(request.substring(quotesIndexBegin, quotesIndexEnd + 1));
 				pos = quotesIndexEnd + 2;

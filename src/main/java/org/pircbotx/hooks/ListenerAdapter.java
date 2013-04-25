@@ -143,7 +143,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			onVoice((VoiceEvent) event);
 		else if (event instanceof WhoisEvent)
 			onWhois((WhoisEvent) event);
-		
+
 		//Generic methods
 		if (event instanceof GenericCTCPEvent)
 			onGenericCTCPEvent((GenericCTCPEvent) event);
