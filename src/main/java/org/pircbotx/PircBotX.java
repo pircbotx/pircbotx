@@ -103,8 +103,8 @@ public class PircBotX {
 	@Getter
 	protected final DccHandler dccHandler;
 	protected final ServerInfo serverInfo;
+	//Connection stuff.
 	protected Socket socket;
-	// Connection stuff.
 	protected Thread inputParserThread;
 	protected Writer outputWriter;
 	protected ReentrantLock writeLock = new ReentrantLock(true);
@@ -1622,10 +1622,6 @@ public class PircBotX {
 			previousChannels.put(curChannel.getName(), key);
 		}
 
-		//Clear relevant variables of information
-		userChannelDao.shutdown();
-		inputParser.shutdown();
-
 		//Dispatch event
 		if (autoReconnect && !noReconnect)
 			try {
@@ -1641,6 +1637,13 @@ public class PircBotX {
 			configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this));
 			log.debug("Disconnected.");
 		}
+		
+		//Shutdown listener manager
+		configuration.getListenerManager().shutdown(this);
+		
+		//Clear relevant variables of information
+		userChannelDao.shutdown();
+		inputParser.shutdown();
 	}
 
 	/**
