@@ -52,6 +52,7 @@ import org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent;
 import org.pircbotx.hooks.events.RemovePrivateEvent;
 import org.pircbotx.hooks.events.RemoveSecretEvent;
 import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
+import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.events.SetChannelLimitEvent;
 import org.pircbotx.hooks.events.SetInviteOnlyEvent;
@@ -717,6 +718,16 @@ public class InputParserTest {
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
 		assertTrue(event.getChannels().contains("##anotherChannel"), "Doesn't contain second given channel");
 		assertEquals(event.getChannels().size(), 2, "Channels list size wrong");
+	}
+	
+	@Test
+	public void serverPingTest() throws IOException {
+		String pingString = "FDS9AG65FH32";
+		inputParser.handleLine("PING " + pingString);
+		
+		//Check event contents
+		ServerPingEvent event = getEvent(ServerPingEvent.class, "ServerPingEvent not dispatched");
+		assertEquals(event.getResponse(), pingString, "Ping string doesn't match given");
 	}
 
 	/**
