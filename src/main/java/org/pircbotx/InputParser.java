@@ -542,56 +542,56 @@ public class InputParser {
 				if (atPos == '+' || atPos == '-')
 					pn = atPos;
 				else if (atPos == 'o') {
-					User reciepeint = dao.getUser(params[p]);
+					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToOps(reciepeint, channel);
-						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, reciepeint, true));
+						dao.addUserToOps(recipient, channel);
+						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromOps(reciepeint, channel);
-						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, reciepeint, false));
+						dao.removeUserFromOps(recipient, channel);
+						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
-					User reciepeint = dao.getUser(params[p]);
+					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToVoices(reciepeint, channel);
-						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, reciepeint, true));
+						dao.addUserToVoices(recipient, channel);
+						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromVoices(reciepeint, channel);
-						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, reciepeint, false));
+						dao.removeUserFromVoices(recipient, channel);
+						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'h') {
 					//Half-op change
-					User reciepeint = dao.getUser(params[p]);
+					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToHalfOps(reciepeint, channel);
-						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, reciepeint, true));
+						dao.addUserToHalfOps(recipient, channel);
+						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromHalfOps(reciepeint, channel);
-						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, reciepeint, false));
+						dao.removeUserFromHalfOps(recipient, channel);
+						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'a') {
 					//SuperOp change
-					User reciepeint = dao.getUser(params[p]);
+					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToSuperOps(reciepeint, channel);
-						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, reciepeint, true));
+						dao.addUserToSuperOps(recipient, channel);
+						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromSuperOps(reciepeint, channel);
-						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, reciepeint, false));
+						dao.removeUserFromSuperOps(recipient, channel);
+						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'q') {
 					//Owner change
-					User reciepeint = dao.getUser(params[p]);
+					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToOwners(reciepeint, channel);
-						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, reciepeint, true));
+						dao.addUserToOwners(recipient, channel);
+						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromOwners(reciepeint, channel);
-						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, reciepeint, false));
+						dao.removeUserFromOwners(recipient, channel);
+						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'k') {
