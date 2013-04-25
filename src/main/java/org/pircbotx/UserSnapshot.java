@@ -72,11 +72,6 @@ public class UserSnapshot extends User {
 	}
 
 	@Override
-	public void parseStatus(Channel chan, String prefix) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
-	}
-
-	@Override
 	void setAway(boolean away) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}
