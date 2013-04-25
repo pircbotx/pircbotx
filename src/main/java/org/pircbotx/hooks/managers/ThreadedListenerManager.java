@@ -18,14 +18,23 @@
  */
 package org.pircbotx.hooks.managers;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -54,6 +63,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 	protected AtomicLong currentId = new AtomicLong();
+	protected HashMultimap<PircBotX, ManagedFutureTask> runningListeners = HashMultimap.create();
 
 	/**
 	 * Configures with default options: perHook is false and a
@@ -112,16 +122,17 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 			submitEvent(pool, curListener, event);
 	}
 
-	protected static void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
-		pool.execute(new Runnable() {
-			public void run() {
+	protected void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
+		pool.execute(new ManagedFutureTask(listener, event, new Callable() {
+			public Object call() {
 				try {
 					listener.onEvent(event);
 				} catch (Exception e) {
 					log.error("Exception encountered when executing event " + event + " on listener " + listener);
 				}
+				return null;
 			}
-		});
+		}));
 	}
 
 	@Override
@@ -147,5 +158,32 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	public ExecutorService shutdown() {
 		pool.shutdown();
 		return pool;
+	}
+
+	public void shutdown(PircBotX bot) throws InterruptedException, ExecutionException {
+		for (ManagedFutureTask curFuture : runningListeners.get(bot)) {
+			log.debug("Waiting for " + curFuture.getListener() + " to execute " + curFuture.getEvent());
+			curFuture.get();
+		}
+	}
+
+	@Getter
+	public class ManagedFutureTask extends FutureTask {
+		protected final Listener listener;
+		protected final Event event;
+
+		public ManagedFutureTask(Listener listener, Event event, Callable callable) {
+			super(callable);
+			this.listener = listener;
+			this.event = event;
+			if(event.getBot() != null)
+				runningListeners.put(event.getBot(), this);
+		}
+		
+		@Override
+		protected void done() {
+			if (event.getBot() != null)
+				runningListeners.remove(event.getBot(), this);
+		}
 	}
 }

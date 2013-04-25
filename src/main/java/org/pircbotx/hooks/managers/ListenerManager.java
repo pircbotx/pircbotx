@@ -111,4 +111,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @return The current id
 	 */
 	public long incrementCurrentId();
+	
+	
+	public void shutdown(PircBotX bot) throws Exception;
 }
