@@ -136,7 +136,7 @@ public class DccHandler implements Closeable {
 		return true;
 	}
 
-	public Chat sendChatRequest(User receiver) throws IOException {
+	public SendChat sendChatRequest(User receiver) throws IOException {
 		if (receiver == null)
 			throw new NullPointerException("Cannot send chat request to null user");
 		ServerSocket ss = createServerSocket();
@@ -148,7 +148,7 @@ public class DccHandler implements Closeable {
 
 		Socket userSocket = ss.accept();
 		ss.close();
-		return new Chat().init(userSocket);
+		return new SendChat().init(userSocket);
 	}
 
 	/**
