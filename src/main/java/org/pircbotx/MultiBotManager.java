@@ -62,7 +62,7 @@ public class MultiBotManager {
 	 */
 	public BotBuilder createBot(Configuration config) {
 		BotBuilder builder = new BotBuilder(config);
-		bots.put(new PircBotX(), builder);
+		bots.put(new PircBotX(config), builder);
 		return builder;
 	}
 
@@ -76,7 +76,7 @@ public class MultiBotManager {
 		for (Map.Entry<PircBotX, BotBuilder> curEntry : bots.entrySet()) {
 			PircBotX bot = curEntry.getKey();
 			BotBuilder builder = curEntry.getValue();
-			bot.connect(builder.getConfig());
+			bot.connect();
 
 			//Join channels
 			for (Map.Entry<String, String> curChannel : builder.getChannels().entrySet())

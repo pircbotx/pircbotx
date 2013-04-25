@@ -21,7 +21,6 @@ import org.pircbotx.hooks.events.UserListEvent;
  */
 @RequiredArgsConstructor
 public class UserChannelDao {
-	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
@@ -44,7 +43,7 @@ public class UserChannelDao {
 			return user;
 
 		//Create new user
-		user = botFactory.createUser(configuration, nick);
+		user = botFactory.createUser(bot, nick);
 		userNickMap.put(nick, user);
 		return user;
 	}
@@ -250,7 +249,7 @@ public class UserChannelDao {
 			return chan;
 
 		//Channel does not exist, create one
-		chan = botFactory.createChannel(configuration, name);
+		chan = botFactory.createChannel(bot, name);
 		channelNameMap.put(name, chan);
 		return chan;
 	}
