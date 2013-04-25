@@ -160,11 +160,14 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		return pool;
 	}
 
-	public void shutdown(PircBotX bot) throws InterruptedException, ExecutionException {
-		for (ManagedFutureTask curFuture : runningListeners.get(bot)) {
-			log.debug("Waiting for " + curFuture.getListener() + " to execute " + curFuture.getEvent());
-			curFuture.get();
-		}
+	public void shutdown(PircBotX bot) {
+		for (ManagedFutureTask curFuture : runningListeners.get(bot))
+			try {
+				log.debug("Waiting for listener " + curFuture.getListener() + " to execute event " + curFuture.getEvent());
+				curFuture.get();
+			} catch (Exception e) {
+				throw new RuntimeException("Cannot shutdown listener " + curFuture.getListener() + " executing event " + curFuture.getEvent(), e);
+			}
 	}
 
 	@Getter
@@ -176,10 +179,10 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 			super(callable);
 			this.listener = listener;
 			this.event = event;
-			if(event.getBot() != null)
+			if (event.getBot() != null)
 				runningListeners.put(event.getBot(), this);
 		}
-		
+
 		@Override
 		protected void done() {
 			if (event.getBot() != null)
