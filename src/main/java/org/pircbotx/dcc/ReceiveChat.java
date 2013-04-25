@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
  * @author Leon
  */
 @RequiredArgsConstructor
-public class ReceiveChat extends Chat {
+public class ReceiveChat extends SendChat {
 	protected final InetAddress address;
 	protected final int port;
 	protected boolean accepted;

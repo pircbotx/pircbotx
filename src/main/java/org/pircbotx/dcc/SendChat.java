@@ -33,7 +33,7 @@ import org.pircbotx.User;
  * @author Leon
  */
 @RequiredArgsConstructor
-public class Chat {
+public class SendChat {
 	@Getter
 	protected User user;
 	@Getter
@@ -45,7 +45,7 @@ public class Chat {
 	protected Boolean inited = false;
 	protected final Object initedLock = new Object();
 
-	protected Chat init(Socket socket) throws IOException {
+	protected SendChat init(Socket socket) throws IOException {
 		if (inited)
 			synchronized (initedLock) {
 				if (inited)
