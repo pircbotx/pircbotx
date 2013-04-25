@@ -83,4 +83,8 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 	public long incrementCurrentId() {
 		return currentId++;
 	}
+
+	public void shutdown(PircBotX bot) throws Exception {
+		//Do nothing since dispatching an event executes all listeners immediately
+	}
 }
