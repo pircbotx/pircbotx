@@ -47,7 +47,7 @@ public class PircBotXTest {
 
 	@BeforeMethod
 	public void setup() {
-		smallBot = new PircBotX();
+		smallBot = new PircBotX(new Configuration.Builder().buildConfiguration());
 	}
 
 	@Test(description = "Make sure send* methods have appropiate variations")
@@ -100,40 +100,40 @@ public class PircBotXTest {
 
 	@Test(description = "Make sure getUser doesn't return null and reliably returns the correct value")
 	public void getUserTest() {
-		User origUser = smallBot.getUser("SomeUser");
+		User origUser = smallBot.getUserChannelDao().getUser("SomeUser");
 		assertNotNull(origUser, "getUser returns null for unknown user");
-		assertEquals(origUser, smallBot.getUser("SomeUser"), "getUser doesn't return the same user during second call");
+		assertEquals(origUser, smallBot.getUserChannelDao().getUser("SomeUser"), "getUser doesn't return the same user during second call");
 	}
 
 	@Test(description = "Make sure channel doesn't return null and reliably returns the correct value")
 	public void getChannelTest() {
-		Channel channel = smallBot.getChannel("#aChannel");
+		Channel channel = smallBot.getUserChannelDao().getChannel("#aChannel");
 		assertNotNull(channel, "getchannel returns null for unknown channel");
-		assertEquals(channel, smallBot.getChannel("#aChannel"), "getChannel doesn't return the same channel during second call");
+		assertEquals(channel, smallBot.getUserChannelDao().getChannel("#aChannel"), "getChannel doesn't return the same channel during second call");
 	}
 
 	@Test(dependsOnMethods = "getUserTest", description = "Make sure userExists works")
 	public void userExistsTest() {
 		//Create user by getting an known one
-		smallBot.getUser("SomeUser");
+		smallBot.getUserChannelDao().getUser("SomeUser");
 		//Make sure it exists
-		assertTrue(smallBot.userExists("SomeUser"));
+		assertTrue(smallBot.getUserChannelDao().userExists("SomeUser"));
 	}
 
 	@Test(dependsOnMethods = "getChannelTest", description = "Make sure channelExists works")
 	public void channelExistsTest() {
 		//Create channel by getting an unknown one
-		smallBot.getChannel("#aChannel");
+		smallBot.getUserChannelDao().getChannel("#aChannel");
 		//Make sure it exists
-		assertTrue(smallBot.channelExists("#aChannel"));
+		assertTrue(smallBot.getUserChannelDao().channelExists("#aChannel"));
 	}
 
 	@Test(description = "Verify getting the bots own user object works")
 	public void getUserBotTest() {
 		smallBot.setNick("BotNick");
-		assertNotNull(smallBot.getUser("BotNick"), "Getting bots user with getUser returns null");
-		assertNotNull(smallBot.getUser("BotNick"), "Getting existing bots user with getUser returns null");
-		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting new user returns null");
-		assertNotNull(smallBot.getUser("SomeOtherNick"), "Getting existing new user returns null");
+		assertNotNull(smallBot.getUserChannelDao().getUser("BotNick"), "Getting bots user with getUser returns null");
+		assertNotNull(smallBot.getUserChannelDao().getUser("BotNick"), "Getting existing bots user with getUser returns null");
+		assertNotNull(smallBot.getUserChannelDao().getUser("SomeOtherNick"), "Getting new user returns null");
+		assertNotNull(smallBot.getUserChannelDao().getUser("SomeOtherNick"), "Getting existing new user returns null");
 	}
 }

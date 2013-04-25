@@ -39,6 +39,7 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
 import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 import org.testng.annotations.BeforeClass;
 
@@ -49,7 +50,6 @@ import org.testng.annotations.BeforeClass;
  */
 @Test(groups = "ConnectTests", singleThreaded = true)
 public class PircBotXConnectTest {
-	protected PircBotX bot;
 	protected Configuration.Builder configurationBuilder;
 	protected SocketFactory socketFactory;
 	protected Socket socket;
@@ -65,19 +65,6 @@ public class PircBotXConnectTest {
 
 	@BeforeMethod
 	public void botProvider() throws Exception {
-		//Setup bot
-		events = new ArrayList<Event>();
-		bot = new PircBotX();
-		configurationBuilder = new Configuration.Builder()
-				.setCapEnabled(true)
-				.setListenerManager(new GenericListenerManager() {
-			@Override
-			public void dispatchEvent(Event event) {
-				events.add(event);
-			}
-		})
-				.setName("PircBotXBot");
-
 		//Setup stream
 		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
 		botOut = new ByteArrayOutputStream();
@@ -87,9 +74,21 @@ public class PircBotXConnectTest {
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket(address, 6667, null, 0)).thenReturn(socket);
+
+		//Setup bot
+		events = new ArrayList<Event>();
+		configurationBuilder = new Configuration.Builder()
+				.setCapEnabled(true)
+				.setListenerManager(new GenericListenerManager())
+				.addListener(new Listener() {
+			public void onEvent(Event event) throws Exception {
+				events.add(event);
+			}
+		})
+				.setName("PircBotXBot");
 	}
 
-	protected void validateEvents() throws Exception {
+	protected void validateEvents(PircBotX bot) throws Exception {
 		//Make sure events are dispatched
 		int rance = 0;
 		int ransce = 0;
@@ -116,11 +115,12 @@ public class PircBotXConnectTest {
 	@Test
 	public void connectTest() throws Exception {
 		//Connect the bot to the socket
-		bot.connect(configurationBuilder
+		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
 				.setServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
+		bot.connect();
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket(address, 6667, null, 0);
@@ -135,18 +135,19 @@ public class PircBotXConnectTest {
 		assertEquals(lines[2], "USER " + configurationBuilder.getLogin() + " 8 * :" + configurationBuilder.getVersion());
 		assertEquals(lines[3], "CAP END");
 
-		validateEvents();
+		validateEvents(bot);
 	}
 
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket
 		when(socketFactory.createSocket(address, 25622, null, 0)).thenReturn(socket);
-		bot.connect(configurationBuilder
+		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
 				.setServer(address.getHostName(), 25622)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
+		bot.connect();
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket(address, 25622, null, 0);
@@ -161,17 +162,18 @@ public class PircBotXConnectTest {
 		assertEquals(lines[2], "USER " + configurationBuilder.getLogin() + " 8 * :" + configurationBuilder.getVersion());
 		assertEquals(lines[3], "CAP END");
 
-		validateEvents();
+		validateEvents(bot);
 	}
 
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithPasswordTest() throws Exception {
 		//Connect the bot to the socket
-		bot.connect(configurationBuilder
+		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
 				.setServer(address.getHostName(), 6667)
 				.setServerPassword("pa55w0rd")
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
+		bot.connect();
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket(address, 6667, null, 0);
@@ -187,7 +189,7 @@ public class PircBotXConnectTest {
 		assertEquals(lines[3], "USER " + configurationBuilder.getLogin() + " 8 * :" + configurationBuilder.getVersion());
 		assertEquals(lines[4], "CAP END");
 
-		validateEvents();
+		validateEvents(bot);
 	}
 
 	@Test(dependsOnMethods = "connectTest")
@@ -196,11 +198,12 @@ public class PircBotXConnectTest {
 		configurationBuilder.addCapHandler(new EnableCapHandler("jdshflkashfalksjh", true));
 
 		//Connect the bot to the socket
-		bot.connect(configurationBuilder
+		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
 				.setServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
+		bot.connect();
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket(address, 6667, null, 0);
@@ -215,6 +218,6 @@ public class PircBotXConnectTest {
 		assertEquals(lines[2], "USER " + configurationBuilder.getLogin() + " 8 * :" + configurationBuilder.getVersion());
 		assertEquals(lines[3], "CAP END");
 
-		validateEvents();
+		validateEvents(bot);
 	}
 }

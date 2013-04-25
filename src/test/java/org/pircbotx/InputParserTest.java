@@ -94,7 +94,15 @@ public class InputParserTest {
 	@BeforeMethod
 	public void setUp() {
 		events = new ArrayList<Event>();
-		bot = new PircBotX() {
+		Configuration configuration = new Configuration.Builder()
+				.setListenerManager(new GenericListenerManager())
+				.addListener(new Listener() {
+			public void onEvent(Event event) throws Exception {
+				events.add(event);
+			}
+		})
+				.buildConfiguration();
+		bot = new PircBotX(configuration) {
 			@Override
 			public boolean isConnected() {
 				return true;
@@ -106,17 +114,6 @@ public class InputParserTest {
 			}
 		};
 		bot.nick = "PircBotXBot";
-		dao = new UserChannelDao();
-		dao.bot = bot;
-		inputParser = new InputParser();
-		inputParser.bot = bot;
-		inputParser.dao = dao;
-		inputParser.listenerManager = new GenericListenerManager() {
-			@Override
-			public void dispatchEvent(Event event) {
-				events.add(event);
-			}
-		};
 	}
 
 	@Test(description = "Verifies UserModeEvent from user mode being changed")
