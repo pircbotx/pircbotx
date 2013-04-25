@@ -165,27 +165,27 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public Set<User> getChannelOps(Channel channel) {
-		return ImmutableSet.copyOf(opsMap.getUsers(channel));
+		return opsMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
 	public Set<User> getChannelVoices(Channel channel) {
-		return ImmutableSet.copyOf(voiceMap.getUsers(channel));
+		return voiceMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
 	public Set<User> getChannelHalfOps(Channel channel) {
-		return ImmutableSet.copyOf(halfOpsMap.getUsers(channel));
+		return halfOpsMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
 	public Set<User> getChannelSuperOps(Channel channel) {
-		return ImmutableSet.copyOf(superOpsMap.getUsers(channel));
+		return superOpsMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
 	public Set<User> getChannelOwners(Channel channel) {
-		return ImmutableSet.copyOf(ownersMap.getUsers(channel));
+		return ownersMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
@@ -201,27 +201,27 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public Set<Channel> getUsersOps(User user) {
-		return ImmutableSet.copyOf(opsMap.getChannels(user));
+		return opsMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
 	public Set<Channel> getUsersVoices(User user) {
-		return ImmutableSet.copyOf(voiceMap.getChannels(user));
+		return voiceMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
 	public Set<Channel> getUsersHalfOps(User user) {
-		return ImmutableSet.copyOf(halfOpsMap.getChannels(user));
+		return halfOpsMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
 	public Set<Channel> getUsersSuperOps(User user) {
-		return ImmutableSet.copyOf(superOpsMap.getChannels(user));
+		return superOpsMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
 	public Set<Channel> getUsersOwners(User user) {
-		return ImmutableSet.copyOf(ownersMap.getChannels(user));
+		return ownersMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
@@ -284,7 +284,7 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public Set<User> getUsers(Channel channel) {
-		return ImmutableSet.copyOf(mainMap.getUsers(channel));
+		return mainMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
@@ -294,7 +294,7 @@ public class UserChannelDao {
 
 	@Synchronized("accessLock")
 	public Set<Channel> getChannels(User user) {
-		return ImmutableSet.copyOf(mainMap.getChannels(user));
+		return mainMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
