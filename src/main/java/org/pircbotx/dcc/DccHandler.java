@@ -49,7 +49,6 @@ import org.pircbotx.hooks.managers.ListenerManager;
  */
 @RequiredArgsConstructor
 public class DccHandler {
-	public static final int TRANSFER_BUFFER_SIZE = 1024;
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
@@ -82,7 +81,7 @@ public class DccHandler {
 						try {
 							Socket userSocket = serverSocket.accept();
 							serverSocket.close();
-							transfer = new ReceiveFileTransfer(user, userSocket, pendingTransfer.filesize(), safeFilename, pendingTransfer.position());
+							transfer = new ReceiveFileTransfer(configuration, user, userSocket, pendingTransfer.filesize(), safeFilename, pendingTransfer.position());
 							//Remove the pending transfer
 							pendingReceiveTransfers.remove(pendingTransfer);
 						} catch (Exception e) {
@@ -99,7 +98,7 @@ public class DccHandler {
 				ReceiveFileTransfer fileTransfer = null;
 				try {
 					Socket userSocket = new Socket(address, port, configuration.getDccLocalAddress(), 0);
-					fileTransfer = new ReceiveFileTransfer(user, userSocket, size, filename, 0);
+					fileTransfer = new ReceiveFileTransfer(configuration, user, userSocket, size, filename, 0);
 				} catch (Exception e) {
 					exception = e;
 				}
@@ -198,7 +197,7 @@ public class DccHandler {
 		Socket userSocket = serverSocket.accept();
 		serverSocket.close();
 
-		return new SendFileTransfer(bot, receiver, safeFilename, userSocket);
+		return new SendFileTransfer(configuration, receiver, safeFilename, userSocket);
 	}
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
