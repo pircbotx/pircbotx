@@ -127,11 +127,6 @@ public class Configuration {
 	protected final boolean capEnabled;
 	protected final List<CapHandler> capHandlers;
 	protected final BotFactory botFactory;
-	protected final PircBotX bot;
-	protected final UserChannelDao userChannelDao;
-	protected final DccHandler dccHandler;
-	protected final ServerInfo serverInfo;
-	protected final InputParser inputParser;
 
 	/**
 	 * Use {@link Configuration.Builder#build() }
@@ -170,14 +165,7 @@ public class Configuration {
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = ImmutableList.copyOf(builder.getCapHandlers());
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
-
-		//Build
-		botFactory = builder.getBotFactory();
-		bot = botFactory.createPircBotX(this);
-		userChannelDao = botFactory.createUserChannelDao(this);
-		dccHandler = botFactory.createDccHandler(this);
-		serverInfo = botFactory.createServerInfo(this);
-		inputParser = botFactory.createInputParser(this);
+		this.botFactory = builder.getBotFactory();
 	}
 
 	@Accessors(chain = true)
@@ -339,37 +327,33 @@ public class Configuration {
 	}
 
 	public static class BotFactory {
-		public PircBotX createPircBotX(Configuration configuration) {
-			return new PircBotX(configuration, configuration.getDccHandler());
+		public UserChannelDao createUserChannelDao(PircBotX bot) {
+			return new UserChannelDao(bot, bot.getConfiguration().getBotFactory());
 		}
 
-		public UserChannelDao createUserChannelDao(Configuration configuration) {
-			return new UserChannelDao(configuration, configuration.getBot(), configuration.getBotFactory());
+		public InputParser createInputParser(PircBotX bot) {
+			return new InputParser(bot,
+					bot.getConfiguration().getListenerManager(),
+					bot.getUserChannelDao(),
+					bot.getConfiguration().getChannelPrefixes(),
+					bot.getServerInfo(),
+					bot.getDccHandler());
 		}
 
-		public InputParser createInputParser(Configuration configuration) {
-			return new InputParser(configuration.getBot(),
-					configuration.getListenerManager(),
-					configuration.getUserChannelDao(),
-					configuration.getChannelPrefixes(),
-					configuration.getServerInfo(),
-					configuration.getDccHandler());
+		public DccHandler createDccHandler(PircBotX bot) {
+			return new DccHandler(bot.getConfiguration(), bot, bot.getConfiguration().getListenerManager());
 		}
 
-		public DccHandler createDccHandler(Configuration configuration) {
-			return new DccHandler(configuration, configuration.getBot(), configuration.getListenerManager());
+		public ServerInfo createServerInfo(PircBotX bot) {
+			return new ServerInfo(bot);
 		}
 
-		public ServerInfo createServerInfo(Configuration configuration) {
-			return new ServerInfo(configuration.getBot());
+		public User createUser(PircBotX bot, String nick) {
+			return new User(bot, bot.getUserChannelDao(), nick);
 		}
 
-		public User createUser(Configuration configuration, String nick) {
-			return new User(configuration.getBot(), configuration.getUserChannelDao(), nick);
-		}
-
-		public Channel createChannel(Configuration configuration, String name) {
-			return new Channel(configuration.getBot(), configuration.getUserChannelDao(), name);
+		public Channel createChannel(PircBotX bot, String name) {
+			return new Channel(bot, bot.getUserChannelDao(), name);
 		}
 	}
 }
