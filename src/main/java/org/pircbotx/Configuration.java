@@ -104,9 +104,9 @@ public class Configuration {
 	protected final String channelPrefixes;
 	//DCC
 	protected final boolean dccFilenameQuotes;
-	protected List<Integer> dccPorts;
-	protected InetAddress dccLocalAddress;
-	protected int dccSocketTimeout;
+	protected final List<Integer> dccPorts;
+	protected final InetAddress dccLocalAddress;
+	protected final int dccSocketTimeout;
 	protected final int dccTransferBufferSize;
 	//Connect information
 	protected final String serverHostname;
