@@ -1634,8 +1634,8 @@ public class PircBotX {
 		configuration.getListenerManager().shutdown(this);
 		
 		//Clear relevant variables of information
-		userChannelDao.shutdown();
-		inputParser.shutdown();
+		userChannelDao.close();
+		inputParser.close();
 		dccHandler.close();
 	}
 
