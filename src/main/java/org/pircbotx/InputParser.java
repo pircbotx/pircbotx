@@ -138,7 +138,7 @@ public class InputParser {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	protected void handleLine(String line) throws IOException {
+	public void handleLine(String line) throws IOException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log.info(line);
@@ -334,7 +334,7 @@ public class InputParser {
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
-	protected void processServerResponse(int code, String rawResponse, List<String> parsedResponse) {
+	public void processServerResponse(int code, String rawResponse, List<String> parsedResponse) {
 		if (parsedResponse == null)
 			throw new IllegalArgumentException("Can't process null response");
 		//Parsed response format: Everything after code
@@ -502,7 +502,7 @@ public class InputParser {
 	 * @param sourceHostname The hostname of the user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	protected void processMode(User user, String target, String mode) {
+	public void processMode(User user, String target, String mode) {
 		if (channelPrefixes.indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
 			Channel channel = dao.getChannel(target);
