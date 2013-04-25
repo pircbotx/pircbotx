@@ -1607,14 +1607,6 @@ public class PircBotX {
 				log.error("Cannot close socket", e);
 			}
 
-		//Close the DCC Manager
-		try {
-			dccHandler.close();
-		} catch (Exception ex) {
-			//Not much we can do with it here. And throwing it would not let other things shutdown
-			log.error("Cannot close dccHandler", ex);
-		}
-
 		//Cache channels for possible next reconnect
 		Map<String, String> previousChannels = new HashMap();
 		for (Channel curChannel : userChannelDao.getAllChannels()) {
@@ -1644,6 +1636,7 @@ public class PircBotX {
 		//Clear relevant variables of information
 		userChannelDao.shutdown();
 		inputParser.shutdown();
+		dccHandler.close();
 	}
 
 	/**
