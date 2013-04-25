@@ -34,13 +34,12 @@ import static org.testng.Assert.*;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TemporaryListenerTest {
-	protected PublicPircBotX bot;
+	protected PircBotX bot;
 	protected ListenerManager listenerManager;
 
 	@BeforeMethod
 	public void setup() {
-		bot = new PublicPircBotX();
-		bot.setConfiguration(new Configuration.Builder()
+		bot = new PircBotX(new Configuration.Builder()
 				.setListenerManager(listenerManager = new GenericListenerManager())
 				.buildConfiguration());
 	}
@@ -60,7 +59,7 @@ public class TemporaryListenerTest {
 		assertTrue(listenerManager.listenerExists(listener), "Listener doesn't exist in ListenerManager");
 
 		//Send some arbitrary line
-		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
+		bot.getInputParser().handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
 		MessageEvent mevent = mutableEvent.getValue();
 
 		//Verify event contents
@@ -82,7 +81,7 @@ public class TemporaryListenerTest {
 		listenerManager.addListener(listener);
 
 		assertTrue(listenerManager.listenerExists(listener), "Listener wasn't added to ListenerManager");
-		bot.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
+		bot.getInputParser().handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
 		assertFalse(listenerManager.listenerExists(listener), "Listener wasn't removed from ListenerManager");
 	}
 }
