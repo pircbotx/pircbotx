@@ -104,6 +104,7 @@ public class Configuration {
 	protected final boolean dccFilenameQuotes;
 	protected List<Integer> dccPorts = new ArrayList();
 	protected InetAddress dccLocalAddress = null;
+	protected int dccSocketTimeout;
 	//Connect information
 	protected final String serverHostname;
 	protected final int serverPort;
@@ -147,6 +148,7 @@ public class Configuration {
 		this.channelPrefixes = builder.getChannelPrefixes();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts.addAll(builder.getDccPorts());
+		this.dccSocketTimeout = builder.getDccSocketTimeout();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
 		this.serverPassword = builder.getServerPassword();
@@ -193,6 +195,7 @@ public class Configuration {
 		protected boolean dccFilenameQuotes = false;
 		protected List<Integer> dccPorts = new ArrayList();
 		protected InetAddress dccLocalAddress = null;
+		protected int dccSocketTimeout = -1;
 		//Connect information
 		protected String serverHostname = null;
 		protected int serverPort = 6667;
@@ -235,6 +238,7 @@ public class Configuration {
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
+			this.dccSocketTimeout = otherBuilder.getDccSocketTimeout();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
 			this.serverPassword = otherBuilder.getServerPassword();
@@ -258,6 +262,10 @@ public class Configuration {
 
 		public InetAddress getDccLocalAddress() {
 			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
+		}
+		
+		public int getDccSocketTimeout() {
+			return (dccSocketTimeout != -1) ? dccSocketTimeout : socketTimeout;
 		}
 
 		public Builder addCapHandler(CapHandler handler) {

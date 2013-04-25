@@ -53,7 +53,6 @@ public class DccHandler {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
-	protected int socketTimeout;
 	@Getter(AccessLevel.PROTECTED)
 	protected List<PendingRecieveFileTransfer> pendingReceiveTransfers = Collections.synchronizedList(new ArrayList<PendingRecieveFileTransfer>());
 
@@ -141,7 +140,7 @@ public class DccHandler {
 		if (receiver == null)
 			throw new NullPointerException("Cannot send chat request to null user");
 		ServerSocket ss = createServerSocket();
-		ss.setSoTimeout(socketTimeout);
+		ss.setSoTimeout(configuration.getDccSocketTimeout());
 
 		int serverPort = ss.getLocalPort();
 		String ipNum = addressToInteger(ss.getInetAddress());
