@@ -18,10 +18,15 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.reflect.ClassPath;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.HookUtils;
+import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.types.GenericEvent;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -29,16 +34,35 @@ import org.testng.annotations.DataProvider;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestUtils {
-	protected static final List<Class<? extends Event>> eventClasses = HookUtils.getAllEvents();
-
-	@DataProvider(name = "getEvents")
-	public static Object[][] eventDataProvider() {
-		int eventSize = eventClasses.size();
-		Object[][] params = new Object[eventSize][];
-		for (int i = 0; i < eventSize; i++)
-			params[i] = new Object[]{eventClasses.get(i)};
-
-		return params;
+	@DataProvider
+	public static Object[][] eventObjectDataProvider() throws IOException {
+		return generateEventArguments(true, false);
+	}
+	
+	@DataProvider
+	public static Object[][] eventGenericDataProvider() throws IOException {
+		return generateEventArguments(false, true);
+	}
+	
+	@DataProvider
+	public static Object[][] eventAllDataProvider() throws IOException {
+		return generateEventArguments(true, true);
+	}
+	
+	protected static Object[][] generateEventArguments(boolean includeEvents, boolean includeGeneric) throws IOException {
+		ClassPath classPath = ClassPath.from(TestUtils.class.getClassLoader());
+		ImmutableSet.Builder<ClassPath.ClassInfo> classesBuilder = ImmutableSet.builder();
+		if(includeEvents)
+			classesBuilder.addAll(classPath.getTopLevelClasses(VoiceEvent.class.getPackage().getName()));
+		if(includeGeneric)
+			classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName());
+		List<Object[]> argumentBuilder = new ArrayList();
+		for (ClassPath.ClassInfo curClassInfo : classesBuilder.build()) {
+			Class loadedClass = curClassInfo.load();
+			if (GenericEvent.class.isAssignableFrom(loadedClass) && !loadedClass.equals(GenericEvent.class))
+				argumentBuilder.add(new Object[]{loadedClass});
+		}
+		return argumentBuilder.toArray(new Object[0][]);
 	}
 
 	public static String wrapClass(Class aClass, String message) {
