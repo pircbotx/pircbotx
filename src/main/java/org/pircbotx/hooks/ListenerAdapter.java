@@ -146,7 +146,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 		//Generic methods
 		if (event instanceof GenericCTCPEvent)
-			onGenericCTCPEvent((GenericCTCPEvent) event);
+			onGenericCTCP((GenericCTCPEvent) event);
 		if (event instanceof GenericUserModeEvent)
 			onGenericUserMode((GenericUserModeEvent) event);
 		if (event instanceof GenericChannelModeEvent)
@@ -316,7 +316,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	public void onWhois(WhoisEvent<T> event) throws Exception {
 	}
 
-	public void onGenericCTCPEvent(GenericCTCPEvent<T> event) throws Exception {
+	public void onGenericCTCP(GenericCTCPEvent<T> event) throws Exception {
 	}
 
 	public void onGenericUserMode(GenericUserModeEvent<T> event) throws Exception {
