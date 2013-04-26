@@ -19,12 +19,13 @@
 package org.pircbotx.hooks;
 
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericEvent;
 
 /**
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public abstract class Event<T extends PircBotX> {
+public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	protected final long timestamp;
 	protected final T bot;
 	protected final long id;
