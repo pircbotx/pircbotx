@@ -104,7 +104,7 @@ public class Configuration {
 	protected final String channelPrefixes;
 	//DCC
 	protected final boolean dccFilenameQuotes;
-	protected final List<Integer> dccPorts;
+	protected final ImmutableList<Integer> dccPorts;
 	protected final InetAddress dccLocalAddress;
 	protected final int dccSocketTimeout;
 	protected final int dccTransferBufferSize;
@@ -121,7 +121,7 @@ public class Configuration {
 	protected final boolean autoNickChange;
 	protected final long messageDelay;
 	protected final boolean shutdownHookEnabled;
-	protected final Map<String, String> autoJoinChannels;
+	protected final ImmutableMap<String, String> autoJoinChannels;
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;

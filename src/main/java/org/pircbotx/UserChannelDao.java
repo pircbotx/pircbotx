@@ -89,7 +89,7 @@ public class UserChannelDao implements Closeable {
 	 * @see UserListEvent
 	 */
 	@Synchronized("accessLock")
-	public Set<User> getAllUsers() {
+	public ImmutableSet<User> getAllUsers() {
 		return ImmutableSet.copyOf(userNickMap.values());
 	}
 
@@ -154,7 +154,7 @@ public class UserChannelDao implements Closeable {
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getChannelNormals(Channel channel) {
+	public ImmutableSet<User> getChannelNormals(Channel channel) {
 		Set<User> remainingUsers = new HashSet(mainMap.getUsers(channel));
 		remainingUsers.removeAll(opsMap.getUsers(channel));
 		remainingUsers.removeAll(voiceMap.getUsers(channel));
@@ -165,32 +165,32 @@ public class UserChannelDao implements Closeable {
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getChannelOps(Channel channel) {
+	public ImmutableSet<User> getChannelOps(Channel channel) {
 		return opsMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getChannelVoices(Channel channel) {
+	public ImmutableSet<User> getChannelVoices(Channel channel) {
 		return voiceMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getChannelHalfOps(Channel channel) {
+	public ImmutableSet<User> getChannelHalfOps(Channel channel) {
 		return halfOpsMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getChannelSuperOps(Channel channel) {
+	public ImmutableSet<User> getChannelSuperOps(Channel channel) {
 		return superOpsMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getChannelOwners(Channel channel) {
+	public ImmutableSet<User> getChannelOwners(Channel channel) {
 		return ownersMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getUsersNormals(User user) {
+	public ImmutableSet<Channel> getUsersNormals(User user) {
 		Set<Channel> remainingChannels = new HashSet(mainMap.getChannels(user));
 		remainingChannels.removeAll(opsMap.getChannels(user));
 		remainingChannels.removeAll(voiceMap.getChannels(user));
@@ -201,27 +201,27 @@ public class UserChannelDao implements Closeable {
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getUsersOps(User user) {
+	public ImmutableSet<Channel> getUsersOps(User user) {
 		return opsMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getUsersVoices(User user) {
+	public ImmutableSet<Channel> getUsersVoices(User user) {
 		return voiceMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getUsersHalfOps(User user) {
+	public ImmutableSet<Channel> getUsersHalfOps(User user) {
 		return halfOpsMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getUsersSuperOps(User user) {
+	public ImmutableSet<Channel> getUsersSuperOps(User user) {
 		return superOpsMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getUsersOwners(User user) {
+	public ImmutableSet<Channel> getUsersOwners(User user) {
 		return ownersMap.getChannels(user);
 	}
 
@@ -284,17 +284,17 @@ public class UserChannelDao implements Closeable {
 	}
 
 	@Synchronized("accessLock")
-	public Set<User> getUsers(Channel channel) {
+	public ImmutableSet<User> getUsers(Channel channel) {
 		return mainMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getAllChannels() {
+	public ImmutableSet<Channel> getAllChannels() {
 		return ImmutableSet.copyOf(channelNameMap.values());
 	}
 
 	@Synchronized("accessLock")
-	public Set<Channel> getChannels(User user) {
+	public ImmutableSet<Channel> getChannels(User user) {
 		return mainMap.getChannels(user);
 	}
 
@@ -357,11 +357,11 @@ public class UserChannelDao implements Closeable {
 				userToChannelMap.remove(curUser, channel);
 		}
 
-		public Set<User> getUsers(Channel channel) {
+		public ImmutableSet<User> getUsers(Channel channel) {
 			return ImmutableSet.copyOf(channelToUserMap.get(channel));
 		}
 
-		public Set<Channel> getChannels(User user) {
+		public ImmutableSet<Channel> getChannels(User user) {
 			return ImmutableSet.copyOf(userToChannelMap.get(user));
 		}
 
