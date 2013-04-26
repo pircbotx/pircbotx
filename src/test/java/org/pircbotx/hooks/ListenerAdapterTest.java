@@ -18,24 +18,17 @@
  */
 package org.pircbotx.hooks;
 
-import com.google.common.collect.Iterables;
-import com.google.common.reflect.ClassPath;
 import java.lang.reflect.Method;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -44,6 +37,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.TestUtils;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.testng.annotations.BeforeMethod;
@@ -63,27 +57,11 @@ public class ListenerAdapterTest {
 				.buildConfiguration());
 	}
 
-	@DataProvider
-	public Object[][] eventDataProvider(Method testMethod) throws IOException {
-		System.out.println("Ran eventDataProvider");
-		ClassPath classPath = ClassPath.from(getClass().getClassLoader());
-		Iterable<ClassPath.ClassInfo> allClasses = Iterables.concat(
-				classPath.getTopLevelClasses(VoiceEvent.class.getPackage().getName()),
-				classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName()));
-		List<Object[]> argumentBuilder = new ArrayList();
-		for (ClassPath.ClassInfo curClassInfo : allClasses) {
-			Class loadedClass = curClassInfo.load();
-			if (GenericEvent.class.isAssignableFrom(loadedClass) && !loadedClass.equals(GenericEvent.class))
-				argumentBuilder.add(new Object[]{loadedClass});
-		}
-		return argumentBuilder.toArray(new Object[0][]);
-	}
-
 	/**
 	 * Makes sure adapter uses all events
 	 * @throws Exception
 	 */
-	@Test(dataProvider = "eventDataProvider", description = "Verify ListenerAdapter has methods for all events")
+	@Test(dataProviderClass = TestUtils.class, dataProvider = "eventAllDataProvider", description = "Verify ListenerAdapter has methods for all events")
 	public void eventImplementTest(Class eventClass) throws NoSuchMethodException {
 		//Just try to load it. If the method doesn't exist then it throws a NoSuchMethodException
 		String eventName = eventClass.getSimpleName();
@@ -92,7 +70,8 @@ public class ListenerAdapterTest {
 		ListenerAdapter.class.getDeclaredMethod(methodName, eventClass);
 	}
 
-	@Test(dependsOnMethods = "eventImplementTest", dataProvider = "eventDataProvider", description = "Verify all methods in ListenerAdapter throw an exception")
+	@Test(dependsOnMethods = "eventImplementTest", 
+			dataProviderClass = TestUtils.class, dataProvider = "eventAllDataProvider", description = "Verify all methods in ListenerAdapter throw an exception")
 	public void throwsExceptionTest(Class eventClass) throws NoSuchMethodException {
 		String methodName = "on" + StringUtils.removeEnd(StringUtils.capitalize(eventClass.getSimpleName()), "Event");
 		Method eventMethod = ListenerAdapter.class.getDeclaredMethod(methodName, eventClass);

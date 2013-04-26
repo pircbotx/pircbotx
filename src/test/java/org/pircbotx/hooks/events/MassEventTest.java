@@ -29,18 +29,20 @@ import org.testng.annotations.Test;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MassEventTest {
-	@Test(description = "Verify event has a single constructor", dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	@Test(dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")
 	public void singleConstructorTest(Class<?> event) {
 		assertEquals(event.getDeclaredConstructors().length, 1, TestUtils.wrapClass(event, "No constructor or extra constructor found"));
 	}
 
-	@Test(description = "Verify event has a single constructor", dependsOnMethods = "singleConstructorTest", dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	@Test(dependsOnMethods = "singleConstructorTest", 
+			dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")
 	public void firstConstructorArgBotTest(Class<?> event) {
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		assertEquals(constructor.getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
 	}
 
-	@Test(description = "Verify number of class fields and number of constructor params match", dependsOnMethods = "singleConstructorTest", dataProvider = "getEvents", dataProviderClass = TestUtils.class)
+	@Test(dependsOnMethods = "singleConstructorTest",
+			dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify number of class fields and number of constructor params match")
 	public void constructorParamToFieldTest(Class<?> event) {
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		//(subtract one parameter to account for bot)
