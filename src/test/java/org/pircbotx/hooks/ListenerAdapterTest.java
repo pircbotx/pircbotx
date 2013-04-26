@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks;
 
+import com.google.common.collect.Iterables;
 import com.google.common.reflect.ClassPath;
 import java.lang.reflect.Method;
 import java.io.IOException;
@@ -65,19 +66,14 @@ public class ListenerAdapterTest {
 	@DataProvider
 	public Object[][] eventDataProvider(Method testMethod) throws IOException {
 		System.out.println("Ran eventDataProvider");
-		Class loadClass;
-		if (testMethod.getName().equals("eventImplementTest"))
-			loadClass = VoiceEvent.class;
-		else if (testMethod.getName().equals("eventImplementTest"))
-			loadClass = GenericMessageEvent.class;
-		else
-			throw new RuntimeException("Unknown method: " + testMethod);
-
-		Set<ClassPath.ClassInfo> classes = ClassPath.from(getClass().getClassLoader()).getTopLevelClasses(loadClass.getPackage().getName());
+		ClassPath classPath = ClassPath.from(getClass().getClassLoader());
+		Iterable<ClassPath.ClassInfo> allClasses = Iterables.concat(
+				classPath.getTopLevelClasses(VoiceEvent.class.getPackage().getName()),
+				classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName()));
 		List<Object[]> argumentBuilder = new ArrayList();
-		for (ClassPath.ClassInfo curClassInfo : classes) {
+		for (ClassPath.ClassInfo curClassInfo : allClasses) {
 			Class loadedClass = curClassInfo.load();
-			if (GenericEvent.class.isAssignableFrom(loadedClass))
+			if (GenericEvent.class.isAssignableFrom(loadedClass) && !loadedClass.equals(GenericEvent.class))
 				argumentBuilder.add(new Object[]{loadedClass});
 		}
 		return argumentBuilder.toArray(new Object[0][]);
