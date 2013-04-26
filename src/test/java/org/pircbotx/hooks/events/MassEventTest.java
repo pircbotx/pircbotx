@@ -31,14 +31,14 @@ import org.testng.annotations.Test;
 public class MassEventTest {
 	@Test(dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")
 	public void singleConstructorTest(Class<?> event) {
-		assertEquals(event.getDeclaredConstructors().length, 1, TestUtils.wrapClass(event, "No constructor or extra constructor found"));
+		assertEquals(event.getDeclaredConstructors().length, 1, wrapClass(event, "No constructor or extra constructor found"));
 	}
 
 	@Test(dependsOnMethods = "singleConstructorTest", 
 			dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")
 	public void firstConstructorArgBotTest(Class<?> event) {
 		Constructor constructor = event.getDeclaredConstructors()[0];
-		assertEquals(constructor.getParameterTypes()[0], PircBotX.class, TestUtils.wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
+		assertEquals(constructor.getParameterTypes()[0], PircBotX.class, wrapClass(event, "First parameter of constructor isn't of PircBotX type"));
 	}
 
 	@Test(dependsOnMethods = "singleConstructorTest",
@@ -46,6 +46,10 @@ public class MassEventTest {
 	public void constructorParamToFieldTest(Class<?> event) {
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		//(subtract one parameter to account for bot)
-		assertEquals(constructor.getParameterTypes().length - 1, event.getDeclaredFields().length, TestUtils.wrapClass(event, "Number of constructor parameters don't match number of fields"));
+		assertEquals(constructor.getParameterTypes().length - 1, event.getDeclaredFields().length, wrapClass(event, "Number of constructor parameters don't match number of fields"));
+	}
+	
+	public static String wrapClass(Class aClass, String message) {
+		return message + " in class " + aClass.toString();
 	}
 }

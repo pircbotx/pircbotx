@@ -65,10 +65,6 @@ public class TestUtils {
 		return argumentBuilder.toArray(new Object[0][]);
 	}
 
-	public static String wrapClass(Class aClass, String message) {
-		return message + " in class " + aClass.toString();
-	}
-
 	public static String getRootName(Class aClass) {
 		String name = aClass.getSimpleName();
 
