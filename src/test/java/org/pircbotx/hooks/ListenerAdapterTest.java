@@ -96,15 +96,13 @@ public class ListenerAdapterTest {
 		ListenerAdapter.class.getDeclaredMethod(methodName, eventClass);
 	}
 
-	@Test(description = "Verify all methods in ListenerAdapter throw an exception")
-	public void throwsExceptionTest() {
-		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
-			if (!curMethod.getName().startsWith("on"))
-				continue;
-			Class<?>[] exceptions = curMethod.getExceptionTypes();
-			assertEquals(exceptions.length, 1, "Method " + curMethod + " in ListenerManager doesn't throw an exception or thows too many");
-			assertEquals(exceptions[0], Exception.class, "Method " + curMethod + " in ListenerManager doesn't throw the right exception");
-		}
+	@Test(dependsOnMethods = "eventImplementTest", dataProvider = "eventDataProvider", description = "Verify all methods in ListenerAdapter throw an exception")
+	public void throwsExceptionTest(Class eventClass) throws NoSuchMethodException {
+		String methodName = "on" + StringUtils.removeEnd(StringUtils.capitalize(eventClass.getSimpleName()), "Event");
+		Method eventMethod = ListenerAdapter.class.getDeclaredMethod(methodName, eventClass);
+		Class<?>[] exceptions = eventMethod.getExceptionTypes();
+		assertEquals(exceptions.length, 1, "Method " + eventMethod + " in ListenerManager doesn't throw an exception or thows too many");
+		assertEquals(exceptions[0], Exception.class, "Method " + eventMethod + " in ListenerManager doesn't throw the right exception");
 	}
 
 	@Test(description = "Do an actual test with a sample ListenerAdapter")
