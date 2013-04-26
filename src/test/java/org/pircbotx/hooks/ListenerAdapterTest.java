@@ -88,11 +88,11 @@ public class ListenerAdapterTest {
 	 * @throws Exception
 	 */
 	@Test(dataProvider = "eventDataProvider", description = "Verify ListenerAdapter has methods for all events")
-	public void eventImplementTest(Class eventClass) throws Exception {
+	public void eventImplementTest(Class eventClass) throws NoSuchMethodException {
 		//Just try to load it. If the method doesn't exist then it throws a NoSuchMethodException
 		String eventName = eventClass.getSimpleName();
 		assertTrue(StringUtils.endsWith(eventName, "Event"), "Unknown event class " + eventClass);
-		String methodName = "on" + StringUtils.removeEnd(StringUtils.capitalize(eventClass.getSimpleName()), "Event");
+		String methodName = "on" + StringUtils.removeEnd(StringUtils.capitalize(eventName), "Event");
 		ListenerAdapter.class.getDeclaredMethod(methodName, eventClass);
 	}
 
