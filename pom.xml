@@ -253,6 +253,7 @@
 							<configuration>
 								<effort>Max</effort>
 								<threshold>Exp</threshold>
+								<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
 							</configuration>
 						</plugin>
 						<!-- PMD Static Analysis -->
