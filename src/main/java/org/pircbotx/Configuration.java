@@ -246,10 +246,8 @@ public class Configuration {
 			this.autoNickChange = otherBuilder.isAutoNickChange();
 			this.messageDelay = otherBuilder.getMessageDelay();
 			this.listenerManager = otherBuilder.getListenerManager();
-			this.autoJoinChannels.clear();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
 			this.capEnabled = otherBuilder.isCapEnabled();
-			this.capHandlers.clear();
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
 			this.botFactory = otherBuilder.getBotFactory();
