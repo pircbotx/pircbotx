@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>0.11.6</version>
+			<version>0.11.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Commons Lang for useful utilities -->
@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.2</version>
+			<version>1.7.5</version>
 		</dependency>
 		<!-- Commons codec for base64 -->
 		<dependency>
@@ -122,7 +122,7 @@
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-			<version>6.8</version>
+			<version>6.8.1</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- Mockito for mocking test objects-->
@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.9</version>
+			<version>1.0.12</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -338,7 +338,7 @@
 			<!-- Make a unified jar with all of the dependencies -->
 			<plugin>              
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
+				<version>2.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
