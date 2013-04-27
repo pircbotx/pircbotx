@@ -280,7 +280,7 @@ public class Configuration {
 		}
 
 		public Builder addAutoJoinChannel(String channel, String key) {
-			getAutoJoinChannels().put(channel, null);
+			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
 
