@@ -167,6 +167,8 @@ public class PircBotX {
 					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
 				shutdownCalled = false;
 			}
+			if(configuration.isUseIdentServer() && IdentServer.getServer() == null)
+				throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
 
 			//Reset capabilities
 			enabledCapabilities = new ArrayList();
@@ -191,10 +193,11 @@ public class PircBotX {
 
 			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), configuration.getEncoding());
 			outputWriter = new OutputStreamWriter(socket.getOutputStream(), configuration.getEncoding());
-
 			BufferedReader breader = new BufferedReader(inputStreamReader);
-
 			configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
+			
+			if(configuration.isUseIdentServer())
+				IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
 
 			if (configuration.isCapEnabled())
 				// Attempt to initiate a CAP transaction.
@@ -401,41 +404,6 @@ public class PircBotX {
 	 */
 	public synchronized void disconnect() {
 		quitServer();
-	}
-
-	/**
-	 * Starts an ident server (Identification Protocol Server, RFC 1413).
-	 * <p>
-	 * Most IRC servers attempt to contact the ident server on connecting
-	 * hosts in order to determine the user's identity. A few IRC servers
-	 * will not allow you to connect unless this information is provided.
-	 * <p>
-	 * So when a PircBotX is run on a machine that does not run an ident server,
-	 * it may be necessary to call this method to start one up.
-	 * <p>
-	 * Calling this method starts up an ident server which will respond with
-	 * the login provided by calling getLogin() and then shut down immediately.
-	 * It will also be shut down if it has not been contacted within 60 seconds
-	 * of creation.
-	 * <p>
-	 * If you require an ident response, then the correct procedure is to start
-	 * the ident server and then connect to the IRC server. The IRC server may
-	 * then contact the ident server to get the information it needs.
-	 * <p>
-	 * The ident server will fail to start if there is already an ident server
-	 * running on port 113, or if you are running as an unprivileged user who
-	 * is unable to create a server socket on that port number.
-	 * <p>
-	 * If it is essential for you to use an ident server when connecting to an
-	 * IRC server, then make sure that port 113 on your machine is visible to
-	 * the IRC server so that it may contact the ident server.
-	 *
-	 * @since PircBot 0.9c
-	 */
-	public IdentServer startIdentServer() {
-		IdentServer startedIdentServer = new IdentServer(this, configuration.getLogin());
-		startedIdentServer.start();
-		return startedIdentServer;
 	}
 
 	/**
