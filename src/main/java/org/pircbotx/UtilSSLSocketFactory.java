@@ -172,7 +172,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		 * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
 		 * */
 		public X509Certificate[] getAcceptedIssuers() {
-			return null;  // I've seen someone return new X509Certificate[ 0 ];
+			return new X509Certificate[0];
 		}
 	}
 
