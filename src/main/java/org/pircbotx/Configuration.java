@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -170,7 +171,6 @@ public class Configuration {
 
 	@Accessors(chain = true)
 	@Data
-	@NoArgsConstructor
 	public static class Builder {
 		//WebIRC
 		protected boolean webIrcEnabled = false;
@@ -207,13 +207,13 @@ public class Configuration {
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
-		protected final List<CapHandler> capHandlers = new ArrayList() {
-			{
-				add(new EnableCapHandler("multi-prefix", true));
-			}
-		};
+		protected final List<CapHandler> capHandlers = new ArrayList();
 		protected BotFactory botFactory = new BotFactory();
 
+		public Builder() {
+			capHandlers.add(new EnableCapHandler("multi-prefix", true));
+		}
+		
 		/**
 		 * Copy values from another builder. 
 		 * @param otherBuilder 
