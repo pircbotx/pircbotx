@@ -35,74 +35,44 @@ public class ChannelTest {
 		channel = new Channel(null, null, "#testChannel");
 	}
 
-	protected void setUsedModes() {
-		//Sandwhich important modes among garbage in the center with garbage arguments
-		channel.setMode("+dfanimnstdfe arg1 2 #arg3 arg4");
+	@DataProvider
+	public Object[][] modeDataProvider() {
+		return new Object[][]{
+			//Sandwhich important modes among garbage in the center with garbage arguments
+			{"+dfanimnstdfe garbage1 2 #garbage3 garbage4"},
+			//Have only garbage modes and garbage arguments
+			{"+dfadfe garbage1 2 #garbage3 garbage4"}
+		};
 	}
 
-	protected void setUnusedModes() {
-		//Have only garbage modes and garbage arguments
-		channel.setMode("+dfadfe arg1 2 #arg3 arg4");
-	}
-
-	@Test
-	public void isInviteOnlyUsedTest() {
-		setUsedModes();
+	@Test(dataProvider = "modeDataProvider")
+	public void isInviteOnlyTest(String mode) {
+		channel.setMode(mode);
 		assertTrue(channel.isInviteOnly());
 	}
 
-	@Test
-	public void isInviteOnlyUnusedTest() {
-		setUnusedModes();
-		assertFalse(channel.isInviteOnly());
-	}
-
-	@Test
-	public void isModeratedUsedTest() {
-		setUsedModes();
+	@Test(dataProvider = "modeDataProvider")
+	public void isModeratedTest(String mode) {
+		channel.setMode(mode);
 		assertTrue(channel.isModerated());
 	}
 
-	@Test
-	public void isModeratedUnusedTest() {
-		setUnusedModes();
-		assertFalse(channel.isModerated());
-	}
-
-	@Test
-	public void isNoExternalMessagesUsedTest() {
-		setUsedModes();
+	@Test(dataProvider = "modeDataProvider")
+	public void isNoExternalMessagesTest(String mode) {
+		channel.setMode(mode);
 		assertTrue(channel.isNoExternalMessages());
 	}
 
-	@Test
-	public void isNoExternalMessagesUnusedTest() {
-		setUnusedModes();
-		assertFalse(channel.isNoExternalMessages());
-	}
-
-	@Test
-	public void isSecretUsedTest() {
-		setUsedModes();
+	@Test(dataProvider = "modeDataProvider")
+	public void isSecretTest(String mode) {
+		channel.setMode(mode);
 		assertTrue(channel.isSecret());
 	}
 
-	@Test
-	public void isSecretUnusedTest() {
-		setUnusedModes();
-		assertFalse(channel.isSecret());
-	}
-
-	@Test
-	public void hasTopicProtectionUsedTest() {
-		setUsedModes();
+	@Test(dataProvider = "modeDataProvider")
+	public void hasTopicProtectionTest(String mode) {
+		channel.setMode(mode);
 		assertTrue(channel.hasTopicProtection());
-	}
-
-	@Test
-	public void hasTopicProtectionUnusedTest() {
-		setUnusedModes();
-		assertFalse(channel.hasTopicProtection());
 	}
 
 	@Test
