@@ -27,6 +27,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
 
 /**
@@ -71,8 +72,16 @@ public class User implements Comparable<User> {
 	public boolean isVerified() {
 		try {
 			bot.sendRawLine("WHOIS " + getNick() + " " + getNick());
-			WhoisEvent event = getBot().waitFor(WhoisEvent.class);
-			return event.getRegisteredAs() != null && !event.getRegisteredAs().isEmpty();
+			WaitForQueue waitForQueue = new WaitForQueue(bot);
+			while (true) {
+				WhoisEvent event = waitForQueue.waitFor(WhoisEvent.class);
+				if (!event.getNick().equals(nick))
+					continue;
+
+				//Got our event
+				waitForQueue.close();
+				return event.getRegisteredAs() != null && !event.getRegisteredAs().isEmpty();
+			}
 		} catch (InterruptedException ex) {
 			throw new RuntimeException("Couldn't finish querying user for verified status", ex);
 		}
