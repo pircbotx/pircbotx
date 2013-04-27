@@ -21,6 +21,7 @@ package org.pircbotx.cap;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
@@ -64,14 +65,10 @@ public class SASLCapHandler implements CapHandler {
 	}
 
 	public void handleUnknown(PircBotX bot, String rawLine) throws CAPException {
-		try {
-			if (rawLine.equals("AUTHENTICATE +")) {
-				//Server ackowledges our request to use plain authentication
-				String encodedAuth = Base64.encodeBase64String((username + '\0' + username + '\0' + password).getBytes("UTF-8"));
-				bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
-			}
-		} catch (Exception e) {
-			throw new CAPException("Exception encountered during authentication", e);
+		if (rawLine.equals("AUTHENTICATE +")) {
+			//Server ackowledges our request to use plain authentication
+			String encodedAuth = Base64.encodeBase64String((username + '\0' + username + '\0' + password).getBytes(Charsets.UTF_8));
+			bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
 		}
 
 		//Check for 904 and 905 
