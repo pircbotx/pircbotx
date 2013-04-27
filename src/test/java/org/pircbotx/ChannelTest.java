@@ -39,40 +39,40 @@ public class ChannelTest {
 	public Object[][] modeDataProvider() {
 		return new Object[][]{
 			//Sandwhich important modes among garbage in the center with garbage arguments
-			{"+dfanimnstdfe garbage1 2 #garbage3 garbage4"},
+			{"+dfanimnstdfe garbage1 2 #garbage3 garbage4", true},
 			//Have only garbage modes and garbage arguments
-			{"+dfadfe garbage1 2 #garbage3 garbage4"}
+			{"+dfadfe garbage1 2 #garbage3 garbage4", false}
 		};
 	}
 
 	@Test(dataProvider = "modeDataProvider")
-	public void isInviteOnlyTest(String mode) {
+	public void isInviteOnlyTest(String mode, boolean value) {
 		channel.setMode(mode);
-		assertTrue(channel.isInviteOnly());
+		assertEquals(channel.isInviteOnly(), value);
 	}
 
 	@Test(dataProvider = "modeDataProvider")
-	public void isModeratedTest(String mode) {
+	public void isModeratedTest(String mode, boolean value) {
 		channel.setMode(mode);
-		assertTrue(channel.isModerated());
+		assertEquals(channel.isModerated(), value);
 	}
 
 	@Test(dataProvider = "modeDataProvider")
-	public void isNoExternalMessagesTest(String mode) {
+	public void isNoExternalMessagesTest(String mode, boolean value) {
 		channel.setMode(mode);
-		assertTrue(channel.isNoExternalMessages());
+		assertEquals(channel.isNoExternalMessages(), value);
 	}
 
 	@Test(dataProvider = "modeDataProvider")
-	public void isSecretTest(String mode) {
+	public void isSecretTest(String mode, boolean value) {
 		channel.setMode(mode);
-		assertTrue(channel.isSecret());
+		assertEquals(channel.isSecret(), value);
 	}
 
 	@Test(dataProvider = "modeDataProvider")
-	public void hasTopicProtectionTest(String mode) {
+	public void hasTopicProtectionTest(String mode, boolean value) {
 		channel.setMode(mode);
-		assertTrue(channel.hasTopicProtection());
+		assertEquals(channel.hasTopicProtection(), value);
 	}
 
 	@Test
