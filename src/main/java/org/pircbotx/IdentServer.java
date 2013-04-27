@@ -107,13 +107,13 @@ public class IdentServer extends Thread {
 				writer.close();
 			}
 		} catch (Exception e) {
-			// We're not really concerned with what went wrong, are we?
+			log.error("Exception encountered when running IdentServer", e);
 		}
 
 		try {
 			ss.close();
 		} catch (Exception e) {
-			// Doesn't really matter...
+			log.error("Could not close IdentServer server socket", e);
 		}
 
 		log.debug("*** The Ident server has been shut down.");
