@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  *
@@ -48,21 +48,34 @@ public class ConfigurationTest {
 			if (!curField.isSynthetic()) {
 				String prefix = (curField.getType().equals(boolean.class)) ? "is" : "get";
 				String name = StringUtils.capitalize(curField.getName());
-				params.add(new Object[]{Configuration.class, prefix + name});
-				params.add(new Object[]{Configuration.Builder.class, prefix + name});
+
+				//Constructors to test
+				params.add(new Object[]{Configuration.class,
+					Configuration.Builder.class,
+					new Configuration.Builder(),
+					prefix + name});
+				params.add(new Object[]{Configuration.Builder.class,
+					Configuration.Builder.class,
+					new Configuration.Builder(),
+					prefix + name});
+				params.add(new Object[]{Configuration.Builder.class,
+					Configuration.class,
+					new Configuration.Builder().buildConfiguration(),
+					prefix + name});
 			}
 		return params.toArray(new Object[0][]);
 	}
 
-	@Test(dataProvider = "fieldNamesDataProvider", description = "Make sure every getter in builder gets called when creating Configuration")
-	public void createCopyingBuilderTest(Class testClass, String getterName) throws Exception {
+	@Test(dataProvider = "fieldNamesDataProvider", dependsOnMethods = "containSameFieldsTest",
+			description = "Make sure every getter in builder gets called when creating Configuration")
+	public void copyConstructorTest(Class containerClass, Class copiedClass, Object copiedOpject, String getterName) throws Exception {
 		//Get the method that is going to be called
-		final Method methodToCall = Configuration.Builder.class.getDeclaredMethod(getterName);
+		final Method methodToCall = copiedClass.getDeclaredMethod(getterName);
 
 		//Trip if method gets called
 		final MutableBoolean isMethodCalled = new MutableBoolean(false);
-		Configuration.Builder configBuilder = mock(Configuration.Builder.class, withSettings()
-				.spiedInstance(new Configuration.Builder())
+		Object copiedObjectSpied = mock(copiedClass, withSettings()
+				.spiedInstance(copiedOpject)
 				.defaultAnswer(new Answer() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				if (invocation.getMethod().equals(methodToCall))
@@ -72,9 +85,9 @@ public class ConfigurationTest {
 		}));
 
 		//Call and test
-		testClass.getConstructor(Configuration.Builder.class).newInstance(configBuilder);
+		containerClass.getDeclaredConstructor(copiedClass).newInstance(copiedObjectSpied);
 		assertTrue(isMethodCalled.getValue(), "Getter " + getterName + " on Builder not called in constructor in class "
-				+ testClass);
+				+ containerClass.getCanonicalName());
 	}
 
 	@Test
