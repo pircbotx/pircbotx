@@ -135,7 +135,7 @@ public class Configuration {
 	 * @param builder 
 	 * @see Configuration.Builder#build()
 	 */
-	public Configuration(Builder builder) {
+	protected Configuration(Builder builder) {
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
 		this.webIrcHostname = builder.getWebIrcHostname();
