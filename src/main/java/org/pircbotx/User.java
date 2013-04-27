@@ -41,7 +41,7 @@ import org.pircbotx.hooks.events.WhoisEvent;
  */
 @Data
 @EqualsAndHashCode(of = {"uuid", "bot"})
-@Setter(AccessLevel.PACKAGE)
+@Setter(AccessLevel.PROTECTED)
 public class User implements Comparable<User> {
 	private String nick;
 	private String realName = "";
