@@ -250,6 +250,7 @@ public class Configuration {
 			this.messageDelay = configuration.getMessageDelay();
 			this.listenerManager = configuration.getListenerManager();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
+			this.useIdentServer = configuration.isUseIdentServer();
 			this.capEnabled = configuration.isCapEnabled();
 			this.capHandlers.addAll(configuration.getCapHandlers());
 			this.shutdownHookEnabled = configuration.isShutdownHookEnabled();
@@ -289,6 +290,7 @@ public class Configuration {
 			this.messageDelay = otherBuilder.getMessageDelay();
 			this.listenerManager = otherBuilder.getListenerManager();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
+			this.useIdentServer = otherBuilder.isUseIdentServer();
 			this.capEnabled = otherBuilder.isCapEnabled();
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
