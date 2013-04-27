@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.User;
 
 /**
@@ -33,6 +34,7 @@ import org.pircbotx.User;
  * @author Leon
  */
 @RequiredArgsConstructor
+@Slf4j
 public class SendChat implements Chat {
 	@Getter
 	protected User user;
@@ -68,7 +70,9 @@ public class SendChat implements Chat {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public String readLine() throws IOException {
-		return bufferedReader.readLine();
+		String line = bufferedReader.readLine();
+		log.info("<<<" + line);
+		return line;
 	}
 
 	/**
@@ -82,6 +86,7 @@ public class SendChat implements Chat {
 	 */
 	public void sendLine(String line) throws IOException {
 		synchronized (bufferedWriter) {
+			log.info(">>>" + line);
 			bufferedWriter.write(line + "\r\n");
 			bufferedWriter.flush();
 		}
