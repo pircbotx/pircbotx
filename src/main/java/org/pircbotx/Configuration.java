@@ -123,6 +123,7 @@ public class Configuration {
 	protected final long messageDelay;
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
+	protected final boolean useIdentServer;
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
@@ -161,6 +162,7 @@ public class Configuration {
 		this.autoSplitMessage = builder.isAutoSplitMessage();
 		this.autoNickChange = builder.isAutoNickChange();
 		this.messageDelay = builder.getMessageDelay();
+		this.useIdentServer = builder.isUseIdentServer();
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
@@ -204,6 +206,7 @@ public class Configuration {
 		protected long messageDelay = 1000;
 		protected boolean shutdownHookEnabled = true;
 		protected final Map<String, String> autoJoinChannels = new HashMap();
+		protected boolean useIdentServer;
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
