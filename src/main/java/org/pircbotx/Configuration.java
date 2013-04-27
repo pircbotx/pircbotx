@@ -218,6 +218,45 @@ public class Configuration {
 		}
 		
 		/**
+		 * Copy values from an existing Configuration
+		 * @param configuration Configuration to copy values from
+		 */
+		public Builder(Configuration configuration) {
+			this.webIrcEnabled = configuration.isWebIrcEnabled();
+			this.webIrcUsername = configuration.getWebIrcUsername();
+			this.webIrcHostname = configuration.getWebIrcHostname();
+			this.webIrcAddress = configuration.getWebIrcAddress();
+			this.webIrcPassword = configuration.getWebIrcPassword();
+			this.name = configuration.getName();
+			this.login = configuration.getLogin();
+			this.version = configuration.getVersion();
+			this.finger = configuration.getFinger();
+			this.channelPrefixes = configuration.getChannelPrefixes();
+			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
+			this.dccPorts.addAll(configuration.getDccPorts());
+			this.dccLocalAddress = configuration.getDccLocalAddress();
+			this.dccSocketTimeout = configuration.getDccSocketTimeout();
+			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
+			this.serverHostname = configuration.getServerHostname();
+			this.serverPort = configuration.getServerPort();
+			this.serverPassword = configuration.getServerPassword();
+			this.socketFactory = configuration.getSocketFactory();
+			this.localAddress = configuration.getLocalAddress();
+			this.encoding = configuration.getEncoding();
+			this.socketTimeout = configuration.getSocketTimeout();
+			this.maxLineLength = configuration.getMaxLineLength();
+			this.autoSplitMessage = configuration.isAutoSplitMessage();
+			this.autoNickChange = configuration.isAutoNickChange();
+			this.messageDelay = configuration.getMessageDelay();
+			this.listenerManager = configuration.getListenerManager();
+			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
+			this.capEnabled = configuration.isCapEnabled();
+			this.capHandlers.addAll(configuration.getCapHandlers());
+			this.shutdownHookEnabled = configuration.isShutdownHookEnabled();
+			this.botFactory = configuration.getBotFactory();
+		}
+		
+		/**
 		 * Copy values from another builder. 
 		 * @param otherBuilder 
 		 */
