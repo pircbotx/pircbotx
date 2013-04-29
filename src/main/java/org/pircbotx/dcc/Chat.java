@@ -20,19 +20,75 @@ package org.pircbotx.dcc;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.User;
 
 /**
  *
  * @author Leon
  */
-public interface Chat {
-	public User getUser();
+@Slf4j
+public class Chat {
+	@Getter
+	protected User user;
+	@Getter
+	protected BufferedReader bufferedReader;
+	@Getter
+	protected BufferedWriter bufferedWriter;
+	@Getter
+	protected Socket socket;
 
-	public Socket getSocket();
+	protected Chat(User user, Socket socket) throws IOException {
+		this.user = user;
+		this.socket = socket;
+		this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+	}
 
-	public BufferedReader getBufferedReader();
+	/**
+	 * Reads the next line of text from the client at the other end of our DCC Chat
+	 * connection. This method blocks until something can be returned.
+	 * If the connection has closed, null is returned.
+	 *
+	 * @return The next line of text from the client. Returns null if the
+	 * connection has closed normally.
+	 *
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public String readLine() throws IOException {
+		String line = bufferedReader.readLine();
+		log.info("<<<" + line);
+		return line;
+	}
 
-	public BufferedWriter getBufferedWriter();
+	/**
+	 * Sends a line of text to the client at the other end of our DCC Chat
+	 * connection.
+	 *
+	 * @param line The line of text to be sent. This should not include
+	 * linefeed characters.
+	 *
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public void sendLine(String line) throws IOException {
+		synchronized (bufferedWriter) {
+			log.info(">>>" + line);
+			bufferedWriter.write(line + "\r\n");
+			bufferedWriter.flush();
+		}
+	}
+
+	/**
+	 * Closes the DCC Chat connection.
+	 *
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public void close() throws IOException {
+		socket.close();
+	}
 }
