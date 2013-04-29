@@ -82,7 +82,7 @@ public class Utils {
 		else if (event instanceof FingerEvent)
 			return ((FingerEvent) event).getUser();
 		else if (event instanceof IncomingChatRequestEvent)
-			return ((IncomingChatRequestEvent) event).getChat().getUser();
+			return ((IncomingChatRequestEvent) event).getUser();
 		else if (event instanceof IncomingFileTransferEvent)
 			return ((IncomingFileTransferEvent) event).getTransfer().getUser();
 		else if (event instanceof JoinEvent)

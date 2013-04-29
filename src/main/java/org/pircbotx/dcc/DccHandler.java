@@ -129,10 +129,14 @@ public class DccHandler implements Closeable {
 			InetAddress address = integerToAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 
-			listenerManager.dispatchEvent(new IncomingChatRequestEvent(bot, new ReceiveChat(address, port)));
+			listenerManager.dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port));
 		} else
 			return false;
 		return true;
+	}
+	
+	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
+		return new ReceiveChat(event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
 	}
 
 	public SendChat sendChatRequest(User receiver) throws IOException {
@@ -147,7 +151,7 @@ public class DccHandler implements Closeable {
 
 		Socket userSocket = ss.accept();
 		ss.close();
-		return new SendChat().init(userSocket);
+		return new SendChat(receiver, userSocket);
 	}
 
 	/**
