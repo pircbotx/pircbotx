@@ -18,10 +18,13 @@
  */
 package org.pircbotx.hooks.events;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
@@ -58,16 +61,24 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
-	protected final ReceiveChat chat;
+	protected final User user;
+	protected final InetAddress chatAddress;
+	protected final int chatPort;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 */
-	public IncomingChatRequestEvent(T bot, ReceiveChat chat) {
+	public IncomingChatRequestEvent(T bot, User user, InetAddress chatAddress, int chatPort) {
 		super(bot);
-		this.chat = chat;
+		this.user = user;
+		this.chatAddress = chatAddress;
+		this.chatPort = chatPort;
+	}
+	
+	public ReceiveChat accept() throws IOException {
+		return getBot().getDccHandler().acceptChatRequest(this);
 	}
 
 	/**
@@ -77,6 +88,6 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChat().getUser(), response);
+		getBot().sendMessage(user, response);
 	}
 }
