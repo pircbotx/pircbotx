@@ -102,13 +102,13 @@ public class PircBotXOutputTest {
 
 	@Test(description = "Verify sendRawLine works correctly")
 	public void sendRawLineTest() throws Exception {
-		bot.sendRawLine(aString);
+		bot.sendRaw().rawLine(aString);
 		checkOutput(aString);
 	}
 
 	@Test(description = "Verify sendRawLineNow works correctly")
 	public void sendRawLineNowTest() throws Exception {
-		bot.sendRawLineNow(aString);
+		bot.sendRaw().rawLineNow(aString);
 		checkOutput(aString);
 	}
 
@@ -116,7 +116,7 @@ public class PircBotXOutputTest {
 	public void sendRawLineSplitShort() throws Exception {
 		String beginning = "BEGIN";
 		String ending = "END";
-		bot.sendRawLineSplit(beginning, aString, ending);
+		bot.sendRaw().rawLineSplit(beginning, aString, ending);
 		checkOutput(beginning + aString + ending);
 	}
 
@@ -141,7 +141,7 @@ public class PircBotXOutputTest {
 		};
 
 		//Send the message, joining all the message parts into one big chunck
-		bot.sendRawLineSplit(beginning, StringUtils.join(stringParts, ""), ending);
+		bot.sendRaw().rawLineSplit(beginning, StringUtils.join(stringParts, ""), ending);
 
 		//Verify sent lines, making sure they come out in parts
 		Iterator<String> outputItr = checkOutput(beginning + stringParts[0] + ending);
@@ -152,133 +152,127 @@ public class PircBotXOutputTest {
 
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
-		bot.sendAction(aUser, aString);
+		aUser.send().action(aString);
 		checkOutput("PRIVMSG aUser :\u0001ACTION " + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendAction to channel")
 	public void sendActionChannelTest() throws Exception {
-		bot.sendAction(aChannel, aString);
+		aChannel.send().action(aString);
 		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendAction by string")
 	public void sendActionStringTest() throws Exception {
-		bot.sendAction("#aChannel", aString);
+		bot.sendIRC().action("#aChannel", aString);
 		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPCommand to user")
 	public void sendCTCPCommandUserTest() throws Exception {
-		bot.sendCTCPCommand(aUser, aString);
+		aUser.send().ctcpCommand(aString);
 		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPCommand to channel")
 	public void sendCTCPCommandChannelTest() throws Exception {
-		bot.sendCTCPCommand(aChannel, aString);
+		aChannel.send().ctcpCommand(aString);
 		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPCommand by string")
 	public void sendCTCPCommandStringTest() throws Exception {
-		bot.sendCTCPCommand("#aChannel", aString);
+		bot.sendIRC().ctcpCommand("#aChannel", aString);
 		checkOutput("PRIVMSG #aChannel :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
-		bot.sendCTCPResponse(aUser, aString);
+		aUser.send().ctcpResponse(aString);
 		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPResponse by string")
 	public void sendCTCPResponseStringTest() throws Exception {
-		bot.sendCTCPResponse("aUser", aString);
+		bot.sendIRC().ctcpResponse("aUser", aString);
 		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendInvite to user")
 	public void sendInviteUserChannelTest() throws Exception {
-		bot.sendInvite(aUser, aChannel);
+		aUser.send().invite(aChannel);
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite to channel")
 	public void sendInviteChannelChannelTest() throws Exception {
-		bot.sendInvite(aChannel, bot.getUserChannelDao().getChannel("#otherChannel"));
+		aChannel.send().invite(bot.getUserChannelDao().getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
 
 	@Test(description = "Verify sendInvite to channel by string")
 	public void sendInviteChannelStringlTest() throws Exception {
-		bot.sendInvite(aUser, "#aChannel");
+		aUser.send().invite("#aChannel");
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite by string")
 	public void sendInviteStringlTest() throws Exception {
-		bot.sendInvite("aUser", "#aChannel");
+		bot.sendIRC().invite("aUser", "#aChannel");
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendMessage to channel")
 	public void sendMessageChannelTest() throws Exception {
-		bot.sendMessage(aChannel, aString);
+		aChannel.send().message(aString);
 		checkOutput("PRIVMSG #aChannel :" + aString);
 	}
 
 	@Test(description = "Verify sendMessage to user in channel")
 	public void sendMessageChannelUserTest() throws Exception {
-		bot.sendMessage(aChannel, aUser, aString);
+		aChannel.send().message(aUser, aString);
 		checkOutput("PRIVMSG #aChannel :aUser: " + aString);
 	}
 
 	@Test(description = "Verify sendMessage to user")
 	public void sendMessageUserTest() throws Exception {
-		bot.sendMessage(aUser, aString);
+		aUser.send().message(aString);
 		checkOutput("PRIVMSG aUser :" + aString);
 	}
 
 	@Test(description = "Verify sendMessage by string")
 	public void sendMessageStringTest() throws Exception {
-		bot.sendMessage("aUser", aString);
+		bot.sendIRC().message("aUser", aString);
 		checkOutput("PRIVMSG aUser :" + aString);
 	}
 
 	@Test(description = "Verify sendNotice to channel")
 	public void sendNoticeChannelTest() throws Exception {
-		bot.sendNotice(aChannel, aString);
+		aChannel.send().notice(aString);
 		checkOutput("NOTICE #aChannel :" + aString);
 	}
 
 	@Test(description = "Verify sendNotice to user")
 	public void sendNoticeUserTest() throws Exception {
-		bot.sendNotice(aUser, aString);
+		aUser.send().notice(aString);
 		checkOutput("NOTICE aUser :" + aString);
 	}
 
 	@Test(description = "Verify sendNotice by String")
 	public void sendNoticeStringTest() throws Exception {
-		bot.sendNotice("aUser", aString);
+		bot.sendIRC().notice("aUser", aString);
 		checkOutput("NOTICE aUser :" + aString);
-	}
-
-	@Test(description = "Verify quit")
-	public void sendDisconnect() throws Exception {
-		bot.disconnect();
-		checkOutput("QUIT :");
 	}
 
 	@Test
 	public void sendQuit() throws Exception {
-		bot.quitServer();
+		bot.sendIRC().quitServer();
 		checkOutput("QUIT :");
 	}
 
 	@Test
 	public void sendQuitMessage() throws Exception {
-		bot.quitServer(aString);
+		bot.sendIRC().quitServer(aString);
 		checkOutput("QUIT :" + aString);
 	}
 
