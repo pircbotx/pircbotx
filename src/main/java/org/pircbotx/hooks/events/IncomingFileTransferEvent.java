@@ -81,6 +81,6 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getTransfer().getUser(), response);
+		getTransfer().getUser().send().message(response);
 	}
 }
