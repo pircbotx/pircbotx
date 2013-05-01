@@ -24,15 +24,12 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.dcc.DccHandler;
@@ -84,6 +81,7 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.output.OutputRaw;
 
 /**
  *
@@ -98,11 +96,12 @@ public class InputParser implements Closeable {
 	protected final String channelPrefixes;
 	protected final ServerInfo serverInfo;
 	protected final DccHandler dccHandler;
+	protected final OutputRaw sendRaw;
 	protected BufferedReader inputReader;
 	//Builders
 	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
 	protected StringBuilder motdBuilder;
-	@Getter(AccessLevel.PROTECTED)
+	@Getter
 	protected boolean channelListRunning = false;
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
 
@@ -116,7 +115,7 @@ public class InputParser implements Closeable {
 			} catch (InterruptedIOException iioe) {
 				// This will happen if we haven't received anything from the server for a while.
 				// So we shall send it a ping to check that we are still connected.
-				bot.sendRawLine("PING " + (System.currentTimeMillis() / 1000));
+				sendRaw.rawLine("PING " + (System.currentTimeMillis() / 1000));
 				// Now we go back to listening for stuff from the server...
 				continue;
 			} catch (Exception e) {
@@ -264,8 +263,8 @@ public class InputParser implements Closeable {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
-				bot.sendRawLine("WHO " + target);
-				bot.sendRawLine("MODE " + target);
+				sendRaw.rawLine("WHO " + target);
+				sendRaw.rawLine("MODE " + target);
 			}
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
