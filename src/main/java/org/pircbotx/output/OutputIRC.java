@@ -37,6 +37,31 @@ public class OutputIRC {
 	protected final OutputRaw sendRaw;
 
 	/**
+	 * Joins a channel.
+	 *
+	 * @param channel The name of the channel to join (eg "#cs").
+	 */
+	public void joinChannel(String channel) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't join a null channel");
+		sendRaw.rawLine("JOIN " + channel);
+	}
+
+	/**
+	 * Joins a channel with a key.
+	 *
+	 * @param channel The name of the channel to join (eg "#cs").
+	 * @param key The key that will be used to join the channel.
+	 */
+	public void joinChannel(String channel, String key) {
+		if (channel == null)
+			throw new IllegalArgumentException("Can't join a null channel");
+		if (key == null)
+			throw new IllegalArgumentException("Can't channel " + channel + " with null key");
+		joinChannel(channel + " " + key);
+	}
+	
+	/**
 	 * Quits from the IRC server.
 	 * Providing we are actually connected to an IRC server, a {@link DisconnectEvent}
 	 * will be dispatched as soon as the IRC server disconnects us.
