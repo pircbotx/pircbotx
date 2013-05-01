@@ -268,7 +268,7 @@ public class DccHandler implements Closeable {
 			Map.Entry<PendingRecieveFileTransfer, Future> curEntry = pendingItr.next();
 			PendingRecieveFileTransfer curTransfer = curEntry.getKey();
 			Future curFuture = curEntry.getValue();
-			while(!curFuture.isDone()) {
+			if(!curFuture.isDone()) {
 				log.debug("Terminating reverse dcc server for transfer " + curTransfer);
 				curFuture.cancel(true);
 			}
