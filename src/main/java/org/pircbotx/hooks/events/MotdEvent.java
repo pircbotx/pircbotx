@@ -50,6 +50,6 @@ public class MotdEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendRawLine(response);
+		getBot().sendRaw().rawLine(response);
 	}
 }

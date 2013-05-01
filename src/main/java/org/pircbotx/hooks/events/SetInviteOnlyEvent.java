@@ -61,6 +61,6 @@ public class SetInviteOnlyEvent<T extends PircBotX> extends Event<T> implements 
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

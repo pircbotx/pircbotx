@@ -55,6 +55,6 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getUser(), response);
+		getBot().sendIRC().message(getUser(), response);
 	}
 }

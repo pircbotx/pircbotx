@@ -76,6 +76,6 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getSource(), response);
+		getChannel().send().message(getSource(), response);
 	}
 }

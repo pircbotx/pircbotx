@@ -55,6 +55,6 @@ public class UserModeEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getSource(), response);
+		getSource().send().message(response);
 	}
 }

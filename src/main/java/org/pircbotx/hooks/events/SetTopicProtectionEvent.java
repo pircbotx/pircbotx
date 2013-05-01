@@ -60,6 +60,6 @@ public class SetTopicProtectionEvent<T extends PircBotX> extends Event<T> implem
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

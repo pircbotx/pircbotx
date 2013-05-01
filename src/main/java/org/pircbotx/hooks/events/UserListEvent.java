@@ -66,6 +66,6 @@ public class UserListEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), response);
+		getChannel().send().message(response);
 	}
 }

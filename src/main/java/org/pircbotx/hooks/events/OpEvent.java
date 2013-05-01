@@ -65,6 +65,6 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUser
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getSource(), response);
+		getChannel().send().message(getSource(), response);
 	}
 }
