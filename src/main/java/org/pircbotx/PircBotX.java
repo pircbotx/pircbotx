@@ -22,8 +22,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -34,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -56,10 +55,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputCAP;
-import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
-import org.pircbotx.output.OutputUser;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -103,7 +100,7 @@ public class PircBotX {
 	protected final ServerInfo serverInfo;
 	//Connection stuff.
 	protected Socket socket;
-	protected Thread inputParserThread;
+	protected Future inputParserFuture;
 	//Writers
 	protected final OutputRaw outputRaw;
 	protected final OutputIRC outputIRC;
@@ -341,7 +338,7 @@ public class PircBotX {
 			}
 
 			//Start input to start accepting lines
-			startInputParser(inputParser, breader);
+			inputParserFuture = getConfiguration().getBotFactory().startInputParser(inputParser, breader);
 
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(this));
 
@@ -352,16 +349,6 @@ public class PircBotX {
 			//	shutdown(true);
 			throw new IOException("Can't connect to server", e);
 		}
-	}
-
-	protected void startInputParser(final InputParser parser, final BufferedReader inputReader) {
-		inputParserThread = new Thread() {
-			@Override
-			public void run() {
-				parser.startLineProcessing(inputReader);
-			}
-		};
-		inputParserThread.start();
 	}
 
 	/**
@@ -537,8 +524,8 @@ public class PircBotX {
 			}
 
 		try {
-			if (inputParserThread != null)
-				inputParserThread.interrupt();
+			if (inputParserFuture != null)
+				inputParserFuture.cancel(true);
 		} catch (Exception e) {
 			log.error("Cannot interrupt inputThread", e);
 		}

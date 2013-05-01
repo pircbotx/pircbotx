@@ -20,14 +20,16 @@ package org.pircbotx;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.BufferedReader;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import javax.net.SocketFactory;
 import lombok.Data;
 import lombok.ToString;
@@ -223,7 +225,7 @@ public class Configuration {
 		public Builder() {
 			capHandlers.add(new EnableCapHandler("multi-prefix", true));
 		}
-		
+
 		/**
 		 * Copy values from an existing Configuration
 		 * @param configuration Configuration to copy values from
@@ -263,7 +265,7 @@ public class Configuration {
 			this.shutdownHookEnabled = configuration.isShutdownHookEnabled();
 			this.botFactory = configuration.getBotFactory();
 		}
-		
+
 		/**
 		 * Copy values from another builder. 
 		 * @param otherBuilder 
@@ -379,23 +381,23 @@ public class Configuration {
 		public UserChannelDao createUserChannelDao(PircBotX bot) {
 			return new UserChannelDao(bot, bot.getConfiguration().getBotFactory());
 		}
-		
+
 		public OutputRaw createOutputRaw(PircBotX bot) {
 			return new OutputRaw(bot, bot.getConfiguration());
 		}
-		
+
 		public OutputCAP createOutputCAP(PircBotX bot) {
 			return new OutputCAP(bot.sendRaw());
 		}
-		
+
 		public OutputIRC createOutputIRC(PircBotX bot) {
 			return new OutputIRC(bot, bot.sendRaw());
 		}
-		
+
 		public OutputChannel createOutputChannel(PircBotX bot, Channel channel) {
 			return new OutputChannel(bot.sendRaw(), bot.sendIRC(), channel);
 		}
-		
+
 		public OutputUser createOutputUser(PircBotX bot, User user) {
 			return new OutputUser(bot.sendIRC(), user);
 		}
@@ -424,6 +426,18 @@ public class Configuration {
 
 		public Channel createChannel(PircBotX bot, String name) {
 			return new Channel(bot, bot.getUserChannelDao(), name);
+		}
+
+		protected Future startInputParser(final InputParser parser, final BufferedReader inputReader) {
+			FutureTask future = new FutureTask(new Callable() {
+				public Object call() throws Exception {
+					parser.startLineProcessing(inputReader);
+					return null;
+				}
+			});
+			Thread thread = new Thread(future);
+			thread.start();
+			return future;
 		}
 	}
 }
