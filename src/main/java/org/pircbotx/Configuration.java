@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.net.SocketFactory;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
@@ -90,6 +91,7 @@ import org.pircbotx.hooks.managers.ThreadedListenerManager;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
+@ToString(exclude = "serverPassword")
 public class Configuration {
 	//WebIRC
 	protected final boolean webIrcEnabled;
