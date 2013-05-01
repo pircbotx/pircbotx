@@ -1,0 +1,153 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.pircbotx.output;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.net.Socket;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+
+/**
+ *
+ * @author Leon
+ */
+@RequiredArgsConstructor
+@Slf4j
+public class OutputRaw {
+	protected final PircBotX bot;
+	protected final Configuration configuration;
+	protected Writer outputWriter;
+	protected final ReentrantLock writeLock = new ReentrantLock(true);
+	protected final Condition writeNowCondition = writeLock.newCondition();
+
+	public void init(Socket socket) throws IOException {
+		outputWriter = new OutputStreamWriter(socket.getOutputStream(), configuration.getEncoding());
+	}
+	
+	/**
+	 * Sends a raw line through the outgoing message queue.
+	 *
+	 * @param line The raw line to send to the IRC server.
+	 */
+	public void rawLine(String line) {
+		if (line == null)
+			throw new NullPointerException("Cannot send null messages to server");
+		if (!bot.isConnected())
+			throw new RuntimeException("Not connected to server");
+		writeLock.lock();
+		try {
+			rawLineToServer(line);
+			//Block for messageDelay. If rawLineNow is called with resetDelay
+			//the condition is tripped and we wait again
+			while (writeNowCondition.await(configuration.getMessageDelay(), TimeUnit.MILLISECONDS)) {
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't pause thread for message delay", e);
+		} finally {
+			writeLock.unlock();
+		}
+	}
+
+	/**
+	 * Sends a raw line to the IRC server as soon as possible without resetting
+	 * the message delay for messages waiting to send
+	 *
+	 * @param line The raw line to send to the IRC server.
+	 * @see #rawLineNow(java.lang.String, boolean) 
+	 */
+	public void rawLineNow(String line) {
+		rawLineNow(line, false);
+	}
+
+	/**
+	 * Sends a raw line to the IRC server as soon as possible
+	 * @param line The raw line to send to the IRC server
+	 * @param resetDelay If true, pending messages will reset their delay.
+	 */
+	public void rawLineNow(String line, boolean resetDelay) {
+		if (line == null)
+			throw new NullPointerException("Cannot send null messages to server");
+		if (!bot.isConnected())
+			throw new RuntimeException("Not connected to server");
+		writeLock.lock();
+		try {
+			rawLineToServer(line);
+			if (resetDelay)
+				//Reset the 
+				writeNowCondition.signalAll();
+		} finally {
+			writeLock.unlock();
+		}
+	}
+
+	/**
+	 * Actually sends the raw line to the server. This method is NOT SYNCHRONIZED 
+	 * since it's only called from methods that handle locking
+	 * @param line 
+	 */
+	protected void rawLineToServer(String line) {
+		if (line.length() > configuration.getMaxLineLength() - 2)
+			line = line.substring(0, configuration.getMaxLineLength() - 2);
+		try {
+			log.info(line);
+			outputWriter.write(line + "\r\n");
+			outputWriter.flush();
+		} catch (Exception e) {
+			//Not much else we can do, but this requires attention of whatever is calling this
+			throw new RuntimeException("Exception encountered when writing to socket", e);
+		}
+	}
+
+	public void rawLineSplit(String prefix, String message) {
+		rawLineSplit(prefix, message, "");
+	}
+
+	public void rawLineSplit(String prefix, String message, String suffix) {
+		//Make sure suffix is valid
+		if (suffix == null)
+			suffix = "";
+
+		//Find if final line is going to be shorter than the max line length
+		String finalMessage = prefix + message + suffix;
+		int realMaxLineLength = configuration.getMaxLineLength() - 2;
+		if (!configuration.isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
+			//Length is good (or auto split message is false), just go ahead and send it
+			rawLine(finalMessage);
+			return;
+		}
+
+		//Too long, split it up
+		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
+		//Oh look, no function to split every nth char. Since regex is expensive, use this nonsense
+		int iterations = (int) Math.ceil(message.length() / (double) maxMessageLength);
+		for (int i = 0; i < iterations; i++) {
+			int endPoint = (i != iterations - 1) ? ((i + 1) * maxMessageLength) : message.length();
+			String curMessagePart = prefix + message.substring(i * maxMessageLength, endPoint) + suffix;
+			rawLine(curMessagePart);
+		}
+	}
+
+	/**
+	 * Gets the number of lines currently waiting in the outgoing message Queue.
+	 * If this returns 0, then the Queue is empty and any new message is likely
+	 * to be sent to the IRC server immediately.
+	 *
+	 * @since PircBot 0.9.9
+	 *
+	 * @return The number of lines in the outgoing message Queue.
+	 */
+	public int getOutgoingQueueSize() {
+		return writeLock.getHoldCount();
+	}
+}

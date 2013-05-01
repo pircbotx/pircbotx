@@ -20,7 +20,8 @@ package org.pircbotx;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
+import java.io.IOException;
+import java.io.Writer;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import javax.net.SocketFactory;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.pircbotx.cap.CapHandler;
@@ -39,6 +39,11 @@ import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.output.OutputCAP;
+import org.pircbotx.output.OutputChannel;
+import org.pircbotx.output.OutputIRC;
+import org.pircbotx.output.OutputRaw;
+import org.pircbotx.output.OutputUser;
 
 /**
  * Configuration class for PircBotX
@@ -374,6 +379,26 @@ public class Configuration {
 		public UserChannelDao createUserChannelDao(PircBotX bot) {
 			return new UserChannelDao(bot, bot.getConfiguration().getBotFactory());
 		}
+		
+		public OutputRaw createOutputRaw(PircBotX bot) {
+			return new OutputRaw(bot, bot.getConfiguration());
+		}
+		
+		public OutputCAP createOutputCAP(PircBotX bot) {
+			return new OutputCAP(bot.sendRaw());
+		}
+		
+		public OutputIRC createOutputIRC(PircBotX bot) {
+			return new OutputIRC(bot, bot.sendRaw());
+		}
+		
+		public OutputChannel createOutputChannel(PircBotX bot) {
+			return new OutputChannel(bot.sendRaw(), bot.sendIRC());
+		}
+		
+		public OutputUser createOutputUser(PircBotX bot) {
+			return new OutputUser(bot.sendIRC());
+		}
 
 		public InputParser createInputParser(PircBotX bot) {
 			return new InputParser(bot,
@@ -381,7 +406,8 @@ public class Configuration {
 					bot.getUserChannelDao(),
 					bot.getConfiguration().getChannelPrefixes(),
 					bot.getServerInfo(),
-					bot.getDccHandler());
+					bot.getDccHandler(),
+					bot.sendRaw());
 		}
 
 		public DccHandler createDccHandler(PircBotX bot) {
