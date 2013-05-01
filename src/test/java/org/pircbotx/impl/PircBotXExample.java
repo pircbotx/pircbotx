@@ -138,15 +138,14 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 			//Basic hello
 			if (event.getMessage().startsWith("?hi"))
-				event.getBot().sendMessage(event.getChannel(), "Hello");
+				event.getChannel().send().message("Hello");
 		}
 
 	}
 
 	@Override
 	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
-		ReceiveChat chat = event.getChat();
-		chat.accept();
+		ReceiveChat chat = event.accept();
 		chat.sendLine("Hello incomming request!");
 		String line;
 		while ((line = chat.readLine()) != null)

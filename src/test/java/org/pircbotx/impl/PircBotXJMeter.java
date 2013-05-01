@@ -65,7 +65,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 	@Override
 	public void onQuit(QuitEvent event) throws Exception {
 		//Send dummy line
-		event.getBot().sendRawLine(event.getReason().trim());
+		event.getBot().sendRaw().rawLine(event.getReason().trim());
 	}
 
 	@Override
