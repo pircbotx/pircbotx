@@ -96,7 +96,7 @@ public class OutputUser {
 	 * @param target The user to send the CTCP Response to
 	 * @param message The response to send
 	 */
-	public void sendCTCPResponse(User target, String message) {
+	public void ctcpResponse(User target, String message) {
 		if (target == null)
 			throw new IllegalArgumentException("Can't send CTCP response to null user");
 		sendIRC.ctcpResponse(target.getNick(), message);
