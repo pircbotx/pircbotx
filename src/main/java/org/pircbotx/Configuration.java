@@ -428,7 +428,7 @@ public class Configuration {
 			return new Channel(bot, bot.getUserChannelDao(), name);
 		}
 
-		protected Future startInputParser(final InputParser parser, final BufferedReader inputReader) {
+		public Future startInputParser(final InputParser parser, final BufferedReader inputReader) {
 			FutureTask future = new FutureTask(new Callable() {
 				public Object call() throws Exception {
 					parser.startLineProcessing(inputReader);
