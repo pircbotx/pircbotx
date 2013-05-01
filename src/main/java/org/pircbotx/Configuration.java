@@ -392,12 +392,12 @@ public class Configuration {
 			return new OutputIRC(bot, bot.sendRaw());
 		}
 		
-		public OutputChannel createOutputChannel(PircBotX bot) {
-			return new OutputChannel(bot.sendRaw(), bot.sendIRC());
+		public OutputChannel createOutputChannel(PircBotX bot, Channel channel) {
+			return new OutputChannel(bot.sendRaw(), bot.sendIRC(), channel);
 		}
 		
-		public OutputUser createOutputUser(PircBotX bot) {
-			return new OutputUser(bot.sendIRC());
+		public OutputUser createOutputUser(PircBotX bot, User user) {
+			return new OutputUser(bot.sendIRC(), user);
 		}
 
 		public InputParser createInputParser(PircBotX bot) {
