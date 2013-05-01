@@ -18,20 +18,7 @@
  */
 package org.pircbotx;
 
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
@@ -48,54 +35,6 @@ public class PircBotXTest {
 	@BeforeMethod
 	public void setup() {
 		smallBot = new PircBotX(new Configuration.Builder().buildConfiguration());
-	}
-
-	@Test(description = "Make sure send* methods have appropiate variations")
-	public void sendMethodsNamingTests() {
-		//Get all send method variations in one list
-		Map<String, List<Method>> sendMethods = new HashMap<String, List<Method>>();
-		for (Method curMethod : PircBotX.class.getDeclaredMethods()) {
-			String name = curMethod.getName();
-			if (name.startsWith("send")) {
-				if (!sendMethods.containsKey(name))
-					sendMethods.put(name, new ArrayList<Method>());
-				sendMethods.get(name).add(curMethod);
-			}
-		}
-
-		//Exclude methods that don't make sense to have variations of
-		sendMethods.remove("sendRawLineSplit");
-		sendMethods.remove("sendRawLineNow");
-		sendMethods.remove("sendRawLine");
-		sendMethods.remove("sendCAPREQ");
-		sendMethods.remove("sendRawLineToServer");
-
-		for (Map.Entry<String, List<Method>> entry : sendMethods.entrySet()) {
-			List<Method> methods = entry.getValue();
-			final String key = entry.getKey();
-
-			List<Class> requiredClassesBase = Collections.unmodifiableList(new ArrayList() {
-				{
-					add(String.class);
-					add(User.class);
-					//sendCTCPResponse shouldn't have a channel variant
-					if (!key.startsWith("sendCTCPResponse"))
-						add(Channel.class);
-				}
-			});
-
-			//---Make sure appropiate variations of a method exist----
-			List<Class> requiredClasses = new ArrayList(requiredClassesBase);
-			for (Method curMethod : methods) {
-				Class firstParam = curMethod.getParameterTypes()[0];
-				//Must exist
-				assertTrue(requiredClassesBase.contains(firstParam), "Unknown first parameter " + firstParam + " in method " + curMethod);
-				requiredClasses.remove(firstParam);
-			}
-
-			//If something is left, then something is wrong!
-			assertTrue(requiredClasses.isEmpty(), "Method group " + key + " doesn't have a method(s) for " + StringUtils.join(requiredClasses, ", "));
-		}
 	}
 
 	@Test(description = "Make sure getUser doesn't return null and reliably returns the correct value")
