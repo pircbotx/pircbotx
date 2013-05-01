@@ -69,6 +69,7 @@ import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
+import org.pircbotx.output.OutputRaw;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -102,16 +103,22 @@ public class InputParserTest {
 				events.add(event);
 			}
 		})
+				.setBotFactory(new Configuration.BotFactory() {
+			@Override
+			public OutputRaw createOutputRaw(PircBotX bot) {
+				return new OutputRaw(bot, bot.getConfiguration()) {
+					@Override
+					protected void rawLineToServer(String line) {
+						//Do nothing
+					}
+				};
+			}
+		})
 				.buildConfiguration();
 		bot = new PircBotX(configuration) {
 			@Override
 			public boolean isConnected() {
 				return true;
-			}
-
-			@Override
-			protected void sendRawLineToServer(String line) {
-				//Do nothing
 			}
 		};
 		bot.nick = "PircBotXBot";
