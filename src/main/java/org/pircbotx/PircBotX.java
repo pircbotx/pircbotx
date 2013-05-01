@@ -105,9 +105,9 @@ public class PircBotX {
 	protected Socket socket;
 	protected Thread inputParserThread;
 	//Writers
-	protected final OutputRaw sendRaw;
-	protected final OutputIRC sendIRC;
-	protected final OutputCAP sendCAP;
+	protected final OutputRaw outputRaw;
+	protected final OutputIRC outputIRC;
+	protected final OutputCAP outputCAP;
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
 	protected String nick = "";
@@ -141,9 +141,9 @@ public class PircBotX {
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.dccHandler = configuration.getBotFactory().createDccHandler(this);
 		this.inputParser = configuration.getBotFactory().createInputParser(this);
-		this.sendRaw = configuration.getBotFactory().createOutputRaw(this);
-		this.sendIRC = configuration.getBotFactory().createOutputIRC(this);
-		this.sendCAP = configuration.getBotFactory().createOutputCAP(this);
+		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
+		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
+		this.outputCAP = configuration.getBotFactory().createOutputCAP(this);
 	}
 
 	/**
@@ -396,15 +396,15 @@ public class PircBotX {
 	}
 
 	public OutputRaw sendRaw() {
-		return sendRaw;
+		return outputRaw;
 	}
 
 	public OutputIRC sendIRC() {
-		return sendIRC;
+		return outputIRC;
 	}
 
 	public OutputCAP sendCAP() {
-		return sendCAP;
+		return outputCAP;
 	}
 
 	/**
