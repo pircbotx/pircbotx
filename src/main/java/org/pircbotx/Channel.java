@@ -326,56 +326,11 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to give Operator status to the given user in this channel. Simply
-	 * calls {@link PircBotX#op(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to Op
-	 */
-	public void op(User user) {
-		getOutput().op(user);
-	}
-
-	/**
-	 * Attempts to remove Operator status from the given user in this channel.
-	 * Simply calls {@link PircBotX#deOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to remove Operator status from
-	 */
-	public void deOp(User user) {
-		bot.sendChannel().deOp(this, user);
-	}
-
-	/**
 	 * Checks if the given user has Voice in this channel
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
 		return dao.getChannelVoices(this).contains(user);
-	}
-
-	/**
-	 * Attempts to give Voice status to the given user in this channel. Simply
-	 * calls {@link PircBotX#voice(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to voice
-	 */
-	public void voice(User user) {
-		bot.sendChannel().voice(this, user);
-	}
-
-	/**
-	 * Attempts to remove Voice status from the given user in this channel. Simply
-	 * calls {@link PircBotX#deVoice(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to remove Voice from
-	 */
-	public void deVoice(User user) {
-		bot.sendChannel().deVoice(this, user);
-	}
-
-	/**
-	 * Attempts to give Super Operator status to the given user in this channel. Simply
-	 * calls {@link PircBotX#superOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to give Super Operator status
-	 */
-	public void superOp(User user) {
-		bot.sendChannel().superOp(this, user);
 	}
 
 	/**
@@ -387,24 +342,6 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Super Operator status from the given user in this channel.
-	 * Simply calls {@link PircBotX#deSuperOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to remove Super Operator status from
-	 */
-	public void deSuperOp(User user) {
-		bot.sendChannel().deSuperOp(this, user);
-	}
-
-	/**
-	 * Attempts to give Owner status to the given user in this channel. Simply
-	 * calls {@link PircBotX#owner(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to give Owner status to
-	 */
-	public void owner(User user) {
-		bot.sendChannel().owner(this, user);
-	}
-
-	/**
 	 * Checks if the given user is an Owner in this channel
 	 * @return True if the user is an Owner, false if not
 	 */
@@ -413,45 +350,10 @@ public class Channel {
 	}
 
 	/**
-	 * Attempts to remove Owner status from the given user in this channel.
-	 * Simply calls {@link PircBotX#deOwner(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to remove Owner status from
-	 */
-	public void deOwner(User user) {
-		bot.sendChannel().deOwner(this, user);
-	}
-
-	/**
-	 * Attempts to give Half Operator status to the given user in this channel. Simply
-	 * calls {@link PircBotX#halfOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to give Half Operator status to
-	 */
-	public void halfOp(User user) {
-		bot.sendChannel().halfOp(this, user);
-	}
-
-	/**
 	 * Checks if the given user is a Half Operator in this channel
 	 * @return True if the user is a Half Operator, false if not
 	 */
 	public boolean isHalfOp(User user) {
 		return dao.getChannelHalfOps(this).contains(user);
-	}
-
-	/**
-	 * Attempts to remove Half Operator status from the given user in this channel.
-	 * Simply calls {@link PircBotX#deHalfOp(org.pircbotx.Channel, org.pircbotx.User) }
-	 * @param user The user to attempt to remove Half Operator status from
-	 */
-	public void deHalfOp(User user) {
-		bot.sendChannel().deHalfOp(this, user);
-	}
-
-	/**
-	 * Send a message to this channel. See {@link PircBotX#sendMessage(org.pircbotx.Channel, java.lang.String)}
-	 * for more information
-	 */
-	public void sendMessage(String message) {
-		bot.sendChannel().message(this, message);
 	}
 }
