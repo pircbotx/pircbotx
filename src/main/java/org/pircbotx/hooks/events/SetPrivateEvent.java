@@ -59,6 +59,6 @@ public class SetPrivateEvent<T extends PircBotX> extends Event<T> implements Gen
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

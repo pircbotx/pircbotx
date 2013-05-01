@@ -88,6 +88,6 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(user, response);
+		getUser().send().message(response);
 	}
 }

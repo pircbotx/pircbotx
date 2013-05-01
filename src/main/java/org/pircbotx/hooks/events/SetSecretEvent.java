@@ -60,6 +60,6 @@ public class SetSecretEvent<T extends PircBotX> extends Event<T> implements Gene
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

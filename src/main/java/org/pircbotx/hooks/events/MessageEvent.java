@@ -59,6 +59,6 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

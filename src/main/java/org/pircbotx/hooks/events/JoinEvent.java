@@ -56,6 +56,6 @@ public class JoinEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

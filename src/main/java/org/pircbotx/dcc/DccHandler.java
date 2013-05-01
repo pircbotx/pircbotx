@@ -90,7 +90,7 @@ public class DccHandler implements Closeable {
 						listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
 					}
 				});
-				bot.sendCTCPCommand(user, "DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
+				user.send().ctcpCommand("DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
 						+ " " + size + " " + transferToken);
 			} else {
 				//User is using normal DCC, connect to them
@@ -122,7 +122,7 @@ public class DccHandler implements Closeable {
 			if (transfer == null)
 				throw new DccException("No Dcc File Transfer to resume recieving (user: " + user.getNick()
 						+ ", filename: " + filename + ", position: " + progress + ", token: " + transferToken + ")");
-			bot.sendCTCPCommand(user, "DCC ACCEPT " + filename + " " + port + " " + progress + " " + transferToken);
+			user.send().ctcpCommand("DCC ACCEPT " + filename + " " + port + " " + progress + " " + transferToken);
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
@@ -147,7 +147,7 @@ public class DccHandler implements Closeable {
 
 		int serverPort = ss.getLocalPort();
 		String ipNum = addressToInteger(ss.getInetAddress());
-		bot.sendCTCPCommand(receiver, "DCC CHAT chat " + ipNum + " " + serverPort);
+		receiver.send().ctcpCommand("DCC CHAT chat " + ipNum + " " + serverPort);
 
 		Socket userSocket = ss.accept();
 		ss.close();
@@ -194,7 +194,7 @@ public class DccHandler implements Closeable {
 		//Try to get the user to connect to us
 		ServerSocket serverSocket = createServerSocket();
 		String ipNum = DccHandler.addressToInteger(serverSocket.getInetAddress());
-		bot.sendCTCPCommand(receiver, "DCC SEND " + safeFilename + " " + ipNum + " " + serverSocket.getLocalPort() + " " + safeFilename.length());
+		receiver.send().ctcpCommand("DCC SEND " + safeFilename + " " + ipNum + " " + serverSocket.getLocalPort() + " " + safeFilename.length());
 
 		//Wait for the user to connect
 		serverSocket.setSoTimeout(timeout);

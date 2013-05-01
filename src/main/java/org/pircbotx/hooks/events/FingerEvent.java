@@ -60,6 +60,6 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendCTCPResponse(getUser(), response);
+		getUser().send().ctcpResponse(response);
 	}
 }
