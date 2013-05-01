@@ -29,6 +29,7 @@ import org.pircbotx.User;
 @RequiredArgsConstructor
 public class OutputUser {
 	protected final OutputIRC sendIRC;
+	protected final User user;
 
 	/**
 	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
@@ -36,10 +37,8 @@ public class OutputUser {
 	 * @param target The user to send the CTCP command to
 	 * @param channel The channel you are inviting the user to join.
 	 */
-	public void invite(User target, String channel) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send invite to null user");
-		sendIRC.invite(target.getNick(), channel);
+	public void invite(String channel) {
+		sendIRC.invite(user.getNick(), channel);
 	}
 
 	/**
@@ -48,12 +47,8 @@ public class OutputUser {
 	 * @param target The user to send the invite to
 	 * @param channel The channel you are inviting the user to join.
 	 */
-	public void invite(User target, Channel channel) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send invite to null user");
-		if (channel == null)
-			throw new IllegalArgumentException("Can't send invite to null channel");
-		sendIRC.invite(target.getNick(), channel.getName());
+	public void invite(Channel channel) {
+		sendIRC.invite(user.getNick(), channel.getName());
 	}
 
 	/**
@@ -62,10 +57,8 @@ public class OutputUser {
 	 * @param target The user to send the notice to
 	 * @param notice The notice to send
 	 */
-	public void notice(User target, String notice) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send notice to null user");
-		sendIRC.notice(target.getNick(), notice);
+	public void notice(String notice) {
+		sendIRC.notice(user.getNick(), notice);
 	}
 
 	/**
@@ -74,10 +67,8 @@ public class OutputUser {
 	 * @param target The user to send the action to
 	 * @param action The action message to send
 	 */
-	public void action(User target, String action) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null user");
-		sendIRC.action(target.getNick(), action);
+	public void action(String action) {
+		sendIRC.action(user.getNick(), action);
 	}
 
 	/**
@@ -86,10 +77,8 @@ public class OutputUser {
 	 * @param target The user to send the message to
 	 * @param message The message to send
 	 */
-	public void message(User target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null user");
-		sendIRC.message(target.getNick(), message);
+	public void message(String message) {
+		sendIRC.message(user.getNick(), message);
 	}
 
 	/**
@@ -98,10 +87,8 @@ public class OutputUser {
 	 * @param target The user to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
-	public void ctcpCommand(User target, String command) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP command to null user");
-		sendIRC.ctcpCommand(target.getNick(), command);
+	public void ctcpCommand(String command) {
+		sendIRC.ctcpCommand(user.getNick(), command);
 	}
 
 	/**
@@ -110,9 +97,7 @@ public class OutputUser {
 	 * @param target The user to send the CTCP Response to
 	 * @param message The response to send
 	 */
-	public void ctcpResponse(User target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP response to null user");
-		sendIRC.ctcpResponse(target.getNick(), message);
+	public void ctcpResponse(String message) {
+		sendIRC.ctcpResponse(user.getNick(), message);
 	}
 }

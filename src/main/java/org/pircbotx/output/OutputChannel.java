@@ -20,6 +20,7 @@ package org.pircbotx.output;
 
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.PartEvent;
@@ -32,40 +33,14 @@ import org.pircbotx.hooks.events.PartEvent;
 public class OutputChannel {
 	protected final OutputRaw sendRaw;
 	protected final OutputIRC sendIRC;
-
-	/**
-	 * Joins a channel.
-	 *
-	 * @param channel The name of the channel to join (eg "#cs").
-	 */
-	public void join(String channel) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't join a null channel");
-		sendRaw.rawLine("JOIN " + channel);
-	}
-
-	/**
-	 * Joins a channel with a key.
-	 *
-	 * @param channel The name of the channel to join (eg "#cs").
-	 * @param key The key that will be used to join the channel.
-	 */
-	public void join(String channel, String key) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't join a null channel");
-		if (key == null)
-			throw new IllegalArgumentException("Can't channel " + channel + " with null key");
-		join(channel + " " + key);
-	}
+	protected final Channel channel;
 
 	/**
 	 * Parts a channel.
 	 *
 	 * @param channel The name of the channel to leave.
 	 */
-	public void part(Channel channel) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't part a null channel");
+	public void part() {
 		sendRaw.rawLine("PART " + channel.getName());
 	}
 
@@ -75,9 +50,7 @@ public class OutputChannel {
 	 * @param channel The name of the channel to leave.
 	 * @param reason The reason for parting the channel.
 	 */
-	public void part(Channel channel, String reason) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't part a null channel");
+	public void part(String reason) {
 		sendRaw.rawLine("PART " + channel.getName() + " :" + reason);
 	}
 
@@ -87,10 +60,8 @@ public class OutputChannel {
 	 * @param target The channel to send the message to
 	 * @param message The message to send
 	 */
-	public void message(Channel target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null channel");
-		sendIRC.message(target.getName(), message);
+	public void message(String message) {
+		sendIRC.message(channel.getName(), message);
 	}
 
 	/**
@@ -100,12 +71,10 @@ public class OutputChannel {
 	 * @param user The user to recieve the message in the channel
 	 * @param message The message to send
 	 */
-	public void message(Channel chan, User user, String message) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't send message to null channel");
+	public void message(User user, String message) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't send message to null user");
-		message(chan, user.getNick() + ": " + message);
+		message(user.getNick() + ": " + message);
 	}
 
 	/**
@@ -114,10 +83,8 @@ public class OutputChannel {
 	 * @param target The channel to send the action to
 	 * @param action The action message to send
 	 */
-	public void action(Channel target, String action) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null channel");
-		sendIRC.action(target.getName(), action);
+	public void action(String action) {
+		sendIRC.action(channel.getName(), action);
 	}
 
 	/**
@@ -126,24 +93,20 @@ public class OutputChannel {
 	 * @param target The channel to send the notice to
 	 * @param notice The notice to send
 	 */
-	public void notice(Channel target, String notice) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send notice to null channel");
-		sendIRC.notice(target.getName(), notice);
+	public void notice(String notice) {
+		sendIRC.notice(channel.getName(), notice);
 	}
 
 	/**
 	 * Send an invite to the channel. See {@link #sendInvite(java.lang.String, java.lang.String) }
 	 * for more information
 	 * @param target The channel to send the invite to
-	 * @param channel The channel you are inviting the user to join.
+	 * @param otherChannel The channel you are inviting the user to join.
 	 */
-	public void invite(Channel target, Channel channel) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send invite to null target channel");
-		if (channel == null)
+	public void invite(Channel otherChannel) {
+		if (otherChannel == null)
 			throw new IllegalArgumentException("Can't send invite to null invite channel");
-		sendIRC.invite(target.getName(), channel.getName());
+		sendIRC.invite(otherChannel.getName(), otherChannel.getName());
 	}
 
 	/**
@@ -152,10 +115,8 @@ public class OutputChannel {
 	 * @param target The channel to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
-	public void ctcpCommand(Channel target, String command) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP command to null channel");
-		sendIRC.ctcpCommand(target.getName(), command);
+	public void ctcpCommand(String command) {
+		sendIRC.ctcpCommand(channel.getName(), command);
 	}
 	
 	/**
@@ -164,8 +125,8 @@ public class OutputChannel {
 	 * @param chan The channel to part and join from. Note that the object will
 	 * be invalid after this method executes and a new one will be created
 	 */
-	public void cycle(final Channel chan) {
-		cycle(chan, "");
+	public void cycle() {
+		cycle("");
 	}
 
 	/**
@@ -175,18 +136,20 @@ public class OutputChannel {
 	 * be invalid after this method executes and a new one will be created
 	 * @param key The key to use when rejoining the channel
 	 */
-	public void cycle(final Channel chan, final String key) {
-		part(chan);
+	public void cycle(final String key) {
+		final PircBotX bot = channel.getBot();
+		final String channelName = channel.getName();
+		part();
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
-		chan.getBot().getConfiguration().getListenerManager().addListener(new ListenerAdapter() {
+		bot.getConfiguration().getListenerManager().addListener(new ListenerAdapter() {
 			@Override
 			public void onPart(PartEvent event) throws Exception {
 				//Make sure this bot is us to prevent nasty errors in multi bot sitations
-				if (event.getBot() == chan.getBot()) {
-					join(chan.getName(), key);
+				if (event.getBot() == bot) {
+					sendIRC.joinChannel(channelName, key);
 					//Self destrust, this listener has no more porpose
-					chan.getBot().getConfiguration().getListenerManager().removeListener(this);
+					bot.getConfiguration().getListenerManager().removeListener(this);
 				}
 			}
 		});
@@ -207,12 +170,10 @@ public class OutputChannel {
 	 *
 	 * @see #op(org.pircbotx.Channel, org.pircbotx.User)
 	 */
-	public void setMode(Channel chan, String mode) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't set mode on null channel");
+	public void setMode(String mode) {
 		if (mode == null)
 			throw new IllegalArgumentException("Can't set mode on channel to null");
-		sendRaw.rawLine("MODE " + chan.getName() + " " + mode);
+		sendRaw.rawLine("MODE " + channel.getName() + " " + mode);
 	}
 
 	/**
@@ -226,9 +187,7 @@ public class OutputChannel {
 	 * a string using {@link Object#toString() } and added together
 	 * with a single space separating them
 	 */
-	public void setMode(Channel chan, String mode, Object... args) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't set mode on null channel");
+	public void setMode(String mode, Object... args) {
 		if (mode == null)
 			throw new IllegalArgumentException("Can't set mode on channel to null");
 		if (args == null)
@@ -237,7 +196,7 @@ public class OutputChannel {
 		StringBuilder argBuilder = new StringBuilder(" ");
 		for (Object curArg : args)
 			argBuilder.append(curArg.toString()).append(" ");
-		setMode(chan, mode + argBuilder.toString());
+		setMode(mode + argBuilder.toString());
 	}
 
 	/**
@@ -247,12 +206,12 @@ public class OutputChannel {
 	 * @param user The user to perform the mode change on
 	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
 	 */
-	public void setMode(Channel chan, String mode, User user) {
+	public void setMode(String mode, User user) {
 		if (mode == null)
 			throw new IllegalArgumentException("Can't set user mode on channel to null");
 		if (user == null)
 			throw new IllegalArgumentException("Can't set user mode on null user");
-		setMode(chan, mode + user.getNick());
+		setMode(mode + user.getNick());
 	}
 
 	/**
@@ -261,8 +220,8 @@ public class OutputChannel {
 	 * @param chan The channel to set the limit on
 	 * @param limit The maximum amount of people that can be in the channel
 	 */
-	public void setChannelLimit(Channel chan, int limit) {
-		setMode(chan, "+l", limit);
+	public void setChannelLimit(int limit) {
+		setMode("+l", limit);
 	}
 
 	/**
@@ -271,7 +230,7 @@ public class OutputChannel {
 	 * @param chan
 	 */
 	public void removeChannelLimit(Channel chan) {
-		setMode(chan, "-l");
+		setMode("-l");
 	}
 
 	/**
@@ -280,10 +239,10 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 * @param key The secret key to use
 	 */
-	public void setChannelKey(Channel chan, String key) {
+	public void setChannelKey(String key) {
 		if (key == null)
 			throw new IllegalArgumentException("Can't set channel key to null");
-		setMode(chan, "+k", key);
+		setMode("+k", key);
 	}
 
 	/**
@@ -293,10 +252,10 @@ public class OutputChannel {
 	 * @param key The secret key to remove. If this is not known a blank key or
 	 * asterisk might work
 	 */
-	public void removeChannelKey(Channel chan, String key) {
+	public void removeChannelKey(String key) {
 		if (key == null)
 			throw new IllegalArgumentException("Can't remove channel key with null key");
-		setMode(chan, "-k", key);
+		setMode("-k", key);
 	}
 
 	/**
@@ -305,7 +264,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void setInviteOnly(Channel chan) {
-		setMode(chan, "+i");
+		setMode("+i");
 	}
 
 	/**
@@ -314,7 +273,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeInviteOnly(Channel chan) {
-		setMode(chan, "-i");
+		setMode("-i");
 	}
 
 	/**
@@ -323,7 +282,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void setModerated(Channel chan) {
-		setMode(chan, "+m");
+		setMode("+m");
 	}
 
 	/**
@@ -332,7 +291,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeModerated(Channel chan) {
-		setMode(chan, "-m");
+		setMode("-m");
 	}
 
 	/**
@@ -341,7 +300,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void setNoExternalMessages(Channel chan) {
-		setMode(chan, "+n");
+		setMode("+n");
 	}
 
 	/**
@@ -350,7 +309,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeNoExternalMessages(Channel chan) {
-		setMode(chan, "-n");
+		setMode("-n");
 	}
 
 	/**
@@ -359,7 +318,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void setSecret(Channel chan) {
-		setMode(chan, "+s");
+		setMode("+s");
 	}
 
 	/**
@@ -368,7 +327,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeSecret(Channel chan) {
-		setMode(chan, "-s");
+		setMode("-s");
 	}
 
 	/**
@@ -377,7 +336,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void setTopicProtection(Channel chan) {
-		setMode(chan, "+t");
+		setMode("+t");
 	}
 
 	/**
@@ -386,7 +345,7 @@ public class OutputChannel {
 	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeTopicProtection(Channel chan) {
-		setMode(chan, "-t");
+		setMode("-t");
 	}
 
 	/**
@@ -399,9 +358,7 @@ public class OutputChannel {
 	 * @param channel The channel to ban the user from.
 	 * @param hostmask A hostmask representing the user we're banning.
 	 */
-	public void ban(Channel channel, String hostmask) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't set ban on null channel");
+	public void ban(String hostmask) {
 		if (hostmask == null)
 			throw new IllegalArgumentException("Can't set ban on null hostmask");
 		sendRaw.rawLine("MODE " + channel.getName() + " +b " + hostmask);
@@ -417,8 +374,6 @@ public class OutputChannel {
 	 * @param hostmask A hostmask representing the user we're unbanning.
 	 */
 	public void unBan(Channel channel, String hostmask) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't remove ban on null channel");
 		if (hostmask == null)
 			throw new IllegalArgumentException("Can't remove ban on null hostmask");
 		sendRaw.rawLine("MODE " + channel.getName() + " -b " + hostmask);
@@ -432,10 +387,10 @@ public class OutputChannel {
 	 * @param chan The channel we're opping the user on.
 	 * @param user The user we are opping.
 	 */
-	public void op(Channel chan, User user) {
+	public void op(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set op on null user");
-		setMode(chan, "+o " + user.getNick());
+		setMode("+o " + user.getNick());
 	}
 
 	/**
@@ -446,10 +401,10 @@ public class OutputChannel {
 	 * @param chan The channel we're deopping the user on.
 	 * @param user The user we are deopping.
 	 */
-	public void deOp(Channel chan, User user) {
+	public void deOp(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove op on null user");
-		setMode(chan, "-o " + user.getNick());
+		setMode("-o " + user.getNick());
 	}
 
 	/**
@@ -460,10 +415,10 @@ public class OutputChannel {
 	 * @param chan The channel we're voicing the user on.
 	 * @param user The user we are voicing.
 	 */
-	public void voice(Channel chan, User user) {
+	public void voice(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set voice on null user");
-		setMode(chan, "+v " + user.getNick());
+		setMode("+v " + user.getNick());
 	}
 
 	/**
@@ -474,10 +429,10 @@ public class OutputChannel {
 	 * @param chan The channel we're devoicing the user on.
 	 * @param user The user we are devoicing.
 	 */
-	public void deVoice(Channel chan, User user) {
+	public void deVoice(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove voice on null user");
-		setMode(chan, "-v " + user.getNick());
+		setMode("-v " + user.getNick());
 	}
 
 	/**
@@ -490,10 +445,10 @@ public class OutputChannel {
 	 * @param chan
 	 * @param user
 	 */
-	public void halfOp(Channel chan, User user) {
+	public void halfOp(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set halfop on null user");
-		setMode(chan, "+h " + user.getNick());
+		setMode("+h " + user.getNick());
 	}
 
 	/**
@@ -506,10 +461,10 @@ public class OutputChannel {
 	 * @param chan
 	 * @param user
 	 */
-	public void deHalfOp(Channel chan, User user) {
+	public void deHalfOp(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove halfop on null user");
-		setMode(chan, "-h " + user.getNick());
+		setMode("-h " + user.getNick());
 	}
 
 	/**
@@ -522,10 +477,10 @@ public class OutputChannel {
 	 * @param chan
 	 * @param user
 	 */
-	public void owner(Channel chan, User user) {
+	public void owner(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set owner on null user");
-		setMode(chan, "+q " + user.getNick());
+		setMode("+q " + user.getNick());
 	}
 
 	/**
@@ -538,10 +493,10 @@ public class OutputChannel {
 	 * @param chan
 	 * @param user
 	 */
-	public void deOwner(Channel chan, User user) {
+	public void deOwner(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove owner on null user");
-		setMode(chan, "-q " + user.getNick());
+		setMode("-q " + user.getNick());
 	}
 
 	/**
@@ -554,10 +509,10 @@ public class OutputChannel {
 	 * @param chan
 	 * @param user
 	 */
-	public void superOp(Channel chan, User user) {
+	public void superOp(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set super op on null user");
-		setMode(chan, "+a " + user.getNick());
+		setMode("+a " + user.getNick());
 	}
 
 	/**
@@ -570,10 +525,10 @@ public class OutputChannel {
 	 * @param chan
 	 * @param user
 	 */
-	public void deSuperOp(Channel chan, User user) {
+	public void deSuperOp(User user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove super op on null user");
-		setMode(chan, "-a " + user.getNick());
+		setMode("-a " + user.getNick());
 	}
 
 	/**
@@ -586,12 +541,10 @@ public class OutputChannel {
 	 * @param topic The new topic for the channel.
 	 *
 	 */
-	public void setTopic(Channel chan, String topic) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't set topic on null channel");
+	public void setTopic(String topic) {
 		if (topic == null)
 			throw new IllegalArgumentException("Can't set topic to null");
-		sendRaw.rawLine("TOPIC " + chan.getName() + " :" + topic);
+		sendRaw.rawLine("TOPIC " + channel.getName() + " :" + topic);
 	}
 
 	/**
@@ -602,8 +555,8 @@ public class OutputChannel {
 	 * @param chan The channel to kick the user from.
 	 * @param user The user to kick.
 	 */
-	public void kick(Channel chan, User user) {
-		kick(chan, user, "");
+	public void kick(User user) {
+		kick(user, "");
 	}
 
 	/**
@@ -615,11 +568,9 @@ public class OutputChannel {
 	 * @param user The user to kick.
 	 * @param reason A description of the reason for kicking a user.
 	 */
-	public void kick(Channel chan, User user, String reason) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't kick on null channel");
+	public void kick(User user, String reason) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't kick null user");
-		sendRaw.rawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
+		sendRaw.rawLine("KICK " + channel.getName() + " " + user.getNick() + " :" + reason);
 	}
 }
