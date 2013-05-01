@@ -53,7 +53,7 @@ public class SASLCapHandler implements CapHandler {
 	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (capabilities.contains("sasl"))
 			//Server supports sasl, send request to use it
-			bot.sendCAPREQ("sasl");
+			bot.sendCAP().request("sasl");
 		else
 			throw new CAPException("Server does not support SASL");
 	}
@@ -61,14 +61,14 @@ public class SASLCapHandler implements CapHandler {
 	public void handleACK(PircBotX bot, List<String> capabilities) {
 		if (capabilities.contains("sasl"))
 			//Server acknowledges our request to use sasl 
-			bot.sendRawLineNow("AUTHENTICATE PLAIN");
+			bot.sendRaw().rawLineNow("AUTHENTICATE PLAIN");
 	}
 
 	public void handleUnknown(PircBotX bot, String rawLine) throws CAPException {
 		if (rawLine.equals("AUTHENTICATE +")) {
 			//Server ackowledges our request to use plain authentication
 			String encodedAuth = Base64.encodeBase64String((username + '\0' + username + '\0' + password).getBytes(Charsets.UTF_8));
-			bot.sendRawLineNow("AUTHENTICATE " + encodedAuth);
+			bot.sendRaw().rawLineNow("AUTHENTICATE " + encodedAuth);
 		}
 
 		//Check for 904 and 905 
