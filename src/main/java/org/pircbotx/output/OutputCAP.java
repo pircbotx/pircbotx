@@ -15,7 +15,24 @@ import org.pircbotx.Utils;
 @RequiredArgsConstructor
 public class OutputCAP {
 	protected final OutputRaw sendRaw;
-	public void sendCAPREQ(String... capability) {
+
+	public void getSupported() {
+		sendRaw.rawLine("CAP LS");
+	}
+
+	public void getEnabled() {
+		sendRaw.rawLine("CAP LIST");
+	}
+
+	public void request(String... capability) {
 		sendRaw.rawLine("CAP REQ :" + Utils.join(Arrays.asList(capability), " "));
+	}
+	
+	public void clear() {
+		sendRaw.rawLine("CAP CLEAR");
+	}
+	
+	public void end() {
+		sendRaw.rawLine("CAP END");
 	}
 }

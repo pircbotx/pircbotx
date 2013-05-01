@@ -48,8 +48,8 @@ public class EnableCapHandler implements CapHandler {
 
 	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
-			//Server supports sasl, send request to use it
-			bot.sendCAPREQ(cap);
+			//Server supports capability, send request to use it
+			bot.sendCAP().request(cap);
 		else if (!ignoreFail)
 			throw new CAPException("Server does not support the " + cap + " capability");
 		else
