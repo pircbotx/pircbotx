@@ -34,11 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
@@ -49,19 +45,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
+import org.pircbotx.dcc.Chat;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.*;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.output.OutputCAP;
+import org.pircbotx.output.OutputChannel;
+import org.pircbotx.output.OutputIRC;
+import org.pircbotx.output.OutputRaw;
+import org.pircbotx.output.OutputUser;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -106,9 +104,12 @@ public class PircBotX {
 	//Connection stuff.
 	protected Socket socket;
 	protected Thread inputParserThread;
-	protected Writer outputWriter;
-	protected ReentrantLock writeLock = new ReentrantLock(true);
-	protected Condition writeNowCondition = writeLock.newCondition();
+	//Writers
+	protected final OutputRaw sendRaw;
+	protected final OutputIRC sendIRC;
+	protected final OutputCAP sendCAP;
+	protected final OutputChannel sendChannel;
+	protected final OutputUser sendUser;
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
 	protected String nick = "";
@@ -142,6 +143,11 @@ public class PircBotX {
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.dccHandler = configuration.getBotFactory().createDccHandler(this);
 		this.inputParser = configuration.getBotFactory().createInputParser(this);
+		this.sendRaw = configuration.getBotFactory().createOutputRaw(this);
+		this.sendIRC = configuration.getBotFactory().createOutputIRC(this);
+		this.sendCAP = configuration.getBotFactory().createOutputCAP(this);
+		this.sendChannel = configuration.getBotFactory().createOutputChannel(this);
+		this.sendUser = configuration.getBotFactory().createOutputUser(this);
 	}
 
 	/**
@@ -167,7 +173,7 @@ public class PircBotX {
 					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
 				shutdownCalled = false;
 			}
-			if(configuration.isUseIdentServer() && IdentServer.getServer() == null)
+			if (configuration.isUseIdentServer() && IdentServer.getServer() == null)
 				throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
 
 			//Reset capabilities
@@ -192,29 +198,29 @@ public class PircBotX {
 			log.info("Connected to server.");
 
 			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), configuration.getEncoding());
-			outputWriter = new OutputStreamWriter(socket.getOutputStream(), configuration.getEncoding());
+			sendRaw().init(socket);
 			BufferedReader breader = new BufferedReader(inputStreamReader);
 			configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
-			
-			if(configuration.isUseIdentServer())
+
+			if (configuration.isUseIdentServer())
 				IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
 
 			if (configuration.isCapEnabled())
 				// Attempt to initiate a CAP transaction.
-				sendRawLineNow("CAP LS");
+				sendRaw().rawLineNow("CAP LS");
 
 			// Attempt to join the server.
 			if (configuration.isWebIrcEnabled())
-				sendRawLineNow("WEBIRC " + configuration.getWebIrcPassword()
+				sendRaw().rawLineNow("WEBIRC " + configuration.getWebIrcPassword()
 						+ " " + configuration.getWebIrcUsername()
 						+ " " + configuration.getWebIrcHostname()
 						+ " " + configuration.getWebIrcAddress().getHostAddress());
 			if (!StringUtils.isBlank(configuration.getServerPassword()))
-				sendRawLineNow("PASS " + configuration.getServerPassword());
+				sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
 			String tempNick = configuration.getName();
 
-			sendRawLineNow("NICK " + tempNick);
-			sendRawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
+			sendRaw().rawLineNow("NICK " + tempNick);
+			sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
 
 			// Read stuff back from the server to see if we connected.
 			String line;
@@ -242,7 +248,7 @@ public class PircBotX {
 						if (configuration.isAutoNickChange()) {
 							tries++;
 							tempNick = configuration.getName() + tries;
-							sendRawLineNow("NICK " + tempNick);
+							sendRaw().rawLineNow("NICK " + tempNick);
 						} else
 							throw new NickAlreadyInUseException(line);
 					else if (code.equals("439")) {
@@ -266,7 +272,7 @@ public class PircBotX {
 								true);
 						sslSocket.startHandshake();
 						breader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), configuration.getEncoding()));
-						outputWriter = new OutputStreamWriter(sslSocket.getOutputStream(), configuration.getEncoding());
+						sendRaw().init(sslSocket);
 						socket = sslSocket;
 						//Notify CAP Handlers
 						for (CapHandler curCapHandler : configuration.getCapHandlers())
@@ -304,7 +310,7 @@ public class PircBotX {
 							break;
 						}
 					if (allDone) {
-						sendRawLineNow("CAP END");
+						sendRaw().rawLineNow("CAP END");
 						capEndSent = true;
 
 						//Make capabilities unmodifiable for the future
@@ -329,7 +335,7 @@ public class PircBotX {
 						PircBotX thisBot = thisBotRef.get();
 						if (thisBot != null && thisBot.isConnected() && thisBot.socket != null && !thisBot.socket.isClosed())
 							try {
-								thisBot.disconnect();
+								thisBot.sendIRC().quitServer();
 							} finally {
 								thisBot.shutdown(true);
 							}
@@ -344,7 +350,7 @@ public class PircBotX {
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(this));
 
 			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
-				joinChannel(channelEntry.getKey(), channelEntry.getValue());
+				sendChannel().join(channelEntry.getKey(), channelEntry.getValue());
 		} catch (Exception e) {
 			//if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
 			//	shutdown(true);
@@ -393,1025 +399,24 @@ public class PircBotX {
 		configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, true, null));
 	}
 
-	/**
-	 * This method disconnects from the server cleanly by calling the
-	 * quitServer() method. Providing the PircBotX was connected to an
-	 * IRC server, DisconnectEvent will be dispatched as soon as the
-	 * disconnection is made by the server.
-	 *
-	 * @see #quitServer() quitServer
-	 * @see #quitServer(String) quitServer
-	 */
-	public synchronized void disconnect() {
-		quitServer();
+	public OutputRaw sendRaw() {
+		return sendRaw;
 	}
 
-	/**
-	 * Joins a channel.
-	 *
-	 * @param channel The name of the channel to join (eg "#cs").
-	 */
-	public void joinChannel(String channel) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't join a null channel");
-		sendRawLine("JOIN " + channel);
+	public OutputIRC sendIRC() {
+		return sendIRC;
 	}
 
-	/**
-	 * Joins a channel with a key.
-	 *
-	 * @param channel The name of the channel to join (eg "#cs").
-	 * @param key The key that will be used to join the channel.
-	 */
-	public void joinChannel(String channel, String key) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't join a null channel");
-		if (key == null)
-			throw new IllegalArgumentException("Can't channel " + channel + " with null key");
-		joinChannel(channel + " " + key);
+	public OutputCAP sendCAP() {
+		return sendCAP;
 	}
 
-	/**
-	 * Parts a channel.
-	 *
-	 * @param channel The name of the channel to leave.
-	 */
-	public void partChannel(Channel channel) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't part a null channel");
-		sendRawLine("PART " + channel.getName());
+	public OutputChannel sendChannel() {
+		return sendChannel;
 	}
 
-	/**
-	 * Parts a channel, giving a reason.
-	 *
-	 * @param channel The name of the channel to leave.
-	 * @param reason The reason for parting the channel.
-	 */
-	public void partChannel(Channel channel, String reason) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't part a null channel");
-		sendRawLine("PART " + channel.getName() + " :" + reason);
-	}
-
-	/**
-	 * Part and rejoin specified channel. Useful for obtaining auto privileges
-	 * after identifying
-	 * @param chan The channel to part and join from. Note that the object will
-	 * be invalid after this method executes and a new one will be created
-	 */
-	public void cycle(final Channel chan) {
-		cycle(chan, "");
-	}
-
-	/**
-	 * Part and rejoin specified channel using channel key. Useful for obtaining
-	 * auto privileges after identifying
-	 * @param chan The channel to part and join from. Note that the object will
-	 * be invalid after this method executes and a new one will be created
-	 * @param key The key to use when rejoining the channel
-	 */
-	public void cycle(final Channel chan, final String key) {
-		partChannel(chan);
-		//As we might not immediatly part and you can't join a channel that your
-		//already joined to, wait for the PART event before rejoining
-		configuration.getListenerManager().addListener(new ListenerAdapter() {
-			@Override
-			public void onPart(PartEvent event) throws Exception {
-				//Make sure this bot is us to prevent nasty errors in multi bot sitations
-				if (event.getBot() == PircBotX.this) {
-					event.getBot().joinChannel(chan.getName(), key);
-					//Self destrust, this listener has no more porpose
-					event.getBot().configuration.getListenerManager().removeListener(this);
-				}
-			}
-		});
-	}
-
-	/**
-	 * Quits from the IRC server.
-	 * Providing we are actually connected to an IRC server, a {@link DisconnectEvent}
-	 * will be dispatched as soon as the IRC server disconnects us.
-	 */
-	public void quitServer() {
-		if (!isConnected())
-			throw new RuntimeException("Can't quit from server because we are already disconnected!");
-		quitServer("");
-	}
-
-	/**
-	 * Quits from the IRC server with a reason.
-	 * Providing we are actually connected to an IRC server, a {@link DisconnectEvent}
-	 * will be dispatched as soon as the IRC server disconnects us.
-	 *
-	 * @param reason The reason for quitting the server.
-	 */
-	public void quitServer(String reason) {
-		sendRawLine("QUIT :" + reason);
-	}
-
-	/**
-	 * Sends a raw line through the outgoing message queue.
-	 *
-	 * @param line The raw line to send to the IRC server.
-	 */
-	public void sendRawLine(String line) {
-		if (line == null)
-			throw new NullPointerException("Cannot send null messages to server");
-		if (!isConnected())
-			throw new RuntimeException("Not connected to server");
-		writeLock.lock();
-		try {
-			sendRawLineToServer(line);
-			//Block for messageDelay. If sendRawLineNow is called with resetDelay
-			//the condition is tripped and we wait again
-			while (writeNowCondition.await(configuration.getMessageDelay(), TimeUnit.MILLISECONDS)) {
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("Couldn't pause thread for message delay", e);
-		} finally {
-			writeLock.unlock();
-		}
-	}
-
-	/**
-	 * Sends a raw line to the IRC server as soon as possible without resetting
-	 * the message delay for messages waiting to send
-	 *
-	 * @param line The raw line to send to the IRC server.
-	 * @see #sendRawLineNow(java.lang.String, boolean) 
-	 */
-	public void sendRawLineNow(String line) {
-		sendRawLineNow(line, false);
-	}
-
-	/**
-	 * Sends a raw line to the IRC server as soon as possible
-	 * @param line The raw line to send to the IRC server
-	 * @param resetDelay If true, pending messages will reset their delay.
-	 */
-	public void sendRawLineNow(String line, boolean resetDelay) {
-		if (line == null)
-			throw new NullPointerException("Cannot send null messages to server");
-		if (!isConnected())
-			throw new RuntimeException("Not connected to server");
-		writeLock.lock();
-		try {
-			sendRawLineToServer(line);
-			if (resetDelay)
-				//Reset the 
-				writeNowCondition.signalAll();
-		} finally {
-			writeLock.unlock();
-		}
-	}
-
-	/**
-	 * Actually sends the raw line to the server. This method is NOT SYNCHRONIZED 
-	 * since it's only called from methods that handle locking
-	 * @param line 
-	 */
-	protected void sendRawLineToServer(String line) {
-		if (line.length() > configuration.getMaxLineLength() - 2)
-			line = line.substring(0, configuration.getMaxLineLength() - 2);
-		try {
-			outputWriter.write(line + "\r\n");
-			outputWriter.flush();
-			logServerSend(line);
-		} catch (Exception e) {
-			//Not much else we can do, but this requires attention of whatever is calling this
-			throw new RuntimeException("Exception encountered when writing to socket", e);
-		}
-	}
-
-	public void sendRawLineSplit(String prefix, String message) {
-		sendRawLineSplit(prefix, message, "");
-	}
-
-	public void sendRawLineSplit(String prefix, String message, String suffix) {
-		//Make sure suffix is valid
-		if (suffix == null)
-			suffix = "";
-
-		//Find if final line is going to be shorter than the max line length
-		String finalMessage = prefix + message + suffix;
-		int realMaxLineLength = configuration.getMaxLineLength() - 2;
-		if (!configuration.isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
-			//Length is good (or auto split message is false), just go ahead and send it
-			sendRawLine(finalMessage);
-			return;
-		}
-
-		//Too long, split it up
-		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
-		//Oh look, no function to split every nth char. Since regex is expensive, use this nonsense
-		int iterations = (int) Math.ceil(message.length() / (double) maxMessageLength);
-		for (int i = 0; i < iterations; i++) {
-			int endPoint = (i != iterations - 1) ? ((i + 1) * maxMessageLength) : message.length();
-			String curMessagePart = prefix + message.substring(i * maxMessageLength, endPoint) + suffix;
-			sendRawLine(curMessagePart);
-		}
-	}
-
-	/**
-	 * Sends a message to a channel or a private message to a user. These
-	 * messages are added to the outgoing message queue and sent at the
-	 * earliest possible opportunity.
-	 * <p>
-	 * Some examples: -
-	 * <pre>    // Send the message "Hello!" to the channel #cs.
-	 *    sendMessage("#cs", "Hello!");
-	 *
-	 *    // Send a private message to Paul that says "Hi".
-	 *    sendMessage("Paul", "Hi");</pre>
-	 *
-	 * You may optionally apply colours, boldness, underlining, etc to
-	 * the message by using the
-	 * <code>Colors</code> class.
-	 *
-	 * @param target The name of the channel or user nick to send to.
-	 * @param message The message to send.
-	 *
-	 * @see Colors
-	 */
-	public void sendMessage(String target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null target");
-		sendRawLineSplit("PRIVMSG " + target + " :", message);
-	}
-
-	/**
-	 * Send a private message to a user. See {@link #sendMessage(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the message to
-	 * @param message The message to send
-	 */
-	public void sendMessage(User target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null user");
-		sendMessage(target.getNick(), message);
-	}
-
-	/**
-	 * Send a message to the channel. See {@link #sendMessage(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The channel to send the message to
-	 * @param message The message to send
-	 */
-	public void sendMessage(Channel target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null channel");
-		sendMessage(target.getName(), message);
-	}
-
-	/**
-	 * Send a message to the given user in the given channel in this format:
-	 * <code>user: message</code>. Very useful for responding directly to a command
-	 * @param chan The channel to send the message to
-	 * @param user The user to recieve the message in the channel
-	 * @param message The message to send
-	 */
-	public void sendMessage(Channel chan, User user, String message) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't send message to null channel");
-		if (user == null)
-			throw new IllegalArgumentException("Can't send message to null user");
-		sendMessage(chan.getName(), user.getNick() + ": " + message);
-	}
-
-	/**
-	 * Sends an action to the channel or to a user.
-	 *
-	 * @param target The name of the channel or user nick to send to.
-	 * @param action The action to send.
-	 *
-	 * @see Colors
-	 */
-	public void sendAction(String target, String action) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send action to null target");
-		sendCTCPCommand(target, "ACTION " + action);
-	}
-
-	/**
-	 * Send an action to the user. See {@link #sendAction(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the action to
-	 * @param action The action message to send
-	 */
-	public void sendAction(User target, String action) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null user");
-		sendAction(target.getNick(), action);
-	}
-
-	/**
-	 * Send an action to the channel. See {@link #sendAction(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The channel to send the action to
-	 * @param action The action message to send
-	 */
-	public void sendAction(Channel target, String action) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null channel");
-		sendAction(target.getName(), action);
-	}
-
-	/**
-	 * Sends a notice to the channel or to a user.
-	 *
-	 * @param target The name of the channel or user nick to send to.
-	 * @param notice The notice to send.
-	 */
-	public void sendNotice(String target, String notice) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send notice to null target");
-		sendRawLineSplit("NOTICE " + target + " :", notice);
-	}
-
-	/**
-	 * Send a notice to the user. See {@link #sendNotice(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the notice to
-	 * @param notice The notice to send
-	 */
-	public void sendNotice(User target, String notice) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send notice to null user");
-		sendNotice(target.getNick(), notice);
-	}
-
-	/**
-	 * Send a notice to the channel. See {@link #sendNotice(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The channel to send the notice to
-	 * @param notice The notice to send
-	 */
-	public void sendNotice(Channel target, String notice) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send notice to null channel");
-		sendNotice(target.getName(), notice);
-	}
-
-	/**
-	 * Sends a CTCP command to a channel or user. (Client to client protocol).
-	 * Examples of such commands are "PING <number>", "FINGER", "VERSION", etc.
-	 * For example, if you wish to request the version of a user called "Dave",
-	 * then you would call
-	 * <code>sendCTCPCommand("Dave", "VERSION");</code>.
-	 * The type of response to such commands is largely dependant on the target
-	 * client software.
-	 *
-	 * @since PircBot 0.9.5
-	 *
-	 * @param target The name of the channel or user to send the CTCP message to.
-	 * @param command The CTCP command to send.
-	 */
-	public void sendCTCPCommand(String target, String command) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP command to null target");
-		sendRawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
-	}
-
-	/**
-	 * Send a CTCP command to the user. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the CTCP command to
-	 * @param command The CTCP command to send
-	 */
-	public void sendCTCPCommand(User target, String command) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP command to null user");
-		sendCTCPCommand(target.getNick(), command);
-	}
-
-	/**
-	 * Send a CTCP command to the channel. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The channel to send the CTCP command to
-	 * @param command The CTCP command to send
-	 */
-	public void sendCTCPCommand(Channel target, String command) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP command to null channel");
-		sendCTCPCommand(target.getName(), command);
-	}
-
-	/**
-	 * Send a CTCP response to the target channel or user. Note that the
-	 * {@link CoreHooks} class already handles responding to the most common CTCP
-	 * commands. Only respond to other commands that aren't implemented
-	 * @param target The target of the response
-	 * @param message The message to send
-	 */
-	public void sendCTCPResponse(String target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP response to null target");
-		sendRawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
-	}
-
-	/**
-	 * Send a CTCP Response to the user. See {@link #sendCTCPResponse(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the CTCP Response to
-	 * @param message The response to send
-	 */
-	public void sendCTCPResponse(User target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP response to null user");
-		sendCTCPResponse(target.getNick(), message);
-	}
-
-	public void sendCAPREQ(String... capability) {
-		sendRawLine("CAP REQ :" + Utils.join(Arrays.asList(capability), " "));
-	}
-
-	/**
-	 * Attempt to change the current nick (nickname) of the bot when it
-	 * is connected to an IRC server.
-	 * After confirmation of a successful nick change, the getNick method
-	 * will return the new nick.
-	 *
-	 * @param newNick The new nick to use.
-	 */
-	public void changeNick(String newNick) {
-		if (newNick == null)
-			throw new IllegalArgumentException("Can't change to null nick");
-		sendRawLine("NICK " + newNick);
-	}
-
-	/**
-	 * Identify the bot with NickServ, supplying the appropriate password.
-	 * Some IRC Networks (such as freenode) require users to <i>register</i> and
-	 * <i>identify</i> with NickServ before they are able to send private messages
-	 * to other users, thus reducing the amount of spam. If you are using
-	 * an IRC network where this kind of policy is enforced, you will need
-	 * to make your bot <i>identify</i> itself to NickServ before you can send
-	 * private messages. Assuming you have already registered your bot's
-	 * nick with NickServ, this method can be used to <i>identify</i> with
-	 * the supplied password. It usually makes sense to identify with NickServ
-	 * immediately after connecting to a server.
-	 * <p>
-	 * This method issues a raw NICKSERV command to the server, and is therefore
-	 * safer than the alternative approach of sending a private message to
-	 * NickServ. The latter approach is considered dangerous, as it may cause
-	 * you to inadvertently transmit your password to an untrusted party if you
-	 * connect to a network which does not run a NickServ service and where the
-	 * untrusted party has assumed the nick "NickServ". However, if your IRC
-	 * network is only compatible with the private message approach, you may
-	 * typically identify like so:
-	 * <pre>sendMessage("NickServ", "identify PASSWORD");</pre>
-	 * <p>
-	 * Note that this method will add a temporary listener for ConnectEvent if
-	 * the bot is not logged in yet. If the bot is logged in the command is sent
-	 * immediately to the server
-	 *
-	 * @param password The password which will be used to identify with NickServ.
-	 */
-	public void identify(final String password) {
-		if (password == null)
-			throw new IllegalArgumentException("Can't identify with null password");
-		if (loggedIn)
-			sendRawLine("NICKSERV IDENTIFY " + password);
-		else
-			configuration.getListenerManager().addListener(new ListenerAdapter() {
-				@Override
-				public void onConnect(ConnectEvent event) throws Exception {
-					//Make sure this bot is us to prevent nasty errors in multi bot sitations
-					if (event.getBot() == PircBotX.this) {
-						sendRawLine("NICKSERV IDENTIFY " + password);
-						//Self destrust, this listener has no more porpose
-						event.getBot().configuration.getListenerManager().removeListener(this);
-					}
-				}
-			});
-	}
-
-	/**
-	 * Set the mode of a channel.
-	 * This method attempts to set the mode of a channel. This
-	 * may require the bot to have operator status on the channel.
-	 * For example, if the bot has operator status, we can grant
-	 * operator status to "Dave" on the #cs channel
-	 * by calling setMode("#cs", "+o Dave");
-	 * An alternative way of doing this would be to use the op method.
-	 *
-	 * @param chan The channel on which to perform the mode change.
-	 * @param mode The new mode to apply to the channel. This may include
-	 * zero or more arguments if necessary.
-	 *
-	 * @see #op(org.pircbotx.Channel, org.pircbotx.User)
-	 */
-	public void setMode(Channel chan, String mode) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't set mode on null channel");
-		if (mode == null)
-			throw new IllegalArgumentException("Can't set mode on channel to null");
-		sendRawLine("MODE " + chan.getName() + " " + mode);
-	}
-
-	/**
-	 * Set a mode for the channel with arguments. Nicer way to pass arguments than
-	 * with string concatenation. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
-	 * for more information
-	 * @param chan The channel on which to perform the mode change.
-	 * @param mode The new mode to apply to the channel. This may include
-	 * zero or more arguments if necessary.
-	 * @param args Arguments to be passed to the mode. All will be converted to
-	 * a string using {@link Object#toString() } and added together
-	 * with a single space separating them
-	 */
-	public void setMode(Channel chan, String mode, Object... args) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't set mode on null channel");
-		if (mode == null)
-			throw new IllegalArgumentException("Can't set mode on channel to null");
-		if (args == null)
-			throw new IllegalArgumentException("Can't set mode arguments to null");
-		//Build arg string
-		StringBuilder argBuilder = new StringBuilder(" ");
-		for (Object curArg : args)
-			argBuilder.append(curArg.toString()).append(" ");
-		setMode(chan, mode + argBuilder.toString());
-	}
-
-	/**
-	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String) }
-	 * @param chan The channel on which to perform the mode change.
-	 * @param mode The new mode to apply to the channel.
-	 * @param user The user to perform the mode change on
-	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
-	 */
-	public void setMode(Channel chan, String mode, User user) {
-		if (mode == null)
-			throw new IllegalArgumentException("Can't set user mode on channel to null");
-		if (user == null)
-			throw new IllegalArgumentException("Can't set user mode on null user");
-		setMode(chan, mode + user.getNick());
-	}
-
-	/**
-	 * Attempt to set the channel limit (+l) to specified value. May require operator
-	 * privileges in the channel
-	 * @param chan The channel to set the limit on
-	 * @param limit The maximum amount of people that can be in the channel
-	 */
-	public void setChannelLimit(Channel chan, int limit) {
-		setMode(chan, "+l", limit);
-	}
-
-	/**
-	 * Attempt to remove the channel limit (-l) on the specified channel. May require
-	 * operator privileges in the channel
-	 * @param chan
-	 */
-	public void removeChannelLimit(Channel chan) {
-		setMode(chan, "-l");
-	}
-
-	/**
-	 * Sets the channel key (+k) or password to get into the channel. May require
-	 * operator privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 * @param key The secret key to use
-	 */
-	public void setChannelKey(Channel chan, String key) {
-		if (key == null)
-			throw new IllegalArgumentException("Can't set channel key to null");
-		setMode(chan, "+k", key);
-	}
-
-	/**
-	 * Removes the channel key (-k) or password to get into the channel. May require
-	 * operator privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 * @param key The secret key to remove. If this is not known a blank key or
-	 * asterisk might work
-	 */
-	public void removeChannelKey(Channel chan, String key) {
-		if (key == null)
-			throw new IllegalArgumentException("Can't remove channel key with null key");
-		setMode(chan, "-k", key);
-	}
-
-	/**
-	 * Set the channel as invite only (+i). May require operator privileges in
-	 * the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void setInviteOnly(Channel chan) {
-		setMode(chan, "+i");
-	}
-
-	/**
-	 * Removes invite only (-i) status from the channel. May require operator
-	 * privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void removeInviteOnly(Channel chan) {
-		setMode(chan, "-i");
-	}
-
-	/**
-	 * Set the channel as moderated (+m). May require operator privileges in
-	 * the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void setModerated(Channel chan) {
-		setMode(chan, "+m");
-	}
-
-	/**
-	 * Removes moderated (-m) status from the channel. May require operator
-	 * privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void removeModerated(Channel chan) {
-		setMode(chan, "-m");
-	}
-
-	/**
-	 * Prevent external messages from appearing in the channel (+n). May require
-	 * operator privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void setNoExternalMessages(Channel chan) {
-		setMode(chan, "+n");
-	}
-
-	/**
-	 * Allow external messages to appear in the channel (+n). May require operator
-	 * privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void removeNoExternalMessages(Channel chan) {
-		setMode(chan, "-n");
-	}
-
-	/**
-	 * Set the channel as secret (+s). May require operator privileges in
-	 * the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void setSecret(Channel chan) {
-		setMode(chan, "+s");
-	}
-
-	/**
-	 * Removes secret (-s) status from the channel. May require operator
-	 * privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void removeSecret(Channel chan) {
-		setMode(chan, "-s");
-	}
-
-	/**
-	 * Prevent non-operator users from changing the channel topic (+t). May
-	 * require operator privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void setTopicProtection(Channel chan) {
-		setMode(chan, "+t");
-	}
-
-	/**
-	 * Allow non-operator users to change the channel topic (-t). May require operator
-	 * privileges in the channel
-	 * @param chan The channel to preform the mode change on
-	 */
-	public void removeTopicProtection(Channel chan) {
-		setMode(chan, "-t");
-	}
-
-	/**
-	 * Sends an invitation to join a channel. Some channels can be marked
-	 * as "invite-only", so it may be useful to allow a bot to invite people
-	 * into it.
-	 *
-	 * @param nick The nick of the user to invite
-	 * @param channel The channel you are inviting the user to join.
-	 *
-	 */
-	public void sendInvite(String nick, String channel) {
-		if (nick == null)
-			throw new IllegalArgumentException("Can't send invite to null nick");
-		if (channel == null)
-			throw new IllegalArgumentException("Can't send invite to null channel");
-		sendRawLine("INVITE " + nick + " :" + channel);
-	}
-
-	/**
-	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the CTCP command to
-	 * @param channel The channel you are inviting the user to join.
-	 */
-	public void sendInvite(User target, String channel) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send invite to null user");
-		sendInvite(target.getNick(), channel);
-	}
-
-	/**
-	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The user to send the invite to
-	 * @param channel The channel you are inviting the user to join.
-	 */
-	public void sendInvite(User target, Channel channel) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send invite to null user");
-		if (channel == null)
-			throw new IllegalArgumentException("Can't send invite to null channel");
-		sendInvite(target.getNick(), channel.getName());
-	}
-
-	/**
-	 * Send an invite to the channel. See {@link #sendInvite(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The channel to send the invite to
-	 * @param channel The channel you are inviting the user to join.
-	 */
-	public void sendInvite(Channel target, Channel channel) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send invite to null target channel");
-		if (channel == null)
-			throw new IllegalArgumentException("Can't send invite to null invite channel");
-		sendInvite(target.getName(), channel.getName());
-	}
-
-	/**
-	 * Bans a user from a channel. An example of a valid hostmask is
-	 * "*!*compu@*.18hp.net". This may be used in conjunction with the
-	 * kick method to permanently remove a user from a channel.
-	 * Successful use of this method may require the bot to have operator
-	 * status itself.
-	 *
-	 * @param channel The channel to ban the user from.
-	 * @param hostmask A hostmask representing the user we're banning.
-	 */
-	public void ban(Channel channel, String hostmask) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't set ban on null channel");
-		if (hostmask == null)
-			throw new IllegalArgumentException("Can't set ban on null hostmask");
-		sendRawLine("MODE " + channel.getName() + " +b " + hostmask);
-	}
-
-	/**
-	 * Unbans a user from a channel. An example of a valid hostmask is
-	 * "*!*compu@*.18hp.net".
-	 * Successful use of this method may require the bot to have operator
-	 * status itself.
-	 *
-	 * @param channel The channel to unban the user from.
-	 * @param hostmask A hostmask representing the user we're unbanning.
-	 */
-	public void unBan(Channel channel, String hostmask) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't remove ban on null channel");
-		if (hostmask == null)
-			throw new IllegalArgumentException("Can't remove ban on null hostmask");
-		sendRawLine("MODE " + channel.getName() + " -b " + hostmask);
-	}
-
-	/**
-	 * Grants operator privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have operator
-	 * status itself.
-	 *
-	 * @param chan The channel we're opping the user on.
-	 * @param user The user we are opping.
-	 */
-	public void op(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't set op on null user");
-		setMode(chan, "+o " + user.getNick());
-	}
-
-	/**
-	 * Removes operator privileges from a user on a channel.
-	 * Successful use of this method may require the bot to have operator
-	 * status itself.
-	 *
-	 * @param chan The channel we're deopping the user on.
-	 * @param user The user we are deopping.
-	 */
-	public void deOp(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't remove op on null user");
-		setMode(chan, "-o " + user.getNick());
-	}
-
-	/**
-	 * Grants voice privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have operator
-	 * status itself.
-	 *
-	 * @param chan The channel we're voicing the user on.
-	 * @param user The user we are voicing.
-	 */
-	public void voice(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't set voice on null user");
-		setMode(chan, "+v " + user.getNick());
-	}
-
-	/**
-	 * Removes voice privileges from a user on a channel.
-	 * Successful use of this method may require the bot to have operator
-	 * status itself.
-	 *
-	 * @param chan The channel we're devoicing the user on.
-	 * @param user The user we are devoicing.
-	 */
-	public void deVoice(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't remove voice on null user");
-		setMode(chan, "-v " + user.getNick());
-	}
-
-	/**
-	 * Grants owner privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have operator or
-	 * halfOp status itself.
-	 * <p>
-	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
-	 * it to mean something else!
-	 * @param chan
-	 * @param user
-	 */
-	public void halfOp(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't set halfop on null user");
-		setMode(chan, "+h " + user.getNick());
-	}
-
-	/**
-	 * Removes owner privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have operator or
-	 * halfOp status itself.
-	 * <p>
-	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
-	 * it to mean something else!
-	 * @param chan
-	 * @param user
-	 */
-	public void deHalfOp(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't remove halfop on null user");
-		setMode(chan, "-h " + user.getNick());
-	}
-
-	/**
-	 * Grants owner privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have owner
-	 * status itself.
-	 * <p>
-	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
-	 * it to mean something else!
-	 * @param chan
-	 * @param user
-	 */
-	public void owner(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't set owner on null user");
-		setMode(chan, "+q " + user.getNick());
-	}
-
-	/**
-	 * Removes owner privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have owner
-	 * status itself.
-	 * <p>
-	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
-	 * it to mean something else!
-	 * @param chan
-	 * @param user
-	 */
-	public void deOwner(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't remove owner on null user");
-		setMode(chan, "-q " + user.getNick());
-	}
-
-	/**
-	 * Grants superOp privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have owner or superOp
-	 * status itself.
-	 * <p>
-	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
-	 * it to mean something else!
-	 * @param chan
-	 * @param user
-	 */
-	public void superOp(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't set super op on null user");
-		setMode(chan, "+a " + user.getNick());
-	}
-
-	/**
-	 * Removes superOp privileges to a user on a channel.
-	 * Successful use of this method may require the bot to have owner or superOp
-	 * status itself.
-	 * <p>
-	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even use
-	 * it to mean something else!
-	 * @param chan
-	 * @param user
-	 */
-	public void deSuperOp(Channel chan, User user) {
-		if (user == null)
-			throw new IllegalArgumentException("Can't remove super op on null user");
-		setMode(chan, "-a " + user.getNick());
-	}
-
-	/**
-	 * Set the topic for a channel.
-	 * This method attempts to set the topic of a channel. This
-	 * may require the bot to have operator status if the topic
-	 * is protected.
-	 *
-	 * @param chan The channel on which to perform the mode change.
-	 * @param topic The new topic for the channel.
-	 *
-	 */
-	public void setTopic(Channel chan, String topic) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't set topic on null channel");
-		if (topic == null)
-			throw new IllegalArgumentException("Can't set topic to null");
-		sendRawLine("TOPIC " + chan.getName() + " :" + topic);
-	}
-
-	/**
-	 * Kicks a user from a channel.
-	 * This method attempts to kick a user from a channel and
-	 * may require the bot to have operator status in the channel.
-	 *
-	 * @param chan The channel to kick the user from.
-	 * @param user The user to kick.
-	 */
-	public void kick(Channel chan, User user) {
-		kick(chan, user, "");
-	}
-
-	/**
-	 * Kicks a user from a channel, giving a reason.
-	 * This method attempts to kick a user from a channel and
-	 * may require the bot to have operator status in the channel.
-	 *
-	 * @param chan The channel to kick the user from.
-	 * @param user The user to kick.
-	 * @param reason A description of the reason for kicking a user.
-	 */
-	public void kick(Channel chan, User user, String reason) {
-		if (chan == null)
-			throw new IllegalArgumentException("Can't kick on null channel");
-		if (user == null)
-			throw new IllegalArgumentException("Can't kick null user");
-		sendRawLine("KICK " + chan.getName() + " " + user.getNick() + " :" + reason);
-	}
-
-	/**
-	 * Issues a request for a list of all channels on the IRC server.
-	 * When the PircBotX receives information for each channel, a {@link ChannelInfoEvent}
-	 * will be dispatched which you will need to listen for if you want to do
-	 * anything useful.
-	 * <p>
-	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
-	 *
-	 * @see ChannelInfoEvent
-	 */
-	public void listChannels() {
-		listChannels(null);
-	}
-
-	/**
-	 * Issues a request for a list of all channels on the IRC server.
-	 * When the PircBotX receives information for each channel, a {@link ChannelInfoEvent}
-	 * will be dispatched which you will need to listen for if you want to do
-	 * anything useful
-	 * <p>
-	 * Some IRC servers support certain parameters for LIST requests.
-	 * One example is a parameter of ">10" to list only those channels
-	 * that have more than 10 users in them. Whether these parameters
-	 * are supported or not will depend on the IRC server software.
-	 * <p>
-	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
-	 * @param parameters The parameters to supply when requesting the
-	 * list.
-	 *
-	 * @see ChannelInfoEvent
-	 */
-	public void listChannels(String parameters) {
-		if (!inputParser.isChannelListRunning())
-			if (parameters == null)
-				sendRawLine("LIST");
-			else
-				sendRawLine("LIST " + parameters);
+	public OutputUser sendUser() {
+		return sendUser;
 	}
 
 	/**
@@ -1436,10 +441,6 @@ public class PircBotX {
 	 */
 	public SendChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
 		return dccHandler.sendChatRequest(sender);
-	}
-
-	protected void logServerSend(String line) {
-		log.info(">>>" + line);
 	}
 
 	/**
@@ -1479,19 +480,6 @@ public class PircBotX {
 	 */
 	public boolean isConnected() {
 		return socket != null && !socket.isClosed();
-	}
-
-	/**
-	 * Gets the number of lines currently waiting in the outgoing message Queue.
-	 * If this returns 0, then the Queue is empty and any new message is likely
-	 * to be sent to the IRC server immediately.
-	 *
-	 * @since PircBot 0.9.9
-	 *
-	 * @return The number of lines in the outgoing message Queue.
-	 */
-	public int getOutgoingQueueSize() {
-		return writeLock.getHoldCount();
 	}
 
 	/**
@@ -1588,7 +576,7 @@ public class PircBotX {
 				reconnect();
 				if (autoReconnectChannels)
 					for (Map.Entry<String, String> curEntry : previousChannels.entrySet())
-						joinChannel(curEntry.getKey(), curEntry.getValue());
+						sendChannel.join(curEntry.getKey(), curEntry.getValue());
 			} catch (Exception e) {
 				//Not much we can do with it
 				throw new RuntimeException("Can't reconnect to server", e);
