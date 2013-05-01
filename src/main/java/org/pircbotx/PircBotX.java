@@ -108,8 +108,6 @@ public class PircBotX {
 	protected final OutputRaw sendRaw;
 	protected final OutputIRC sendIRC;
 	protected final OutputCAP sendCAP;
-	protected final OutputChannel sendChannel;
-	protected final OutputUser sendUser;
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
 	protected String nick = "";
@@ -146,8 +144,6 @@ public class PircBotX {
 		this.sendRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.sendIRC = configuration.getBotFactory().createOutputIRC(this);
 		this.sendCAP = configuration.getBotFactory().createOutputCAP(this);
-		this.sendChannel = configuration.getBotFactory().createOutputChannel(this);
-		this.sendUser = configuration.getBotFactory().createOutputUser(this);
 	}
 
 	/**
@@ -350,7 +346,7 @@ public class PircBotX {
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(this));
 
 			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
-				sendChannel().join(channelEntry.getKey(), channelEntry.getValue());
+				sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} catch (Exception e) {
 			//if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
 			//	shutdown(true);
@@ -409,14 +405,6 @@ public class PircBotX {
 
 	public OutputCAP sendCAP() {
 		return sendCAP;
-	}
-
-	public OutputChannel sendChannel() {
-		return sendChannel;
-	}
-
-	public OutputUser sendUser() {
-		return sendUser;
 	}
 
 	/**
@@ -576,7 +564,7 @@ public class PircBotX {
 				reconnect();
 				if (autoReconnectChannels)
 					for (Map.Entry<String, String> curEntry : previousChannels.entrySet())
-						sendChannel.join(curEntry.getKey(), curEntry.getValue());
+						sendIRC().joinChannel(curEntry.getKey(), curEntry.getValue());
 			} catch (Exception e) {
 				//Not much we can do with it
 				throw new RuntimeException("Can't reconnect to server", e);
