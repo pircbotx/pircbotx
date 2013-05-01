@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx;
+package org.pircbotx.output;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +33,11 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import javax.net.SocketFactory;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.Configuration;
+import org.pircbotx.InputParser;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -44,7 +49,7 @@ import static org.mockito.Mockito.*;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
-public class PircBotXOutputTest {
+public class OutputTest {
 	protected final String aString = "I'm some super long string that has multiple words";
 	protected PircBotX bot;
 	protected SocketFactory socketFactory;
