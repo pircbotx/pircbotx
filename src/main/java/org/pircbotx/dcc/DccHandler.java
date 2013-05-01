@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -37,6 +38,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -51,6 +53,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * @author Leon
  */
 @RequiredArgsConstructor
+@Slf4j
 public class DccHandler implements Closeable {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
@@ -259,7 +262,18 @@ public class DccHandler implements Closeable {
 	}
 
 	public void close() {
-		pendingReceiveTransfers.clear();
+		//Shutdown open reverse dcc servers
+		Iterator<Map.Entry<PendingRecieveFileTransfer, Future>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
+		while(pendingItr.hasNext()) {
+			Map.Entry<PendingRecieveFileTransfer, Future> curEntry = pendingItr.next();
+			PendingRecieveFileTransfer curTransfer = curEntry.getKey();
+			Future curFuture = curEntry.getValue();
+			while(!curFuture.isDone()) {
+				log.debug("Terminating reverse dcc server for transfer " + curTransfer);
+				curFuture.cancel(true);
+			}
+			pendingItr.remove();
+		}
 	}
 
 	public static String addressToInteger(InetAddress address) {
