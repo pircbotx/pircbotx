@@ -44,7 +44,7 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 
 	@Override
 	public void respond(String response) {
-		bot.sendMessage(getNick(), response);
+		getBot().sendIRC().message(getNick(), response);
 	}
 
 	public List<String> getChannels() {

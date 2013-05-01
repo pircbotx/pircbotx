@@ -64,6 +64,6 @@ public class SetModeratedEvent<T extends PircBotX> extends Event<T> implements G
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

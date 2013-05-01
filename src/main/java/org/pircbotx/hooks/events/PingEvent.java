@@ -65,6 +65,6 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendCTCPResponse(getUser(), response);
+		getUser().send().ctcpResponse(response);
 	}
 }

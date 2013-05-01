@@ -56,6 +56,6 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getNewNick(), response);
+		getUser().send().message(response);
 	}
 }

@@ -59,6 +59,6 @@ public class RemoveTopicProtectionEvent<T extends PircBotX> extends Event<T> imp
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendMessage(getChannel(), getUser(), response);
+		getChannel().send().message(getUser(), response);
 	}
 }

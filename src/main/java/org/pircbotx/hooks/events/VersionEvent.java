@@ -61,6 +61,6 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendCTCPResponse(getUser(), response);
+		getUser().send().ctcpResponse(response);
 	}
 }

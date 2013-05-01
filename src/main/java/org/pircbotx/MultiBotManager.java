@@ -80,7 +80,7 @@ public class MultiBotManager {
 
 			//Join channels
 			for (Map.Entry<String, String> curChannel : builder.getChannels().entrySet())
-				bot.joinChannel(curChannel.getKey(), curChannel.getValue());
+				bot.sendIRC().joinChannel(curChannel.getKey(), curChannel.getValue());
 		}
 	}
 
@@ -90,7 +90,7 @@ public class MultiBotManager {
 	public void disconnectAll() {
 		for (PircBotX bot : bots.keySet())
 			if (bot.isConnected())
-				bot.disconnect();
+					bot.sendIRC().quitServer();
 	}
 
 	/**
