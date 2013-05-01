@@ -18,8 +18,6 @@
  */
 package org.pircbotx;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -29,6 +27,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
+import org.pircbotx.output.OutputChannel;
+import org.pircbotx.output.OutputUser;
 
 /**
  * Represents a User on the server. Contains all the available information about
@@ -55,11 +55,25 @@ public class User implements Comparable<User> {
 	protected final UserChannelDao dao;
 	@Getter(AccessLevel.NONE)
 	protected final UUID uuid = UUID.randomUUID();
+	//Output is lazily created since it might not ever be used
+	protected OutputUser output = null;
+	protected volatile boolean outputCreated = false;
+	protected final Object outputCreatedLock = new Object[0];
 
 	protected User(PircBotX bot, UserChannelDao dao, String nick) {
 		this.bot = bot;
 		this.dao = dao;
 		this.nick = nick;
+	}
+	
+	public OutputUser send() {
+		if(!outputCreated) {
+			synchronized(outputCreatedLock) {
+				this.output = bot.getConfiguration().getBotFactory().createOutputUser(bot, this);
+				this.outputCreated = true;
+			}
+		}
+		return output;
 	}
 
 	/**
@@ -71,7 +85,7 @@ public class User implements Comparable<User> {
 	 */
 	public boolean isVerified() {
 		try {
-			bot.sendRawLine("WHOIS " + getNick() + " " + getNick());
+			bot.sendRaw().rawLine("WHOIS " + getNick() + " " + getNick());
 			WaitForQueue waitForQueue = new WaitForQueue(bot);
 			while (true) {
 				WhoisEvent event = waitForQueue.waitFor(WhoisEvent.class);

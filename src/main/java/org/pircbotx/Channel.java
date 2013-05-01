@@ -18,8 +18,6 @@
  */
 package org.pircbotx;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import lombok.AccessLevel;
@@ -30,6 +28,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.output.OutputChannel;
 
 /**
  * Represents a Channel that we're joined to. Contains all the available
@@ -57,11 +56,25 @@ public class Channel {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
-
+	//Output is lazily created since it might not ever be used
+	protected OutputChannel output = null;
+	protected volatile boolean outputCreated = false;
+	protected final Object outputCreatedLock = new Object[0];
+	
 	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
 		this.bot = bot;
 		this.dao = dao;
 		this.name = name;
+	}
+	
+	public OutputChannel send() {
+		if(!outputCreated) {
+			synchronized(outputCreatedLock) {
+				this.output = bot.getConfiguration().getBotFactory().createOutputChannel(bot, this);
+				this.outputCreated = true;
+			}
+		}
+		return output;
 	}
 
 	protected void parseMode(String rawMode) {
@@ -102,7 +115,7 @@ public class Channel {
 
 		//Mode is stale, get new mode from server
 		try {
-			bot.sendRawLine("MODE " + getName());
+			bot.sendRaw().rawLine("MODE " + getName());
 			if (modeLatch == null || modeLatch.getCount() == 0)
 				modeLatch = new CountDownLatch(1);
 			//Wait for setMode to be called
@@ -318,7 +331,7 @@ public class Channel {
 	 * @param user The user to attempt to Op
 	 */
 	public void op(User user) {
-		bot.op(this, user);
+		getOutput().op(user);
 	}
 
 	/**
@@ -327,7 +340,7 @@ public class Channel {
 	 * @param user The user to attempt to remove Operator status from
 	 */
 	public void deOp(User user) {
-		bot.deOp(this, user);
+		bot.sendChannel().deOp(this, user);
 	}
 
 	/**
@@ -344,7 +357,7 @@ public class Channel {
 	 * @param user The user to attempt to voice
 	 */
 	public void voice(User user) {
-		bot.voice(this, user);
+		bot.sendChannel().voice(this, user);
 	}
 
 	/**
@@ -353,7 +366,7 @@ public class Channel {
 	 * @param user The user to attempt to remove Voice from
 	 */
 	public void deVoice(User user) {
-		bot.deVoice(this, user);
+		bot.sendChannel().deVoice(this, user);
 	}
 
 	/**
@@ -362,7 +375,7 @@ public class Channel {
 	 * @param user The user to attempt to give Super Operator status
 	 */
 	public void superOp(User user) {
-		bot.superOp(this, user);
+		bot.sendChannel().superOp(this, user);
 	}
 
 	/**
@@ -379,7 +392,7 @@ public class Channel {
 	 * @param user The user to attempt to remove Super Operator status from
 	 */
 	public void deSuperOp(User user) {
-		bot.deSuperOp(this, user);
+		bot.sendChannel().deSuperOp(this, user);
 	}
 
 	/**
@@ -388,7 +401,7 @@ public class Channel {
 	 * @param user The user to attempt to give Owner status to
 	 */
 	public void owner(User user) {
-		bot.owner(this, user);
+		bot.sendChannel().owner(this, user);
 	}
 
 	/**
@@ -405,7 +418,7 @@ public class Channel {
 	 * @param user The user to attempt to remove Owner status from
 	 */
 	public void deOwner(User user) {
-		bot.deOwner(this, user);
+		bot.sendChannel().deOwner(this, user);
 	}
 
 	/**
@@ -414,7 +427,7 @@ public class Channel {
 	 * @param user The user to attempt to give Half Operator status to
 	 */
 	public void halfOp(User user) {
-		bot.halfOp(this, user);
+		bot.sendChannel().halfOp(this, user);
 	}
 
 	/**
@@ -431,7 +444,7 @@ public class Channel {
 	 * @param user The user to attempt to remove Half Operator status from
 	 */
 	public void deHalfOp(User user) {
-		bot.deHalfOp(this, user);
+		bot.sendChannel().deHalfOp(this, user);
 	}
 
 	/**
@@ -439,6 +452,6 @@ public class Channel {
 	 * for more information
 	 */
 	public void sendMessage(String message) {
-		getBot().sendMessage(this, message);
+		bot.sendChannel().message(this, message);
 	}
 }
