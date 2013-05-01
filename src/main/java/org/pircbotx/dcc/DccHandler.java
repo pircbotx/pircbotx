@@ -29,7 +29,10 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +56,7 @@ public class DccHandler implements Closeable {
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
 	@Getter(AccessLevel.PROTECTED)
-	protected List<PendingRecieveFileTransfer> pendingReceiveTransfers = Collections.synchronizedList(new ArrayList<PendingRecieveFileTransfer>());
+	protected Map<PendingRecieveFileTransfer, Future> pendingReceiveTransfers = Collections.synchronizedMap(new HashMap());
 
 	public boolean processDcc(final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
@@ -70,11 +73,10 @@ public class DccHandler implements Closeable {
 			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
 
 			if (port == 0 || transferToken != null) {
-				//User is trying to use Passive DCC
+				//User is trying to use reverse DCC
 				final ServerSocket serverSocket = createServerSocket();
 				final PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(user, filename, address, size, transferToken, serverSocket);
-				pendingReceiveTransfers.add(pendingTransfer);
-				runReverseDccServer(new Runnable() {
+				pendingReceiveTransfers.put(pendingTransfer, configuration.getBotFactory().startReverseDCCServer(this, new Runnable() {
 					public void run() {
 						Exception exception = null;
 						ReceiveFileTransfer transfer = null;
@@ -89,7 +91,7 @@ public class DccHandler implements Closeable {
 						}
 						listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
 					}
-				});
+				}));
 				user.send().ctcpCommand("DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
 						+ " " + size + " " + transferToken);
 			} else {
@@ -114,7 +116,7 @@ public class DccHandler implements Closeable {
 			String transferToken = requestParts.get(5);
 
 			PendingRecieveFileTransfer transfer = null;
-			for (PendingRecieveFileTransfer curTransfer : pendingReceiveTransfers)
+			for (PendingRecieveFileTransfer curTransfer : pendingReceiveTransfers.keySet())
 				if (curTransfer.user() == user && curTransfer.token().equals(transferToken)) {
 					transfer = curTransfer;
 					break;
@@ -224,10 +226,6 @@ public class DccHandler implements Closeable {
 				throw new DccException("All ports returned by getDccPorts() " + configuration.getDccPorts() + "are in use.");
 		}
 		return ss;
-	}
-
-	protected void runReverseDccServer(Runnable run) {
-		new Thread(run).start();
 	}
 
 	protected static List<String> tokenizeDccRequest(String request) {
