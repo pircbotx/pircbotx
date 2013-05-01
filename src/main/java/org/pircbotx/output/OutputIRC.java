@@ -26,6 +26,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
+import static com.google.common.base.Preconditions.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -42,8 +44,7 @@ public class OutputIRC {
 	 * @param channel The name of the channel to join (eg "#cs").
 	 */
 	public void joinChannel(String channel) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't join a null channel");
+		checkArgument(StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
 		sendRaw.rawLine("JOIN " + channel);
 	}
 
@@ -54,13 +55,11 @@ public class OutputIRC {
 	 * @param key The key that will be used to join the channel.
 	 */
 	public void joinChannel(String channel, String key) {
-		if (channel == null)
-			throw new IllegalArgumentException("Can't join a null channel");
-		if (key == null)
-			throw new IllegalArgumentException("Can't channel " + channel + " with null key");
+		checkArgument(StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
+		checkNotNull(key, "Key for channel %s cannot be null", channel);
 		joinChannel(channel + " " + key);
 	}
-	
+
 	/**
 	 * Quits from the IRC server.
 	 * Providing we are actually connected to an IRC server, a {@link DisconnectEvent}
@@ -78,6 +77,7 @@ public class OutputIRC {
 	 * @param reason The reason for quitting the server.
 	 */
 	public void quitServer(String reason) {
+		checkNotNull(reason, "Reason cannot be null");
 		sendRaw.rawLine("QUIT :" + reason);
 	}
 
@@ -96,8 +96,8 @@ public class OutputIRC {
 	 * @param command The CTCP command to send.
 	 */
 	public void ctcpCommand(String target, String command) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP command to null target");
+		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target, command);
+		checkArgument(StringUtils.isBlank(command), "CTCP command '%s' is blank", command, target);
 		sendRaw.rawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
 	}
 
@@ -109,8 +109,7 @@ public class OutputIRC {
 	 * @param message The message to send
 	 */
 	public void ctcpResponse(String target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send CTCP response to null target");
+		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
 		sendRaw.rawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
 
@@ -136,8 +135,7 @@ public class OutputIRC {
 	 * @see Colors
 	 */
 	public void message(String target, String message) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send message to null target");
+		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
 		sendRaw.rawLineSplit("PRIVMSG " + target + " :", message);
 	}
 
@@ -150,8 +148,7 @@ public class OutputIRC {
 	 * @see Colors
 	 */
 	public void action(String target, String action) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send action to null target");
+		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
 		ctcpCommand(target, "ACTION " + action);
 	}
 
@@ -162,8 +159,7 @@ public class OutputIRC {
 	 * @param notice The notice to send.
 	 */
 	public void notice(String target, String notice) {
-		if (target == null)
-			throw new IllegalArgumentException("Can't send notice to null target");
+		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
 		sendRaw.rawLineSplit("NOTICE " + target + " :", notice);
 	}
 
@@ -176,8 +172,7 @@ public class OutputIRC {
 	 * @param newNick The new nick to use.
 	 */
 	public void changeNick(String newNick) {
-		if (newNick == null)
-			throw new IllegalArgumentException("Can't change to null nick");
+		checkArgument(StringUtils.isBlank(newNick), "Nick '%s' is blank", newNick);
 		sendRaw.rawLine("NICK " + newNick);
 	}
 
@@ -191,13 +186,11 @@ public class OutputIRC {
 	 *
 	 */
 	public void invite(String nick, String channel) {
-		if (nick == null)
-			throw new IllegalArgumentException("Can't send invite to null nick");
-		if (channel == null)
-			throw new IllegalArgumentException("Can't send invite to null channel");
+		checkArgument(StringUtils.isBlank(nick), "Nick '%s' is blank", nick);
+		checkArgument(StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
 		sendRaw.rawLine("INVITE " + nick + " :" + channel);
 	}
-	
+
 	/**
 	 * Issues a request for a list of all channels on the IRC server.
 	 * When the PircBotX receives information for each channel, a {@link ChannelInfoEvent}
@@ -209,7 +202,7 @@ public class OutputIRC {
 	 * @see ChannelInfoEvent
 	 */
 	public void listChannels() {
-		listChannels(null);
+		listChannels("");
 	}
 
 	/**
@@ -230,13 +223,11 @@ public class OutputIRC {
 	 * @see ChannelInfoEvent
 	 */
 	public void listChannels(String parameters) {
+		checkNotNull(parameters, "Parameters cannot be null");
 		if (!bot.getInputParser().isChannelListRunning())
-			if (parameters == null)
-				sendRaw.rawLine("LIST");
-			else
-				sendRaw.rawLine("LIST " + parameters);
+			sendRaw.rawLine("LIST " + parameters);
 	}
-	
+
 	/**
 	 * Identify the bot with NickServ, supplying the appropriate password.
 	 * Some IRC Networks (such as freenode) require users to <i>register</i> and
@@ -266,8 +257,7 @@ public class OutputIRC {
 	 * @param password The password which will be used to identify with NickServ.
 	 */
 	public void identify(final String password) {
-		if (password == null)
-			throw new IllegalArgumentException("Can't identify with null password");
+		checkArgument(StringUtils.isBlank(password), "Password '%s' is blank", password);
 		if (bot.isConnected())
 			sendRaw.rawLine("NICKSERV IDENTIFY " + password);
 		else
