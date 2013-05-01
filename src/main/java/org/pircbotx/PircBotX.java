@@ -207,7 +207,7 @@ public class PircBotX {
 
 			if (configuration.isCapEnabled())
 				// Attempt to initiate a CAP transaction.
-				sendRaw().rawLineNow("CAP LS");
+				sendCAP().getSupported();
 
 			// Attempt to join the server.
 			if (configuration.isWebIrcEnabled())
@@ -310,7 +310,7 @@ public class PircBotX {
 							break;
 						}
 					if (allDone) {
-						sendRaw().rawLineNow("CAP END");
+						sendCAP().end();
 						capEndSent = true;
 
 						//Make capabilities unmodifiable for the future

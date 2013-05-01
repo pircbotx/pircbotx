@@ -49,7 +49,7 @@ public class TLSCapHandler extends EnableCapHandler {
 	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException {
 		//super.handleACK(bot, capabilities);
 		if (capabilities.contains("tls"))
-			bot.sendRawLineNow("STARTTLS");
+			bot.sendRaw().rawLineNow("STARTTLS");
 	}
 
 	@Override
