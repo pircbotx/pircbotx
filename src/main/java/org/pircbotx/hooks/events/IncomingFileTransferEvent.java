@@ -18,10 +18,13 @@
  */
 package org.pircbotx.hooks.events;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
@@ -61,18 +64,32 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
-	protected final ReceiveFileTransfer transfer;
-	protected final Exception exception;
+	protected final User user;
+	protected final String filename;
+	protected final InetAddress address;
+	protected final int port;
+	protected final long filesize;
+	protected final String transferToken;
+	protected final boolean reverse;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public IncomingFileTransferEvent(T bot, ReceiveFileTransfer transfer, Exception exception) {
+	public IncomingFileTransferEvent(T bot, User user, String filename, InetAddress address, int port, long filesize, String transferToken, boolean reverse) {
 		super(bot);
-		this.transfer = transfer;
-		this.exception = exception;
+		this.user = user;
+		this.filename = filename;
+		this.address = address;
+		this.port = port;
+		this.filesize = filesize;
+		this.transferToken = transferToken;
+		this.reverse = reverse;
+	}
+	
+	public ReceiveFileTransfer accept() throws IOException {
+		return user.getBot().getDccHandler().acceptFileTransfer(this);
 	}
 
 	/**
@@ -81,6 +98,6 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	 */
 	@Override
 	public void respond(String response) {
-		getTransfer().getUser().send().message(response);
+		getUser().send().message(response);
 	}
 }
