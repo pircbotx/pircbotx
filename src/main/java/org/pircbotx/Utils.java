@@ -84,7 +84,7 @@ public class Utils {
 		else if (event instanceof IncomingChatRequestEvent)
 			return ((IncomingChatRequestEvent) event).getUser();
 		else if (event instanceof IncomingFileTransferEvent)
-			return ((IncomingFileTransferEvent) event).getTransfer().getUser();
+			return ((IncomingFileTransferEvent) event).getUser();
 		else if (event instanceof JoinEvent)
 			return ((JoinEvent) event).getUser();
 		else if (event instanceof KickEvent)
