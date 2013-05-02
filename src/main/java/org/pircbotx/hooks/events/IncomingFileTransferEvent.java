@@ -92,6 +92,10 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	public ReceiveFileTransfer accept(File destination) throws IOException {
 		return user.getBot().getDccHandler().acceptFileTransfer(this, destination);
 	}
+	
+	public ReceiveFileTransfer acceptResume(File destination, long startPosition) throws IOException, InterruptedException {
+		return user.getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
+	}
 
 	/**
 	 * Respond with a <i>private message</i> to the user that sent the request
