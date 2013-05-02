@@ -247,6 +247,10 @@ public class DccHandler implements Closeable {
 		return new SendChat(receiver, userSocket);
 	}
 
+	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
+		return sendFile(file, receiver, configuration.isDccPassiveRequest());
+	}
+	
 	/**
 	 * Send the specified file to the user
 	 * @see #sendFileTransfers
