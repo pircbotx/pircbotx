@@ -33,7 +33,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -61,7 +63,7 @@ public class DccHandler implements Closeable {
 	protected final ListenerManager listenerManager;
 	protected final OutputDCC sendDCC;
 	@Getter(AccessLevel.PROTECTED)
-	protected Map<PendingRecieveFileTransfer, Future> pendingReceiveTransfers = Collections.synchronizedMap(new HashMap());
+	protected final Map<PendingRecieveFileTransfer, CountDownLatch> pendingReceiveTransfers = new HashMap();
 
 	public boolean processDcc(final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
@@ -86,21 +88,33 @@ public class DccHandler implements Closeable {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
 			//Reply with: DCC ACCEPT <filename> 0 <position> <token>
-			String filename = requestParts.get(2);
-			int port = Integer.parseInt(requestParts.get(3));
-			long progress = Integer.parseInt(requestParts.get(4));
-			String transferToken = requestParts.get(5);
 
-			PendingRecieveFileTransfer transfer = null;
-			for (PendingRecieveFileTransfer curTransfer : pendingReceiveTransfers.keySet())
-				if (curTransfer.user() == user && curTransfer.token().equals(transferToken)) {
-					transfer = curTransfer;
-					break;
+			int port = Integer.parseInt(requestParts.get(3));
+
+			//Haven't returned yet, received an unknown transfer
+			throw new DccException("No Dcc File Transfer to resume recieving (user: " + user.getNick()
+					+ ", filename: " + filename + ", position: " + progress + ", token: " + transferToken + ")");
+		} else if (type.equals("ACCEPT")) {
+			//Someone is acknowledging a transfer resume
+			//Example: DCC ACCEPT <filename> 0 <position> <token> (0 is optional)
+			String filename = requestParts.get(2);
+			int dataPosition = (requestParts.size() == 5) ? 3 : 4;
+			long position = Integer.parseInt(requestParts.get(dataPosition));
+			String transferToken = requestParts.get(dataPosition + 1);
+			synchronized (pendingReceiveTransfers) {
+				Iterator<Map.Entry<PendingRecieveFileTransfer, CountDownLatch>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
+				while (pendingItr.hasNext()) {
+					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
+					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
+					if (transferEvent.getUser() == user && transferEvent.getFilename().equals(filename)
+							&& transferEvent.getTransferToken().equals(transferToken)) {
+						curEntry.getKey().setPosition(position);
+						curEntry.getValue().countDown();
+						pendingItr.remove();
+						return true;
+					}
 				}
-			if (transfer == null)
-				throw new DccException("No Dcc File Transfer to resume recieving (user: " + user.getNick()
-						+ ", filename: " + filename + ", position: " + progress + ", token: " + transferToken + ")");
-			user.send().ctcpCommand("DCC ACCEPT " + filename + " " + port + " " + progress + " " + transferToken);
+			}
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
@@ -118,6 +132,34 @@ public class DccHandler implements Closeable {
 	}
 
 	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event) throws IOException {
+		return acceptFileTransfer(event, 0);
+	}
+
+	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, long startPosition) throws IOException, InterruptedException, DccException {
+		//Add to pending map so we can be notified when the user has accepted
+		CountDownLatch countdown = new CountDownLatch(1);
+		PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(event);
+		synchronized (pendingReceiveTransfers) {
+			pendingReceiveTransfers.put(pendingTransfer, countdown);
+		}
+
+		//Request resume
+		if (event.isReverse())
+			sendDCC.filePassiveResumeRequest(event.getUser().getNick(), event.getFilename(), startPosition, event.getTransferToken());
+		else
+			sendDCC.fileResumeRequest(event.getUser().getNick(), event.getFilename(), event.getPort(), startPosition);
+		if (!countdown.await(configuration.getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
+			throw new DccException("Accepting of file transfer resume timed out (" + configuration.getDccResumeAcceptTimeout()
+					+ " milliseconds) for transfer " + event);
+		
+		//User has accepted resume, begin transfer
+		if (pendingTransfer.getPosition() != startPosition)
+			log.warn("User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
+					pendingTransfer.getPosition(), startPosition, event);
+		return acceptFileTransfer(event, pendingTransfer.getPosition());
+	}
+
+	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, long startPosition) throws IOException {
 		if (event.isReverse()) {
 			ServerSocket serverSocket = createServerSocket();
 			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getFilename(), event.getAddress(), event.getPort(), event.getFilesize(), event.getTransferToken());
@@ -125,10 +167,10 @@ public class DccHandler implements Closeable {
 
 			//User is connected, begin transfer
 			serverSocket.close();
-			return new ReceiveFileTransfer(configuration, event.getUser(), userSocket, event.getFilesize(), event.getFilename(), 0);
+			return new ReceiveFileTransfer(configuration, event.getUser(), userSocket, event.getFilesize(), event.getFilename(), startPosition);
 		} else {
 			Socket userSocket = new Socket(event.getAddress(), event.getPort(), configuration.getDccLocalAddress(), 0);
-			return new ReceiveFileTransfer(configuration, event.getUser(), userSocket, event.getFilesize(), event.getFilename(), 0);
+			return new ReceiveFileTransfer(configuration, event.getUser(), userSocket, event.getFilesize(), event.getFilename(), startPosition);
 		}
 	}
 
@@ -296,7 +338,7 @@ public class DccHandler implements Closeable {
 
 	@Data
 	protected static class PendingRecieveFileTransfer {
-		protected final ServerSocket serverSocket;
 		protected final IncomingFileTransferEvent event;
+		protected long position;
 	}
 }
