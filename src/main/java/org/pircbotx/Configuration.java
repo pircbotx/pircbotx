@@ -120,6 +120,7 @@ public class Configuration {
 	protected final int dccAcceptTimeout;
 	protected final int dccResumeAcceptTimeout;
 	protected final int dccTransferBufferSize;
+	protected final boolean dccPassiveRequest;
 	//Connect information
 	protected final String serverHostname;
 	protected final int serverPort;
@@ -163,6 +164,7 @@ public class Configuration {
 		this.dccAcceptTimeout = builder.getDccAcceptTimeout();
 		this.dccResumeAcceptTimeout = builder.getDccResumeAcceptTimeout();
 		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
+		this.dccPassiveRequest = builder.isDccPassiveRequest();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
 		this.serverPassword = builder.getServerPassword();
@@ -205,6 +207,7 @@ public class Configuration {
 		protected int dccAcceptTimeout = -1;
 		protected int dccResumeAcceptTimeout = -1;
 		protected int dccTransferBufferSize = 1024;
+		protected boolean dccPassiveRequest = false;
 		//Connect information
 		protected String serverHostname = null;
 		protected int serverPort = 6667;
@@ -251,6 +254,7 @@ public class Configuration {
 			this.dccAcceptTimeout = configuration.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = configuration.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
+			this.dccPassiveRequest = configuration.isDccPassiveRequest();
 			this.serverHostname = configuration.getServerHostname();
 			this.serverPort = configuration.getServerPort();
 			this.serverPassword = configuration.getServerPassword();
@@ -292,6 +296,7 @@ public class Configuration {
 			this.dccAcceptTimeout = otherBuilder.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = otherBuilder.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
+			this.dccPassiveRequest = otherBuilder.isDccPassiveRequest();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
 			this.serverPassword = otherBuilder.getServerPassword();
