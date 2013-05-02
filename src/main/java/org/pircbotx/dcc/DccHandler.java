@@ -87,10 +87,10 @@ public class DccHandler implements Closeable {
 			int port = Integer.parseInt(requestParts.get(4));
 			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
 			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
-			
-			if(transferToken != null) {
+
+			if (transferToken != null)
 				//Check if this is an acknowledgement of a passive dcc file request
-				synchronized(pendingSendPassiveTransfers) {
+				synchronized (pendingSendPassiveTransfers) {
 					Iterator<Map.Entry<PendingSendFileTransferPassive, CountDownLatch>> pendingItr = pendingSendPassiveTransfers.entrySet().iterator();
 					while (pendingItr.hasNext()) {
 						Map.Entry<PendingSendFileTransferPassive, CountDownLatch> curEntry = pendingItr.next();
@@ -105,7 +105,6 @@ public class DccHandler implements Closeable {
 						}
 					}
 				}
-			}
 
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
@@ -136,19 +135,18 @@ public class DccHandler implements Closeable {
 						}
 					}
 				}
-			} else {
-				synchronized(pendingSendTransfers) {
+			} else
+				synchronized (pendingSendTransfers) {
 					Iterator<PendingSendFileTransfer> pendingItr = pendingSendTransfers.iterator();
-					while(pendingItr.hasNext()) {
+					while (pendingItr.hasNext()) {
 						PendingSendFileTransfer transfer = pendingItr.next();
-						if(transfer.getUser() == user && transfer.getFilename().equals(filename)
+						if (transfer.getUser() == user && transfer.getFilename().equals(filename)
 								&& transfer.getPort() == port) {
 							transfer.setPosition(position);
 							return true;
 						}
 					}
 				}
-			}
 
 			//Haven't returned yet, received an unknown transfer
 			throw new DccException("No Dcc File Transfer to resume recieving: " + request);
@@ -209,9 +207,9 @@ public class DccHandler implements Closeable {
 		if (!countdown.await(configuration.getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
 			throw new DccException("Accepting of file transfer resume timed out (" + configuration.getDccResumeAcceptTimeout()
 					+ " milliseconds) for transfer " + event);
-		if(shuttingDown)
-				throw new DccException("Transfer "+event+" canceled due to bot shutting down");
-		
+		if (shuttingDown)
+			throw new DccException("Transfer " + event + " canceled due to bot shutting down");
+
 		//User has accepted resume, begin transfer
 		if (pendingTransfer.getPosition() != startPosition)
 			log.warn("User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
@@ -350,9 +348,9 @@ public class DccHandler implements Closeable {
 		//Shutdown open reverse dcc servers
 		shuttingDown = true;
 		log.info("Terminating all transfers waiting to be accepted");
-		for(CountDownLatch curCountdown : pendingReceiveTransfers.values())
+		for (CountDownLatch curCountdown : pendingReceiveTransfers.values())
 			curCountdown.countDown();
-		for(CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
+		for (CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
 			curCountdown.countDown();
 	}
 
