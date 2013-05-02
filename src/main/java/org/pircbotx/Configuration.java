@@ -413,7 +413,7 @@ public class Configuration {
 		}
 
 		public OutputUser createOutputUser(PircBotX bot, User user) {
-			return new OutputUser(bot.sendIRC(), user);
+			return new OutputUser(bot.sendIRC(), user, bot.getDccHandler());
 		}
 
 		public InputParser createInputParser(PircBotX bot) {
@@ -427,7 +427,7 @@ public class Configuration {
 		}
 
 		public DccHandler createDccHandler(PircBotX bot) {
-			return new DccHandler(bot.getConfiguration(), bot, bot.getConfiguration().getListenerManager());
+			return new DccHandler(bot.getConfiguration(), bot, bot.getConfiguration().getListenerManager(), bot.sendDCC());
 		}
 
 		public ServerInfo createServerInfo(PircBotX bot) {
