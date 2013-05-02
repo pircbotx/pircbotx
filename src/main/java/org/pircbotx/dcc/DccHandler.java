@@ -72,6 +72,7 @@ public class DccHandler implements Closeable {
 	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList();
 	@Getter(AccessLevel.PROTECTED)
 	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap();
+	protected boolean shuttingDown = false;
 
 	public boolean processDcc(final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
@@ -208,7 +209,9 @@ public class DccHandler implements Closeable {
 		if (!countdown.await(configuration.getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
 			throw new DccException("Accepting of file transfer resume timed out (" + configuration.getDccResumeAcceptTimeout()
 					+ " milliseconds) for transfer " + event);
-
+		if(shuttingDown)
+				throw new DccException("Transfer "+event+" canceled due to bot shutting down");
+		
 		//User has accepted resume, begin transfer
 		if (pendingTransfer.getPosition() != startPosition)
 			log.warn("User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
@@ -271,6 +274,8 @@ public class DccHandler implements Closeable {
 			//Wait for user to acknowledge
 			if (!countdown.await(configuration.getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
 				throw new DccException("Transfer of file " + file.getAbsolutePath() + " to user " + receiver + " timed out");
+			if (shuttingDown)
+				throw new DccException("Transfer of file " + file.getAbsolutePath() + " to user " + receiver + " canceled due to bot shutting down");
 			Socket transferSocket = new Socket(pendingPassiveTransfer.getReceiverAddress(), pendingPassiveTransfer.getReceiverPort());
 			return new SendFileTransfer(configuration, receiver, file, transferSocket, pendingPassiveTransfer.getStartPosition());
 		} else {
@@ -343,17 +348,12 @@ public class DccHandler implements Closeable {
 
 	public void close() {
 		//Shutdown open reverse dcc servers
-		Iterator<Map.Entry<PendingRecieveFileTransfer, Future>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
-		while (pendingItr.hasNext()) {
-			Map.Entry<PendingRecieveFileTransfer, Future> curEntry = pendingItr.next();
-			PendingRecieveFileTransfer curTransfer = curEntry.getKey();
-			Future curFuture = curEntry.getValue();
-			if (!curFuture.isDone()) {
-				log.debug("Terminating reverse dcc server for transfer " + curTransfer);
-				curFuture.cancel(true);
-			}
-			pendingItr.remove();
-		}
+		shuttingDown = true;
+		log.info("Terminating all transfers waiting to be accepted");
+		for(CountDownLatch curCountdown : pendingReceiveTransfers.values())
+			curCountdown.countDown();
+		for(CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
+			curCountdown.countDown();
 	}
 
 	public static String addressToInteger(InetAddress address) {
