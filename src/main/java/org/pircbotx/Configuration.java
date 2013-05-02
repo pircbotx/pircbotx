@@ -117,6 +117,7 @@ public class Configuration {
 	protected final ImmutableList<Integer> dccPorts;
 	protected final InetAddress dccLocalAddress;
 	protected final int dccAcceptTimeout;
+	protected final int dccResumeAcceptTimeout;
 	protected final int dccTransferBufferSize;
 	//Connect information
 	protected final String serverHostname;
@@ -159,6 +160,7 @@ public class Configuration {
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
 		this.dccAcceptTimeout = builder.getDccAcceptTimeout();
+		this.dccResumeAcceptTimeout = builder.getDccResumeAcceptTimeout();
 		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
@@ -200,6 +202,7 @@ public class Configuration {
 		protected List<Integer> dccPorts = new ArrayList();
 		protected InetAddress dccLocalAddress = null;
 		protected int dccAcceptTimeout = -1;
+		protected int dccResumeAcceptTimeout = -1;
 		protected int dccTransferBufferSize = 1024;
 		//Connect information
 		protected String serverHostname = null;
@@ -244,7 +247,8 @@ public class Configuration {
 			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
 			this.dccPorts.addAll(configuration.getDccPorts());
 			this.dccLocalAddress = configuration.getDccLocalAddress();
-			this.dccAcceptTimeout = configuration.getDccSocketTimeout();
+			this.dccAcceptTimeout = configuration.getDccAcceptTimeout();
+			this.dccResumeAcceptTimeout = configuration.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
 			this.serverHostname = configuration.getServerHostname();
 			this.serverPort = configuration.getServerPort();
@@ -285,6 +289,7 @@ public class Configuration {
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
 			this.dccAcceptTimeout = otherBuilder.getDccAcceptTimeout();
+			this.dccResumeAcceptTimeout = otherBuilder.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
@@ -312,6 +317,10 @@ public class Configuration {
 
 		public int getDccAcceptTimeout() {
 			return (dccAcceptTimeout != -1) ? dccAcceptTimeout : socketTimeout;
+		}
+		
+		public int getDccResumeAcceptTimeout() {
+			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
 
 		public Builder addCapHandler(CapHandler handler) {
