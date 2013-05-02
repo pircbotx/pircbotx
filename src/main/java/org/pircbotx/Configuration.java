@@ -448,12 +448,5 @@ public class Configuration {
 			thread.start();
 			return future;
 		}
-		
-		public Future startReverseDCCServer(DccHandler dccHandler, Runnable run) {
-			FutureTask future = new FutureTask(run, null);
-			Thread thread = new Thread(future);
-			thread.start();
-			return future;
-		}
 	}
 }
