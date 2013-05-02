@@ -24,10 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import lombok.AccessLevel;
 import lombok.Cleanup;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
@@ -35,46 +32,19 @@ import org.pircbotx.User;
  * Sends a file to a user
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class SendFileTransfer implements FileTransfer {
-	protected final Configuration configuration;
-	@Getter
-	protected final User user;
-	@Getter
-	protected final String filename;
-	protected final Socket socket;
-	@Getter
-	protected long startPosition;
-	@Getter
-	protected long filesize;
-	@Getter
-	protected long bytesTransfered;
-	@Getter
-	protected DccState state = DccState.INIT;
-	protected final Object stateLock = new Object();
-
-	public void sendFile(File source) throws IOException {
-		sendFile(source, 0);
+public class SendFileTransfer extends FileTransfer {
+	public SendFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
+		super(configuration, socket, user, file, startPosition);
 	}
 
-	public void sendFile(File source, long startPosition) throws IOException {
-		//Prevent being called multiple times
-		if (state != DccState.INIT)
-			synchronized (stateLock) {
-				if (state != DccState.INIT)
-					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
-			}
-		state = DccState.RUNNING;
-
-		this.filesize = source.length();
-		this.startPosition = startPosition;
-
+	@Override
+	protected void transferFile() throws IOException {
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup
-		BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(source));
+		BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(file));
 
 		// Check for resuming.
 		if (startPosition > 0) {
@@ -92,7 +62,5 @@ public class SendFileTransfer implements FileTransfer {
 			socketInput.read(inBuffer, 0, inBuffer.length);
 			bytesTransfered += bytesRead;
 		}
-
-		state = DccState.DONE;
 	}
 }
