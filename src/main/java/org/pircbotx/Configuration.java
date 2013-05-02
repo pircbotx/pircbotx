@@ -43,6 +43,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputChannel;
+import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
@@ -401,6 +402,10 @@ public class Configuration {
 
 		public OutputIRC createOutputIRC(PircBotX bot) {
 			return new OutputIRC(bot, bot.sendRaw());
+		}
+		
+		public OutputDCC createOutputDCC(PircBotX bot) {
+			return new OutputDCC(bot.sendIRC());
 		}
 
 		public OutputChannel createOutputChannel(PircBotX bot, Channel channel) {

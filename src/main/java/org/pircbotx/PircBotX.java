@@ -19,13 +19,11 @@
 package org.pircbotx;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,10 +42,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
-import org.pircbotx.dcc.Chat;
-import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.DccHandler;
-import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
@@ -55,6 +50,7 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputCAP;
+import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
 
@@ -105,6 +101,7 @@ public class PircBotX {
 	protected final OutputRaw outputRaw;
 	protected final OutputIRC outputIRC;
 	protected final OutputCAP outputCAP;
+	protected final OutputDCC outputDCC;
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList();
 	protected String nick = "";
@@ -140,6 +137,7 @@ public class PircBotX {
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
 		this.outputCAP = configuration.getBotFactory().createOutputCAP(this);
+		this.outputDCC = configuration.getBotFactory().createOutputDCC(this);
 		this.inputParser = configuration.getBotFactory().createInputParser(this);
 	}
 
@@ -393,29 +391,9 @@ public class PircBotX {
 	public OutputCAP sendCAP() {
 		return outputCAP;
 	}
-
-	/**
-	 * Utility method to send a file to a user. Simply calls 
-	 * {@link DccHandler#sendFile(java.io.File, org.pircbotx.User, int) }
-	 * 
-	 * @return When the transfer is finished returns the {@link SendFileTransfer} used
-	 * @see DccHandler#sendFile(java.io.File, org.pircbotx.User, int) 
-	 * @see DccHandler#sendFileRequest(java.lang.String, org.pircbotx.User, int) 
-	 */
-	public SendFileTransfer dccSendFile(File file, User reciever, int timeout) throws IOException {
-		return dccHandler.sendFile(file, reciever, timeout);
-	}
-
-	/**
-	 * Utility method to send a chat request to a user. Simply calls
-	 * {@link DccHandler#sendChatRequest(org.pircbotx.User) }
-	 * 
-	 * @return An open {@link Chat}
-	 * @see DccHandler#sendChatRequest(org.pircbotx.User) 
-	 * @see Chat
-	 */
-	public SendChat dccSendChatRequest(User sender, int timeout) throws IOException, SocketTimeoutException {
-		return dccHandler.sendChatRequest(sender);
+	
+	public OutputDCC sendDCC() {
+		return outputDCC;
 	}
 
 	/**
