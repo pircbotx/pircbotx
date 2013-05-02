@@ -116,7 +116,7 @@ public class Configuration {
 	protected final boolean dccFilenameQuotes;
 	protected final ImmutableList<Integer> dccPorts;
 	protected final InetAddress dccLocalAddress;
-	protected final int dccSocketTimeout;
+	protected final int dccAcceptTimeout;
 	protected final int dccTransferBufferSize;
 	//Connect information
 	protected final String serverHostname;
@@ -158,7 +158,7 @@ public class Configuration {
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
-		this.dccSocketTimeout = builder.getDccSocketTimeout();
+		this.dccAcceptTimeout = builder.getDccAcceptTimeout();
 		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
 		this.serverHostname = builder.getServerHostname();
 		this.serverPort = builder.getServerPort();
@@ -199,7 +199,7 @@ public class Configuration {
 		protected boolean dccFilenameQuotes = false;
 		protected List<Integer> dccPorts = new ArrayList();
 		protected InetAddress dccLocalAddress = null;
-		protected int dccSocketTimeout = -1;
+		protected int dccAcceptTimeout = -1;
 		protected int dccTransferBufferSize = 1024;
 		//Connect information
 		protected String serverHostname = null;
@@ -244,7 +244,7 @@ public class Configuration {
 			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
 			this.dccPorts.addAll(configuration.getDccPorts());
 			this.dccLocalAddress = configuration.getDccLocalAddress();
-			this.dccSocketTimeout = configuration.getDccSocketTimeout();
+			this.dccAcceptTimeout = configuration.getDccSocketTimeout();
 			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
 			this.serverHostname = configuration.getServerHostname();
 			this.serverPort = configuration.getServerPort();
@@ -284,7 +284,7 @@ public class Configuration {
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
-			this.dccSocketTimeout = otherBuilder.getDccSocketTimeout();
+			this.dccAcceptTimeout = otherBuilder.getDccAcceptTimeout();
 			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
 			this.serverHostname = otherBuilder.getServerHostname();
 			this.serverPort = otherBuilder.getServerPort();
@@ -310,8 +310,8 @@ public class Configuration {
 			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
 		}
 
-		public int getDccSocketTimeout() {
-			return (dccSocketTimeout != -1) ? dccSocketTimeout : socketTimeout;
+		public int getDccAcceptTimeout() {
+			return (dccAcceptTimeout != -1) ? dccAcceptTimeout : socketTimeout;
 		}
 
 		public Builder addCapHandler(CapHandler handler) {
