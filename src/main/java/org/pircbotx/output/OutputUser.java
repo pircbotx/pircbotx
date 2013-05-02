@@ -18,9 +18,14 @@
  */
 package org.pircbotx.output;
 
+import java.io.File;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.dcc.SendFileTransfer;
+import org.pircbotx.exception.DccException;
 
 /**
  *
@@ -30,6 +35,7 @@ import org.pircbotx.User;
 public class OutputUser {
 	protected final OutputIRC sendIRC;
 	protected final User user;
+	protected final DccHandler dccHandler;
 
 	/**
 	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
@@ -99,5 +105,13 @@ public class OutputUser {
 	 */
 	public void ctcpResponse(String message) {
 		sendIRC.ctcpResponse(user.getNick(), message);
+	}
+	
+	public SendFileTransfer dccFile(File file) throws IOException, DccException, InterruptedException {
+		return dccHandler.sendFile(file, user);
+	}
+	
+	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
+		return dccHandler.sendFile(file, user, passive);
 	}
 }
