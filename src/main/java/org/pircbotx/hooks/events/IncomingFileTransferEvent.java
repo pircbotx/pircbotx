@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import lombok.Data;
@@ -87,9 +88,9 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 		this.transferToken = transferToken;
 		this.reverse = reverse;
 	}
-	
-	public ReceiveFileTransfer accept() throws IOException {
-		return user.getBot().getDccHandler().acceptFileTransfer(this);
+
+	public ReceiveFileTransfer accept(File destination) throws IOException {
+		return user.getBot().getDccHandler().acceptFileTransfer(this, destination);
 	}
 
 	/**

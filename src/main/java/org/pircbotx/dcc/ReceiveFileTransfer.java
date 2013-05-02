@@ -21,56 +21,29 @@ package org.pircbotx.dcc;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.Socket;
-import java.nio.channels.FileChannel;
 import lombok.Cleanup;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
  * Handle everything related to receiving a file from another IRC user
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@RequiredArgsConstructor
-public class ReceiveFileTransfer implements FileTransfer {
-	protected final Configuration configuration;
-	@Getter
-	protected final User user;
-	@Getter
-	protected final Socket socket;
-	@Getter
-	protected final long filesize;
-	@Getter
-	protected final String filename;
-	@Getter
-	protected final long startPosition;
-	@Getter
-	protected long bytesTransfered;
-	@Getter
-	protected DccState state = DccState.INIT;
-	protected final Object stateLock = new Object();
+public class ReceiveFileTransfer extends FileTransfer {
+	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
+		super(configuration, socket, user, file, startPosition);
+	}
 
-	public void receiveFile(File destination) throws IOException {
-		//Prevent being called multiple times
-		if (state != DccState.INIT)
-			synchronized (stateLock) {
-				if (state != DccState.INIT)
-					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
-			}
-		state = DccState.RUNNING;
-
+	public void transferFile() throws IOException {
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup
 		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
 		@Cleanup
-		RandomAccessFile fileOutput = new RandomAccessFile(destination.getCanonicalPath(), "rw");
+		RandomAccessFile fileOutput = new RandomAccessFile(file.getCanonicalPath(), "rw");
 		fileOutput.seek(startPosition);
 
 		//Recieve file
@@ -90,7 +63,5 @@ public class ReceiveFileTransfer implements FileTransfer {
 			socketOutput.write(outBuffer);
 			socketOutput.flush();
 		}
-
-		state = DccState.DONE;
 	}
 }

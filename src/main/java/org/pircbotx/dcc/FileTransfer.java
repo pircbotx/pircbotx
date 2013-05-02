@@ -18,22 +18,47 @@
  */
 package org.pircbotx.dcc;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
 /**
  *
  * @author Leon
  */
-public interface FileTransfer {
-	public User getUser();
+@RequiredArgsConstructor
+public abstract class FileTransfer {
+	protected final Configuration configuration;
+	protected final Socket socket;
+	@Getter
+	protected final User user;
+	@Getter
+	protected final File file;
+	@Getter
+	protected final long startPosition;
+	@Getter
+	protected long bytesTransfered;
+	@Getter
+	protected DccState state = DccState.INIT;
+	protected final Object stateLock = new Object();
 
-	public String getFilename();
+	public void transfer() throws IOException {
+		//Prevent being called multiple times
+		if (state != DccState.INIT)
+			synchronized (stateLock) {
+				if (state != DccState.INIT)
+					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
+			}
+		state = DccState.RUNNING;
 
-	public long getFilesize();
+		transferFile();
 
-	public long getStartPosition();
+		state = DccState.DONE;
+	}
 
-	public long getBytesTransfered();
-
-	public DccState getState();
+	protected abstract void transferFile() throws IOException;
 }
