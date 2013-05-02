@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import javax.net.SocketFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Channel;
@@ -83,12 +84,14 @@ public class OutputTest {
 				.setServer(localhost.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
-				.buildConfiguration()) {
+				.setBotFactory(new Configuration.BotFactory() {
 			@Override
-			protected void startInputParser(InputParser parser, BufferedReader inputReader) {
+			public Future startInputParser(InputParser parser, BufferedReader inputReader) {
 				//Do nothing
+				return null;
 			}
-		};
+		})
+				.buildConfiguration());
 		bot.connect();
 
 		//Make sure the bot is connected
