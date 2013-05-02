@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -47,6 +47,7 @@ import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.output.OutputDCC;
 
 /**
  *
@@ -58,6 +59,7 @@ public class DccHandler implements Closeable {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
+	protected final OutputDCC sendDCC;
 	@Getter(AccessLevel.PROTECTED)
 	protected Map<PendingRecieveFileTransfer, Future> pendingReceiveTransfers = Collections.synchronizedMap(new HashMap());
 
@@ -75,40 +77,11 @@ public class DccHandler implements Closeable {
 			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
 			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
 
-			if (port == 0 || transferToken != null) {
+			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				final ServerSocket serverSocket = createServerSocket();
-				final PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(user, filename, address, size, transferToken, serverSocket);
-				pendingReceiveTransfers.put(pendingTransfer, configuration.getBotFactory().startReverseDCCServer(this, new Runnable() {
-					public void run() {
-						Exception exception = null;
-						ReceiveFileTransfer transfer = null;
-						try {
-							Socket userSocket = serverSocket.accept();
-							serverSocket.close();
-							transfer = new ReceiveFileTransfer(configuration, user, userSocket, pendingTransfer.filesize(), safeFilename, pendingTransfer.position());
-							//Remove the pending transfer
-							pendingReceiveTransfers.remove(pendingTransfer);
-						} catch (Exception e) {
-							exception = e;
-						}
-						listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, transfer, exception));
-					}
-				}));
-				user.send().ctcpCommand("DCC SEND " + filename + " " + addressToInteger(serverSocket.getInetAddress()) + " " + serverSocket.getLocalPort()
-						+ " " + size + " " + transferToken);
-			} else {
-				//User is using normal DCC, connect to them
-				Exception exception = null;
-				ReceiveFileTransfer fileTransfer = null;
-				try {
-					Socket userSocket = new Socket(address, port, configuration.getDccLocalAddress(), 0);
-					fileTransfer = new ReceiveFileTransfer(configuration, user, userSocket, size, filename, 0);
-				} catch (Exception e) {
-					exception = e;
-				}
-				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, fileTransfer, exception));
-			}
+				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, filename, address, port, size, transferToken, true));
+			else
+				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, filename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -139,9 +112,24 @@ public class DccHandler implements Closeable {
 			return false;
 		return true;
 	}
-	
+
 	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
 		return new ReceiveChat(event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
+	}
+
+	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event) throws IOException {
+		if (event.isReverse()) {
+			ServerSocket serverSocket = createServerSocket();
+			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getFilename(), event.getAddress(), event.getPort(), event.getFilesize(), event.getTransferToken());
+			Socket userSocket = serverSocket.accept();
+
+			//User is connected, begin transfer
+			serverSocket.close();
+			return new ReceiveFileTransfer(configuration, event.getUser(), userSocket, event.getFilesize(), event.getFilename(), 0);
+		} else {
+			Socket userSocket = new Socket(event.getAddress(), event.getPort(), configuration.getDccLocalAddress(), 0);
+			return new ReceiveFileTransfer(configuration, event.getUser(), userSocket, event.getFilesize(), event.getFilename(), 0);
+		}
 	}
 
 	public SendChat sendChatRequest(User receiver) throws IOException {
@@ -264,11 +252,11 @@ public class DccHandler implements Closeable {
 	public void close() {
 		//Shutdown open reverse dcc servers
 		Iterator<Map.Entry<PendingRecieveFileTransfer, Future>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
-		while(pendingItr.hasNext()) {
+		while (pendingItr.hasNext()) {
 			Map.Entry<PendingRecieveFileTransfer, Future> curEntry = pendingItr.next();
 			PendingRecieveFileTransfer curTransfer = curEntry.getKey();
 			Future curFuture = curEntry.getValue();
-			if(!curFuture.isDone()) {
+			if (!curFuture.isDone()) {
 				log.debug("Terminating reverse dcc server for transfer " + curTransfer);
 				curFuture.cancel(true);
 			}
@@ -306,24 +294,9 @@ public class DccHandler implements Closeable {
 		}
 	}
 
-	@Accessors(fluent = true)
-	@Getter
+	@Data
 	protected static class PendingRecieveFileTransfer {
-		protected String filename;
-		protected InetAddress userAddress;
-		protected long filesize;
-		protected long position;
-		protected ServerSocket serverSocket;
-		protected String token;
-		protected User user;
-
-		public PendingRecieveFileTransfer(User user, String filename, InetAddress userAddress, long filesize, String token, ServerSocket serverSocket) {
-			this.user = user;
-			this.filename = filename;
-			this.userAddress = userAddress;
-			this.filesize = filesize;
-			this.token = token;
-			this.serverSocket = serverSocket;
-		}
+		protected final ServerSocket serverSocket;
+		protected final IncomingFileTransferEvent event;
 	}
 }
