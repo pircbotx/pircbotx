@@ -178,7 +178,7 @@ public class DccHandler implements Closeable {
 		if (receiver == null)
 			throw new NullPointerException("Cannot send chat request to null user");
 		ServerSocket ss = createServerSocket();
-		ss.setSoTimeout(configuration.getDccSocketTimeout());
+		ss.setSoTimeout(configuration.getDccAcceptTimeout());
 
 		int serverPort = ss.getLocalPort();
 		String ipNum = addressToInteger(ss.getInetAddress());
