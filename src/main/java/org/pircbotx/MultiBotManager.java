@@ -34,7 +34,6 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
@@ -72,7 +71,7 @@ public class MultiBotManager {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public void connectAll() throws IOException, IrcException, NickAlreadyInUseException {
+	public void connectAll() throws IOException, IrcException {
 		for (Map.Entry<PircBotX, BotBuilder> curEntry : bots.entrySet()) {
 			PircBotX bot = curEntry.getKey();
 			BotBuilder builder = curEntry.getValue();

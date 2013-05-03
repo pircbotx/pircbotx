@@ -44,7 +44,6 @@ import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
-import org.pircbotx.exception.NickAlreadyInUseException;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
@@ -155,7 +154,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public void connect() throws IOException, IrcException, NickAlreadyInUseException {
+	public void connect() throws IOException, IrcException {
 		try {
 			if (isConnected())
 				throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
@@ -241,7 +240,7 @@ public class PircBotX {
 							tempNick = configuration.getName() + tries;
 							sendRaw().rawLineNow("NICK " + tempNick);
 						} else
-							throw new NickAlreadyInUseException(line);
+							throw new IrcException(IrcException.Reason.NickAlreadyInUse, "Line: " + line);
 					else if (code.equals("439")) {
 						//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 						// No action required.
@@ -350,7 +349,7 @@ public class PircBotX {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
+	public synchronized void reconnect() throws IOException, IrcException {
 		if (configuration == null)
 			throw new IrcException(IrcException.Reason.ReconnectBeforeConnect, "Must connect to the server before reconnecting");
 		try {
