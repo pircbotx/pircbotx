@@ -37,7 +37,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 		super(configuration, socket, user, file, startPosition);
 	}
 
-	public void transferFile() throws IOException {
+	protected void transferFile() throws IOException {
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup
