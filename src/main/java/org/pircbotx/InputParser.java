@@ -90,6 +90,7 @@ import org.pircbotx.output.OutputRaw;
 @RequiredArgsConstructor
 @Slf4j
 public class InputParser implements Closeable {
+	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
 	protected final UserChannelDao dao;
@@ -163,7 +164,7 @@ public class InputParser implements Closeable {
 		if (parsedLine.get(0).startsWith(":"))
 			senderInfo = parsedLine.remove(0);
 
-		String command = parsedLine.remove(0).toUpperCase();
+		String command = parsedLine.remove(0).toUpperCase(configuration.getLocale());
 
 		// Check for server pings.
 		if (command.equals("PING")) {
