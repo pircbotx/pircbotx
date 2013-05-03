@@ -18,6 +18,7 @@
  */
 package org.pircbotx.output;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -31,8 +32,11 @@ import org.pircbotx.hooks.events.PartEvent;
  */
 @RequiredArgsConstructor
 public class OutputChannel {
+	@NonNull
 	protected final OutputRaw sendRaw;
+	@NonNull
 	protected final OutputIRC sendIRC;
+	@NonNull
 	protected final Channel channel;
 
 	/**

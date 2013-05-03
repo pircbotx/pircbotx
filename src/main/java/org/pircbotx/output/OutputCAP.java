@@ -19,6 +19,7 @@
 package org.pircbotx.output;
 
 import java.util.Arrays;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Utils;
 
@@ -28,6 +29,7 @@ import org.pircbotx.Utils;
  */
 @RequiredArgsConstructor
 public class OutputCAP {
+	@NonNull
 	protected final OutputRaw sendRaw;
 
 	public void getSupported() {
