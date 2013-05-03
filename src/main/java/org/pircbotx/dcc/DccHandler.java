@@ -18,7 +18,6 @@
  */
 package org.pircbotx.dcc;
 
-import com.google.common.base.Joiner;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -35,16 +34,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -54,6 +50,7 @@ import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputDCC;
+import static com.google.common.base.Preconditions.*;
 
 /**
  *
@@ -185,14 +182,21 @@ public class DccHandler implements Closeable {
 	}
 
 	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
+		checkNotNull(event, "Event cannot be null");
 		return new ReceiveChat(event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
 	}
 
 	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
+		checkNotNull(event, "Event cannot be null");
+		checkNotNull(destination, "Destination file cannot be null");
 		return acceptFileTransfer(event, destination, 0);
 	}
 
 	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
+		checkNotNull(event, "Event cannot be null");
+		checkNotNull(destination, "Destination file cannot be null");
+		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
+		
 		//Add to pending map so we can be notified when the user has accepted
 		CountDownLatch countdown = new CountDownLatch(1);
 		PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(event);
@@ -219,6 +223,10 @@ public class DccHandler implements Closeable {
 	}
 
 	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException {
+		checkNotNull(event, "Event cannot be null");
+		checkNotNull(destination, "Destination file cannot be null");
+		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
+		
 		if (event.isReverse()) {
 			ServerSocket serverSocket = createServerSocket();
 			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), event.getAddress(), event.getPort(), event.getFilesize(), event.getTransferToken());
@@ -234,8 +242,7 @@ public class DccHandler implements Closeable {
 	}
 
 	public SendChat sendChat(User receiver) throws IOException {
-		if (receiver == null)
-			throw new NullPointerException("Cannot send chat request to null user");
+		checkNotNull(receiver, "Receiver user cannot be null");
 		ServerSocket ss = createServerSocket();
 		ss.setSoTimeout(configuration.getDccAcceptTimeout());
 
@@ -257,6 +264,9 @@ public class DccHandler implements Closeable {
 	 * @see #sendFileTransfers
 	 */
 	public SendFileTransfer sendFile(File file, User receiver, boolean passive) throws IOException, DccException, InterruptedException {
+		checkNotNull(file, "Source file cannot be null");
+		checkNotNull(receiver, "Receiver cannot be null");
+		
 		//Make the filename safe to send
 		String safeFilename = file.getName();
 		if (safeFilename.contains(" "))
