@@ -18,6 +18,7 @@
  */
 package org.pircbotx.dcc;
 
+import com.google.common.base.Joiner;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -80,9 +81,9 @@ public class DccHandler implements Closeable {
 		if (type.equals("SEND")) {
 			//Someone is trying to send a file to us
 			//Example: DCC SEND <filename> <ip> <port> <file size> <transferToken> (note File size is optional)
-			String filename = requestParts.get(2);
-			final String safeFilename = (filename.startsWith("\"") && filename.endsWith("\""))
-					? filename.substring(1, filename.length() - 1) : filename;
+			String rawFilename = requestParts.get(2);
+			final String safeFilename = (rawFilename.startsWith("\"") && rawFilename.endsWith("\""))
+					? rawFilename.substring(1, rawFilename.length() - 1) : rawFilename;
 			InetAddress address = integerToAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
@@ -95,7 +96,7 @@ public class DccHandler implements Closeable {
 					while (pendingItr.hasNext()) {
 						Map.Entry<PendingSendFileTransferPassive, CountDownLatch> curEntry = pendingItr.next();
 						PendingSendFileTransferPassive transfer = curEntry.getKey();
-						if (transfer.getUser() == user && transfer.getFilename().equals(filename)
+						if (transfer.getUser() == user && transfer.getFilename().equals(rawFilename)
 								&& transfer.getTransferToken().equals(transferToken)) {
 							transfer.setReceiverAddress(address);
 							transfer.setReceiverPort(port);
@@ -109,9 +110,9 @@ public class DccHandler implements Closeable {
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, filename, address, port, size, transferToken, true));
+				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, true));
 			else
-				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, filename, address, port, size, transferToken, false));
+				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -162,7 +163,7 @@ public class DccHandler implements Closeable {
 				while (pendingItr.hasNext()) {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
 					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
-					if (transferEvent.getUser() == user && transferEvent.getFilename().equals(filename)
+					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
 							&& transferEvent.getTransferToken().equals(transferToken)) {
 						curEntry.getKey().setPosition(position);
 						curEntry.getValue().countDown();
@@ -201,9 +202,9 @@ public class DccHandler implements Closeable {
 
 		//Request resume
 		if (event.isReverse())
-			sendDCC.filePassiveResumeRequest(event.getUser().getNick(), event.getFilename(), startPosition, event.getTransferToken());
+			sendDCC.filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getTransferToken());
 		else
-			sendDCC.fileResumeRequest(event.getUser().getNick(), event.getFilename(), event.getPort(), startPosition);
+			sendDCC.fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
 		if (!countdown.await(configuration.getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
 			throw new DccException("Accepting of file transfer resume timed out (" + configuration.getDccResumeAcceptTimeout()
 					+ " milliseconds) for transfer " + event);
@@ -220,7 +221,7 @@ public class DccHandler implements Closeable {
 	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException {
 		if (event.isReverse()) {
 			ServerSocket serverSocket = createServerSocket();
-			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getFilename(), event.getAddress(), event.getPort(), event.getFilesize(), event.getTransferToken());
+			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), event.getAddress(), event.getPort(), event.getFilesize(), event.getTransferToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer

@@ -155,11 +155,11 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 	@Override
 	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
-		event.respond("Receiving file " + event.getFilename());
-		File file = File.createTempFile("pircbotx-dcc", event.getFilename());
+		event.respond("Receiving file " + event.getSafeFilename());
+		File file = File.createTempFile("pircbotx-dcc", event.getSafeFilename());
 		ReceiveFileTransfer transfer = event.accept(file);
 
-		event.respond("Received file " + event.getFilename() + " to " + file.getAbsolutePath());
+		event.respond("Received file " + event.getSafeFilename() + " to " + file.getAbsolutePath());
 	}
 
 	public static void main(String[] args) {
