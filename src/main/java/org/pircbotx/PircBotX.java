@@ -477,6 +477,10 @@ public class PircBotX {
 	public ServerInfo getServerInfo() {
 		return serverInfo;
 	}
+	
+	public InetAddress getLocalAddress() {
+		return socket.getLocalAddress();
+	}
 
 	/**
 	 * Calls shutdown allowing reconnect
