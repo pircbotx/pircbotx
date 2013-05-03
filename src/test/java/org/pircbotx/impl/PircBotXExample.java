@@ -67,7 +67,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 		if (event.getMessage().startsWith("?dccSendFile")) {
 			File file = new File("C:\\Users\\Leon\\Downloads\\pircbotx-1.9.jar");
-			event.getUser().send().dccFile(file);
+			event.getUser().send().dccFile(file).transfer();
 			event.respond("Done sending you a file!");
 		}
 
@@ -157,7 +157,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
 		event.respond("Receiving file " + event.getSafeFilename());
 		File file = File.createTempFile("pircbotx-dcc", event.getSafeFilename());
-		ReceiveFileTransfer transfer = event.accept(file);
+		event.accept(file).transfer();
 
 		event.respond("Received file " + event.getSafeFilename() + " to " + file.getAbsolutePath());
 	}
