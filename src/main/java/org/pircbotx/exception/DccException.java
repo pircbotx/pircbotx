@@ -31,20 +31,20 @@ public class DccException extends RuntimeException {
 	@Getter
 	protected final User user;
 
-	public DccException(Reason reason, User user, String message, Throwable cause) {
-		super(generateMessage(reason, user, message), cause);
+	public DccException(Reason reason, User user, String detail, Throwable cause) {
+		super(generateMessage(reason, user, detail), cause);
 		this.ourReason = reason;
 		this.user = user;
 	}
 
-	public DccException(Reason reason, User user, String message) {
-		super(generateMessage(reason, user, message));
+	public DccException(Reason reason, User user, String detail) {
+		super(generateMessage(reason, user, detail));
 		this.ourReason = reason;
 		this.user = user;
 	}
 
-	protected static String generateMessage(Reason reason, User user, String message) {
-		return reason + " from user " + user.getNick() + ": " + message;
+	protected static String generateMessage(Reason reason, User user, String detail) {
+		return reason + " from user " + user.getNick() + ": " + detail;
 	}
 
 	public static enum Reason {
