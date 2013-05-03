@@ -56,7 +56,7 @@ public class OutputDCC {
 	}
 
 	public void filePassiveAccept(String target, String filename, InetAddress receiverAddress, int receiverPort, long filesize, String transferToken) {
-		dcc(target, "SEND", filename, receiverAddress, receiverPort, filesize, transferToken);
+		dcc(target, "SEND", filename, DccHandler.addressToInteger(receiverAddress), receiverPort, filesize, transferToken);
 	}
 
 	public void filePassiveResumeRequest(String target, String filename, long position, String transferToken) {
