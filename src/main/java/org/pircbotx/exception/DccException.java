@@ -18,16 +18,41 @@
  */
 package org.pircbotx.exception;
 
+import lombok.Getter;
+import org.pircbotx.User;
+
 /**
  * A general exception dealing with Dcc errors
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccException extends RuntimeException {
-	public DccException(String message, Throwable cause) {
-		super(message, cause);
+	@Getter
+	protected final Reason ourReason;
+	@Getter
+	protected final User user;
+
+	public DccException(Reason reason, User user, String message, Throwable cause) {
+		super(generateMessage(reason, user, message), cause);
+		this.ourReason = reason;
+		this.user = user;
 	}
 
-	public DccException(String message) {
-		super(message);
+	public DccException(Reason reason, User user, String message) {
+		super(generateMessage(reason, user, message));
+		this.ourReason = reason;
+		this.user = user;
+	}
+
+	protected static String generateMessage(Reason reason, User user, String message) {
+		return reason + " from user " + user.getNick() + ": " + message;
+	}
+
+	public static enum Reason {
+		UnknownFileTransferResume,
+		FileTransferCancelled,
+		FileTransferTimeout,
+		FileTransferResumeTimeout,
+		FileTransferResumeCancelled,
+		DccPortsInUse
 	}
 }
