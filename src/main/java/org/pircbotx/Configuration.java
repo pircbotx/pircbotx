@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.BufferedReader;
@@ -32,8 +33,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import javax.net.SocketFactory;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.dcc.DccHandler;
@@ -148,6 +151,24 @@ public class Configuration {
 	 * @see Configuration.Builder#build()
 	 */
 	protected Configuration(Builder builder) {
+		//Check for basics
+		checkNotNull(builder.getListenerManager());
+		checkArgument(!StringUtils.isBlank(builder.getName()), "Must specify name");
+		checkArgument(!StringUtils.isBlank(builder.getLogin()), "Must specify login");
+		checkArgument(!StringUtils.isBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
+		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
+		checkArgument(builder.getDccResumeAcceptTimeout()> 0, "dccResumeAcceptTimeout must be positive");
+		checkArgument(builder.getDccTransferBufferSize()> 0, "dccTransferBufferSize must be positive");
+		checkArgument(!StringUtils.isBlank(builder.getServerHostname()), "Must specify server hostname");
+		checkArgument(builder.getServerPort() > 0 && builder.getServerPort() <= 65535, "Port must be between 1 and 65535");
+		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
+		checkNotNull(builder.getEncoding(), "Must specify encoding");
+		checkArgument(builder.getSocketTimeout() > 0, "Socket timeout must be positive");
+		checkArgument(builder.getMaxLineLength()> 0, "Max line length must be positive");
+		checkArgument(builder.getMessageDelay()> 0, "Message delay must be positive");
+		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
+		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
+		
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
 		this.webIrcHostname = builder.getWebIrcHostname();
