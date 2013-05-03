@@ -320,18 +320,7 @@ public class PircBotX {
 			if (configuration.isShutdownHookEnabled()) {
 				//Add a shutdown hook, using weakreference so PircBotX can be GC'd
 				final WeakReference<PircBotX> thisBotRef = new WeakReference(this);
-				Runtime.getRuntime().addShutdownHook(shutdownHook = new Thread() {
-					@Override
-					public void run() {
-						PircBotX thisBot = thisBotRef.get();
-						if (thisBot != null && thisBot.isConnected() && thisBot.socket != null && !thisBot.socket.isClosed())
-							try {
-								thisBot.sendIRC().quitServer();
-							} finally {
-								thisBot.shutdown(true);
-							}
-					}
-				});
+				Runtime.getRuntime().addShutdownHook(new BotShutdownHook(this));
 				shutdownHook.setName("bot" + botCount + "-shutdownhook");
 			}
 
@@ -391,7 +380,7 @@ public class PircBotX {
 	public OutputCAP sendCAP() {
 		return outputCAP;
 	}
-	
+
 	public OutputDCC sendDCC() {
 		return outputDCC;
 	}
@@ -477,7 +466,7 @@ public class PircBotX {
 	public ServerInfo getServerInfo() {
 		return serverInfo;
 	}
-	
+
 	public InetAddress getLocalAddress() {
 		return socket.getLocalAddress();
 	}
@@ -550,5 +539,24 @@ public class PircBotX {
 		userChannelDao.close();
 		inputParser.close();
 		dccHandler.close();
+	}
+
+	protected static class BotShutdownHook extends Thread {
+		protected final WeakReference<PircBotX> thisBotRef;
+
+		public BotShutdownHook(PircBotX bot) {
+			this.thisBotRef = new WeakReference(bot);
+		}
+
+		@Override
+		public void run() {
+			PircBotX thisBot = thisBotRef.get();
+			if (thisBot != null && thisBot.isConnected() && thisBot.socket != null && !thisBot.socket.isClosed())
+				try {
+					thisBot.sendIRC().quitServer();
+				} finally {
+					thisBot.shutdown(true);
+				}
+		}
 	}
 }
