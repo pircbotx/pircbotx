@@ -51,6 +51,7 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputDCC;
 import static com.google.common.base.Preconditions.*;
+import lombok.NonNull;
 
 /**
  *
@@ -60,9 +61,13 @@ import static com.google.common.base.Preconditions.*;
 @Slf4j
 public class DccHandler implements Closeable {
 	protected static final Random tokenRandom = new SecureRandom();
+	@NonNull
 	protected final Configuration configuration;
+	@NonNull
 	protected final PircBotX bot;
+	@NonNull
 	protected final ListenerManager listenerManager;
+	@NonNull
 	protected final OutputDCC sendDCC;
 	@Getter(AccessLevel.PROTECTED)
 	protected final Map<PendingRecieveFileTransfer, CountDownLatch> pendingReceiveTransfers = new HashMap();

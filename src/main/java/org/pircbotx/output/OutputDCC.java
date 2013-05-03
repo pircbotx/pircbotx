@@ -20,6 +20,7 @@ package org.pircbotx.output;
 
 import com.google.common.base.Joiner;
 import java.net.InetAddress;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.dcc.DccHandler;
 
@@ -30,6 +31,7 @@ import org.pircbotx.dcc.DccHandler;
  */
 @RequiredArgsConstructor
 public class OutputDCC {
+	@NonNull
 	protected final OutputIRC sendIRC;
 	protected static final Joiner lineJoiner = Joiner.on(' ');
 

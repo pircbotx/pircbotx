@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
@@ -32,12 +33,17 @@ import org.pircbotx.User;
  */
 @RequiredArgsConstructor
 public abstract class FileTransfer {
+	@NonNull
 	protected final Configuration configuration;
+	@NonNull
 	protected final Socket socket;
+	@NonNull
 	@Getter
 	protected final User user;
+	@NonNull
 	@Getter
 	protected final File file;
+	@NonNull
 	@Getter
 	protected final long startPosition;
 	@Getter
