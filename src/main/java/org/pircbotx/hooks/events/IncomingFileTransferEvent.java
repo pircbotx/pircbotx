@@ -66,7 +66,8 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	protected final User user;
-	protected final String filename;
+	protected final String rawFilename;
+	protected final String safeFilename;
 	protected final InetAddress address;
 	protected final int port;
 	protected final long filesize;
@@ -78,10 +79,11 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public IncomingFileTransferEvent(T bot, User user, String filename, InetAddress address, int port, long filesize, String transferToken, boolean reverse) {
+	public IncomingFileTransferEvent(T bot, User user, String rawFilename, String safeFilename, InetAddress address, int port, long filesize, String transferToken, boolean reverse) {
 		super(bot);
 		this.user = user;
-		this.filename = filename;
+		this.rawFilename = rawFilename;
+		this.safeFilename = safeFilename;
 		this.address = address;
 		this.port = port;
 		this.filesize = filesize;
