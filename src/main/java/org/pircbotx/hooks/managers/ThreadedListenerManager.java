@@ -128,7 +128,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 				try {
 					listener.onEvent(event);
 				} catch (Exception e) {
-					log.error("Exception encountered when executing event " + event + " on listener " + listener);
+					log.error("Exception encountered when executing event " + event + " on listener " + listener, e);
 				}
 				return null;
 			}
