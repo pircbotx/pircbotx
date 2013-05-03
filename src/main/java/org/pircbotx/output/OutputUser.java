@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.DccException;
 
@@ -113,5 +114,9 @@ public class OutputUser {
 	
 	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
 		return dccHandler.sendFile(file, user, passive);
+	}
+	
+	public SendChat dccChat() throws IOException {
+		return dccHandler.sendChat(user);
 	}
 }
