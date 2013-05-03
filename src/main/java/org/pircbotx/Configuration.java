@@ -22,7 +22,10 @@ import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +43,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.dcc.ReceiveChat;
+import org.pircbotx.dcc.ReceiveFileTransfer;
+import org.pircbotx.dcc.SendChat;
+import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -461,6 +468,22 @@ public class Configuration {
 
 		public DccHandler createDccHandler(PircBotX bot) {
 			return new DccHandler(bot.getConfiguration(), bot, bot.getConfiguration().getListenerManager(), bot.sendDCC());
+		}
+		
+		public SendChat createSendChat(PircBotX bot, User user, Socket socket) throws IOException {
+			return new SendChat(user, socket, bot.getConfiguration().getEncoding());
+		}
+		
+		public ReceiveChat createReceiveChat(PircBotX bot, User user, Socket socket) throws IOException {
+			return new ReceiveChat(user, socket, bot.getConfiguration().getEncoding());
+		}
+		
+		public SendFileTransfer createSendFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
+			return new SendFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
+		}
+		
+		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
+			return new ReceiveFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
 		}
 
 		public ServerInfo createServerInfo(PircBotX bot) {
