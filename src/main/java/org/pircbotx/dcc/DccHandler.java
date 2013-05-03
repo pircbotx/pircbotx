@@ -188,7 +188,7 @@ public class DccHandler implements Closeable {
 
 	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
 		checkNotNull(event, "Event cannot be null");
-		return new ReceiveChat(event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()), configuration.getEncoding());
+		return configuration.getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
 	}
 
 	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
@@ -239,10 +239,10 @@ public class DccHandler implements Closeable {
 
 			//User is connected, begin transfer
 			serverSocket.close();
-			return new ReceiveFileTransfer(configuration, userSocket, event.getUser(), destination, startPosition);
+			return configuration.getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
 		} else {
 			Socket userSocket = new Socket(event.getAddress(), event.getPort(), configuration.getDccLocalAddress(), 0);
-			return new ReceiveFileTransfer(configuration, userSocket, event.getUser(), destination, startPosition);
+			return configuration.getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
 		}
 	}
 
@@ -257,7 +257,7 @@ public class DccHandler implements Closeable {
 
 		Socket userSocket = ss.accept();
 		ss.close();
-		return new SendChat(receiver, userSocket, configuration.getEncoding());
+		return configuration.getBotFactory().createSendChat(bot, receiver, userSocket);
 	}
 
 	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
@@ -295,7 +295,7 @@ public class DccHandler implements Closeable {
 			if (shuttingDown)
 				throw new DccException("Transfer of file " + file.getAbsolutePath() + " to user " + receiver + " canceled due to bot shutting down");
 			Socket transferSocket = new Socket(pendingPassiveTransfer.getReceiverAddress(), pendingPassiveTransfer.getReceiverPort());
-			return new SendFileTransfer(configuration, transferSocket, receiver, file, pendingPassiveTransfer.getStartPosition());
+			return configuration.getBotFactory().createSendFileTransfer(bot, transferSocket, receiver, file, pendingPassiveTransfer.getStartPosition());
 		} else {
 			//Try to get the user to connect to us
 			final ServerSocket serverSocket = createServerSocket();
@@ -308,7 +308,7 @@ public class DccHandler implements Closeable {
 			//Wait for the user to connect
 			Socket userSocket = serverSocket.accept();
 			serverSocket.close();
-			return new SendFileTransfer(configuration, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
+			return configuration.getBotFactory().createSendFileTransfer(bot, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
 		}
 	}
 
