@@ -27,13 +27,13 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import javax.net.SocketFactory;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
@@ -131,6 +131,7 @@ public class Configuration {
 	protected final SocketFactory socketFactory;
 	protected final InetAddress localAddress;
 	protected final Charset encoding;
+	protected final Locale locale;
 	protected final int socketTimeout;
 	protected final int maxLineLength;
 	protected final boolean autoSplitMessage;
@@ -163,6 +164,7 @@ public class Configuration {
 		checkArgument(builder.getServerPort() > 0 && builder.getServerPort() <= 65535, "Port must be between 1 and 65535");
 		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
 		checkNotNull(builder.getEncoding(), "Must specify encoding");
+		checkNotNull(builder.getLocale(), "Must specify locale");
 		checkArgument(builder.getSocketTimeout() > 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength()> 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay()> 0, "Message delay must be positive");
@@ -192,6 +194,7 @@ public class Configuration {
 		this.socketFactory = builder.getSocketFactory();
 		this.localAddress = builder.getLocalAddress();
 		this.encoding = builder.getEncoding();
+		this.locale = builder.getLocale();
 		this.socketTimeout = builder.getSocketTimeout();
 		this.maxLineLength = builder.getMaxLineLength();
 		this.autoSplitMessage = builder.isAutoSplitMessage();
@@ -236,6 +239,7 @@ public class Configuration {
 		protected SocketFactory socketFactory = SocketFactory.getDefault();
 		protected InetAddress localAddress = null;
 		protected Charset encoding = Charset.defaultCharset();
+		protected Locale locale = Locale.getDefault();
 		protected int socketTimeout = 1000 * 60 * 5;
 		protected int maxLineLength = 512;
 		protected boolean autoSplitMessage = true;
@@ -282,6 +286,7 @@ public class Configuration {
 			this.socketFactory = configuration.getSocketFactory();
 			this.localAddress = configuration.getLocalAddress();
 			this.encoding = configuration.getEncoding();
+			this.locale = configuration.getLocale();
 			this.socketTimeout = configuration.getSocketTimeout();
 			this.maxLineLength = configuration.getMaxLineLength();
 			this.autoSplitMessage = configuration.isAutoSplitMessage();
@@ -324,6 +329,7 @@ public class Configuration {
 			this.socketFactory = otherBuilder.getSocketFactory();
 			this.localAddress = otherBuilder.getLocalAddress();
 			this.encoding = otherBuilder.getEncoding();
+			this.locale = otherBuilder.getLocale();
 			this.socketTimeout = otherBuilder.getSocketTimeout();
 			this.maxLineLength = otherBuilder.getMaxLineLength();
 			this.autoSplitMessage = otherBuilder.isAutoSplitMessage();
