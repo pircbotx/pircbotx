@@ -234,7 +234,7 @@ public class DccHandler implements Closeable {
 		
 		if (event.isReverse()) {
 			ServerSocket serverSocket = createServerSocket();
-			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), event.getAddress(), event.getPort(), event.getFilesize(), event.getTransferToken());
+			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getTransferToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
