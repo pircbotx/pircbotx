@@ -449,7 +449,8 @@ public class Configuration {
 		}
 
 		public InputParser createInputParser(PircBotX bot) {
-			return new InputParser(bot,
+			return new InputParser(bot.getConfiguration(),
+					bot,
 					bot.getConfiguration().getListenerManager(),
 					bot.getUserChannelDao(),
 					bot.getConfiguration().getChannelPrefixes(),
