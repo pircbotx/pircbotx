@@ -44,7 +44,7 @@ public class OutputIRC {
 	 * @param channel The name of the channel to join (eg "#cs").
 	 */
 	public void joinChannel(String channel) {
-		checkArgument(StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
+		checkArgument(!StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
 		sendRaw.rawLine("JOIN " + channel);
 	}
 
@@ -55,7 +55,7 @@ public class OutputIRC {
 	 * @param key The key that will be used to join the channel.
 	 */
 	public void joinChannel(String channel, String key) {
-		checkArgument(StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
+		checkArgument(!StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
 		checkNotNull(key, "Key for channel %s cannot be null", channel);
 		joinChannel(channel + " " + key);
 	}
@@ -96,8 +96,8 @@ public class OutputIRC {
 	 * @param command The CTCP command to send.
 	 */
 	public void ctcpCommand(String target, String command) {
-		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target, command);
-		checkArgument(StringUtils.isBlank(command), "CTCP command '%s' is blank", command, target);
+		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target, command);
+		checkArgument(!StringUtils.isBlank(command), "CTCP command '%s' is blank", command, target);
 		sendRaw.rawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
 	}
 
@@ -109,7 +109,7 @@ public class OutputIRC {
 	 * @param message The message to send
 	 */
 	public void ctcpResponse(String target, String message) {
-		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
+		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
 		sendRaw.rawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
 
@@ -135,7 +135,7 @@ public class OutputIRC {
 	 * @see Colors
 	 */
 	public void message(String target, String message) {
-		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
+		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
 		sendRaw.rawLineSplit("PRIVMSG " + target + " :", message);
 	}
 
@@ -148,7 +148,7 @@ public class OutputIRC {
 	 * @see Colors
 	 */
 	public void action(String target, String action) {
-		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
+		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
 		ctcpCommand(target, "ACTION " + action);
 	}
 
@@ -159,7 +159,7 @@ public class OutputIRC {
 	 * @param notice The notice to send.
 	 */
 	public void notice(String target, String notice) {
-		checkArgument(StringUtils.isBlank(target), "Target '%s' is blank", target);
+		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
 		sendRaw.rawLineSplit("NOTICE " + target + " :", notice);
 	}
 
@@ -172,7 +172,7 @@ public class OutputIRC {
 	 * @param newNick The new nick to use.
 	 */
 	public void changeNick(String newNick) {
-		checkArgument(StringUtils.isBlank(newNick), "Nick '%s' is blank", newNick);
+		checkArgument(!StringUtils.isBlank(newNick), "Nick '%s' is blank", newNick);
 		sendRaw.rawLine("NICK " + newNick);
 	}
 
@@ -186,8 +186,8 @@ public class OutputIRC {
 	 *
 	 */
 	public void invite(String nick, String channel) {
-		checkArgument(StringUtils.isBlank(nick), "Nick '%s' is blank", nick);
-		checkArgument(StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
+		checkArgument(!StringUtils.isBlank(nick), "Nick '%s' is blank", nick);
+		checkArgument(!StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
 		sendRaw.rawLine("INVITE " + nick + " :" + channel);
 	}
 
@@ -257,7 +257,7 @@ public class OutputIRC {
 	 * @param password The password which will be used to identify with NickServ.
 	 */
 	public void identify(final String password) {
-		checkArgument(StringUtils.isBlank(password), "Password '%s' is blank", password);
+		checkArgument(!StringUtils.isBlank(password), "Password '%s' is blank", password);
 		if (bot.isConnected())
 			sendRaw.rawLine("NICKSERV IDENTIFY " + password);
 		else
