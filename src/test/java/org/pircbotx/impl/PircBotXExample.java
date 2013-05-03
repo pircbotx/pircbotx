@@ -67,12 +67,12 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 		if (event.getMessage().startsWith("?dccSendFile")) {
 			File file = new File("C:\\Users\\Leon\\Downloads\\pircbotx-1.9.jar");
-			event.getBot().dccSendFile(file, event.getUser(), 20000);
+			event.getUser().send().dccFile(file);
 			event.respond("Done sending you a file!");
 		}
 
 		if (event.getMessage().startsWith("?dccChat")) {
-			SendChat chat = event.getBot().dccSendChatRequest(event.getUser(), 20000);
+			SendChat chat = event.getUser().send().dccChat();
 			System.out.println("Chat");
 			chat.sendLine("Hello!");
 			String line;
@@ -155,17 +155,11 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 
 	@Override
 	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
-		ReceiveFileTransfer transfer = event.getTransfer();
-		if (event.getException() != null) {
-			event.getException().printStackTrace();
-			return;
-		}
-		//Create temporary file
-		event.respond("Receiving file " + transfer.getFilename());
-		File file = File.createTempFile("pircbotx-dcc", transfer.getFilename());
-		transfer.receiveFile(file);
+		event.respond("Receiving file " + event.getFilename());
+		File file = File.createTempFile("pircbotx-dcc", event.getFilename());
+		ReceiveFileTransfer transfer = event.accept(file);
 
-		event.respond("Received file " + transfer.getFilename() + " to " + file.getAbsolutePath());
+		event.respond("Received file " + event.getFilename() + " to " + file.getAbsolutePath());
 	}
 
 	public static void main(String[] args) {
