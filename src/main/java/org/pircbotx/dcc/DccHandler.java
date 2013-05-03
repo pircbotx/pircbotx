@@ -232,7 +232,7 @@ public class DccHandler implements Closeable {
 		}
 	}
 
-	public SendChat sendChatRequest(User receiver) throws IOException {
+	public SendChat sendChat(User receiver) throws IOException {
 		if (receiver == null)
 			throw new NullPointerException("Cannot send chat request to null user");
 		ServerSocket ss = createServerSocket();
