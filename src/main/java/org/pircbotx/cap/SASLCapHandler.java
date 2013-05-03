@@ -55,7 +55,7 @@ public class SASLCapHandler implements CapHandler {
 			//Server supports sasl, send request to use it
 			bot.sendCAP().request("sasl");
 		else
-			throw new CAPException("Server does not support SASL");
+			throw new CAPException(CAPException.Reason.UnsupportedCapability, "SASL");
 	}
 
 	public void handleACK(PircBotX bot, List<String> capabilities) {
@@ -79,7 +79,7 @@ public class SASLCapHandler implements CapHandler {
 				bot.getEnabledCapabilities().remove("sasl");
 
 				if (!ignoreFail)
-					throw new CAPException("SASL Authentication failed with message: " + parsedLine[3].substring(1));
+					throw new CAPException(CAPException.Reason.SASLFailed, "SASL Authentication failed with message: " + parsedLine[3].substring(1));
 
 				//Pretend like nothing happened
 				done = true;
@@ -91,7 +91,7 @@ public class SASLCapHandler implements CapHandler {
 		if (!ignoreFail && capabilities.contains("sasl")) {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove("sasl");
-			throw new CAPException("Server does not support SASL");
+			throw new CAPException(CAPException.Reason.UnsupportedCapability, "SASL");
 		}
 	}
 }

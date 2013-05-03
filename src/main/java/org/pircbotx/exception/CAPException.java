@@ -23,11 +23,21 @@ package org.pircbotx.exception;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class CAPException extends RuntimeException {
-	public CAPException(String message) {
-		super(message);
+	public CAPException(Reason reason, String detail) {
+		super(generateMessage(reason, detail));
 	}
 
-	public CAPException(String message, Throwable cause) {
-		super(message, cause);
+	public CAPException(Reason reason, String detail, Throwable cause) {
+		super(generateMessage(reason, detail), cause);
+	}
+	
+	protected static String generateMessage(Reason reason, String message) {
+		return reason + ": " + message;
+	}
+	
+	public static enum Reason {
+		UnsupportedCapability,
+		SASLFailed,
+		Other
 	}
 }
