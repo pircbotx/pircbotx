@@ -313,7 +313,10 @@ public class DccHandler implements Closeable {
 	}
 
 	protected ServerSocket createServerSocket() throws IOException, DccException {
-		InetAddress address = configuration.getLocalAddress();
+		InetAddress address = configuration.getDccLocalAddress();
+		if(address == null)
+			//Default to bots address
+			address = bot.getLocalAddress();
 		ServerSocket ss = null;
 		if (configuration.getDccPorts().isEmpty())
 			// Use any free port.
