@@ -51,7 +51,7 @@ public class EnableCapHandler implements CapHandler {
 			//Server supports capability, send request to use it
 			bot.sendCAP().request(cap);
 		else if (!ignoreFail)
-			throw new CAPException("Server does not support the " + cap + " capability");
+			throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
 		else
 			//Nothing more to do
 			done = true;
@@ -68,7 +68,7 @@ public class EnableCapHandler implements CapHandler {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove(cap);
 			if (!ignoreFail)
-				throw new CAPException("Server does not support the " + cap + " capability");
+				throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
 			else
 				//Nothing more to do
 				done = true;
