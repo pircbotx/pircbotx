@@ -25,6 +25,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.output.OutputChannel;
@@ -40,6 +41,7 @@ import org.pircbotx.output.OutputUser;
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Data
+@ToString(exclude = {"outputCreated", "outputCreatedLock"})
 @EqualsAndHashCode(of = {"uuid", "bot"})
 @Setter(AccessLevel.PROTECTED)
 public class User implements Comparable<User> {
