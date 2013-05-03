@@ -31,9 +31,19 @@ public class IrcException extends Exception {
 	/**
 	 * Constructs a new IrcException.
 	 *
-	 * @param e The error message to report.
+	 * @param detail The error message to report.
 	 */
-	public IrcException(String e) {
-		super(e);
+	public IrcException(Reason reason, String detail) {
+		super(generateMessage(reason, detail));
+	}
+
+	protected static String generateMessage(Reason reason, String detail) {
+		return reason + ": " + detail;
+	}
+
+	public static enum Reason {
+		AlreadyConnected,
+		CannotLogin,
+		ReconnectBeforeConnect
 	}
 }
