@@ -34,36 +34,40 @@ public class OutputDCC {
 	@NonNull
 	protected final OutputIRC sendIRC;
 	protected static final Joiner lineJoiner = Joiner.on(' ');
+	
+	public void dcc(String target, String service, Object... parameters) {
+		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", service, (Object[])parameters));
+	}
 
 	public void fileRequest(String target, String filename, InetAddress senderAddress, int senderPort, long filesize) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", "SEND", filename, DccHandler.addressToInteger(senderAddress), senderPort, filesize));
+		dcc(target, "SEND", filename, DccHandler.addressToInteger(senderAddress), senderPort, filesize);
 	}
 
 	public void fileResumeRequest(String target, String filename, int senderPort, long position) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", "RESUME", filename, senderPort, position));
+		dcc(target, "RESUME", filename, senderPort, position);
 	}
 
 	public void fileResumeAccept(String target, String filename, int senderPort, long position) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", "ACCEPT", filename, senderPort, position));
+		dcc(target, "ACCEPT", filename, senderPort, position);
 	}
 
 	public void filePassiveRequest(String target, String filename, InetAddress senderAddress, long filesize, String transferToken) {
-		sendIRC.ctcpCommand(target, lineJoiner.join(target, "DCC", "SEND", filename, DccHandler.addressToInteger(senderAddress), 0, filesize, transferToken));
+		dcc(target, "SEND", filename, DccHandler.addressToInteger(senderAddress), 0, filesize, transferToken);
 	}
 
 	public void filePassiveAccept(String target, String filename, InetAddress receiverAddress, int receiverPort, long filesize, String transferToken) {
-		sendIRC.ctcpCommand(target, lineJoiner.join(filename, "DCC", "SEND", receiverAddress, receiverPort, filesize, transferToken));
+		dcc(target, "SEND", filename, receiverAddress, receiverPort, filesize, transferToken);
 	}
 
 	public void filePassiveResumeRequest(String target, String filename, long position, String transferToken) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", "RESUME", filename, 0, position, transferToken));
+		dcc(target, "RESUME", filename, 0, position, transferToken);
 	}
 
 	public void filePassiveResumeAccept(String target, String filename, long position, String transferToken) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", "ACCEPT", filename, 0, position, transferToken));
+		dcc(target, "ACCEPT", filename, 0, position, transferToken);
 	}
 
 	public void chatRequest(String target, InetAddress address, int port) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", "CHAT", "chat", DccHandler.addressToInteger(address), port));
+		dcc(target, "CHAT", "chat", DccHandler.addressToInteger(address), port);
 	}
 }
