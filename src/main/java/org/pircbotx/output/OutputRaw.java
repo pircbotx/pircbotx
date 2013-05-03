@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,9 @@ import org.pircbotx.PircBotX;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
+	@NonNull
 	protected final PircBotX bot;
+	@NonNull
 	protected final Configuration configuration;
 	protected Writer outputWriter;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);

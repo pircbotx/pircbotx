@@ -20,6 +20,7 @@ package org.pircbotx.output;
 
 import java.io.File;
 import java.io.IOException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -34,8 +35,11 @@ import org.pircbotx.exception.DccException;
  */
 @RequiredArgsConstructor
 public class OutputUser {
+	@NonNull
 	protected final OutputIRC sendIRC;
+	@NonNull
 	protected final User user;
+	@NonNull
 	protected final DccHandler dccHandler;
 
 	/**

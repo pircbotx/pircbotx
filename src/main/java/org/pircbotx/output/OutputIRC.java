@@ -27,6 +27,7 @@ import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import static com.google.common.base.Preconditions.*;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -35,7 +36,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 @RequiredArgsConstructor
 public class OutputIRC {
+	@NonNull
 	protected final PircBotX bot;
+	@NonNull
 	protected final OutputRaw sendRaw;
 
 	/**
