@@ -38,7 +38,7 @@ import org.pircbotx.output.OutputChannel;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
-@ToString(doNotUseGetters = true)
+@ToString(doNotUseGetters = true, exclude = {"outputCreated", "outputCreatedLock"})
 @EqualsAndHashCode(of = {"name", "bot"})
 @Setter(AccessLevel.PACKAGE)
 public class Channel {
