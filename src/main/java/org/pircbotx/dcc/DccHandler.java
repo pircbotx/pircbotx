@@ -188,7 +188,7 @@ public class DccHandler implements Closeable {
 
 	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
 		checkNotNull(event, "Event cannot be null");
-		return new ReceiveChat(event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
+		return new ReceiveChat(event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()), configuration.getEncoding());
 	}
 
 	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
@@ -257,7 +257,7 @@ public class DccHandler implements Closeable {
 
 		Socket userSocket = ss.accept();
 		ss.close();
-		return new SendChat(receiver, userSocket);
+		return new SendChat(receiver, userSocket, configuration.getEncoding());
 	}
 
 	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
