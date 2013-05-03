@@ -18,10 +18,9 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import org.pircbotx.User;
 
 /**
@@ -29,7 +28,7 @@ import org.pircbotx.User;
  * @author Leon
  */
 public class ReceiveChat extends Chat {
-	public ReceiveChat(User user, Socket socket) throws IOException {
-		super(user, socket);
+	public ReceiveChat(User user, Socket socket, Charset encoding) throws IOException {
+		super(user, socket, encoding);
 	}
 }

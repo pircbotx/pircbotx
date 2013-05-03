@@ -20,6 +20,7 @@ package org.pircbotx.dcc;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import org.pircbotx.User;
 
 /**
@@ -27,7 +28,7 @@ import org.pircbotx.User;
  * @author Leon
  */
 public class SendChat extends Chat {
-	public SendChat(User user, Socket socket) throws IOException {
-		super(user, socket);
+	public SendChat(User user, Socket socket, Charset encoding) throws IOException {
+		super(user, socket, encoding);
 	}
 }

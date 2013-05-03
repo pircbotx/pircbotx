@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.User;
@@ -43,11 +44,11 @@ public class Chat {
 	@Getter
 	protected Socket socket;
 
-	protected Chat(User user, Socket socket) throws IOException {
+	protected Chat(User user, Socket socket, Charset encoding) throws IOException {
 		this.user = user;
 		this.socket = socket;
-		this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+		this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
+		this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), encoding));
 	}
 
 	/**
