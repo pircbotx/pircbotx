@@ -158,7 +158,7 @@ public class PircBotX {
 	public void connect() throws IOException, IrcException, NickAlreadyInUseException {
 		try {
 			if (isConnected())
-				throw new IrcException("The PircBotX is already connected to an IRC server.  Disconnect first.");
+				throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
 			synchronized (shutdownCalledLock) {
 				if (shutdownCalled)
 					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
@@ -249,7 +249,7 @@ public class PircBotX {
 						//EXAMPLE: 451 CAP :You have not registered
 						//Ignore, this is from servers that don't support CAP
 					} else if (code.startsWith("5") || code.startsWith("4"))
-						throw new IrcException("Could not log into the IRC server: " + line);
+						throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + line);
 					else if (code.equals("670")) {
 						//Server is saying that we can upgrade to TLS
 						SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
@@ -352,7 +352,7 @@ public class PircBotX {
 	 */
 	public synchronized void reconnect() throws IOException, IrcException, NickAlreadyInUseException {
 		if (configuration == null)
-			throw new IrcException("Cannot reconnect to an IRC server because we were never connected to one previously!");
+			throw new IrcException(IrcException.Reason.ReconnectBeforeConnect, "Must connect to the server before reconnecting");
 		try {
 			connect();
 		} catch (IOException e) {
