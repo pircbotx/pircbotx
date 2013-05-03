@@ -133,11 +133,11 @@ public class PircBotX {
 		this.configuration = configuration;
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
-		this.dccHandler = configuration.getBotFactory().createDccHandler(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
 		this.outputCAP = configuration.getBotFactory().createOutputCAP(this);
 		this.outputDCC = configuration.getBotFactory().createOutputDCC(this);
+		this.dccHandler = configuration.getBotFactory().createDccHandler(this);
 		this.inputParser = configuration.getBotFactory().createInputParser(this);
 	}
 
