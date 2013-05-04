@@ -97,8 +97,6 @@ public class PircBotX {
 	//Connection stuff.
 	@Getter(AccessLevel.PROTECTED)
 	protected Socket socket;
-	protected Future inputParserFuture;
-	//Writers
 	protected final OutputRaw outputRaw;
 	protected final OutputIRC outputIRC;
 	protected final OutputCAP outputCAP;
@@ -114,6 +112,7 @@ public class PircBotX {
 	@Getter
 	@Setter
 	protected boolean autoReconnectChannels;
+	@Getter(AccessLevel.PROTECTED)
 	protected boolean shutdownCalled;
 	protected final Object shutdownCalledLock = new Object();
 
@@ -211,7 +210,7 @@ public class PircBotX {
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
 
 		//Start input to start accepting lines
-		inputParserFuture = getConfiguration().getBotFactory().startInputParser(inputParser);
+		inputParser.startLineProcessing();
 	}
 
 	protected void changeSocket(Socket socket) throws IOException {
@@ -383,12 +382,11 @@ public class PircBotX {
 				if (shutdownCalled)
 					throw new RuntimeException("Shutdown has already been called");
 			}
-
+		
 		try {
-			if (inputParserFuture != null)
-				inputParserFuture.cancel(true);
-		} catch (Exception e) {
-			log.error("Cannot interrupt inputThread", e);
+			socket.close();
+		} catch(Exception e) {
+			log.error("Can't close socket", e);
 		}
 
 		//Close the socket from here and let the threads die

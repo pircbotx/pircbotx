@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -122,12 +123,12 @@ public class InputParser implements Closeable {
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
 	protected boolean capEndSent = false;
-	
+
 	protected void init(Socket socket) throws IOException {
 		this.inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), configuration.getEncoding()));
 	}
 
-	public void startLineProcessing() {
+		public void startLineProcessing() {
 		while (true) {
 			//Get line from the server
 			String line;
@@ -140,9 +141,14 @@ public class InputParser implements Closeable {
 				// Now we go back to listening for stuff from the server...
 				continue;
 			} catch (Exception e) {
-				//Something is wrong. Assume its bad and begin disconnect
-				log.error("Exception encountered when reading next line from server", e);
-				line = null;
+				if (e instanceof SocketException && bot.isShutdownCalled()) {
+					log.info("Shutdown has been called, closing InputParser");
+					return;
+				} else {
+					//Something is wrong. Assume its bad and begin disconnect
+					log.error("Exception encountered when reading next line from server", e);
+					line = null;
+				}
 			}
 
 			//End the loop if the line is null
@@ -215,7 +221,7 @@ public class InputParser implements Closeable {
 			} else {
 				int code = Utils.tryParseInt(command, -1);
 				if (code != -1) {
-					if(!bot.loggedIn)
+					if (!bot.loggedIn)
 						processConnect(line, command, target, parsedLine);
 					processServerResponse(code, line, parsedLine);
 					// Return from the method.
@@ -236,7 +242,7 @@ public class InputParser implements Closeable {
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
 
-		if(!bot.loggedIn)
+		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
 		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
 	}
