@@ -18,13 +18,14 @@
  */
 package org.pircbotx;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -121,9 +122,12 @@ public class InputParser implements Closeable {
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
 	protected boolean capEndSent = false;
+	
+	protected void init(Socket socket) throws IOException {
+		this.inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), configuration.getEncoding()));
+	}
 
-	public void startLineProcessing(BufferedReader inputReader) {
-		this.inputReader = inputReader;
+	public void startLineProcessing() {
 		while (true) {
 			//Get line from the server
 			String line = null;

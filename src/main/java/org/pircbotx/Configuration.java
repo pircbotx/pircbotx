@@ -500,10 +500,10 @@ public class Configuration {
 			return new Channel(bot, bot.getUserChannelDao(), name);
 		}
 
-		public Future startInputParser(final InputParser parser, final BufferedReader inputReader) {
+		public Future startInputParser(final InputParser parser) {
 			FutureTask future = new FutureTask(new Callable() {
 				public Object call() throws Exception {
-					parser.startLineProcessing(inputReader);
+					parser.startLineProcessing();
 					return null;
 				}
 			});
