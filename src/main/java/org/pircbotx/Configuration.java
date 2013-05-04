@@ -172,9 +172,9 @@ public class Configuration {
 		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
 		checkNotNull(builder.getEncoding(), "Must specify encoding");
 		checkNotNull(builder.getLocale(), "Must specify locale");
-		checkArgument(builder.getSocketTimeout() > 0, "Socket timeout must be positive");
+		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
-		checkArgument(builder.getMessageDelay() > 0, "Message delay must be positive");
+		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
 
