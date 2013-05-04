@@ -55,9 +55,8 @@ public class DCCTest {
 
 	@BeforeMethod
 	public void setup() throws UnknownHostException {
-		bot = new PircBotX(new Configuration.Builder()
+		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setLocalAddress(InetAddress.getByName("::1"))
-				.setListenerManager(new GenericListenerManager())
 				.buildConfiguration());
 	}
 

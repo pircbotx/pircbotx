@@ -52,15 +52,15 @@ public class ConfigurationTest {
 				//Constructors to test
 				params.add(new Object[]{Configuration.class,
 					Configuration.Builder.class,
-					new Configuration.Builder(),
+					TestUtils.generateConfigurationBuilder(),
 					prefix + name});
 				params.add(new Object[]{Configuration.Builder.class,
 					Configuration.Builder.class,
-					new Configuration.Builder(),
+					TestUtils.generateConfigurationBuilder(),
 					prefix + name});
 				params.add(new Object[]{Configuration.Builder.class,
 					Configuration.class,
-					new Configuration.Builder().buildConfiguration(),
+					TestUtils.generateConfigurationBuilder().buildConfiguration(),
 					prefix + name});
 			}
 		return params.toArray(new Object[0][]);

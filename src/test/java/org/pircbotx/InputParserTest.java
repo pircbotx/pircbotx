@@ -95,8 +95,7 @@ public class InputParserTest {
 	@BeforeMethod
 	public void setUp() {
 		events = new ArrayList<Event>();
-		Configuration configuration = new Configuration.Builder()
-				.setListenerManager(new GenericListenerManager())
+		Configuration configuration = TestUtils.generateConfigurationBuilder()
 				.addListener(new Listener() {
 			public void onEvent(Event event) throws Exception {
 				events.add(event);

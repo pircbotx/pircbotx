@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.testng.annotations.DataProvider;
 
@@ -75,5 +76,14 @@ public class TestUtils {
 
 		//Can't get anything, error out
 		throw new IllegalArgumentException("Cannot get root of class name " + aClass.toString());
+	}
+	
+	public static Configuration.Builder generateConfigurationBuilder() {
+		return new Configuration.Builder()
+				.setCapEnabled(true)
+				.setServerHostname("example.com")
+				.setListenerManager(new GenericListenerManager())
+				.setName("PircBotXBot")
+				.setMessageDelay(0);
 	}
 }

@@ -34,7 +34,8 @@ public class PircBotXTest {
 
 	@BeforeMethod
 	public void setup() {
-		smallBot = new PircBotX(new Configuration.Builder().buildConfiguration());
+		smallBot = new PircBotX(TestUtils.generateConfigurationBuilder()
+				.buildConfiguration());
 	}
 
 	@Test(description = "Make sure getUser doesn't return null and reliably returns the correct value")
