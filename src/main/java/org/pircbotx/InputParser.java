@@ -130,7 +130,7 @@ public class InputParser implements Closeable {
 	public void startLineProcessing() {
 		while (true) {
 			//Get line from the server
-			String line = null;
+			String line;
 			try {
 				line = inputReader.readLine();
 			} catch (InterruptedIOException iioe) {
