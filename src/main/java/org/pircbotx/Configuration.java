@@ -499,17 +499,5 @@ public class Configuration {
 		public Channel createChannel(PircBotX bot, String name) {
 			return new Channel(bot, bot.getUserChannelDao(), name);
 		}
-
-		public Future startInputParser(final InputParser parser) {
-			FutureTask future = new FutureTask(new Callable() {
-				public Object call() throws Exception {
-					parser.startLineProcessing();
-					return null;
-				}
-			});
-			Thread thread = new Thread(future);
-			thread.start();
-			return future;
-		}
 	}
 }
