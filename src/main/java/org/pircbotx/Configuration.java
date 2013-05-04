@@ -463,7 +463,9 @@ public class Configuration {
 					bot.getConfiguration().getChannelPrefixes(),
 					bot.getServerInfo(),
 					bot.getDccHandler(),
-					bot.sendRaw());
+					bot.sendRaw(),
+					bot.sendIRC(),
+					bot.sendCAP());
 		}
 
 		public DccHandler createDccHandler(PircBotX bot) {
