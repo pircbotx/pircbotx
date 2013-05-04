@@ -52,8 +52,7 @@ public class ListenerAdapterTest {
 
 	@BeforeMethod
 	public void setUp() {
-		bot = new PircBotX(new Configuration.Builder()
-				.setListenerManager(new GenericListenerManager())
+		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.buildConfiguration());
 	}
 

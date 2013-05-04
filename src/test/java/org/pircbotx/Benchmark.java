@@ -106,7 +106,7 @@ public class Benchmark {
 			listenerManager = new ThreadedListenerManager(Executors.newCachedThreadPool());
 		else
 			listenerManager = new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount));
-		PircBotX bot = new PircBotX(new Configuration.Builder()
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setListenerManager(listenerManager)
 				.addListener(new PircBotXJMeter())
 				.buildConfiguration());

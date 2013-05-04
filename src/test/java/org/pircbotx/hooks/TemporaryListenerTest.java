@@ -23,6 +23,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.TestUtils;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -40,9 +41,9 @@ public class TemporaryListenerTest {
 
 	@BeforeMethod
 	public void setup() {
-		bot = new PircBotX(new Configuration.Builder()
-				.setListenerManager(listenerManager = new GenericListenerManager())
+		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.buildConfiguration());
+		listenerManager = bot.getConfiguration().getListenerManager();
 	}
 
 	@Test
