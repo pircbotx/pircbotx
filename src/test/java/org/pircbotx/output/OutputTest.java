@@ -44,6 +44,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
+import org.pircbotx.TestUtils;
 
 /**
  * Test the output of PircBotX. Depend on ConnectTests to check mocked sockets
@@ -76,21 +77,11 @@ public class OutputTest {
 		when(socketFactory.createSocket(localhost, 6667, null, 0)).thenReturn(socket);
 
 		//Configure and connect bot
-		bot = new PircBotX(new Configuration.Builder()
+		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setCapEnabled(true)
-				.setListenerManager(new GenericListenerManager())
-				.setName("PircBotXBot")
-				.setMessageDelay(0)
 				.setServer(localhost.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
-				.setBotFactory(new Configuration.BotFactory() {
-			@Override
-			public Future startInputParser(InputParser parser, BufferedReader inputReader) {
-				//Do nothing
-				return null;
-			}
-		})
 				.buildConfiguration());
 		bot.connect();
 

@@ -77,9 +77,8 @@ public class PircBotXConnectTest {
 
 		//Setup bot
 		events = new ArrayList<Event>();
-		configurationBuilder = new Configuration.Builder()
+		configurationBuilder = TestUtils.generateConfigurationBuilder()
 				.setCapEnabled(true)
-				.setListenerManager(new GenericListenerManager())
 				.addListener(new Listener() {
 			public void onEvent(Event event) throws Exception {
 				events.add(event);
@@ -106,7 +105,7 @@ public class PircBotXConnectTest {
 
 				//Verify values
 				assertEquals(scevent.getBot(), bot);
-			}
+			} 
 
 		assertEquals(rance, 1, "ConnectEvent not dispatched/dispatched more than once");
 		assertEquals(ransce, 1, "SocketConnectEvent not dispatched/dispatched more than once");
@@ -115,7 +114,7 @@ public class PircBotXConnectTest {
 	@Test
 	public void connectTest() throws Exception {
 		//Connect the bot to the socket
-		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
@@ -142,7 +141,7 @@ public class PircBotXConnectTest {
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket
 		when(socketFactory.createSocket(address, 25622, null, 0)).thenReturn(socket);
-		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setServer(address.getHostName(), 25622)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
@@ -168,7 +167,7 @@ public class PircBotXConnectTest {
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithPasswordTest() throws Exception {
 		//Connect the bot to the socket
-		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setServer(address.getHostName(), 6667)
 				.setServerPassword("pa55w0rd")
 				.setSocketFactory(socketFactory)
@@ -198,7 +197,7 @@ public class PircBotXConnectTest {
 		configurationBuilder.addCapHandler(new EnableCapHandler("jdshflkashfalksjh", true));
 
 		//Connect the bot to the socket
-		PircBotX bot = new PircBotX(new Configuration.Builder(configurationBuilder)
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
