@@ -165,19 +165,19 @@ public class Configuration {
 		checkArgument(!StringUtils.isBlank(builder.getLogin()), "Must specify login");
 		checkArgument(!StringUtils.isBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
-		checkArgument(builder.getDccResumeAcceptTimeout()> 0, "dccResumeAcceptTimeout must be positive");
-		checkArgument(builder.getDccTransferBufferSize()> 0, "dccTransferBufferSize must be positive");
+		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
+		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
 		checkArgument(!StringUtils.isBlank(builder.getServerHostname()), "Must specify server hostname");
 		checkArgument(builder.getServerPort() > 0 && builder.getServerPort() <= 65535, "Port must be between 1 and 65535");
 		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
 		checkNotNull(builder.getEncoding(), "Must specify encoding");
 		checkNotNull(builder.getLocale(), "Must specify locale");
 		checkArgument(builder.getSocketTimeout() > 0, "Socket timeout must be positive");
-		checkArgument(builder.getMaxLineLength()> 0, "Max line length must be positive");
-		checkArgument(builder.getMessageDelay()> 0, "Message delay must be positive");
+		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
+		checkArgument(builder.getMessageDelay() > 0, "Message delay must be positive");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
-		
+
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
 		this.webIrcHostname = builder.getWebIrcHostname();
@@ -358,7 +358,7 @@ public class Configuration {
 		public int getDccAcceptTimeout() {
 			return (dccAcceptTimeout != -1) ? dccAcceptTimeout : socketTimeout;
 		}
-		
+
 		public int getDccResumeAcceptTimeout() {
 			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
@@ -442,7 +442,7 @@ public class Configuration {
 		public OutputIRC createOutputIRC(PircBotX bot) {
 			return new OutputIRC(bot, bot.sendRaw());
 		}
-		
+
 		public OutputDCC createOutputDCC(PircBotX bot) {
 			return new OutputDCC(bot.sendIRC());
 		}
@@ -471,19 +471,19 @@ public class Configuration {
 		public DccHandler createDccHandler(PircBotX bot) {
 			return new DccHandler(bot.getConfiguration(), bot, bot.getConfiguration().getListenerManager(), bot.sendDCC());
 		}
-		
+
 		public SendChat createSendChat(PircBotX bot, User user, Socket socket) throws IOException {
 			return new SendChat(user, socket, bot.getConfiguration().getEncoding());
 		}
-		
+
 		public ReceiveChat createReceiveChat(PircBotX bot, User user, Socket socket) throws IOException {
 			return new ReceiveChat(user, socket, bot.getConfiguration().getEncoding());
 		}
-		
+
 		public SendFileTransfer createSendFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
 			return new SendFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
 		}
-		
+
 		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
 			return new ReceiveFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
 		}
