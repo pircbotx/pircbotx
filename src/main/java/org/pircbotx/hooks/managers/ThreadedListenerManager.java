@@ -19,6 +19,7 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.Collections;
@@ -63,7 +64,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 	protected AtomicLong currentId = new AtomicLong();
-	protected final HashMultimap<PircBotX, ManagedFutureTask> runningListeners = HashMultimap.create();
+	protected final Multimap<PircBotX, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
 	 * Configures with default options: perHook is false and a
