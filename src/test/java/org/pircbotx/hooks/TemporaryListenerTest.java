@@ -23,6 +23,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.testng.annotations.BeforeMethod;
@@ -45,7 +46,7 @@ public class TemporaryListenerTest {
 	}
 
 	@Test
-	public void eventDispatched() throws IOException {
+	public void eventDispatched() throws IOException, IrcException {
 		final MutableObject<MessageEvent> mutableEvent = new MutableObject();
 		Listener listener = new TemporaryListener(bot) {
 			@Override
@@ -71,7 +72,7 @@ public class TemporaryListenerTest {
 	}
 
 	@Test
-	public void listenerGetsRemoved() throws IOException {
+	public void listenerGetsRemoved() throws IOException, IrcException {
 		TemporaryListener listener = new TemporaryListener(bot) {
 			@Override
 			public void onMessage(MessageEvent event) throws Exception {

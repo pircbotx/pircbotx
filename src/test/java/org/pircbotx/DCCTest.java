@@ -32,6 +32,7 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -61,7 +62,7 @@ public class DCCTest {
 	}
 
 	@Test
-	public void incommingDccChatTest() throws IOException, InterruptedException {
+	public void incommingDccChatTest() throws IOException, InterruptedException, IrcException {
 		Inet6Address localhost6 = (Inet6Address) InetAddress.getByName("::1");
 
 		//Create listener to handle everything
