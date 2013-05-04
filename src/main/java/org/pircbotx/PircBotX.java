@@ -188,9 +188,7 @@ public class PircBotX {
 			throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
 		log.info("Connected to server.");
 
-		InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), configuration.getEncoding());
-		sendRaw().init(socket);
-		BufferedReader breader = new BufferedReader(inputStreamReader);
+		changeSocket(socket);
 		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 		if (configuration.isUseIdentServer())
@@ -213,12 +211,13 @@ public class PircBotX {
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
 
 		//Start input to start accepting lines
-		inputParserFuture = getConfiguration().getBotFactory().startInputParser(inputParser, breader);
+		inputParserFuture = getConfiguration().getBotFactory().startInputParser(inputParser);
 	}
 
 	protected void changeSocket(Socket socket) throws IOException {
 		this.socket = socket;
 		sendRaw().init(socket);
+		inputParser.init(socket);
 	}
 	
 	protected void loggedIn(String nick) {
