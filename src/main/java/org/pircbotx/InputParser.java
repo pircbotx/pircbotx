@@ -128,7 +128,7 @@ public class InputParser implements Closeable {
 		this.inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), configuration.getEncoding()));
 	}
 
-		public void startLineProcessing() {
+	public void startLineProcessing() {
 		while (true) {
 			//Get line from the server
 			String line;
@@ -783,7 +783,6 @@ public class InputParser implements Closeable {
 	}
 
 	public void close() {
-		inputReader = null;
 		whoisBuilder.clear();
 		motdBuilder = null;
 		channelListRunning = false;
