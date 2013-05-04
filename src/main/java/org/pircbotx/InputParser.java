@@ -18,23 +18,33 @@
  */
 package org.pircbotx;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import lombok.AccessLevel;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import static org.pircbotx.ReplyConstants.*;
+import org.pircbotx.cap.CapHandler;
+import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
+import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.InviteEvent;
@@ -81,6 +91,8 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.output.OutputCAP;
+import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
 
 /**
@@ -98,6 +110,8 @@ public class InputParser implements Closeable {
 	protected final ServerInfo serverInfo;
 	protected final DccHandler dccHandler;
 	protected final OutputRaw sendRaw;
+	protected final OutputIRC sendIRC;
+	protected final OutputCAP sendCAP;
 	protected BufferedReader inputReader;
 	//Builders
 	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
@@ -105,6 +119,8 @@ public class InputParser implements Closeable {
 	@Getter
 	protected boolean channelListRunning = false;
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
+	protected int nickSuffix = 0;
+	protected boolean capEndSent = false;
 
 	public void startLineProcessing(BufferedReader inputReader) {
 		this.inputReader = inputReader;
@@ -153,7 +169,7 @@ public class InputParser implements Closeable {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	public void handleLine(String line) throws IOException {
+	public void handleLine(String line) throws IOException, IrcException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
 		log.info(line);
@@ -180,7 +196,10 @@ public class InputParser implements Closeable {
 		String sourceNick = "";
 		String sourceLogin = "";
 		String sourceHostname = "";
-		String target = null;
+		String target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
+
+		if (target.startsWith(":"))
+			target = target.substring(1);
 
 		int exclamation = senderInfo.indexOf("!");
 		int at = senderInfo.indexOf("@");
@@ -192,6 +211,8 @@ public class InputParser implements Closeable {
 			} else {
 				int code = Utils.tryParseInt(command, -1);
 				if (code != -1) {
+					if(!bot.loggedIn)
+						processConnect(line, command, target, parsedLine);
 					processServerResponse(code, line, parsedLine);
 					// Return from the method.
 					return;
@@ -211,12 +232,97 @@ public class InputParser implements Closeable {
 		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
 
-		target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
-
-		if (target.startsWith(":"))
-			target = target.substring(1);
-
+		if(!bot.loggedIn)
+			processConnect(line, command, target, parsedLine);
 		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
+	}
+
+	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
+		//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
+		String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
+		if (Arrays.asList(codes).contains(code)) {
+			// We're connected to the server.
+			bot.loggedIn(configuration.getName() + nickSuffix);
+			log.debug("Logged onto server.");
+
+			configuration.getListenerManager().dispatchEvent(new ConnectEvent(bot));
+
+			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
+				sendIRC.joinChannel(channelEntry.getKey(), channelEntry.getValue());
+		} else if (code.equals("433"))
+			//EXAMPLE: AnAlreadyUsedName :Nickname already in use
+			//Nickname in use, rename
+			if (configuration.isAutoNickChange()) {
+				nickSuffix++;
+				sendIRC.changeNick(configuration.getName() + nickSuffix);
+			} else
+				throw new IrcException(IrcException.Reason.NickAlreadyInUse, "Line: " + rawLine);
+		else if (code.equals("439")) {
+			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
+			// No action required.
+		} else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP")) {
+			//EXAMPLE: 451 CAP :You have not registered
+			//Ignore, this is from servers that don't support CAP
+		} else if (code.startsWith("5") || code.startsWith("4"))
+			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
+		else if (code.equals("670")) {
+			//Server is saying that we can upgrade to TLS
+			SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
+			for (CapHandler curCapHandler : configuration.getCapHandlers())
+				if (curCapHandler instanceof TLSCapHandler)
+					sslSocketFactory = ((TLSCapHandler) curCapHandler).getSslSocketFactory();
+			SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(
+					bot.getSocket(),
+					bot.getLocalAddress().getHostAddress(),
+					bot.getSocket().getPort(),
+					true);
+			sslSocket.startHandshake();
+			bot.changeSocket(sslSocket);
+			//Notify CAP Handlers
+			for (CapHandler curCapHandler : configuration.getCapHandlers())
+				curCapHandler.handleUnknown(bot, rawLine);
+		} else if (code.equals("CAP")) {
+			//Handle CAP Code; remove extra from params
+			String capCommand = parsedLine.get(1);
+			List<String> capParams = ImmutableList.copyOf(StringUtils.split(parsedLine.get(2)));
+			if (capCommand.equals("LS"))
+				for (CapHandler curCapHandler : configuration.getCapHandlers())
+					curCapHandler.handleLS(bot, capParams);
+			else if (capCommand.equals("ACK")) {
+				//Server is enabling a capability, store that
+				bot.getEnabledCapabilities().addAll(capParams);
+
+				for (CapHandler curCapHandler : configuration.getCapHandlers())
+					curCapHandler.handleACK(bot, capParams);
+			} else if (capCommand.equals("NAK"))
+				for (CapHandler curCapHandler : configuration.getCapHandlers())
+					curCapHandler.handleNAK(bot, capParams);
+			else
+				//Maybe the CapHandlers know how to use it
+				for (CapHandler curCapHandler : configuration.getCapHandlers())
+					curCapHandler.handleUnknown(bot, rawLine);
+		} else
+			//Pass to CapHandlers, could be important
+			for (CapHandler curCapHandler : configuration.getCapHandlers())
+				curCapHandler.handleUnknown(bot, rawLine);
+
+
+		//Send CAP END if all CapHandlers are finished
+		if (configuration.isCapEnabled() && !capEndSent) {
+			boolean allDone = true;
+			for (CapHandler curCapHandler : configuration.getCapHandlers())
+				if (!curCapHandler.isDone()) {
+					allDone = false;
+					break;
+				}
+			if (allDone) {
+				sendCAP.end();
+				capEndSent = true;
+
+				//Make capabilities unmodifiable for the future
+				bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
+			}
+		}
 	}
 
 	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {

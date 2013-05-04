@@ -34,6 +34,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -94,6 +95,7 @@ public class PircBotX {
 	protected final DccHandler dccHandler;
 	protected final ServerInfo serverInfo;
 	//Connection stuff.
+	@Getter(AccessLevel.PROTECTED)
 	protected Socket socket;
 	protected Future inputParserFuture;
 	//Writers
@@ -155,186 +157,76 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public void connect() throws IOException, IrcException {
-		try {
-			if (isConnected())
-				throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
-			synchronized (shutdownCalledLock) {
-				if (shutdownCalled)
-					throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
-				shutdownCalled = false;
-			}
-			if (configuration.isUseIdentServer() && IdentServer.getServer() == null)
-				throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
-
-			//Reset capabilities
-			enabledCapabilities = new ArrayList();
-
-			// Connect to the server by DNS server
-			for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
-				log.debug("Trying address " + curAddress);
-				try {
-					socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
-
-					//No exception, assume successful
-					break;
-				} catch (Exception e) {
-					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
-				}
-			}
-
-			//Make sure were connected
-			if (socket == null || (socket != null && !socket.isConnected()))
-				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
-			log.info("Connected to server.");
-
-			InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), configuration.getEncoding());
-			sendRaw().init(socket);
-			BufferedReader breader = new BufferedReader(inputStreamReader);
-			configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
-
-			if (configuration.isUseIdentServer())
-				IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
-
-			if (configuration.isCapEnabled())
-				// Attempt to initiate a CAP transaction.
-				sendCAP().getSupported();
-
-			// Attempt to join the server.
-			if (configuration.isWebIrcEnabled())
-				sendRaw().rawLineNow("WEBIRC " + configuration.getWebIrcPassword()
-						+ " " + configuration.getWebIrcUsername()
-						+ " " + configuration.getWebIrcHostname()
-						+ " " + configuration.getWebIrcAddress().getHostAddress());
-			if (!StringUtils.isBlank(configuration.getServerPassword()))
-				sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
-			String tempNick = configuration.getName();
-
-			sendRaw().rawLineNow("NICK " + tempNick);
-			sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
-
-			// Read stuff back from the server to see if we connected.
-			String line;
-			int tries = 1;
-			boolean capEndSent = false;
-			while ((line = breader.readLine()) != null) {
-				inputParser.handleLine(line);
-
-				List<String> params = Utils.tokenizeLine(line);
-				if (params.size() >= 2) {
-					String sender = "";
-					if (params.get(0).startsWith(":"))
-						sender = params.remove(0);
-
-					String code = params.remove(0);
-
-					//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
-					String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
-					if (Arrays.asList(codes).contains(code))
-						// We're connected to the server.
-						break;
-					else if (code.equals("433"))
-						//EXAMPLE: AnAlreadyUsedName :Nickname already in use
-						//Nickname in use, rename
-						if (configuration.isAutoNickChange()) {
-							tries++;
-							tempNick = configuration.getName() + tries;
-							sendRaw().rawLineNow("NICK " + tempNick);
-						} else
-							throw new IrcException(IrcException.Reason.NickAlreadyInUse, "Line: " + line);
-					else if (code.equals("439")) {
-						//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
-						// No action required.
-					} else if (configuration.isCapEnabled() && code.equals("451") && params.get(0).equals("CAP")) {
-						//EXAMPLE: 451 CAP :You have not registered
-						//Ignore, this is from servers that don't support CAP
-					} else if (code.startsWith("5") || code.startsWith("4"))
-						throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + line);
-					else if (code.equals("670")) {
-						//Server is saying that we can upgrade to TLS
-						SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
-						for (CapHandler curCapHandler : configuration.getCapHandlers())
-							if (curCapHandler instanceof TLSCapHandler)
-								sslSocketFactory = ((TLSCapHandler) curCapHandler).getSslSocketFactory();
-						SSLSocket sslSocket = (SSLSocket) sslSocketFactory.createSocket(
-								socket,
-								socket.getInetAddress().getHostName(),
-								socket.getPort(),
-								true);
-						sslSocket.startHandshake();
-						breader = new BufferedReader(new InputStreamReader(sslSocket.getInputStream(), configuration.getEncoding()));
-						sendRaw().init(sslSocket);
-						socket = sslSocket;
-						//Notify CAP Handlers
-						for (CapHandler curCapHandler : configuration.getCapHandlers())
-							curCapHandler.handleUnknown(this, line);
-					} else if (code.equals("CAP")) {
-						//Handle CAP Code; remove extra from params
-						List<String> capParams = Arrays.asList(params.get(2).split(" "));
-						if (params.get(1).equals("LS"))
-							for (CapHandler curCapHandler : configuration.getCapHandlers())
-								curCapHandler.handleLS(this, capParams);
-						else if (params.get(1).equals("ACK")) {
-							//Server is enabling a capability, store that
-							getEnabledCapabilities().addAll(capParams);
-
-							for (CapHandler curCapHandler : configuration.getCapHandlers())
-								curCapHandler.handleACK(this, capParams);
-						} else if (params.get(1).equals("NAK"))
-							for (CapHandler curCapHandler : configuration.getCapHandlers())
-								curCapHandler.handleNAK(this, capParams);
-						else
-							//Maybe the CapHandlers know how to use it
-							for (CapHandler curCapHandler : configuration.getCapHandlers())
-								curCapHandler.handleUnknown(this, line);
-					} else
-						//Pass to CapHandlers, could be important
-						for (CapHandler curCapHandler : configuration.getCapHandlers())
-							curCapHandler.handleUnknown(this, line);
-				}
-				//Send CAP END if all CapHandlers are finished
-				if (configuration.isCapEnabled() && !capEndSent) {
-					boolean allDone = true;
-					for (CapHandler curCapHandler : configuration.getCapHandlers())
-						if (!curCapHandler.isDone()) {
-							allDone = false;
-							break;
-						}
-					if (allDone) {
-						sendCAP().end();
-						capEndSent = true;
-
-						//Make capabilities unmodifiable for the future
-						enabledCapabilities = Collections.unmodifiableList(enabledCapabilities);
-					}
-				}
-			}
-
-			this.nick = tempNick;
-			loggedIn = true;
-			log.info("Logged onto server.");
-
-			// This makes the socket timeout on read operations after 5 minutes.
-			socket.setSoTimeout(configuration.getSocketTimeout());
-
-			if (configuration.isShutdownHookEnabled()) {
-				//Add a shutdown hook, using weakreference so PircBotX can be GC'd
-				final WeakReference<PircBotX> thisBotRef = new WeakReference(this);
-				Runtime.getRuntime().addShutdownHook(new BotShutdownHook(this));
-				shutdownHook.setName("bot" + botCount + "-shutdownhook");
-			}
-
-			//Start input to start accepting lines
-			inputParserFuture = getConfiguration().getBotFactory().startInputParser(inputParser, breader);
-
-			configuration.getListenerManager().dispatchEvent(new ConnectEvent(this));
-
-			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
-				sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
-		} catch (Exception e) {
-			//if (!(e instanceof IrcException) && !(e instanceof NickAlreadyInUseException))
-			//	shutdown(true);
-			throw new IOException("Can't connect to server", e);
+		if (isConnected())
+			throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
+		synchronized (shutdownCalledLock) {
+			if (shutdownCalled)
+				throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
+			shutdownCalled = false;
 		}
+		if (configuration.isUseIdentServer() && IdentServer.getServer() == null)
+			throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
+
+		//Reset capabilities
+		enabledCapabilities = new ArrayList();
+
+		// Connect to the server by DNS server
+		for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
+			log.debug("Trying address " + curAddress);
+			try {
+				socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
+
+				//No exception, assume successful
+				break;
+			} catch (Exception e) {
+				log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
+			}
+		}
+
+		//Make sure were connected
+		if (socket == null || (socket != null && !socket.isConnected()))
+			throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
+		log.info("Connected to server.");
+
+		InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream(), configuration.getEncoding());
+		sendRaw().init(socket);
+		BufferedReader breader = new BufferedReader(inputStreamReader);
+		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
+
+		if (configuration.isUseIdentServer())
+			IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
+
+		if (configuration.isCapEnabled())
+			// Attempt to initiate a CAP transaction.
+			sendCAP().getSupported();
+
+		// Attempt to join the server.
+		if (configuration.isWebIrcEnabled())
+			sendRaw().rawLineNow("WEBIRC " + configuration.getWebIrcPassword()
+					+ " " + configuration.getWebIrcUsername()
+					+ " " + configuration.getWebIrcHostname()
+					+ " " + configuration.getWebIrcAddress().getHostAddress());
+		if (!StringUtils.isBlank(configuration.getServerPassword()))
+			sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
+
+		sendRaw().rawLineNow("NICK " + configuration.getName());
+		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
+
+		//Start input to start accepting lines
+		inputParserFuture = getConfiguration().getBotFactory().startInputParser(inputParser, breader);
+	}
+
+	protected void changeSocket(Socket socket) throws IOException {
+		this.socket = socket;
+		sendRaw().init(socket);
+	}
+	
+	protected void loggedIn(String nick) {
+		this.loggedIn = true;
+		setNick(nick);
+		
+		if (configuration.isShutdownHookEnabled())
+				Runtime.getRuntime().addShutdownHook(shutdownHook = new PircBotX.BotShutdownHook(this));
 	}
 
 	/**
@@ -545,6 +437,7 @@ public class PircBotX {
 
 		public BotShutdownHook(PircBotX bot) {
 			this.thisBotRef = new WeakReference(bot);
+			setName("bot" + botCount + "-shutdownhook");
 		}
 
 		@Override
