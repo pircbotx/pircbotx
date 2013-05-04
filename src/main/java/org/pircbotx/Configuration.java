@@ -424,6 +424,27 @@ public class Configuration {
 		public Configuration buildConfiguration() {
 			return new Configuration(this);
 		}
+		
+		public Configuration buildForServer(String hostname) {
+			return new Builder(this)
+					.setServerHostname(serverHostname)
+					.buildConfiguration();
+		}
+		
+		public Configuration buildForServer(String hostname, int port) {
+			return new Builder(this)
+					.setServerHostname(serverHostname)
+					.setServerPort(serverPort)
+					.buildConfiguration();
+		}
+		
+		public Configuration buildForServer(String hostname, int port, String password) {
+			return new Builder(this)
+					.setServerHostname(serverHostname)
+					.setServerPort(serverPort)
+					.setServerPassword(serverPassword)
+					.buildConfiguration();
+		}
 	}
 
 	public static class BotFactory {
