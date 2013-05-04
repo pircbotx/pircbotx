@@ -20,10 +20,13 @@ package org.pircbotx;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.Executors;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -140,7 +143,7 @@ public class Benchmark {
 		}
 	}
 
-	private static final int run(StopWatch stopWatch) throws IOException {
+	private static final int run(StopWatch stopWatch) throws IOException, IrcException {
 		int counter = 0;
 		stopWatch.start();
 		for (String[] curGroup : responseGroups) {
