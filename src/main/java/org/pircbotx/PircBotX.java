@@ -112,8 +112,7 @@ public class PircBotX {
 	@Getter
 	@Setter
 	protected boolean autoReconnectChannels;
-	@Getter(AccessLevel.PROTECTED)
-	protected boolean shutdownCalled;
+	protected boolean shutdownCalled = false;
 	protected final Object shutdownCalledLock = new Object();
 
 	/**
@@ -359,7 +358,13 @@ public class PircBotX {
 	public InetAddress getLocalAddress() {
 		return socket.getLocalAddress();
 	}
-
+	
+	protected boolean isShutdownCalled() {
+		synchronized(shutdownCalledLock) {
+			return shutdownCalled;
+		}
+	}
+	
 	/**
 	 * Calls shutdown allowing reconnect
 	 */
