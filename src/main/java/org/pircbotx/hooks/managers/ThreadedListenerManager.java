@@ -63,7 +63,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
 	protected AtomicLong currentId = new AtomicLong();
-	protected HashMultimap<PircBotX, ManagedFutureTask> runningListeners = HashMultimap.create();
+	protected final HashMultimap<PircBotX, ManagedFutureTask> runningListeners = HashMultimap.create();
 
 	/**
 	 * Configures with default options: perHook is false and a
@@ -161,13 +161,15 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	public void shutdown(PircBotX bot) {
-		for (ManagedFutureTask curFuture : runningListeners.get(bot))
-			try {
-				log.debug("Waiting for listener " + curFuture.getListener() + " to execute event " + curFuture.getEvent());
-				curFuture.get();
-			} catch (Exception e) {
-				throw new RuntimeException("Cannot shutdown listener " + curFuture.getListener() + " executing event " + curFuture.getEvent(), e);
-			}
+		synchronized (runningListeners) {
+			for (ManagedFutureTask curFuture : runningListeners.get(bot))
+				try {
+					log.debug("Waiting for listener " + curFuture.getListener() + " to execute event " + curFuture.getEvent());
+					curFuture.get();
+				} catch (Exception e) {
+					throw new RuntimeException("Cannot shutdown listener " + curFuture.getListener() + " executing event " + curFuture.getEvent(), e);
+				}
+		}
 	}
 
 	@Getter
@@ -180,13 +182,17 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 			this.listener = listener;
 			this.event = event;
 			if (event.getBot() != null)
-				runningListeners.put(event.getBot(), this);
+				synchronized (runningListeners) {
+					runningListeners.put(event.getBot(), this);
+				}
 		}
 
 		@Override
 		protected void done() {
 			if (event.getBot() != null)
-				runningListeners.remove(event.getBot(), this);
+				synchronized (runningListeners) {
+					runningListeners.remove(event.getBot(), this);
+				}
 		}
 	}
 }
