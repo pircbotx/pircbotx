@@ -42,6 +42,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
+import org.slf4j.MDC;
 
 /**
  * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(org.pircbotx.hooks.Event)}.
@@ -127,6 +128,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		pool.execute(new ManagedFutureTask(listener, event, new Callable() {
 			public Object call() {
 				try {
+					MDC.put("pircbotx-number", String.valueOf(event.getBot().getBotNumber()));
 					listener.onEvent(event);
 				} catch (Exception e) {
 					log.error("Exception encountered when executing event " + event + " on listener " + listener, e);
