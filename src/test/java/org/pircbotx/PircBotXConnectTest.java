@@ -41,6 +41,7 @@ import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -90,20 +91,16 @@ public class PircBotXConnectTest {
 	}
 
 	protected void validateEvents(PircBotX bot) throws Exception {
-		/*assertEquals(events.size(), 2, "More events were generated than expected:"
-				+ SystemUtils.LINE_SEPARATOR
-				+ StringUtils.join(events, SystemUtils.LINE_SEPARATOR));*/
-		
-		System.out.println("More events were generated than expected:"
-				+ SystemUtils.LINE_SEPARATOR
-				+ StringUtils.join(events, SystemUtils.LINE_SEPARATOR));
-
 		Event event = events.get(0);
 		assertTrue(event instanceof SocketConnectEvent, "Unknown first event: " + event);
 		assertEquals(event.getBot(), bot);
 
 		event = events.get(2);
-		assertTrue(event instanceof ConnectEvent, "Unknown second event: " + event);
+		assertTrue(event instanceof ConnectEvent, "Unknown third event: " + event);
+		assertEquals(event.getBot(), bot);
+		
+		event = events.get(4);
+		assertTrue(event instanceof DisconnectEvent, "Unknown fifth event: " + event);
 		assertEquals(event.getBot(), bot);
 	}
 
