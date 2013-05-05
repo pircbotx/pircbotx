@@ -86,7 +86,7 @@ public class PircBotX {
 	public static final String VERSION = "2.0-SNAPSHOT";
 	protected static final AtomicInteger botCount = new AtomicInteger();
 	@Getter
-	protected final int botNumber;
+	protected final int botId;
 	//Utility objects
 	@Getter
 	protected final Configuration configuration;
@@ -131,7 +131,7 @@ public class PircBotX {
 	 * </ul>
 	 */
 	public PircBotX(Configuration configuration) {
-		botNumber = botCount.getAndIncrement();
+		botId = botCount.getAndIncrement();
 		this.configuration = configuration;
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
