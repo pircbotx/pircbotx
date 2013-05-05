@@ -133,7 +133,7 @@ public class InputParser implements Closeable {
 	}
 
 	public void startLineProcessing() {
-		MDC.put("pircbotx-number", String.valueOf(bot.getBotNumber()));
+		MDC.put("pircbotx-number", String.valueOf(bot.getBotId()));
 		while (true) {
 			//Get line from the server
 			String line;

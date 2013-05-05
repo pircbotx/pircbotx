@@ -116,7 +116,7 @@ public class MultiBotManager {
 		ListenableFuture future = botPool.submit(new BotRunner(bot));
 		synchronized (runningBotsLock) {
 			runningBots.put(bot, future);
-			runningBotsNumbers.put(bot, bot.getBotNumber());
+			runningBotsNumbers.put(bot, bot.getBotId());
 		}
 		Futures.addCallback(future, new BotFutureCallback(bot));
 	}
@@ -165,7 +165,7 @@ public class MultiBotManager {
 		protected final PircBotX bot;
 
 		public Void call() throws Exception {
-			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotNumber());
+			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotId());
 			bot.connect();
 			return null;
 		}
@@ -178,7 +178,7 @@ public class MultiBotManager {
 		protected final PircBotX bot;
 
 		public void onSuccess(Void result) {
-			log.debug("Bot #" + bot.getBotNumber() + " finished");
+			log.debug("Bot #" + bot.getBotId() + " finished");
 			remove();
 		}
 
