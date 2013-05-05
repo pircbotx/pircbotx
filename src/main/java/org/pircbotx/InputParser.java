@@ -96,6 +96,9 @@ import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
+import org.slf4j.MDC;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  *
@@ -104,6 +107,7 @@ import org.pircbotx.output.OutputRaw;
 @RequiredArgsConstructor
 @Slf4j
 public class InputParser implements Closeable {
+	protected static final Marker inputMarker = MarkerFactory.getMarker("pircbotx-input");
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
@@ -129,6 +133,7 @@ public class InputParser implements Closeable {
 	}
 
 	public void startLineProcessing() {
+		MDC.put("pircbotx-number", String.valueOf(bot.getBotNumber()));
 		while (true) {
 			//Get line from the server
 			String line;
@@ -182,7 +187,7 @@ public class InputParser implements Closeable {
 	public void handleLine(String line) throws IOException, IrcException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
-		log.info(line);
+		log.info(inputMarker, line);
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
