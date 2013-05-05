@@ -83,12 +83,20 @@ public class MultiBotManager {
 
 	@Synchronized("stateLock")
 	public void addBot(Configuration config) {
+		//Since creating a bot is expensive, verify the state first
+		if (state != State.NEW && state != State.RUNNING)
+			throw new RuntimeException("MultiBotManager is not running. State: " + state);
+		addBot(new PircBotX(config));
+	}
+
+	@Synchronized("stateLock")
+	public void addBot(PircBotX bot) {
 		if (state == State.NEW) {
 			log.debug("Not started yet, add to queue");
-			startQueue.add(new PircBotX(config));
+			startQueue.add(bot);
 		} else if (state == State.RUNNING) {
 			log.debug("Already running, start bot immediately");
-			startBot(new PircBotX(config));
+			startBot(bot);
 		} else
 			throw new RuntimeException("MultiBotManager is not running. State: " + state);
 	}
