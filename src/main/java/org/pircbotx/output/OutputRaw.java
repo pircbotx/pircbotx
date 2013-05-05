@@ -51,7 +51,7 @@ public class OutputRaw {
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
 
-	public void init(Socket socket) throws IOException {
+	protected void init(Socket socket) throws IOException {
 		outputWriter = new OutputStreamWriter(socket.getOutputStream(), configuration.getEncoding());
 	}
 	

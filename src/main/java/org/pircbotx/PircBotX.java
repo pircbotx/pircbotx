@@ -53,6 +53,7 @@ import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
+import org.pircbotx.output.OutputUtils;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -216,7 +217,7 @@ public class PircBotX {
 
 	protected void changeSocket(Socket socket) throws IOException {
 		this.socket = socket;
-		sendRaw().init(socket);
+		OutputUtils.initOutputRaw(outputRaw, socket);
 		inputParser.init(socket);
 	}
 	
