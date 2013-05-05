@@ -29,6 +29,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -61,15 +62,20 @@ public class IdentServer implements Closeable, Runnable {
 	@Getter(AccessLevel.PROTECTED)
 	protected static IdentServer server;
 	protected static final Object instanceCreateLock = new Object();
+	protected final Charset encoding;
 	protected final ServerSocket serverSocket;
 	protected final List<IdentEntry> identEntries = new ArrayList();
 	protected Thread runningThread;
-
-	@Synchronized("instanceCreateLock")
+	
 	public static void startServer() {
+		startServer(Charset.defaultCharset());
+	}
+	
+	@Synchronized("instanceCreateLock")
+	public static void startServer(Charset encoding) {
 		if (server != null)
 			throw new RuntimeException("Already created an IdentServer instance");
-		server = new IdentServer();
+		server = new IdentServer(encoding);
 	}
 
 	@Synchronized("instanceCreateLock")
@@ -93,9 +99,10 @@ public class IdentServer implements Closeable, Runnable {
 	 * @param bot The PircBotX instance that will be used to log to.
 	 * @param login The login that the ident server will respond with.
 	 */
-	protected IdentServer() {
+	protected IdentServer(Charset encoding) {
 		try {
-			serverSocket = new ServerSocket(113);
+			this.encoding = encoding;
+			this.serverSocket = new ServerSocket(113);
 		} catch (Exception e) {
 			throw new RuntimeException("Could not create server socket for IdentServer on port 113", e);
 		}
@@ -131,8 +138,8 @@ public class IdentServer implements Closeable, Runnable {
 	public void handleNextConnection() throws SocketException, IOException {
 		//Grab next connectin
 		Socket socket = serverSocket.accept();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
+		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), encoding));
 		InetSocketAddress remoteAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
 
 		//Get and validate Ident from server
