@@ -32,6 +32,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  *
@@ -40,6 +42,7 @@ import org.pircbotx.PircBotX;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
+	protected static final Marker outputMarker = MarkerFactory.getMarker("pircbotx-output");
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
@@ -117,7 +120,7 @@ public class OutputRaw {
 		if (line.length() > configuration.getMaxLineLength() - 2)
 			line = line.substring(0, configuration.getMaxLineLength() - 2);
 		try {
-			log.info(line);
+			log.info(outputMarker, line);
 			outputWriter.write(line + "\r\n");
 			outputWriter.flush();
 		} catch (Exception e) {
