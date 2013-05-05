@@ -158,6 +158,11 @@ public class MultiBotManager {
 			return ImmutableSet.copyOf(runningBots.keySet());
 		}
 	}
+	
+	@Synchronized("runningBotsLock")
+	public PircBotX getBotById(int id) {
+		return runningBotsNumbers.inverse().get(id);
+	}
 
 	@RequiredArgsConstructor
 	protected class BotRunner implements Callable<Void> {
