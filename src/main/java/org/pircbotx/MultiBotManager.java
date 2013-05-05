@@ -153,12 +153,11 @@ public class MultiBotManager {
 	 * anywhere as it will be out of date when a new bot is created
 	 * @return An <i>unmodifiable</i> Set of bots that are being managed
 	 */
+	@Synchronized("runningBotsLock")
 	public ImmutableSet<PircBotX> getBots() {
-		synchronized (runningBots) {
-			return ImmutableSet.copyOf(runningBots.keySet());
-		}
+		return ImmutableSet.copyOf(runningBots.keySet());
 	}
-	
+
 	@Synchronized("runningBotsLock")
 	public PircBotX getBotById(int id) {
 		return runningBotsNumbers.inverse().get(id);
