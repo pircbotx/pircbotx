@@ -74,9 +74,6 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	@Override
 	public void respond(String response) {
-		if (getChannel() != null)
-			getChannel().send().action(response);
-		else
-			getChannel().send().action(response);
+		getChannel().send().action(response);
 	}
 }
