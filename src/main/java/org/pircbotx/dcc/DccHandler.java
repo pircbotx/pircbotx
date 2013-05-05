@@ -51,6 +51,7 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputDCC;
 import static com.google.common.base.Preconditions.*;
+import java.nio.charset.Charset;
 import lombok.NonNull;
 
 /**
@@ -102,6 +103,8 @@ public class DccHandler implements Closeable {
 								&& transfer.getTransferToken().equals(transferToken)) {
 							transfer.setReceiverAddress(address);
 							transfer.setReceiverPort(port);
+							log.debug("Passive send file transfer of file {} to user {} accepted at address {} and port {}", 
+									transfer.getFilename(), transfer.getUser().getNick(), address, port);
 							curEntry.getValue().countDown();
 							pendingItr.remove();
 							return true;
@@ -134,6 +137,8 @@ public class DccHandler implements Closeable {
 						if (transfer.getUser() == user && transfer.getFilename().equals(filename)
 								&& transfer.getTransferToken().equals(transferToken)) {
 							transfer.setStartPosition(position);
+							log.debug("Passive send file transfer of file {} to user {} set to position {}",
+									transfer.getFilename(), transfer.getUser().getNick(), position);
 							return true;
 						}
 					}
@@ -146,6 +151,8 @@ public class DccHandler implements Closeable {
 						if (transfer.getUser() == user && transfer.getFilename().equals(filename)
 								&& transfer.getPort() == port) {
 							transfer.setPosition(position);
+							log.debug("Send file transfer of file {} to user {} set to position {}",
+									transfer.getFilename(), transfer.getUser().getNick(), position);
 							return true;
 						}
 					}
@@ -168,6 +175,8 @@ public class DccHandler implements Closeable {
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
 							&& transferEvent.getTransferToken().equals(transferToken)) {
 						curEntry.getKey().setPosition(position);
+						log.debug("Receive file transfer of file {} to user {} set to position {}", 
+								transferEvent.getRawFilename(), transferEvent.getUser().getNick(), position);
 						curEntry.getValue().countDown();
 						pendingItr.remove();
 						return true;
