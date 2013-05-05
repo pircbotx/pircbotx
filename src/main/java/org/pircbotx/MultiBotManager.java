@@ -18,23 +18,34 @@
  */
 package org.pircbotx;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+import static com.google.common.util.concurrent.Service.State;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.nio.charset.Charset;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.net.SocketFactory;
-import lombok.AccessLevel;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Data;
-import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.exception.IrcException;
-import org.pircbotx.hooks.managers.ListenerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Manager that provides an easy way to create bots on many different servers
@@ -48,48 +59,93 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@Data
+@Slf4j
 public class MultiBotManager {
-	protected final Map<PircBotX, BotBuilder> bots = new HashMap();
+	protected static final AtomicInteger managerCount = new AtomicInteger();
+	protected final int managerNumber;
+	protected final HashMap<PircBotX, ListenableFuture> runningBots = new HashMap();
+	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
+	protected final Object runningBotsLock = new Object[0];
+	protected final ListeningExecutorService botPool;
+	//Code for starting
+	protected List<PircBotX> startQueue = new ArrayList();
+	protected State state = State.NEW;
+	protected final Object stateLock = new Object[0];
 
-	/**
-	 * Create a bot using the specified hostname, port, password, and socketfactory
-	 * @param hostname The hostname of the server to connect to.
-	 * @param port The port number to connect to on the server.
-	 * @param password The password to use to join the server.
-	 * @param socketFactory The factory to use for creating sockets, including secure sockets
-	 */
-	public BotBuilder createBot(Configuration config) {
-		BotBuilder builder = new BotBuilder(config);
-		bots.put(new PircBotX(config), builder);
-		return builder;
+	public MultiBotManager() {
+		managerNumber = managerCount.getAndIncrement();
+		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+		defaultPool.allowCoreThreadTimeOut(true);
+		this.botPool = MoreExecutors.listeningDecorator(defaultPool);
 	}
 
-	/**
-	 * Connect all bots to their respective hosts and channels
-	 * @throws IOException if it was not possible to connect to the server.
-	 * @throws IrcException if the server would not let us join it.
-	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
-	 */
-	public void connectAll() throws IOException, IrcException {
-		for (Map.Entry<PircBotX, BotBuilder> curEntry : bots.entrySet()) {
-			PircBotX bot = curEntry.getKey();
-			BotBuilder builder = curEntry.getValue();
-			bot.connect();
+	public MultiBotManager(ExecutorService botPool) {
+		this.botPool = MoreExecutors.listeningDecorator(botPool);
+		this.managerNumber = managerCount.getAndIncrement();
+	}
 
-			//Join channels
-			for (Map.Entry<String, String> curChannel : builder.getChannels().entrySet())
-				bot.sendIRC().joinChannel(curChannel.getKey(), curChannel.getValue());
+	@Synchronized("stateLock")
+	public void addBot(Configuration config) {
+		if (state == State.NEW) {
+			log.debug("Not started yet, add to queue");
+			startQueue.add(new PircBotX(config));
+		} else if (state == State.RUNNING) {
+			log.debug("Already running, start bot immediately");
+			startBot(new PircBotX(config));
+		} else
+			throw new RuntimeException("MultiBotManager is not running. State: " + state);
+	}
+
+	public void start() {
+		synchronized (stateLock) {
+			if (state != State.NEW)
+				throw new RuntimeException("MultiBotManager has already been started. State: " + state);
+			state = State.STARTING;
 		}
+
+		for (PircBotX bot : startQueue)
+			startBot(bot);
+		startQueue.clear();
+
+		synchronized (stateLock) {
+			state = State.RUNNING;
+		}
+	}
+
+	protected void startBot(final PircBotX bot) {
+		ListenableFuture future = botPool.submit(new BotRunner(bot));
+		synchronized (runningBotsLock) {
+			runningBots.put(bot, future);
+			runningBotsNumbers.put(bot, bot.getBotNumber());
+		}
+		Futures.addCallback(future, new BotFutureCallback(bot));
 	}
 
 	/**
 	 * Disconnect all bots from their respective severs cleanly.
 	 */
-	public void disconnectAll() {
-		for (PircBotX bot : bots.keySet())
+	public void stop() {
+		synchronized (stateLock) {
+			if (state != State.RUNNING)
+				throw new RuntimeException("MultiBotManager cannot be stopped again or before starting. State: " + state);
+			state = State.STOPPING;
+		}
+
+		for (PircBotX bot : runningBots.keySet())
 			if (bot.isConnected())
-					bot.sendIRC().quitServer();
+				bot.sendIRC().quitServer();
+
+		botPool.shutdown();
+	}
+
+	public void stopAndWait() throws InterruptedException {
+		stop();
+
+		do
+			synchronized (runningBotsLock) {
+				log.debug("Waiting 5 seconds for bots [{}] to terminate ", Joiner.on(", ").join(runningBots.values()));
+			}
+		while (!botPool.awaitTermination(5, TimeUnit.SECONDS));
 	}
 
 	/**
@@ -97,25 +153,55 @@ public class MultiBotManager {
 	 * anywhere as it will be out of date when a new bot is created
 	 * @return An <i>unmodifiable</i> Set of bots that are being managed
 	 */
-	public Set<PircBotX> getBots() {
-		return Collections.unmodifiableSet(bots.keySet());
+	public ImmutableSet<PircBotX> getBots() {
+		synchronized (runningBots) {
+			return ImmutableSet.copyOf(runningBots.keySet());
+		}
 	}
 
 	@RequiredArgsConstructor
-	public static class BotBuilder {
-		@Getter
-		protected final Configuration config;
-		@Getter(AccessLevel.PROTECTED)
-		protected final Map<String, String> channels = new HashMap();
+	protected class BotRunner implements Callable<Void> {
+		@NonNull
+		protected final PircBotX bot;
 
-		public BotBuilder addChannel(String channelName) {
-			channels.put(channelName, "");
-			return this;
+		public Void call() throws Exception {
+			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotNumber());
+			bot.connect();
+			return null;
+		}
+	}
+
+	@RequiredArgsConstructor
+	protected class BotFutureCallback implements FutureCallback<Void> {
+		protected final Logger log = LoggerFactory.getLogger(getClass());
+		@NonNull
+		protected final PircBotX bot;
+
+		public void onSuccess(Void result) {
+			log.debug("Bot #" + bot.getBotNumber() + " finished");
+			remove();
 		}
 
-		public BotBuilder addChannel(String channelName, String key) {
-			channels.put(channelName, key);
-			return this;
+		public void onFailure(Throwable t) {
+			log.error("Bot exited with Exception", t);
+			remove();
+		}
+
+		protected void remove() {
+			synchronized (runningBotsLock) {
+				runningBots.remove(bot);
+				runningBotsNumbers.remove(bot);
+
+				if (runningBots.isEmpty())
+					//Change state to TERMINATED if this is the last but to be removed during shutdown
+					if (state == State.STOPPING)
+						synchronized (stateLock) {
+							if (state == State.STOPPING)
+								state = State.TERMINATED;
+						}
+			}
+
+
 		}
 	}
 }
