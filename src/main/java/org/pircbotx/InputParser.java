@@ -475,7 +475,8 @@ public class InputParser implements Closeable {
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
-	public void processServerResponse(int code, String rawResponse, List<String> parsedResponse) {
+	public void processServerResponse(int code, String rawResponse, List<String> parsedResponseOrig) {
+		ImmutableList<String> parsedResponse = ImmutableList.copyOf(parsedResponseOrig);
 		if (parsedResponse == null)
 			throw new IllegalArgumentException("Can't process null response");
 		//Parsed response format: Everything after code
