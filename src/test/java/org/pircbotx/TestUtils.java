@@ -84,6 +84,7 @@ public class TestUtils {
 				.setServerHostname("example.com")
 				.setListenerManager(new GenericListenerManager())
 				.setName("PircBotXBot")
-				.setMessageDelay(0);
+				.setMessageDelay(0)
+				.setShutdownHookEnabled(false);
 	}
 }
