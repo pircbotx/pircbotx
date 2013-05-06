@@ -18,6 +18,8 @@
  */
 package org.pircbotx;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
@@ -262,7 +264,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(bot));
 
 			//Handle automatic on connect stuff
-			if(configuration.getNickservPassword() != null)
+			if (configuration.getNickservPassword() != null)
 				sendIRC.identify(configuration.getNickservPassword());
 			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
 				sendIRC.joinChannel(channelEntry.getKey(), channelEntry.getValue());
@@ -562,7 +564,7 @@ public class InputParser implements Closeable {
 		else if (code == RPL_MOTD)
 			//Example: 372 PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
 			//This is part of the MOTD, add a new line
-			motdBuilder.append(parsedResponse.get(1).substring(2)).append("\n");
+			motdBuilder.append(CharMatcher.WHITESPACE.trimFrom(parsedResponse.get(1).substring(1))).append("\n");
 		else if (code == RPL_ENDOFMOTD) {
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, clean it and dispatch MotdEvent
