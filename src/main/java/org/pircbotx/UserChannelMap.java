@@ -36,13 +36,7 @@ public class UserChannelMap {
 	}
 
 	public void removeUserFromChannel(User user, Channel channel) {
-		if (userToChannelMap.get(user).size() == 1)
-			//Remove user completely, that was the only channel they were in
-			userToChannelMap.removeAll(user);
-		else
-			//Just remove the relationship
-			userToChannelMap.remove(user, channel);
-		//Only need to remove the user since empty channels do exist
+		userToChannelMap.remove(user, channel);
 		channelToUserMap.remove(channel, user);
 	}
 
