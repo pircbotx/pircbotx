@@ -261,19 +261,6 @@ public class OutputIRC {
 	 */
 	public void identify(final String password) {
 		checkArgument(!StringUtils.isBlank(password), "Password '%s' is blank", password);
-		if (bot.isConnected())
-			sendRaw.rawLine("NICKSERV IDENTIFY " + password);
-		else
-			bot.getConfiguration().getListenerManager().addListener(new ListenerAdapter() {
-				@Override
-				public void onConnect(ConnectEvent event) throws Exception {
-					//Make sure this bot is us to prevent nasty errors in multi bot sitations
-					if (event.getBot() == bot) {
-						sendRaw.rawLine("NICKSERV IDENTIFY " + password);
-						//Self destrust, this listener has no more porpose
-						bot.getConfiguration().getListenerManager().removeListener(this);
-					}
-				}
-			});
+		sendRaw.rawLine("NICKSERV IDENTIFY " + password);
 	}
 }
