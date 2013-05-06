@@ -148,7 +148,7 @@ public class MultiBotManager {
 
 		do
 			synchronized (runningBotsLock) {
-				log.debug("Waiting 5 seconds for bots [{}] to terminate ", Joiner.on(", ").join(runningBots.values()));
+				log.debug("Waiting 5 seconds for bot(s) [{}] to terminate ", Joiner.on(", ").join(runningBots.values()));
 			}
 		while (!botPool.awaitTermination(5, TimeUnit.SECONDS));
 	}
