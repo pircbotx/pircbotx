@@ -28,6 +28,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import static com.google.common.util.concurrent.Service.State;
+import static com.google.common.base.Preconditions.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,12 +78,14 @@ public class MultiBotManager {
 	}
 
 	public MultiBotManager(ExecutorService botPool) {
+		checkNotNull(botPool, "Bot pool cannot be null");
 		this.botPool = MoreExecutors.listeningDecorator(botPool);
 		this.managerNumber = managerCount.getAndIncrement();
 	}
 
 	@Synchronized("stateLock")
 	public void addBot(Configuration config) {
+		checkNotNull(config, "Configuration cannot be null");
 		//Since creating a bot is expensive, verify the state first
 		if (state != State.NEW && state != State.RUNNING)
 			throw new RuntimeException("MultiBotManager is not running. State: " + state);
@@ -91,6 +94,7 @@ public class MultiBotManager {
 
 	@Synchronized("stateLock")
 	public void addBot(PircBotX bot) {
+		checkNotNull(bot, "Bot cannot be null");
 		if (state == State.NEW) {
 			log.debug("Not started yet, add to queue");
 			startQueue.add(bot);
@@ -118,6 +122,7 @@ public class MultiBotManager {
 	}
 
 	protected void startBot(final PircBotX bot) {
+		checkNotNull(bot, "Bot cannot be null");
 		ListenableFuture future = botPool.submit(new BotRunner(bot));
 		synchronized (runningBotsLock) {
 			runningBots.put(bot, future);
