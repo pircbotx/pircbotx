@@ -28,6 +28,8 @@ import java.nio.charset.Charset;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.User;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  *
@@ -35,6 +37,8 @@ import org.pircbotx.User;
  */
 @Slf4j
 public class Chat {
+	protected static final Marker inputChatMarker = MarkerFactory.getMarker("pircbotx.dccChat.input");
+	protected static final Marker outputChatMarker = MarkerFactory.getMarker("pircbotx.dccChat.output");
 	@Getter
 	protected User user;
 	@Getter
@@ -65,7 +69,7 @@ public class Chat {
 	 */
 	public String readLine() throws IOException {
 		String line = bufferedReader.readLine();
-		log.info("<<<" + line);
+		log.info(inputChatMarker, "<<<" + line);
 		return line;
 	}
 
@@ -80,7 +84,7 @@ public class Chat {
 	 */
 	public void sendLine(String line) throws IOException {
 		synchronized (bufferedWriter) {
-			log.info(">>>" + line);
+			log.info(outputChatMarker, ">>>" + line);
 			bufferedWriter.write(line + "\r\n");
 			bufferedWriter.flush();
 		}
