@@ -222,6 +222,7 @@ public class Utils {
 		//Heavily optimized version string split by space with all characters after :
 		//added as a single entry. Under benchmarks, its faster than StringTokenizer,
 		//String.split, toCharArray, and charAt
+		input = input.trim();
 		int pos = 0, end;
 		while ((end = input.indexOf(' ', pos)) >= 0) {
 			stringParts.add(input.substring(pos, end));
