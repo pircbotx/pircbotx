@@ -18,7 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
-import java.util.Collections;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import lombok.Data;
 import lombok.Delegate;
@@ -47,7 +47,7 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		getBot().sendIRC().message(getNick(), response);
 	}
 
-	public List<String> getChannels() {
+	public ImmutableList<String> getChannels() {
 		//Project Lombok doesn't like Delagates with generics
 		return builder.getChannels();
 	}
@@ -58,16 +58,12 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		protected String login;
 		protected String hostname;
 		protected String realname;
-		protected List<String> channels;
+		protected ImmutableList<String> channels;
 		protected String server;
 		protected String serverInfo;
 		protected long idleSeconds;
 		protected long signOnTime;
 		protected String registeredAs;
-
-		public List<String> getChannels() {
-			return Collections.unmodifiableList(channels);
-		}
 
 		public WhoisEvent generateEvent(J bot) {
 			return new WhoisEvent(bot, this);

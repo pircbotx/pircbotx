@@ -597,7 +597,7 @@ public class InputParser implements Closeable {
 			//Example: 319 TheLQ Plazma :+#freenode
 			//Channel list from whois. Re-tokenize since they're after the :
 			String whoisNick = parsedResponse.get(1);
-			List<String> parsedChannels = Utils.tokenizeLine(parsedResponse.get(2));
+			ImmutableList<String> parsedChannels = ImmutableList.copyOf(Utils.tokenizeLine(parsedResponse.get(2)));
 
 			whoisBuilder.get(whoisNick).setChannels(parsedChannels);
 		} else if (code == RPL_WHOISSERVER) {
