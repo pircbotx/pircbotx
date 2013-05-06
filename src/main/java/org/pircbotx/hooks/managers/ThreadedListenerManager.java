@@ -18,27 +18,23 @@
  */
 package org.pircbotx.hooks.managers;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -128,7 +124,11 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		pool.execute(new ManagedFutureTask(listener, event, new Callable() {
 			public Object call() {
 				try {
-					MDC.put("pircbotx.number", String.valueOf(event.getBot().getBotId()));
+					PircBotX bot = event.getBot();
+					Configuration configuration = bot.getConfiguration();
+					MDC.put("pircbotx.number", String.valueOf(bot.getBotId()));
+					MDC.put("pircbotx.server", configuration.getServerHostname());
+					MDC.put("pircbotx.port", String.valueOf(configuration.getServerPort()));
 					listener.onEvent(event);
 				} catch (Exception e) {
 					log.error("Exception encountered when executing event " + event + " on listener " + listener, e);
