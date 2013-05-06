@@ -578,11 +578,11 @@ public class InputParser implements Closeable {
 			int endCommentIndex = rawResponse.lastIndexOf(" :");
 			if (endCommentIndex > 1) {
 				String endComment = rawResponse.substring(endCommentIndex + 2);
-				int lastIndex = parsedResponse.size() - 1;
-				if (endComment.equals(parsedResponse.get(lastIndex)))
-					parsedResponse.remove(lastIndex);
+				int lastIndex = parsedResponseOrig.size() - 1;
+				if (endComment.equals(parsedResponseOrig.get(lastIndex)))
+					parsedResponseOrig.remove(lastIndex);
 			}
-			serverInfo.parse(code, parsedResponse);
+			serverInfo.parse(code, parsedResponseOrig);
 		} else if (code == RPL_WHOISUSER) {
 			//Example: 311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
 			//New whois is starting
