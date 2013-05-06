@@ -21,6 +21,7 @@ package org.pircbotx;
 import java.util.List;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+import org.testng.annotations.DataProvider;
 
 /**
  *
@@ -29,9 +30,14 @@ import static org.testng.Assert.*;
 public class UtilsTest {
 	protected static final String testString = "Hi there: how are you?";
 
-	@Test
-	public void tokenizeChannelMessageTest() {
-		List<String> tokens = Utils.tokenizeLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + testString);
+	@DataProvider
+	public Object[][] suffixDataProvider() {
+		return new Object[][]{{""}, {"    "}};
+	}
+	
+	@Test(dataProvider = "suffixDataProvider")
+	public void tokenizeChannelMessageTest(String suffix) {
+		List<String> tokens = Utils.tokenizeLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + testString + suffix);
 
 		assertEquals(tokens.size(), 4, "Unexpected length: " + tokens);
 		assertEquals(tokens.get(0), ":AUser!~ALogin@some.host");
@@ -40,9 +46,9 @@ public class UtilsTest {
 		assertEquals(tokens.get(3), testString);
 	}
 
-	@Test
-	public void tokenizePing() {
-		List<String> tokens = Utils.tokenizeLine("PING sa3214323");
+	@Test(dataProvider = "suffixDataProvider")
+	public void tokenizePing(String suffix) {
+		List<String> tokens = Utils.tokenizeLine("PING sa3214323" + suffix);
 
 		assertEquals(tokens.size(), 2, "Unexpected length: " + tokens);
 		assertEquals(tokens.get(0), "PING");
