@@ -249,7 +249,7 @@ public class DccHandler implements Closeable {
 			serverSocket.close();
 			return configuration.getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
 		} else {
-			Socket userSocket = new Socket(event.getAddress(), event.getPort(), configuration.getDccLocalAddress(), 0);
+			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccAddress(), 0);
 			return configuration.getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
 		}
 	}
@@ -295,7 +295,7 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendTransfers) {
 				pendingSendPassiveTransfers.put(pendingPassiveTransfer, countdown);
 			}
-			sendDCC.filePassiveRequest(receiver.getNick(), safeFilename, configuration.getDccLocalAddress(), file.length(), transferToken);
+			sendDCC.filePassiveRequest(receiver.getNick(), safeFilename, getRealDccAddress(), file.length(), transferToken);
 
 			//Wait for user to acknowledge
 			if (!countdown.await(configuration.getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
@@ -319,6 +319,12 @@ public class DccHandler implements Closeable {
 			serverSocket.close();
 			return configuration.getBotFactory().createSendFileTransfer(bot, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
 		}
+	}
+	
+	public InetAddress getRealDccAddress() {
+		//Try dccLocalAddress (which tries to default to dccLocalAddress
+		InetAddress address = configuration.getDccLocalAddress();
+		return (address != null) ? address : bot.getLocalAddress();
 	}
 
 	protected ServerSocket createServerSocket(User user) throws IOException, DccException {
