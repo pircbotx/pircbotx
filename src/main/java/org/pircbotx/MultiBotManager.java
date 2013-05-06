@@ -95,6 +95,7 @@ public class MultiBotManager {
 	@Synchronized("stateLock")
 	public void addBot(PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
+		checkArgument(!bot.isConnected(), "Bot must not already be connected");
 		if (state == State.NEW) {
 			log.debug("Not started yet, add to queue");
 			startQueue.add(bot);
