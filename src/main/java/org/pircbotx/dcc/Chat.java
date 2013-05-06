@@ -43,6 +43,8 @@ public class Chat {
 	protected BufferedWriter bufferedWriter;
 	@Getter
 	protected Socket socket;
+	@Getter
+	protected boolean finished;
 
 	protected Chat(User user, Socket socket, Charset encoding) throws IOException {
 		this.user = user;
@@ -91,5 +93,6 @@ public class Chat {
 	 */
 	public void close() throws IOException {
 		socket.close();
+		finished = true;
 	}
 }
