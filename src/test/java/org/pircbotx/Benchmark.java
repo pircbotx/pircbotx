@@ -18,12 +18,15 @@
  */
 package org.pircbotx;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.util.StatusPrinter;
+import com.google.common.io.ByteStreams;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.Executors;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pircbotx.exception.IrcException;
@@ -31,6 +34,8 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.impl.PircBotXJMeter;
+import org.pircbotx.output.OutputRaw;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,11 +44,19 @@ import org.pircbotx.impl.PircBotXJMeter;
 public class Benchmark {
 	protected final static int MAX_USERS = 200;
 	protected final static int MAX_CHANNELS = 20;
-	protected final static int MAX_ITERATIONS = 50;
+	protected final static int MAX_ITERATIONS = 5;
 	protected static String[][] responseGroups;
 	protected static InputParser inputParser;
 
 	public static void main(String[] args) throws Exception {
+		//Change logging to no-op
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+		JoranConfigurator configurator = new JoranConfigurator();
+		configurator.setContext(context);
+		context.reset();
+		configurator.doConfigure(Benchmark.class.getResource("/logback-nop.xml"));
+		StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+
 		if (args.length != 1) {
 			System.err.println("Must specify thread count:");
 			System.err.println(" -1: GenericListenerManager");
@@ -108,9 +121,24 @@ public class Benchmark {
 			listenerManager = new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount));
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setListenerManager(listenerManager)
+				.setBotFactory(new Configuration.BotFactory() {
+			@Override
+			public OutputRaw createOutputRaw(PircBotX bot) {
+				return new OutputRaw(bot, bot.getConfiguration()) {
+					{
+						outputWriter = new OutputStreamWriter(ByteStreams.nullOutputStream(), configuration.getEncoding());
+					}
+				};
+			}
+		})
 				.addListener(new PircBotXJMeter())
-				.buildConfiguration());
-
+				.buildConfiguration()) {
+			@Override
+			public boolean isConnected() {
+				return true;
+			}
+		};
+		inputParser = bot.getInputParser();
 
 		System.out.println("Waiting 5 seconds");
 		Thread.sleep(5000);
