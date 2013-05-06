@@ -76,6 +76,7 @@ public class IdentServer implements Closeable, Runnable {
 		if (server != null)
 			throw new RuntimeException("Already created an IdentServer instance");
 		server = new IdentServer(encoding);
+		server.start();
 	}
 
 	@Synchronized("instanceCreateLock")
