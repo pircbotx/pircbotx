@@ -18,6 +18,7 @@
  */
 package org.pircbotx.cap;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class EnableCapHandler implements CapHandler {
 		this.ignoreFail = false;
 	}
 
-	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException {
+	public void handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
 			//Server supports capability, send request to use it
 			bot.sendCAP().request(cap);
@@ -57,13 +58,13 @@ public class EnableCapHandler implements CapHandler {
 			done = true;
 	}
 
-	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException {
+	public void handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
 			//Capability is now enabled
 			done = true;
 	}
 
-	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException {
+	public void handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap)) {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove(cap);

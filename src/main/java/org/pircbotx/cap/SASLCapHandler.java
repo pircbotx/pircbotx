@@ -18,6 +18,7 @@
  */
 package org.pircbotx.cap;
 
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ public class SASLCapHandler implements CapHandler {
 		this.ignoreFail = false;
 	}
 
-	public void handleLS(PircBotX bot, List<String> capabilities) throws CAPException {
+	public void handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains("sasl"))
 			//Server supports sasl, send request to use it
 			bot.sendCAP().request("sasl");
@@ -58,7 +59,7 @@ public class SASLCapHandler implements CapHandler {
 			throw new CAPException(CAPException.Reason.UnsupportedCapability, "SASL");
 	}
 
-	public void handleACK(PircBotX bot, List<String> capabilities) {
+	public void handleACK(PircBotX bot, ImmutableList<String> capabilities) {
 		if (capabilities.contains("sasl"))
 			//Server acknowledges our request to use sasl 
 			bot.sendRaw().rawLineNow("AUTHENTICATE PLAIN");
@@ -87,7 +88,7 @@ public class SASLCapHandler implements CapHandler {
 				done = true;
 	}
 
-	public void handleNAK(PircBotX bot, List<String> capabilities) throws CAPException {
+	public void handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (!ignoreFail && capabilities.contains("sasl")) {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove("sasl");
