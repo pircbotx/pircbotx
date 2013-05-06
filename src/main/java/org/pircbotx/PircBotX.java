@@ -158,6 +158,7 @@ public class PircBotX {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	public void connect() throws IOException, IrcException {
+		Utils.addBotToMDC(this);
 		if (isConnected())
 			throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
 		synchronized (shutdownCalledLock) {
