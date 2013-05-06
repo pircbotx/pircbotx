@@ -146,7 +146,7 @@ public class Configuration {
 	protected final long messageDelay;
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
-	protected final boolean useIdentServer;
+	protected final boolean identServerEnabled;
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
@@ -207,7 +207,7 @@ public class Configuration {
 		this.autoSplitMessage = builder.isAutoSplitMessage();
 		this.autoNickChange = builder.isAutoNickChange();
 		this.messageDelay = builder.getMessageDelay();
-		this.useIdentServer = builder.isUseIdentServer();
+		this.identServerEnabled = builder.isIdentServerEnabled();
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
@@ -254,7 +254,7 @@ public class Configuration {
 		protected long messageDelay = 1000;
 		protected boolean shutdownHookEnabled = true;
 		protected final Map<String, String> autoJoinChannels = new HashMap();
-		protected boolean useIdentServer;
+		protected boolean identServerEnabled;
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
@@ -301,7 +301,7 @@ public class Configuration {
 			this.messageDelay = configuration.getMessageDelay();
 			this.listenerManager = configuration.getListenerManager();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
-			this.useIdentServer = configuration.isUseIdentServer();
+			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
 			this.capHandlers.addAll(configuration.getCapHandlers());
 			this.shutdownHookEnabled = configuration.isShutdownHookEnabled();
@@ -344,7 +344,7 @@ public class Configuration {
 			this.messageDelay = otherBuilder.getMessageDelay();
 			this.listenerManager = otherBuilder.getListenerManager();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
-			this.useIdentServer = otherBuilder.isUseIdentServer();
+			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
