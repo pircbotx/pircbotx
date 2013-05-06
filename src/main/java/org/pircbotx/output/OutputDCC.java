@@ -70,4 +70,12 @@ public class OutputDCC {
 	public void chatRequest(String target, InetAddress address, int port) {
 		dcc(target, "CHAT", "chat", DccHandler.addressToInteger(address), port);
 	}
+	
+	public void chatPassiveRequest(String target, InetAddress address, String chatToken) {
+		dcc(target, "CHAT", "chat", DccHandler.addressToInteger(address), 0, chatToken);
+	}
+	
+	public void chatPassiveAccept(String target, InetAddress address, int port, String chatToken) {
+		dcc(target, "CHAT", "chat", DccHandler.addressToInteger(address), port, chatToken);
+	}
 }
