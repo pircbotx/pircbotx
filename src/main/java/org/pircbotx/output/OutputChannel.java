@@ -158,6 +158,14 @@ public class OutputChannel {
 			}
 		});
 	}
+	
+	public void who() {
+		sendRaw.rawLine("WHO " + channel.getName());
+	}
+	
+	public void getMode() {
+		sendRaw.rawLine("MODE " + channel.getName());
+	}
 
 	/**
 	 * Set the mode of a channel.
