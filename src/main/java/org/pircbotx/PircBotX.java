@@ -165,7 +165,7 @@ public class PircBotX {
 				throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
 			shutdownCalled = false;
 		}
-		if (configuration.isUseIdentServer() && IdentServer.getServer() == null)
+		if (configuration.isIdentServerEnabled() && IdentServer.getServer() == null)
 			throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
 
 		//Reset capabilities
@@ -192,7 +192,7 @@ public class PircBotX {
 		changeSocket(socket);
 		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
-		if (configuration.isUseIdentServer())
+		if (configuration.isIdentServerEnabled())
 			IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
 
 		if (configuration.isCapEnabled())
