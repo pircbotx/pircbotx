@@ -391,6 +391,7 @@ public class PircBotX {
 				if (shutdownCalled)
 					throw new RuntimeException("Shutdown has already been called");
 			}
+		shutdownCalled = true;
 		
 		try {
 			socket.close();
