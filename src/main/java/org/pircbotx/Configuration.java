@@ -109,7 +109,7 @@ import org.pircbotx.output.OutputUser;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
-@ToString(exclude = "serverPassword")
+@ToString(exclude = {"serverPassword", "nickservPassword"})
 public class Configuration {
 	//WebIRC
 	protected final boolean webIrcEnabled;
@@ -147,6 +147,7 @@ public class Configuration {
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean identServerEnabled;
+	protected final String nickservPassword;
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
@@ -175,6 +176,8 @@ public class Configuration {
 		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
+		if(builder.getNickservPassword() != null)
+			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
 
@@ -208,6 +211,7 @@ public class Configuration {
 		this.autoNickChange = builder.isAutoNickChange();
 		this.messageDelay = builder.getMessageDelay();
 		this.identServerEnabled = builder.isIdentServerEnabled();
+		this.nickservPassword = builder.getNickservPassword();
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
@@ -255,6 +259,7 @@ public class Configuration {
 		protected boolean shutdownHookEnabled = true;
 		protected final Map<String, String> autoJoinChannels = new HashMap();
 		protected boolean identServerEnabled;
+		protected String nickservPassword;
 		//Bot classes
 		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
@@ -300,6 +305,7 @@ public class Configuration {
 			this.autoNickChange = configuration.isAutoNickChange();
 			this.messageDelay = configuration.getMessageDelay();
 			this.listenerManager = configuration.getListenerManager();
+			this.nickservPassword = configuration.getNickservPassword();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
 			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
@@ -343,6 +349,7 @@ public class Configuration {
 			this.autoNickChange = otherBuilder.isAutoNickChange();
 			this.messageDelay = otherBuilder.getMessageDelay();
 			this.listenerManager = otherBuilder.getListenerManager();
+			this.nickservPassword = otherBuilder.getNickservPassword();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
 			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();

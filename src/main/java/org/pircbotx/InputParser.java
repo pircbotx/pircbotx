@@ -262,6 +262,9 @@ public class InputParser implements Closeable {
 
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(bot));
 
+			//Handle automatic on connect stuff
+			if(configuration.getNickservPassword() != null)
+				sendIRC.identify(configuration.getNickservPassword());
 			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
 				sendIRC.joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} else if (code.equals("433"))
