@@ -126,7 +126,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 				try {
 					PircBotX bot = event.getBot();
 					Configuration configuration = bot.getConfiguration();
-					MDC.put("pircbotx.number", String.valueOf(bot.getBotId()));
+					MDC.put("pircbotx.id", String.valueOf(bot.getBotId()));
 					MDC.put("pircbotx.server", configuration.getServerHostname());
 					MDC.put("pircbotx.port", String.valueOf(configuration.getServerPort()));
 					listener.onEvent(event);
