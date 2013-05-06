@@ -128,7 +128,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		pool.execute(new ManagedFutureTask(listener, event, new Callable() {
 			public Object call() {
 				try {
-					MDC.put("pircbotx-number", String.valueOf(event.getBot().getBotId()));
+					MDC.put("pircbotx.number", String.valueOf(event.getBot().getBotId()));
 					listener.onEvent(event);
 				} catch (Exception e) {
 					log.error("Exception encountered when executing event " + event + " on listener " + listener, e);
