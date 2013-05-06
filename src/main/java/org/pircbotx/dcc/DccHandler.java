@@ -314,15 +314,13 @@ public class DccHandler implements Closeable {
 			return configuration.getBotFactory().createSendChat(bot, receiver, chatSocket);
 		} else {
 			//Get the user to connect to us
-			ServerSocket ss = createServerSocket(receiver);
-			ss.setSoTimeout(configuration.getDccAcceptTimeout());
+			ServerSocket serverSocket = createServerSocket(receiver);
+			serverSocket.setSoTimeout(configuration.getDccAcceptTimeout());
+			sendDCC.chatRequest(receiver.getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort());
 
-			int serverPort = ss.getLocalPort();
-			String ipNum = addressToInteger(ss.getInetAddress());
-			receiver.send().ctcpCommand("DCC CHAT chat " + ipNum + " " + serverPort);
-
-			Socket userSocket = ss.accept();
-			ss.close();
+			//Wait for user to connect
+			Socket userSocket = serverSocket.accept();
+			serverSocket.close();
 			return configuration.getBotFactory().createSendChat(bot, receiver, userSocket);
 		}
 	}
