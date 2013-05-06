@@ -107,7 +107,7 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class InputParser implements Closeable {
-	protected static final Marker inputMarker = MarkerFactory.getMarker("pircbotx-input");
+	protected static final Marker inputMarker = MarkerFactory.getMarker("pircbotx.input");
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;

@@ -42,7 +42,7 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
-	protected static final Marker outputMarker = MarkerFactory.getMarker("pircbotx-output");
+	protected static final Marker outputMarker = MarkerFactory.getMarker("pircbotx.output");
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
