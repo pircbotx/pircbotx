@@ -151,7 +151,7 @@ public class Configuration {
 	//Bot classes
 	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
-	protected final List<CapHandler> capHandlers;
+	protected final ImmutableList<CapHandler> capHandlers;
 	protected final BotFactory botFactory;
 
 	/**
