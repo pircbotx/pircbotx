@@ -18,6 +18,7 @@
  */
 package org.pircbotx.cap;
 
+import com.google.common.collect.ImmutableList;
 import java.net.Socket;
 import java.util.List;
 import javax.net.ssl.SSLSocketFactory;
@@ -46,7 +47,7 @@ public class TLSCapHandler extends EnableCapHandler {
 	}
 
 	@Override
-	public void handleACK(PircBotX bot, List<String> capabilities) throws CAPException {
+	public void handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		//super.handleACK(bot, capabilities);
 		if (capabilities.contains("tls"))
 			bot.sendRaw().rawLineNow("STARTTLS");
