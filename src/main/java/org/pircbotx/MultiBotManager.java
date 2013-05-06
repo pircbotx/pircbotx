@@ -151,10 +151,11 @@ public class MultiBotManager {
 
 	public void stopAndWait() throws InterruptedException {
 		stop();
-
+		
+		Joiner commaJoiner = Joiner.on(", ");
 		do
 			synchronized (runningBotsLock) {
-				log.debug("Waiting 5 seconds for bot(s) [{}] to terminate ", Joiner.on(", ").join(runningBots.values()));
+				log.debug("Waiting 5 seconds for bot(s) [{}] to terminate ", commaJoiner.join(runningBots.values()));
 			}
 		while (!botPool.awaitTermination(5, TimeUnit.SECONDS));
 	}
