@@ -64,17 +64,21 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	protected final User user;
 	protected final InetAddress chatAddress;
 	protected final int chatPort;
+	protected final String chatToken;
+	protected final boolean passive;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 */
-	public IncomingChatRequestEvent(T bot, User user, InetAddress chatAddress, int chatPort) {
+	public IncomingChatRequestEvent(T bot, User user, InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.chatAddress = chatAddress;
 		this.chatPort = chatPort;
+		this.chatToken = chatToken;
+		this.passive = passive;
 	}
 	
 	public ReceiveChat accept() throws IOException {

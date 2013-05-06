@@ -120,7 +120,11 @@ public class OutputUser {
 		return dccHandler.sendFile(file, user, passive);
 	}
 	
-	public SendChat dccChat() throws IOException {
+	public SendChat dccChat() throws IOException, InterruptedException {
 		return dccHandler.sendChat(user);
+	}
+	
+	public SendChat dccChat(boolean passive) throws IOException, InterruptedException {
+		return dccHandler.sendChat(user, passive);
 	}
 }
