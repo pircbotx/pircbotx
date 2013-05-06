@@ -96,7 +96,6 @@ public class OutputTest {
 	@AfterMethod
 	public void cleanUp() {
 		inputLatch.countDown();
-		bot.shutdown();
 	}
 
 	@Test(description = "Verify sendRawLine works correctly")
