@@ -336,6 +336,7 @@ public class DccHandler implements Closeable {
 	public SendFileTransfer sendFile(File file, User receiver, boolean passive) throws IOException, DccException, InterruptedException {
 		checkNotNull(file, "Source file cannot be null");
 		checkNotNull(receiver, "Receiver cannot be null");
+		checkArgument(file.exists(), "File must exist");
 
 		//Make the filename safe to send
 		String safeFilename = file.getName();
