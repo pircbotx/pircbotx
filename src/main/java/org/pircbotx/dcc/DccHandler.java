@@ -71,11 +71,8 @@ public class DccHandler implements Closeable {
 	protected final ListenerManager listenerManager;
 	@NonNull
 	protected final OutputDCC sendDCC;
-	@Getter(AccessLevel.PROTECTED)
 	protected final Map<PendingRecieveFileTransfer, CountDownLatch> pendingReceiveTransfers = new HashMap();
-	@Getter(AccessLevel.PROTECTED)
 	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList();
-	@Getter(AccessLevel.PROTECTED)
 	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap();
 	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap();
 	protected boolean shuttingDown = false;
