@@ -62,6 +62,7 @@ import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.Event;
+import org.slf4j.MDC;
 
 /**
  *
@@ -198,6 +199,13 @@ public class Utils {
 			return list.get(index);
 		else
 			return defaultValue;
+	}
+
+	public static void addBotToMDC(PircBotX bot) {
+		Configuration configuration = bot.getConfiguration();
+		MDC.put("pircbotx.id", String.valueOf(bot.getBotId()));
+		MDC.put("pircbotx.server", configuration.getServerHostname());
+		MDC.put("pircbotx.port", String.valueOf(configuration.getServerPort()));
 	}
 
 	/**
