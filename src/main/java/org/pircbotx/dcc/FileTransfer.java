@@ -67,4 +67,8 @@ public abstract class FileTransfer {
 	}
 
 	protected abstract void transferFile() throws IOException;
+	
+	public boolean isFinished() {
+		return state == DccState.DONE; 
+	}
 }
