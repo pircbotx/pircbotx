@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.Utils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.slf4j.MDC;
@@ -124,11 +125,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		pool.execute(new ManagedFutureTask(listener, event, new Callable() {
 			public Object call() {
 				try {
-					PircBotX bot = event.getBot();
-					Configuration configuration = bot.getConfiguration();
-					MDC.put("pircbotx.id", String.valueOf(bot.getBotId()));
-					MDC.put("pircbotx.server", configuration.getServerHostname());
-					MDC.put("pircbotx.port", String.valueOf(configuration.getServerPort()));
+					Utils.addBotToMDC(event.getBot());
 					listener.onEvent(event);
 				} catch (Exception e) {
 					log.error("Exception encountered when executing event " + event + " on listener " + listener, e);
