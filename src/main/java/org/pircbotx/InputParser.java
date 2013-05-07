@@ -19,17 +19,11 @@
 package org.pircbotx;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.InterruptedIOException;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +34,6 @@ import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
@@ -99,7 +92,6 @@ import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
-import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -636,20 +628,20 @@ public class InputParser implements Closeable {
 				else if (atPos == 'o') {
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToOps(recipient, channel);
+						dao.addUserToLevel(UserLevel.OP, user, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromOps(recipient, channel);
+						dao.removeUserFromLevel(UserLevel.OP, user, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToVoices(recipient, channel);
+						dao.addUserToLevel(UserLevel.VOICE, user, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromVoices(recipient, channel);
+						dao.removeUserFromLevel(UserLevel.VOICE, user, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -657,10 +649,10 @@ public class InputParser implements Closeable {
 					//Half-op change
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToHalfOps(recipient, channel);
+						dao.addUserToLevel(UserLevel.HALFOP, user, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromHalfOps(recipient, channel);
+						dao.removeUserFromLevel(UserLevel.HALFOP, user, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -668,10 +660,10 @@ public class InputParser implements Closeable {
 					//SuperOp change
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToSuperOps(recipient, channel);
+						dao.addUserToLevel(UserLevel.SUPEROP, user, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromSuperOps(recipient, channel);
+						dao.removeUserFromLevel(UserLevel.SUPEROP, user, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -679,10 +671,10 @@ public class InputParser implements Closeable {
 					//Owner change
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToOwners(recipient, channel);
+						dao.addUserToLevel(UserLevel.OWNER, user, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromOwners(recipient, channel);
+						dao.removeUserFromLevel(UserLevel.OWNER, user, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -743,15 +735,15 @@ public class InputParser implements Closeable {
 
 	public void processUserStatus(Channel chan, User user, String prefix) {
 		if (prefix.contains("@"))
-			dao.addUserToOps(user, chan);
+			dao.addUserToLevel(UserLevel.OP, user, chan);
 		if (prefix.contains("+"))
-			dao.addUserToVoices(user, chan);
+			dao.addUserToLevel(UserLevel.VOICE, user, chan);
 		if (prefix.contains("%"))
-			dao.addUserToHalfOps(user, chan);
+			dao.addUserToLevel(UserLevel.HALFOP, user, chan);
 		if (prefix.contains("~"))
-			dao.addUserToOwners(user, chan);
+			dao.addUserToLevel(UserLevel.OWNER, user, chan);
 		if (prefix.contains("&"))
-			dao.addUserToSuperOps(user, chan);
+			dao.addUserToLevel(UserLevel.SUPEROP, user, chan);
 		user.setAway(prefix.contains("G")); //Assume here (H) if there is no G
 		user.setIrcop(prefix.contains("*"));
 	}

@@ -21,13 +21,13 @@ package org.pircbotx;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import java.io.Closeable;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.Synchronized;
 import org.pircbotx.hooks.events.UserListEvent;
 
@@ -38,20 +38,24 @@ import org.pircbotx.hooks.events.UserListEvent;
  * @see Channel
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@RequiredArgsConstructor
 public class UserChannelDao implements Closeable {
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
 	protected final UserChannelMap mainMap = new UserChannelMap();
-	protected final UserChannelMap opsMap = new UserChannelMap();
-	protected final UserChannelMap voiceMap = new UserChannelMap();
-	protected final UserChannelMap superOpsMap = new UserChannelMap();
-	protected final UserChannelMap halfOpsMap = new UserChannelMap();
-	protected final UserChannelMap ownersMap = new UserChannelMap();
+	protected final EnumMap<UserLevel, UserChannelMap> levelsMap = Maps.newEnumMap(UserLevel.class);
 	protected final HashBiMap<String, User> userNickMap = HashBiMap.create();
 	protected final HashBiMap<String, Channel> channelNameMap = HashBiMap.create();
 	protected final Set<User> privateUsers = new HashSet();
+
+	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
+		this.bot = bot;
+		this.botFactory = botFactory;
+
+		//Initialize levels map with a UserChannelMap for each level
+		for (UserLevel level : UserLevel.values())
+			levelsMap.put(level, new UserChannelMap());
+	}
 
 	@Synchronized("accessLock")
 	public User getUser(String nick) {
@@ -108,135 +112,47 @@ public class UserChannelDao implements Closeable {
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToOps(User user, Channel channel) {
-		opsMap.addUserToChannel(user, channel);
+	protected void addUserToLevel(UserLevel level, User user, Channel channel) {
+		levelsMap.get(level).addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToVoices(User user, Channel channel) {
-		voiceMap.addUserToChannel(user, channel);
+	protected void removeUserFromLevel(UserLevel level, User user, Channel channel) {
+		levelsMap.get(level).removeUserFromChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToHalfOps(User user, Channel channel) {
-		halfOpsMap.addUserToChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void addUserToSuperOps(User user, Channel channel) {
-		superOpsMap.addUserToChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void addUserToOwners(User user, Channel channel) {
-		ownersMap.addUserToChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void removeUserFromOps(User user, Channel channel) {
-		opsMap.removeUserFromChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void removeUserFromVoices(User user, Channel channel) {
-		voiceMap.removeUserFromChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void removeUserFromHalfOps(User user, Channel channel) {
-		halfOpsMap.removeUserFromChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void removeUserFromSuperOps(User user, Channel channel) {
-		superOpsMap.removeUserFromChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	protected void removeUserFromOwners(User user, Channel channel) {
-		ownersMap.removeUserFromChannel(user, channel);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<User> getChannelNormals(Channel channel) {
+	public ImmutableSet<User> getNormalUsers(Channel channel) {
 		Set<User> remainingUsers = new HashSet(mainMap.getUsers(channel));
-		remainingUsers.removeAll(opsMap.getUsers(channel));
-		remainingUsers.removeAll(voiceMap.getUsers(channel));
-		remainingUsers.removeAll(halfOpsMap.getUsers(channel));
-		remainingUsers.removeAll(superOpsMap.getUsers(channel));
-		remainingUsers.removeAll(ownersMap.getUsers(channel));
+		for(UserChannelMap curLevelMap : levelsMap.values())
+			remainingUsers.removeAll(curLevelMap.getUsers(channel));
 		return ImmutableSet.copyOf(remainingUsers);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<User> getChannelOps(Channel channel) {
-		return opsMap.getUsers(channel);
+	public ImmutableSet<User> getUsers(Channel channel, UserLevel level) {
+		return levelsMap.get(level).getUsers(channel);
 	}
+	
 
 	@Synchronized("accessLock")
-	public ImmutableSet<User> getChannelVoices(Channel channel) {
-		return voiceMap.getUsers(channel);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<User> getChannelHalfOps(Channel channel) {
-		return halfOpsMap.getUsers(channel);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<User> getChannelSuperOps(Channel channel) {
-		return superOpsMap.getUsers(channel);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<User> getChannelOwners(Channel channel) {
-		return ownersMap.getUsers(channel);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getUsersNormals(User user) {
+	public ImmutableSet<Channel> getNormalUserChannels(User user) {
 		Set<Channel> remainingChannels = new HashSet(mainMap.getChannels(user));
-		remainingChannels.removeAll(opsMap.getChannels(user));
-		remainingChannels.removeAll(voiceMap.getChannels(user));
-		remainingChannels.removeAll(halfOpsMap.getChannels(user));
-		remainingChannels.removeAll(superOpsMap.getChannels(user));
-		remainingChannels.removeAll(ownersMap.getChannels(user));
+		for(UserChannelMap curLevelMap : levelsMap.values())
+			remainingChannels.removeAll(curLevelMap.getChannels(user));
 		return ImmutableSet.copyOf(remainingChannels);
 	}
-
+	
 	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getUsersOps(User user) {
-		return opsMap.getChannels(user);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getUsersVoices(User user) {
-		return voiceMap.getChannels(user);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getUsersHalfOps(User user) {
-		return halfOpsMap.getChannels(user);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getUsersSuperOps(User user) {
-		return superOpsMap.getChannels(user);
-	}
-
-	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getUsersOwners(User user) {
-		return ownersMap.getChannels(user);
+	public ImmutableSet<Channel> getChannels(User user, UserLevel level) {
+		return levelsMap.get(level).getChannels(user);
 	}
 
 	@Synchronized("accessLock")
 	protected void removeUserFromChannel(User user, Channel channel) {
 		mainMap.removeUserFromChannel(user, channel);
-		opsMap.removeUserFromChannel(user, channel);
-		voiceMap.removeUserFromChannel(user, channel);
-		halfOpsMap.removeUserFromChannel(user, channel);
-		superOpsMap.removeUserFromChannel(user, channel);
-		ownersMap.removeUserFromChannel(user, channel);
+		for(UserChannelMap curLevelMap : levelsMap.values())
+			curLevelMap.removeUserFromChannel(user, channel);
 
 		if (!privateUsers.contains(user) && !mainMap.containsUser(user))
 			//Completely remove user
@@ -246,15 +162,16 @@ public class UserChannelDao implements Closeable {
 	@Synchronized("accessLock")
 	protected void removeUser(User user) {
 		mainMap.removeUser(user);
-		opsMap.removeUser(user);
-		voiceMap.removeUser(user);
-		halfOpsMap.removeUser(user);
-		superOpsMap.removeUser(user);
-		ownersMap.removeUser(user);
+		for(UserChannelMap curLevelMap : levelsMap.values())
+			curLevelMap.removeUser(user);
 
 		//Remove remaining locations
 		userNickMap.inverse().remove(user);
 		privateUsers.remove(user);
+	}
+	
+	protected boolean levelContainsUser(UserLevel level, Channel channel, User user) {
+		return levelsMap.get(level).containsEntry(user, channel);
 	}
 
 	@Synchronized("accessLock")
@@ -305,11 +222,8 @@ public class UserChannelDao implements Closeable {
 	@Synchronized("accessLock")
 	protected void removeChannel(Channel channel) {
 		mainMap.removeChannel(channel);
-		opsMap.removeChannel(channel);
-		voiceMap.removeChannel(channel);
-		halfOpsMap.removeChannel(channel);
-		superOpsMap.removeChannel(channel);
-		ownersMap.removeChannel(channel);
+		for(UserChannelMap curLevelMap : levelsMap.values())
+			curLevelMap.removeChannel(channel);
 
 		//Remove remaining locations
 		channelNameMap.remove(channel.getName());
@@ -318,11 +232,8 @@ public class UserChannelDao implements Closeable {
 	@Synchronized("accessLock")
 	public void close() {
 		mainMap.clear();
-		opsMap.clear();
-		voiceMap.clear();
-		halfOpsMap.clear();
-		superOpsMap.clear();
-		ownersMap.clear();
+		for(UserChannelMap curLevelMap : levelsMap.values())
+			curLevelMap.clear();
 		channelNameMap.clear();
 		privateUsers.clear();
 		userNickMap.clear();
