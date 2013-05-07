@@ -36,7 +36,7 @@ import lombok.Setter;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
-@Setter(AccessLevel.PACKAGE)
+@Setter(AccessLevel.NONE)
 public class ServerInfo {
 	protected final PircBotX bot;
 
@@ -188,6 +188,7 @@ public class ServerInfo {
 	protected boolean accept;
 	protected String language;
 	//Other information
+	@Setter(AccessLevel.PROTECTED)
 	protected String motd;
 	protected int highestConnections;
 	protected int highestClients;
