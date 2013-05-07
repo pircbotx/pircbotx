@@ -29,10 +29,4 @@ public class ChannelListEntry {
 	protected final String name;
 	protected final int users;
 	protected final String topic;
-
-	public ChannelListEntry(String name, int users, String topic) {
-		this.name = name;
-		this.users = users;
-		this.topic = topic;
-	}
 }
