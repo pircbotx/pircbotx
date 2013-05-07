@@ -63,6 +63,7 @@ import lombok.NonNull;
 @Slf4j
 public class DccHandler implements Closeable {
 	protected static final Random tokenRandom = new SecureRandom();
+	protected static final int tokenRandomMax = 20000;
 	@NonNull
 	protected final Configuration configuration;
 	@NonNull
@@ -293,7 +294,7 @@ public class DccHandler implements Closeable {
 	public SendChat sendChat(User receiver, boolean passive) throws IOException, InterruptedException {
 		checkNotNull(receiver, "Receiver user cannot be null");
 		if (passive) {
-			String chatToken = Integer.toString(tokenRandom.nextInt(20000));
+			String chatToken = Integer.toString(tokenRandom.nextInt(tokenRandomMax));
 			PendingSendChatPassive pendingChat = new PendingSendChatPassive(receiver, chatToken);
 			CountDownLatch countdown = new CountDownLatch(1);
 			synchronized (pendingSendPassiveChat) {
@@ -344,7 +345,7 @@ public class DccHandler implements Closeable {
 				safeFilename = safeFilename.replace(" ", "_");
 
 		if (passive) {
-			String transferToken = Integer.toString(tokenRandom.nextInt(20000));
+			String transferToken = Integer.toString(tokenRandom.nextInt(tokenRandomMax));
 			CountDownLatch countdown = new CountDownLatch(1);
 			PendingSendFileTransferPassive pendingPassiveTransfer = new PendingSendFileTransferPassive(receiver, safeFilename, transferToken);
 			synchronized (pendingSendTransfers) {
