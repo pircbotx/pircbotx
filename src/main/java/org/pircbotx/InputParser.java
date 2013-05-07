@@ -110,6 +110,11 @@ import org.slf4j.MarkerFactory;
 @Slf4j
 public class InputParser implements Closeable {
 	protected static final Marker inputMarker = MarkerFactory.getMarker("pircbotx.input");
+	/**
+	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6)
+	 */
+	protected static final ImmutableList<String> connectCodes = ImmutableList.of("001", "002", "003", "004", "005", 
+			"251", "252", "253", "254", "255", "375", "376");
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
@@ -254,9 +259,7 @@ public class InputParser implements Closeable {
 	}
 
 	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
-		//Check for both a successful connection. Inital connection (001-4), user stats (251-5), or MOTD (375-6)
-		String[] codes = {"001", "002", "003", "004", "005", "251", "252", "253", "254", "255", "375", "376"};
-		if (Arrays.asList(codes).contains(code)) {
+		if (connectCodes.contains(code)) {
 			// We're connected to the server.
 			bot.loggedIn(configuration.getName() + nickSuffix);
 			log.debug("Logged onto server.");
