@@ -18,6 +18,7 @@
  */
 package org.pircbotx.dcc;
 
+import static com.google.common.base.Preconditions.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -51,6 +52,9 @@ public class Chat {
 	protected boolean finished;
 
 	protected Chat(User user, Socket socket, Charset encoding) throws IOException {
+		checkNotNull(user, "User cannot be null");
+		checkNotNull(socket, "Socket cannot be null");
+		checkNotNull(encoding, "Encoding cannot be null");
 		this.user = user;
 		this.socket = socket;
 		this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
@@ -83,6 +87,7 @@ public class Chat {
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void sendLine(String line) throws IOException {
+		checkNotNull(line, "Line cannot be null");
 		synchronized (bufferedWriter) {
 			log.info(OUTPUT_CHAT_MARKER, ">>>" + line);
 			bufferedWriter.write(line + "\r\n");
