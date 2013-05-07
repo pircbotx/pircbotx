@@ -18,7 +18,7 @@
  */
 package org.pircbotx;
 
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 import java.util.concurrent.CountDownLatch;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -234,7 +234,7 @@ public class Channel {
 	 * that they aren't ops, have voice, superops, halops, or owners in this channel
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of non-special users in the channel
 	 */
-	public Set<User> getNormalUsers() {
+	public ImmutableSet<User> getNormalUsers() {
 		return dao.getChannelNormals(this);
 	}
 
@@ -244,7 +244,7 @@ public class Channel {
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
-	public Set<User> getOps() {
+	public ImmutableSet<User> getOps() {
 		return dao.getChannelOps(this);
 	}
 
@@ -254,7 +254,7 @@ public class Channel {
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
 	 */
-	public Set<User> getVoices() {
+	public ImmutableSet<User> getVoices() {
 		return dao.getChannelVoices(this);
 	}
 
@@ -264,7 +264,7 @@ public class Channel {
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Owner status
 	 */
-	public Set<User> getOwners() {
+	public ImmutableSet<User> getOwners() {
 		return dao.getChannelOwners(this);
 	}
 
@@ -274,7 +274,7 @@ public class Channel {
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Half Operator status
 	 */
-	public Set<User> getHalfOps() {
+	public ImmutableSet<User> getHalfOps() {
 		return dao.getChannelHalfOps(this);
 	}
 
@@ -284,7 +284,7 @@ public class Channel {
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Super Operator status
 	 */
-	public Set<User> getSuperOps() {
+	public ImmutableSet<User> getSuperOps() {
 		return dao.getChannelSuperOps(this);
 	}
 
@@ -304,7 +304,7 @@ public class Channel {
 	 * Get all users in this channel. Simply calls {@link PircBotX#getUsers(org.pircbotx.Channel) }
 	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
-	public Set<User> getUsers() {
+	public ImmutableSet<User> getUsers() {
 		return dao.getUsers(this);
 	}
 
