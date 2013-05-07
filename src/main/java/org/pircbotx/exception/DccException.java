@@ -49,6 +49,7 @@ public class DccException extends RuntimeException {
 
 	public static enum Reason {
 		UnknownFileTransferResume,
+		ChatNotConnected,
 		ChatCancelled,
 		ChatTimeout,
 		FileTransferCancelled,
