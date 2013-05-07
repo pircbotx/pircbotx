@@ -40,6 +40,7 @@ import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
@@ -198,7 +199,7 @@ public class InputParser implements Closeable {
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
 		String senderInfo = "";
-		if (parsedLine.get(0).startsWith(":"))
+		if (parsedLine.get(0).charAt(0) == ':')
 			senderInfo = parsedLine.remove(0);
 
 		String command = parsedLine.remove(0).toUpperCase(configuration.getLocale());
@@ -219,12 +220,12 @@ public class InputParser implements Closeable {
 		String sourceHostname = "";
 		String target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
 
-		if (target.startsWith(":"))
+		if (target.charAt(0) == ':')
 			target = target.substring(1);
 
-		int exclamation = senderInfo.indexOf("!");
-		int at = senderInfo.indexOf("@");
-		if (senderInfo.startsWith(":"))
+		int exclamation = senderInfo.indexOf('!');
+		int at = senderInfo.indexOf('@');
+		if (senderInfo.charAt(0) == ':')
 			if (exclamation > 0 && at > 0 && exclamation < at) {
 				sourceNick = senderInfo.substring(1, exclamation);
 				sourceLogin = senderInfo.substring(exclamation + 1, at);
@@ -250,7 +251,7 @@ public class InputParser implements Closeable {
 			return;
 		}
 
-		if (sourceNick.startsWith(":"))
+		if (sourceNick.charAt(0) == ':')
 			sourceNick = sourceNick.substring(1);
 
 		if (!bot.loggedIn)
