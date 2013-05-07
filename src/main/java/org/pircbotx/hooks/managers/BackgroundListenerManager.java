@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.managers;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,10 +67,11 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 	}
 
 	@Override
-	public Set<Listener> getListeners() {
-		Set<Listener> allListeners = new HashSet(listeners);
-		allListeners.addAll(backgroundListeners.keySet());
-		return Collections.unmodifiableSet(allListeners);
+	public ImmutableSet<Listener> getListeners() {
+		return ImmutableSet.<Listener>builder()
+				.addAll(listeners)
+				.addAll(backgroundListeners.keySet())
+				.build();
 	}
 
 	@Override

@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.managers;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
@@ -63,8 +64,8 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 		return listeners.remove(listener);
 	}
 
-	public Set<Listener> getListeners() {
-		return Collections.unmodifiableSet(listeners);
+	public ImmutableSet<Listener> getListeners() {
+		return ImmutableSet.copyOf(listeners);
 	}
 
 	public void dispatchEvent(Event<E> event) {
