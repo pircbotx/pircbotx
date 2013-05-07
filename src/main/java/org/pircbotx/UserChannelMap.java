@@ -26,7 +26,7 @@ import com.google.common.collect.Multimap;
 /**
  * A many to many map of users to channels.
  */
-class UserChannelMap {
+public class UserChannelMap {
 	protected final Multimap<Channel, User> channelToUserMap;
 	protected final Multimap<User, Channel> userToChannelMap;
 
