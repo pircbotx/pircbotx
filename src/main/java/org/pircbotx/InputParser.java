@@ -215,7 +215,7 @@ public class InputParser implements Closeable {
 			return;
 		}
 
-		String sourceNick = "";
+		String sourceNick;
 		String sourceLogin = "";
 		String sourceHostname = "";
 		String target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
