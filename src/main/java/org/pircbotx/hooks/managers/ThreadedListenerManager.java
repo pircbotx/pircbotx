@@ -18,6 +18,8 @@
  */
 package org.pircbotx.hooks.managers;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collections;
@@ -91,8 +93,8 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	@Override
-	public Set<Listener> getListeners() {
-		return Collections.unmodifiableSet(getListenersReal());
+	public ImmutableSet<Listener> getListeners() {
+		return ImmutableSet.copyOf(getListenersReal());
 	}
 
 	protected Set<Listener> getListenersReal() {

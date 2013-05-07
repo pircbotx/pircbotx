@@ -18,6 +18,8 @@
  */
 package org.pircbotx.hooks.managers;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import java.util.Set;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
@@ -82,9 +84,9 @@ public interface ListenerManager<E extends PircBotX> {
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information}
 	 * on exception handling and performance.
-	 * @return An <b>Immutable set</b> of all listeners that are in this ListenerManager
+	 * @return An <b>immutable copy</b> of all listeners that are in this ListenerManager
 	 */
-	public Set<Listener> getListeners();
+	public ImmutableSet<Listener> getListeners();
 
 	/**
 	 * Set the current id used by the ListenerManager
