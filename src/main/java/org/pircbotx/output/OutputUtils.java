@@ -26,6 +26,9 @@ import java.net.Socket;
  * @author Leon
  */
 public class OutputUtils {
+	private OutputUtils() {
+	}
+
 	/**
 	 * Internal utility method to init OutputRaw from PircBotX class, which is not
 	 * in this package. Needed so {@link OutputRaw#init(java.net.Socket) } can stay
