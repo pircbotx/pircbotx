@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Implements the basic IRC protocol.
- * @author Leon Blakey <lord.quackstar@gmail.com>
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputIRC {
