@@ -212,6 +212,16 @@ public final class Utils {
 		MDC.put("pircbotx.server", configuration.getServerHostname());
 		MDC.put("pircbotx.port", String.valueOf(configuration.getServerPort()));
 	}
+	
+	/**
+	 * Sends a raw line to the server. Needed so {@link PircBotX#sendRawLineToServer(java.lang.String) }
+	 * can stay protected but still be callable from the org.pircbotx.output package
+	 * @param bot The bot that sends the raw line
+	 * @param rawLine The raw line to send
+	 */
+	public static void sendRawLineToServer(PircBotX bot, String rawLine) {
+		bot.sendRawLineToServer(rawLine);
+	}
 
 	/**
 	 * Tokenize IRC raw input into it's components, keeping the

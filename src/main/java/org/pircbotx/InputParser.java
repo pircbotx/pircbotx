@@ -114,7 +114,7 @@ public class InputParser implements Closeable {
 	/**
 	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6)
 	 */
-	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005", 
+	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005",
 			"251", "252", "253", "254", "255", "375", "376");
 	protected final Configuration configuration;
 	protected final PircBotX bot;
@@ -135,54 +135,6 @@ public class InputParser implements Closeable {
 	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
 	protected boolean capEndSent = false;
-
-	protected void init(Socket socket) throws IOException {
-		this.inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), configuration.getEncoding()));
-	}
-
-	public void startLineProcessing() {
-		while (true) {
-			//Get line from the server
-			String line;
-			try {
-				line = inputReader.readLine();
-			} catch (InterruptedIOException iioe) {
-				// This will happen if we haven't received anything from the server for a while.
-				// So we shall send it a ping to check that we are still connected.
-				sendRaw.rawLine("PING " + (System.currentTimeMillis() / 1000));
-				// Now we go back to listening for stuff from the server...
-				continue;
-			} catch (Exception e) {
-				if (e instanceof SocketException && bot.isShutdownCalled()) {
-					log.info("Shutdown has been called, closing InputParser");
-					return;
-				} else {
-					//Something is wrong. Assume its bad and begin disconnect
-					log.error("Exception encountered when reading next line from server", e);
-					line = null;
-				}
-			}
-
-			//End the loop if the line is null
-			if (line == null)
-				break;
-
-			//Start acting the line
-			try {
-				handleLine(line);
-			} catch (Exception e) {
-				//Exception in client code. Just log and continue
-				log.error("Exception encountered when parsing line", e);
-			}
-
-			//Do nothing if this thread is being interrupted (meaning shutdown() was run)
-			if (Thread.interrupted())
-				return;
-		}
-
-		//Now that the socket is definatly closed call event, log, and kill the OutputThread
-		bot.shutdown();
-	}
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
