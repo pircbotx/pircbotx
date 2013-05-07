@@ -18,17 +18,21 @@
  */
 package org.pircbotx.exception;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * General Exception for problems during CAP negotiation
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class CAPException extends RuntimeException {
 	public CAPException(Reason reason, String detail) {
-		super(generateMessage(reason, detail));
+		this(reason, detail, null);
 	}
 
 	public CAPException(Reason reason, String detail, Throwable cause) {
 		super(generateMessage(reason, detail), cause);
+		checkNotNull(reason, "Reason cannot be null");
+		checkNotNull(detail, "Detail cannot be null");
 	}
 	
 	protected static String generateMessage(Reason reason, String message) {

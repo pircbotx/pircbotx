@@ -18,6 +18,8 @@
  */
 package org.pircbotx.exception;
 
+import static com.google.common.base.Preconditions.*;
+
 /**
  * An IrcException class.
  *
@@ -35,6 +37,8 @@ public class IrcException extends Exception {
 	 */
 	public IrcException(Reason reason, String detail) {
 		super(generateMessage(reason, detail));
+		checkNotNull(reason, "Reason cannot be null");
+		checkNotNull(detail, "Detail cannot be null");
 	}
 
 	protected static String generateMessage(Reason reason, String detail) {
