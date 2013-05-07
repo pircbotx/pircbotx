@@ -121,21 +121,16 @@ public class Benchmark {
 			listenerManager = new ThreadedListenerManager(Executors.newFixedThreadPool(threadCount));
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setListenerManager(listenerManager)
-				.setBotFactory(new Configuration.BotFactory() {
-			@Override
-			public OutputRaw createOutputRaw(PircBotX bot) {
-				return new OutputRaw(bot, bot.getConfiguration()) {
-					{
-						outputWriter = new OutputStreamWriter(ByteStreams.nullOutputStream(), configuration.getEncoding());
-					}
-				};
-			}
-		})
 				.addListener(new PircBotXJMeter())
 				.buildConfiguration()) {
 			@Override
 			public boolean isConnected() {
 				return true;
+			}
+
+			@Override
+			protected void sendRawLineToServer(String line) {
+				//Do nothing
 			}
 		};
 		inputParser = bot.getInputParser();

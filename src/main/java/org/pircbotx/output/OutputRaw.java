@@ -33,6 +33,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.Utils;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -43,19 +44,13 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
-	protected static final Marker OUTPUT_MARKER = MarkerFactory.getMarker("pircbotx.output");
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
 	protected final Configuration configuration;
-	protected Writer outputWriter;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
 
-	protected void init(Socket socket) throws IOException {
-		outputWriter = new OutputStreamWriter(socket.getOutputStream(), configuration.getEncoding());
-	}
-	
 	/**
 	 * Sends a raw line through the outgoing message queue.
 	 *
@@ -69,7 +64,7 @@ public class OutputRaw {
 			throw new RuntimeException("Not connected to server");
 		writeLock.lock();
 		try {
-			rawLineToServer(line);
+			Utils.sendRawLineToServer(bot, line);
 			//Block for messageDelay. If rawLineNow is called with resetDelay
 			//the condition is tripped and we wait again
 			while (writeNowCondition.await(configuration.getMessageDelay(), TimeUnit.MILLISECONDS)) {
@@ -103,30 +98,12 @@ public class OutputRaw {
 			throw new RuntimeException("Not connected to server");
 		writeLock.lock();
 		try {
-			rawLineToServer(line);
+			Utils.sendRawLineToServer(bot, line);
 			if (resetDelay)
 				//Reset the 
 				writeNowCondition.signalAll();
 		} finally {
 			writeLock.unlock();
-		}
-	}
-
-	/**
-	 * Actually sends the raw line to the server. This method is NOT SYNCHRONIZED 
-	 * since it's only called from methods that handle locking
-	 * @param line 
-	 */
-	protected void rawLineToServer(String line) {
-		if (line.length() > configuration.getMaxLineLength() - 2)
-			line = line.substring(0, configuration.getMaxLineLength() - 2);
-		try {
-			log.info(OUTPUT_MARKER, line);
-			outputWriter.write(line + "\r\n");
-			outputWriter.flush();
-		} catch (Exception e) {
-			//Not much else we can do, but this requires attention of whatever is calling this
-			throw new RuntimeException("Exception encountered when writing to socket", e);
 		}
 	}
 
