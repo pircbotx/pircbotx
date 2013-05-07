@@ -782,7 +782,6 @@ public class InputParser implements Closeable {
 	}
 
 	public void processUserStatus(Channel chan, User user, String prefix) {
-		//TODO: Move into InputThread
 		if (prefix.contains("@"))
 			dao.addUserToOps(user, chan);
 		if (prefix.contains("+"))
