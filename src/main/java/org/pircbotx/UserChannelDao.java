@@ -26,8 +26,8 @@ import com.google.common.collect.Multimap;
 import java.io.Closeable;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import org.pircbotx.hooks.events.UserListEvent;
 
@@ -134,6 +134,13 @@ public class UserChannelDao implements Closeable {
 		return levelsMap.get(level).getUsers(channel);
 	}
 	
+	public ImmutableSet<UserLevel> getLevels(Channel channel, User user) {
+		ImmutableSet.Builder<UserLevel> builder = ImmutableSet.builder();
+		for(Map.Entry<UserLevel, UserChannelMap> curEntry : levelsMap.entrySet())
+			if(curEntry.getValue().containsEntry(user, channel))
+				builder.add(curEntry.getKey());
+		return builder.build();
+	}
 
 	@Synchronized("accessLock")
 	public ImmutableSet<Channel> getNormalUserChannels(User user) {
