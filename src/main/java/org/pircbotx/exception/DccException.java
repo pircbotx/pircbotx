@@ -18,6 +18,7 @@
  */
 package org.pircbotx.exception;
 
+import static com.google.common.base.Preconditions.*;
 import lombok.Getter;
 import org.pircbotx.User;
 
@@ -33,12 +34,16 @@ public class DccException extends RuntimeException {
 
 	public DccException(Reason reason, User user, String detail, Throwable cause) {
 		super(generateMessage(reason, user, detail), cause);
+		checkNotNull(reason, "Reason cannot be null");
+		checkNotNull(user, "User cannot be null");
 		this.ourReason = reason;
 		this.user = user;
 	}
 
 	public DccException(Reason reason, User user, String detail) {
 		super(generateMessage(reason, user, detail));
+		checkNotNull(reason, "Reason cannot be null");
+		checkNotNull(user, "User cannot be null");
 		this.ourReason = reason;
 		this.user = user;
 	}

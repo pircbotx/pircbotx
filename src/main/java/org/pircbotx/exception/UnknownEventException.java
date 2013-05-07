@@ -18,6 +18,8 @@
  */
 package org.pircbotx.exception;
 
+import static com.google.common.base.Preconditions.*;
+
 import org.pircbotx.hooks.Event;
 
 /**
@@ -27,6 +29,7 @@ import org.pircbotx.hooks.Event;
 public class UnknownEventException extends RuntimeException {
 	public UnknownEventException(Event event, Throwable cause) {
 		super("Unknown Event " + event.getClass().toString(), cause);
+		checkNotNull(event, "Event cannot be null");
 	}
 
 	public UnknownEventException(Event event) {
