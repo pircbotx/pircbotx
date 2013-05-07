@@ -18,6 +18,8 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Table;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -28,7 +30,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
-import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputUser;
 
 /**
@@ -107,6 +108,15 @@ public class User implements Comparable<User> {
 
 	public UserSnapshot generateSnapshot() {
 		return new UserSnapshot(this);
+	}
+	
+	/**
+	 * Get all the levels this user holds in the channel
+	 * @param channel The channel to get the levels from
+	 * @return An <b>immutable copy</b> of the levels this user holds
+	 */
+	public ImmutableSet<UserLevel> getUserLevels(Channel channel) {
+		return dao.getLevels(channel, this);
 	}
 
 	/**

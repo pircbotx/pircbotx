@@ -233,6 +233,15 @@ public class Channel {
 	public String getChannelKey() {
 		return getModeArgument('k');
 	}
+	
+	/**
+	 * Get all levels the user holds in this channel.
+	 * @param user The user to get the levels of
+	 * @return An <b>immutable copy</b> of the levels the user holds
+	 */
+	public ImmutableSet<UserLevel> getUserLevels(User user) {
+		return dao.getLevels(this, user);
+	}
 
 	/**
 	 * Get all users that don't have any special status in this channel. This means
