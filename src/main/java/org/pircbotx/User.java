@@ -123,7 +123,7 @@ public class User implements Comparable<User> {
 	 * Get all channels this user is a part of
 	 * @return All channels this user is a part of
 	 */
-	public Set<Channel> getChannels() {
+	public ImmutableSet<Channel> getChannels() {
 		return dao.getChannels(this);
 	}
 
@@ -134,7 +134,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Operator status in
 	 */
-	public Set<Channel> getChannelsOpIn() {
+	public ImmutableSet<Channel> getChannelsOpIn() {
 		return dao.getChannels(this, UserLevel.OP);
 	}
 
@@ -145,7 +145,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Voice status in
 	 */
-	public Set<Channel> getChannelsVoiceIn() {
+	public ImmutableSet<Channel> getChannelsVoiceIn() {
 		return dao.getChannels(this, UserLevel.VOICE);
 	}
 
@@ -156,7 +156,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Owner status in
 	 */
-	public Set<Channel> getChannelsOwnerIn() {
+	public ImmutableSet<Channel> getChannelsOwnerIn() {
 		return dao.getChannels(this, UserLevel.OWNER);
 	}
 
@@ -167,7 +167,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Half Operator status in
 	 */
-	public Set<Channel> getChannelsHalfOpIn() {
+	public ImmutableSet<Channel> getChannelsHalfOpIn() {
 		return dao.getChannels(this, UserLevel.HALFOP);
 	}
 
@@ -178,7 +178,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Super Operator status in
 	 */
-	public Set<Channel> getChannelsSuperOpIn() {
+	public ImmutableSet<Channel> getChannelsSuperOpIn() {
 		return dao.getChannels(this, UserLevel.SUPEROP);
 	}
 
