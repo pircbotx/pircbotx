@@ -125,7 +125,7 @@ public class User implements Comparable<User> {
 	 * channels user has Operator status in
 	 */
 	public Set<Channel> getChannelsOpIn() {
-		return dao.getUsersOps(this);
+		return dao.getChannels(this, UserLevel.OP);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class User implements Comparable<User> {
 	 * channels user has Voice status in
 	 */
 	public Set<Channel> getChannelsVoiceIn() {
-		return dao.getUsersVoices(this);
+		return dao.getChannels(this, UserLevel.VOICE);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class User implements Comparable<User> {
 	 * channels user has Owner status in
 	 */
 	public Set<Channel> getChannelsOwnerIn() {
-		return dao.getUsersOwners(this);
+		return dao.getChannels(this, UserLevel.OWNER);
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class User implements Comparable<User> {
 	 * channels user has Half Operator status in
 	 */
 	public Set<Channel> getChannelsHalfOpIn() {
-		return dao.getUsersHalfOps(this);
+		return dao.getChannels(this, UserLevel.HALFOP);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class User implements Comparable<User> {
 	 * channels user has Super Operator status in
 	 */
 	public Set<Channel> getChannelsSuperOpIn() {
-		return dao.getUsersSuperOps(this);
+		return dao.getChannels(this, UserLevel.SUPEROP);
 	}
 
 	/**
