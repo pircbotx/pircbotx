@@ -110,11 +110,11 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class InputParser implements Closeable {
-	protected static final Marker inputMarker = MarkerFactory.getMarker("pircbotx.input");
+	protected static final Marker INPUT_MARKER = MarkerFactory.getMarker("pircbotx.input");
 	/**
 	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6)
 	 */
-	protected static final ImmutableList<String> connectCodes = ImmutableList.of("001", "002", "003", "004", "005", 
+	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005", 
 			"251", "252", "253", "254", "255", "375", "376");
 	protected final Configuration configuration;
 	protected final PircBotX bot;
@@ -194,7 +194,7 @@ public class InputParser implements Closeable {
 	public void handleLine(String line) throws IOException, IrcException {
 		if (line == null)
 			throw new IllegalArgumentException("Can't process null line");
-		log.info(inputMarker, line);
+		log.info(INPUT_MARKER, line);
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
@@ -261,7 +261,7 @@ public class InputParser implements Closeable {
 	}
 
 	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
-		if (connectCodes.contains(code)) {
+		if (CONNECT_CODES.contains(code)) {
 			// We're connected to the server.
 			bot.loggedIn(configuration.getName() + nickSuffix);
 			log.debug("Logged onto server.");

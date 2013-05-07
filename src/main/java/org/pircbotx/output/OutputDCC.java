@@ -33,10 +33,10 @@ import org.pircbotx.dcc.DccHandler;
 public class OutputDCC {
 	@NonNull
 	protected final OutputIRC sendIRC;
-	protected static final Joiner lineJoiner = Joiner.on(' ');
+	protected static final Joiner SPACE_JOINER = Joiner.on(' ');
 	
 	public void dcc(String target, String service, Object... parameters) {
-		sendIRC.ctcpCommand(target, lineJoiner.join("DCC", service, (Object[])parameters));
+		sendIRC.ctcpCommand(target, SPACE_JOINER.join("DCC", service, (Object[])parameters));
 	}
 
 	public void fileRequest(String target, String filename, InetAddress senderAddress, int senderPort, long filesize) {

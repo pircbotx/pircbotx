@@ -61,7 +61,7 @@ public class IdentServer implements Closeable, Runnable {
 	@Setter(AccessLevel.PROTECTED)
 	@Getter(AccessLevel.PROTECTED)
 	protected static IdentServer server;
-	protected static final Object instanceCreateLock = new Object();
+	protected static final Object INSTANCE_CREATE_LOCK = new Object();
 	protected final Charset encoding;
 	protected final ServerSocket serverSocket;
 	protected final List<IdentEntry> identEntries = new ArrayList();
@@ -71,7 +71,7 @@ public class IdentServer implements Closeable, Runnable {
 		startServer(Charset.defaultCharset());
 	}
 	
-	@Synchronized("instanceCreateLock")
+	@Synchronized("INSTANCE_CREATE_LOCK")
 	public static void startServer(Charset encoding) {
 		if (server != null)
 			throw new RuntimeException("Already created an IdentServer instance");
@@ -79,7 +79,7 @@ public class IdentServer implements Closeable, Runnable {
 		server.start();
 	}
 
-	@Synchronized("instanceCreateLock")
+	@Synchronized("INSTANCE_CREATE_LOCK")
 	public static void stopServer() throws IOException {
 		if (server == null)
 			throw new RuntimeException("Never created an IdentServer");
@@ -199,7 +199,7 @@ public class IdentServer implements Closeable, Runnable {
 		}
 	}
 
-	@Synchronized("instanceCreateLock")
+	@Synchronized("INSTANCE_CREATE_LOCK")
 	public void close() throws IOException {
 		serverSocket.close();
 		log.info("Closed ident server on port 113");
