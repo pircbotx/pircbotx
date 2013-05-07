@@ -25,7 +25,7 @@ import java.net.Socket;
  *
  * @author Leon
  */
-public class OutputUtils {
+public final class OutputUtils {
 	private OutputUtils() {
 	}
 

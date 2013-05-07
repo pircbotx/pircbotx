@@ -69,7 +69,7 @@ import org.slf4j.MDC;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class Utils {
+public final class Utils {
 	//Do not create instances of this
 	private Utils() {
 	}
