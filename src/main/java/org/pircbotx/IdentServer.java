@@ -203,6 +203,7 @@ public class IdentServer implements Closeable, Runnable {
 	@Synchronized("INSTANCE_CREATE_LOCK")
 	public void close() throws IOException {
 		serverSocket.close();
+		identEntries.clear();
 		log.info("Closed ident server on port " + PORT);
 	}
 
