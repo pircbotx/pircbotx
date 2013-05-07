@@ -70,6 +70,10 @@ import org.slf4j.MDC;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class Utils {
+	//Do not create instances of this
+	private Utils() {
+	}
+
 	/**
 	 * Extract the source user from any Event. <b>Warning:</b> This will not work
 	 * on events that return the user as a string like {@link InviteEvent}
