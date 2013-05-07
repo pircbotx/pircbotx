@@ -120,7 +120,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 			for (String suite : sslSocket.getEnabledCipherSuites())
 				if (!suite.contains("_DHE_"))
 					limited.add(suite);
-			sslSocket.setEnabledCipherSuites(limited.toArray(new String[0]));
+			sslSocket.setEnabledCipherSuites(limited.toArray(new String[limited.size()]));
 		}
 		return sslSocket;
 	}
