@@ -43,19 +43,23 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.pircbotx.output.OutputIRC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Manager that provides an easy way to create bots on many different servers
- * with the same or close to the same information. All important setup methods
- * have been mirrored here. For documentation, see their equivalent PircBotX
- * methods.
+ * Manager that makes connecting and running multiple bots an easy, painless
+ * process. 
  * <p>
- * <b>Note:</b> Setting any value after connectAll() is invoked will NOT update
- * all existing bots. You will need to loop over the bots and call the set methods
- * manually
- * <p/>
+ * Lifecycle:
+ * <ol><li>When created, any added bots or configurations are queued</li>
+ * <li>When {@link #start()} is called, all queued bots are connected. Any bots 
+ * added after this point are automatically connected</li>
+ * <li>When {@link #stop()} is called, {@link OutputIRC#quitServer()} is called 
+ * on all bots. No more bots can be added, the Manager is finished. Note that 
+ * an optional {@link #stopAndWait() } method is provided to block until all bots
+ * shutdown
+ * </ol>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
@@ -71,6 +75,9 @@ public class MultiBotManager {
 	protected State state = State.NEW;
 	protected final Object stateLock = new Object[0];
 
+	/**
+	 * Create MultiBotManager with a cached thread pool.
+	 */
 	public MultiBotManager() {
 		managerNumber = MANAGER_COUNT.getAndIncrement();
 		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
@@ -78,12 +85,20 @@ public class MultiBotManager {
 		this.botPool = MoreExecutors.listeningDecorator(defaultPool);
 	}
 
+	/**
+	 * Create MultiBotManager with the specified thread pool. 
+	 * @param botPool A provided thread pool. 
+	 */
 	public MultiBotManager(ExecutorService botPool) {
 		checkNotNull(botPool, "Bot pool cannot be null");
 		this.botPool = MoreExecutors.listeningDecorator(botPool);
 		this.managerNumber = MANAGER_COUNT.getAndIncrement();
 	}
 
+	/**
+	 * Adds a managed bot using the specified configuration.
+	 * @param config A configuration to pass to the created bot
+	 */
 	@Synchronized("stateLock")
 	public void addBot(Configuration config) {
 		checkNotNull(config, "Configuration cannot be null");
@@ -93,6 +108,10 @@ public class MultiBotManager {
 		addBot(new PircBotX(config));
 	}
 
+	/**
+	 * Adds a bot to be managed
+	 * @param bot An existing <b>unconnected</b> bot
+	 */
 	@Synchronized("stateLock")
 	public void addBot(PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
@@ -107,6 +126,9 @@ public class MultiBotManager {
 			throw new RuntimeException("MultiBotManager is not running. State: " + state);
 	}
 
+	/**
+	 * Start the manager, connecting all queued bots.
+	 */
 	public void start() {
 		synchronized (stateLock) {
 			if (state != State.NEW)
@@ -150,6 +172,10 @@ public class MultiBotManager {
 		botPool.shutdown();
 	}
 
+	/**
+	 * {@link #stop()} and wait for all bots to disconnect
+	 * @throws InterruptedException If this is interrupted while waiting
+	 */
 	public void stopAndWait() throws InterruptedException {
 		stop();
 		
@@ -162,15 +188,19 @@ public class MultiBotManager {
 	}
 
 	/**
-	 * Get all the bots that this MultiBotManager is managing. Do not save this
-	 * anywhere as it will be out of date when a new bot is created
-	 * @return An <i>unmodifiable</i> Set of bots that are being managed
+	 * Get all the bots that this MultiBotManager is managing.
+	 * @return An <i>immutable copy</i> of bots that are being managed
 	 */
 	@Synchronized("runningBotsLock")
 	public ImmutableSet<PircBotX> getBots() {
 		return ImmutableSet.copyOf(runningBots.keySet());
 	}
 
+	/**
+	 * Lookup a managed bot by id
+	 * @param id The id of the bot
+	 * @return A bot that has the specified id or null
+	 */
 	@Synchronized("runningBotsLock")
 	public PircBotX getBotById(int id) {
 		return runningBotsNumbers.inverse().get(id);

@@ -34,8 +34,8 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- *
- * @author Leon
+ * Generic DCC chat handling class that represents an active dcc chat.
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
 public class Chat {

@@ -66,7 +66,7 @@ import org.pircbotx.hooks.Event;
 import org.slf4j.MDC;
 
 /**
- *
+ * Useful utilities for internal PircBotX use. Users should not use this class directly
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public final class Utils {

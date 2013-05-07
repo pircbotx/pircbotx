@@ -26,15 +26,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputChannel;
 
 /**
- * Represents a Channel that we're joined to. Contains all the available
- * information about the channel, as well as delegate methods for useful functions
- * like {@link #op(org.pircbotx.User) giving op} or
- * {@link #voice(org.pircbotx.User) voice} status.
+ * Represents a Channel that we're joined to. 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -67,6 +63,10 @@ public class Channel {
 		this.name = name;
 	}
 	
+	/**
+	 * Send a line to the channel
+	 * @return A {@link OutputChannel} for this channel
+	 */
 	public OutputChannel send() {
 		if(!outputCreated) {
 			synchronized(outputCreatedLock) {
@@ -106,8 +106,9 @@ public class Channel {
 	 * <p>
 	 * <b>WARNING:</b> Because of the last checking, a threaded listener manager like
 	 * {@link ThreadedListenerManager} is required. Using a single threaded listener
-	 * manager like {@link GenericListenerManager} will mean this method <i>never returns</i>!
-	 * @return A known good mode, either immediatly or soon.
+	 * manager like {@link org.pircbotx.hooks.managers.GenericListenerManager} will 
+	 * mean this method <i>never returns</i>!
+	 * @return A known good mode, either immediately or soon.
 	 */
 	public String getMode() {
 		if (!modeStale)
@@ -137,13 +138,17 @@ public class Channel {
 		return getMode().split(" ")[0].contains("" + modeChar);
 	}
 
+	/**
+	 * Check if channel is invite only (+i)
+	 * @return True if +i
+	 */
 	public boolean isInviteOnly() {
 		return modeExists('i');
 	}
 
 	/**
 	 * Check if channel is moderated (+m)
-	 * @return True if set, false if not
+	 * @return True if +m
 	 */
 	public boolean isModerated() {
 		return modeExists('m');
@@ -151,7 +156,7 @@ public class Channel {
 
 	/**
 	 * Check if channel will not accept external messages (+n)
-	 * @return True if set, false if not
+	 * @return True if +n
 	 */
 	public boolean isNoExternalMessages() {
 		return modeExists('n');
@@ -159,7 +164,7 @@ public class Channel {
 
 	/**
 	 * Check if channel is secret (+s)
-	 * @return True if set, false if not
+	 * @return True if +s
 	 */
 	public boolean isSecret() {
 		return modeExists('s');
@@ -167,8 +172,8 @@ public class Channel {
 
 	/**
 	 * Check if the channel has topic protection (+t) set
-	 * @return True if its set, false if not
-	 */
+	 * @return True if +t	
+ */
 	public boolean hasTopicProtection() {
 		return modeExists('t');
 	}
@@ -232,57 +237,47 @@ public class Channel {
 	/**
 	 * Get all users that don't have any special status in this channel. This means
 	 * that they aren't ops, have voice, superops, halops, or owners in this channel
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of non-special users in the channel
+	 * @return An <b>immutable copy</b> of normal users
 	 */
 	public ImmutableSet<User> getNormalUsers() {
 		return dao.getChannelNormals(this);
 	}
 
 	/**
-	 * Gets all opped users in this channel.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
+	 * Get all opped users in this channel.
+	 * @return An <b>immutable copy</b> of opped users
 	 */
 	public ImmutableSet<User> getOps() {
 		return dao.getChannelOps(this);
 	}
 
 	/**
-	 * Gets all voiced users in this channel.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of opped users
+	 * Get all voiced users in this channel.
+	 * @return An <b>immutable copy</b> of voiced users
 	 */
 	public ImmutableSet<User> getVoices() {
 		return dao.getChannelVoices(this);
 	}
 
 	/**
-	 * Gets all users with Owner status in this channel.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Owner status
+	 * Get all users with Owner status in this channel.
+	 * @return An <b>immutable copy</b> of users with Owner status
 	 */
 	public ImmutableSet<User> getOwners() {
 		return dao.getChannelOwners(this);
 	}
 
 	/**
-	 * Gets all users with Half Operator status in this channel.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Half Operator status
+	 * Get all users with Half Operator status in this channel.
+	 * @return An <b>immutable copy</b> of users with Half Operator status
 	 */
 	public ImmutableSet<User> getHalfOps() {
 		return dao.getChannelHalfOps(this);
 	}
 
 	/**
-	 * Gets all users with Super Operator status in this channel.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
-	 * @return An <i>unmodifiable</i> Set (IE snapshot) of users with Super Operator status
+	 * Get all users with Super Operator status in this channel.
+	 * @return An <b>immutable copy</b> of users with Super Operator status
 	 */
 	public ImmutableSet<User> getSuperOps() {
 		return dao.getChannelSuperOps(this);

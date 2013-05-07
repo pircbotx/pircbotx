@@ -32,7 +32,7 @@ import org.pircbotx.hooks.types.*;
  * <b>WARNING:</b> If you are going to be implementing {@link Listener}'s
  * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
- * will work!
+ * will be called!
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {

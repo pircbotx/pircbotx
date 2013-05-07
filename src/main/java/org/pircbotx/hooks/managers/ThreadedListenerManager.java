@@ -42,17 +42,8 @@ import org.pircbotx.hooks.Listener;
 import org.slf4j.MDC;
 
 /**
- * Wraps a ListenerManager and adds multithreading to {@link #dispatchEvent(org.pircbotx.hooks.Event)}.
- * This makes {@link #dispatchEvent(org.pircbotx.hooks.Event)} return almost immediately freeing
- * up the bot to execute other incoming events
- * <p>
- * This multithreading can be controlled with the perHook flag in the constructors.
- * <ul>
- * <li><code>false</code> - Default. Listeners are executed sequentially in
- * a separate thread per event.</li>
- * <li><code>true</code> - Every listener is executed in a different thread
- * all at once per event.</li>
- * </ul>
+ * A listener manager that executes individual listeners in a thread pool. Will 
+ * also shutdown all running listeners upon bot shutdown
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j

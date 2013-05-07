@@ -30,15 +30,13 @@ package org.pircbotx;
  * The class contains static methods to remove colours and formatting
  * from lines of IRC text.
  * <p>
- * Here are some examples of how to use the contants from within a
- * class that extends PircBot and imports org.jibble.pircbot.*;
- * <p/>
- * <
- * pre> sendMessage("#cs", Colors.BOLD + "A bold hello!");
+ * Here are some examples of how to use the constants
+ * <pre>
+ * message(Colors.BOLD + "A bold hello!");
  * <b>A bold hello!</b>
- * sendMessage("#cs", Colors.RED + "Red" + Colors.NORMAL + " text");
+ * message(Colors.RED + "Red" + Colors.NORMAL + " text");
  * <font color="red">Red</font> text
- * sendMessage("#cs", Colors.BOLD + Colors.RED + "Bold and red");
+ * message(Colors.BOLD + Colors.RED + "Bold and red");
  * <b><font color="red">Bold and red</font></b></pre>
  * <p/>
  * Please note that some IRC channels may be configured to reject any
