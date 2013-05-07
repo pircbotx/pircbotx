@@ -227,18 +227,18 @@ public class Utils {
 		//Heavily optimized version string split by space with all characters after :
 		//added as a single entry. Under benchmarks, its faster than StringTokenizer,
 		//String.split, toCharArray, and charAt
-		input = CharMatcher.WHITESPACE.trimFrom(input);
+		String trimmedInput = CharMatcher.WHITESPACE.trimFrom(input);
 		int pos = 0, end;
-		while ((end = input.indexOf(' ', pos)) >= 0) {
-			stringParts.add(input.substring(pos, end));
+		while ((end = trimmedInput.indexOf(' ', pos)) >= 0) {
+			stringParts.add(trimmedInput.substring(pos, end));
 			pos = end + 1;
-			if (input.charAt(pos) == ':') {
-				stringParts.add(input.substring(pos + 1));
+			if (trimmedInput.charAt(pos) == ':') {
+				stringParts.add(trimmedInput.substring(pos + 1));
 				return stringParts;
 			}
 		}
 		//No more spaces, add last part of line
-		stringParts.add(input.substring(pos));
+		stringParts.add(trimmedInput.substring(pos));
 		return stringParts;
 	}
 }
