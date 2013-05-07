@@ -37,38 +37,29 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class CoreHooks implements Listener {
+public class CoreHooks extends ListenerAdapter {
+	@Override
 	public void onFinger(FingerEvent event) {
 		event.getUser().send().ctcpResponse("FINGER " + event.getBot().getConfiguration().getFinger());
 	}
 
+	@Override
 	public void onPing(PingEvent event) {
 		event.getUser().send().ctcpResponse("PING " + event.getPingValue());
 	}
 
+	@Override
 	public void onServerPing(ServerPingEvent event) {
 		event.getBot().sendRaw().rawLine("PONG " + event.getResponse());
 	}
 
+	@Override
 	public void onTime(TimeEvent event) {
 		event.getUser().send().ctcpResponse("TIME " + new Date().toString());
 	}
 
+	@Override
 	public void onVersion(VersionEvent event) {
 		event.getUser().send().ctcpResponse("VERSION " + event.getBot().getConfiguration().getVersion());
-	}
-
-	public void onEvent(Event event) {
-		//Use a small custom onEvent here instead of ListenerAdapter for performance
-		if (event instanceof VersionEvent)
-			onVersion((VersionEvent) event);
-		else if (event instanceof TimeEvent)
-			onTime((TimeEvent) event);
-		else if (event instanceof ServerPingEvent)
-			onServerPing((ServerPingEvent) event);
-		else if (event instanceof PingEvent)
-			onPing((PingEvent) event);
-		else if (event instanceof FingerEvent)
-			onFinger((FingerEvent) event);
 	}
 }
