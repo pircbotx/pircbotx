@@ -18,10 +18,10 @@
  */
 package org.pircbotx;
 
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -30,18 +30,18 @@ import lombok.ToString;
  * a channel or server. Any attempts to modify data throw an exception
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@Data
 //Only use super implementation which uses UIDs
 @EqualsAndHashCode(callSuper = true, of = {})
 @ToString(callSuper = true, of = {})
 @Setter(AccessLevel.NONE)
+@Getter
 public class UserSnapshot extends User {
-	protected Set<Channel> channels;
-	protected Set<Channel> channelsOpIn;
-	protected Set<Channel> channelsVoiceIn;
-	protected Set<Channel> channelsOwnerIn;
-	protected Set<Channel> channelsSuperOpIn;
-	protected Set<Channel> channelsHalfOpIn;
+	protected ImmutableSet<Channel> channels;
+	protected ImmutableSet<Channel> channelsOpIn;
+	protected ImmutableSet<Channel> channelsVoiceIn;
+	protected ImmutableSet<Channel> channelsOwnerIn;
+	protected ImmutableSet<Channel> channelsSuperOpIn;
+	protected ImmutableSet<Channel> channelsHalfOpIn;
 	protected final User generatedFrom;
 
 	public UserSnapshot(User user) {
