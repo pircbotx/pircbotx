@@ -57,7 +57,7 @@ import org.slf4j.MDC;
  */
 @Slf4j
 public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
-	protected static final AtomicInteger managerCount = new AtomicInteger();
+	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected ExecutorService pool;
 	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
@@ -69,7 +69,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
 	 */
 	public ThreadedListenerManager() {
-		managerNumber = managerCount.getAndIncrement();
+		managerNumber = MANAGER_COUNT.getAndIncrement();
 		BasicThreadFactory factory = new BasicThreadFactory.Builder()
 				.namingPattern("listenerPool" + managerNumber + "-thread%d")
 				.daemon(true)
@@ -85,7 +85,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	 * @param pool
 	 */
 	public ThreadedListenerManager(ExecutorService pool) {
-		managerNumber = managerCount.getAndIncrement();
+		managerNumber = MANAGER_COUNT.getAndIncrement();
 		this.pool = pool;
 	}
 

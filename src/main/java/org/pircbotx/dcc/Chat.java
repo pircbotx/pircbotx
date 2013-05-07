@@ -37,8 +37,8 @@ import org.slf4j.MarkerFactory;
  */
 @Slf4j
 public class Chat {
-	protected static final Marker inputChatMarker = MarkerFactory.getMarker("pircbotx.dccChat.input");
-	protected static final Marker outputChatMarker = MarkerFactory.getMarker("pircbotx.dccChat.output");
+	protected static final Marker INPUT_CHAT_MARKER = MarkerFactory.getMarker("pircbotx.dccChat.input");
+	protected static final Marker OUTPUT_CHAT_MARKER = MarkerFactory.getMarker("pircbotx.dccChat.output");
 	@Getter
 	protected User user;
 	@Getter
@@ -69,7 +69,7 @@ public class Chat {
 	 */
 	public String readLine() throws IOException {
 		String line = bufferedReader.readLine();
-		log.info(inputChatMarker, "<<<" + line);
+		log.info(INPUT_CHAT_MARKER, "<<<" + line);
 		return line;
 	}
 
@@ -84,7 +84,7 @@ public class Chat {
 	 */
 	public void sendLine(String line) throws IOException {
 		synchronized (bufferedWriter) {
-			log.info(outputChatMarker, ">>>" + line);
+			log.info(OUTPUT_CHAT_MARKER, ">>>" + line);
 			bufferedWriter.write(line + "\r\n");
 			bufferedWriter.flush();
 		}

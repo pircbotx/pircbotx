@@ -43,7 +43,7 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
-	protected static final Marker outputMarker = MarkerFactory.getMarker("pircbotx.output");
+	protected static final Marker OUTPUT_MARKER = MarkerFactory.getMarker("pircbotx.output");
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
@@ -121,7 +121,7 @@ public class OutputRaw {
 		if (line.length() > configuration.getMaxLineLength() - 2)
 			line = line.substring(0, configuration.getMaxLineLength() - 2);
 		try {
-			log.info(outputMarker, line);
+			log.info(OUTPUT_MARKER, line);
 			outputWriter.write(line + "\r\n");
 			outputWriter.flush();
 		} catch (Exception e) {
