@@ -240,7 +240,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of normal users
 	 */
 	public ImmutableSet<User> getNormalUsers() {
-		return dao.getChannelNormals(this);
+		return dao.getNormalUsers(this);
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of opped users
 	 */
 	public ImmutableSet<User> getOps() {
-		return dao.getChannelOps(this);
+		return dao.getUsers(this, UserLevel.OP);
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of voiced users
 	 */
 	public ImmutableSet<User> getVoices() {
-		return dao.getChannelVoices(this);
+		return dao.getUsers(this, UserLevel.VOICE);
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of users with Owner status
 	 */
 	public ImmutableSet<User> getOwners() {
-		return dao.getChannelOwners(this);
+		return dao.getUsers(this, UserLevel.OWNER);
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of users with Half Operator status
 	 */
 	public ImmutableSet<User> getHalfOps() {
-		return dao.getChannelHalfOps(this);
+		return dao.getUsers(this, UserLevel.HALFOP);
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of users with Super Operator status
 	 */
 	public ImmutableSet<User> getSuperOps() {
-		return dao.getChannelSuperOps(this);
+		return dao.getUsers(this, UserLevel.SUPEROP);
 	}
 
 	/**
@@ -317,7 +317,7 @@ public class Channel {
 	 * @return True if the user is an Operator, false if not
 	 */
 	public boolean isOp(User user) {
-		return dao.getChannelOps(this).contains(user);
+		return dao.levelContainsUser(UserLevel.OP, this, user);
 	}
 
 	/**
@@ -325,7 +325,7 @@ public class Channel {
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
-		return dao.getChannelVoices(this).contains(user);
+		return dao.levelContainsUser(UserLevel.VOICE, this, user);
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class Channel {
 	 * @return True if the user is a Super Operator, false if not
 	 */
 	public boolean isSuperOp(User user) {
-		return dao.getChannelSuperOps(this).contains(user);
+		return dao.levelContainsUser(UserLevel.SUPEROP, this, user);
 	}
 
 	/**
@@ -341,7 +341,7 @@ public class Channel {
 	 * @return True if the user is an Owner, false if not
 	 */
 	public boolean isOwner(User user) {
-		return dao.getChannelOwners(this).contains(user);
+		return dao.levelContainsUser(UserLevel.OWNER, this, user);
 	}
 
 	/**
@@ -349,6 +349,6 @@ public class Channel {
 	 * @return True if the user is a Half Operator, false if not
 	 */
 	public boolean isHalfOp(User user) {
-		return dao.getChannelHalfOps(this).contains(user);
+		return dao.levelContainsUser(UserLevel.HALFOP, this, user);
 	}
 }
