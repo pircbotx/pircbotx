@@ -18,6 +18,7 @@
  */
 package org.pircbotx.output;
 
+import static com.google.common.base.Preconditions.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -61,6 +62,7 @@ public class OutputRaw {
 	 * @param line The raw line to send to the IRC server.
 	 */
 	public void rawLine(String line) {
+		checkNotNull(line, "Line cannot be null");
 		if (line == null)
 			throw new NullPointerException("Cannot send null messages to server");
 		if (!bot.isConnected())
@@ -96,8 +98,7 @@ public class OutputRaw {
 	 * @param resetDelay If true, pending messages will reset their delay.
 	 */
 	public void rawLineNow(String line, boolean resetDelay) {
-		if (line == null)
-			throw new NullPointerException("Cannot send null messages to server");
+		checkNotNull(line, "Line cannot be null");
 		if (!bot.isConnected())
 			throw new RuntimeException("Not connected to server");
 		writeLock.lock();
@@ -134,9 +135,9 @@ public class OutputRaw {
 	}
 
 	public void rawLineSplit(String prefix, String message, String suffix) {
-		//Make sure suffix is valid
-		if (suffix == null)
-			suffix = "";
+		checkNotNull(prefix, "Prefix cannot be null");
+		checkNotNull(message, "Message cannot be null");
+		checkNotNull(suffix, "Suffix cannot be null");
 
 		//Find if final line is going to be shorter than the max line length
 		String finalMessage = prefix + message + suffix;
