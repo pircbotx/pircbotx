@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 @Slf4j
 public class MultiBotManager {
-	protected static final AtomicInteger managerCount = new AtomicInteger();
+	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected final Map<PircBotX, ListenableFuture> runningBots = new HashMap();
 	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
@@ -72,7 +72,7 @@ public class MultiBotManager {
 	protected final Object stateLock = new Object[0];
 
 	public MultiBotManager() {
-		managerNumber = managerCount.getAndIncrement();
+		managerNumber = MANAGER_COUNT.getAndIncrement();
 		ThreadPoolExecutor defaultPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 		defaultPool.allowCoreThreadTimeOut(true);
 		this.botPool = MoreExecutors.listeningDecorator(defaultPool);
@@ -81,7 +81,7 @@ public class MultiBotManager {
 	public MultiBotManager(ExecutorService botPool) {
 		checkNotNull(botPool, "Bot pool cannot be null");
 		this.botPool = MoreExecutors.listeningDecorator(botPool);
-		this.managerNumber = managerCount.getAndIncrement();
+		this.managerNumber = MANAGER_COUNT.getAndIncrement();
 	}
 
 	@Synchronized("stateLock")
