@@ -41,11 +41,7 @@ public class DccException extends RuntimeException {
 	}
 
 	public DccException(Reason reason, User user, String detail) {
-		super(generateMessage(reason, user, detail));
-		checkNotNull(reason, "Reason cannot be null");
-		checkNotNull(user, "User cannot be null");
-		this.ourReason = reason;
-		this.user = user;
+		this(reason, user, detail, null);
 	}
 
 	protected static String generateMessage(Reason reason, User user, String detail) {
