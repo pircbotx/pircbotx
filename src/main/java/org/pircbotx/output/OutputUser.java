@@ -31,7 +31,7 @@ import org.pircbotx.exception.DccException;
 
 /**
  * Send lines to a user.
- * @author Leon Blakey <lord.quackstar@gmail.com>
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputUser {
