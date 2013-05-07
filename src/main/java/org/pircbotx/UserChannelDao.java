@@ -20,6 +20,7 @@ package org.pircbotx;
 
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -250,8 +251,25 @@ public class UserChannelDao implements Closeable {
 	 * A many to many map of users to channels.
 	 */
 	protected static class UserChannelMap {
-		protected final Multimap<Channel, User> channelToUserMap = HashMultimap.create();
-		protected final Multimap<User, Channel> userToChannelMap = HashMultimap.create();
+		protected final Multimap<Channel, User> channelToUserMap;
+		protected final Multimap<User, Channel> userToChannelMap;
+
+		/**
+		 * Create with HashMultimaps
+		 */
+		public UserChannelMap() {
+			channelToUserMap = HashMultimap.create();
+			userToChannelMap = HashMultimap.create();
+		}
+		
+		/**
+		 * Create as an <b>immutable copy</b> of the other map
+		 * @param otherMap Another map to copy
+		 */
+		public UserChannelMap(UserChannelMap otherMap) {
+			this.channelToUserMap = ImmutableMultimap.copyOf(otherMap.channelToUserMap);
+			this.userToChannelMap = ImmutableMultimap.copyOf(otherMap.userToChannelMap);
+		}
 
 		public void addUserToChannel(User user, Channel channel) {
 			userToChannelMap.put(user, channel);
