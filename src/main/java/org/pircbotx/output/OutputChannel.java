@@ -28,7 +28,7 @@ import org.pircbotx.hooks.events.PartEvent;
 
 /**
  * Send lines to a channel.
- * @author Leon Blakey <lord.quackstar@gmail.com>
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputChannel {
