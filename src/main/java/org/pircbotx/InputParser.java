@@ -242,7 +242,8 @@ public class InputParser implements Closeable {
 					// This is not a server response.
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
-					sourceNick = senderInfo; //WARNING: Changed from origional PircBot. Instead of command as target, use channel/user (setup later)
+					//WARNING: Changed from origional PircBot. Instead of command as target, use channel/user (setup later)
+					sourceNick = senderInfo;
 			}
 		else {
 			// We don't know what this line means.
