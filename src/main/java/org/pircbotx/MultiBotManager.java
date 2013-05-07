@@ -208,9 +208,8 @@ public class MultiBotManager {
 				runningBots.remove(bot);
 				runningBotsNumbers.remove(bot);
 
-				if (runningBots.isEmpty())
-					//Change state to TERMINATED if this is the last but to be removed during shutdown
-					if (state == State.STOPPING)
+				//Change state to TERMINATED if this is the last but to be removed during shutdown
+				if (runningBots.isEmpty() && state == State.STOPPING)
 						synchronized (stateLock) {
 							if (state == State.STOPPING)
 								state = State.TERMINATED;
