@@ -21,14 +21,15 @@ package org.pircbotx;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 
 /**
  *
  * @author Leon
  */
 public class UserChannelMap {
-	protected final HashMultimap<Channel, User> channelToUserMap = HashMultimap.create();
-	protected final HashMultimap<User, Channel> userToChannelMap = HashMultimap.create();
+	protected final Multimap<Channel, User> channelToUserMap = HashMultimap.create();
+	protected final Multimap<User, Channel> userToChannelMap = HashMultimap.create();
 
 	public void addUserToChannel(User user, Channel channel) {
 		userToChannelMap.put(user, channel);
