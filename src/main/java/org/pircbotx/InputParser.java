@@ -220,12 +220,12 @@ public class InputParser implements Closeable {
 		String sourceHostname = "";
 		String target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
 
-		if (target.charAt(0) == ':')
+		if (target.startsWith(":"))
 			target = target.substring(1);
 
 		int exclamation = senderInfo.indexOf('!');
 		int at = senderInfo.indexOf('@');
-		if (senderInfo.charAt(0) == ':')
+		if (senderInfo.startsWith(":"))
 			if (exclamation > 0 && at > 0 && exclamation < at) {
 				sourceNick = senderInfo.substring(1, exclamation);
 				sourceLogin = senderInfo.substring(exclamation + 1, at);
@@ -251,7 +251,7 @@ public class InputParser implements Closeable {
 			return;
 		}
 
-		if (sourceNick.charAt(0) == ':')
+		if (sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
 
 		if (!bot.loggedIn)
