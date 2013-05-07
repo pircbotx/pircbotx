@@ -44,6 +44,7 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
+	protected static final Marker OUTPUT_MARKER = MarkerFactory.getMarker("pircbotx.output");
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
@@ -64,6 +65,7 @@ public class OutputRaw {
 			throw new RuntimeException("Not connected to server");
 		writeLock.lock();
 		try {
+			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
 			//Block for messageDelay. If rawLineNow is called with resetDelay
 			//the condition is tripped and we wait again
@@ -98,6 +100,7 @@ public class OutputRaw {
 			throw new RuntimeException("Not connected to server");
 		writeLock.lock();
 		try {
+			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
 			if (resetDelay)
 				//Reset the 
