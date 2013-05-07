@@ -30,8 +30,8 @@ import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.DccException;
 
 /**
- *
- * @author Leon
+ * Send lines to a user.
+ * @author Leon Blakey <lord.quackstar@gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputUser {

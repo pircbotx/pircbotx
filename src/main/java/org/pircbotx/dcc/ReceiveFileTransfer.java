@@ -29,7 +29,7 @@ import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
 /**
- * Handle everything related to receiving a file from another IRC user
+ * A DCC File Transfer initiated by another user.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ReceiveFileTransfer extends FileTransfer {

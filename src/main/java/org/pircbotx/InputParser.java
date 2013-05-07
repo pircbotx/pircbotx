@@ -104,8 +104,8 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- *
- * @author Leon
+ * Parse received input from IRC server
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -138,8 +138,7 @@ public class InputParser implements Closeable {
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
-	 * then calling the appropriate method in the PircBotX. This method is
-	 * protected and only called by the InputThread for this instance.
+	 * then dispatching the appropriate event
 	 *
 	 * @param line The raw line of text from the server.
 	 */
@@ -212,6 +211,15 @@ public class InputParser implements Closeable {
 		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
 	}
 
+	/**
+	 * Process any lines relevant to connect. Only called before bot is logged into the server
+	 * @param rawLine Raw, unprocessed line from the server
+	 * @param code 
+	 * @param target
+	 * @param parsedLine Processed line
+	 * @throws IrcException If the server rejects the bot (nick already in use or a 4** or 5** code
+	 * @throws IOException If an error occurs during upgrading to SSL
+	 */
 	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
 		if (CONNECT_CODES.contains(code)) {
 			// We're connected to the server.
@@ -748,6 +756,9 @@ public class InputParser implements Closeable {
 		user.setIrcop(prefix.contains("*"));
 	}
 
+	/**
+	 * Clear out builders.
+	 */
 	public void close() {
 		whoisBuilder.clear();
 		motdBuilder = null;

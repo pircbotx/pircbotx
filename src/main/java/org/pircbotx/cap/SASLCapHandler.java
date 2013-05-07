@@ -41,7 +41,7 @@ public class SASLCapHandler implements CapHandler {
 
 	/**
 	 * Create SASLCapHandler not ignoring failed authentication and throwing
-	 * a RuntimeException
+	 * a CapException
 	 * @param username
 	 * @param password
 	 */

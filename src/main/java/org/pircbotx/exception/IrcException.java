@@ -21,7 +21,7 @@ package org.pircbotx.exception;
 import static com.google.common.base.Preconditions.*;
 
 /**
- * An IrcException class.
+ * A fatal IRC error.
  *
  * @since PircBot 0.9
  * @author Origionally by:

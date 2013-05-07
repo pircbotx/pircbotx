@@ -28,8 +28,8 @@ import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
 /**
- *
- * @author Leon
+ * A general active DCC file transfer
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 public abstract class FileTransfer {
@@ -52,6 +52,10 @@ public abstract class FileTransfer {
 	protected DccState state = DccState.INIT;
 	protected final Object stateLock = new Object();
 
+	/**
+	 * Transfer the file to the user
+	 * @throws IOException If an error occurred during transfer
+	 */
 	public void transfer() throws IOException {
 		//Prevent being called multiple times
 		if (state != DccState.INIT)
@@ -68,6 +72,10 @@ public abstract class FileTransfer {
 
 	protected abstract void transferFile() throws IOException;
 	
+	/**
+	 * Is the transfer finished?
+	 * @return True if its finished
+	 */
 	public boolean isFinished() {
 		return state == DccState.DONE; 
 	}

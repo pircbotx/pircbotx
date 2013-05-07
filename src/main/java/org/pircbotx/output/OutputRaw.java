@@ -19,17 +19,11 @@
 package org.pircbotx.output;
 
 import static com.google.common.base.Preconditions.*;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -38,8 +32,8 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- *
- * @author Leon
+ * Send raw lines to the server with locking and message delay support.
+ * @author Leon Blakey <lord.quackstar@gmail.com>
  */
 @RequiredArgsConstructor
 @Slf4j

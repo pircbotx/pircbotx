@@ -27,8 +27,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.PartEvent;
 
 /**
- *
- * @author Leon
+ * Send lines to a channel.
+ * @author Leon Blakey <lord.quackstar@gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputChannel {

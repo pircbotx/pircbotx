@@ -24,8 +24,9 @@ import lombok.RequiredArgsConstructor;
 import org.pircbotx.Utils;
 
 /**
- *
- * @author Leon
+ * IRCv3 CAP Negoation commands. See <a href="http://ircv3.atheme.org/">http://ircv3.atheme.org/</a>
+ * for more information
+ * @author Leon Blakey <lord.quackstar@gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputCAP {

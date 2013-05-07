@@ -22,17 +22,15 @@ import lombok.RequiredArgsConstructor;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.CoreHooks;
-import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
-import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import static com.google.common.base.Preconditions.*;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
- * @author Leon
+ * Implements the basic IRC protocol.
+ * @author Leon Blakey <lord.quackstar@gmail.com>
  */
 @RequiredArgsConstructor
 public class OutputIRC {

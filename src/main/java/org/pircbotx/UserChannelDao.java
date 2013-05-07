@@ -32,8 +32,11 @@ import lombok.Synchronized;
 import org.pircbotx.hooks.events.UserListEvent;
 
 /**
- *
- * @author Leon
+ * Stores and maintains relationships between users and channels. This class should
+ * not be directly, it is meant to be the internal storage engine.
+ * @see User
+ * @see Channel
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 public class UserChannelDao implements Closeable {

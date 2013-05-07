@@ -19,12 +19,12 @@
 package org.pircbotx.cap;
 
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
 /**
- *
+ * Generic CAP handler. Relevant handle methods are called when a CAP line is received.
+ * Connecting is not considered finished until {@link #isDone() } returns true
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface CapHandler {
