@@ -68,10 +68,18 @@ public class IdentServer implements Closeable, Runnable {
 	protected final List<IdentEntry> identEntries = new ArrayList();
 	protected Thread runningThread;
 	
+	/**
+	 * Start the ident server with the systems default charset.
+	 * @see Charset#defaultCharset()
+	 */
 	public static void startServer() {
 		startServer(Charset.defaultCharset());
 	}
 	
+	/**
+	 * Start the ident server with the specified charset
+	 * @param encoding The encoding to use for connections
+	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")
 	public static void startServer(Charset encoding) {
 		if (server != null)
@@ -80,6 +88,10 @@ public class IdentServer implements Closeable, Runnable {
 		server.start();
 	}
 
+	/**
+	 * Stop the server and clear pending ident responses
+	 * @throws IOException 
+	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")
 	public static void stopServer() throws IOException {
 		if (server == null)
@@ -89,17 +101,8 @@ public class IdentServer implements Closeable, Runnable {
 	}
 
 	/**
-	 * Constructs and starts an instance of an IdentServer that will
-	 * respond to a client with the provided login. Rather than calling
-	 * this constructor explicitly from your code, it is recommended that
-	 * you use the startIdentServer method in the PircBotX class.
-	 * <p>
-	 * The ident server will wait for up to 60 seconds before shutting
-	 * down. Otherwise, it will shut down as soon as it has responded
-	 * to an ident request.
-	 *
-	 * @param bot The PircBotX instance that will be used to log to.
-	 * @param login The login that the ident server will respond with.
+	 * Create an ident server on port 113 with the specified encoding
+	 * @param encoding Encoding to use for sockets
 	 */
 	protected IdentServer(Charset encoding) {
 		try {
@@ -110,6 +113,9 @@ public class IdentServer implements Closeable, Runnable {
 		}
 	}
 
+	/**
+	 * Start the ident server in a new thread.
+	 */
 	public void start() {
 		runningThread = new Thread(this);
 		runningThread.setName("IdentServer");
@@ -118,8 +124,7 @@ public class IdentServer implements Closeable, Runnable {
 
 	/**
 	 * Waits for a client to connect to the ident server before making an
-	 * appropriate response. Note that this method is started by the class
-	 * constructor.
+	 * appropriate response. 
 	 */
 	public void run() {
 		try {
@@ -137,7 +142,11 @@ public class IdentServer implements Closeable, Runnable {
 		}
 	}
 
-	public void handleNextConnection() throws SocketException, IOException {
+	/**
+	 * Wait for and process the next connection
+	 * @throws IOException If any error occurred during reading or writing
+	 */
+	public void handleNextConnection() throws IOException {
 		//Grab next connectin
 		Socket socket = serverSocket.accept();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
@@ -200,6 +209,10 @@ public class IdentServer implements Closeable, Runnable {
 		}
 	}
 
+	/**
+	 * Close the server socket and clear pending ident responses
+	 * @throws IOException If an error occured during closing
+	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")
 	public void close() throws IOException {
 		serverSocket.close();

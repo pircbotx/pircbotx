@@ -56,8 +56,8 @@ import com.google.common.collect.Iterables;
 import lombok.NonNull;
 
 /**
- *
- * @author Leon
+ * Handler of all DCC requests
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
 @Slf4j
@@ -219,6 +219,12 @@ public class DccHandler implements Closeable {
 		return true;
 	}
 
+	/**
+	 * Accept chat request, blocking until the connection is active
+	 * @param event The chat request event
+	 * @return An active {@link ReceiveChat}
+	 * @throws IOException If an error occurred during connection
+	 */
 	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		if (event.isPassive()) {
@@ -233,12 +239,29 @@ public class DccHandler implements Closeable {
 			return configuration.getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
 	}
 
+	/**
+	 * Accept file transfer at position 0, blocking until the connection is active
+	 * @param event The file request event
+	 * @param destination The destination file
+	 * @return An active {@link ReceiveFileTransfer}
+	 * @throws IOException If an error occurred during connection
+	 */
 	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		return acceptFileTransfer(event, destination, 0);
 	}
 
+	/**
+	 * Accept file transfer resuming at specified position, blocking until the connection is active
+	 * @param event The file request event
+	 * @param destination The destination file
+	 * @param startPosition The position to start the transfer at
+	 * @return An active {@link ReceiveFileTransfer} 
+	 * @throws IOException If an error occurred during connection
+	 * @throws InterruptedException If this is interrupted while waiting for a connection
+	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 */
 	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
@@ -287,10 +310,27 @@ public class DccHandler implements Closeable {
 		}
 	}
 	
+	/**
+	 * Send a chat request using {@link Configuration#isDccPassiveRequest()}
+	 * @param receiver The user to chat with
+	 * @return An active {@link SendChat}
+	 * @throws IOException If an error occurred during connection
+	 * @throws InterruptedException If passive connection was interrupted
+	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 */
 	public SendChat sendChat(User receiver) throws IOException, InterruptedException {
 		return sendChat(receiver, configuration.isDccPassiveRequest());
 	}
 
+	/**
+	 * Send a chat request using passive parameter
+	 * @param receiver The user to chat with
+	 * @param passive Whether to connect passively
+	 * @return An active {@link SendChat}
+	 * @throws IOException If an error occurred during connection
+	 * @throws InterruptedException If passive connection was interrupted
+	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 */
 	public SendChat sendChat(User receiver, boolean passive) throws IOException, InterruptedException {
 		checkNotNull(receiver, "Receiver user cannot be null");
 		if (passive) {
@@ -323,13 +363,28 @@ public class DccHandler implements Closeable {
 		}
 	}
 
+	/**
+	 * Send file using {@link Configuration#isDccPassiveRequest() }
+	 * @param file The file to send
+	 * @param receiver The user to send the file to
+	 * @return An active {@link SendFileTransfer}
+	 * @throws IOException If an error occurred during connecting
+	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 * @throws InterruptedException If passive connection was interrupted
+	 */
 	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
 		return sendFile(file, receiver, configuration.isDccPassiveRequest());
 	}
 
 	/**
-	 * Send the specified file to the user
-	 * @see #sendFileTransfers
+	 * Send file using {@link Configuration#isDccPassiveRequest() }
+	 * @param file The file to send
+	 * @param receiver The user to send the file to
+	 * @param passive Whether to connect passively
+	 * @return An active {@link SendFileTransfer}
+	 * @throws IOException If an error occurred during connecting
+	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 * @throws InterruptedException If passive connection was interrupted
 	 */
 	public SendFileTransfer sendFile(File file, User receiver, boolean passive) throws IOException, DccException, InterruptedException {
 		checkNotNull(file, "Source file cannot be null");
@@ -377,6 +432,13 @@ public class DccHandler implements Closeable {
 		}
 	}
 	
+	/**
+	 * Try to get a real InetAddress in this order:
+	 * <ol><li>{@link Configuration#getDccLocalAddress()}</li>
+	 * <li>{@link Configuration#getLocalAddress()}</li>
+	 * <li>{@link PircBotX#getLocalAddress()}</li>
+	 * @return 
+	 */
 	public InetAddress getRealDccAddress() {
 		//Try dccLocalAddress (which tries to default to dccLocalAddress
 		InetAddress address = configuration.getDccLocalAddress();
@@ -438,6 +500,9 @@ public class DccHandler implements Closeable {
 		return stringParts;
 	}
 
+	/**
+	 * Shutdown any pending dcc transfers
+	 */
 	public void close() {
 		//Shutdown open reverse dcc servers
 		shuttingDown = true;

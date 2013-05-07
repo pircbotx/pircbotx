@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.*;
 import org.pircbotx.hooks.Event;
 
 /**
- *
+ * An unknown event error.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class UnknownEventException extends RuntimeException {

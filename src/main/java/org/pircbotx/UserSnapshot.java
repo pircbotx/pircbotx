@@ -27,7 +27,7 @@ import lombok.ToString;
 
 /**
  * A snapshot of a user in time. Useful to get information before a user leaves
- * a channel or server.
+ * a channel or server. Any attempts to modify data throw an exception
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data

@@ -24,8 +24,8 @@ import java.nio.charset.Charset;
 import org.pircbotx.User;
 
 /**
- *
- * @author Leon
+ * A DCC Chat initiated by the bot.
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SendChat extends Chat {
 	public SendChat(User user, Socket socket, Charset encoding) throws IOException {

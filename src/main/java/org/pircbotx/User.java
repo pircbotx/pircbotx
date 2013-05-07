@@ -32,9 +32,7 @@ import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Represents a User on the server. Contains all the available information about
- * the user as well as some useful delegate methods.
- * status.
+ * Represents a User on the server. 
  * @since PircBot 1.0.0
  * @author Origionally by:
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
@@ -68,6 +66,10 @@ public class User implements Comparable<User> {
 		this.nick = nick;
 	}
 	
+	/**
+	 * Send a line to the user
+	 * @return A {@link OutputUser} for this user
+	 */
 	public OutputUser send() {
 		if(!outputCreated) {
 			synchronized(outputCreatedLock) {

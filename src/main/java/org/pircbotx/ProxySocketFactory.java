@@ -27,12 +27,16 @@ import java.net.UnknownHostException;
 import javax.net.SocketFactory;
 
 /**
- * A basic SocketFactory for generating sockets with proxy support
+ * A basic SocketFactory for creating sockets that connect through the specified proxy
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ProxySocketFactory extends SocketFactory {
 	protected final Proxy proxy;
 
+	/**
+	 * Create all sockets with the specified proxy
+	 * @param proxy An existing proxy
+	 */
 	public ProxySocketFactory(Proxy proxy) {
 		this.proxy = proxy;
 	}
