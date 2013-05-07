@@ -58,6 +58,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Slf4j
 public class IdentServer implements Closeable, Runnable {
+	protected static final int PORT = 113;
 	@Setter(AccessLevel.PROTECTED)
 	@Getter(AccessLevel.PROTECTED)
 	protected static IdentServer server;
@@ -103,9 +104,9 @@ public class IdentServer implements Closeable, Runnable {
 	protected IdentServer(Charset encoding) {
 		try {
 			this.encoding = encoding;
-			this.serverSocket = new ServerSocket(113);
+			this.serverSocket = new ServerSocket(PORT);
 		} catch (Exception e) {
-			throw new RuntimeException("Could not create server socket for IdentServer on port 113", e);
+			throw new RuntimeException("Could not create server socket for IdentServer on port " + PORT, e);
 		}
 	}
 
@@ -122,7 +123,7 @@ public class IdentServer implements Closeable, Runnable {
 	 */
 	public void run() {
 		try {
-			log.info("IdentServer running on port 113");
+			log.info("IdentServer running on port " + PORT);
 			while (true)
 				handleNextConnection();
 		} catch (Exception e) {
@@ -202,7 +203,7 @@ public class IdentServer implements Closeable, Runnable {
 	@Synchronized("INSTANCE_CREATE_LOCK")
 	public void close() throws IOException {
 		serverSocket.close();
-		log.info("Closed ident server on port 113");
+		log.info("Closed ident server on port " + PORT);
 	}
 
 	@Data
