@@ -33,24 +33,28 @@ import org.pircbotx.output.OutputChannel;
  * Represents a Channel that we're joined to. 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@Data
 @ToString(doNotUseGetters = true, exclude = {"outputCreated", "outputCreatedLock"})
 @EqualsAndHashCode(of = {"name", "bot"})
-@Setter(AccessLevel.PACKAGE)
 public class Channel {
+	@Getter
 	private final String name;
 	protected final UserChannelDao dao;
+	@Getter
 	protected final PircBotX bot;
 	private String mode = "";
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
 	private String topic = "";
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
 	private long topicTimestamp;
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
 	private long createTimestamp;
+	@Setter(AccessLevel.PACKAGE)
+	@Getter
 	private String topicSetter = "";
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
 	//Output is lazily created since it might not ever be used
 	protected OutputChannel output = null;
