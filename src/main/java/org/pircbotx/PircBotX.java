@@ -90,7 +90,7 @@ public class PircBotX {
 	@Getter
 	protected final InputParser inputParser;
 	@Getter
-	protected final UserChannelDao userChannelDao;
+	protected final UserChannelDao<User, Channel> userChannelDao;
 	@Getter
 	protected final DccHandler dccHandler;
 	protected final ServerInfo serverInfo;

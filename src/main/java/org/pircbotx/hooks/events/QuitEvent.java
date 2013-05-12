@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.UserSnapshot;
+import org.pircbotx.snapshot.UserSnapshot;
 
 /**
  * This event is dispatched whenever someone (possibly us) quits from the

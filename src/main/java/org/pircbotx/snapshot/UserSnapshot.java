@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx;
+package org.pircbotx.snapshot;
 
 import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
@@ -24,6 +24,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 
 /**
  * A snapshot of a user in time. Useful to get information before a user leaves
@@ -33,19 +35,15 @@ import lombok.ToString;
 //Only use super implementation which uses UIDs
 @EqualsAndHashCode(callSuper = true, of = {})
 @ToString(callSuper = true, of = {})
-@Setter(AccessLevel.NONE)
-@Getter
 public class UserSnapshot extends User {
-	protected ImmutableSet<Channel> channels;
-	protected ImmutableSet<Channel> channelsOpIn;
-	protected ImmutableSet<Channel> channelsVoiceIn;
-	protected ImmutableSet<Channel> channelsOwnerIn;
-	protected ImmutableSet<Channel> channelsSuperOpIn;
-	protected ImmutableSet<Channel> channelsHalfOpIn;
+	@Getter
 	protected final User generatedFrom;
-
+	@Getter(value = AccessLevel.PROTECTED, onMethod = @_(@Override))
+	@Setter
+	protected UserChannelDaoSnapshot dao;
+	
 	public UserSnapshot(User user) {
-		super(user.getBot(), user.getDao(), user.getNick());
+		super(user.getBot(), null, user.getNick());
 		generatedFrom = user;
 
 		//Clone fields
@@ -56,18 +54,10 @@ public class UserSnapshot extends User {
 		super.setLogin(user.getLogin());
 		super.setRealName(user.getRealName());
 		super.setServer(user.getServer());
-
-		//Store channels
-		channels = user.getChannels();
-		channelsOpIn = user.getChannelsOpIn();
-		channelsVoiceIn = user.getChannelsVoiceIn();
-		channelsSuperOpIn = user.getChannelsSuperOpIn();
-		channelsHalfOpIn = user.getChannelsHalfOpIn();
-		channelsOwnerIn = user.getChannelsOwnerIn();
 	}
 
 	@Override
-	public UserSnapshot generateSnapshot() {
+	public UserSnapshot createSnapshot() {
 		throw new UnsupportedOperationException("Attempting to generate user snapshot from a snapshot");
 	}
 
