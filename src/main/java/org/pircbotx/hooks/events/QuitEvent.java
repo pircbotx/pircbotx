@@ -22,6 +22,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserChannelDao;
+import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
@@ -33,6 +35,7 @@ import org.pircbotx.snapshot.UserSnapshot;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QuitEvent<T extends PircBotX> extends Event<T> {
+	protected final UserChannelDaoSnapshot daoSnapshot;
 	protected final UserSnapshot user;
 	protected final String reason;
 
@@ -42,8 +45,9 @@ public class QuitEvent<T extends PircBotX> extends Event<T> {
 	 * @param user The user that quit from the server in snapshot form
 	 * @param reason The reason given for quitting the server.
 	 */
-	public QuitEvent(T bot, UserSnapshot user, String reason) {
+	public QuitEvent(T bot, UserChannelDaoSnapshot daoSnapshot, UserSnapshot user, String reason) {
 		super(bot);
+		this.daoSnapshot = daoSnapshot;
 		this.user = user;
 		this.reason = reason;
 	}

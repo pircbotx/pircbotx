@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 
 /**
  * This event is dispatched when we get disconnected. It is meant for the bot
@@ -42,12 +43,15 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DisconnectEvent<T extends PircBotX> extends Event<T> {
+	protected final UserChannelDaoSnapshot daoSnapshot;
+
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 */
-	public DisconnectEvent(T bot) {
+	public DisconnectEvent(T bot, UserChannelDaoSnapshot daoSnapshot) {
 		super(bot);
+		this.daoSnapshot = daoSnapshot;
 	}
 
 	/**

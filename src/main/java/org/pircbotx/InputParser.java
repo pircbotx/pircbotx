@@ -93,6 +93,8 @@ import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
+import org.pircbotx.snapshot.ChannelSnapshot;
+import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -356,13 +358,16 @@ public class InputParser implements Closeable {
 			listenerManager.dispatchEvent(new JoinEvent(bot, channel, source));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
+			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
+			ChannelSnapshot channelSnapshot = daoSnapshot.getChannel(channel.getName());
+			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source.getNick());
 			if (sourceNick.equals(bot.getNick()))
 				//We parted the channel
 				dao.removeChannel(channel);
 			else
 				//Just remove the user from memory
 				dao.removeUserFromChannel(source, channel);
-			listenerManager.dispatchEvent(new PartEvent(bot, channel, source, message));
+			listenerManager.dispatchEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, sourceSnapshot, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
@@ -375,14 +380,15 @@ public class InputParser implements Closeable {
 			// Someone is sending a notice.
 			listenerManager.dispatchEvent(new NoticeEvent(bot, source, channel, message));
 		else if (command.equals("QUIT")) {
-			UserSnapshot snapshot = source.createSnapshot();
+			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
+			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source.getNick());
 			//A real target is missing, so index is off
 			String reason = target;
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(bot.getNick()))
 				//Someone else
 				dao.removeUser(source);
-			listenerManager.dispatchEvent(new QuitEvent(bot, snapshot, reason));
+			listenerManager.dispatchEvent(new QuitEvent(bot, daoSnapshot, sourceSnapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			User recipient = dao.getUser(message);
