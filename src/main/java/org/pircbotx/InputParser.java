@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -374,7 +375,7 @@ public class InputParser implements Closeable {
 			// Someone is sending a notice.
 			listenerManager.dispatchEvent(new NoticeEvent(bot, source, channel, message));
 		else if (command.equals("QUIT")) {
-			UserSnapshot snapshot = source.generateSnapshot();
+			UserSnapshot snapshot = source.createSnapshot();
 			//A real target is missing, so index is off
 			String reason = target;
 			// Someone has quit from the IRC server.
@@ -628,20 +629,20 @@ public class InputParser implements Closeable {
 				else if (atPos == 'o') {
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToLevel(UserLevel.OP, user, channel);
+						dao.addUserToLevel(UserLevel.OP, recipient, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.OP, user, channel);
+						dao.removeUserFromLevel(UserLevel.OP, recipient, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
 				} else if (atPos == 'v') {
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToLevel(UserLevel.VOICE, user, channel);
+						dao.addUserToLevel(UserLevel.VOICE, recipient, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.VOICE, user, channel);
+						dao.removeUserFromLevel(UserLevel.VOICE, recipient, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -649,10 +650,10 @@ public class InputParser implements Closeable {
 					//Half-op change
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToLevel(UserLevel.HALFOP, user, channel);
+						dao.addUserToLevel(UserLevel.HALFOP, recipient, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.HALFOP, user, channel);
+						dao.removeUserFromLevel(UserLevel.HALFOP, recipient, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -660,10 +661,10 @@ public class InputParser implements Closeable {
 					//SuperOp change
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToLevel(UserLevel.SUPEROP, user, channel);
+						dao.addUserToLevel(UserLevel.SUPEROP, recipient, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.SUPEROP, user, channel);
+						dao.removeUserFromLevel(UserLevel.SUPEROP, recipient, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, false));
 					}
 					p++;
@@ -671,10 +672,10 @@ public class InputParser implements Closeable {
 					//Owner change
 					User recipient = dao.getUser(params[p]);
 					if (pn == '+') {
-						dao.addUserToLevel(UserLevel.OWNER, user, channel);
+						dao.addUserToLevel(UserLevel.OWNER, recipient, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.OWNER, user, channel);
+						dao.removeUserFromLevel(UserLevel.OWNER, recipient, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
 					}
 					p++;

@@ -26,8 +26,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputChannel;
+import org.pircbotx.snapshot.ChannelSnapshot;
 
 /**
  * Represents a Channel that we're joined to. 
@@ -35,24 +37,25 @@ import org.pircbotx.output.OutputChannel;
  */
 @ToString(doNotUseGetters = true, exclude = {"outputCreated", "outputCreatedLock"})
 @EqualsAndHashCode(of = {"name", "bot"})
+@Slf4j
 public class Channel {
 	@Getter
 	private final String name;
+	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao dao;
 	@Getter
 	protected final PircBotX bot;
 	private String mode = "";
-	@Setter(AccessLevel.PACKAGE)
+	@Setter(AccessLevel.PROTECTED)
 	@Getter
 	private String topic = "";
-	@Setter(AccessLevel.PACKAGE)
+	@Setter(AccessLevel.PROTECTED)
 	@Getter
 	private long topicTimestamp;
-	@Setter(AccessLevel.PACKAGE)
+	@Setter(AccessLevel.PROTECTED)
 	@Getter
 	private long createTimestamp;
-	@Setter(AccessLevel.PACKAGE)
-	@Getter
+	@Setter(AccessLevel.PROTECTED)
 	private String topicSetter = "";
 	protected boolean modeStale = false;
 	protected CountDownLatch modeLatch = null;
@@ -244,7 +247,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of the levels the user holds
 	 */
 	public ImmutableSet<UserLevel> getUserLevels(User user) {
-		return dao.getLevels(this, user);
+		return getDao().getLevels(this, user);
 	}
 
 	/**
@@ -253,7 +256,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of normal users
 	 */
 	public ImmutableSet<User> getNormalUsers() {
-		return dao.getNormalUsers(this);
+		return getDao().getNormalUsers(this);
 	}
 
 	/**
@@ -261,7 +264,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of opped users
 	 */
 	public ImmutableSet<User> getOps() {
-		return dao.getUsers(this, UserLevel.OP);
+		return getDao().getUsers(this, UserLevel.OP);
 	}
 
 	/**
@@ -269,7 +272,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of voiced users
 	 */
 	public ImmutableSet<User> getVoices() {
-		return dao.getUsers(this, UserLevel.VOICE);
+		return getDao().getUsers(this, UserLevel.VOICE);
 	}
 
 	/**
@@ -277,7 +280,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of users with Owner status
 	 */
 	public ImmutableSet<User> getOwners() {
-		return dao.getUsers(this, UserLevel.OWNER);
+		return getDao().getUsers(this, UserLevel.OWNER);
 	}
 
 	/**
@@ -285,7 +288,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of users with Half Operator status
 	 */
 	public ImmutableSet<User> getHalfOps() {
-		return dao.getUsers(this, UserLevel.HALFOP);
+		return getDao().getUsers(this, UserLevel.HALFOP);
 	}
 
 	/**
@@ -293,7 +296,7 @@ public class Channel {
 	 * @return An <b>immutable copy</b> of users with Super Operator status
 	 */
 	public ImmutableSet<User> getSuperOps() {
-		return dao.getUsers(this, UserLevel.SUPEROP);
+		return getDao().getUsers(this, UserLevel.SUPEROP);
 	}
 
 	/**
@@ -313,7 +316,7 @@ public class Channel {
 	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
 	public ImmutableSet<User> getUsers() {
-		return dao.getUsers(this);
+		return getDao().getUsers(this);
 	}
 
 	/**
@@ -330,7 +333,7 @@ public class Channel {
 	 * @return True if the user is an Operator, false if not
 	 */
 	public boolean isOp(User user) {
-		return dao.levelContainsUser(UserLevel.OP, this, user);
+		return getDao().levelContainsUser(UserLevel.OP, this, user);
 	}
 
 	/**
@@ -338,7 +341,7 @@ public class Channel {
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
-		return dao.levelContainsUser(UserLevel.VOICE, this, user);
+		return getDao().levelContainsUser(UserLevel.VOICE, this, user);
 	}
 
 	/**
@@ -346,7 +349,7 @@ public class Channel {
 	 * @return True if the user is a Super Operator, false if not
 	 */
 	public boolean isSuperOp(User user) {
-		return dao.levelContainsUser(UserLevel.SUPEROP, this, user);
+		return getDao().levelContainsUser(UserLevel.SUPEROP, this, user);
 	}
 
 	/**
@@ -354,7 +357,7 @@ public class Channel {
 	 * @return True if the user is an Owner, false if not
 	 */
 	public boolean isOwner(User user) {
-		return dao.levelContainsUser(UserLevel.OWNER, this, user);
+		return getDao().levelContainsUser(UserLevel.OWNER, this, user);
 	}
 
 	/**
@@ -362,6 +365,12 @@ public class Channel {
 	 * @return True if the user is a Half Operator, false if not
 	 */
 	public boolean isHalfOp(User user) {
-		return dao.levelContainsUser(UserLevel.HALFOP, this, user);
+		return getDao().levelContainsUser(UserLevel.HALFOP, this, user);
+	}
+	
+	public ChannelSnapshot createSnapshot() {
+		if(modeStale)
+			log.warn("Channel {} mode '{}' is stale", getName(), getMode());
+		return new ChannelSnapshot(this, mode);
 	}
 }

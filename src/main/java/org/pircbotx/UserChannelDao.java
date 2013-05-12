@@ -18,19 +18,25 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import java.io.Closeable;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import org.pircbotx.hooks.events.UserListEvent;
+import org.pircbotx.snapshot.ChannelSnapshot;
+import org.pircbotx.snapshot.UserChannelDaoSnapshot;
+import org.pircbotx.snapshot.UserChannelMapSnapshot;
+import org.pircbotx.snapshot.UserSnapshot;
 
 /**
  * Stores and maintains relationships between users and channels. This class should
@@ -39,35 +45,41 @@ import org.pircbotx.hooks.events.UserListEvent;
  * @see Channel
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class UserChannelDao implements Closeable {
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+public class UserChannelDao<U extends User, C extends Channel> implements Closeable {
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
-	protected final UserChannelMap mainMap = new UserChannelMap();
-	protected final EnumMap<UserLevel, UserChannelMap> levelsMap = Maps.newEnumMap(UserLevel.class);
-	protected final HashBiMap<String, User> userNickMap = HashBiMap.create();
-	protected final HashBiMap<String, Channel> channelNameMap = HashBiMap.create();
-	protected final Set<User> privateUsers = new HashSet();
+	protected final UserChannelMap mainMap;
+	protected final EnumMap<UserLevel, UserChannelMap<U, C>> levelsMap;
+	protected final BiMap<String, U> userNickMap;
+	protected final BiMap<String, C> channelNameMap;
+	protected final Set<U> privateUsers;
 
 	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
+		this.mainMap = new UserChannelMap();
+		this.userNickMap = HashBiMap.create();
+		this.channelNameMap = HashBiMap.create();
+		this.privateUsers = new HashSet();
 
 		//Initialize levels map with a UserChannelMap for each level
+		this.levelsMap = Maps.newEnumMap(UserLevel.class);
 		for (UserLevel level : UserLevel.values())
 			levelsMap.put(level, new UserChannelMap());
 	}
 
 	@Synchronized("accessLock")
-	public User getUser(String nick) {
+	public U getUser(String nick) {
 		if (nick == null)
 			throw new NullPointerException("Can't get a null user");
-		User user = userNickMap.get(nick);
+		U user = userNickMap.get(nick);
 		if (user != null)
 			return user;
 
 		//Create new user
-		user = botFactory.createUser(bot, nick);
+		user = (U) botFactory.createUser(bot, nick);
 		userNickMap.put(nick, user);
 		return user;
 	}
@@ -98,68 +110,69 @@ public class UserChannelDao implements Closeable {
 	 * @see UserListEvent
 	 */
 	@Synchronized("accessLock")
-	public ImmutableSet<User> getAllUsers() {
+	public ImmutableSet<U> getAllUsers() {
 		return ImmutableSet.copyOf(userNickMap.values());
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToChannel(User user, Channel channel) {
+	protected void addUserToChannel(U user, C channel) {
 		mainMap.addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToPrivate(User user) {
+	protected void addUserToPrivate(U user) {
 		privateUsers.add(user);
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToLevel(UserLevel level, User user, Channel channel) {
+	protected void addUserToLevel(UserLevel level, U user, C channel) {
 		levelsMap.get(level).addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void removeUserFromLevel(UserLevel level, User user, Channel channel) {
+	protected void removeUserFromLevel(UserLevel level, U user, C channel) {
 		levelsMap.get(level).removeUserFromChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<User> getNormalUsers(Channel channel) {
-		Set<User> remainingUsers = new HashSet(mainMap.getUsers(channel));
-		for(UserChannelMap curLevelMap : levelsMap.values())
+	public ImmutableSet<U> getNormalUsers(C channel) {
+		Set<U> remainingUsers = new HashSet(mainMap.getUsers(channel));
+		for (UserChannelMap curLevelMap : levelsMap.values())
 			remainingUsers.removeAll(curLevelMap.getUsers(channel));
 		return ImmutableSet.copyOf(remainingUsers);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<User> getUsers(Channel channel, UserLevel level) {
+	public ImmutableSet<U> getUsers(C channel, UserLevel level) {
 		return levelsMap.get(level).getUsers(channel);
 	}
-	
-	public ImmutableSet<UserLevel> getLevels(Channel channel, User user) {
+
+	@Synchronized("accessLock")
+	public ImmutableSet<UserLevel> getLevels(C channel, U user) {
 		ImmutableSet.Builder<UserLevel> builder = ImmutableSet.builder();
-		for(Map.Entry<UserLevel, UserChannelMap> curEntry : levelsMap.entrySet())
-			if(curEntry.getValue().containsEntry(user, channel))
+		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curEntry : levelsMap.entrySet())
+			if (curEntry.getValue().containsEntry(user, channel))
 				builder.add(curEntry.getKey());
 		return builder.build();
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getNormalUserChannels(User user) {
-		Set<Channel> remainingChannels = new HashSet(mainMap.getChannels(user));
-		for(UserChannelMap curLevelMap : levelsMap.values())
+	public ImmutableSet<C> getNormalUserChannels(U user) {
+		Set<C> remainingChannels = new HashSet(mainMap.getChannels(user));
+		for (UserChannelMap curLevelMap : levelsMap.values())
 			remainingChannels.removeAll(curLevelMap.getChannels(user));
 		return ImmutableSet.copyOf(remainingChannels);
 	}
-	
+
 	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getChannels(User user, UserLevel level) {
+	public ImmutableSet<C> getChannels(U user, UserLevel level) {
 		return levelsMap.get(level).getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	protected void removeUserFromChannel(User user, Channel channel) {
+	protected void removeUserFromChannel(U user, C channel) {
 		mainMap.removeUserFromChannel(user, channel);
-		for(UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap curLevelMap : levelsMap.values())
 			curLevelMap.removeUserFromChannel(user, channel);
 
 		if (!privateUsers.contains(user) && !mainMap.containsUser(user))
@@ -168,36 +181,37 @@ public class UserChannelDao implements Closeable {
 	}
 
 	@Synchronized("accessLock")
-	protected void removeUser(User user) {
+	protected void removeUser(U user) {
 		mainMap.removeUser(user);
-		for(UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap curLevelMap : levelsMap.values())
 			curLevelMap.removeUser(user);
 
 		//Remove remaining locations
 		userNickMap.inverse().remove(user);
 		privateUsers.remove(user);
 	}
-	
-	protected boolean levelContainsUser(UserLevel level, Channel channel, User user) {
+
+	@Synchronized("accessLock")
+	protected boolean levelContainsUser(UserLevel level, C channel, U user) {
 		return levelsMap.get(level).containsEntry(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void renameUser(User user, String newNick) {
+	protected void renameUser(U user, String newNick) {
 		user.setNick(newNick);
 		userNickMap.inverse().put(user, newNick);
 	}
 
 	@Synchronized("accessLock")
-	public Channel getChannel(String name) {
+	public C getChannel(String name) {
 		if (name == null)
 			throw new NullPointerException("Can't get a null channel");
-		Channel chan = channelNameMap.get(name);
+		C chan = channelNameMap.get(name);
 		if (chan != null)
 			return chan;
 
 		//Channel does not exist, create one
-		chan = botFactory.createChannel(bot, name);
+		chan = (C) botFactory.createChannel(bot, name);
 		channelNameMap.put(name, chan);
 		return chan;
 	}
@@ -207,30 +221,30 @@ public class UserChannelDao implements Closeable {
 	 * @param name A channel name as a string
 	 * @return True if we are still connected to the channel, false if not
 	 */
-	@Synchronized
+	@Synchronized("accessLock")
 	public boolean channelExists(String name) {
 		return channelNameMap.containsKey(name);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<User> getUsers(Channel channel) {
+	public ImmutableSet<U> getUsers(C channel) {
 		return mainMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getAllChannels() {
+	public ImmutableSet<C> getAllChannels() {
 		return ImmutableSet.copyOf(channelNameMap.values());
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<Channel> getChannels(User user) {
+	public ImmutableSet<C> getChannels(U user) {
 		return mainMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	protected void removeChannel(Channel channel) {
+	protected void removeChannel(C channel) {
 		mainMap.removeChannel(channel);
-		for(UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap curLevelMap : levelsMap.values())
 			curLevelMap.removeChannel(channel);
 
 		//Remove remaining locations
@@ -240,10 +254,55 @@ public class UserChannelDao implements Closeable {
 	@Synchronized("accessLock")
 	public void close() {
 		mainMap.clear();
-		for(UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap curLevelMap : levelsMap.values())
 			curLevelMap.clear();
 		channelNameMap.clear();
 		privateUsers.clear();
 		userNickMap.clear();
+	}
+
+	@Synchronized("accessLock")
+	public UserChannelDaoSnapshot createSnapshot() {
+		//Create snapshots of all users and channels
+		ImmutableMap.Builder<U, UserSnapshot> userSnapshotBuilder = ImmutableMap.builder();
+		for (U curUser : userNickMap.values())
+			userSnapshotBuilder.put(curUser, curUser.createSnapshot());
+		ImmutableMap<U, UserSnapshot> userSnapshotMap = userSnapshotBuilder.build();
+		ImmutableMap.Builder<C, ChannelSnapshot> channelSnapshotBuilder = ImmutableMap.builder();
+		for (C curChannel : channelNameMap.values())
+			channelSnapshotBuilder.put(curChannel, curChannel.createSnapshot());
+		ImmutableMap<C, ChannelSnapshot> channelSnapshotMap = channelSnapshotBuilder.build();
+
+		//Make snapshots of the relationship maps using the above user and channel snapshots
+		UserChannelMapSnapshot mainMapSnapshot = mainMap.createSnapshot(userSnapshotMap, channelSnapshotMap);
+		EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = new EnumMap(UserLevel.class);
+		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
+			levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
+		ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();
+		for (Map.Entry<String, U> curNick : userNickMap.entrySet())
+			userNickMapSnapshotBuilder.put(curNick.getKey(), curNick.getValue().createSnapshot());
+		ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
+		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
+			channelNameMapSnapshotBuilder.put(curName.getKey(), curName.getValue().createSnapshot());
+		ImmutableSet.Builder<UserSnapshot> privateUserSnapshotBuilder = ImmutableSet.builder();
+		for (User curUser : privateUsers)
+			privateUserSnapshotBuilder.add(curUser.createSnapshot());
+
+		//Finally can create the snapshot object
+		UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,
+				mainMapSnapshot,
+				levelsMapSnapshot,
+				userNickMapSnapshotBuilder.build(),
+				channelNameMapSnapshotBuilder.build(),
+				privateUserSnapshotBuilder.build());
+		
+		//Tell UserSnapshots and ChannelSnapshots what the new backing dao is
+		for(UserSnapshot curUserSnapshot : userSnapshotMap.values())
+			curUserSnapshot.setDao(daoSnapshot);
+		for(ChannelSnapshot curChannelSnapshot : channelSnapshotMap.values())
+			curChannelSnapshot.setDao(daoSnapshot);
+		
+		//Finally
+		return daoSnapshot;
 	}
 }

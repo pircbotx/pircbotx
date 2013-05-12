@@ -22,13 +22,22 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
+import java.util.Map;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.pircbotx.snapshot.ChannelSnapshot;
+import org.pircbotx.snapshot.UserChannelMapSnapshot;
+import org.pircbotx.snapshot.UserSnapshot;
 
 /**
  * A many to many map of users to channels.
  */
-public class UserChannelMap {
-	protected final Multimap<Channel, User> channelToUserMap;
-	protected final Multimap<User, Channel> userToChannelMap;
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
+public class UserChannelMap<U extends User, C extends Channel> {
+	protected final Multimap<U, C> userToChannelMap;
+	protected final Multimap<C, U> channelToUserMap;
 
 	/**
 	 * Create with HashMultimaps
@@ -38,48 +47,45 @@ public class UserChannelMap {
 		userToChannelMap = HashMultimap.create();
 	}
 
-	/**
-	 * Create as an <b>immutable copy</b> of the other map
-	 * @param otherMap Another map to copy
-	 */
-	public UserChannelMap(UserChannelMap otherMap) {
-		this.channelToUserMap = ImmutableMultimap.copyOf(otherMap.channelToUserMap);
-		this.userToChannelMap = ImmutableMultimap.copyOf(otherMap.userToChannelMap);
-	}
-
-	public void addUserToChannel(User user, Channel channel) {
+	public void addUserToChannel(U user, C channel) {
+		log.trace("MapAdd User: {} | Channel: {}", user, channel);
 		userToChannelMap.put(user, channel);
 		channelToUserMap.put(channel, user);
 	}
 
-	public void removeUserFromChannel(User user, Channel channel) {
+	public void removeUserFromChannel(U user, C channel) {
 		userToChannelMap.remove(user, channel);
 		channelToUserMap.remove(channel, user);
 	}
 
-	public void removeUser(User user) {
+	public void removeUser(U user) {
 		//Remove the user from each channel
 		for (Channel curChannel : userToChannelMap.removeAll(user))
 			channelToUserMap.remove(curChannel, user);
 	}
 
-	public void removeChannel(Channel channel) {
+	public void removeChannel(C channel) {
 		//Remove the channel from each user
 		for (User curUser : channelToUserMap.removeAll(channel))
 			//This will automatically remove the user if they have no more channels
 			userToChannelMap.remove(curUser, channel);
 	}
 
-	public ImmutableSet<User> getUsers(Channel channel) {
+	public ImmutableSet<U> getUsers(C channel) {
 		return ImmutableSet.copyOf(channelToUserMap.get(channel));
 	}
 
-	public ImmutableSet<Channel> getChannels(User user) {
+	public ImmutableSet<C> getChannels(U user) {
 		return ImmutableSet.copyOf(userToChannelMap.get(user));
 	}
 
-	public boolean containsEntry(User user, Channel channel) {
-		return channelToUserMap.containsEntry(channel, user) && userToChannelMap.containsEntry(user, channel);
+	public boolean containsEntry(U user, C channel) {
+		log.trace("MapContains User: {} | Channel: {}", user, channel);
+		boolean channelToUserContains = channelToUserMap.containsEntry(channel, user);
+		boolean userToChannelContains = userToChannelMap.containsEntry(user, channel);
+		if (channelToUserContains != userToChannelContains)
+			throw new RuntimeException("Map inconsistent! User: " + user + " | Channel: " + channel + " | channelToUserMap: " + channelToUserContains + " | userToChannelMap: " + userToChannelContains);
+		return  channelToUserContains;
 	}
 
 	public boolean containsUser(User user) {
@@ -94,5 +100,17 @@ public class UserChannelMap {
 		userToChannelMap.clear();
 		channelToUserMap.clear();
 	}
-	
+
+	public UserChannelMapSnapshot createSnapshot(Map<U, UserSnapshot> userSnapshots, Map<C, ChannelSnapshot> channelSnapshots) {
+		//Create new multimaps replacing each user and channel with their respective snapshots
+		ImmutableMultimap.Builder<UserSnapshot, ChannelSnapshot> userToChannelSnapshotBuilder = ImmutableMultimap.builder();
+		for (Map.Entry<U, C> curEntry : userToChannelMap.entries())
+			userToChannelSnapshotBuilder.put(userSnapshots.get(curEntry.getKey()), channelSnapshots.get(curEntry.getValue()));
+		ImmutableMultimap.Builder<ChannelSnapshot, UserSnapshot> channelToUserSnapshotBuilder = ImmutableMultimap.builder();
+		for (Map.Entry<C, U> curEntry : channelToUserMap.entries())
+			channelToUserSnapshotBuilder.put(channelSnapshots.get(curEntry.getKey()), userSnapshots.get(curEntry.getValue()));
+
+		//Return a snapshot of the map
+		return new UserChannelMapSnapshot(userToChannelSnapshotBuilder.build(), channelToUserSnapshotBuilder.build());
+	}
 }
