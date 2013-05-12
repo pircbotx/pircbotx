@@ -633,7 +633,7 @@ public class InputParserTest {
 		//Check event contents
 		PartEvent event = getEvent(PartEvent.class, "PartEvent not dispatched");
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
-		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given");
+		assertEquals(event.getUser().getGeneratedFrom(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), aString, "PartEvent's reason doesn't match given");
 	}
 
@@ -647,7 +647,7 @@ public class InputParserTest {
 		//Check event contents
 		PartEvent event = getEvent(PartEvent.class, "PartEvent not dispatched");
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
-		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given");
+		assertEquals(event.getUser().getGeneratedFrom(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
 	}
 
@@ -661,7 +661,7 @@ public class InputParserTest {
 		//Check event contents
 		PartEvent event = getEvent(PartEvent.class, "PartEvent not dispatched");
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
-		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given");
+		assertEquals(event.getUser().getGeneratedFrom(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
 	}
 
@@ -675,7 +675,7 @@ public class InputParserTest {
 		//Check event contents
 		PartEvent event = getEvent(PartEvent.class, "PartEvent not dispatched for this bot");
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given for this bot");
-		assertEquals(event.getUser(), otherUser, "PartEvent's user doesn't match given for this bot");
+		assertEquals(event.getUser().getGeneratedFrom(), otherUser, "PartEvent's user doesn't match given for this bot");
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given for this bot");
 	}
 
