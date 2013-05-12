@@ -24,6 +24,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.snapshot.ChannelSnapshot;
+import org.pircbotx.snapshot.UserChannelDaoSnapshot;
+import org.pircbotx.snapshot.UserSnapshot;
 
 /**
  * This event is dispatched whenever someone (possibly us) parts a channel
@@ -33,8 +36,9 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PartEvent<T extends PircBotX> extends Event<T> {
-	protected final Channel channel;
-	protected final User user;
+	protected final UserChannelDaoSnapshot daoSnapshot;
+	protected final ChannelSnapshot channel;
+	protected final UserSnapshot user;
 	protected final String reason;
 
 	/**
@@ -43,8 +47,9 @@ public class PartEvent<T extends PircBotX> extends Event<T> {
 	 * @param channel The channel which somebody parted from.
 	 * @param user The user who parted from the channel.
 	 */
-	public PartEvent(T bot, Channel channel, User user, String reason) {
+	public PartEvent(T bot, UserChannelDaoSnapshot daoSnapshot, ChannelSnapshot channel, UserSnapshot user, String reason) {
 		super(bot);
+		this.daoSnapshot = daoSnapshot;
 		this.channel = channel;
 		this.user = user;
 		this.reason = reason;
