@@ -486,7 +486,7 @@ public class PircBotX {
 				throw new RuntimeException("Can't reconnect to server", e);
 			}
 		else {
-			configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this));
+			configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, userChannelDao.createSnapshot()));
 			log.debug("Disconnected.");
 		}
 
