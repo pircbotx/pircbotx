@@ -20,6 +20,7 @@ package org.pircbotx.hooks.events;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketAddress;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.pircbotx.hooks.Event;
@@ -62,8 +63,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @EqualsAndHashCode(callSuper = true)
 public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	protected final User user;
-	protected final InetAddress chatAddress;
-	protected final int chatPort;
+	protected final SocketAddress chatAddress;
 	protected final String chatToken;
 	protected final boolean passive;
 
@@ -72,11 +72,10 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 */
-	public IncomingChatRequestEvent(T bot, User user, InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
+	public IncomingChatRequestEvent(T bot, User user, SocketAddress chatAddress, String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.chatAddress = chatAddress;
-		this.chatPort = chatPort;
 		this.chatToken = chatToken;
 		this.passive = passive;
 	}
