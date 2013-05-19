@@ -19,8 +19,11 @@
 package org.pircbotx.dcc;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +39,7 @@ public abstract class FileTransfer {
 	@NonNull
 	protected final Configuration configuration;
 	@NonNull
-	protected final Socket socket;
+	protected final SocketChannel socket;
 	@NonNull
 	@Getter
 	protected final User user;
