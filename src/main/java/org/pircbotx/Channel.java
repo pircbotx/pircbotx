@@ -38,30 +38,42 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 @ToString(doNotUseGetters = true, exclude = {"outputCreated", "outputCreatedLock"})
 @EqualsAndHashCode(of = {"name", "bot"})
 @Slf4j
+@Getter
+@Setter(AccessLevel.PROTECTED)
 public class Channel {
-	@Getter
 	private final String name;
 	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao dao;
-	@Getter
 	protected final PircBotX bot;
 	private String mode = "";
-	@Setter(AccessLevel.PROTECTED)
-	@Getter
-	private String topic = "";
-	@Setter(AccessLevel.PROTECTED)
-	@Getter
-	private long topicTimestamp;
-	@Setter(AccessLevel.PROTECTED)
-	@Getter
-	private long createTimestamp;
-	@Setter(AccessLevel.PROTECTED)
-	private String topicSetter = "";
+	protected String topic = "";
+	protected long topicTimestamp;
+	protected long createTimestamp;
+	protected String topicSetter = "";
+	protected boolean moderated = false;
+	protected boolean noExternalMessages = false;
+	protected boolean inviteOnly = false;
+	protected boolean secret = false;
+	protected boolean channelPrivate = false;
+	@Getter(AccessLevel.NONE)
+	protected boolean topicProtection = false;
+	protected int channelLimit = -1;
+	protected String channelKey = null;
+	@Getter(AccessLevel.PROTECTED)
+	@Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
+	@Getter(AccessLevel.PROTECTED)
+	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
 	//Output is lazily created since it might not ever be used
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	protected OutputChannel output = null;
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	protected volatile boolean outputCreated = false;
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	protected final Object outputCreatedLock = new Object[0];
 	
 	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
@@ -101,7 +113,7 @@ public class Channel {
 			else if (curChar == '+')
 				adding = true;
 			else if (adding)
-				mode = curChar + mode;
+				mode = mode + curChar;
 			else
 				mode = mode.replace(Character.toString(curChar), "");
 	}
@@ -123,6 +135,7 @@ public class Channel {
 
 		//Mode is stale, get new mode from server
 		try {
+			log.trace("Who the crap called me?", new RuntimeException());
 			bot.sendRaw().rawLine("MODE " + getName());
 			if (modeLatch == null || modeLatch.getCount() == 0)
 				modeLatch = new CountDownLatch(1);
@@ -137,108 +150,12 @@ public class Channel {
 		}
 	}
 
-	protected boolean modeExists(char modeChar) {
-		//Can't exist if there's nothing there
-		if (getMode().isEmpty())
-			return false;
-
-		return getMode().split(" ")[0].contains("" + modeChar);
-	}
-
-	/**
-	 * Check if channel is invite only (+i)
-	 * @return True if +i
-	 */
-	public boolean isInviteOnly() {
-		return modeExists('i');
-	}
-
-	/**
-	 * Check if channel is moderated (+m)
-	 * @return True if +m
-	 */
-	public boolean isModerated() {
-		return modeExists('m');
-	}
-
-	/**
-	 * Check if channel will not accept external messages (+n)
-	 * @return True if +n
-	 */
-	public boolean isNoExternalMessages() {
-		return modeExists('n');
-	}
-
-	/**
-	 * Check if channel is secret (+s)
-	 * @return True if +s
-	 */
-	public boolean isSecret() {
-		return modeExists('s');
-	}
-
 	/**
 	 * Check if the channel has topic protection (+t) set
 	 * @return True if +t	
  */
 	public boolean hasTopicProtection() {
-		return modeExists('t');
-	}
-
-	protected String getModeArgument(char modeChar) {
-		String cleanMode = (getMode().startsWith("+") || getMode().startsWith("-")) ? getMode().substring(1) : getMode();
-		String[] modeParts = cleanMode.split(" ");
-
-		//Make sure it exists
-		if (!modeExists(modeChar))
-			return null;
-
-		//If its the fist one, use that
-		if (cleanMode.startsWith("" + modeChar))
-			return modeParts[1];
-
-		//If its the last one, use that
-		if (modeParts[0].endsWith("" + modeChar))
-			return modeParts[modeParts.length - 1];
-
-		//Its in the middle. Go through the modes and move which position we think the argument is
-		int argCounter = 0;
-		for (char curMode : getMode().split(" ")[0].toCharArray())
-			if (curMode == modeChar)
-				argCounter++;
-
-		//If arg counter is 0, then the mode arg found
-		if (argCounter == 0)
-			throw new RuntimeException("Arg wasn't found yet it go to the loop");
-
-		//Assume the argument here is the correct one
-		return modeParts[argCounter];
-	}
-
-	/**
-	 * Get the channel limit if it exists
-	 * <p>
-	 * <b>Note:</b> The returned value is the best effort guess of what the channel
-	 * limit is. Unknown modes and their arguments may make the returned value wrong.
-	 * Whether the returned value is null is not affected by this issue
-	 * @return If its set, the best effort guess of what the channel limit is.
-	 * If its not set, returns -1.
-	 */
-	public int getChannelLimit() {
-		return Utils.tryParseInt(getModeArgument('l'), -1);
-	}
-
-	/**
-	 * Get the channel key if it exists
-	 * <p>
-	 * <b>Note:</b> The returned value is the best effort guess of what the channel
-	 * key is. Unknown modes and their arguments may make the returned value wrong.
-	 * Whether the returned value is null is not affected by this issue
-	 * @return If its set, the best effort guess of what the channel key is.
-	 * If its not set, null.
-	 */
-	public String getChannelKey() {
-		return getModeArgument('k');
+		return topicProtection;
 	}
 	
 	/**
@@ -370,7 +287,7 @@ public class Channel {
 	
 	public ChannelSnapshot createSnapshot() {
 		if(modeStale)
-			log.warn("Channel {} mode '{}' is stale", getName(), getMode());
+			log.warn("Channel {} mode '{}' is stale", getName(), mode);
 		return new ChannelSnapshot(this, mode);
 	}
 }
