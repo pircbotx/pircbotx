@@ -42,7 +42,7 @@ import org.pircbotx.output.OutputUser;
  */
 @Data
 @ToString(exclude = {"outputCreated", "outputCreatedLock"})
-@EqualsAndHashCode(of = {"uuid", "bot"})
+@EqualsAndHashCode(of = {"userId", "bot"})
 @Setter(AccessLevel.PROTECTED)
 public class User implements Comparable<User> {
 	private String nick;
@@ -56,8 +56,7 @@ public class User implements Comparable<User> {
 	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao dao;
-	@Getter(AccessLevel.NONE)
-	protected final UUID uuid = UUID.randomUUID();
+	protected final UUID userId = UUID.randomUUID();
 	//Output is lazily created since it might not ever be used
 	protected OutputUser output = null;
 	protected volatile boolean outputCreated = false;
