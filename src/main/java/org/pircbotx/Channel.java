@@ -19,9 +19,9 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,6 +42,7 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 @Setter(AccessLevel.PROTECTED)
 public class Channel {
 	private final String name;
+	protected final UUID channelId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao dao;
 	protected final PircBotX bot;
