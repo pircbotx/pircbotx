@@ -22,11 +22,13 @@ import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterators;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -613,126 +615,127 @@ public class InputParser implements Closeable {
 			// The mode of a channel is being changed.
 			Channel channel = dao.getChannel(target);
 			channel.parseMode(mode);
-			StringTokenizer tok = new StringTokenizer(mode);
-			String[] params = new String[tok.countTokens()];
+			Iterator<String> params = Iterators.forArray(StringUtils.split(mode, ' '));
 
-			int t = 0;
-			while (tok.hasMoreTokens()) {
-				params[t] = tok.nextToken();
-				t++;
-			}
+			//Process modes letter by letter, grabbing paramaters as needed
+			boolean adding = true;
+			String modeLetters = params.next();
+			for (int i = 0; i < modeLetters.length(); i++) {
+				char curModeChar = modeLetters.charAt(i);
 
-			char pn = ' ';
-			int p = 1;
-
-			// All of this is very large and ugly, but it's the only way of providing
-			// what the users want :-/
-			for (int i = 0; i < params[0].length(); i++) {
-				char atPos = params[0].charAt(i);
-
-				if (atPos == '+' || atPos == '-')
-					pn = atPos;
-				else if (atPos == 'o') {
-					User recipient = dao.getUser(params[p]);
-					if (pn == '+') {
+				if (curModeChar == '+')
+					adding = true;
+				else if (curModeChar == '-')
+					adding = false;
+				else if (curModeChar == 'o') {
+					User recipient = dao.getUser(params.next());
+					if (adding) {
 						dao.addUserToLevel(UserLevel.OP, recipient, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, true));
 					} else {
 						dao.removeUserFromLevel(UserLevel.OP, recipient, channel);
 						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, false));
 					}
-					p++;
-				} else if (atPos == 'v') {
-					User recipient = dao.getUser(params[p]);
-					if (pn == '+') {
+				} else if (curModeChar == 'v') {
+					User recipient = dao.getUser(params.next());
+					if (adding) {
 						dao.addUserToLevel(UserLevel.VOICE, recipient, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, true));
 					} else {
 						dao.removeUserFromLevel(UserLevel.VOICE, recipient, channel);
 						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, false));
 					}
-					p++;
-				} else if (atPos == 'h') {
+				} else if (curModeChar == 'h') {
 					//Half-op change
-					User recipient = dao.getUser(params[p]);
-					if (pn == '+') {
+					User recipient = dao.getUser(params.next());
+					if (adding) {
 						dao.addUserToLevel(UserLevel.HALFOP, recipient, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, true));
 					} else {
 						dao.removeUserFromLevel(UserLevel.HALFOP, recipient, channel);
 						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, false));
 					}
-					p++;
-				} else if (atPos == 'a') {
+				} else if (curModeChar == 'a') {
 					//SuperOp change
-					User recipient = dao.getUser(params[p]);
-					if (pn == '+') {
+					User recipient = dao.getUser(params.next());
+					if (adding) {
 						dao.addUserToLevel(UserLevel.SUPEROP, recipient, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, true));
 					} else {
 						dao.removeUserFromLevel(UserLevel.SUPEROP, recipient, channel);
 						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, false));
 					}
-					p++;
-				} else if (atPos == 'q') {
+				} else if (curModeChar == 'q') {
 					//Owner change
-					User recipient = dao.getUser(params[p]);
-					if (pn == '+') {
+					User recipient = dao.getUser(params.next());
+					if (adding) {
 						dao.addUserToLevel(UserLevel.OWNER, recipient, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, true));
 					} else {
 						dao.removeUserFromLevel(UserLevel.OWNER, recipient, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
 					}
-					p++;
-				} else if (atPos == 'k') {
-					if (pn == '+')
-						listenerManager.dispatchEvent(new SetChannelKeyEvent(bot, channel, user, params[p]));
-					else
-						listenerManager.dispatchEvent(new RemoveChannelKeyEvent(bot, channel, user, (p < params.length) ? params[p] : null));
-					p++;
-				} else if (atPos == 'l')
-					if (pn == '+') {
-						listenerManager.dispatchEvent(new SetChannelLimitEvent(bot, channel, user, Integer.parseInt(params[p])));
-						p++;
-					} else
+				} else if (curModeChar == 'k') {
+					if (adding) {
+						String key = params.next();
+						channel.setChannelKey(key);
+						listenerManager.dispatchEvent(new SetChannelKeyEvent(bot, channel, user, key));
+					} else {
+						String key = params.hasNext() ? params.next() : null;
+						channel.setChannelKey(null);
+						listenerManager.dispatchEvent(new RemoveChannelKeyEvent(bot, channel, user, key));
+					}
+				} else if (curModeChar == 'l')
+					if (adding) {
+						int limit = Integer.parseInt(params.next());
+						channel.setChannelLimit(limit);
+						listenerManager.dispatchEvent(new SetChannelLimitEvent(bot, channel, user, limit));
+					} else {
+						channel.setChannelLimit(-1);
 						listenerManager.dispatchEvent(new RemoveChannelLimitEvent(bot, channel, user));
-				else if (atPos == 'b') {
-					if (pn == '+')
-						listenerManager.dispatchEvent(new SetChannelBanEvent(bot, channel, user, params[p]));
+					}
+				else if (curModeChar == 'b') {
+					if (adding)
+						listenerManager.dispatchEvent(new SetChannelBanEvent(bot, channel, user, params.next()));
 					else
-						listenerManager.dispatchEvent(new RemoveChannelBanEvent(bot, channel, user, params[p]));
-					p++;
-				} else if (atPos == 't')
-					if (pn == '+')
+						listenerManager.dispatchEvent(new RemoveChannelBanEvent(bot, channel, user, params.next()));
+				} else if (curModeChar == 't') {
+					channel.setTopicProtection(adding);
+					if (adding)
 						listenerManager.dispatchEvent(new SetTopicProtectionEvent(bot, channel, user));
 					else
 						listenerManager.dispatchEvent(new RemoveTopicProtectionEvent(bot, channel, user));
-				else if (atPos == 'n')
-					if (pn == '+')
+				} else if (curModeChar == 'n') {
+					channel.setNoExternalMessages(adding);
+					if (adding)
 						listenerManager.dispatchEvent(new SetNoExternalMessagesEvent(bot, channel, user));
 					else
 						listenerManager.dispatchEvent(new RemoveNoExternalMessagesEvent(bot, channel, user));
-				else if (atPos == 'i')
-					if (pn == '+')
+				} else if (curModeChar == 'i') {
+					channel.setInviteOnly(adding);
+					if (adding)
 						listenerManager.dispatchEvent(new SetInviteOnlyEvent(bot, channel, user));
 					else
 						listenerManager.dispatchEvent(new RemoveInviteOnlyEvent(bot, channel, user));
-				else if (atPos == 'm')
-					if (pn == '+')
+				} else if (curModeChar == 'm') {
+					channel.setModerated(adding);
+					if (adding)
 						listenerManager.dispatchEvent(new SetModeratedEvent(bot, channel, user));
 					else
 						listenerManager.dispatchEvent(new RemoveModeratedEvent(bot, channel, user));
-				else if (atPos == 'p')
-					if (pn == '+')
+				} else if (curModeChar == 'p') {
+					channel.setChannelPrivate(adding);
+					if (adding)
 						listenerManager.dispatchEvent(new SetPrivateEvent(bot, channel, user));
 					else
 						listenerManager.dispatchEvent(new RemovePrivateEvent(bot, channel, user));
-				else if (atPos == 's')
-					if (pn == '+')
+				} else if (curModeChar == 's') {
+					channel.setSecret(adding);
+					if (adding)
 						listenerManager.dispatchEvent(new SetSecretEvent(bot, channel, user));
 					else
 						listenerManager.dispatchEvent(new RemoveSecretEvent(bot, channel, user));
+				}
 			}
 			listenerManager.dispatchEvent(new ModeEvent(bot, channel, user, mode));
 		} else
