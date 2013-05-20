@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
@@ -26,6 +27,9 @@ import org.pircbotx.hooks.events.SuperOpEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -79,6 +83,7 @@ import static org.testng.Assert.*;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 @Test(singleThreaded = true)
 public class InputParserTest {
 	final static String aString = "I'm some super long string that has multiple words";
@@ -425,21 +430,52 @@ public class InputParserTest {
 
 	@DataProvider
 	protected Object[][] channelModeProvider() {
-		return new Object[][]{{"+l 10", null, SetChannelLimitEvent.class},
-			{"-l", "l 10", RemoveChannelLimitEvent.class},
-			{"+k testPassword", null, SetChannelKeyEvent.class},
-			{"-k", "k testPassword", RemoveChannelKeyEvent.class},
-			{"-k testPassword", "k testPassword", RemoveChannelKeyEvent.class},
-			{"+i", null, SetInviteOnlyEvent.class},
-			{"-i", null, RemoveInviteOnlyEvent.class},
-			{"+n", null, SetNoExternalMessagesEvent.class},
-			{"-n", null, RemoveNoExternalMessagesEvent.class},
-			{"+s", null, SetSecretEvent.class},
-			{"-s", null, RemoveSecretEvent.class},
-			{"+t", null, SetTopicProtectionEvent.class},
-			{"-t", null, RemoveTopicProtectionEvent.class},
-			{"+p", null, SetPrivateEvent.class},
-			{"-p", null, RemovePrivateEvent.class}};
+		ImmutableList<Object[]> testTemplates = ImmutableList.of(
+				new Object[]{"+l 10", null, SetChannelLimitEvent.class},
+				new Object[]{"-l", "l 10", RemoveChannelLimitEvent.class},
+				new Object[]{"+k testPassword", null, SetChannelKeyEvent.class},
+				new Object[]{"-k", "k testPassword", RemoveChannelKeyEvent.class},
+				new Object[]{"-k testPassword", "k testPassword", RemoveChannelKeyEvent.class},
+				new Object[]{"+i", null, SetInviteOnlyEvent.class},
+				new Object[]{"-i", null, RemoveInviteOnlyEvent.class},
+				new Object[]{"+n", null, SetNoExternalMessagesEvent.class},
+				new Object[]{"-n", null, RemoveNoExternalMessagesEvent.class},
+				new Object[]{"+s", null, SetSecretEvent.class},
+				new Object[]{"-s", null, RemoveSecretEvent.class},
+				new Object[]{"+t", null, SetTopicProtectionEvent.class},
+				new Object[]{"-t", null, RemoveTopicProtectionEvent.class},
+				new Object[]{"+p", null, SetPrivateEvent.class},
+				new Object[]{"-p", null, RemovePrivateEvent.class});
+		List<Object[]> testParams = new ArrayList();
+		for(Object[] curTemplate : testTemplates) {
+			//Normal version
+			testParams.add(curTemplate);
+			
+			//Create other versions
+			String modeRaw = (String)curTemplate[0];
+			String modePrefix = modeRaw.substring(0, 1);
+			log.trace("Mode prefix: " + modePrefix);
+			String mode = (modeRaw.contains(" ")) ? StringUtils.split(modeRaw)[0] : modeRaw;
+			mode = mode.substring(1);
+			log.trace("Mode: " + mode);
+			
+			//Version with random modes at end
+			Object[] newTemplate = ArrayUtils.clone(curTemplate);
+			newTemplate[0] = StringUtils.replace(modeRaw, modePrefix + mode, modePrefix + mode + "xyz");
+			log.trace("Current: " + newTemplate[0]);
+			testParams.add(newTemplate);
+			
+			//Version with random modes at the beggining
+			newTemplate = ArrayUtils.clone(curTemplate);
+			newTemplate[0] = StringUtils.replace(modeRaw, modePrefix + mode, modePrefix + "cde" + mode);
+			testParams.add(newTemplate);
+			
+			//Version with random surrounding nodes
+			newTemplate = ArrayUtils.clone(curTemplate);
+			newTemplate[0] = StringUtils.replace(modeRaw, modePrefix + mode, modePrefix + "cde" + mode + "xyz");
+			testParams.add(newTemplate);
+		}
+		return testParams.toArray(new Object[testParams.size()][]);
 	}
 
 	@Test(dataProvider = "channelModeProvider")
