@@ -45,12 +45,20 @@ public class ChannelSnapshot extends Channel {
 	public ChannelSnapshot(Channel channel, String mode) {
 		super(channel.getBot(), null, channel.getName());
 		this.generatedFrom = channel;
-		
+
 		//Clone
 		super.setCreateTimestamp(channel.getCreateTimestamp());
 		super.setTopic(channel.getTopic());
 		super.setTopicSetter(channel.getTopicSetter());
 		super.setTopicTimestamp(channel.getTopicTimestamp());
+		super.setChannelKey(channel.getChannelKey());
+		super.setChannelLimit(channel.getChannelLimit());
+		super.setChannelPrivate(channel.isChannelPrivate());
+		super.setInviteOnly(channel.isInviteOnly());
+		super.setModerated(channel.isModerated());
+		super.setNoExternalMessages(channel.isNoExternalMessages());
+		super.setSecret(channel.isSecret());
+		super.setTopicProtection(channel.hasTopicProtection());
 	}
 
 	@Override
@@ -82,6 +90,44 @@ public class ChannelSnapshot extends Channel {
 	protected void setTopicSetter(String topicSetter) {
 		SnapshotUtils.fail();
 	}
-	
-	
+
+	@Override
+	protected void setModerated(boolean moderated) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setNoExternalMessages(boolean noExternalMessages) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setInviteOnly(boolean inviteOnly) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setSecret(boolean secret) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setChannelPrivate(boolean channelPrivate) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setTopicProtection(boolean topicProtection) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setChannelLimit(int channelLimit) {
+		SnapshotUtils.fail();
+	}
+
+	@Override
+	protected void setChannelKey(String channelKey) {
+		SnapshotUtils.fail();
+	}
 }
