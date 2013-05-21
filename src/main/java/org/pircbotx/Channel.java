@@ -136,7 +136,7 @@ public class Channel {
 
 		//Mode is stale, get new mode from server
 		try {
-			log.trace("Who the crap called me?", new RuntimeException());
+			log.debug("Mode is stale, fetching fresh mode");
 			bot.sendRaw().rawLine("MODE " + getName());
 			if (modeLatch == null || modeLatch.getCount() == 0)
 				modeLatch = new CountDownLatch(1);
