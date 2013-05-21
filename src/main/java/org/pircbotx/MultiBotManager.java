@@ -31,6 +31,7 @@ import static com.google.common.util.concurrent.Service.State;
 import static com.google.common.base.Preconditions.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -66,7 +67,7 @@ import org.slf4j.LoggerFactory;
 public class MultiBotManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final Map<PircBotX, ListenableFuture> runningBots = new HashMap();
+	protected final Map<PircBotX, ListenableFuture> runningBots = new LinkedHashMap();
 	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
