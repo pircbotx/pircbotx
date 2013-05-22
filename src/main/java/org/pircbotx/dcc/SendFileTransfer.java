@@ -24,9 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.SocketChannel;
 import lombok.Cleanup;
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
@@ -36,21 +33,33 @@ import org.pircbotx.User;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SendFileTransfer extends FileTransfer {
-	public SendFileTransfer(Configuration configuration, SocketChannel socket, User user, File file, long startPosition) {
+	public SendFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
 		super(configuration, socket, user, file, startPosition);
 	}
 
 	@Override
 	protected void transferFile() throws IOException {
 		@Cleanup
-		FileInputStream fileInput = new FileInputStream(file);
-		FileChannel fileChannel = fileInput.getChannel();
-		fileChannel.position(startPosition);
+		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
+		@Cleanup
+		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
+		@Cleanup
+		BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(file));
 
-		ByteBuffer buffer = ByteBuffer.allocate(configuration.getDccTransferBufferSize());
-		int bytesRead;
-		while ((bytesRead = fileChannel.read(buffer)) != -1) {
-			socket.write(buffer);
+		// Check for resuming.
+		if (startPosition > 0) {
+			long bytesSkipped = 0;
+			while (bytesSkipped < startPosition)
+				bytesSkipped += fileInput.skip(startPosition - bytesSkipped);
+		}
+
+		byte[] outBuffer = new byte[configuration.getDccTransferBufferSize()];
+		byte[] inBuffer = new byte[4];
+		int bytesRead = 0;
+		while ((bytesRead = fileInput.read(outBuffer, 0, outBuffer.length)) != -1) {
+			socketOutput.write(outBuffer, 0, bytesRead);
+			socketOutput.flush();
+			socketInput.read(inBuffer, 0, inBuffer.length);
 			bytesTransfered += bytesRead;
 		}
 	}

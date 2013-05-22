@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -509,11 +508,11 @@ public class Configuration {
 			return new ReceiveChat(user, socket, bot.getConfiguration().getEncoding());
 		}
 
-		public SendFileTransfer createSendFileTransfer(PircBotX bot, SocketChannel socket, User user, File file, long startPosition) {
+		public SendFileTransfer createSendFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
 			return new SendFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
 		}
 
-		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, SocketChannel socket, User user, File file, long startPosition) {
+		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
 			return new ReceiveFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
 		}
 
