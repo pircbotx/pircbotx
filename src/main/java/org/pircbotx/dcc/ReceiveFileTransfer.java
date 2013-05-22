@@ -19,12 +19,13 @@
 package org.pircbotx.dcc;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.net.Socket;
 import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
@@ -32,6 +33,7 @@ import org.pircbotx.User;
  * A DCC File Transfer initiated by another user.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 public class ReceiveFileTransfer extends FileTransfer {
 	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
 		super(configuration, socket, user, file, startPosition);
@@ -41,7 +43,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 		@Cleanup
 		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
 		@Cleanup
-		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
+		OutputStream socketOutput = socket.getOutputStream();
 		@Cleanup
 		RandomAccessFile fileOutput = new RandomAccessFile(file.getCanonicalPath(), "rw");
 		fileOutput.seek(startPosition);
@@ -61,7 +63,6 @@ public class ReceiveFileTransfer extends FileTransfer {
 			//TODO: Why does netbeans say this does nothing?
 			outBuffer[3] = (byte) ((bytesTransfered >> 0) & 0xff);
 			socketOutput.write(outBuffer);
-			socketOutput.flush();
 		}
 	}
 }
