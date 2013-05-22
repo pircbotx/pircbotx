@@ -56,7 +56,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 			fileOutput.write(inBuffer, 0, bytesRead);
 			bytesTransfered += bytesRead;
 			//Send back an acknowledgement of how many bytes we have got so far.
-			//TODO: What does this actually do?
+			//Convert bytesTransfered to an unsigned int, per DCC specification
 			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
 			outBuffer[1] = (byte) ((bytesTransfered >> 16) & 0xff);
 			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
