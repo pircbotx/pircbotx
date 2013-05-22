@@ -24,9 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.Socket;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.SocketChannel;
 import lombok.Cleanup;
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
@@ -36,29 +33,35 @@ import org.pircbotx.User;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ReceiveFileTransfer extends FileTransfer {
-	public ReceiveFileTransfer(Configuration configuration, SocketChannel socket, User user, File file, long startPosition) {
+	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
 		super(configuration, socket, user, file, startPosition);
 	}
 
 	protected void transferFile() throws IOException {
 		@Cleanup
-		RandomAccessFile fileAccess = new RandomAccessFile(file.getCanonicalPath(), "rw");
-		FileChannel fileChannel = fileAccess.getChannel();
-		fileChannel.position(startPosition);
+		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
+		@Cleanup
+		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
+		@Cleanup
+		RandomAccessFile fileOutput = new RandomAccessFile(file.getCanonicalPath(), "rw");
+		fileOutput.seek(startPosition);
 
 		//Recieve file
-		ByteBuffer buffer = ByteBuffer.allocate(configuration.getDccTransferBufferSize());
-		ByteBuffer transferedBuffer = ByteBuffer.allocate(4);
-		int	bytesRead;
-		while ((bytesRead = socket.read(buffer)) != -1) {
-			//Write to file
-			buffer.flip();
-			fileChannel.write(buffer);
-			
-			//Send back an acknowledgement of how many bytes we have got so far.
+		byte[] inBuffer = new byte[configuration.getDccTransferBufferSize()];
+		byte[] outBuffer = new byte[4];
+		int bytesRead = 0;
+		while ((bytesRead = socketInput.read(inBuffer, 0, inBuffer.length)) != -1) {
+			fileOutput.write(inBuffer, 0, bytesRead);
 			bytesTransfered += bytesRead;
-			transferedBuffer.putLong(0, bytesTransfered);
-			socket.write(transferedBuffer);
+			//Send back an acknowledgement of how many bytes we have got so far.
+			//TODO: What does this actually do?
+			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
+			outBuffer[1] = (byte) ((bytesTransfered >> 16) & 0xff);
+			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
+			//TODO: Why does netbeans say this does nothing?
+			outBuffer[3] = (byte) ((bytesTransfered >> 0) & 0xff);
+			socketOutput.write(outBuffer);
+			socketOutput.flush();
 		}
 	}
 }
