@@ -373,7 +373,7 @@ public class InputParser implements Closeable {
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
-			source.setNick(newNick);
+			dao.renameUser(source, newNick);
 			if (sourceNick.equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
 				bot.setNick(newNick);
