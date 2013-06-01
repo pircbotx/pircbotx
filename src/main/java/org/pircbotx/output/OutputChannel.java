@@ -143,7 +143,6 @@ public class OutputChannel {
 	public void cycle(final String key) {
 		final PircBotX bot = channel.getBot();
 		final String channelName = channel.getName();
-		part();
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining
 		bot.getConfiguration().getListenerManager().addListener(new ListenerAdapter() {
@@ -157,6 +156,7 @@ public class OutputChannel {
 				}
 			}
 		});
+		part();
 	}
 	
 	public void who() {
