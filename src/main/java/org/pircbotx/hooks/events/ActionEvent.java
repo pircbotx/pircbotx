@@ -63,7 +63,8 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	}
 
 	/**
-	 * Respond to an action with an action.
+	 * Respond to an action with an action in either the channel that the message 
+	 * came from or a private message.
 	 * <p>
 	 * Example
 	 * <pre>
@@ -74,6 +75,9 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	@Override
 	public void respond(String response) {
-		getChannel().send().action(response);
+		if (getChannel() == null)
+			getUser().send().action(response);
+		else
+			getChannel().send().action(response);
 	}
 }

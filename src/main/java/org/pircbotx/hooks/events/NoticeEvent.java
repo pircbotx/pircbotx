@@ -61,13 +61,16 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	}
 
 	/**
-	 * Respond by sending a message to the channel in
-	 * <code>user: message</code>
+	 * Respond by sending a message to the channel in <code>user: message</code>,
+	 * or if its a private message respond with a private message to the user
 	 * format.
 	 * @param response The response to send
 	 */
 	@Override
 	public void respond(String response) {
-		getChannel().send().message(getUser(), response);
+		if (getChannel() == null)
+			getUser().send().message(response);
+		else
+			getChannel().send().message(getUser(), response);
 	}
 }
