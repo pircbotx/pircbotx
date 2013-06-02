@@ -16,21 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.pircbotx.snapshot;
 
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.EnumMap;
-import java.util.Set;
-import org.pircbotx.Channel;
-import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
 import org.pircbotx.UserChannelMap;
 import org.pircbotx.UserLevel;
@@ -40,7 +31,7 @@ import org.pircbotx.UserLevel;
  * @author Leon
  */
 public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, ChannelSnapshot> {
-	public UserChannelDaoSnapshot(PircBotX bot, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableBiMap<String, UserSnapshot> userNickMap, ImmutableBiMap<String, ChannelSnapshot> channelNameMap, ImmutableSet<UserSnapshot> privateUsers) {
+	public UserChannelDaoSnapshot(PircBotX bot, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableBiMap<String, UserSnapshot> userNickMap, ImmutableBiMap<String, ChannelSnapshot> channelNameMap, ImmutableSortedSet<UserSnapshot> privateUsers) {
 		super(bot, null, mainMap, levelsMap, userNickMap, channelNameMap, privateUsers);
 	}
 
