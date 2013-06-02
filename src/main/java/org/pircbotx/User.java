@@ -20,8 +20,6 @@ package org.pircbotx;
 
 import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Table;
-import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
