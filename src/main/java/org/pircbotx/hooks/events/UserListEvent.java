@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.Set;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -46,7 +47,7 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class UserListEvent<T extends PircBotX> extends Event<T> {
 	protected final Channel channel;
-	protected final Set<User> users;
+	protected final ImmutableSortedSet<User> users;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -54,7 +55,7 @@ public class UserListEvent<T extends PircBotX> extends Event<T> {
 	 * @param channel The channel that the user list is from.
 	 * @param users An <b>immutable</b> Set of Users belonging to this channel.
 	 */
-	public UserListEvent(T bot, Channel channel, Set<User> users) {
+	public UserListEvent(T bot, Channel channel, ImmutableSortedSet<User> users) {
 		super(bot);
 		this.channel = channel;
 		this.users = users;
