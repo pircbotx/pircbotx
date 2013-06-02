@@ -287,7 +287,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
 		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
 			channelNameMapSnapshotBuilder.put(curName.getKey(), curName.getValue().createSnapshot());
-		ImmutableSortedSet.Builder<UserSnapshot> privateUserSnapshotBuilder = ImmutableSortedSet.builder();
+		ImmutableSortedSet.Builder<UserSnapshot> privateUserSnapshotBuilder = ImmutableSortedSet.naturalOrder();
 		for (User curUser : privateUsers)
 			privateUserSnapshotBuilder.add(curUser.createSnapshot());
 
