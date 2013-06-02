@@ -184,7 +184,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Compare User nicks with {@link String#compareToIgnoreCase(java.lang.String) }.
+	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String) }.
 	 * This is useful for sorting lists of User objects.
 	 * @param other Other user to compare to
 	 * @return the result of calling compareToIgnoreCase user nicks.
