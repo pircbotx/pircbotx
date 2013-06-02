@@ -191,7 +191,7 @@ public class User implements Comparable<User> {
 	 */
 	@Override
 	public int compareTo(User other) {
-		return other.getNick().compareToIgnoreCase(getNick());
+		return getNick().compareToIgnoreCase(other.getNick());
 	}
 
 	/**
