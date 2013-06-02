@@ -293,7 +293,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Compare channel names with {@link String#compareToIgnoreCase(java.lang.String) }.
+	 * Compare {@link #getName()} with {@link String#compareToIgnoreCase(java.lang.String) }.
 	 * This is useful for sorting lists of Channel objects.
 	 * @param other Other channel to compare to
 	 * @return the result of calling compareToIgnoreCase on channel names.
