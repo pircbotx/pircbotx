@@ -40,7 +40,7 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 @Slf4j
 @Getter
 @Setter(AccessLevel.PROTECTED)
-public class Channel {
+public class Channel implements Comparable<Channel> {
 	private final String name;
 	protected final UUID channelId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
@@ -290,5 +290,15 @@ public class Channel {
 		if(modeStale)
 			log.warn("Channel {} mode '{}' is stale", getName(), mode);
 		return new ChannelSnapshot(this, mode);
+	}
+
+	/**
+	 * Compare channel names with {@link String#compareToIgnoreCase(java.lang.String) }.
+	 * This is useful for sorting lists of Channel objects.
+	 * @param other Other channel to compare to
+	 * @return the result of calling compareToIgnoreCase on channel names.
+	 */
+	public int compareTo(Channel other) {
+		return getName().compareToIgnoreCase(other.getName());
 	}
 }

@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks;
 
+import com.google.common.collect.ComparisonChain;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericEvent;
 
@@ -25,7 +26,7 @@ import org.pircbotx.hooks.types.GenericEvent;
  * An event representing what was received from the IRC server.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
+public abstract class Event<T extends PircBotX> implements GenericEvent<T>, Comparable<Event> {
 	protected final long timestamp;
 	protected final T bot;
 	protected final long id;
@@ -69,4 +70,17 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	 * @param response The response to send
 	 */
 	public abstract void respond(String response);
+
+	/**
+	 * Compare events by timestamp and then id to order by when they are received.
+	 * This is useful for sorting lists of Channel objects.
+	 * @param other Other Event to compare to
+	 * @return the result of the comparison
+	 */
+	public int compareTo(Event other) {
+		return ComparisonChain.start()
+				.compare(getTimestamp(), other.getTimestamp())
+				.compare(getId(), other.getId())
+				.result();
+	}
 }
