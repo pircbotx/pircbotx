@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.primitives.Ints;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -75,7 +76,7 @@ import org.slf4j.MarkerFactory;
  */
 @RequiredArgsConstructor
 @Slf4j
-public class PircBotX {
+public class PircBotX implements Comparable<PircBotX> {
 	/**
 	 * The definitive version number of this release of PircBotX.
 	 */
@@ -497,6 +498,16 @@ public class PircBotX {
 		userChannelDao.close();
 		inputParser.close();
 		dccHandler.close();
+	}
+
+	/**
+	 * Compare {@link #getBotId() bot id's}.  This is useful for sorting lists 
+	 * of Channel objects.
+	 * @param other Other channel to compare to
+	 * @return the result of calling compareToIgnoreCase on channel names.
+	 */
+	public int compareTo(PircBotX other) {
+		return Ints.compare(getBotId(), other.getBotId());
 	}
 
 	protected static class BotShutdownHook extends Thread {
