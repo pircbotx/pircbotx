@@ -184,10 +184,10 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Returns the result of calling the compareTo method on lowercased
-	 * nicks. This is useful for sorting lists of User objects.
-	 *
-	 * @return the result of calling compareTo on lowercased nicks.
+	 * Compare User nicks with {@link String#compareToIgnoreCase(java.lang.String) }.
+	 * This is useful for sorting lists of User objects.
+	 * @param other Other user to compare to
+	 * @return the result of calling compareToIgnoreCase user nicks.
 	 */
 	@Override
 	public int compareTo(User other) {
