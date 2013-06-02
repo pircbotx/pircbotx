@@ -18,7 +18,7 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import lombok.AccessLevel;
@@ -164,7 +164,7 @@ public class Channel implements Comparable<Channel> {
 	 * @param user The user to get the levels of
 	 * @return An <b>immutable copy</b> of the levels the user holds
 	 */
-	public ImmutableSet<UserLevel> getUserLevels(User user) {
+	public ImmutableSortedSet<UserLevel> getUserLevels(User user) {
 		return getDao().getLevels(this, user);
 	}
 
@@ -173,7 +173,7 @@ public class Channel implements Comparable<Channel> {
 	 * that they aren't ops, have voice, superops, halops, or owners in this channel
 	 * @return An <b>immutable copy</b> of normal users
 	 */
-	public ImmutableSet<User> getNormalUsers() {
+	public ImmutableSortedSet<User> getNormalUsers() {
 		return getDao().getNormalUsers(this);
 	}
 
@@ -181,7 +181,7 @@ public class Channel implements Comparable<Channel> {
 	 * Get all opped users in this channel.
 	 * @return An <b>immutable copy</b> of opped users
 	 */
-	public ImmutableSet<User> getOps() {
+	public ImmutableSortedSet<User> getOps() {
 		return getDao().getUsers(this, UserLevel.OP);
 	}
 
@@ -189,7 +189,7 @@ public class Channel implements Comparable<Channel> {
 	 * Get all voiced users in this channel.
 	 * @return An <b>immutable copy</b> of voiced users
 	 */
-	public ImmutableSet<User> getVoices() {
+	public ImmutableSortedSet<User> getVoices() {
 		return getDao().getUsers(this, UserLevel.VOICE);
 	}
 
@@ -197,7 +197,7 @@ public class Channel implements Comparable<Channel> {
 	 * Get all users with Owner status in this channel.
 	 * @return An <b>immutable copy</b> of users with Owner status
 	 */
-	public ImmutableSet<User> getOwners() {
+	public ImmutableSortedSet<User> getOwners() {
 		return getDao().getUsers(this, UserLevel.OWNER);
 	}
 
@@ -205,7 +205,7 @@ public class Channel implements Comparable<Channel> {
 	 * Get all users with Half Operator status in this channel.
 	 * @return An <b>immutable copy</b> of users with Half Operator status
 	 */
-	public ImmutableSet<User> getHalfOps() {
+	public ImmutableSortedSet<User> getHalfOps() {
 		return getDao().getUsers(this, UserLevel.HALFOP);
 	}
 
@@ -213,7 +213,7 @@ public class Channel implements Comparable<Channel> {
 	 * Get all users with Super Operator status in this channel.
 	 * @return An <b>immutable copy</b> of users with Super Operator status
 	 */
-	public ImmutableSet<User> getSuperOps() {
+	public ImmutableSortedSet<User> getSuperOps() {
 		return getDao().getUsers(this, UserLevel.SUPEROP);
 	}
 
@@ -233,7 +233,7 @@ public class Channel implements Comparable<Channel> {
 	 * Get all users in this channel. Simply calls {@link PircBotX#getUsers(org.pircbotx.Channel) }
 	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
-	public ImmutableSet<User> getUsers() {
+	public ImmutableSortedSet<User> getUsers() {
 		return getDao().getUsers(this);
 	}
 

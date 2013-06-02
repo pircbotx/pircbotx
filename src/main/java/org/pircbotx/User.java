@@ -19,7 +19,7 @@
 package org.pircbotx;
 
 import org.pircbotx.snapshot.UserSnapshot;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Table;
 import java.util.Set;
 import java.util.UUID;
@@ -116,7 +116,7 @@ public class User implements Comparable<User> {
 	 * @param channel The channel to get the levels from
 	 * @return An <b>immutable copy</b> of the levels this user holds
 	 */
-	public ImmutableSet<UserLevel> getUserLevels(Channel channel) {
+	public ImmutableSortedSet<UserLevel> getUserLevels(Channel channel) {
 		return getDao().getLevels(channel, this);
 	}
 
@@ -124,7 +124,7 @@ public class User implements Comparable<User> {
 	 * Get all channels this user is a part of
 	 * @return All channels this user is a part of
 	 */
-	public ImmutableSet<Channel> getChannels() {
+	public ImmutableSortedSet<Channel> getChannels() {
 		return getDao().getChannels(this);
 	}
 
@@ -135,7 +135,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Operator status in
 	 */
-	public ImmutableSet<Channel> getChannelsOpIn() {
+	public ImmutableSortedSet<Channel> getChannelsOpIn() {
 		return getDao().getChannels(this, UserLevel.OP);
 	}
 
@@ -146,7 +146,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Voice status in
 	 */
-	public ImmutableSet<Channel> getChannelsVoiceIn() {
+	public ImmutableSortedSet<Channel> getChannelsVoiceIn() {
 		return getDao().getChannels(this, UserLevel.VOICE);
 	}
 
@@ -157,7 +157,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Owner status in
 	 */
-	public ImmutableSet<Channel> getChannelsOwnerIn() {
+	public ImmutableSortedSet<Channel> getChannelsOwnerIn() {
 		return getDao().getChannels(this, UserLevel.OWNER);
 	}
 
@@ -168,7 +168,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Half Operator status in
 	 */
-	public ImmutableSet<Channel> getChannelsHalfOpIn() {
+	public ImmutableSortedSet<Channel> getChannelsHalfOpIn() {
 		return getDao().getChannels(this, UserLevel.HALFOP);
 	}
 
@@ -179,7 +179,7 @@ public class User implements Comparable<User> {
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Super Operator status in
 	 */
-	public ImmutableSet<Channel> getChannelsSuperOpIn() {
+	public ImmutableSortedSet<Channel> getChannelsSuperOpIn() {
 		return getDao().getChannels(this, UserLevel.SUPEROP);
 	}
 

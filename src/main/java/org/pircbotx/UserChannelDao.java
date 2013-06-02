@@ -22,7 +22,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import java.io.Closeable;
 import java.util.EnumMap;
@@ -110,8 +111,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @see UserListEvent
 	 */
 	@Synchronized("accessLock")
-	public ImmutableSet<U> getAllUsers() {
-		return ImmutableSet.copyOf(userNickMap.values());
+	public ImmutableSortedSet<U> getAllUsers() {
+		return ImmutableSortedSet.copyOf(userNickMap.values());
 	}
 
 	@Synchronized("accessLock")
@@ -135,21 +136,21 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<U> getNormalUsers(C channel) {
+	public ImmutableSortedSet<U> getNormalUsers(C channel) {
 		Set<U> remainingUsers = new HashSet(mainMap.getUsers(channel));
 		for (UserChannelMap curLevelMap : levelsMap.values())
 			remainingUsers.removeAll(curLevelMap.getUsers(channel));
-		return ImmutableSet.copyOf(remainingUsers);
+		return ImmutableSortedSet.copyOf(remainingUsers);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<U> getUsers(C channel, UserLevel level) {
+	public ImmutableSortedSet<U> getUsers(C channel, UserLevel level) {
 		return levelsMap.get(level).getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<UserLevel> getLevels(C channel, U user) {
-		ImmutableSet.Builder<UserLevel> builder = ImmutableSet.builder();
+	public ImmutableSortedSet<UserLevel> getLevels(C channel, U user) {
+		ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.builder();
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curEntry : levelsMap.entrySet())
 			if (curEntry.getValue().containsEntry(user, channel))
 				builder.add(curEntry.getKey());
@@ -157,15 +158,15 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<C> getNormalUserChannels(U user) {
+	public ImmutableSortedSet<C> getNormalUserChannels(U user) {
 		Set<C> remainingChannels = new HashSet(mainMap.getChannels(user));
 		for (UserChannelMap curLevelMap : levelsMap.values())
 			remainingChannels.removeAll(curLevelMap.getChannels(user));
-		return ImmutableSet.copyOf(remainingChannels);
+		return ImmutableSortedSet.copyOf(remainingChannels);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<C> getChannels(U user, UserLevel level) {
+	public ImmutableSortedSet<C> getChannels(U user, UserLevel level) {
 		return levelsMap.get(level).getChannels(user);
 	}
 
@@ -229,17 +230,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<U> getUsers(C channel) {
+	public ImmutableSortedSet<U> getUsers(C channel) {
 		return mainMap.getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<C> getAllChannels() {
-		return ImmutableSet.copyOf(channelNameMap.values());
+	public ImmutableSortedSet<C> getAllChannels() {
+		return ImmutableSortedSet.copyOf(channelNameMap.values());
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSet<C> getChannels(U user) {
+	public ImmutableSortedSet<C> getChannels(U user) {
 		return mainMap.getChannels(user);
 	}
 
@@ -286,7 +287,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
 		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
 			channelNameMapSnapshotBuilder.put(curName.getKey(), curName.getValue().createSnapshot());
-		ImmutableSet.Builder<UserSnapshot> privateUserSnapshotBuilder = ImmutableSet.builder();
+		ImmutableSortedSet.Builder<UserSnapshot> privateUserSnapshotBuilder = ImmutableSortedSet.builder();
 		for (User curUser : privateUsers)
 			privateUserSnapshotBuilder.add(curUser.createSnapshot());
 
