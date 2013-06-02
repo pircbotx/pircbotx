@@ -18,13 +18,11 @@
  */
 package org.pircbotx.snapshot;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.pircbotx.Channel;
 import org.pircbotx.User;
 
 /**

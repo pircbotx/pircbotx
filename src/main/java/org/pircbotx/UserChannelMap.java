@@ -20,7 +20,8 @@ package org.pircbotx;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Multimap;
 import java.util.Map;
 import lombok.AccessLevel;
@@ -71,12 +72,12 @@ public class UserChannelMap<U extends User, C extends Channel> {
 			userToChannelMap.remove(curUser, channel);
 	}
 
-	public ImmutableSet<U> getUsers(C channel) {
-		return ImmutableSet.copyOf(channelToUserMap.get(channel));
+	public ImmutableSortedSet<U> getUsers(C channel) {
+		return ImmutableSortedSet.copyOf(channelToUserMap.get(channel));
 	}
 
-	public ImmutableSet<C> getChannels(U user) {
-		return ImmutableSet.copyOf(userToChannelMap.get(user));
+	public ImmutableSortedSet<C> getChannels(U user) {
+		return ImmutableSortedSet.copyOf(userToChannelMap.get(user));
 	}
 
 	public boolean containsEntry(U user, C channel) {
