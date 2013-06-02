@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableList;
 import java.util.Set;
 import org.pircbotx.PircBotX;
 import org.pircbotx.ChannelListEntry;
@@ -40,14 +41,14 @@ import org.pircbotx.hooks.Event;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChannelInfoEvent<T extends PircBotX> extends Event<T> {
-	protected final Set<ChannelListEntry> list;
+	protected final ImmutableList<ChannelListEntry> list;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param list A list of ChannelList Entries
 	 */
-	public ChannelInfoEvent(T bot, Set<ChannelListEntry> list) {
+	public ChannelInfoEvent(T bot, ImmutableList<ChannelListEntry> list) {
 		super(bot);
 		this.list = list;
 	}
