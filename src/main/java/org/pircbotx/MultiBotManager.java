@@ -21,7 +21,6 @@ package org.pircbotx;
 import com.google.common.base.Joiner;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -29,11 +28,10 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import static com.google.common.util.concurrent.Service.State;
 import static com.google.common.base.Preconditions.*;
+import com.google.common.collect.ImmutableSortedSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -67,7 +65,7 @@ import org.slf4j.LoggerFactory;
 public class MultiBotManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final Map<PircBotX, ListenableFuture> runningBots = new LinkedHashMap();
+	protected final LinkedHashMap<PircBotX, ListenableFuture> runningBots = new LinkedHashMap();
 	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
@@ -193,8 +191,8 @@ public class MultiBotManager {
 	 * @return An <i>immutable copy</i> of bots that are being managed
 	 */
 	@Synchronized("runningBotsLock")
-	public ImmutableSet<PircBotX> getBots() {
-		return ImmutableSet.copyOf(runningBots.keySet());
+	public ImmutableSortedSet<PircBotX> getBots() {
+		return ImmutableSortedSet.copyOf(runningBots.keySet());
 	}
 
 	/**
