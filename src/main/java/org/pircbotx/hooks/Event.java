@@ -72,8 +72,8 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T>, Comp
 	public abstract void respond(String response);
 
 	/**
-	 * Compare events by timestamp and then id to order by when they are received.
-	 * This is useful for sorting lists of Channel objects.
+	 * Compare events by {@link #getTimestamp()} and then {@link #getId()} to 
+	 * order by when they are received. This is useful for sorting lists of Channel objects.
 	 * @param other Other Event to compare to
 	 * @return the result of the comparison
 	 */
