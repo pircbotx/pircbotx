@@ -148,7 +148,7 @@ public class InputParserTest {
 		ChannelInfoEvent cevent = getEvent(ChannelInfoEvent.class, "No ChannelInfoEvent dispatched");
 
 		//Verify event contents
-		Set<ChannelListEntry> channels = cevent.getList();
+		ImmutableList<ChannelListEntry> channels = cevent.getList();
 		assertEquals(channels.size(), 3);
 		boolean channelParsed = false;
 		for (ChannelListEntry entry : channels)

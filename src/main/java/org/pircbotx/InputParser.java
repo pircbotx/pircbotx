@@ -129,7 +129,7 @@ public class InputParser implements Closeable {
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;
-	protected ImmutableSet.Builder<ChannelListEntry> channelListBuilder;
+	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
 	protected boolean capEndSent = false;
 
@@ -450,7 +450,7 @@ public class InputParser implements Closeable {
 		if (code == RPL_LISTSTART) {
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
-			channelListBuilder = ImmutableSet.builder();
+			channelListBuilder = ImmutableList.builder();
 			channelListRunning = true;
 		} else if (code == RPL_LIST) {
 			//This is part of a full channel listing as part of /LIST
