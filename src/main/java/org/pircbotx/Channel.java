@@ -39,7 +39,7 @@ import org.pircbotx.snapshot.ChannelSnapshot;
  * Represents a Channel that we're joined to. 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@ToString(doNotUseGetters = true, exclude = {"outputCreated", "outputCreatedLock"})
+@ToString(doNotUseGetters = true)
 @EqualsAndHashCode(of = {"name", "bot"})
 @Slf4j
 @Getter
