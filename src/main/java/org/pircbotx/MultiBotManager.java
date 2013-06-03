@@ -29,6 +29,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import static com.google.common.util.concurrent.Service.State;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableSortedSet;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.output.OutputIRC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -210,7 +212,7 @@ public class MultiBotManager {
 		@NonNull
 		protected final PircBotX bot;
 
-		public Void call() throws Exception {
+		public Void call() throws IOException, IrcException {
 			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotId());
 			bot.connect();
 			return null;
