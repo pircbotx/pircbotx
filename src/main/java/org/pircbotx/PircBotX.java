@@ -119,16 +119,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected final Object shutdownCalledLock = new Object();
 
 	/**
-	 * Constructs a PircBotX with the default settings and 
-	 * <ul><li>Add {@link CoreHooks} to the default ListenerManager, {@link ThreadedListenerManager}</li>
-	 * <li>Add a shutdown hook (See {@link #useShutdownHook(boolean) })</li>
-	 * <li>Add an {@link EnableCapHandler} to enable multi-prefix, ignoring it if it fails</li>
-	 * <li>Set {@link #getSocketTimeout() default socket timeout} to 5 minutes</li>
-	 * <li>Set {@link #getMessageDelay() message delay} to 1 second</li>
-	 * <li>Turn off {@link #isAutoNickChange() auto nick changing}</li>
-	 * <li>Turn off {@link #isVerbose() verbose} logging</li>
-	 * <li>Turn off {@link #isCapEnabled() () CAP handling}</li>
-	 * </ul>
+	 * Constructs a PircBotX with the provided configuration
 	 */
 	public PircBotX(Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
