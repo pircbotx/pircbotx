@@ -27,8 +27,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
+import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
+import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputUser;
 
 /**
@@ -56,9 +59,12 @@ public class User implements Comparable<User> {
 	protected final UserChannelDao dao;
 	protected final UUID userId = UUID.randomUUID();
 	//Output is lazily created since it might not ever be used
-	protected OutputUser output = null;
-	protected volatile boolean outputCreated = false;
-	protected final Object outputCreatedLock = new Object[0];
+	protected final AtomicSafeInitializer<OutputUser> output = new AtomicSafeInitializer<OutputUser>() {
+		@Override
+		protected OutputUser initialize() {
+			return bot.getConfiguration().getBotFactory().createOutputUser(bot, User.this);
+		}
+	};
 
 	protected User(PircBotX bot, UserChannelDao dao, String nick) {
 		this.bot = bot;
@@ -71,13 +77,11 @@ public class User implements Comparable<User> {
 	 * @return A {@link OutputUser} for this user
 	 */
 	public OutputUser send() {
-		if(!outputCreated) {
-			synchronized(outputCreatedLock) {
-				this.output = bot.getConfiguration().getBotFactory().createOutputUser(bot, this);
-				this.outputCreated = true;
-			}
+		try {
+			return output.get();
+		} catch (ConcurrentException ex) {
+			throw new RuntimeException("Could not generate OutputChannel for " + getNick());
 		}
-		return output;
 	}
 
 	/**

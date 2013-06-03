@@ -21,12 +21,16 @@ package org.pircbotx;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
+import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputChannel;
 import org.pircbotx.snapshot.ChannelSnapshot;
@@ -68,14 +72,12 @@ public class Channel implements Comparable<Channel> {
 	protected CountDownLatch modeLatch = null;
 	//Output is lazily created since it might not ever be used
 	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	protected OutputChannel output = null;
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	protected volatile boolean outputCreated = false;
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	protected final Object outputCreatedLock = new Object[0];
+	protected final AtomicSafeInitializer<OutputChannel> output = new AtomicSafeInitializer<OutputChannel>() {
+		@Override
+		protected OutputChannel initialize() {
+			return bot.getConfiguration().getBotFactory().createOutputChannel(bot, Channel.this);
+		}
+	};
 
 	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
 		this.bot = bot;
@@ -88,12 +90,11 @@ public class Channel implements Comparable<Channel> {
 	 * @return A {@link OutputChannel} for this channel
 	 */
 	public OutputChannel send() {
-		if (!outputCreated)
-			synchronized (outputCreatedLock) {
-				this.output = bot.getConfiguration().getBotFactory().createOutputChannel(bot, this);
-				this.outputCreated = true;
-			}
-		return output;
+		try {
+			return output.get();
+		} catch (ConcurrentException ex) {
+			throw new RuntimeException("Could not generate OutputChannel for " + getName());
+		}
 	}
 
 	protected void parseMode(String rawMode) {
