@@ -675,7 +675,7 @@ public class InputParser implements Closeable {
 						dao.removeUserFromLevel(UserLevel.OWNER, recipient, channel);
 						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
 					}
-				} else if (curModeChar == 'k') {
+				} else if (curModeChar == 'k')
 					if (adding) {
 						String key = params.next();
 						channel.setChannelKey(key);
@@ -685,7 +685,7 @@ public class InputParser implements Closeable {
 						channel.setChannelKey(null);
 						listenerManager.dispatchEvent(new RemoveChannelKeyEvent(bot, channel, user, key));
 					}
-				} else if (curModeChar == 'l')
+				else if (curModeChar == 'l')
 					if (adding) {
 						int limit = Integer.parseInt(params.next());
 						channel.setChannelLimit(limit);
@@ -694,12 +694,12 @@ public class InputParser implements Closeable {
 						channel.setChannelLimit(-1);
 						listenerManager.dispatchEvent(new RemoveChannelLimitEvent(bot, channel, user));
 					}
-				else if (curModeChar == 'b') {
+				else if (curModeChar == 'b')
 					if (adding)
 						listenerManager.dispatchEvent(new SetChannelBanEvent(bot, channel, user, params.next()));
 					else
 						listenerManager.dispatchEvent(new RemoveChannelBanEvent(bot, channel, user, params.next()));
-				} else if (curModeChar == 't') {
+				else if (curModeChar == 't') {
 					channel.setTopicProtection(adding);
 					if (adding)
 						listenerManager.dispatchEvent(new SetTopicProtectionEvent(bot, channel, user));
