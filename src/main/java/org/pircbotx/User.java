@@ -79,7 +79,7 @@ public class User implements Comparable<User> {
 		try {
 			return output.get();
 		} catch (ConcurrentException ex) {
-			throw new RuntimeException("Could not generate OutputChannel for " + getNick());
+			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
 		}
 	}
 
