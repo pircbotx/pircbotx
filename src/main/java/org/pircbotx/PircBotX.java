@@ -294,7 +294,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public synchronized void reconnect() throws IOException, IrcException {
+	public void reconnect() throws IOException, IrcException {
 		if (configuration == null)
 			throw new IrcException(IrcException.Reason.ReconnectBeforeConnect, "Must connect to the server before reconnecting");
 		try {
