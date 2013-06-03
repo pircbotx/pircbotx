@@ -60,10 +60,10 @@ public class Channel implements Comparable<Channel> {
 	protected boolean topicProtection = false;
 	protected int channelLimit = -1;
 	protected String channelKey = null;
-	@Getter(AccessLevel.PROTECTED)
+	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected boolean modeStale = false;
-	@Getter(AccessLevel.PROTECTED)
+	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
 	//Output is lazily created since it might not ever be used
