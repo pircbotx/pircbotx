@@ -41,6 +41,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.ModeEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
 import org.pircbotx.hooks.events.PartEvent;
@@ -447,29 +448,29 @@ public class InputParserTest {
 				new Object[]{"+p", null, SetPrivateEvent.class},
 				new Object[]{"-p", null, RemovePrivateEvent.class});
 		List<Object[]> testParams = new ArrayList();
-		for(Object[] curTemplate : testTemplates) {
+		for (Object[] curTemplate : testTemplates) {
 			//Normal version
 			testParams.add(curTemplate);
-			
+
 			//Create other versions
-			String modeRaw = (String)curTemplate[0];
+			String modeRaw = (String) curTemplate[0];
 			String modePrefix = modeRaw.substring(0, 1);
 			log.trace("Mode prefix: " + modePrefix);
 			String mode = (modeRaw.contains(" ")) ? StringUtils.split(modeRaw)[0] : modeRaw;
 			mode = mode.substring(1);
 			log.trace("Mode: " + mode);
-			
+
 			//Version with random modes at end
 			Object[] newTemplate = ArrayUtils.clone(curTemplate);
 			newTemplate[0] = StringUtils.replace(modeRaw, modePrefix + mode, modePrefix + mode + "xyz");
 			log.trace("Current: " + newTemplate[0]);
 			testParams.add(newTemplate);
-			
+
 			//Version with random modes at the beggining
 			newTemplate = ArrayUtils.clone(curTemplate);
 			newTemplate[0] = StringUtils.replace(modeRaw, modePrefix + mode, modePrefix + "cde" + mode);
 			testParams.add(newTemplate);
-			
+
 			//Version with random surrounding nodes
 			newTemplate = ArrayUtils.clone(curTemplate);
 			newTemplate[0] = StringUtils.replace(modeRaw, modePrefix + mode, modePrefix + "cde" + mode + "xyz");
@@ -762,6 +763,29 @@ public class InputParserTest {
 		//Check event contents
 		ServerPingEvent event = getEvent(ServerPingEvent.class, "ServerPingEvent not dispatched");
 		assertEquals(event.getResponse(), pingString, "Ping string doesn't match given");
+	}
+
+	@Test
+	public void nickChangeOtherTest() throws IOException, IrcException {
+		User aUser = dao.getUser("AUser");
+		inputParser.handleLine(":AUser!~ALogin@some.host NICK :AnotherUser");
+
+		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
+		assertEquals(event.getOldNick(), "AUser");
+		assertEquals(event.getNewNick(), "AnotherUser");
+		assertEquals(event.getUser(), aUser);
+	}
+
+	@Test
+	public void nickChangeBotTest() throws IOException, IrcException {
+		User botUser = bot.getUserBot();
+		inputParser.handleLine(":PircBotXBot!~PircBotXBot@bot.host NICK :PircBotXBetter");
+
+		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
+		assertEquals(event.getOldNick(), "PircBotXBot");
+		assertEquals(event.getNewNick(), "PircBotXBetter");
+		assertEquals(event.getUser(), botUser);
+		assertEquals(event.getUser(), bot.getUserBot());
 	}
 
 	/**
