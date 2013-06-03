@@ -21,7 +21,6 @@ package org.pircbotx;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -32,9 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 import javax.net.SocketFactory;
 import lombok.Data;
 import lombok.ToString;
@@ -66,7 +62,8 @@ import org.pircbotx.output.OutputUser;
  * tries to join an IRC server.</li>
  * <li>login - Login of the bot</li>
  * <li>version - CTCP version response</li>
- * <li>finger - CTCP finger response</li></ul>
+ * <li>finger - CTCP finger response</li>
+ * </ul>
  * 
  * WebIRC:
  * 
@@ -78,33 +75,36 @@ import org.pircbotx.output.OutputUser;
  * </ul>
  * 
  * Connect information
- * <ul><li>serverHostname - The hostname of the server (eg irc.freenode.net)
- * <li>serverPort - The port of the IRC server (default: 6667)
- * <li>serverPassword - The password of the IRC server
- * <li>messageDelay - number of milliseconds to delay between consecutive
+ * <ul><li>serverHostname - The hostname of the server (eg irc.freenode.net)</li>
+ * <li>serverPort - The port of the IRC server (default: 6667)</li>
+ * <li>serverPassword - The password of the IRC server</li>
+ * <li>messageDelay - number of milliseconds to delay between consecutive</li>
  * messages
  * <li>socketFactory - SocketFactory to use to connect to the IRC server (default:
- * {@link SocketFactory#getDefault() }
- * <li>inetAddress - Local address to use when connecting to the IRC server
+ * {@link SocketFactory#getDefault() }</li>
+ * <li>inetAddress - Local address to use when connecting to the IRC server</li>
  * <li>encoding - The encoding {@link Charset} to use for the connection (default:
- * {@link Charset#defaultCharset()}
+ * {@link Charset#defaultCharset()}</li>
  * <li>socketTimeout - Number of milliseconds to wait before the socket times out on read
  * operations. This does not mean the socket is invalid. By default its 5 minutes
- * minutes
+ * minutes</li>
  * <li>maxLineLength - Maximum length of any line that is sent. (default: IRC 
- * RFC default (including \r\n) 512 bytes)
+ * RFC default (including \r\n) 512 bytes)</li>
  * <li>autoSplitMessage - Enable or disable sendRawLineSplit splitting all lines
- * to maxLineLength (default: true)
+ * to maxLineLength (default: true)</li>
  * <li>autoNickChange - Enable or disable changing nick in case it is already 
- * in use on the server by adding numbers until an unused nick is found 
+ * in use on the server by adding numbers until an unused nick is found</li>
+ * </ul>
  * 
  * Bot classes:
+ * <ul>
  * <li>listenerManager - Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
  * when this method is called. If you do not want this, remove CoreHooks with
- * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
- * <li>capEnabled - If true, CAP handling is enabled (default: false)
- * <li>capHandlers - All CAP Handlers (default: a {@link EnableCapHandler}
+ * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }</li>
+ * <li>capEnabled - If true, CAP handling is enabled (default: false)</li>
+ * <li>capHandlers - All CAP Handlers (default: a {@link EnableCapHandler}</li>
  * for multi-prefix, ignoring errors)
+ * </ul>
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -155,7 +155,7 @@ public class Configuration {
 	protected final BotFactory botFactory;
 
 	/**
-	 * Use {@link Configuration.Builder#build() }
+	 * Use {@link Configuration.Builder#build() }.
 	 * @param builder 
 	 * @see Configuration.Builder#build()
 	 */
@@ -271,7 +271,7 @@ public class Configuration {
 		}
 
 		/**
-		 * Copy values from an existing Configuration
+		 * Copy values from an existing Configuration.
 		 * @param configuration Configuration to copy values from
 		 */
 		public Builder(Configuration configuration) {

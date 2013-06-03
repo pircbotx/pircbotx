@@ -167,7 +167,7 @@ public final class ReplyConstants {
 	public static final int ERR_NOSERVICEHOST = 492;
 	
 	/**
-	 * Should not be initialized
+	 * Should not be initialized.
 	 */
 	private ReplyConstants() {
 	}

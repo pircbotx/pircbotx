@@ -21,7 +21,6 @@ package org.pircbotx;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Multimap;
 import java.util.Map;
 import lombok.AccessLevel;
@@ -41,7 +40,7 @@ public class UserChannelMap<U extends User, C extends Channel> {
 	protected final Multimap<C, U> channelToUserMap;
 
 	/**
-	 * Create with HashMultimaps
+	 * Create with HashMultimaps.
 	 */
 	public UserChannelMap() {
 		channelToUserMap = HashMultimap.create();

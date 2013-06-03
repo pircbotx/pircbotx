@@ -33,9 +33,11 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
+import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
@@ -69,6 +71,10 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			File file = new File("C:\\Users\\Leon\\Downloads\\pircbotx-1.9.jar");
 			event.getUser().send().dccFile(file).transfer();
 			event.respond("Done sending you a file!");
+		}
+		
+		if(event.getMessage().startsWith("?getMode")) {
+			event.respond(event.getChannel().getMode());
 		}
 
 		if (event.getMessage().startsWith("?dccChat")) {
@@ -107,6 +113,19 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			}
 		}
 	}
+
+	@Override
+	public void onNickChange(NickChangeEvent event) throws Exception {
+		event.respond("Event oldnick: " + event.getOldNick() + " | Event newnick: " + event.getNewNick()
+				+ " | User nick: " + event.getUser().getNick() + " | User realname: " + event.getUser().getRealName()) ;
+	}
+
+	@Override
+	public void onAction(ActionEvent event) throws Exception {
+		event.respond("You said " + event.getMessage());
+	}
+	
+	
 
 	/**
 	 * Older way to handle events. We are given a generic event and must cast

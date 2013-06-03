@@ -72,7 +72,7 @@ public class User implements Comparable<User> {
 	}
 	
 	/**
-	 * Send a line to the user
+	 * Send a line to the user.
 	 * @return A {@link OutputUser} for this user
 	 */
 	public OutputUser send() {
@@ -113,7 +113,7 @@ public class User implements Comparable<User> {
 	}
 	
 	/**
-	 * Get all the levels this user holds in the channel
+	 * Get all the levels this user holds in the channel.
 	 * @param channel The channel to get the levels from
 	 * @return An <b>immutable copy</b> of the levels this user holds
 	 */
@@ -122,7 +122,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Get all channels this user is a part of
+	 * Get all channels this user is a part of.
 	 * @return All channels this user is a part of
 	 */
 	public ImmutableSortedSet<Channel> getChannels() {
@@ -130,7 +130,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Get all channels user has Operator status in
+	 * Get all channels user has Operator status in.
 	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
@@ -141,7 +141,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Get all channels user has Voice status in
+	 * Get all channels user has Voice status in.
 	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
@@ -152,7 +152,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Get all channels user has Owner status in
+	 * Get all channels user has Owner status in.
 	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
@@ -163,7 +163,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * Get all channels user has Half Operator status in
+	 * Get all channels user has Half Operator status in.
 	 * Be careful when storing the result from this method as it may be out of date
 	 * by the time you use it again
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
@@ -196,7 +196,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * The exact server that this user is joined to
+	 * The exact server that this user is joined to.
 	 * @return The address of the server
 	 */
 	public String getServer() {
@@ -204,7 +204,7 @@ public class User implements Comparable<User> {
 	}
 
 	/**
-	 * The number of hops it takes to this user
+	 * The number of hops it takes to this user.
 	 * @return the hops
 	 */
 	public int getHops() {
