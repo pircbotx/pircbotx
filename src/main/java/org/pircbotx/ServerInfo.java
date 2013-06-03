@@ -39,6 +39,65 @@ import lombok.Setter;
 @Setter(AccessLevel.NONE)
 public class ServerInfo {
 	protected final PircBotX bot;
+	//004 information
+	protected String serverName;
+	protected String serverVersion;
+	protected String userModes;
+	//005 information
+	protected String prefixes;
+	protected String channelTypes;
+	protected String channelModes;
+	protected int maxModes;
+	protected int maxChannels;
+	protected String chanlimit;
+	protected int maxNickLength;
+	protected int maxBans;
+	protected Map<String, Integer> maxList = new HashMap();
+	protected String network;
+	protected String exceptBans;
+	protected String exceptInvites;
+	protected String invites;
+	protected boolean wallOps;
+	protected boolean wallVoices;
+	protected String statusMessage;
+	protected String caseMapping;
+	protected String eList;
+	protected int topicLength;
+	protected int kickLength;
+	protected int channelLength;
+	protected String channelIDLength;
+	protected String standard;
+	protected int silence;
+	protected boolean RFC2812;
+	protected boolean penalty;
+	protected boolean forcedNickChanges;
+	protected boolean safeList;
+	protected int awayLength;
+	protected boolean noQuit;
+	protected boolean userIPExists;
+	protected boolean cPrivMsgExists;
+	protected boolean cNoticeExists;
+	protected int maxTargets;
+	protected boolean knockExists;
+	protected boolean vChannels;
+	protected int watchMax;
+	protected boolean whoX;
+	protected boolean callerID;
+	protected boolean accept;
+	protected String language;
+	//Other information
+	@Setter(AccessLevel.PROTECTED)
+	protected String motd;
+	protected int highestConnections;
+	protected int highestClients;
+	protected int totalUsers;
+	protected int totalInvisibleUsers;
+	protected int totalServers;
+	protected int totalOperatorsOnline;
+	protected int totalUnknownConnections;
+	protected int totalChannelsFormed;
+	protected int serverUsers;
+	protected int connectedServers;
 
 	public void parse(int code, List<String> parsedLine) {
 		//Pass off to speicific methods
@@ -141,63 +200,4 @@ public class ServerInfo {
 		//005 PircBotX CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 TOPICLEN=390 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ NETWORK=Rizon MAXLIST=beI:100 TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1 CHANTYPES=# :are supported by this server
 		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
 	}
-	//004 information
-	protected String serverName;
-	protected String serverVersion;
-	protected String userModes;
-	//005 information
-	protected String prefixes;
-	protected String channelTypes;
-	protected String channelModes;
-	protected int maxModes;
-	protected int maxChannels;
-	protected String chanlimit;
-	protected int maxNickLength;
-	protected int maxBans;
-	protected Map<String, Integer> maxList = new HashMap();
-	protected String network;
-	protected String exceptBans;
-	protected String exceptInvites;
-	protected String invites;
-	protected boolean wallOps;
-	protected boolean wallVoices;
-	protected String statusMessage;
-	protected String caseMapping;
-	protected String eList;
-	protected int topicLength;
-	protected int kickLength;
-	protected int channelLength;
-	protected String channelIDLength;
-	protected String standard;
-	protected int silence;
-	protected boolean RFC2812;
-	protected boolean penalty;
-	protected boolean forcedNickChanges;
-	protected boolean safeList;
-	protected int awayLength;
-	protected boolean noQuit;
-	protected boolean userIPExists;
-	protected boolean cPrivMsgExists;
-	protected boolean cNoticeExists;
-	protected int maxTargets;
-	protected boolean knockExists;
-	protected boolean vChannels;
-	protected int watchMax;
-	protected boolean whoX;
-	protected boolean callerID;
-	protected boolean accept;
-	protected String language;
-	//Other information
-	@Setter(AccessLevel.PROTECTED)
-	protected String motd;
-	protected int highestConnections;
-	protected int highestClients;
-	protected int totalUsers;
-	protected int totalInvisibleUsers;
-	protected int totalServers;
-	protected int totalOperatorsOnline;
-	protected int totalUnknownConnections;
-	protected int totalChannelsFormed;
-	protected int serverUsers;
-	protected int connectedServers;
 }
