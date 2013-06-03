@@ -56,7 +56,7 @@
 	</issueManagement>
         
 	<ciManagement>
-		<url>https://drone.io/emilymabrey93/pircbotx</url>
+		<url>https://thelq.ci.cloudbees.com/job/PircBotX/</url>
 	</ciManagement>
 
 	<scm>
