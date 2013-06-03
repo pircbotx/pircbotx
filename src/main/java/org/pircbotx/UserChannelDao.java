@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -33,6 +34,7 @@ import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
@@ -73,8 +75,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	public U getUser(String nick) {
-		if (nick == null)
-			throw new NullPointerException("Can't get a null user");
+		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
 		U user = userNickMap.get(nick);
 		if (user != null)
 			return user;
@@ -207,8 +208,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	public C getChannel(String name) {
-		if (name == null)
-			throw new NullPointerException("Can't get a null channel");
+		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
 		C chan = channelNameMap.get(name);
 		if (chan != null)
 			return chan;
