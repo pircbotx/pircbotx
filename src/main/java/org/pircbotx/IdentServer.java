@@ -77,7 +77,7 @@ public class IdentServer implements Closeable, Runnable {
 	}
 	
 	/**
-	 * Start the ident server with the specified charset
+	 * Start the ident server with the specified charset.
 	 * @param encoding The encoding to use for connections
 	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")
@@ -89,7 +89,7 @@ public class IdentServer implements Closeable, Runnable {
 	}
 
 	/**
-	 * Stop the server and clear pending ident responses
+	 * Stop the server and clear pending ident responses.
 	 * @throws IOException 
 	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")
@@ -143,7 +143,7 @@ public class IdentServer implements Closeable, Runnable {
 	}
 
 	/**
-	 * Wait for and process the next connection
+	 * Wait for and process the next connection.
 	 * @throws IOException If any error occurred during reading or writing
 	 */
 	public void handleNextConnection() throws IOException {
@@ -210,7 +210,7 @@ public class IdentServer implements Closeable, Runnable {
 	}
 
 	/**
-	 * Close the server socket and clear pending ident responses
+	 * Close the server socket and clear pending ident responses.
 	 * @throws IOException If an error occured during closing
 	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")

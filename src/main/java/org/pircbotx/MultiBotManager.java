@@ -110,7 +110,7 @@ public class MultiBotManager {
 	}
 
 	/**
-	 * Adds a bot to be managed
+	 * Adds a bot to be managed.
 	 * @param bot An existing <b>unconnected</b> bot
 	 */
 	@Synchronized("stateLock")
@@ -174,7 +174,7 @@ public class MultiBotManager {
 	}
 
 	/**
-	 * {@link #stop()} and wait for all bots to disconnect
+	 * {@link #stop()} and wait for all bots to disconnect.
 	 * @throws InterruptedException If this is interrupted while waiting
 	 */
 	public void stopAndWait() throws InterruptedException {
@@ -198,7 +198,7 @@ public class MultiBotManager {
 	}
 
 	/**
-	 * Lookup a managed bot by id
+	 * Lookup a managed bot by id.
 	 * @param id The id of the bot
 	 * @return A bot that has the specified id or null
 	 */

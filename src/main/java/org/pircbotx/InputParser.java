@@ -99,7 +99,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 /**
- * Parse received input from IRC server
+ * Parse received input from IRC server.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -107,7 +107,7 @@ import org.slf4j.MarkerFactory;
 public class InputParser implements Closeable {
 	protected static final Marker INPUT_MARKER = MarkerFactory.getMarker("pircbotx.input");
 	/**
-	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6)
+	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6).
 	 */
 	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005",
 			"251", "252", "253", "254", "255", "375", "376");
@@ -133,7 +133,7 @@ public class InputParser implements Closeable {
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
-	 * then dispatching the appropriate event
+	 * then dispatching the appropriate event.
 	 *
 	 * @param line The raw line of text from the server.
 	 */
@@ -752,7 +752,8 @@ public class InputParser implements Closeable {
 			dao.addUserToLevel(UserLevel.OWNER, user, chan);
 		if (prefix.contains("&"))
 			dao.addUserToLevel(UserLevel.SUPEROP, user, chan);
-		user.setAway(prefix.contains("G")); //Assume here (H) if there is no G
+		//Assume here (H) if there is no G
+		user.setAway(prefix.contains("G")); 
 		user.setIrcop(prefix.contains("*"));
 	}
 

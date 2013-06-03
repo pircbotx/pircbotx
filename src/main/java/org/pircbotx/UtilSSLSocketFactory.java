@@ -59,14 +59,14 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	protected boolean diffieHellmanDisabled = false;
 
 	/**
-	 * Setup UtilSSLSocketFactory wrapping {@link SSLSocketFactory#getDefault() }
+	 * Setup UtilSSLSocketFactory wrapping {@link SSLSocketFactory#getDefault() }.
 	 */
 	public UtilSSLSocketFactory() {
 		wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 	}
 
 	/**
-	 * Setup UntilSSLSocketFactory wrapping the provided SSLSocketFactory
+	 * Setup UntilSSLSocketFactory wrapping the provided SSLSocketFactory.
 	 * @param providedFactory An SSLSocketFactory to wrap
 	 */
 	public UtilSSLSocketFactory(SSLSocketFactory providedFactory) {

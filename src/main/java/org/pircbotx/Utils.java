@@ -174,7 +174,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Try to parse int string, returning -1 if it fails
+	 * Try to parse int string, returning -1 if it fails.
 	 * @param longString
 	 * @return The string as an int or -1
 	 */
@@ -187,7 +187,7 @@ public final class Utils {
 	}
 
 	/**
-	 * Try to parse long string, returning -1 if it fails
+	 * Try to parse long string, returning -1 if it fails.
 	 * @param longString
 	 * @return The string as a long or -1
 	 */

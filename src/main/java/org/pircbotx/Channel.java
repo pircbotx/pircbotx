@@ -86,7 +86,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Send a line to the channel
+	 * Send a line to the channel.
 	 * @return A {@link OutputChannel} for this channel
 	 */
 	public OutputChannel send() {
@@ -150,7 +150,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Check if the channel has topic protection (+t) set
+	 * Check if the channel has topic protection (+t) set.
 	 * @return True if +t	
 	 */
 	public boolean hasTopicProtection() {
@@ -253,7 +253,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Checks if the given user has Voice in this channel
+	 * Checks if the given user has Voice in this channel.
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
@@ -261,7 +261,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Checks if the given user is a Super Operator in this channel
+	 * Checks if the given user is a Super Operator in this channel.
 	 * @return True if the user is a Super Operator, false if not
 	 */
 	public boolean isSuperOp(User user) {
@@ -269,7 +269,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Checks if the given user is an Owner in this channel
+	 * Checks if the given user is an Owner in this channel.
 	 * @return True if the user is an Owner, false if not
 	 */
 	public boolean isOwner(User user) {
@@ -277,7 +277,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Checks if the given user is a Half Operator in this channel
+	 * Checks if the given user is a Half Operator in this channel.
 	 * @return True if the user is a Half Operator, false if not
 	 */
 	public boolean isHalfOp(User user) {
