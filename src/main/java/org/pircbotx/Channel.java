@@ -76,24 +76,23 @@ public class Channel implements Comparable<Channel> {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected final Object outputCreatedLock = new Object[0];
-	
+
 	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
 		this.bot = bot;
 		this.dao = dao;
 		this.name = name;
 	}
-	
+
 	/**
 	 * Send a line to the channel
 	 * @return A {@link OutputChannel} for this channel
 	 */
 	public OutputChannel send() {
-		if(!outputCreated) {
-			synchronized(outputCreatedLock) {
+		if (!outputCreated)
+			synchronized (outputCreatedLock) {
 				this.output = bot.getConfiguration().getBotFactory().createOutputChannel(bot, this);
 				this.outputCreated = true;
 			}
-		}
 		return output;
 	}
 
@@ -136,14 +135,12 @@ public class Channel implements Comparable<Channel> {
 
 		//Mode is stale, get new mode from server
 		try {
-			log.debug("Mode is stale, fetching fresh mode");
-			bot.sendRaw().rawLine("MODE " + getName());
+			log.debug("Mode is stale for channel " + getName() + ", fetching fresh mode");
 			if (modeLatch == null || modeLatch.getCount() == 0)
 				modeLatch = new CountDownLatch(1);
+			bot.sendRaw().rawLine("MODE " + getName());
 			//Wait for setMode to be called
 			modeLatch.await();
-			//Mode is no longer stale since we have a good mode
-			modeStale = false;
 			//We have known good mode from server, now return
 			return mode;
 		} catch (InterruptedException e) {
@@ -154,11 +151,11 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * Check if the channel has topic protection (+t) set
 	 * @return True if +t	
- */
+	 */
 	public boolean hasTopicProtection() {
 		return topicProtection;
 	}
-	
+
 	/**
 	 * Get all levels the user holds in this channel.
 	 * @param user The user to get the levels of
@@ -225,7 +222,7 @@ public class Channel implements Comparable<Channel> {
 	void setMode(String mode) {
 		this.mode = mode;
 		this.modeStale = false;
-		if (modeLatch != null && modeLatch.getCount() == 1)
+		if (modeLatch != null)
 			modeLatch.countDown();
 	}
 
@@ -285,9 +282,9 @@ public class Channel implements Comparable<Channel> {
 	public boolean isHalfOp(User user) {
 		return getDao().levelContainsUser(UserLevel.HALFOP, this, user);
 	}
-	
+
 	public ChannelSnapshot createSnapshot() {
-		if(modeStale)
+		if (modeStale)
 			log.warn("Channel {} mode '{}' is stale", getName(), mode);
 		return new ChannelSnapshot(this, mode);
 	}
