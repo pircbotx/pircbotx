@@ -44,14 +44,6 @@ import org.pircbotx.output.OutputUser;
 @EqualsAndHashCode(of = {"userId", "bot"})
 @Setter(AccessLevel.PROTECTED)
 public class User implements Comparable<User> {
-	private String nick;
-	private String realName = "";
-	private String login = "";
-	private String hostmask = "";
-	private boolean away = false;
-	private boolean ircop = false;
-	private String server = "";
-	private int hops = 0;
 	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao dao;
@@ -64,6 +56,14 @@ public class User implements Comparable<User> {
 			return bot.getConfiguration().getBotFactory().createOutputUser(bot, User.this);
 		}
 	};
+	private String nick;
+	private String realName = "";
+	private String login = "";
+	private String hostmask = "";
+	private boolean away = false;
+	private boolean ircop = false;
+	private String server = "";
+	private int hops = 0;
 
 	protected User(PircBotX bot, UserChannelDao dao, String nick) {
 		this.bot = bot;

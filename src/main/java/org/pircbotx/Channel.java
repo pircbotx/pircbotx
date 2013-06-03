@@ -45,12 +45,20 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 public class Channel implements Comparable<Channel> {
-	private final String name;
+	protected final String name;
 	protected final UUID channelId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao dao;
 	protected final PircBotX bot;
-	private String mode = "";
+	//Output is lazily created since it might not ever be used
+	@Getter(AccessLevel.NONE)
+	protected final AtomicSafeInitializer<OutputChannel> output = new AtomicSafeInitializer<OutputChannel>() {
+		@Override
+		protected OutputChannel initialize() {
+			return bot.getConfiguration().getBotFactory().createOutputChannel(bot, Channel.this);
+		}
+	};
+	protected String mode = "";
 	protected String topic = "";
 	protected long topicTimestamp;
 	protected long createTimestamp;
@@ -70,14 +78,6 @@ public class Channel implements Comparable<Channel> {
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
-	//Output is lazily created since it might not ever be used
-	@Getter(AccessLevel.NONE)
-	protected final AtomicSafeInitializer<OutputChannel> output = new AtomicSafeInitializer<OutputChannel>() {
-		@Override
-		protected OutputChannel initialize() {
-			return bot.getConfiguration().getBotFactory().createOutputChannel(bot, Channel.this);
-		}
-	};
 
 	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
 		this.bot = bot;
