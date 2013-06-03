@@ -536,7 +536,7 @@ public class InputParser implements Closeable {
 			serverInfo.setMotd(motdBuilder.toString().trim());
 			motdBuilder = null;
 			listenerManager.dispatchEvent(new MotdEvent(bot, (serverInfo.getMotd())));
-		} else if (code == 004 || code == 005) {
+		} else if (code == 4 || code == 5) {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, remove ending comment and let ServerInfo class parse it
 			int endCommentIndex = rawResponse.lastIndexOf(" :");
