@@ -31,7 +31,6 @@ import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
-import org.pircbotx.output.OutputChannel;
 import org.pircbotx.output.OutputUser;
 
 /**
@@ -42,7 +41,6 @@ import org.pircbotx.output.OutputUser;
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Data
-@ToString(exclude = {"outputCreated", "outputCreatedLock"})
 @EqualsAndHashCode(of = {"userId", "bot"})
 @Setter(AccessLevel.PROTECTED)
 public class User implements Comparable<User> {
@@ -59,6 +57,7 @@ public class User implements Comparable<User> {
 	protected final UserChannelDao dao;
 	protected final UUID userId = UUID.randomUUID();
 	//Output is lazily created since it might not ever be used
+	@Getter(AccessLevel.NONE)
 	protected final AtomicSafeInitializer<OutputUser> output = new AtomicSafeInitializer<OutputUser>() {
 		@Override
 		protected OutputUser initialize() {
