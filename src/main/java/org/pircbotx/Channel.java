@@ -220,7 +220,7 @@ public class Channel implements Comparable<Channel> {
 	 * fire it.
 	 * @param mode
 	 */
-	void setMode(String mode) {
+	protected void setMode(String mode) {
 		this.mode = mode;
 		this.modeStale = false;
 		if (modeLatch != null)
