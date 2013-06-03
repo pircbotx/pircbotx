@@ -39,19 +39,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
-import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.*;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -119,7 +114,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected final Object shutdownCalledLock = new Object();
 
 	/**
-	 * Constructs a PircBotX with the provided configuration
+	 * Constructs a PircBotX with the provided configuration.
 	 */
 	public PircBotX(Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
@@ -393,7 +388,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	}
 
 	/**
-	 * Gets the bots own user object
+	 * Gets the bots own user object.
 	 * @return The user object representing this bot
 	 */
 	public User getUserBot() {
@@ -418,7 +413,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	}
 
 	/**
-	 * Calls shutdown allowing reconnect
+	 * Calls shutdown allowing reconnect.
 	 */
 	public void shutdown() {
 		shutdown(false);
