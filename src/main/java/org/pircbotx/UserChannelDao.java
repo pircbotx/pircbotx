@@ -24,7 +24,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import java.io.Closeable;
 import java.util.EnumMap;
@@ -151,7 +150,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<UserLevel> getLevels(C channel, U user) {
-		ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.builder();
+		ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.naturalOrder();
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curEntry : levelsMap.entrySet())
 			if (curEntry.getValue().containsEntry(user, channel))
 				builder.add(curEntry.getKey());
