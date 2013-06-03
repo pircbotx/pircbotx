@@ -93,7 +93,7 @@ public class Channel implements Comparable<Channel> {
 		try {
 			return output.get();
 		} catch (ConcurrentException ex) {
-			throw new RuntimeException("Could not generate OutputChannel for " + getName());
+			throw new RuntimeException("Could not generate OutputChannel for " + getName(), ex);
 		}
 	}
 
