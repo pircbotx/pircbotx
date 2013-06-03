@@ -346,11 +346,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * @param nick The new nick.
 	 */
 	protected void setNick(String nick) {
-		synchronized (userChannelDao.accessLock) {
-			User user = userChannelDao.getUser(this.nick);
-			userChannelDao.renameUser(user, nick);
-			this.nick = nick;
-		}
+		this.nick = nick;
 	}
 
 	/**
