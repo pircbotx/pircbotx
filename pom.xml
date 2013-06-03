@@ -177,7 +177,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.1</version>
 				<configuration>
 					<source>1.5</source>
 					<target>1.5</target>
@@ -202,17 +202,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.3</version>
 				<dependencies>
 					<dependency><!-- add support for scm -->
 						<groupId>org.apache.maven.wagon</groupId>
 						<artifactId>wagon-scm</artifactId>
-						<version>2.1</version>
+						<version>2.4</version>
 					</dependency>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
 						<artifactId>maven-scm-provider-hg</artifactId>
-						<version>1.5</version>
+						<version>1.8.1</version>
 					</dependency>
 				</dependencies>
 				<configuration>
@@ -221,7 +221,7 @@
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.8</version>
+							<version>2.9</version>
 							<configuration>
 								<defaultAuthor>Leon Blakey</defaultAuthor>
 								<defaultVersion>${project.version}</defaultVersion>
@@ -294,7 +294,7 @@
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
-				<version>0.11.2.0</version>
+				<version>0.11.8.0</version>
 				<executions>
 					<execution>
 						<phase>process-sources</phase>
@@ -314,7 +314,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.8.1</version>
+				<version>2.9</version>
 				<configuration>
 					<defaultAuthor>Leon Blakey</defaultAuthor>
 					<defaultVersion>${project.version}</defaultVersion>
@@ -325,7 +325,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.2</version>
+				<version>2.14.1</version>
 				<configuration>
 					<properties>
 						<property>
@@ -338,7 +338,7 @@
 			<!-- Make a unified jar with all of the dependencies -->
 			<plugin>              
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.0</version>
+				<version>2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
