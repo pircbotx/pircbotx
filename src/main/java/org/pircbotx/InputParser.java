@@ -153,7 +153,7 @@ public class InputParser implements Closeable {
 		// Check for server pings.
 		if (command.equals("PING")) {
 			// Respond to the ping and return immediately.
-			listenerManager.dispatchEvent(new ServerPingEvent(bot, line.substring(5)));
+			listenerManager.dispatchEvent(new ServerPingEvent(bot, parsedLine.get(0)));
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
