@@ -216,9 +216,8 @@ public final class Colors {
 		StringBuilder buffer = new StringBuilder();
 		for (int i = 0; i < length; i++) {
 			char ch = line.charAt(i);
-			if (ch == '\u000f' || ch == '\u0002' || ch == '\u001f' || ch == '\u0016') {
-				// Don't add this character.
-			} else
+			//Filter characters
+			if (ch != '\u000f' && ch != '\u0002' && ch != '\u001f' && ch != '\u0016')
 				buffer.append(ch);
 		}
 		return buffer.toString();
