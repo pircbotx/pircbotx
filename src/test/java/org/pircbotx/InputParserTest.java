@@ -784,6 +784,7 @@ public class InputParserTest {
 		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
 		assertEquals(event.getOldNick(), "PircBotXBot");
 		assertEquals(event.getNewNick(), "PircBotXBetter");
+		assertEquals(bot.getNick(), "PircBotXBetter");
 		assertEquals(event.getUser(), botUser);
 		assertEquals(event.getUser(), bot.getUserBot());
 	}
