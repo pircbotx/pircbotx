@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -146,7 +147,7 @@ public class MultiBotManager {
 		}
 	}
 
-	protected void startBot(final PircBotX bot) {
+	protected ListenableFuture startBot(final PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
 		ListenableFuture future = botPool.submit(new BotRunner(bot));
 		synchronized (runningBotsLock) {
@@ -154,6 +155,7 @@ public class MultiBotManager {
 			runningBotsNumbers.put(bot, bot.getBotId());
 		}
 		Futures.addCallback(future, new BotFutureCallback(bot));
+		return future;
 	}
 
 	/**
