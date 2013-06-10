@@ -147,9 +147,9 @@ public class MultiBotManager {
 		}
 	}
 
-	protected ListenableFuture startBot(final PircBotX bot) {
+	protected ListenableFuture<Void> startBot(final PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
-		ListenableFuture future = botPool.submit(new BotRunner(bot));
+		ListenableFuture<Void> future = botPool.submit(new BotRunner(bot));
 		synchronized (runningBotsLock) {
 			runningBots.put(bot, future);
 			runningBotsNumbers.put(bot, bot.getBotId());
