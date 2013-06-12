@@ -18,7 +18,6 @@
  */
 package org.pircbotx.hooks.managers;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
@@ -36,12 +35,10 @@ import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
-import org.slf4j.MDC;
 
 /**
  * A listener manager that executes individual listeners in a thread pool. Will 
@@ -49,13 +46,13 @@ import org.slf4j.MDC;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
-public class ThreadedListenerManager<E extends PircBotX> implements ListenerManager<E> {
+public class ThreadedListenerManager<B extends PircBotX> implements ListenerManager<B> {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected ExecutorService pool;
-	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
+	protected Set<Listener<B>> listeners = Collections.synchronizedSet(new HashSet<Listener<B>>());
 	protected AtomicLong currentId = new AtomicLong();
-	protected final Multimap<PircBotX, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
+	protected final Multimap<B, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
 	 * Configures with default options: perHook is false and a
@@ -83,40 +80,40 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	@Override
-	public boolean addListener(Listener listener) {
+	public boolean addListener(Listener<B> listener) {
 		return getListenersReal().add(listener);
 	}
 
 	@Override
-	public boolean removeListener(Listener listener) {
+	public boolean removeListener(Listener<B> listener) {
 		return getListenersReal().remove(listener);
 	}
 
 	@Override
-	public ImmutableSet<Listener> getListeners() {
+	public ImmutableSet<Listener<B>> getListeners() {
 		return ImmutableSet.copyOf(getListenersReal());
 	}
 
-	protected Set<Listener> getListenersReal() {
+	protected Set<Listener<B>> getListenersReal() {
 		return listeners;
 	}
 
 	@Override
-	public boolean listenerExists(Listener listener) {
+	public boolean listenerExists(Listener<B> listener) {
 		return getListeners().contains(listener);
 	}
 
 	@Override
 	@Synchronized("listeners")
-	public void dispatchEvent(Event<E> event) {
+	public void dispatchEvent(Event<B> event) {
 		//For each Listener, add a new Runnable
-		for (Listener curListener : getListenersReal())
+		for (Listener<B> curListener : getListenersReal())
 			submitEvent(pool, curListener, event);
 	}
 
-	protected void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
-		pool.execute(new ManagedFutureTask(listener, event, new Callable() {
-			public Object call() {
+	protected void submitEvent(ExecutorService pool, final Listener<B> listener, final Event<B> event) {
+		pool.execute(new ManagedFutureTask(listener, event, new Callable<Void>() {
+			public Void call() {
 				try {
 					Utils.addBotToMDC(event.getBot());
 					listener.onEvent(event);
@@ -153,7 +150,7 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 		return pool;
 	}
 
-	public void shutdown(PircBotX bot) {
+	public void shutdown(B bot) {
 		synchronized (runningListeners) {
 			for (ManagedFutureTask curFuture : runningListeners.get(bot))
 				try {
@@ -166,11 +163,11 @@ public class ThreadedListenerManager<E extends PircBotX> implements ListenerMana
 	}
 
 	@Getter
-	public class ManagedFutureTask extends FutureTask {
-		protected final Listener listener;
-		protected final Event event;
+	public class ManagedFutureTask extends FutureTask<Void> {
+		protected final Listener<B> listener;
+		protected final Event<B> event;
 
-		public ManagedFutureTask(Listener listener, Event event, Callable callable) {
+		public ManagedFutureTask(Listener<B> listener, Event<B> event, Callable<Void> callable) {
 			super(callable);
 			this.listener = listener;
 			this.event = event;

@@ -100,7 +100,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected final OutputCAP outputCAP;
 	protected final OutputDCC outputDCC;
 	@Getter
-	protected List<String> enabledCapabilities = new ArrayList();
+	protected List<String> enabledCapabilities = new ArrayList<String>();
 	protected String nick = "";
 	protected boolean loggedIn = false;
 	protected Thread shutdownHook;
@@ -156,7 +156,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
 
 		//Reset capabilities
-		enabledCapabilities = new ArrayList();
+		enabledCapabilities = new ArrayList<String>();
 
 		// Connect to the server by DNS server
 		for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
@@ -451,7 +451,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			}
 
 		//Cache channels for possible next reconnect
-		Map<String, String> previousChannels = new HashMap();
+		Map<String, String> previousChannels = new HashMap<String, String>();
 		for (Channel curChannel : userChannelDao.getAllChannels()) {
 			String key = (curChannel.getChannelKey() == null) ? "" : curChannel.getChannelKey();
 			previousChannels.put(curChannel.getName(), key);
@@ -496,7 +496,7 @@ public class PircBotX implements Comparable<PircBotX> {
 		protected final WeakReference<PircBotX> thisBotRef;
 
 		public BotShutdownHook(PircBotX bot) {
-			this.thisBotRef = new WeakReference(bot);
+			this.thisBotRef = new WeakReference<PircBotX>(bot);
 			setName("bot" + BOT_COUNT + "-shutdownhook");
 		}
 
