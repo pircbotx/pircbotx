@@ -20,6 +20,7 @@ package org.pircbotx.hooks;
 
 import com.google.common.collect.ComparisonChain;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 
 /**
@@ -32,9 +33,13 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T>, Comp
 	protected final long id;
 
 	public Event(T bot) {
+		this(bot.getConfiguration().getListenerManager());
+	}
+
+	public Event(ListenerManager listenerManager) {
 		this.timestamp = System.currentTimeMillis();
-		this.bot = bot;
-		this.id = bot.getConfiguration().getListenerManager().incrementCurrentId();
+		this.id = listenerManager.incrementCurrentId();
+		this.bot = null;
 	}
 
 	/**
