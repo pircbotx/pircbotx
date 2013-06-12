@@ -65,15 +65,15 @@ import org.slf4j.LoggerFactory;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
-public class MultiBotManager {
+public class MultiBotManager<B extends PircBotX> {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final LinkedHashMap<PircBotX, ListenableFuture> runningBots = new LinkedHashMap();
-	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
+	protected final LinkedHashMap<B, ListenableFuture> runningBots = new LinkedHashMap();
+	protected final BiMap<B, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
 	//Code for starting
-	protected List<PircBotX> startQueue = new ArrayList();
+	protected List<B> startQueue = new ArrayList();
 	protected State state = State.NEW;
 	protected final Object stateLock = new Object[0];
 
@@ -107,7 +107,7 @@ public class MultiBotManager {
 		//Since creating a bot is expensive, verify the state first
 		if (state != State.NEW && state != State.RUNNING)
 			throw new RuntimeException("MultiBotManager is not running. State: " + state);
-		addBot(new PircBotX(config));
+		addBot((B)new PircBotX(config));
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class MultiBotManager {
 	 * @param bot An existing <b>unconnected</b> bot
 	 */
 	@Synchronized("stateLock")
-	public void addBot(PircBotX bot) {
+	public void addBot(B bot) {
 		checkNotNull(bot, "Bot cannot be null");
 		checkArgument(!bot.isConnected(), "Bot must not already be connected");
 		if (state == State.NEW) {
@@ -138,7 +138,7 @@ public class MultiBotManager {
 			state = State.STARTING;
 		}
 
-		for (PircBotX bot : startQueue)
+		for (B bot : startQueue)
 			startBot(bot);
 		startQueue.clear();
 
@@ -147,7 +147,7 @@ public class MultiBotManager {
 		}
 	}
 
-	protected ListenableFuture<Void> startBot(final PircBotX bot) {
+	protected ListenableFuture<Void> startBot(final B bot) {
 		checkNotNull(bot, "Bot cannot be null");
 		ListenableFuture<Void> future = botPool.submit(new BotRunner(bot));
 		synchronized (runningBotsLock) {
@@ -168,7 +168,7 @@ public class MultiBotManager {
 			state = State.STOPPING;
 		}
 
-		for (PircBotX bot : runningBots.keySet())
+		for (B bot : runningBots.keySet())
 			if (bot.isConnected())
 				bot.sendIRC().quitServer();
 
@@ -195,7 +195,7 @@ public class MultiBotManager {
 	 * @return An <i>immutable copy</i> of bots that are being managed
 	 */
 	@Synchronized("runningBotsLock")
-	public ImmutableSortedSet<PircBotX> getBots() {
+	public ImmutableSortedSet<B> getBots() {
 		return ImmutableSortedSet.copyOf(runningBots.keySet());
 	}
 
@@ -205,14 +205,14 @@ public class MultiBotManager {
 	 * @return A bot that has the specified id or null
 	 */
 	@Synchronized("runningBotsLock")
-	public PircBotX getBotById(int id) {
+	public B getBotById(int id) {
 		return runningBotsNumbers.inverse().get(id);
 	}
 
 	@RequiredArgsConstructor
 	protected class BotRunner implements Callable<Void> {
 		@NonNull
-		protected final PircBotX bot;
+		protected final B bot;
 
 		public Void call() throws IOException, IrcException {
 			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotId());
@@ -225,7 +225,7 @@ public class MultiBotManager {
 	protected class BotFutureCallback implements FutureCallback<Void> {
 		protected final Logger log = LoggerFactory.getLogger(getClass());
 		@NonNull
-		protected final PircBotX bot;
+		protected final B bot;
 
 		public void onSuccess(Void result) {
 			log.debug("Bot #" + bot.getBotId() + " finished");
