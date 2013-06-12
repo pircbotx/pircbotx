@@ -51,7 +51,7 @@ import org.pircbotx.PircBotX;
 @Deprecated
 @Slf4j
 public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
-	protected Set<Listener> listeners = new HashSet<Listener>();
+	protected Set<Listener<E>> listeners = new HashSet<Listener<E>>();
 	@Getter
 	@Setter
 	protected long currentId = 0;
@@ -64,7 +64,7 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 		return listeners.remove(listener);
 	}
 
-	public ImmutableSet<Listener> getListeners() {
+	public ImmutableSet<Listener<E>> getListeners() {
 		return ImmutableSet.copyOf(listeners);
 	}
 

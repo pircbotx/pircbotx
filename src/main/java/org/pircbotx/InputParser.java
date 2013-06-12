@@ -22,11 +22,11 @@ import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Maps;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +114,7 @@ public class InputParser implements Closeable {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final ListenerManager listenerManager;
-	protected final UserChannelDao dao;
+	protected final UserChannelDao<User, Channel> dao;
 	protected final String channelPrefixes;
 	protected final ServerInfo serverInfo;
 	protected final DccHandler dccHandler;
@@ -123,7 +123,7 @@ public class InputParser implements Closeable {
 	protected final OutputCAP sendCAP;
 	protected BufferedReader inputReader;
 	//Builders
-	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = new HashMap();
+	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = Maps.newHashMap();
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;
