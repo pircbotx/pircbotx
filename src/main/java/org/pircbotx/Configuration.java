@@ -21,13 +21,13 @@ package org.pircbotx;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -149,7 +149,7 @@ public class Configuration {
 	protected final boolean identServerEnabled;
 	protected final String nickservPassword;
 	//Bot classes
-	protected final ListenerManager<? extends PircBotX> listenerManager;
+	protected final ListenerManager listenerManager;
 	protected final boolean capEnabled;
 	protected final ImmutableList<CapHandler> capHandlers;
 	protected final BotFactory botFactory;
@@ -237,7 +237,7 @@ public class Configuration {
 		protected String channelPrefixes = "#&+!";
 		//DCC
 		protected boolean dccFilenameQuotes = false;
-		protected List<Integer> dccPorts = new ArrayList();
+		protected List<Integer> dccPorts = new ArrayList<Integer>();
 		protected InetAddress dccLocalAddress = null;
 		protected int dccAcceptTimeout = -1;
 		protected int dccResumeAcceptTimeout = -1;
@@ -257,13 +257,13 @@ public class Configuration {
 		protected boolean autoNickChange = false;
 		protected long messageDelay = 1000;
 		protected boolean shutdownHookEnabled = true;
-		protected final Map<String, String> autoJoinChannels = new HashMap();
+		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
 		protected boolean identServerEnabled;
 		protected String nickservPassword;
 		//Bot classes
-		protected ListenerManager<? extends PircBotX> listenerManager = null;
+		protected ListenerManager listenerManager = null;
 		protected boolean capEnabled = false;
-		protected final List<CapHandler> capHandlers = new ArrayList();
+		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 		protected BotFactory botFactory = new BotFactory();
 
 		public Builder() {

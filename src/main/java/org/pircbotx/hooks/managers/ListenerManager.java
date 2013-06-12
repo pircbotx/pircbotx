@@ -41,7 +41,7 @@ import org.pircbotx.hooks.Listener;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface ListenerManager<E extends PircBotX> {
+public interface ListenerManager<B extends PircBotX> {
 	/**
 	 * Sends event to all appropriate listeners.
 	 * <p>
@@ -49,7 +49,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * on exception handling and performance.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(Event<E> event);
+	public void dispatchEvent(Event<B> event);
 
 	/**
 	 * Adds an listener to the list of listeners for an event.
@@ -59,7 +59,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @param listener The listener to add
 	 * @return True if the listener was successfully added, false if not
 	 */
-	public boolean addListener(Listener listener);
+	public boolean addListener(Listener<B> listener);
 
 	/**
 	 * Removes the specified Listener
@@ -70,14 +70,14 @@ public interface ListenerManager<E extends PircBotX> {
 	 * @return True if the listener was removed, false if it didn't exist or wasn't
 	 * removed
 	 */
-	public boolean removeListener(Listener listener);
+	public boolean removeListener(Listener<B> listener);
 
 	/**
 	 * Checks if the specified listener exists
 	 * @param listener The listener <i>instance</i> to look for
 	 * @return True if it the listener exists, false if it doesn't
 	 */
-	public boolean listenerExists(Listener listener);
+	public boolean listenerExists(Listener<B> listener);
 
 	/**
 	 * Gets all listeners that are in this ListenerManager
@@ -86,7 +86,7 @@ public interface ListenerManager<E extends PircBotX> {
 	 * on exception handling and performance.
 	 * @return An <b>immutable copy</b> of all listeners that are in this ListenerManager
 	 */
-	public ImmutableSet<Listener> getListeners();
+	public ImmutableSet<Listener<B>> getListeners();
 
 	/**
 	 * Set the current id used by the ListenerManager
@@ -114,5 +114,5 @@ public interface ListenerManager<E extends PircBotX> {
 	 */
 	public long incrementCurrentId();
 
-	public void shutdown(PircBotX bot);
+	public void shutdown(B bot);
 }
