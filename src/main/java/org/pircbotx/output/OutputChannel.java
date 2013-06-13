@@ -20,6 +20,7 @@ package org.pircbotx.output;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -204,11 +205,7 @@ public class OutputChannel {
 			throw new IllegalArgumentException("Can't set mode on channel to null");
 		if (args == null)
 			throw new IllegalArgumentException("Can't set mode arguments to null");
-		//Build arg string
-		StringBuilder argBuilder = new StringBuilder(" ");
-		for (Object curArg : args)
-			argBuilder.append(curArg.toString()).append(" ");
-		setMode(mode + argBuilder.toString());
+		setMode(mode + StringUtils.join(args, " "));
 	}
 
 	/**
