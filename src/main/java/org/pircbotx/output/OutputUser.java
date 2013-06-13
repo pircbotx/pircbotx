@@ -112,6 +112,10 @@ public class OutputUser {
 		sendIRC.ctcpResponse(user.getNick(), message);
 	}
 	
+	public void mode(String mode) {
+		sendIRC.mode(user.getNick(), mode);
+	}
+	
 	public SendFileTransfer dccFile(File file) throws IOException, DccException, InterruptedException {
 		return dccHandler.sendFile(file, user);
 	}
