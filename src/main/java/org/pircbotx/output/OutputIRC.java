@@ -261,4 +261,8 @@ public class OutputIRC {
 		checkArgument(!StringUtils.isBlank(password), "Password '%s' is blank", password);
 		sendRaw.rawLine("NICKSERV IDENTIFY " + password);
 	}
+
+	public void mode(String target, String mode) {
+		sendRaw.rawLine("MODE " + target + " " + mode);
+	}
 }

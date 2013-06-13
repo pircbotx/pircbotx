@@ -186,7 +186,7 @@ public class OutputChannel {
 	public void setMode(String mode) {
 		if (mode == null)
 			throw new IllegalArgumentException("Can't set mode on channel to null");
-		sendRaw.rawLine("MODE " + channel.getName() + " " + mode);
+		sendIRC.mode(channel.getName(), mode);
 	}
 
 	/**
