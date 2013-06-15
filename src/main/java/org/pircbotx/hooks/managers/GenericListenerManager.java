@@ -56,11 +56,11 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 	@Setter
 	protected long currentId = 0;
 
-	public boolean addListener(Listener listener) {
+	public boolean addListener(Listener<E> listener) {
 		return listeners.add(listener);
 	}
 
-	public boolean removeListener(Listener listener) {
+	public boolean removeListener(Listener<E> listener) {
 		return listeners.remove(listener);
 	}
 
@@ -70,14 +70,14 @@ public class GenericListenerManager<E extends PircBotX> implements ListenerManag
 
 	public void dispatchEvent(Event<E> event) {
 		try {
-			for (Listener curListener : listeners)
+			for (Listener<E> curListener : listeners)
 				curListener.onEvent(event);
 		} catch (Exception e) {
 			log.error("Exception encountered when dispatching event " + event, e);
 		}
 	}
 
-	public boolean listenerExists(Listener listener) {
+	public boolean listenerExists(Listener<E> listener) {
 		return listeners.contains(listener);
 	}
 
