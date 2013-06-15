@@ -50,34 +50,34 @@ import org.pircbotx.PircBotX;
  */
 @Deprecated
 @Slf4j
-public class GenericListenerManager<E extends PircBotX> implements ListenerManager<E> {
-	protected Set<Listener<E>> listeners = new HashSet<Listener<E>>();
+public class GenericListenerManager<B extends PircBotX> implements ListenerManager<B> {
+	protected Set<Listener<B>> listeners = new HashSet<Listener<B>>();
 	@Getter
 	@Setter
 	protected long currentId = 0;
 
-	public boolean addListener(Listener<E> listener) {
+	public boolean addListener(Listener<B> listener) {
 		return listeners.add(listener);
 	}
 
-	public boolean removeListener(Listener<E> listener) {
+	public boolean removeListener(Listener<B> listener) {
 		return listeners.remove(listener);
 	}
 
-	public ImmutableSet<Listener<E>> getListeners() {
+	public ImmutableSet<Listener<B>> getListeners() {
 		return ImmutableSet.copyOf(listeners);
 	}
 
-	public void dispatchEvent(Event<E> event) {
+	public void dispatchEvent(Event<B> event) {
 		try {
-			for (Listener<E> curListener : listeners)
+			for (Listener<B> curListener : listeners)
 				curListener.onEvent(event);
 		} catch (Exception e) {
 			log.error("Exception encountered when dispatching event " + event, e);
 		}
 	}
 
-	public boolean listenerExists(Listener<E> listener) {
+	public boolean listenerExists(Listener<B> listener) {
 		return listeners.contains(listener);
 	}
 
