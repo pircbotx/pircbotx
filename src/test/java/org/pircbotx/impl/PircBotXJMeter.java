@@ -136,7 +136,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 		try {
 			PircBotX bot = new PircBotX(configuration);
 			//Connect to the freenode IRC network
-			bot.connect();
+			bot.startBot();
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {

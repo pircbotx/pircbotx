@@ -21,6 +21,7 @@ package org.pircbotx;
 import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import java.io.BufferedReader;
@@ -226,7 +227,10 @@ public class InputParser implements Closeable {
 			//Handle automatic on connect stuff
 			if (configuration.getNickservPassword() != null)
 				sendIRC.identify(configuration.getNickservPassword());
-			for (Map.Entry<String, String> channelEntry : configuration.getAutoJoinChannels().entrySet())
+			ImmutableMap<String, String> autoConnectChannels = bot.reconnectChannels();
+			if (autoConnectChannels == null)
+				autoConnectChannels = configuration.getAutoJoinChannels();
+			for (Map.Entry<String, String> channelEntry : autoConnectChannels.entrySet())
 				sendIRC.joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} else if (code.equals("433"))
 			//EXAMPLE: AnAlreadyUsedName :Nickname already in use
@@ -753,7 +757,7 @@ public class InputParser implements Closeable {
 		if (prefix.contains("&"))
 			dao.addUserToLevel(UserLevel.SUPEROP, user, chan);
 		//Assume here (H) if there is no G
-		user.setAway(prefix.contains("G")); 
+		user.setAway(prefix.contains("G"));
 		user.setIrcop(prefix.contains("*"));
 	}
 

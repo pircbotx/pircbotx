@@ -21,6 +21,7 @@ package org.pircbotx.impl;
 import java.io.File;
 import javax.net.SocketFactory;
 import org.pircbotx.Configuration;
+import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.cap.EnableCapHandler;
@@ -198,7 +199,7 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 		try {
 			PircBotX bot = new PircBotX(configuration);
 			//Connect to the freenode IRC network
-			bot.connect();
+			bot.startBot();
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {

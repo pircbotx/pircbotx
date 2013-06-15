@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,7 +37,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.dcc.DccHandler;
@@ -104,12 +104,8 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected String nick = "";
 	protected boolean loggedIn = false;
 	protected Thread shutdownHook;
-	@Getter
-	@Setter
-	protected boolean autoReconnect;
-	@Getter
-	@Setter
-	protected boolean autoReconnectChannels;
+	protected boolean reconnectStopped = false;
+	protected ImmutableMap<String, String> reconnectChannels;
 	protected boolean shutdownCalled = false;
 	protected final Object shutdownCalledLock = new Object();
 
@@ -128,6 +124,28 @@ public class PircBotX implements Comparable<PircBotX> {
 		this.dccHandler = configuration.getBotFactory().createDccHandler(this);
 		this.inputParser = configuration.getBotFactory().createInputParser(this);
 	}
+	
+	/**
+	 * Start the bot by connecting to the server. If {@link Configuration#isAutoReconnect()} 
+	 * is true this will continuously reconnect to the server until {@link #stopBot()} 
+	 * is called or an exception is thrown from connecting
+	 * 
+	 * @throws IOException if it was not possible to connect to the server.
+	 * @throws IrcException 
+	 */
+	public void startBot() throws IOException, IrcException {
+		reconnectStopped = false;
+		do {
+			connect();
+		} while(configuration.isAutoReconnect() && !reconnectStopped);
+	}
+	
+	/**
+	 * Stops the bot from reconnecting constantly to the server in the future.
+	 */
+	public void stopBotReconnect() {
+		reconnectStopped = true;
+	}
 
 	/**
 	 * Attempt to connect to the specified IRC server using the supplied
@@ -143,7 +161,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
-	public void connect() throws IOException, IrcException {
+	protected void connect() throws IOException, IrcException {
 		Utils.addBotToMDC(this);
 		if (isConnected())
 			throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
@@ -277,37 +295,6 @@ public class PircBotX implements Comparable<PircBotX> {
 			Runtime.getRuntime().addShutdownHook(shutdownHook = new PircBotX.BotShutdownHook(this));
 	}
 
-	/**
-	 * Reconnects to the IRC server that we were previously connected to using 
-	 * the same {@link Configuration}
-	 * This method will throw an IrcException if we have never connected
-	 * to an IRC server previously.
-	 *
-	 * @since PircBot 0.9.9
-	 *
-	 * @throws IOException if it was not possible to connect to the server.
-	 * @throws IrcException if the server would not let us join it.
-	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
-	 */
-	public void reconnect() throws IOException, IrcException {
-		if (configuration == null)
-			throw new IrcException(IrcException.Reason.ReconnectBeforeConnect, "Must connect to the server before reconnecting");
-		try {
-			connect();
-		} catch (IOException e) {
-			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
-			throw e;
-		} catch (IrcException e) {
-			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
-			throw e;
-		} catch (RuntimeException e) {
-			configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, false, e));
-			throw e;
-		}
-		//Should be good
-		configuration.getListenerManager().dispatchEvent(new ReconnectEvent(this, true, null));
-	}
-
 	public OutputRaw sendRaw() {
 		return outputRaw;
 	}
@@ -411,6 +398,16 @@ public class PircBotX implements Comparable<PircBotX> {
 			return shutdownCalled;
 		}
 	}
+	
+	/**
+	 * Get the auto reconnect channels and clear local copy
+	 * @return 
+	 */
+	protected ImmutableMap<String, String> reconnectChannels() {
+		ImmutableMap<String, String> reconnectChannelsLocal = reconnectChannels;
+		reconnectChannels = null;
+		return reconnectChannelsLocal;
+	}
 
 	/**
 	 * Calls shutdown allowing reconnect.
@@ -451,28 +448,17 @@ public class PircBotX implements Comparable<PircBotX> {
 			}
 
 		//Cache channels for possible next reconnect
-		Map<String, String> previousChannels = new HashMap<String, String>();
+		ImmutableMap.Builder<String, String> reconnectChannelsBuilder = ImmutableMap.builder();
 		for (Channel curChannel : userChannelDao.getAllChannels()) {
 			String key = (curChannel.getChannelKey() == null) ? "" : curChannel.getChannelKey();
-			previousChannels.put(curChannel.getName(), key);
+			reconnectChannelsBuilder.put(curChannel.getName(), key);
 		}
+		reconnectChannels = reconnectChannelsBuilder.build();
 
 		//Dispatch event
-		if (autoReconnect && !noReconnect)
-			try {
-				reconnect();
-				if (autoReconnectChannels)
-					for (Map.Entry<String, String> curEntry : previousChannels.entrySet())
-						sendIRC().joinChannel(curEntry.getKey(), curEntry.getValue());
-			} catch (Exception e) {
-				//Not much we can do with it
-				throw new RuntimeException("Can't reconnect to server", e);
-			}
-		else {
-			configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, userChannelDao.createSnapshot()));
-			log.debug("Disconnected.");
-		}
-
+		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, userChannelDao.createSnapshot()));
+		log.debug("Disconnected.");
+		
 		//Shutdown listener manager
 		configuration.getListenerManager().shutdown(this);
 
