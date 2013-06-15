@@ -81,8 +81,6 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			onPrivateMessage((PrivateMessageEvent) event);
 		else if (event instanceof QuitEvent)
 			onQuit((QuitEvent) event);
-		else if (event instanceof ReconnectEvent)
-			onReconnect((ReconnectEvent) event);
 		else if (event instanceof RemoveChannelBanEvent)
 			onRemoveChannelBan((RemoveChannelBanEvent) event);
 		else if (event instanceof RemoveChannelKeyEvent)
@@ -221,9 +219,6 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onQuit(QuitEvent<T> event) throws Exception {
-	}
-
-	public void onReconnect(ReconnectEvent<T> event) throws Exception {
 	}
 
 	public void onRemoveChannelBan(RemoveChannelBanEvent<T> event) throws Exception {
