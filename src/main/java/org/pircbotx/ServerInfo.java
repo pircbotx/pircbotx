@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -43,6 +44,9 @@ public class ServerInfo {
 	protected String serverVersion;
 	protected String userModes;
 	//005 information
+	protected ImmutableMap<String, String> isupportRaw;
+	@Getter(AccessLevel.NONE)
+	protected ImmutableMap.Builder<String, String> isupportRawBuilder;
 	protected String prefixes;
 	protected String channelTypes;
 	protected String channelModes;
@@ -120,6 +124,7 @@ public class ServerInfo {
 			String[] itemParts = curItem.split("=", 2);
 			String key = itemParts[0];
 			String value = (itemParts.length == 2) ? itemParts[1] : "";
+			isupportRawBuilder.put(key, value);
 			if (key.equalsIgnoreCase("PREFIX"))
 				prefixes = value;
 			else if (key.equalsIgnoreCase("CHANTYPES"))
@@ -200,5 +205,9 @@ public class ServerInfo {
 		//Rizon
 		//005 PircBotX CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 TOPICLEN=390 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ NETWORK=Rizon MAXLIST=beI:100 TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1 CHANTYPES=# :are supported by this server
 		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
+	}
+	
+	protected void done() {
+		isupportRaw = isupportRawBuilder.build();
 	}
 }
