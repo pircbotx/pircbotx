@@ -19,11 +19,11 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -44,9 +44,7 @@ public class ServerInfo {
 	protected String serverVersion;
 	protected String userModes;
 	//005 information
-	protected ImmutableMap<String, String> isupportRaw;
-	@Getter(AccessLevel.NONE)
-	protected ImmutableMap.Builder<String, String> isupportRawBuilder;
+	protected LinkedHashMap<String, String> isupportRaw = new LinkedHashMap<String, String>();
 	protected String prefixes;
 	protected String channelTypes;
 	protected String channelModes;
@@ -124,7 +122,7 @@ public class ServerInfo {
 			String[] itemParts = curItem.split("=", 2);
 			String key = itemParts[0];
 			String value = (itemParts.length == 2) ? itemParts[1] : "";
-			isupportRawBuilder.put(key, value);
+			isupportRaw.put(key, value);
 			if (key.equalsIgnoreCase("PREFIX"))
 				prefixes = value;
 			else if (key.equalsIgnoreCase("CHANTYPES"))
@@ -207,7 +205,13 @@ public class ServerInfo {
 		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
 	}
 	
-	protected void done() {
-		isupportRaw = isupportRawBuilder.build();
+	/**
+	 * Get all supported server options as a map. Be careful about calling this
+	 * very early in the connection phase as we might not of received all the 005
+	 * lines yet
+	 * @return An <i>immutable copy</i> of the current supported options
+	 */
+	public ImmutableMap<String, String> getIsupportRaw() {
+		return ImmutableMap.copyOf(isupportRaw);
 	}
 }
