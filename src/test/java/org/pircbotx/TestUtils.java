@@ -85,6 +85,7 @@ public class TestUtils {
 				.setListenerManager(new GenericListenerManager())
 				.setName("PircBotXBot")
 				.setMessageDelay(0)
-				.setShutdownHookEnabled(false);
+				.setShutdownHookEnabled(false)
+				.setAutoReconnect(false);
 	}
 }

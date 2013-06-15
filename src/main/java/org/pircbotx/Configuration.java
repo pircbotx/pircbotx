@@ -148,6 +148,7 @@ public class Configuration {
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean identServerEnabled;
 	protected final String nickservPassword;
+	protected final boolean autoReconnect;
 	//Bot classes
 	protected final ListenerManager listenerManager;
 	protected final boolean capEnabled;
@@ -212,6 +213,7 @@ public class Configuration {
 		this.messageDelay = builder.getMessageDelay();
 		this.identServerEnabled = builder.isIdentServerEnabled();
 		this.nickservPassword = builder.getNickservPassword();
+		this.autoReconnect = builder.isAutoReconnect();
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
@@ -260,6 +262,7 @@ public class Configuration {
 		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
 		protected boolean identServerEnabled;
 		protected String nickservPassword;
+		protected boolean autoReconnect = false;
 		//Bot classes
 		protected ListenerManager listenerManager = null;
 		protected boolean capEnabled = false;
@@ -306,6 +309,7 @@ public class Configuration {
 			this.messageDelay = configuration.getMessageDelay();
 			this.listenerManager = configuration.getListenerManager();
 			this.nickservPassword = configuration.getNickservPassword();
+			this.autoReconnect = configuration.isAutoReconnect();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
 			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
@@ -350,6 +354,7 @@ public class Configuration {
 			this.messageDelay = otherBuilder.getMessageDelay();
 			this.listenerManager = otherBuilder.getListenerManager();
 			this.nickservPassword = otherBuilder.getNickservPassword();
+			this.autoReconnect = otherBuilder.isAutoReconnect();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
 			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();

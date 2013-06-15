@@ -83,7 +83,7 @@ public class OutputTest {
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
-		bot.connect();
+		bot.startBot();
 
 		//Make sure the bot is connected
 		verify(socketFactory).createSocket(localhost, 6667, null, 0);
