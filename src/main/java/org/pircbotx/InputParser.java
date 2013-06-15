@@ -220,6 +220,7 @@ public class InputParser implements Closeable {
 		if (CONNECT_CODES.contains(code)) {
 			// We're connected to the server.
 			bot.loggedIn(configuration.getName() + (nickSuffix == 0 ? "" : nickSuffix));
+			serverInfo.done();
 			log.debug("Logged onto server.");
 
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(bot));
