@@ -20,8 +20,8 @@ package org.pircbotx.output;
 
 import com.google.common.base.Joiner;
 import java.net.InetAddress;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.pircbotx.PircBotX;
 import org.pircbotx.dcc.DccHandler;
 
 /**
@@ -31,12 +31,11 @@ import org.pircbotx.dcc.DccHandler;
  */
 @RequiredArgsConstructor
 public class OutputDCC {
-	@NonNull
-	protected final OutputIRC sendIRC;
 	protected static final Joiner SPACE_JOINER = Joiner.on(' ');
+	protected final PircBotX bot;
 	
 	public void dcc(String target, String service, Object... parameters) {
-		sendIRC.ctcpCommand(target, SPACE_JOINER.join("DCC", service, (Object[])parameters));
+		bot.sendIRC().ctcpCommand(target, SPACE_JOINER.join("DCC", service, (Object[])parameters));
 	}
 
 	public void fileRequest(String target, String filename, InetAddress senderAddress, int senderPort, long filesize) {

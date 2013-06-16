@@ -116,14 +116,6 @@ public class InputParser implements Closeable {
 			"251", "252", "253", "254", "255", "375", "376");
 	protected final Configuration configuration;
 	protected final PircBotX bot;
-	protected final ListenerManager listenerManager;
-	protected final UserChannelDao<User, Channel> dao;
-	protected final String channelPrefixes;
-	protected final ServerInfo serverInfo;
-	protected final DccHandler dccHandler;
-	protected final OutputRaw sendRaw;
-	protected final OutputIRC sendIRC;
-	protected final OutputCAP sendCAP;
 	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
 	protected BufferedReader inputReader;
 	//Builders
@@ -133,6 +125,11 @@ public class InputParser implements Closeable {
 	protected boolean channelListRunning = false;
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
+
+	public InputParser(PircBotX bot) {
+		this.bot = bot;
+		this.configuration = bot.getConfiguration();
+	}
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
@@ -156,7 +153,7 @@ public class InputParser implements Closeable {
 		// Check for server pings.
 		if (command.equals("PING")) {
 			// Respond to the ping and return immediately.
-			listenerManager.dispatchEvent(new ServerPingEvent(bot, parsedLine.get(0)));
+			configuration.getListenerManager().dispatchEvent(new ServerPingEvent(bot, parsedLine.get(0)));
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
@@ -196,7 +193,7 @@ public class InputParser implements Closeable {
 			}
 		else {
 			// We don't know what this line means.
-			listenerManager.dispatchEvent(new UnknownEvent(bot, line));
+			configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
 			// Return from the method;
 			return;
 		}
@@ -228,18 +225,18 @@ public class InputParser implements Closeable {
 
 			//Handle automatic on connect stuff
 			if (configuration.getNickservPassword() != null)
-				sendIRC.identify(configuration.getNickservPassword());
+				bot.sendIRC().identify(configuration.getNickservPassword());
 			ImmutableMap<String, String> autoConnectChannels = bot.reconnectChannels();
 			if (autoConnectChannels == null)
 				autoConnectChannels = configuration.getAutoJoinChannels();
 			for (Map.Entry<String, String> channelEntry : autoConnectChannels.entrySet())
-				sendIRC.joinChannel(channelEntry.getKey(), channelEntry.getValue());
+				bot.sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} else if (code.equals("433"))
 			//EXAMPLE: AnAlreadyUsedName :Nickname already in use
 			//Nickname in use, rename
 			if (configuration.isAutoNickChange()) {
 				nickSuffix++;
-				sendIRC.changeNick(configuration.getName() + nickSuffix);
+				bot.sendIRC().changeNick(configuration.getName() + nickSuffix);
 			} else
 				throw new IrcException(IrcException.Reason.NickAlreadyInUse, "Line: " + rawLine);
 		else if (code.equals("439")) {
@@ -270,7 +267,7 @@ public class InputParser implements Closeable {
 			//Handle CAP Code; remove extra from params
 			String capCommand = parsedLine.get(1);
 			ImmutableList<String> capParams = ImmutableList.copyOf(StringUtils.split(parsedLine.get(2)));
-			if (capCommand.equals("LS")) {
+			if (capCommand.equals("LS"))
 				for (CapHandler curCapHandler : configuration.getCapHandlers()) {
 					log.debug("Executing cap handler " + curCapHandler);
 					if (curCapHandler.handleLS(bot, capParams)) {
@@ -278,7 +275,7 @@ public class InputParser implements Closeable {
 						capHandlersFinished.add(curCapHandler);
 					}
 				}
-			} else if (capCommand.equals("ACK")) {
+			else if (capCommand.equals("ACK")) {
 				//Server is enabling a capability, store that
 				bot.getEnabledCapabilities().addAll(capParams);
 
@@ -304,15 +301,15 @@ public class InputParser implements Closeable {
 
 		//Send CAP END if all CapHandlers are finished
 		if (configuration.isCapEnabled() && capHandlersFinished.containsAll(configuration.getCapHandlers())) {
-			sendCAP.end();
+			bot.sendCAP().end();
 			bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
 		}
 	}
 
 	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
-		User source = dao.getUser(sourceNick);
+		User source = bot.getUserChannelDao().getUser(sourceNick);
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && channelPrefixes.indexOf(target.charAt(0)) >= 0) ? dao.getChannel(target) : null;
+		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) ? bot.getUserChannelDao().getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
@@ -320,47 +317,47 @@ public class InputParser implements Closeable {
 			String request = message.substring(1, message.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
-				listenerManager.dispatchEvent(new VersionEvent(bot, source, channel));
+				configuration.getListenerManager().dispatchEvent(new VersionEvent(bot, source, channel));
 			else if (request.startsWith("ACTION "))
 				// ACTION request
-				listenerManager.dispatchEvent(new ActionEvent(bot, source, channel, request.substring(7)));
+				configuration.getListenerManager().dispatchEvent(new ActionEvent(bot, source, channel, request.substring(7)));
 			else if (request.startsWith("PING "))
 				// PING request
-				listenerManager.dispatchEvent(new PingEvent(bot, source, channel, request.substring(5)));
+				configuration.getListenerManager().dispatchEvent(new PingEvent(bot, source, channel, request.substring(5)));
 			else if (request.equals("TIME"))
 				// TIME request
-				listenerManager.dispatchEvent(new TimeEvent(bot, source, channel));
+				configuration.getListenerManager().dispatchEvent(new TimeEvent(bot, source, channel));
 			else if (request.equals("FINGER"))
 				// FINGER request
-				listenerManager.dispatchEvent(new FingerEvent(bot, source, channel));
+				configuration.getListenerManager().dispatchEvent(new FingerEvent(bot, source, channel));
 			else if (request.startsWith("DCC ")) {
 				// This is a DCC request.
-				boolean success = dccHandler.processDcc(source, request);
+				boolean success = bot.getDccHandler().processDcc(source, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
-					listenerManager.dispatchEvent(new UnknownEvent(bot, line));
+					configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
 			} else
 				// An unknown CTCP message - ignore it.
-				listenerManager.dispatchEvent(new UnknownEvent(bot, line));
+				configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
 		} else if (command.equals("PRIVMSG") && channel != null)
 			// This is a normal message to a channel.
-			listenerManager.dispatchEvent(new MessageEvent(bot, channel, source, message));
+			configuration.getListenerManager().dispatchEvent(new MessageEvent(bot, channel, source, message));
 		else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
 			//Add to private message
-			dao.addUserToPrivate(source);
-			listenerManager.dispatchEvent(new PrivateMessageEvent(bot, source, message));
+			bot.getUserChannelDao().addUserToPrivate(source);
+			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent(bot, source, message));
 		} else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
-				sendRaw.rawLine("WHO " + target);
-				sendRaw.rawLine("MODE " + target);
+				bot.sendRaw().rawLine("WHO " + target);
+				bot.sendRaw().rawLine("MODE " + target);
 			}
 			source.setLogin(sourceLogin);
 			source.setHostmask(sourceHostname);
-			dao.addUserToChannel(source, channel);
-			listenerManager.dispatchEvent(new JoinEvent(bot, channel, source));
+			bot.getUserChannelDao().addUserToChannel(source, channel);
+			configuration.getListenerManager().dispatchEvent(new JoinEvent(bot, channel, source));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
@@ -368,22 +365,22 @@ public class InputParser implements Closeable {
 			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source.getNick());
 			if (sourceNick.equals(bot.getNick()))
 				//We parted the channel
-				dao.removeChannel(channel);
+				bot.getUserChannelDao().removeChannel(channel);
 			else
 				//Just remove the user from memory
-				dao.removeUserFromChannel(source, channel);
-			listenerManager.dispatchEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, sourceSnapshot, message));
+				bot.getUserChannelDao().removeUserFromChannel(source, channel);
+			configuration.getListenerManager().dispatchEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, sourceSnapshot, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
-			dao.renameUser(source, newNick);
+			bot.getUserChannelDao().renameUser(source, newNick);
 			if (sourceNick.equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
 				bot.setNick(newNick);
-			listenerManager.dispatchEvent(new NickChangeEvent(bot, sourceNick, newNick, source));
+			configuration.getListenerManager().dispatchEvent(new NickChangeEvent(bot, sourceNick, newNick, source));
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
-			listenerManager.dispatchEvent(new NoticeEvent(bot, source, channel, message));
+			configuration.getListenerManager().dispatchEvent(new NoticeEvent(bot, source, channel, message));
 		else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
 			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source.getNick());
@@ -392,19 +389,19 @@ public class InputParser implements Closeable {
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(bot.getNick()))
 				//Someone else
-				dao.removeUser(source);
-			listenerManager.dispatchEvent(new QuitEvent(bot, daoSnapshot, sourceSnapshot, reason));
+				bot.getUserChannelDao().removeUser(source);
+			configuration.getListenerManager().dispatchEvent(new QuitEvent(bot, daoSnapshot, sourceSnapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
-			User recipient = dao.getUser(message);
+			User recipient = bot.getUserChannelDao().getUser(message);
 
 			if (recipient.getNick().equals(bot.getNick()))
 				//We were just kicked
-				dao.removeChannel(channel);
+				bot.getUserChannelDao().removeChannel(channel);
 			else
 				//Someone else
-				dao.removeUserFromChannel(recipient, channel);
-			listenerManager.dispatchEvent(new KickEvent(bot, channel, source, recipient, parsedLine.get(2)));
+				bot.getUserChannelDao().removeUserFromChannel(recipient, channel);
+			configuration.getListenerManager().dispatchEvent(new KickEvent(bot, channel, source, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -419,17 +416,17 @@ public class InputParser implements Closeable {
 			channel.setTopicSetter(sourceNick);
 			channel.setTopicTimestamp(currentTime);
 
-			listenerManager.dispatchEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
+			configuration.getListenerManager().dispatchEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
-			listenerManager.dispatchEvent(new InviteEvent(bot, sourceNick, message));
-			if (dao.getChannels(source).isEmpty())
-				dao.removeUser(source);
+			configuration.getListenerManager().dispatchEvent(new InviteEvent(bot, sourceNick, message));
+			if (bot.getUserChannelDao().getChannels(source).isEmpty())
+				bot.getUserChannelDao().removeUser(source);
 		} else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
-			listenerManager.dispatchEvent(new UnknownEvent(bot, line));
+			configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
 	}
 
 	/**
@@ -465,34 +462,34 @@ public class InputParser implements Closeable {
 		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
-			listenerManager.dispatchEvent(new ChannelInfoEvent(bot, channelListBuilder.build()));
+			configuration.getListenerManager().dispatchEvent(new ChannelInfoEvent(bot, channelListBuilder.build()));
 			channelListBuilder = null;
 			channelListRunning = false;
 		} else if (code == RPL_TOPIC) {
 			//EXAMPLE: 332 PircBotX #aChannel :I'm some random topic
 			//This is topic about a channel we've just joined. From /JOIN or /TOPIC
-			Channel channel = dao.getChannel(parsedResponse.get(1));
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 			String topic = parsedResponse.get(2);
 
 			channel.setTopic(topic);
 		} else if (code == RPL_TOPICINFO) {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
-			Channel channel = dao.getChannel(parsedResponse.get(1));
-			User setBy = dao.getUser(parsedResponse.get(2));
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			User setBy = bot.getUserChannelDao().getUser(parsedResponse.get(2));
 			long date = Utils.tryParseLong(parsedResponse.get(3), -1);
 
 			channel.setTopicTimestamp(date * 1000);
 			channel.setTopicSetter(setBy.getNick());
 
-			listenerManager.dispatchEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false));
+			configuration.getListenerManager().dispatchEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
-			Channel channel = dao.getChannel(parsedResponse.get(1));
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 
 			//Setup user
-			User curUser = dao.getUser(parsedResponse.get(5));
+			User curUser = bot.getUserChannelDao().getUser(parsedResponse.get(5));
 			curUser.setLogin(parsedResponse.get(2));
 			curUser.setHostmask(parsedResponse.get(3));
 			curUser.setServer(parsedResponse.get(4));
@@ -505,24 +502,24 @@ public class InputParser implements Closeable {
 			curUser.setRealName(rawEnding.substring(rawEndingSpaceIndex + 1));
 
 			//Associate with channel
-			dao.addUserToChannel(curUser, channel);
+			bot.getUserChannelDao().addUserToChannel(curUser, channel);
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
-			Channel channel = dao.getChannel(parsedResponse.get(1));
-			listenerManager.dispatchEvent(new UserListEvent(bot, channel, dao.getUsers(channel)));
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			configuration.getListenerManager().dispatchEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel)));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			Channel channel = dao.getChannel(parsedResponse.get(1));
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 			String mode = parsedResponse.get(2);
 
 			channel.setMode(mode);
-			listenerManager.dispatchEvent(new ModeEvent(bot, channel, null, mode));
+			configuration.getListenerManager().dispatchEvent(new ModeEvent(bot, channel, null, mode));
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
-			Channel channel = dao.getChannel(parsedResponse.get(1));
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 			int createDate = Utils.tryParseInt(parsedResponse.get(2), -1);
 
 			//Set in channel
@@ -538,9 +535,10 @@ public class InputParser implements Closeable {
 		else if (code == RPL_ENDOFMOTD) {
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, clean it and dispatch MotdEvent
+			ServerInfo serverInfo = bot.getServerInfo();
 			serverInfo.setMotd(motdBuilder.toString().trim());
 			motdBuilder = null;
-			listenerManager.dispatchEvent(new MotdEvent(bot, (serverInfo.getMotd())));
+			configuration.getListenerManager().dispatchEvent(new MotdEvent(bot, (serverInfo.getMotd())));
 		} else if (code == 4 || code == 5) {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, remove ending comment and let ServerInfo class parse it
@@ -551,7 +549,7 @@ public class InputParser implements Closeable {
 				if (endComment.equals(parsedResponseOrig.get(lastIndex)))
 					parsedResponseOrig.remove(lastIndex);
 			}
-			serverInfo.parse(code, parsedResponseOrig);
+			bot.getServerInfo().parse(code, parsedResponseOrig);
 		} else if (code == RPL_WHOISUSER) {
 			//Example: 311 TheLQ Plazma ~Plazma freenode/staff/plazma * :Plazma Rooolz!
 			//New whois is starting
@@ -593,10 +591,10 @@ public class InputParser implements Closeable {
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
 
-			listenerManager.dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(bot));
+			configuration.getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
 		}
-		listenerManager.dispatchEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
+		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
 	}
 
 	/**
@@ -614,9 +612,9 @@ public class InputParser implements Closeable {
 	 * @param mode The mode that has been set.
 	 */
 	public void processMode(User user, String target, String mode) {
-		if (channelPrefixes.indexOf(target.charAt(0)) >= 0) {
+		if (configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
-			Channel channel = dao.getChannel(target);
+			Channel channel = bot.getUserChannelDao().getChannel(target);
 			channel.parseMode(mode);
 			Iterator<String> params = Iterators.forArray(StringUtils.split(mode, ' '));
 
@@ -631,132 +629,132 @@ public class InputParser implements Closeable {
 				else if (curModeChar == '-')
 					adding = false;
 				else if (curModeChar == 'o') {
-					User recipient = dao.getUser(params.next());
+					User recipient = bot.getUserChannelDao().getUser(params.next());
 					if (adding) {
-						dao.addUserToLevel(UserLevel.OP, recipient, channel);
-						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, true));
+						bot.getUserChannelDao().addUserToLevel(UserLevel.OP, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new OpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.OP, recipient, channel);
-						listenerManager.dispatchEvent(new OpEvent(bot, channel, user, recipient, false));
+						bot.getUserChannelDao().removeUserFromLevel(UserLevel.OP, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new OpEvent(bot, channel, user, recipient, false));
 					}
 				} else if (curModeChar == 'v') {
-					User recipient = dao.getUser(params.next());
+					User recipient = bot.getUserChannelDao().getUser(params.next());
 					if (adding) {
-						dao.addUserToLevel(UserLevel.VOICE, recipient, channel);
-						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, true));
+						bot.getUserChannelDao().addUserToLevel(UserLevel.VOICE, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new VoiceEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.VOICE, recipient, channel);
-						listenerManager.dispatchEvent(new VoiceEvent(bot, channel, user, recipient, false));
+						bot.getUserChannelDao().removeUserFromLevel(UserLevel.VOICE, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new VoiceEvent(bot, channel, user, recipient, false));
 					}
 				} else if (curModeChar == 'h') {
 					//Half-op change
-					User recipient = dao.getUser(params.next());
+					User recipient = bot.getUserChannelDao().getUser(params.next());
 					if (adding) {
-						dao.addUserToLevel(UserLevel.HALFOP, recipient, channel);
-						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, true));
+						bot.getUserChannelDao().addUserToLevel(UserLevel.HALFOP, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.HALFOP, recipient, channel);
-						listenerManager.dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, false));
+						bot.getUserChannelDao().removeUserFromLevel(UserLevel.HALFOP, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new HalfOpEvent(bot, channel, user, recipient, false));
 					}
 				} else if (curModeChar == 'a') {
 					//SuperOp change
-					User recipient = dao.getUser(params.next());
+					User recipient = bot.getUserChannelDao().getUser(params.next());
 					if (adding) {
-						dao.addUserToLevel(UserLevel.SUPEROP, recipient, channel);
-						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, true));
+						bot.getUserChannelDao().addUserToLevel(UserLevel.SUPEROP, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.SUPEROP, recipient, channel);
-						listenerManager.dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, false));
+						bot.getUserChannelDao().removeUserFromLevel(UserLevel.SUPEROP, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new SuperOpEvent(bot, channel, user, recipient, false));
 					}
 				} else if (curModeChar == 'q') {
 					//Owner change
-					User recipient = dao.getUser(params.next());
+					User recipient = bot.getUserChannelDao().getUser(params.next());
 					if (adding) {
-						dao.addUserToLevel(UserLevel.OWNER, recipient, channel);
-						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, true));
+						bot.getUserChannelDao().addUserToLevel(UserLevel.OWNER, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new OwnerEvent(bot, channel, user, recipient, true));
 					} else {
-						dao.removeUserFromLevel(UserLevel.OWNER, recipient, channel);
-						listenerManager.dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
+						bot.getUserChannelDao().removeUserFromLevel(UserLevel.OWNER, recipient, channel);
+						configuration.getListenerManager().dispatchEvent(new OwnerEvent(bot, channel, user, recipient, false));
 					}
 				} else if (curModeChar == 'k')
 					if (adding) {
 						String key = params.next();
 						channel.setChannelKey(key);
-						listenerManager.dispatchEvent(new SetChannelKeyEvent(bot, channel, user, key));
+						configuration.getListenerManager().dispatchEvent(new SetChannelKeyEvent(bot, channel, user, key));
 					} else {
 						String key = params.hasNext() ? params.next() : null;
 						channel.setChannelKey(null);
-						listenerManager.dispatchEvent(new RemoveChannelKeyEvent(bot, channel, user, key));
+						configuration.getListenerManager().dispatchEvent(new RemoveChannelKeyEvent(bot, channel, user, key));
 					}
 				else if (curModeChar == 'l')
 					if (adding) {
 						int limit = Integer.parseInt(params.next());
 						channel.setChannelLimit(limit);
-						listenerManager.dispatchEvent(new SetChannelLimitEvent(bot, channel, user, limit));
+						configuration.getListenerManager().dispatchEvent(new SetChannelLimitEvent(bot, channel, user, limit));
 					} else {
 						channel.setChannelLimit(-1);
-						listenerManager.dispatchEvent(new RemoveChannelLimitEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveChannelLimitEvent(bot, channel, user));
 					}
 				else if (curModeChar == 'b')
 					if (adding)
-						listenerManager.dispatchEvent(new SetChannelBanEvent(bot, channel, user, params.next()));
+						configuration.getListenerManager().dispatchEvent(new SetChannelBanEvent(bot, channel, user, params.next()));
 					else
-						listenerManager.dispatchEvent(new RemoveChannelBanEvent(bot, channel, user, params.next()));
+						configuration.getListenerManager().dispatchEvent(new RemoveChannelBanEvent(bot, channel, user, params.next()));
 				else if (curModeChar == 't') {
 					channel.setTopicProtection(adding);
 					if (adding)
-						listenerManager.dispatchEvent(new SetTopicProtectionEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetTopicProtectionEvent(bot, channel, user));
 					else
-						listenerManager.dispatchEvent(new RemoveTopicProtectionEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveTopicProtectionEvent(bot, channel, user));
 				} else if (curModeChar == 'n') {
 					channel.setNoExternalMessages(adding);
 					if (adding)
-						listenerManager.dispatchEvent(new SetNoExternalMessagesEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetNoExternalMessagesEvent(bot, channel, user));
 					else
-						listenerManager.dispatchEvent(new RemoveNoExternalMessagesEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveNoExternalMessagesEvent(bot, channel, user));
 				} else if (curModeChar == 'i') {
 					channel.setInviteOnly(adding);
 					if (adding)
-						listenerManager.dispatchEvent(new SetInviteOnlyEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetInviteOnlyEvent(bot, channel, user));
 					else
-						listenerManager.dispatchEvent(new RemoveInviteOnlyEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveInviteOnlyEvent(bot, channel, user));
 				} else if (curModeChar == 'm') {
 					channel.setModerated(adding);
 					if (adding)
-						listenerManager.dispatchEvent(new SetModeratedEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetModeratedEvent(bot, channel, user));
 					else
-						listenerManager.dispatchEvent(new RemoveModeratedEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveModeratedEvent(bot, channel, user));
 				} else if (curModeChar == 'p') {
 					channel.setChannelPrivate(adding);
 					if (adding)
-						listenerManager.dispatchEvent(new SetPrivateEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetPrivateEvent(bot, channel, user));
 					else
-						listenerManager.dispatchEvent(new RemovePrivateEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemovePrivateEvent(bot, channel, user));
 				} else if (curModeChar == 's') {
 					channel.setSecret(adding);
 					if (adding)
-						listenerManager.dispatchEvent(new SetSecretEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new SetSecretEvent(bot, channel, user));
 					else
-						listenerManager.dispatchEvent(new RemoveSecretEvent(bot, channel, user));
+						configuration.getListenerManager().dispatchEvent(new RemoveSecretEvent(bot, channel, user));
 				}
 			}
-			listenerManager.dispatchEvent(new ModeEvent(bot, channel, user, mode));
+			configuration.getListenerManager().dispatchEvent(new ModeEvent(bot, channel, user, mode));
 		} else
 			// The mode of a user is being changed.
-			listenerManager.dispatchEvent(new UserModeEvent(bot, dao.getUser(target), user, mode));
+			configuration.getListenerManager().dispatchEvent(new UserModeEvent(bot, bot.getUserChannelDao().getUser(target), user, mode));
 	}
 
 	public void processUserStatus(Channel chan, User user, String prefix) {
 		if (prefix.contains("@"))
-			dao.addUserToLevel(UserLevel.OP, user, chan);
+			bot.getUserChannelDao().addUserToLevel(UserLevel.OP, user, chan);
 		if (prefix.contains("+"))
-			dao.addUserToLevel(UserLevel.VOICE, user, chan);
+			bot.getUserChannelDao().addUserToLevel(UserLevel.VOICE, user, chan);
 		if (prefix.contains("%"))
-			dao.addUserToLevel(UserLevel.HALFOP, user, chan);
+			bot.getUserChannelDao().addUserToLevel(UserLevel.HALFOP, user, chan);
 		if (prefix.contains("~"))
-			dao.addUserToLevel(UserLevel.OWNER, user, chan);
+			bot.getUserChannelDao().addUserToLevel(UserLevel.OWNER, user, chan);
 		if (prefix.contains("&"))
-			dao.addUserToLevel(UserLevel.SUPEROP, user, chan);
+			bot.getUserChannelDao().addUserToLevel(UserLevel.SUPEROP, user, chan);
 		//Assume here (H) if there is no G
 		user.setAway(prefix.contains("G"));
 		user.setIrcop(prefix.contains("*"));
