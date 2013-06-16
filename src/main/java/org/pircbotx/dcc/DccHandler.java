@@ -52,6 +52,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.output.OutputDCC;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import lombok.NonNull;
 
@@ -65,13 +66,7 @@ public class DccHandler implements Closeable {
 	protected static final Random TOKEN_RANDOM = new SecureRandom();
 	protected static final int TOKEN_RANDOM_MAX = 20000;
 	@NonNull
-	protected final Configuration configuration;
-	@NonNull
 	protected final PircBotX bot;
-	@NonNull
-	protected final ListenerManager listenerManager;
-	@NonNull
-	protected final OutputDCC sendDCC;
 	protected final Map<PendingRecieveFileTransfer, CountDownLatch> pendingReceiveTransfers = new HashMap();
 	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList();
 	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap();
@@ -115,9 +110,9 @@ public class DccHandler implements Closeable {
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, true));
 			else
-				listenerManager.dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -211,9 +206,9 @@ public class DccHandler implements Closeable {
 
 			//Nope, this is a new chat
 			if (port == 0 && chatToken != null)
-				listenerManager.dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port, chatToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port, chatToken, true));
 			else
-				listenerManager.dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port, chatToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port, chatToken, false));
 		} else
 			return false;
 		return true;
@@ -229,14 +224,14 @@ public class DccHandler implements Closeable {
 		checkNotNull(event, "Event cannot be null");
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
-			sendDCC.chatPassiveAccept(event.getUser().getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getChatToken());
+			bot.sendDCC().chatPassiveAccept(event.getUser().getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getChatToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
 			serverSocket.close();
-			return configuration.getBotFactory().createReceiveChat(bot, event.getUser(), userSocket);
+			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), userSocket);
 		} else
-			return configuration.getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
+			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
 	}
 
 	/**
@@ -276,10 +271,10 @@ public class DccHandler implements Closeable {
 
 		//Request resume
 		if (event.isReverse())
-			sendDCC.filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getTransferToken());
+			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getTransferToken());
 		else
-			sendDCC.fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
-		if (!countdown.await(configuration.getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
+			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
+		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
 			throw new DccException(DccException.Reason.FileTransferResumeTimeout, event.getUser(), "Event: " + event);
 		if (shuttingDown)
 			throw new DccException(DccException.Reason.FileTransferResumeCancelled, event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
@@ -298,18 +293,18 @@ public class DccHandler implements Closeable {
 
 		if (event.isReverse()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
-			sendDCC.filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getTransferToken());
+			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getTransferToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
 			serverSocket.close();
-			return configuration.getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
+			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
 		} else {
 			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccAddress(), 0);
-			return configuration.getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
+			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
 		}
 	}
-	
+
 	/**
 	 * Send a chat request using {@link Configuration#isDccPassiveRequest()}
 	 * @param receiver The user to chat with
@@ -319,7 +314,7 @@ public class DccHandler implements Closeable {
 	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
 	public SendChat sendChat(User receiver) throws IOException, InterruptedException {
-		return sendChat(receiver, configuration.isDccPassiveRequest());
+		return sendChat(receiver, bot.getConfiguration().isDccPassiveRequest());
 	}
 
 	/**
@@ -333,6 +328,7 @@ public class DccHandler implements Closeable {
 	 */
 	public SendChat sendChat(User receiver, boolean passive) throws IOException, InterruptedException {
 		checkNotNull(receiver, "Receiver user cannot be null");
+		int dccAcceptTimeout = bot.getConfiguration().getDccAcceptTimeout();
 		if (passive) {
 			String chatToken = Integer.toString(TOKEN_RANDOM.nextInt(TOKEN_RANDOM_MAX));
 			PendingSendChatPassive pendingChat = new PendingSendChatPassive(receiver, chatToken);
@@ -340,26 +336,26 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendPassiveChat) {
 				pendingSendPassiveChat.put(pendingChat, countdown);
 			}
-			sendDCC.chatPassiveRequest(receiver.getNick(), getRealDccAddress(), chatToken);
+			bot.sendDCC().chatPassiveRequest(receiver.getNick(), getRealDccAddress(), chatToken);
 
 			//Wait for the user to acknowledge
-			log.debug("Waiting {}ms for user {} to accept passive chat", configuration.getDccAcceptTimeout(), receiver.getNick());
-			if (!countdown.await(configuration.getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
+			log.debug("Waiting {}ms for user {} to accept passive chat", dccAcceptTimeout, receiver.getNick());
+			if (!countdown.await(dccAcceptTimeout, TimeUnit.MILLISECONDS))
 				throw new DccException(DccException.Reason.ChatTimeout, receiver, "");
 			if (shuttingDown)
 				throw new DccException(DccException.Reason.ChatCancelled, receiver, "");
 			Socket chatSocket = new Socket(pendingChat.getReceiverAddress(), pendingChat.getReceiverPort());
-			return configuration.getBotFactory().createSendChat(bot, receiver, chatSocket);
+			return bot.getConfiguration().getBotFactory().createSendChat(bot, receiver, chatSocket);
 		} else {
 			//Get the user to connect to us
 			ServerSocket serverSocket = createServerSocket(receiver);
-			serverSocket.setSoTimeout(configuration.getDccAcceptTimeout());
-			sendDCC.chatRequest(receiver.getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort());
+			serverSocket.setSoTimeout(dccAcceptTimeout);
+			bot.sendDCC().chatRequest(receiver.getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort());
 
 			//Wait for user to connect
 			Socket userSocket = serverSocket.accept();
 			serverSocket.close();
-			return configuration.getBotFactory().createSendChat(bot, receiver, userSocket);
+			return bot.getConfiguration().getBotFactory().createSendChat(bot, receiver, userSocket);
 		}
 	}
 
@@ -373,7 +369,7 @@ public class DccHandler implements Closeable {
 	 * @throws InterruptedException If passive connection was interrupted
 	 */
 	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
-		return sendFile(file, receiver, configuration.isDccPassiveRequest());
+		return sendFile(file, receiver, bot.getConfiguration().isDccPassiveRequest());
 	}
 
 	/**
@@ -394,7 +390,7 @@ public class DccHandler implements Closeable {
 		//Make the filename safe to send
 		String safeFilename = file.getName();
 		if (safeFilename.contains(" "))
-			if (configuration.isDccFilenameQuotes())
+			if (bot.getConfiguration().isDccFilenameQuotes())
 				safeFilename = "\"" + safeFilename + "\"";
 			else
 				safeFilename = safeFilename.replace(" ", "_");
@@ -406,16 +402,16 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendTransfers) {
 				pendingSendPassiveTransfers.put(pendingPassiveTransfer, countdown);
 			}
-			sendDCC.filePassiveRequest(receiver.getNick(), safeFilename, getRealDccAddress(), file.length(), transferToken);
+			bot.sendDCC().filePassiveRequest(receiver.getNick(), safeFilename, getRealDccAddress(), file.length(), transferToken);
 
 			//Wait for user to acknowledge
-			if (!countdown.await(configuration.getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
+			if (!countdown.await(bot.getConfiguration().getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
 				throw new DccException(DccException.Reason.FileTransferTimeout, receiver, "File: " + file.getAbsolutePath());
 			if (shuttingDown)
 				throw new DccException(DccException.Reason.FileTransferCancelled, receiver, "Transfer of file " + file.getAbsolutePath()
 						+ " canceled due to bot shutdown");
 			Socket transferSocket = new Socket(pendingPassiveTransfer.getReceiverAddress(), pendingPassiveTransfer.getReceiverPort());
-			return configuration.getBotFactory().createSendFileTransfer(bot, transferSocket, receiver, file, pendingPassiveTransfer.getStartPosition());
+			return bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, transferSocket, receiver, file, pendingPassiveTransfer.getStartPosition());
 		} else {
 			//Try to get the user to connect to us
 			final ServerSocket serverSocket = createServerSocket(receiver);
@@ -423,15 +419,15 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendTransfers) {
 				pendingSendTransfers.add(pendingSendFileTransfer);
 			}
-			sendDCC.fileRequest(receiver.getNick(), safeFilename, serverSocket.getInetAddress(), serverSocket.getLocalPort(), file.length());
+			bot.sendDCC().fileRequest(receiver.getNick(), safeFilename, serverSocket.getInetAddress(), serverSocket.getLocalPort(), file.length());
 
 			//Wait for the user to connect
 			Socket userSocket = serverSocket.accept();
 			serverSocket.close();
-			return configuration.getBotFactory().createSendFileTransfer(bot, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
+			return bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
 		}
 	}
-	
+
 	/**
 	 * Try to get a real InetAddress in this order:
 	 * <ol><li>{@link Configuration#getDccLocalAddress()}</li>
@@ -441,21 +437,22 @@ public class DccHandler implements Closeable {
 	 */
 	public InetAddress getRealDccAddress() {
 		//Try dccLocalAddress (which tries to default to dccLocalAddress
-		InetAddress address = configuration.getDccLocalAddress();
+		InetAddress address = bot.getConfiguration().getDccLocalAddress();
 		return (address != null) ? address : bot.getLocalAddress();
 	}
 
 	protected ServerSocket createServerSocket(User user) throws IOException, DccException {
-		InetAddress address = configuration.getDccLocalAddress();
+		InetAddress address = bot.getConfiguration().getDccLocalAddress();
+		ImmutableList<Integer> dccPorts = bot.getConfiguration().getDccPorts();
 		if (address == null)
 			//Default to bots address
 			address = bot.getLocalAddress();
 		ServerSocket ss = null;
-		if (configuration.getDccPorts().isEmpty())
+		if (dccPorts.isEmpty())
 			// Use any free port.
 			ss = new ServerSocket(0, 1, address);
 		else {
-			for (int currentPort : configuration.getDccPorts())
+			for (int currentPort : dccPorts)
 				try {
 					ss = new ServerSocket(currentPort, 1, address);
 					// Found a port number we could use.
@@ -465,7 +462,7 @@ public class DccHandler implements Closeable {
 				}
 			if (ss == null)
 				// No ports could be used.
-				throw new DccException(DccException.Reason.DccPortsInUse, user, "Ports " + configuration.getDccPorts() + " are in use.");
+				throw new DccException(DccException.Reason.DccPortsInUse, user, "Ports " + dccPorts + " are in use.");
 		}
 		return ss;
 	}
