@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.dcc.DccHandler;
@@ -47,6 +48,7 @@ import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
+import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
@@ -106,8 +108,8 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected Thread shutdownHook;
 	protected boolean reconnectStopped = false;
 	protected ImmutableMap<String, String> reconnectChannels;
-	protected boolean shutdownCalled = false;
-	protected final Object shutdownCalledLock = new Object();
+	private State state = State.INIT;
+	protected final Object stateLock = new Object();
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
@@ -124,7 +126,7 @@ public class PircBotX implements Comparable<PircBotX> {
 		this.dccHandler = configuration.getBotFactory().createDccHandler(this);
 		this.inputParser = configuration.getBotFactory().createInputParser(this);
 	}
-	
+
 	/**
 	 * Start the bot by connecting to the server. If {@link Configuration#isAutoReconnect()} 
 	 * is true this will continuously reconnect to the server until {@link #stopBot()} 
@@ -135,11 +137,11 @@ public class PircBotX implements Comparable<PircBotX> {
 	 */
 	public void startBot() throws IOException, IrcException {
 		reconnectStopped = false;
-		do {
+		do
 			connect();
-		} while(configuration.isAutoReconnect() && !reconnectStopped);
+		while (configuration.isAutoReconnect() && !reconnectStopped);
 	}
-	
+
 	/**
 	 * Stops the bot from reconnecting constantly to the server in the future.
 	 */
@@ -162,39 +164,40 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * @throws NickAlreadyInUseException if our nick is already in use on the server.
 	 */
 	protected void connect() throws IOException, IrcException {
-		Utils.addBotToMDC(this);
-		if (isConnected())
-			throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
-		synchronized (shutdownCalledLock) {
-			if (shutdownCalled)
-				throw new RuntimeException("Shutdown has not been called but your still connected. This shouldn't happen");
-			shutdownCalled = false;
-		}
-		if (configuration.isIdentServerEnabled() && IdentServer.getServer() == null)
-			throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
+		synchronized (stateLock) {
+			Utils.addBotToMDC(this);
+			if (isConnected())
+				throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
+			if (getState() == State.CONNECTED)
+				throw new RuntimeException("Bot is not connected but state is State.CONNECTED. This shouldn't happen");
+			if (configuration.isIdentServerEnabled() && IdentServer.getServer() == null)
+				throw new RuntimeException("UseIdentServer is enabled but no IdentServer has been started");
 
-		//Reset capabilities
-		enabledCapabilities = new ArrayList<String>();
+			//Reset capabilities
+			enabledCapabilities = new ArrayList<String>();
 
-		// Connect to the server by DNS server
-		for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
-			log.debug("Trying address " + curAddress);
-			try {
-				socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
+			// Connect to the server by DNS server
+			for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
+				log.debug("Trying address " + curAddress);
+				try {
+					socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
 
-				//No exception, assume successful
-				break;
-			} catch (Exception e) {
-				log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
+					//No exception, assume successful
+					break;
+				} catch (Exception e) {
+					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
+				}
 			}
+
+			//Make sure were connected
+			if (socket == null || (socket != null && !socket.isConnected()))
+				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
+			state = State.CONNECTED;
+			log.info("Connected to server.");
+
+			changeSocket(socket);
 		}
 
-		//Make sure were connected
-		if (socket == null || (socket != null && !socket.isConnected()))
-			throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
-		log.info("Connected to server.");
-
-		changeSocket(socket);
 		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 		if (configuration.isIdentServerEnabled())
@@ -239,7 +242,7 @@ public class PircBotX implements Comparable<PircBotX> {
 				// Now we go back to listening for stuff from the server...
 				continue;
 			} catch (Exception e) {
-				if (e instanceof SocketException && isShutdownCalled()) {
+				if (e instanceof SocketException && getState() == State.DISCONNECTED) {
 					log.info("Shutdown has been called, closing InputParser");
 					return;
 				} else {
@@ -342,6 +345,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 *
 	 * @return True if and only if the PircBotX is currently connected to a server.
 	 */
+	@Synchronized("stateLock")
 	public boolean isConnected() {
 		return socket != null && !socket.isClosed();
 	}
@@ -393,12 +397,6 @@ public class PircBotX implements Comparable<PircBotX> {
 		return socket.getLocalAddress();
 	}
 
-	protected boolean isShutdownCalled() {
-		synchronized (shutdownCalledLock) {
-			return shutdownCalled;
-		}
-	}
-	
 	/**
 	 * Get the auto reconnect channels and clear local copy
 	 * @return 
@@ -424,49 +422,47 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * @param noReconnect Toggle whether to reconnect if enabled. Set to true to
 	 * 100% shutdown the bot
 	 */
+	@Synchronized("stateLock")
 	public void shutdown(boolean noReconnect) {
-		//Guard against multiple calls
-		if (shutdownCalled)
-			synchronized (shutdownCalledLock) {
-				if (shutdownCalled)
-					throw new RuntimeException("Shutdown has already been called");
-			}
-		shutdownCalled = true;
-
-		try {
-			socket.close();
-		} catch (Exception e) {
-			log.error("Can't close socket", e);
-		}
-
-		//Close the socket from here and let the threads die
-		if (socket != null && !socket.isClosed())
+		UserChannelDaoSnapshot daoSnapshot;
+		synchronized (stateLock) {
+			state = State.DISCONNECTED;
 			try {
 				socket.close();
 			} catch (Exception e) {
-				log.error("Cannot close socket", e);
+				log.error("Can't close socket", e);
 			}
 
-		//Cache channels for possible next reconnect
-		ImmutableMap.Builder<String, String> reconnectChannelsBuilder = ImmutableMap.builder();
-		for (Channel curChannel : userChannelDao.getAllChannels()) {
-			String key = (curChannel.getChannelKey() == null) ? "" : curChannel.getChannelKey();
-			reconnectChannelsBuilder.put(curChannel.getName(), key);
+			//Close the socket from here and let the threads die
+			if (socket != null && !socket.isClosed())
+				try {
+					socket.close();
+				} catch (Exception e) {
+					log.error("Cannot close socket", e);
+				}
+
+			//Cache channels for possible next reconnect
+			ImmutableMap.Builder<String, String> reconnectChannelsBuilder = ImmutableMap.builder();
+			for (Channel curChannel : userChannelDao.getAllChannels()) {
+				String key = (curChannel.getChannelKey() == null) ? "" : curChannel.getChannelKey();
+				reconnectChannelsBuilder.put(curChannel.getName(), key);
+			}
+			reconnectChannels = reconnectChannelsBuilder.build();
+
+			//Clear relevant variables of information
+			loggedIn = false;
+			daoSnapshot = userChannelDao.createSnapshot();
+			userChannelDao.close();
+			inputParser.close();
+			dccHandler.close();
 		}
-		reconnectChannels = reconnectChannelsBuilder.build();
 
 		//Dispatch event
-		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, userChannelDao.createSnapshot()));
+		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, daoSnapshot));
 		log.debug("Disconnected.");
-		
+
 		//Shutdown listener manager
 		configuration.getListenerManager().shutdown(this);
-
-		//Clear relevant variables of information
-		loggedIn = false;
-		userChannelDao.close();
-		inputParser.close();
-		dccHandler.close();
 	}
 
 	/**
@@ -477,6 +473,14 @@ public class PircBotX implements Comparable<PircBotX> {
 	 */
 	public int compareTo(PircBotX other) {
 		return Ints.compare(getBotId(), other.getBotId());
+	}
+
+	/**
+	 * @return the state
+	 */
+	@Synchronized("stateLock")
+	public State getState() {
+		return state;
 	}
 
 	protected static class BotShutdownHook extends Thread {
@@ -497,5 +501,11 @@ public class PircBotX implements Comparable<PircBotX> {
 					thisBot.shutdown(true);
 				}
 		}
+	}
+
+	public static enum State {
+		INIT,
+		CONNECTED,
+		DISCONNECTED
 	}
 }
