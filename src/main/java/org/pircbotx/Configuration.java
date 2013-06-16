@@ -493,7 +493,7 @@ public class Configuration {
 		}
 
 		public DccHandler createDccHandler(PircBotX bot) {
-			return new DccHandler(bot.getConfiguration(), bot, bot.getConfiguration().getListenerManager(), bot.sendDCC());
+			return new DccHandler(bot);
 		}
 
 		public SendChat createSendChat(PircBotX bot, User user, Socket socket) throws IOException {
