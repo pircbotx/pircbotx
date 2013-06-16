@@ -496,6 +496,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			PircBotX thisBot = thisBotRef.get();
 			if (thisBot != null && thisBot.isConnected() && thisBot.socket != null && !thisBot.socket.isClosed())
 				try {
+					thisBot.stopBotReconnect();
 					thisBot.sendIRC().quitServer();
 				} finally {
 					thisBot.shutdown(true);
