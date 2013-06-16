@@ -18,7 +18,6 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.events.OpEvent;
@@ -28,19 +27,7 @@ import org.pircbotx.hooks.events.OpEvent;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericUserModeEvent<T extends PircBotX> extends GenericEvent<T> {
-	/**
-	 * The channel that the mode changed occurred in
-	 * @return The affected channel
-	 */
-	public Channel getChannel();
-
-	/**
-	 * The source of the mode change
-	 * @return The source user
-	 */
-	public User getSource();
-
+public interface GenericUserModeEvent<T extends PircBotX> extends GenericUserEvent<T>, GenericChannelEvent<T> {
 	/**
 	 * The recipient of the mode change
 	 * @return The recipient user
