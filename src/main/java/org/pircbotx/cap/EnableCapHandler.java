@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
@@ -30,10 +31,9 @@ import org.pircbotx.exception.CAPException;
  * almost all CAP features except SASL since most only need to be requested.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 @RequiredArgsConstructor
 public class EnableCapHandler implements CapHandler {
-	@Getter
-	protected boolean done = false;
 	@Getter
 	protected final String cap;
 	protected final boolean ignoreFail;
@@ -47,24 +47,28 @@ public class EnableCapHandler implements CapHandler {
 		this.ignoreFail = false;
 	}
 
-	public void handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
+	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap))
 			//Server supports capability, send request to use it
 			bot.sendCAP().request(cap);
 		else if (!ignoreFail)
 			throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
-		else
-			//Nothing more to do
-			done = true;
+		else {
+			//Server doesn't support capability but were ignoring exceptions
+			log.debug("Unsupported capability " + cap);
+			return true;
+		}
+		log.debug("Supported capability " + cap);
+		//Not finished yet
+		return false;
 	}
 
-	public void handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
-		if (capabilities.contains(cap))
-			//Capability is now enabled
-			done = true;
+	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
+		//Finished if the server is acknowledging the capability
+		return capabilities.contains(cap);
 	}
 
-	public void handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
+	public boolean handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap)) {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove(cap);
@@ -72,10 +76,13 @@ public class EnableCapHandler implements CapHandler {
 				throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
 			else
 				//Nothing more to do
-				done = true;
+				return true;
 		}
+		//Not applicable to us
+		return false;
 	}
 
-	public void handleUnknown(PircBotX bot, String rawLine) {
+	public boolean handleUnknown(PircBotX bot, String rawLine) {
+		return false;
 	}
 }

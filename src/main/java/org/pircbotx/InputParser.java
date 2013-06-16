@@ -23,10 +23,12 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -122,6 +124,7 @@ public class InputParser implements Closeable {
 	protected final OutputRaw sendRaw;
 	protected final OutputIRC sendIRC;
 	protected final OutputCAP sendCAP;
+	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
 	protected BufferedReader inputReader;
 	//Builders
 	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = Maps.newHashMap();
@@ -130,7 +133,6 @@ public class InputParser implements Closeable {
 	protected boolean channelListRunning = false;
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
-	protected boolean capEndSent = false;
 
 	/**
 	 * This method handles events when any line of text arrives from the server,
@@ -268,43 +270,42 @@ public class InputParser implements Closeable {
 			//Handle CAP Code; remove extra from params
 			String capCommand = parsedLine.get(1);
 			ImmutableList<String> capParams = ImmutableList.copyOf(StringUtils.split(parsedLine.get(2)));
-			if (capCommand.equals("LS"))
-				for (CapHandler curCapHandler : configuration.getCapHandlers())
-					curCapHandler.handleLS(bot, capParams);
-			else if (capCommand.equals("ACK")) {
+			if (capCommand.equals("LS")) {
+				for (CapHandler curCapHandler : configuration.getCapHandlers()) {
+					log.debug("Executing cap handler " + curCapHandler);
+					if (curCapHandler.handleLS(bot, capParams)) {
+						log.debug("Cap handler " + curCapHandler + " finished");
+						capHandlersFinished.add(curCapHandler);
+					}
+				}
+			} else if (capCommand.equals("ACK")) {
 				//Server is enabling a capability, store that
 				bot.getEnabledCapabilities().addAll(capParams);
 
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
-					curCapHandler.handleACK(bot, capParams);
-			} else if (capCommand.equals("NAK"))
+					if (curCapHandler.handleACK(bot, capParams)) {
+						log.trace("Removing cap handler " + curCapHandler);
+						capHandlersFinished.add(curCapHandler);
+					}
+			} else if (capCommand.equals("NAK")) {
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
-					curCapHandler.handleNAK(bot, capParams);
-			else
+					if (curCapHandler.handleNAK(bot, capParams))
+						capHandlersFinished.add(curCapHandler);
+			} else
 				//Maybe the CapHandlers know how to use it
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
-					curCapHandler.handleUnknown(bot, rawLine);
+					if (curCapHandler.handleUnknown(bot, rawLine))
+						capHandlersFinished.add(curCapHandler);
 		} else
 			//Pass to CapHandlers, could be important
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
-				curCapHandler.handleUnknown(bot, rawLine);
-
+				if (curCapHandler.handleUnknown(bot, rawLine))
+					capHandlersFinished.add(curCapHandler);
 
 		//Send CAP END if all CapHandlers are finished
-		if (configuration.isCapEnabled() && !capEndSent) {
-			boolean allDone = true;
-			for (CapHandler curCapHandler : configuration.getCapHandlers())
-				if (!curCapHandler.isDone()) {
-					allDone = false;
-					break;
-				}
-			if (allDone) {
-				sendCAP.end();
-				capEndSent = true;
-
-				//Make capabilities unmodifiable for the future
-				bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
-			}
+		if (configuration.isCapEnabled() && capHandlersFinished.containsAll(configuration.getCapHandlers())) {
+			sendCAP.end();
+			bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
 		}
 	}
 
@@ -765,6 +766,7 @@ public class InputParser implements Closeable {
 	 * Clear out builders.
 	 */
 	public void close() {
+		capHandlersFinished.clear();
 		whoisBuilder.clear();
 		motdBuilder = null;
 		channelListRunning = false;
