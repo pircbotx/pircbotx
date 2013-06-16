@@ -40,7 +40,7 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T>, Comp
 		this(null, listenerManager);
 	}
 
-	protected Event(T bot, ListenerManager listenerManager) {
+	public Event(T bot, ListenerManager listenerManager) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
 		this.id = listenerManager.incrementCurrentId();
