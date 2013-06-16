@@ -27,14 +27,5 @@ import org.pircbotx.User;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericChannelModeEvent<T extends PircBotX> extends GenericEvent<T> {
-	/**
-	 * The channel that the mode changed occured in
-	 */
-	public Channel getChannel();
-
-	/**
-	 * The source of the mode change
-	 */
-	public User getUser();
+public interface GenericChannelModeEvent<T extends PircBotX> extends GenericUserEvent<T>, GenericChannelEvent<T> {
 }
