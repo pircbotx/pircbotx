@@ -47,16 +47,16 @@ public class TLSCapHandler extends EnableCapHandler {
 	}
 
 	@Override
-	public void handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
-		//super.handleACK(bot, capabilities);
+	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains("tls"))
 			bot.sendRaw().rawLineNow("STARTTLS");
+		//Not finished, still need to wait for 670 line
+		return false;
 	}
 
 	@Override
-	public void handleUnknown(PircBotX bot, String rawLine) {
-		if (rawLine.contains(" 670 "))
-			//We have upgraded the socket, say were done
-			done = true;
+	public boolean handleUnknown(PircBotX bot, String rawLine) {
+		//Finished if we have successfully upgraded the socket
+		return rawLine.contains(" 670 ");
 	}
 }

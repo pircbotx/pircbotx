@@ -28,13 +28,11 @@ import org.pircbotx.exception.CAPException;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface CapHandler {
-	public void handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;
+	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;
 
-	public void handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;
+	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;
 
-	public void handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;
+	public boolean handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;
 
-	public void handleUnknown(PircBotX bot, String rawLine) throws CAPException;
-
-	public boolean isDone();
+	public boolean handleUnknown(PircBotX bot, String rawLine) throws CAPException;
 }
