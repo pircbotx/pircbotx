@@ -56,12 +56,11 @@ public class ReceiveFileTransfer extends FileTransfer {
 			fileOutput.write(inBuffer, 0, bytesRead);
 			bytesTransfered += bytesRead;
 			//Send back an acknowledgement of how many bytes we have got so far.
-			//Convert bytesTransfered to an unsigned int, per DCC specification
+			//Convert bytesTransfered to an "unsigned, 4 byte integer in network byte order", per DCC specification
 			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
 			outBuffer[1] = (byte) ((bytesTransfered >> 16) & 0xff);
 			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
-			//TODO: Why does netbeans say this does nothing?
-			outBuffer[3] = (byte) ((bytesTransfered >> 0) & 0xff);
+			outBuffer[3] = (byte) (bytesTransfered & 0xff);
 			socketOutput.write(outBuffer);
 		}
 	}
