@@ -463,6 +463,7 @@ public class PircBotX implements Comparable<PircBotX> {
 		configuration.getListenerManager().shutdown(this);
 
 		//Clear relevant variables of information
+		loggedIn = false;
 		userChannelDao.close();
 		inputParser.close();
 		dccHandler.close();
