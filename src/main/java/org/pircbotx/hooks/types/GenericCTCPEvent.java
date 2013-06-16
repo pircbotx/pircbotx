@@ -18,24 +18,11 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 
 /**
  * Any event dealing with CTCP.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericCTCPEvent<T extends PircBotX> extends GenericEvent<T> {
-	/**
-	 * Gets the user that sent the CTCP command
-	 * @return The user that sent the CTCP command
-	 */
-	public User getUser();
-
-	/**
-	 * Gets the target channel of the CTCP command. If null, then the target was us.
-	 * @return The target channel or null if the target was us
-	 */
-	public Channel getChannel();
+public interface GenericCTCPEvent<T extends PircBotX> extends GenericUserEvent<T>, GenericChannelEvent<T> {
 }
