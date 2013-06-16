@@ -36,8 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 public class OutputIRC {
 	@NonNull
 	protected final PircBotX bot;
-	@NonNull
-	protected final OutputRaw sendRaw;
 
 	/**
 	 * Joins a channel.
@@ -46,7 +44,7 @@ public class OutputIRC {
 	 */
 	public void joinChannel(String channel) {
 		checkArgument(!StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
-		sendRaw.rawLine("JOIN " + channel);
+		bot.sendRaw().rawLine("JOIN " + channel);
 	}
 
 	/**
@@ -79,7 +77,7 @@ public class OutputIRC {
 	 */
 	public void quitServer(String reason) {
 		checkNotNull(reason, "Reason cannot be null");
-		sendRaw.rawLine("QUIT :" + reason);
+		bot.sendRaw().rawLine("QUIT :" + reason);
 	}
 
 	/**
@@ -99,7 +97,7 @@ public class OutputIRC {
 	public void ctcpCommand(String target, String command) {
 		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target, command);
 		checkArgument(!StringUtils.isBlank(command), "CTCP command '%s' is blank", command, target);
-		sendRaw.rawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
+		bot.sendRaw().rawLineSplit("PRIVMSG " + target + " :\u0001", command, "\u0001");
 	}
 
 	/**
@@ -111,7 +109,7 @@ public class OutputIRC {
 	 */
 	public void ctcpResponse(String target, String message) {
 		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
-		sendRaw.rawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
+		bot.sendRaw().rawLine("NOTICE " + target + " :\u0001" + message + "\u0001");
 	}
 
 	/**
@@ -137,7 +135,7 @@ public class OutputIRC {
 	 */
 	public void message(String target, String message) {
 		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
-		sendRaw.rawLineSplit("PRIVMSG " + target + " :", message);
+		bot.sendRaw().rawLineSplit("PRIVMSG " + target + " :", message);
 	}
 
 	/**
@@ -161,7 +159,7 @@ public class OutputIRC {
 	 */
 	public void notice(String target, String notice) {
 		checkArgument(!StringUtils.isBlank(target), "Target '%s' is blank", target);
-		sendRaw.rawLineSplit("NOTICE " + target + " :", notice);
+		bot.sendRaw().rawLineSplit("NOTICE " + target + " :", notice);
 	}
 
 	/**
@@ -174,7 +172,7 @@ public class OutputIRC {
 	 */
 	public void changeNick(String newNick) {
 		checkArgument(!StringUtils.isBlank(newNick), "Nick '%s' is blank", newNick);
-		sendRaw.rawLine("NICK " + newNick);
+		bot.sendRaw().rawLine("NICK " + newNick);
 	}
 
 	/**
@@ -189,7 +187,7 @@ public class OutputIRC {
 	public void invite(String nick, String channel) {
 		checkArgument(!StringUtils.isBlank(nick), "Nick '%s' is blank", nick);
 		checkArgument(!StringUtils.isBlank(channel), "Channel '%s' is blank", channel);
-		sendRaw.rawLine("INVITE " + nick + " :" + channel);
+		bot.sendRaw().rawLine("INVITE " + nick + " :" + channel);
 	}
 
 	/**
@@ -226,7 +224,7 @@ public class OutputIRC {
 	public void listChannels(String parameters) {
 		checkNotNull(parameters, "Parameters cannot be null");
 		if (!bot.getInputParser().isChannelListRunning())
-			sendRaw.rawLine("LIST " + parameters);
+			bot.sendRaw().rawLine("LIST " + parameters);
 	}
 
 	/**
@@ -259,10 +257,10 @@ public class OutputIRC {
 	 */
 	public void identify(final String password) {
 		checkArgument(!StringUtils.isBlank(password), "Password '%s' is blank", password);
-		sendRaw.rawLine("NICKSERV IDENTIFY " + password);
+		bot.sendRaw().rawLine("NICKSERV IDENTIFY " + password);
 	}
 
 	public void mode(String target, String mode) {
-		sendRaw.rawLine("MODE " + target + " " + mode);
+		bot.sendRaw().rawLine("MODE " + target + " " + mode);
 	}
 }

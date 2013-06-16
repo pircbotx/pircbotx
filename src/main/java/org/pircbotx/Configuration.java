@@ -465,40 +465,31 @@ public class Configuration {
 		}
 
 		public OutputRaw createOutputRaw(PircBotX bot) {
-			return new OutputRaw(bot, bot.getConfiguration());
+			return new OutputRaw(bot);
 		}
 
 		public OutputCAP createOutputCAP(PircBotX bot) {
-			return new OutputCAP(bot.sendRaw());
+			return new OutputCAP(bot);
 		}
 
 		public OutputIRC createOutputIRC(PircBotX bot) {
-			return new OutputIRC(bot, bot.sendRaw());
+			return new OutputIRC(bot);
 		}
 
 		public OutputDCC createOutputDCC(PircBotX bot) {
-			return new OutputDCC(bot.sendIRC());
+			return new OutputDCC(bot);
 		}
 
 		public OutputChannel createOutputChannel(PircBotX bot, Channel channel) {
-			return new OutputChannel(bot.sendRaw(), bot.sendIRC(), channel);
+			return new OutputChannel(bot, channel);
 		}
 
 		public OutputUser createOutputUser(PircBotX bot, User user) {
-			return new OutputUser(bot.sendIRC(), user, bot.getDccHandler());
+			return new OutputUser(bot, user);
 		}
 
 		public InputParser createInputParser(PircBotX bot) {
-			return new InputParser(bot.getConfiguration(),
-					bot,
-					bot.getConfiguration().getListenerManager(),
-					bot.getUserChannelDao(),
-					bot.getConfiguration().getChannelPrefixes(),
-					bot.getServerInfo(),
-					bot.getDccHandler(),
-					bot.sendRaw(),
-					bot.sendIRC(),
-					bot.sendCAP());
+			return new InputParser(bot);
 		}
 
 		public DccHandler createDccHandler(PircBotX bot) {
