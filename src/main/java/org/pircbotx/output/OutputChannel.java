@@ -34,9 +34,7 @@ import org.pircbotx.hooks.events.PartEvent;
 @RequiredArgsConstructor
 public class OutputChannel {
 	@NonNull
-	protected final OutputRaw sendRaw;
-	@NonNull
-	protected final OutputIRC sendIRC;
+	protected final PircBotX bot;
 	@NonNull
 	protected final Channel channel;
 
@@ -46,7 +44,7 @@ public class OutputChannel {
 	 * @param channel The name of the channel to leave.
 	 */
 	public void part() {
-		sendRaw.rawLine("PART " + channel.getName());
+		bot.sendRaw().rawLine("PART " + channel.getName());
 	}
 
 	/**
@@ -56,7 +54,7 @@ public class OutputChannel {
 	 * @param reason The reason for parting the channel.
 	 */
 	public void part(String reason) {
-		sendRaw.rawLine("PART " + channel.getName() + " :" + reason);
+		bot.sendRaw().rawLine("PART " + channel.getName() + " :" + reason);
 	}
 
 	/**
@@ -66,7 +64,7 @@ public class OutputChannel {
 	 * @param message The message to send
 	 */
 	public void message(String message) {
-		sendIRC.message(channel.getName(), message);
+		bot.sendIRC().message(channel.getName(), message);
 	}
 
 	/**
@@ -89,7 +87,7 @@ public class OutputChannel {
 	 * @param action The action message to send
 	 */
 	public void action(String action) {
-		sendIRC.action(channel.getName(), action);
+		bot.sendIRC().action(channel.getName(), action);
 	}
 
 	/**
@@ -99,7 +97,7 @@ public class OutputChannel {
 	 * @param notice The notice to send
 	 */
 	public void notice(String notice) {
-		sendIRC.notice(channel.getName(), notice);
+		bot.sendIRC().notice(channel.getName(), notice);
 	}
 
 	/**
@@ -111,7 +109,7 @@ public class OutputChannel {
 	public void invite(Channel otherChannel) {
 		if (otherChannel == null)
 			throw new IllegalArgumentException("Can't send invite to null invite channel");
-		sendIRC.invite(channel.getName(), otherChannel.getName());
+		bot.sendIRC().invite(channel.getName(), otherChannel.getName());
 	}
 
 	/**
@@ -121,7 +119,7 @@ public class OutputChannel {
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
-		sendIRC.ctcpCommand(channel.getName(), command);
+		bot.sendIRC().ctcpCommand(channel.getName(), command);
 	}
 	
 	/**
@@ -151,7 +149,7 @@ public class OutputChannel {
 			public void onPart(PartEvent event) throws Exception {
 				//Make sure this bot is us to prevent nasty errors in multi bot sitations
 				if (event.getBot() == bot) {
-					sendIRC.joinChannel(channelName, key);
+					bot.sendIRC().joinChannel(channelName, key);
 					//Self destrust, this listener has no more porpose
 					bot.getConfiguration().getListenerManager().removeListener(this);
 				}
@@ -161,11 +159,11 @@ public class OutputChannel {
 	}
 	
 	public void who() {
-		sendRaw.rawLine("WHO " + channel.getName());
+		bot.sendRaw().rawLine("WHO " + channel.getName());
 	}
 	
 	public void getMode() {
-		sendRaw.rawLine("MODE " + channel.getName());
+		bot.sendRaw().rawLine("MODE " + channel.getName());
 	}
 
 	/**
@@ -186,7 +184,7 @@ public class OutputChannel {
 	public void setMode(String mode) {
 		if (mode == null)
 			throw new IllegalArgumentException("Can't set mode on channel to null");
-		sendIRC.mode(channel.getName(), mode);
+		bot.sendIRC().mode(channel.getName(), mode);
 	}
 
 	/**
@@ -370,7 +368,7 @@ public class OutputChannel {
 	public void ban(String hostmask) {
 		if (hostmask == null)
 			throw new IllegalArgumentException("Can't set ban on null hostmask");
-		sendRaw.rawLine("MODE " + channel.getName() + " +b " + hostmask);
+		bot.sendRaw().rawLine("MODE " + channel.getName() + " +b " + hostmask);
 	}
 
 	/**
@@ -385,7 +383,7 @@ public class OutputChannel {
 	public void unBan(Channel channel, String hostmask) {
 		if (hostmask == null)
 			throw new IllegalArgumentException("Can't remove ban on null hostmask");
-		sendRaw.rawLine("MODE " + channel.getName() + " -b " + hostmask);
+		bot.sendRaw().rawLine("MODE " + channel.getName() + " -b " + hostmask);
 	}
 
 	/**
@@ -553,7 +551,7 @@ public class OutputChannel {
 	public void setTopic(String topic) {
 		if (topic == null)
 			throw new IllegalArgumentException("Can't set topic to null");
-		sendRaw.rawLine("TOPIC " + channel.getName() + " :" + topic);
+		bot.sendRaw().rawLine("TOPIC " + channel.getName() + " :" + topic);
 	}
 
 	/**
@@ -580,6 +578,6 @@ public class OutputChannel {
 	public void kick(User user, String reason) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't kick null user");
-		sendRaw.rawLine("KICK " + channel.getName() + " " + user.getNick() + " :" + reason);
+		bot.sendRaw().rawLine("KICK " + channel.getName() + " " + user.getNick() + " :" + reason);
 	}
 }

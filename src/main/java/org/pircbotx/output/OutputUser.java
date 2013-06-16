@@ -23,8 +23,8 @@ import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.DccException;
@@ -36,11 +36,9 @@ import org.pircbotx.exception.DccException;
 @RequiredArgsConstructor
 public class OutputUser {
 	@NonNull
-	protected final OutputIRC sendIRC;
+	protected final PircBotX bot;
 	@NonNull
 	protected final User user;
-	@NonNull
-	protected final DccHandler dccHandler;
 
 	/**
 	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
@@ -49,7 +47,7 @@ public class OutputUser {
 	 * @param channel The channel you are inviting the user to join.
 	 */
 	public void invite(String channel) {
-		sendIRC.invite(user.getNick(), channel);
+		bot.sendIRC().invite(user.getNick(), channel);
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class OutputUser {
 	 * @param channel The channel you are inviting the user to join.
 	 */
 	public void invite(Channel channel) {
-		sendIRC.invite(user.getNick(), channel.getName());
+		bot.sendIRC().invite(user.getNick(), channel.getName());
 	}
 
 	/**
@@ -69,7 +67,7 @@ public class OutputUser {
 	 * @param notice The notice to send
 	 */
 	public void notice(String notice) {
-		sendIRC.notice(user.getNick(), notice);
+		bot.sendIRC().notice(user.getNick(), notice);
 	}
 
 	/**
@@ -79,7 +77,7 @@ public class OutputUser {
 	 * @param action The action message to send
 	 */
 	public void action(String action) {
-		sendIRC.action(user.getNick(), action);
+		bot.sendIRC().action(user.getNick(), action);
 	}
 
 	/**
@@ -89,7 +87,7 @@ public class OutputUser {
 	 * @param message The message to send
 	 */
 	public void message(String message) {
-		sendIRC.message(user.getNick(), message);
+		bot.sendIRC().message(user.getNick(), message);
 	}
 
 	/**
@@ -99,7 +97,7 @@ public class OutputUser {
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
-		sendIRC.ctcpCommand(user.getNick(), command);
+		bot.sendIRC().ctcpCommand(user.getNick(), command);
 	}
 
 	/**
@@ -109,26 +107,26 @@ public class OutputUser {
 	 * @param message The response to send
 	 */
 	public void ctcpResponse(String message) {
-		sendIRC.ctcpResponse(user.getNick(), message);
+		bot.sendIRC().ctcpResponse(user.getNick(), message);
 	}
 	
 	public void mode(String mode) {
-		sendIRC.mode(user.getNick(), mode);
+		bot.sendIRC().mode(user.getNick(), mode);
 	}
 	
 	public SendFileTransfer dccFile(File file) throws IOException, DccException, InterruptedException {
-		return dccHandler.sendFile(file, user);
+		return bot.getDccHandler().sendFile(file, user);
 	}
 	
 	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
-		return dccHandler.sendFile(file, user, passive);
+		return bot.getDccHandler().sendFile(file, user, passive);
 	}
 	
 	public SendChat dccChat() throws IOException, InterruptedException {
-		return dccHandler.sendChat(user);
+		return bot.getDccHandler().sendChat(user);
 	}
 	
 	public SendChat dccChat(boolean passive) throws IOException, InterruptedException {
-		return dccHandler.sendChat(user, passive);
+		return bot.getDccHandler().sendChat(user, passive);
 	}
 }

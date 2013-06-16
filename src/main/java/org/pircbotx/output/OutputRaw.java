@@ -41,8 +41,6 @@ public class OutputRaw {
 	protected static final Marker OUTPUT_MARKER = MarkerFactory.getMarker("pircbotx.output");
 	@NonNull
 	protected final PircBotX bot;
-	@NonNull
-	protected final Configuration configuration;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
 
@@ -63,7 +61,7 @@ public class OutputRaw {
 			Utils.sendRawLineToServer(bot, line);
 			//Block for messageDelay. If rawLineNow is called with resetDelay
 			//the condition is tripped and we wait again
-			while (writeNowCondition.await(configuration.getMessageDelay(), TimeUnit.MILLISECONDS)) {
+			while (writeNowCondition.await(bot.getConfiguration().getMessageDelay(), TimeUnit.MILLISECONDS)) {
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't pause thread for message delay", e);
@@ -115,8 +113,8 @@ public class OutputRaw {
 
 		//Find if final line is going to be shorter than the max line length
 		String finalMessage = prefix + message + suffix;
-		int realMaxLineLength = configuration.getMaxLineLength() - 2;
-		if (!configuration.isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
+		int realMaxLineLength = bot.getConfiguration().getMaxLineLength() - 2;
+		if (!bot.getConfiguration().isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
 			//Length is good (or auto split message is false), just go ahead and send it
 			rawLine(finalMessage);
 			return;
