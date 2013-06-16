@@ -72,14 +72,14 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	protected final int port;
 	protected final long filesize;
 	protected final String transferToken;
-	protected final boolean reverse;
+	protected final boolean passive;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public IncomingFileTransferEvent(T bot, User user, String rawFilename, String safeFilename, InetAddress address, int port, long filesize, String transferToken, boolean reverse) {
+	public IncomingFileTransferEvent(T bot, User user, String rawFilename, String safeFilename, InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.rawFilename = rawFilename;
@@ -88,7 +88,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 		this.port = port;
 		this.filesize = filesize;
 		this.transferToken = transferToken;
-		this.reverse = reverse;
+		this.passive = passive;
 	}
 
 	public ReceiveFileTransfer accept(File destination) throws IOException {
