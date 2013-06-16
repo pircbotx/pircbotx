@@ -19,12 +19,13 @@
 package org.pircbotx.hooks.types;
 
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
 
 /**
  * Base interface that all Generic event interfaces must extend from.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericEvent<T extends PircBotX> {
+public interface GenericEvent<T extends PircBotX> extends Comparable<Event<T>> {
 	/**
 	 * Send a response using the underlying event's respond() method
 	 * @param response The response to send
