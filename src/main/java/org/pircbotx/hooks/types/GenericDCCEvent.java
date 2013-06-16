@@ -26,5 +26,6 @@ import org.pircbotx.PircBotX;
  * in common
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericDCCEvent<T extends PircBotX> extends GenericEvent<T> {
+public interface GenericDCCEvent<T extends PircBotX> extends GenericUserEvent<T> {
+	public boolean isPassive();
 }
