@@ -150,7 +150,7 @@ public class Configuration {
 	protected final String nickservPassword;
 	protected final boolean autoReconnect;
 	//Bot classes
-	protected final ListenerManager<? extends PircBotX> listenerManager;
+	protected final ListenerManager<PircBotX> listenerManager;
 	protected final boolean capEnabled;
 	protected final ImmutableList<CapHandler> capHandlers;
 	protected final BotFactory botFactory;
@@ -264,7 +264,7 @@ public class Configuration {
 		protected String nickservPassword;
 		protected boolean autoReconnect = false;
 		//Bot classes
-		protected ListenerManager<? extends PircBotX> listenerManager = null;
+		protected ListenerManager<PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
 		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 		protected BotFactory botFactory = new BotFactory();
@@ -410,7 +410,7 @@ public class Configuration {
 		 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
 		 * @param listenerManager The listener manager
 		 */
-		public Builder setListenerManager(ListenerManager<? extends PircBotX> listenerManager) {
+		public Builder setListenerManager(ListenerManager<PircBotX> listenerManager) {
 			this.listenerManager = listenerManager;
 			for (Listener curListener : listenerManager.getListeners())
 				if (curListener instanceof CoreHooks)
@@ -425,7 +425,7 @@ public class Configuration {
 		 * was already set
 		 * @return Current ListenerManager
 		 */
-		public ListenerManager<? extends PircBotX> getListenerManager() {
+		public ListenerManager<PircBotX> getListenerManager() {
 			if (listenerManager == null) {
 				listenerManager = new ThreadedListenerManager();
 				listenerManager.addListener(new CoreHooks());
