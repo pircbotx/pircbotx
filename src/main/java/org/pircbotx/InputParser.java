@@ -741,7 +741,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new ModeEvent(bot, channel, user, mode));
 		} else
 			// The mode of a user is being changed.
-			configuration.getListenerManager().dispatchEvent(new UserModeEvent(bot, bot.getUserChannelDao().getUser(target), user, mode));
+			configuration.getListenerManager().dispatchEvent(new UserModeEvent(bot, user, bot.getUserChannelDao().getUser(target), mode));
 	}
 
 	public void processUserStatus(Channel chan, User user, String prefix) {
