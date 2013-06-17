@@ -18,8 +18,12 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
@@ -31,6 +35,7 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UnknownEvent<T extends PircBotX> extends Event<T> {
+	@Getter(onMethod = @_({@Nonnull}))
 	protected final String line;
 
 	/**
@@ -38,7 +43,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param line The raw line that was received from the server.
 	 */
-	public UnknownEvent(T bot, String line) {
+	public UnknownEvent(T bot, @NonNull String line) {
 		super(bot);
 		this.line = line;
 	}
@@ -48,7 +53,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getBot().sendRaw().rawLine(response);
 	}
 }

@@ -18,10 +18,13 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
@@ -36,7 +39,9 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RemoveChannelKeyEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final String key;
 
@@ -47,7 +52,7 @@ public class RemoveChannelKeyEvent<T extends PircBotX> extends Event<T> implemen
 	 * @param user The user that performed the mode change.
 	 * @param key The key that was in use before the channel key was removed.
 	 */
-	public RemoveChannelKeyEvent(T bot, Channel channel, User user, String key) {
+	public RemoveChannelKeyEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String key) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
@@ -61,7 +66,7 @@ public class RemoveChannelKeyEvent<T extends PircBotX> extends Event<T> implemen
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getChannel().send().message(getUser(), response);
 	}
 }

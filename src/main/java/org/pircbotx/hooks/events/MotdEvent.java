@@ -18,8 +18,10 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
@@ -39,7 +41,7 @@ public class MotdEvent<T extends PircBotX> extends Event<T> {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param motd The full motd separated by newlines (<code>\n</code>)
 	 */
-	public MotdEvent(T bot, String motd) {
+	public MotdEvent(T bot, @NonNull String motd) {
 		super(bot);
 		this.motd = motd;
 	}
@@ -49,7 +51,7 @@ public class MotdEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getBot().sendRaw().rawLine(response);
 	}
 }

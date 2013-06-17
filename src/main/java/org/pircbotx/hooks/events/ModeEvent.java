@@ -18,12 +18,16 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Used when the mode of a channel is set.
@@ -38,8 +42,10 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ModeEvent<T extends PircBotX> extends Event<T> {
+public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final String mode;
 
@@ -50,7 +56,7 @@ public class ModeEvent<T extends PircBotX> extends Event<T> {
 	 * @param user The user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	public ModeEvent(T bot, Channel channel, User user, String mode) {
+	public ModeEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String mode) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
@@ -64,7 +70,7 @@ public class ModeEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getChannel().send().message(getUser(), response);
 	}
 }

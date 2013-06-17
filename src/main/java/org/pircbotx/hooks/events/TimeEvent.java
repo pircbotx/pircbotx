@@ -18,8 +18,11 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
@@ -39,8 +42,11 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
-	protected final User user;
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	@Getter(onMethod = @_(@Override))
+	protected final User user;
+	
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -49,10 +55,10 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * @param channel The target channel of the TIME request. A value of <code>null</code>
 	 * means that target is us
 	 */
-	public TimeEvent(T bot, User user, Channel channel) {
+	public TimeEvent(T bot, @NonNull Channel channel, @NonNull User user) {
 		super(bot);
-		this.user = user;
 		this.channel = channel;
+		this.user = user;
 	}
 
 	/**
@@ -60,7 +66,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().ctcpResponse(response);
 	}
 }

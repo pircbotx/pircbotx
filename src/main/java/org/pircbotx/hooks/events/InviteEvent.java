@@ -18,10 +18,11 @@
  */
 package org.pircbotx.hooks.events;
 
-import org.pircbotx.Channel;
-import org.pircbotx.User;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
@@ -43,7 +44,7 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 	 * @param channel The channel that we're being invited to. Provided as a string
 	 * since we are not joined to the channel yet
 	 */
-	public InviteEvent(T bot, String user, String channel) {
+	public InviteEvent(T bot, @NonNull String user, @NonNull String channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
@@ -54,7 +55,7 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getBot().sendIRC().message(getUser(), response);
 	}
 }

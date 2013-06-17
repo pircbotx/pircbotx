@@ -18,12 +18,17 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.types.GenericChannelEvent;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
@@ -33,8 +38,10 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ActionEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
+public class ActionEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
 	protected final String action;
 
@@ -47,7 +54,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * is a private message, not a channel
 	 * @param action The action carried out by the user.
 	 */
-	public ActionEvent(T bot, User user, Channel channel, String action) {
+	public ActionEvent(T bot, @NonNull User user, @NonNull Channel channel, @NonNull String action) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
@@ -58,6 +65,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * Returns the action sent by the user. Same result as getAction
 	 * @return Action sent by the user
 	 */
+	@Override
 	public String getMessage() {
 		return action;
 	}
@@ -74,7 +82,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		if (getChannel() == null)
 			getUser().send().action(response);
 		else
