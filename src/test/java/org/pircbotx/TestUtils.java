@@ -56,7 +56,7 @@ public class TestUtils {
 		if(includeEvents)
 			classesBuilder.addAll(classPath.getTopLevelClasses(VoiceEvent.class.getPackage().getName()));
 		if(includeGeneric)
-			classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName());
+			classesBuilder.addAll(classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName()));
 		List<Object[]> argumentBuilder = new ArrayList();
 		for (ClassPath.ClassInfo curClassInfo : classesBuilder.build()) {
 			Class loadedClass = curClassInfo.load();
