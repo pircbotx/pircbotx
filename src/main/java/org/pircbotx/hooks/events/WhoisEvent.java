@@ -19,10 +19,9 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import lombok.Data;
-import lombok.Delegate;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
@@ -33,13 +32,31 @@ import org.pircbotx.hooks.Event;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @EqualsAndHashCode(callSuper = true)
-public class WhoisEvent<T extends PircBotX> extends Event<T> {
-	@Delegate(types = WhoisEventBuilderIncludes.class)
-	protected WhoisEventBuilder builder;
+@Getter
+public class WhoisEvent<B extends PircBotX> extends Event<B> {
+	protected final String nick;
+	protected final String login;
+	protected final String hostname;
+	protected final String realname;
+	protected final ImmutableList<String> channels;
+	protected final String server;
+	protected final String serverInfo;
+	protected final long idleSeconds;
+	protected final long signOnTime;
+	protected final String registeredAs;
 
-	public WhoisEvent(T bot, WhoisEventBuilder builder) {
+	protected WhoisEvent(B bot, Builder<B> builder) {
 		super(bot);
-		this.builder = builder;
+		this.nick = builder.getNick();
+		this.login = builder.getLogin();
+		this.hostname = builder.getHostname();
+		this.realname = builder.getRealname();
+		this.channels = builder.getChannels();
+		this.server = builder.getServer();
+		this.serverInfo = builder.getServerInfo();
+		this.idleSeconds = builder.getIdleSeconds();
+		this.signOnTime = builder.getSignOnTime();
+		this.registeredAs = builder.getRegisteredAs();
 	}
 
 	@Override
@@ -47,13 +64,8 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		getBot().sendIRC().message(getNick(), response);
 	}
 
-	public ImmutableList<String> getChannels() {
-		//Project Lombok doesn't like Delagates with generics
-		return builder.getChannels();
-	}
-
 	@Data
-	public static class WhoisEventBuilder<J extends PircBotX> {
+	public static class Builder<B extends PircBotX> {
 		protected String nick;
 		protected String login;
 		protected String hostname;
@@ -65,31 +77,8 @@ public class WhoisEvent<T extends PircBotX> extends Event<T> {
 		protected long signOnTime;
 		protected String registeredAs;
 
-		public WhoisEvent generateEvent(J bot) {
-			return new WhoisEvent(bot, this);
+		public WhoisEvent<B> generateEvent(B bot) {
+			return new WhoisEvent<B>(bot, this);
 		}
-	}
-
-	protected static interface WhoisEventBuilderIncludes {
-		public String getNick();
-
-		public String getLogin();
-
-		public String getHostname();
-
-		public String getRealname();
-
-		public String getServer();
-
-		public String getServerInfo();
-
-		public long getIdleSeconds();
-
-		public long getSignOnTime();
-
-		public String getRegisteredAs();
-
-		@Override
-		public String toString();
 	}
 }
