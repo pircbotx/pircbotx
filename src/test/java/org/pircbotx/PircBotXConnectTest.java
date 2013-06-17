@@ -120,7 +120,7 @@ public class PircBotXConnectTest {
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 
-		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, SystemUtils.LINE_SEPARATOR));
 
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "NICK PircBotXBot");
@@ -147,7 +147,7 @@ public class PircBotXConnectTest {
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 
-		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, SystemUtils.LINE_SEPARATOR));
 
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "NICK PircBotXBot");
@@ -173,7 +173,7 @@ public class PircBotXConnectTest {
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 
-		assertEquals(lines.length, 5, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		assertEquals(lines.length, 5, "Extra line: " + StringUtils.join(lines, SystemUtils.LINE_SEPARATOR));
 
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "PASS pa55w0rd");
@@ -203,7 +203,7 @@ public class PircBotXConnectTest {
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 
-		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, System.getProperty("line.separator")));
+		assertEquals(lines.length, 4, "Extra line: " + StringUtils.join(lines, SystemUtils.LINE_SEPARATOR));
 
 		assertEquals(lines[0], "CAP LS");
 		assertEquals(lines[1], "NICK PircBotXBot");
