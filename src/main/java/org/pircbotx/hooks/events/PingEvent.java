@@ -18,10 +18,13 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.CoreHooks;
@@ -40,7 +43,9 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
 	protected final String pingValue;
 
@@ -52,7 +57,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * means the target was us.
 	 * @param pingValue The value that was supplied as an argument to the PING command.
 	 */
-	public PingEvent(T bot, User user, Channel channel, String pingValue) {
+	public PingEvent(T bot, @NonNull User user, @NonNull Channel channel, @NonNull String pingValue) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
@@ -64,7 +69,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().ctcpResponse(response);
 	}
 }

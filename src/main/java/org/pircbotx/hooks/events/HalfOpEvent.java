@@ -18,10 +18,13 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
@@ -37,8 +40,11 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class HalfOpEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
-	protected final User source;
+	@Getter(onMethod = @_(@Override))
+	protected final User user;
+	@Getter(onMethod = @_(@Override))
 	protected final User recipient;
 	protected final boolean isHalfOp;
 
@@ -46,13 +52,13 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param channel The channel in which the mode change took place.
-	 * @param source The user that performed the mode change.
+	 * @param user The user that performed the mode change.
 	 * @param recipient The nick of the user that got 'voiced'.
 	 */
-	public HalfOpEvent(T bot, Channel channel, User source, User recipient, boolean isHalfOp) {
+	public HalfOpEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isHalfOp) {
 		super(bot);
 		this.channel = channel;
-		this.source = source;
+		this.user = user;
 		this.recipient = recipient;
 		this.isHalfOp = isHalfOp;
 	}
@@ -65,7 +71,7 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
-		getChannel().send().message(getSource(), response);
+	public void respond(@Nullable String response) {
+		getChannel().send().message(getUser(), response);
 	}
 }

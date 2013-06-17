@@ -18,12 +18,16 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
  * This event is dispatched whenever a user sets the topic, or when
@@ -32,10 +36,12 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TopicEvent<T extends PircBotX> extends Event<T> {
+public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
 	protected final String oldTopic;
 	protected final String topic;
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final boolean changed;
 	protected final long date;
@@ -50,7 +56,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> {
 	 * @param changed True if the topic has just been changed, false if
 	 * the topic was already there.
 	 */
-	public TopicEvent(T bot, Channel channel, String oldTopic, String topic, User user, long date, boolean changed) {
+	public TopicEvent(T bot, @NonNull Channel channel, @NonNull String oldTopic, @NonNull String topic, @NonNull User user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.oldTopic = oldTopic;
@@ -67,7 +73,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getChannel().send().message(getUser(), response);
 	}
 }

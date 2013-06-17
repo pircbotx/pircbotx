@@ -21,8 +21,11 @@ package org.pircbotx.hooks.events;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -65,6 +68,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final String rawFilename;
 	protected final String safeFilename;
@@ -72,6 +76,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	protected final int port;
 	protected final long filesize;
 	protected final String transferToken;
+	@Getter(onMethod = @_(@Override))
 	protected final boolean passive;
 
 	/**
@@ -79,7 +84,8 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
-	public IncomingFileTransferEvent(T bot, User user, String rawFilename, String safeFilename, InetAddress address, int port, long filesize, String transferToken, boolean passive) {
+	public IncomingFileTransferEvent(T bot, @NonNull User user, @NonNull String rawFilename, @NonNull String safeFilename, 
+			@NonNull InetAddress address, int port, long filesize, @NonNull String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.rawFilename = rawFilename;
@@ -91,11 +97,11 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 		this.passive = passive;
 	}
 
-	public ReceiveFileTransfer accept(File destination) throws IOException {
+	public ReceiveFileTransfer accept(@NonNull File destination) throws IOException {
 		return user.getBot().getDccHandler().acceptFileTransfer(this, destination);
 	}
 	
-	public ReceiveFileTransfer acceptResume(File destination, long startPosition) throws IOException, InterruptedException {
+	public ReceiveFileTransfer acceptResume(@NonNull File destination, long startPosition) throws IOException, InterruptedException {
 		return user.getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
 	}
 
@@ -104,7 +110,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().message(response);
 	}
 }

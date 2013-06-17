@@ -18,8 +18,10 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
@@ -49,7 +51,7 @@ public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 */
-	public DisconnectEvent(T bot, UserChannelDaoSnapshot daoSnapshot) {
+	public DisconnectEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
 	}
@@ -60,7 +62,8 @@ public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	@Deprecated
+	public void respond(@Nullable String response) {
 		throw new UnsupportedOperationException("Attepting to respond to a disconnected server");
 	}
 }

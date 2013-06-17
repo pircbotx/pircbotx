@@ -18,8 +18,11 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
@@ -37,7 +40,9 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final int limit;
 
@@ -48,7 +53,7 @@ public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implement
 	 * @param user The user that performed the mode change.
 	 * @param limit The maximum number of users that may be in this channel at the same time.
 	 */
-	public SetChannelLimitEvent(T bot, Channel channel, User user, int limit) {
+	public SetChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull User user, int limit) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
@@ -62,7 +67,7 @@ public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implement
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getChannel().send().message(getUser(), response);
 	}
 }

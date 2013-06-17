@@ -18,9 +18,12 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -32,7 +35,9 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	@Getter(onMethod = @_(@Override))
 	protected final String message;
 
 	/**
@@ -41,7 +46,7 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 	 * @param user The user who sent the private message.
 	 * @param message The actual message.
 	 */
-	public PrivateMessageEvent(T bot, User user, String message) {
+	public PrivateMessageEvent(T bot, @NonNull User user, @NonNull String message) {
 		super(bot);
 		this.user = user;
 		this.message = message;
@@ -52,7 +57,7 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().message(response);
 	}
 }
