@@ -153,6 +153,12 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			onGenericDCC((GenericDCCEvent) event);
 		if (event instanceof GenericMessageEvent)
 			onGenericMessage((GenericMessageEvent) event);
+		if (event instanceof GenericUserEvent)
+			onGenericUser((GenericUserEvent) event);
+		if (event instanceof GenericChannelEvent)
+			onGenericChannel((GenericChannelEvent) event);
+		if (event instanceof GenericChannelUserEvent)
+			onGenericChannelUser((GenericChannelUserEvent) event);
 	}
 
 	public void onAction(ActionEvent<T> event) throws Exception {
@@ -324,5 +330,14 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onGenericMessage(GenericMessageEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericChannel(GenericChannelEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericUser(GenericUserEvent<T> event) throws Exception {
+	}
+	
+	public void onGenericChannelUser(GenericChannelUserEvent<T> event) throws Exception {
 	}
 }
