@@ -86,7 +86,7 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	 * @param other Other Event to compare to
 	 * @return the result of the comparison
 	 */
-	public int compareTo(Event other) {
+	public int compareTo(Event<T> other) {
 		ComparisonChain comparison = ComparisonChain.start()
 				.compare(getTimestamp(), other.getTimestamp())
 				.compare(getId(), other.getId());
