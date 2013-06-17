@@ -18,12 +18,13 @@
  */
 package org.pircbotx.hooks.events;
 
-import org.pircbotx.Channel;
-import org.pircbotx.User;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
@@ -35,7 +36,7 @@ import org.pircbotx.snapshot.UserSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PartEvent<T extends PircBotX> extends Event<T> {
+public class PartEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
 	protected final UserChannelDaoSnapshot daoSnapshot;
 	protected final ChannelSnapshot channel;
 	protected final UserSnapshot user;
@@ -47,7 +48,7 @@ public class PartEvent<T extends PircBotX> extends Event<T> {
 	 * @param channel The channel which somebody parted from.
 	 * @param user The user who parted from the channel.
 	 */
-	public PartEvent(T bot, UserChannelDaoSnapshot daoSnapshot, ChannelSnapshot channel, UserSnapshot user, String reason) {
+	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
 		this.channel = channel;
@@ -60,7 +61,7 @@ public class PartEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getChannel().send().message(response);
 	}
 }

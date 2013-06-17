@@ -18,11 +18,16 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.Event;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.types.GenericUserEvent;
 
 /**
  * Called when the mode of a user is set.
@@ -30,22 +35,23 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserModeEvent<T extends PircBotX> extends Event<T> {
-	protected final User source;
-	protected final User target;
+public class UserModeEvent<B extends PircBotX> extends Event<B> implements GenericUserEvent<B> {
+	@Getter(onMethod = @_({@Override}))
+	protected final User user;
+	protected final User recipient;
 	protected final String mode;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
 	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param target The user that the mode operation applies to.
-	 * @param source The user that set the mode.
+	 * @param user The user that set the mode.
+	 * @param recipient The user that the mode operation applies to.
 	 * @param mode The mode that has been set.
 	 */
-	public UserModeEvent(T bot, User source, User target, String mode) {
+	public UserModeEvent(@NonNull B bot, @NonNull User user, @NonNull User recipient, @NonNull String mode) {
 		super(bot);
-		this.source = source;
-		this.target = target;
+		this.user = user;
+		this.recipient = recipient;
 		this.mode = mode;
 	}
 
@@ -54,7 +60,7 @@ public class UserModeEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
-		getSource().send().message(response);
+	public void respond(@Nullable String response) {
+		getUser().send().message(response);
 	}
 }

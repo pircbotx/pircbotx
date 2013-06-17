@@ -18,14 +18,16 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericCTCPEvent;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
  * This event is dispatched whenever we receive a FINGER request.
@@ -38,7 +40,7 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
 	protected final User user;
 	protected final Channel channel;
 
@@ -48,7 +50,7 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * @param user The user that sent the FINGER request.
 	 * @param channel The target channel of the FINGER request
 	 */
-	public FingerEvent(T bot, User user, Channel channel) {
+	public FingerEvent(T bot, @NonNull User user, @Nullable Channel channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
@@ -59,7 +61,7 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().ctcpResponse(response);
 	}
 }

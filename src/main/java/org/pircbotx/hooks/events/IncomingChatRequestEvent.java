@@ -20,8 +20,11 @@ package org.pircbotx.hooks.events;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -61,10 +64,12 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final InetAddress chatAddress;
 	protected final int chatPort;
 	protected final String chatToken;
+	@Getter(onMethod = @_(@Override))
 	protected final boolean passive;
 
 	/**
@@ -72,7 +77,7 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 */
-	public IncomingChatRequestEvent(T bot, User user, InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
+	public IncomingChatRequestEvent(T bot, @NonNull User user, @NonNull InetAddress chatAddress, int chatPort, @NonNull String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.chatAddress = chatAddress;
@@ -80,7 +85,7 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 		this.chatToken = chatToken;
 		this.passive = passive;
 	}
-	
+
 	public ReceiveChat accept() throws IOException {
 		return getBot().getDccHandler().acceptChatRequest(this);
 	}
@@ -91,7 +96,7 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().message(response);
 	}
 }

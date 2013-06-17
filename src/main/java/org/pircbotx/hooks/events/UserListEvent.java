@@ -20,12 +20,16 @@ package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  * This event is dispatched when we receive a user list from the server
@@ -45,7 +49,8 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserListEvent<T extends PircBotX> extends Event<T> {
+public class UserListEvent<B extends PircBotX> extends Event<B> implements GenericChannelEvent<B> {
+	@Getter(onMethod = @_({@Override}))
 	protected final Channel channel;
 	protected final ImmutableSortedSet<User> users;
 
@@ -55,7 +60,7 @@ public class UserListEvent<T extends PircBotX> extends Event<T> {
 	 * @param channel The channel that the user list is from.
 	 * @param users An <b>immutable</b> Set of Users belonging to this channel.
 	 */
-	public UserListEvent(T bot, Channel channel, ImmutableSortedSet<User> users) {
+	public UserListEvent(@NonNull B bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
 		super(bot);
 		this.channel = channel;
 		this.users = users;
@@ -66,7 +71,7 @@ public class UserListEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getChannel().send().message(response);
 	}
 }

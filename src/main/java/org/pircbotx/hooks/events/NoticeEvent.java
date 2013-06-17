@@ -18,12 +18,16 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
@@ -32,8 +36,10 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NoticeEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
+public class NoticeEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
 	protected final String notice;
 
@@ -45,7 +51,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * means that the target is us
 	 * @param notice The notice message.
 	 */
-	public NoticeEvent(T bot, User user, Channel channel, String notice) {
+	public NoticeEvent(T bot, @NonNull User user, @NonNull Channel channel, @NonNull String notice) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
@@ -56,6 +62,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * Returns the notice the user sent
 	 * @return The notice the user sent
 	 */
+	@Override
 	public String getMessage() {
 		return notice;
 	}
@@ -67,7 +74,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		if (getChannel() == null)
 			getUser().send().message(response);
 		else

@@ -19,9 +19,10 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
-import java.util.List;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.ReplyConstants;
@@ -63,7 +64,7 @@ public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param code The three-digit numerical code for the response.
 	 */
-	public ServerResponseEvent(T bot, int code, String rawLine, ImmutableList<String> parsedResponse) {
+	public ServerResponseEvent(T bot, int code, @NonNull String rawLine, @NonNull ImmutableList<String> parsedResponse) {
 		super(bot);
 		this.code = code;
 		this.rawLine = rawLine;
@@ -75,7 +76,7 @@ public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getBot().sendRaw().rawLine(response);
 	}
 }

@@ -18,11 +18,15 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericUserEvent;
 
 /**
  * This event is dispatched whenever someone (possibly us) changes nick on any
@@ -31,9 +35,10 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NickChangeEvent<T extends PircBotX> extends Event<T> {
+public class NickChangeEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
 	protected final String oldNick;
 	protected final String newNick;
+	@Getter(onMethod = @_(@Override))
 	protected final User user;
 
 	/**
@@ -43,7 +48,7 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> {
 	 * @param newNick The new nick.
 	 * @param user The user that changed their nick
 	 */
-	public NickChangeEvent(T bot, String oldNick, String newNick, User user) {
+	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, @NonNull User user) {
 		super(bot);
 		this.oldNick = oldNick;
 		this.newNick = newNick;
@@ -55,7 +60,7 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().message(response);
 	}
 }
