@@ -134,8 +134,8 @@ public class InputParserTest {
 
 		//Verify event contents
 		UserModeEvent uevent = getEvent(UserModeEvent.class, "UserModeEvent not dispatched on change");
-		assertEquals(uevent.getSource(), aUser, "UserModeEvent's source does not match given");
-		assertEquals(uevent.getTarget(), aUser2, "UserModeEvent's target does not match given");
+		assertEquals(uevent.getUser(), aUser, "UserModeEvent's source does not match given");
+		assertEquals(uevent.getRecipient(), aUser2, "UserModeEvent's target does not match given");
 		assertEquals(uevent.getMode(), "+i", "UserModeEvent's mode does not match given");
 	}
 
@@ -419,7 +419,7 @@ public class InputParserTest {
 		//Verify specific event contents
 		GenericUserModeEvent event = (GenericUserModeEvent) getEvent(eventClass, "No " + eventClass.getSimpleName() + " dispatched with " + mode);
 		assertEquals(event.getChannel(), aChannel, eventClass.getSimpleName() + "'s channel does not match given with mode " + mode);
-		assertEquals(event.getSource(), aUser, eventClass.getSimpleName() + "'s source user does not match given with mode " + mode);
+		assertEquals(event.getUser(), aUser, eventClass.getSimpleName() + "'s source user does not match given with mode " + mode);
 		assertEquals(event.getRecipient(), otherUser, eventClass.getSimpleName() + "'s recipient user does not match given with mode " + mode);
 
 		//Make sure the event's is* method returns the correct value
@@ -601,7 +601,7 @@ public class InputParserTest {
 		//Verify event contents
 		KickEvent kevent = getEvent(KickEvent.class, "KickEvent not dispatched");
 		assertEquals(kevent.getChannel(), aChannel, "KickEvent channel does not match");
-		assertEquals(kevent.getSource(), aUser, "KickEvent's getSource doesn't match kicker user");
+		assertEquals(kevent.getUser(), aUser, "KickEvent's getSource doesn't match kicker user");
 		assertEquals(kevent.getRecipient(), otherUser, "KickEvent's getRecipient doesn't match kickee user");
 		assertEquals(kevent.getReason(), aString, "KickEvent's reason doesn't match given one");
 
