@@ -49,7 +49,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	protected final long signOnTime;
 	protected final String registeredAs;
 
-	protected WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
+	public WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
 		super(bot);
 		this.nick = builder.getNick();
 		this.login = builder.getLogin();
