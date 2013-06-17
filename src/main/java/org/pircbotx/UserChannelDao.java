@@ -52,7 +52,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
 	protected final Object accessLock = new Object();
-	protected final UserChannelMap mainMap;
+	protected final UserChannelMap<U, C> mainMap;
 	protected final EnumMap<UserLevel, UserChannelMap<U, C>> levelsMap;
 	protected final BiMap<String, U> userNickMap;
 	protected final BiMap<String, C> channelNameMap;
@@ -61,15 +61,15 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
-		this.mainMap = new UserChannelMap();
+		this.mainMap = new UserChannelMap<U, C>();
 		this.userNickMap = HashBiMap.create();
 		this.channelNameMap = HashBiMap.create();
-		this.privateUsers = new HashSet();
+		this.privateUsers = new HashSet<U>();
 
 		//Initialize levels map with a UserChannelMap for each level
 		this.levelsMap = Maps.newEnumMap(UserLevel.class);
 		for (UserLevel level : UserLevel.values())
-			levelsMap.put(level, new UserChannelMap());
+			levelsMap.put(level, new UserChannelMap<U, C>());
 	}
 
 	@Synchronized("accessLock")
@@ -137,8 +137,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<U> getNormalUsers(C channel) {
-		Set<U> remainingUsers = new HashSet(mainMap.getUsers(channel));
-		for (UserChannelMap curLevelMap : levelsMap.values())
+		Set<U> remainingUsers = new HashSet<U>(mainMap.getUsers(channel));
+		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			remainingUsers.removeAll(curLevelMap.getUsers(channel));
 		return ImmutableSortedSet.copyOf(remainingUsers);
 	}
@@ -159,8 +159,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<C> getNormalUserChannels(U user) {
-		Set<C> remainingChannels = new HashSet(mainMap.getChannels(user));
-		for (UserChannelMap curLevelMap : levelsMap.values())
+		Set<C> remainingChannels = new HashSet<C>(mainMap.getChannels(user));
+		for (UserChannelMap<U, C>  curLevelMap : levelsMap.values())
 			remainingChannels.removeAll(curLevelMap.getChannels(user));
 		return ImmutableSortedSet.copyOf(remainingChannels);
 	}
@@ -173,7 +173,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	protected void removeUserFromChannel(U user, C channel) {
 		mainMap.removeUserFromChannel(user, channel);
-		for (UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeUserFromChannel(user, channel);
 
 		if (!privateUsers.contains(user) && !mainMap.containsUser(user))
@@ -184,7 +184,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	protected void removeUser(U user) {
 		mainMap.removeUser(user);
-		for (UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeUser(user);
 
 		//Remove remaining locations
@@ -246,7 +246,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	protected void removeChannel(C channel) {
 		mainMap.removeChannel(channel);
-		for (UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeChannel(channel);
 
 		//Remove remaining locations
@@ -256,7 +256,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	public void close() {
 		mainMap.clear();
-		for (UserChannelMap curLevelMap : levelsMap.values())
+		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.clear();
 		channelNameMap.clear();
 		privateUsers.clear();
@@ -277,7 +277,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 		//Make snapshots of the relationship maps using the above user and channel snapshots
 		UserChannelMapSnapshot mainMapSnapshot = mainMap.createSnapshot(userSnapshotMap, channelSnapshotMap);
-		EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = new EnumMap(UserLevel.class);
+		EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = Maps.newEnumMap(UserLevel.class);
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
 			levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
 		ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();
