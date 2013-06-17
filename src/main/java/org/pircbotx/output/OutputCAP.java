@@ -21,6 +21,7 @@ package org.pircbotx.output;
 import java.util.Arrays;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 
@@ -43,7 +44,7 @@ public class OutputCAP {
 	}
 
 	public void request(String... capability) {
-		bot.sendRaw().rawLineNow("CAP REQ :" + Utils.join(Arrays.asList(capability), " "));
+		bot.sendRaw().rawLineNow("CAP REQ :" + StringUtils.join(capability, " "));
 	}
 	
 	public void clear() {
