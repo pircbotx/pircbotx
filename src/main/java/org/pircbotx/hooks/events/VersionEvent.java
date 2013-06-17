@@ -18,10 +18,14 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.PircBotX;
@@ -39,7 +43,9 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+	@Getter(onMethod = @_({@Override}))
 	protected final User user;
+	@Getter(onMethod = @_({@Override}))
 	protected final Channel channel;
 
 	/**
@@ -49,7 +55,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * @param channel The target channel of the VERSION request. A value of <code>null</code>
 	 * means that that the target is us.
 	 */
-	public VersionEvent(T bot, User user, Channel channel) {
+	public VersionEvent(T bot, @NonNull User user, @NonNull Channel channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
@@ -60,7 +66,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getUser().send().ctcpResponse(response);
 	}
 }
