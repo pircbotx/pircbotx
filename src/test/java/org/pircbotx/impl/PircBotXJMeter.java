@@ -54,7 +54,7 @@ public class PircBotXJMeter extends ListenerAdapter {
 
 	@Override
 	public void onGenericUserMode(GenericUserModeEvent event) throws Exception {
-		event.respond(event.getSource().getNick());
+		event.respond(event.getUser().getNick());
 	}
 
 	@Override
