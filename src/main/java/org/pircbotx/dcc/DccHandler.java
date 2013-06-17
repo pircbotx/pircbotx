@@ -270,7 +270,7 @@ public class DccHandler implements Closeable {
 		}
 
 		//Request resume
-		if (event.isReverse())
+		if (event.isPassive())
 			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getTransferToken());
 		else
 			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
@@ -291,7 +291,7 @@ public class DccHandler implements Closeable {
 		checkNotNull(destination, "Destination file cannot be null");
 		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
 
-		if (event.isReverse()) {
+		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
 			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getTransferToken());
 			Socket userSocket = serverSocket.accept();
