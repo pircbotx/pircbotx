@@ -47,6 +47,12 @@ public class MassEventTest {
 	@Test(dependsOnMethods = "singleConstructorTest",
 			dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify number of class fields and number of constructor params match")
 	public void constructorParamToFieldTest(Class<?> event) {
+		if(event == WhoisEvent.class) {
+			//This uses a builder
+			//TODO: Verify?
+			return;
+		}
+			
 		//Manually count fields to exclude synthetic ones
 		int fieldCount = 0;
 		for(Field curField : event.getDeclaredFields())
