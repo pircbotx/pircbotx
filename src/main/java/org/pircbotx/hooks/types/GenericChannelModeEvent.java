@@ -18,14 +18,12 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 
 /**
  * Generic Channel Mode (not users status in the channel) change event
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericChannelModeEvent<T extends PircBotX> extends GenericUserEvent<T>, GenericChannelEvent<T> {
+public interface GenericChannelModeEvent<T extends PircBotX> extends GenericChannelUserEvent<T> {
 }
