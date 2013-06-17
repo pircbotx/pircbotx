@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
@@ -68,6 +69,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	}
 
 	@Data
+	@NoArgsConstructor
 	public static class Builder<B extends PircBotX> {
 		@NonNull
 		protected String nick;
