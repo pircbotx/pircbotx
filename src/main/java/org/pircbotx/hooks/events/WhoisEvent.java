@@ -19,9 +19,11 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
@@ -31,6 +33,7 @@ import org.pircbotx.hooks.Event;
  * us directly
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+//TODO: Add tests
 @EqualsAndHashCode(callSuper = true)
 @Getter
 public class WhoisEvent<B extends PircBotX> extends Event<B> {
@@ -45,7 +48,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	protected final long signOnTime;
 	protected final String registeredAs;
 
-	protected WhoisEvent(B bot, Builder<B> builder) {
+	protected WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
 		super(bot);
 		this.nick = builder.getNick();
 		this.login = builder.getLogin();
@@ -60,24 +63,34 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	}
 
 	@Override
-	public void respond(String response) {
+	public void respond(@Nullable String response) {
 		getBot().sendIRC().message(getNick(), response);
 	}
 
 	@Data
 	public static class Builder<B extends PircBotX> {
+		@NonNull
 		protected String nick;
+		@NonNull
 		protected String login;
+		@NonNull
 		protected String hostname;
+		@NonNull
 		protected String realname;
+		@NonNull
 		protected ImmutableList<String> channels;
+		@NonNull
 		protected String server;
+		@NonNull
 		protected String serverInfo;
+		@NonNull
 		protected long idleSeconds;
+		@NonNull
 		protected long signOnTime;
+		@NonNull
 		protected String registeredAs;
 
-		public WhoisEvent<B> generateEvent(B bot) {
+		public WhoisEvent<B> generateEvent(@NonNull B bot) {
 			return new WhoisEvent<B>(bot, this);
 		}
 	}
