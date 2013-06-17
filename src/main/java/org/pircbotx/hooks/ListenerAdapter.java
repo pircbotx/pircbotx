@@ -38,127 +38,127 @@ import org.pircbotx.hooks.types.*;
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
 	public void onEvent(Event<T> event) throws Exception {
 		if (event instanceof ActionEvent)
-			onAction((ActionEvent) event);
+			onAction((ActionEvent<T>) event);
 		else if (event instanceof ChannelInfoEvent)
-			onChannelInfo((ChannelInfoEvent) event);
+			onChannelInfo((ChannelInfoEvent<T>) event);
 		else if (event instanceof ConnectEvent)
-			onConnect((ConnectEvent) event);
+			onConnect((ConnectEvent<T>) event);
 		else if (event instanceof DisconnectEvent)
-			onDisconnect((DisconnectEvent) event);
+			onDisconnect((DisconnectEvent<T>) event);
 		else if (event instanceof FingerEvent)
-			onFinger((FingerEvent) event);
+			onFinger((FingerEvent<T>) event);
 		else if (event instanceof HalfOpEvent)
-			onHalfOp((HalfOpEvent) event);
+			onHalfOp((HalfOpEvent<T>) event);
 		else if (event instanceof IncomingChatRequestEvent)
-			onIncomingChatRequest((IncomingChatRequestEvent) event);
+			onIncomingChatRequest((IncomingChatRequestEvent<T>) event);
 		else if (event instanceof IncomingFileTransferEvent)
-			onIncomingFileTransfer((IncomingFileTransferEvent) event);
+			onIncomingFileTransfer((IncomingFileTransferEvent<T>) event);
 		else if (event instanceof InviteEvent)
-			onInvite((InviteEvent) event);
+			onInvite((InviteEvent<T>) event);
 		else if (event instanceof JoinEvent)
-			onJoin((JoinEvent) event);
+			onJoin((JoinEvent<T>) event);
 		else if (event instanceof KickEvent)
-			onKick((KickEvent) event);
+			onKick((KickEvent<T>) event);
 		else if (event instanceof MessageEvent)
-			onMessage((MessageEvent) event);
+			onMessage((MessageEvent<T>) event);
 		else if (event instanceof ModeEvent)
-			onMode((ModeEvent) event);
+			onMode((ModeEvent<T>) event);
 		else if (event instanceof MotdEvent)
-			onMotd((MotdEvent) event);
+			onMotd((MotdEvent<T>) event);
 		else if (event instanceof NickChangeEvent)
-			onNickChange((NickChangeEvent) event);
+			onNickChange((NickChangeEvent<T>) event);
 		else if (event instanceof NoticeEvent)
-			onNotice((NoticeEvent) event);
+			onNotice((NoticeEvent<T>) event);
 		else if (event instanceof OpEvent)
-			onOp((OpEvent) event);
+			onOp((OpEvent<T>) event);
 		else if (event instanceof OwnerEvent)
-			onOwner((OwnerEvent) event);
+			onOwner((OwnerEvent<T>) event);
 		else if (event instanceof PartEvent)
-			onPart((PartEvent) event);
+			onPart((PartEvent<T>) event);
 		else if (event instanceof PingEvent)
-			onPing((PingEvent) event);
+			onPing((PingEvent<T>) event);
 		else if (event instanceof PrivateMessageEvent)
-			onPrivateMessage((PrivateMessageEvent) event);
+			onPrivateMessage((PrivateMessageEvent<T>) event);
 		else if (event instanceof QuitEvent)
-			onQuit((QuitEvent) event);
+			onQuit((QuitEvent<T>) event);
 		else if (event instanceof RemoveChannelBanEvent)
-			onRemoveChannelBan((RemoveChannelBanEvent) event);
+			onRemoveChannelBan((RemoveChannelBanEvent<T>) event);
 		else if (event instanceof RemoveChannelKeyEvent)
-			onRemoveChannelKey((RemoveChannelKeyEvent) event);
+			onRemoveChannelKey((RemoveChannelKeyEvent<T>) event);
 		else if (event instanceof RemoveChannelLimitEvent)
-			onRemoveChannelLimit((RemoveChannelLimitEvent) event);
+			onRemoveChannelLimit((RemoveChannelLimitEvent<T>) event);
 		else if (event instanceof RemoveInviteOnlyEvent)
-			onRemoveInviteOnly((RemoveInviteOnlyEvent) event);
+			onRemoveInviteOnly((RemoveInviteOnlyEvent<T>) event);
 		else if (event instanceof RemoveModeratedEvent)
-			onRemoveModerated((RemoveModeratedEvent) event);
+			onRemoveModerated((RemoveModeratedEvent<T>) event);
 		else if (event instanceof RemoveNoExternalMessagesEvent)
-			onRemoveNoExternalMessages((RemoveNoExternalMessagesEvent) event);
+			onRemoveNoExternalMessages((RemoveNoExternalMessagesEvent<T>) event);
 		else if (event instanceof RemovePrivateEvent)
-			onRemovePrivate((RemovePrivateEvent) event);
+			onRemovePrivate((RemovePrivateEvent<T>) event);
 		else if (event instanceof RemoveSecretEvent)
-			onRemoveSecret((RemoveSecretEvent) event);
+			onRemoveSecret((RemoveSecretEvent<T>) event);
 		else if (event instanceof RemoveTopicProtectionEvent)
-			onRemoveTopicProtection((RemoveTopicProtectionEvent) event);
+			onRemoveTopicProtection((RemoveTopicProtectionEvent<T>) event);
 		else if (event instanceof ServerPingEvent)
-			onServerPing((ServerPingEvent) event);
+			onServerPing((ServerPingEvent<T>) event);
 		else if (event instanceof ServerResponseEvent)
-			onServerResponse((ServerResponseEvent) event);
+			onServerResponse((ServerResponseEvent<T>) event);
 		else if (event instanceof SetChannelBanEvent)
-			onSetChannelBan((SetChannelBanEvent) event);
+			onSetChannelBan((SetChannelBanEvent<T>) event);
 		else if (event instanceof SetChannelKeyEvent)
-			onSetChannelKey((SetChannelKeyEvent) event);
+			onSetChannelKey((SetChannelKeyEvent<T>) event);
 		else if (event instanceof SetChannelLimitEvent)
-			onSetChannelLimit((SetChannelLimitEvent) event);
+			onSetChannelLimit((SetChannelLimitEvent<T>) event);
 		else if (event instanceof SetInviteOnlyEvent)
-			onSetInviteOnly((SetInviteOnlyEvent) event);
+			onSetInviteOnly((SetInviteOnlyEvent<T>) event);
 		else if (event instanceof SetModeratedEvent)
-			onSetModerated((SetModeratedEvent) event);
+			onSetModerated((SetModeratedEvent<T>) event);
 		else if (event instanceof SetNoExternalMessagesEvent)
-			onSetNoExternalMessages((SetNoExternalMessagesEvent) event);
+			onSetNoExternalMessages((SetNoExternalMessagesEvent<T>) event);
 		else if (event instanceof SetPrivateEvent)
-			onSetPrivate((SetPrivateEvent) event);
+			onSetPrivate((SetPrivateEvent<T>) event);
 		else if (event instanceof SetSecretEvent)
-			onSetSecret((SetSecretEvent) event);
+			onSetSecret((SetSecretEvent<T>) event);
 		else if (event instanceof SetTopicProtectionEvent)
-			onSetTopicProtection((SetTopicProtectionEvent) event);
+			onSetTopicProtection((SetTopicProtectionEvent<T>) event);
 		else if (event instanceof SocketConnectEvent)
-			onSocketConnect((SocketConnectEvent) event);
+			onSocketConnect((SocketConnectEvent<T>) event);
 		else if (event instanceof SuperOpEvent)
-			onSuperOp((SuperOpEvent) event);
+			onSuperOp((SuperOpEvent<T>) event);
 		else if (event instanceof TimeEvent)
-			onTime((TimeEvent) event);
+			onTime((TimeEvent<T>) event);
 		else if (event instanceof TopicEvent)
-			onTopic((TopicEvent) event);
+			onTopic((TopicEvent<T>) event);
 		else if (event instanceof UnknownEvent)
-			onUnknown((UnknownEvent) event);
+			onUnknown((UnknownEvent<T>) event);
 		else if (event instanceof UserListEvent)
-			onUserList((UserListEvent) event);
+			onUserList((UserListEvent<T>) event);
 		else if (event instanceof UserModeEvent)
-			onUserMode((UserModeEvent) event);
+			onUserMode((UserModeEvent<T>) event);
 		else if (event instanceof VersionEvent)
-			onVersion((VersionEvent) event);
+			onVersion((VersionEvent<T>) event);
 		else if (event instanceof VoiceEvent)
-			onVoice((VoiceEvent) event);
+			onVoice((VoiceEvent<T>) event);
 		else if (event instanceof WhoisEvent)
-			onWhois((WhoisEvent) event);
+			onWhois((WhoisEvent<T>) event);
 
 		//Generic methods
 		if (event instanceof GenericCTCPEvent)
-			onGenericCTCP((GenericCTCPEvent) event);
+			onGenericCTCP((GenericCTCPEvent<T>) event);
 		if (event instanceof GenericUserModeEvent)
-			onGenericUserMode((GenericUserModeEvent) event);
+			onGenericUserMode((GenericUserModeEvent<T>) event);
 		if (event instanceof GenericChannelModeEvent)
-			onGenericChannelMode((GenericChannelModeEvent) event);
+			onGenericChannelMode((GenericChannelModeEvent<T>) event);
 		if (event instanceof GenericDCCEvent)
-			onGenericDCC((GenericDCCEvent) event);
+			onGenericDCC((GenericDCCEvent<T>) event);
 		if (event instanceof GenericMessageEvent)
-			onGenericMessage((GenericMessageEvent) event);
+			onGenericMessage((GenericMessageEvent<T>) event);
 		if (event instanceof GenericUserEvent)
-			onGenericUser((GenericUserEvent) event);
+			onGenericUser((GenericUserEvent<T>) event);
 		if (event instanceof GenericChannelEvent)
-			onGenericChannel((GenericChannelEvent) event);
+			onGenericChannel((GenericChannelEvent<T>) event);
 		if (event instanceof GenericChannelUserEvent)
-			onGenericChannelUser((GenericChannelUserEvent) event);
+			onGenericChannelUser((GenericChannelUserEvent<T>) event);
 	}
 
 	public void onAction(ActionEvent<T> event) throws Exception {
