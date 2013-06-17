@@ -38,6 +38,7 @@ import org.mockito.stubbing.Answer;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
+import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.testng.annotations.BeforeMethod;
@@ -171,6 +172,8 @@ public class ListenerAdapterTest {
 				eventConstructorParams[i] = 0;
 			else if (eventConstructorParamTypes[i] == boolean.class)
 				eventConstructorParams[i] = false;
+			else if (eventConstructorParamTypes[i] == WhoisEvent.Builder.class)
+				eventConstructorParams[i] = new WhoisEvent.Builder();
 		eventConstructorParams[0] = bot;
 		Event eventObject = (Event) eventConstructor.newInstance(eventConstructorParams);
 
