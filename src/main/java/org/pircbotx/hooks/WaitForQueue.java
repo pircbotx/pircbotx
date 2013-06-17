@@ -21,6 +21,7 @@ package org.pircbotx.hooks;
 import java.io.Closeable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import org.pircbotx.PircBotX;
 
 /**
@@ -40,7 +41,7 @@ import org.pircbotx.PircBotX;
  */
 public class WaitForQueue implements Closeable {
 	protected final PircBotX bot;
-	protected BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
+	protected LinkedBlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
 	protected WaitForQueueListener listener;
 
 	/**
@@ -53,6 +54,10 @@ public class WaitForQueue implements Closeable {
 		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
 
+	public <E extends Event> E waitFor(Class<E> eventClass) throws InterruptedException {
+		return waitFor(eventClass, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+	}
+
 	/**
 	 * Wait for events of the specified event class to appear in the queue. If 
 	 * the event was dispatched before this is called, it will return immediately. 
@@ -62,11 +67,11 @@ public class WaitForQueue implements Closeable {
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public <E extends Event> E waitFor(Class<E> eventClass) throws InterruptedException {
+	public <E extends Event> E waitFor(Class<E> eventClass, long timeout, TimeUnit unit) throws InterruptedException {
 		if (eventClass == null)
 			throw new IllegalArgumentException("Can't wait for null event");
 		while (true) {
-			Event curEvent = eventQueue.take();
+			Event curEvent = eventQueue.poll(timeout, unit);
 			if (eventClass.isInstance(curEvent))
 				return (E) curEvent;
 		}
