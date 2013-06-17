@@ -119,7 +119,7 @@ public class InputParser implements Closeable {
 	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
 	protected BufferedReader inputReader;
 	//Builders
-	protected final Map<String, WhoisEvent.WhoisEventBuilder> whoisBuilder = Maps.newHashMap();
+	protected final Map<String, WhoisEvent.Builder> whoisBuilder = Maps.newHashMap();
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;
@@ -326,7 +326,7 @@ public class InputParser implements Closeable {
 				configuration.getListenerManager().dispatchEvent(new PingEvent(bot, source, channel, request.substring(5)));
 			else if (request.equals("TIME"))
 				// TIME request
-				configuration.getListenerManager().dispatchEvent(new TimeEvent(bot, source, channel));
+				configuration.getListenerManager().dispatchEvent(new TimeEvent(bot, channel, source));
 			else if (request.equals("FINGER"))
 				// FINGER request
 				configuration.getListenerManager().dispatchEvent(new FingerEvent(bot, source, channel));
@@ -555,7 +555,7 @@ public class InputParser implements Closeable {
 			//New whois is starting
 			String whoisNick = parsedResponse.get(1);
 
-			WhoisEvent.WhoisEventBuilder builder = new WhoisEvent.WhoisEventBuilder();
+			WhoisEvent.Builder builder = new WhoisEvent.Builder();
 			builder.setNick(whoisNick);
 			builder.setLogin(parsedResponse.get(2));
 			builder.setHostname(parsedResponse.get(3));
