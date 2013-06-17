@@ -117,6 +117,7 @@ public class InputParser implements Closeable {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
+	protected boolean capEndSent = false;
 	protected BufferedReader inputReader;
 	//Builders
 	protected final Map<String, WhoisEvent.Builder> whoisBuilder = Maps.newHashMap();
@@ -300,7 +301,8 @@ public class InputParser implements Closeable {
 					capHandlersFinished.add(curCapHandler);
 
 		//Send CAP END if all CapHandlers are finished
-		if (configuration.isCapEnabled() && capHandlersFinished.containsAll(configuration.getCapHandlers())) {
+		if (configuration.isCapEnabled() && !capEndSent && capHandlersFinished.containsAll(configuration.getCapHandlers())) {
+			capEndSent = true;
 			bot.sendCAP().end();
 			bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
 		}
@@ -764,6 +766,7 @@ public class InputParser implements Closeable {
 	 * Clear out builders.
 	 */
 	public void close() {
+		capEndSent = false;
 		capHandlersFinished.clear();
 		whoisBuilder.clear();
 		motdBuilder = null;
