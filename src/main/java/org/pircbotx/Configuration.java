@@ -150,7 +150,7 @@ public class Configuration {
 	protected final String nickservPassword;
 	protected final boolean autoReconnect;
 	//Bot classes
-	protected final ListenerManager listenerManager;
+	protected final ListenerManager<? extends PircBotX> listenerManager;
 	protected final boolean capEnabled;
 	protected final ImmutableList<CapHandler> capHandlers;
 	protected final BotFactory botFactory;
@@ -264,7 +264,7 @@ public class Configuration {
 		protected String nickservPassword;
 		protected boolean autoReconnect = false;
 		//Bot classes
-		protected ListenerManager listenerManager = null;
+		protected ListenerManager<? extends PircBotX> listenerManager = null;
 		protected boolean capEnabled = false;
 		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 		protected BotFactory botFactory = new BotFactory();
