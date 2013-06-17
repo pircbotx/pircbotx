@@ -161,9 +161,9 @@ public class ListenerAdapterTest {
 		doCallRealMethod().when(mockListener).onEvent(any(Event.class));
 
 		//Call the constructor in the Event, trying to give as many default values as possible
-		Constructor[] eventConstructors = eventClass.getConstructors();
+		Constructor[] eventConstructors = eventClass.getDeclaredConstructors();
 		assertEquals(eventConstructors.length, 1, "Unexpected number of event constructors in " + eventClass);
-		Constructor eventConstructor = eventClass.getConstructors()[0];
+		Constructor eventConstructor = eventConstructors[0];
 		Class[] eventConstructorParamTypes = eventConstructor.getParameterTypes();
 		Object[] eventConstructorParams = new Object[eventConstructorParamTypes.length];
 		for (int i = 0; i < eventConstructorParams.length; i++)
