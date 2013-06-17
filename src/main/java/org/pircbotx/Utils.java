@@ -34,17 +34,6 @@ public final class Utils {
 	private Utils() {
 	}
 
-	public static String join(Collection<String> strings, String sep) {
-		StringBuilder builder = new StringBuilder();
-		Iterator<String> itr = strings.iterator();
-		while (itr.hasNext()) {
-			builder.append(itr.next());
-			if (itr.hasNext())
-				builder.append(sep);
-		}
-		return builder.toString();
-	}
-
 	/**
 	 * Try to parse int string, returning -1 if it fails.
 	 * @param longString
