@@ -85,9 +85,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 		protected String server;
 		@NonNull
 		protected String serverInfo;
-		@NonNull
 		protected long idleSeconds;
-		@NonNull
 		protected long signOnTime;
 		@NonNull
 		protected String registeredAs;
