@@ -18,10 +18,12 @@
  */
 package org.pircbotx.hooks;
 
+import com.google.common.collect.Lists;
 import java.io.Closeable;
-import java.util.concurrent.BlockingQueue;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import lombok.NonNull;
 import org.pircbotx.PircBotX;
 
 /**
@@ -54,8 +56,12 @@ public class WaitForQueue implements Closeable {
 		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
 
-	public <E extends Event> E waitFor(Class<E> eventClass) throws InterruptedException {
-		return waitFor(eventClass, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+	public <E extends Event> E waitFor(Class<E>... eventClasses) throws InterruptedException {
+		return waitFor(Lists.newArrayList(eventClasses));
+	}
+
+	public <E extends Event> E waitFor(List<Class<E>> eventClasses) throws InterruptedException {
+		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -67,13 +73,12 @@ public class WaitForQueue implements Closeable {
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public <E extends Event> E waitFor(Class<E> eventClass, long timeout, TimeUnit unit) throws InterruptedException {
-		if (eventClass == null)
-			throw new IllegalArgumentException("Can't wait for null event");
+	public <E extends Event> E waitFor(@NonNull List<Class<E>> eventClasses, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
 		while (true) {
 			Event curEvent = eventQueue.poll(timeout, unit);
-			if (eventClass.isInstance(curEvent))
-				return (E) curEvent;
+			for (Class<E> curEventClass : eventClasses)
+				if (curEventClass.isInstance(curEvent))
+					return (E) curEvent;
 		}
 	}
 
