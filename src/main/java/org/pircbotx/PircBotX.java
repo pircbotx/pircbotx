@@ -84,7 +84,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected final int botId;
 	//Utility objects
 	@Getter
-	protected final Configuration configuration;
+	protected final Configuration<PircBotX> configuration;
 	@Getter
 	protected final InputParser inputParser;
 	@Getter
@@ -114,9 +114,10 @@ public class PircBotX implements Comparable<PircBotX> {
 	/**
 	 * Constructs a PircBotX with the provided configuration.
 	 */
-	public PircBotX(Configuration configuration) {
+	@SuppressWarnings("unchecked")
+	public PircBotX(Configuration<? extends PircBotX> configuration) {
 		botId = BOT_COUNT.getAndIncrement();
-		this.configuration = configuration;
+		this.configuration = (Configuration<PircBotX>)configuration;
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);

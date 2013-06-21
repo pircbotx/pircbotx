@@ -410,9 +410,10 @@ public class Configuration<B extends PircBotX> {
 		 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
 		 * @param listenerManager The listener manager
 		 */
-		public Builder<B> setListenerManager(ListenerManager<B> listenerManager) {
-			this.listenerManager = listenerManager;
-			for (Listener<B> curListener : listenerManager.getListeners())
+		@SuppressWarnings("unchecked")
+		public Builder<B> setListenerManager(ListenerManager<? extends B> listenerManager) {
+			this.listenerManager = (ListenerManager<B>)listenerManager;
+			for (Listener<B> curListener : this.listenerManager.getListeners())
 				if (curListener instanceof CoreHooks)
 					return this;
 			listenerManager.addListener(new CoreHooks());
@@ -426,10 +427,8 @@ public class Configuration<B extends PircBotX> {
 		 * @return Current ListenerManager
 		 */
 		public ListenerManager<B> getListenerManager() {
-			if (listenerManager == null) {
-				listenerManager = new ThreadedListenerManager<B>();
-				listenerManager.addListener(new CoreHooks());
-			}
+			if (listenerManager == null)
+				setListenerManager(new ThreadedListenerManager<B>());
 			return listenerManager;
 		}
 
