@@ -108,7 +108,7 @@ public class InputParser implements Closeable {
 	 */
 	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005",
 			"251", "252", "253", "254", "255", "375", "376");
-	protected final Configuration configuration;
+	protected final Configuration<PircBotX> configuration;
 	protected final PircBotX bot;
 	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
 	protected boolean capEndSent = false;
