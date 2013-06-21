@@ -68,12 +68,12 @@ import org.slf4j.LoggerFactory;
 public class MultiBotManager<B extends PircBotX> {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final LinkedHashMap<B, ListenableFuture> runningBots = new LinkedHashMap();
+	protected final LinkedHashMap<B, ListenableFuture<Void>> runningBots = new LinkedHashMap<B, ListenableFuture<Void>>();
 	protected final BiMap<B, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
 	//Code for starting
-	protected List<B> startQueue = new ArrayList();
+	protected List<B> startQueue = new ArrayList<B>();
 	protected State state = State.NEW;
 	protected final Object stateLock = new Object[0];
 
@@ -102,7 +102,7 @@ public class MultiBotManager<B extends PircBotX> {
 	 * @param config A configuration to pass to the created bot
 	 */
 	@Synchronized("stateLock")
-	public void addBot(Configuration config) {
+	public void addBot(Configuration<PircBotX> config) {
 		checkNotNull(config, "Configuration cannot be null");
 		//Since creating a bot is expensive, verify the state first
 		if (state != State.NEW && state != State.RUNNING)
