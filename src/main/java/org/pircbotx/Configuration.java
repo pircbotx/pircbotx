@@ -55,7 +55,7 @@ import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Configuration class for PircBotX
+ * Configuration<B> class for PircBotX
  * 
  * Bot information:
  * <ul><li>name - Name of the bot, which will be used as its nick when it
@@ -110,7 +110,7 @@ import org.pircbotx.output.OutputUser;
  */
 @Data
 @ToString(exclude = {"serverPassword", "nickservPassword"})
-public class Configuration {
+public class Configuration<B extends PircBotX> {
 	//WebIRC
 	protected final boolean webIrcEnabled;
 	protected final String webIrcUsername;
@@ -150,17 +150,17 @@ public class Configuration {
 	protected final String nickservPassword;
 	protected final boolean autoReconnect;
 	//Bot classes
-	protected final ListenerManager<PircBotX> listenerManager;
+	protected final ListenerManager<B> listenerManager;
 	protected final boolean capEnabled;
 	protected final ImmutableList<CapHandler> capHandlers;
 	protected final BotFactory botFactory;
-
+	
 	/**
 	 * Use {@link Configuration.Builder#build() }.
 	 * @param builder 
 	 * @see Configuration.Builder#build()
 	 */
-	protected Configuration(Builder builder) {
+	protected Configuration(Builder<B> builder) {
 		//Check for basics
 		checkNotNull(builder.getListenerManager());
 		checkArgument(!StringUtils.isBlank(builder.getName()), "Must specify name");
@@ -224,7 +224,7 @@ public class Configuration {
 
 	@Accessors(chain = true)
 	@Data
-	public static class Builder {
+	public static class Builder<B extends PircBotX> {
 		//WebIRC
 		protected boolean webIrcEnabled = false;
 		protected String webIrcUsername = null;
@@ -264,7 +264,7 @@ public class Configuration {
 		protected String nickservPassword;
 		protected boolean autoReconnect = false;
 		//Bot classes
-		protected ListenerManager<PircBotX> listenerManager = null;
+		protected ListenerManager<B> listenerManager = null;
 		protected boolean capEnabled = false;
 		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 		protected BotFactory botFactory = new BotFactory();
@@ -275,9 +275,9 @@ public class Configuration {
 
 		/**
 		 * Copy values from an existing Configuration.
-		 * @param configuration Configuration to copy values from
+		 * @param configuration Configuration<B> to copy values from
 		 */
-		public Builder(Configuration configuration) {
+		public Builder(Configuration<B> configuration) {
 			this.webIrcEnabled = configuration.isWebIrcEnabled();
 			this.webIrcUsername = configuration.getWebIrcUsername();
 			this.webIrcHostname = configuration.getWebIrcHostname();
@@ -320,9 +320,9 @@ public class Configuration {
 
 		/**
 		 * Copy values from another builder. 
-		 * @param otherBuilder 
+		 * @param otherBuilder<B> 
 		 */
-		public Builder(Builder otherBuilder) {
+		public Builder(Builder<B> otherBuilder) {
 			this.webIrcEnabled = otherBuilder.isWebIrcEnabled();
 			this.webIrcUsername = otherBuilder.getWebIrcUsername();
 			this.webIrcHostname = otherBuilder.getWebIrcHostname();
@@ -375,32 +375,32 @@ public class Configuration {
 			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
 
-		public Builder addCapHandler(CapHandler handler) {
+		public Builder<B> addCapHandler(CapHandler handler) {
 			getCapHandlers().add(handler);
 			return this;
 		}
 
-		public Builder addListener(Listener listener) {
+		public Builder<B> addListener(Listener<B> listener) {
 			getListenerManager().addListener(listener);
 			return this;
 		}
 
-		public Builder addAutoJoinChannel(String channel) {
+		public Builder<B> addAutoJoinChannel(String channel) {
 			getAutoJoinChannels().put(channel, "");
 			return this;
 		}
 
-		public Builder addAutoJoinChannel(String channel, String key) {
+		public Builder<B> addAutoJoinChannel(String channel, String key) {
 			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
 
-		public Builder setServer(String hostname, int port) {
+		public Builder<B> setServer(String hostname, int port) {
 			return setServerHostname(hostname)
 					.setServerPort(port);
 		}
 
-		public Builder setServer(String hostname, int port, String password) {
+		public Builder<B> setServer(String hostname, int port, String password) {
 			return setServer(hostname, port).setServerPassword(password);
 		}
 
@@ -410,9 +410,9 @@ public class Configuration {
 		 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
 		 * @param listenerManager The listener manager
 		 */
-		public Builder setListenerManager(ListenerManager<PircBotX> listenerManager) {
+		public Builder<B> setListenerManager(ListenerManager<B> listenerManager) {
 			this.listenerManager = listenerManager;
-			for (Listener curListener : listenerManager.getListeners())
+			for (Listener<B> curListener : listenerManager.getListeners())
 				if (curListener instanceof CoreHooks)
 					return this;
 			listenerManager.addListener(new CoreHooks());
@@ -425,33 +425,33 @@ public class Configuration {
 		 * was already set
 		 * @return Current ListenerManager
 		 */
-		public ListenerManager<PircBotX> getListenerManager() {
+		public ListenerManager<B> getListenerManager() {
 			if (listenerManager == null) {
-				listenerManager = new ThreadedListenerManager();
+				listenerManager = new ThreadedListenerManager<B>();
 				listenerManager.addListener(new CoreHooks());
 			}
 			return listenerManager;
 		}
 
-		public Configuration buildConfiguration() {
-			return new Configuration(this);
+		public Configuration<B> buildConfiguration() {
+			return new Configuration<B>(this);
 		}
 		
-		public Configuration buildForServer(String hostname) {
-			return new Builder(this)
+		public Configuration<B> buildForServer(String hostname) {
+			return new Builder<B>(this)
 					.setServerHostname(serverHostname)
 					.buildConfiguration();
 		}
 		
-		public Configuration buildForServer(String hostname, int port) {
-			return new Builder(this)
+		public Configuration<B> buildForServer(String hostname, int port) {
+			return new Builder<B>(this)
 					.setServerHostname(serverHostname)
 					.setServerPort(serverPort)
 					.buildConfiguration();
 		}
 		
-		public Configuration buildForServer(String hostname, int port, String password) {
-			return new Builder(this)
+		public Configuration<B> buildForServer(String hostname, int port, String password) {
+			return new Builder<B>(this)
 					.setServerHostname(serverHostname)
 					.setServerPort(serverPort)
 					.setServerPassword(serverPassword)
