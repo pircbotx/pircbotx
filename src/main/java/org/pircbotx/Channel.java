@@ -21,8 +21,6 @@ package org.pircbotx;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -48,7 +46,7 @@ public class Channel implements Comparable<Channel> {
 	protected final String name;
 	protected final UUID channelId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
-	protected final UserChannelDao dao;
+	protected final UserChannelDao<User, Channel> dao;
 	protected final PircBotX bot;
 	//Output is lazily created since it might not ever be used
 	@Getter(AccessLevel.NONE)
@@ -79,9 +77,10 @@ public class Channel implements Comparable<Channel> {
 	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeLatch = null;
 
-	protected Channel(PircBotX bot, UserChannelDao dao, String name) {
+	@SuppressWarnings("unchecked")
+	protected Channel(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String name) {
 		this.bot = bot;
-		this.dao = dao;
+		this.dao = (UserChannelDao<User, Channel>)dao;
 		this.name = name;
 	}
 

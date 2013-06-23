@@ -46,7 +46,7 @@ import org.pircbotx.output.OutputUser;
 public class User implements Comparable<User> {
 	protected final PircBotX bot;
 	@Getter(AccessLevel.PROTECTED)
-	protected final UserChannelDao dao;
+	protected final UserChannelDao<User, Channel> dao;
 	protected final UUID userId = UUID.randomUUID();
 	//Output is lazily created since it might not ever be used
 	@Getter(AccessLevel.NONE)
@@ -65,9 +65,10 @@ public class User implements Comparable<User> {
 	private String server = "";
 	private int hops = 0;
 
-	protected User(PircBotX bot, UserChannelDao dao, String nick) {
+	@SuppressWarnings("unchecked")
+	protected User(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String nick) {
 		this.bot = bot;
-		this.dao = dao;
+		this.dao = (UserChannelDao<User, Channel>)dao;
 		this.nick = nick;
 	}
 	
