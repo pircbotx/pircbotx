@@ -43,9 +43,9 @@ import org.pircbotx.PircBotX;
  * </code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class WaitForQueue<B extends PircBotX> implements Closeable {
-	protected final B bot;
-	protected LinkedBlockingQueue<Event<B>> eventQueue = new LinkedBlockingQueue<Event<B>>();
+public class WaitForQueue implements Closeable {
+	protected final PircBotX bot;
+	protected LinkedBlockingQueue<Event<PircBotX>> eventQueue = new LinkedBlockingQueue<Event<PircBotX>>();
 	protected WaitForQueueListener listener;
 
 	/**
@@ -53,23 +53,23 @@ public class WaitForQueue<B extends PircBotX> implements Closeable {
 	 * It will be removed when {@link #done()} is called
 	 * @param bot 
 	 */
-	public WaitForQueue(B bot) {
+	public WaitForQueue(PircBotX bot) {
 		this.bot = bot;
 		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
 	
-	public <E extends Event<B>> E waitFor(Class<E> eventClass) throws InterruptedException {
+	public <E extends Event> E waitFor(Class<E> eventClass) throws InterruptedException {
 		List<Class<E>> eventList = new ArrayList<Class<E>>();
 		eventList.add(eventClass);
-		return (E)waitFor((List<Class<? extends Event<B>>>)(Object)eventList);
+		return (E)waitFor((List<Class<? extends Event>>)(Object)eventList);
 	}
 
-	public Event<B> waitFor(Class<? extends Event<B>>... eventClasses) throws InterruptedException {
+	public Event waitFor(Class<? extends Event>... eventClasses) throws InterruptedException {
 		//Work around generics problems
 		return waitFor(Arrays.asList(eventClasses));
 	}
 
-	public Event<B> waitFor(List<Class<? extends Event<B>>> eventClasses) throws InterruptedException {
+	public Event waitFor(List<Class<? extends Event>> eventClasses) throws InterruptedException {
 		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 
@@ -82,10 +82,10 @@ public class WaitForQueue<B extends PircBotX> implements Closeable {
 	 * @return
 	 * @throws InterruptedException 
 	 */
-	public Event<B> waitFor(@NonNull List<Class<? extends Event<B>>> eventClasses, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
+	public Event waitFor(@NonNull List<Class<? extends Event>> eventClasses, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
 		while (true) {
-			Event<B> curEvent = eventQueue.poll(timeout, unit);
-			for (Class<? extends Event<B>> curEventClass : eventClasses)
+			Event curEvent = eventQueue.poll(timeout, unit);
+			for (Class<? extends Event> curEventClass : eventClasses)
 				if (curEventClass.isInstance(curEvent))
 					return curEvent;
 		}
