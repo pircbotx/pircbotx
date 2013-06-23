@@ -30,9 +30,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -117,7 +115,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	@SuppressWarnings("unchecked")
 	public PircBotX(Configuration<? extends PircBotX> configuration) {
 		botId = BOT_COUNT.getAndIncrement();
-		this.configuration = (Configuration<PircBotX>)configuration;
+		this.configuration = (Configuration<PircBotX>) configuration;
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
