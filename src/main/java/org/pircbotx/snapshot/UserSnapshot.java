@@ -23,7 +23,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.pircbotx.Channel;
 import org.pircbotx.User;
+import org.pircbotx.UserChannelDao;
 
 /**
  * A snapshot of a user in time. Useful to get information before a user leaves
@@ -36,7 +38,6 @@ import org.pircbotx.User;
 public class UserSnapshot extends User {
 	@Getter
 	protected final User generatedFrom;
-	@Getter(value = AccessLevel.PROTECTED, onMethod = @_(@Override))
 	@Setter
 	protected UserChannelDaoSnapshot dao;
 	
@@ -52,6 +53,12 @@ public class UserSnapshot extends User {
 		super.setLogin(user.getLogin());
 		super.setRealName(user.getRealName());
 		super.setServer(user.getServer());
+	}
+	
+	@Override
+	protected UserChannelDao<User, Channel> getDao() {
+		//Workaround for generics
+		return (UserChannelDao<User, Channel>) (Object) dao;
 	}
 
 	@Override
