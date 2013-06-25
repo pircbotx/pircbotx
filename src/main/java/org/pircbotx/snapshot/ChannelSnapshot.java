@@ -22,12 +22,11 @@
  */
 package org.pircbotx.snapshot;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
 
 /**
@@ -36,7 +35,6 @@ import org.pircbotx.UserChannelDao;
  */
 @Slf4j
 public class ChannelSnapshot extends Channel {
-	@Getter(value = AccessLevel.PROTECTED, onMethod = @_(@Override))
 	@Setter
 	protected UserChannelDaoSnapshot dao;
 	@Getter
@@ -59,6 +57,12 @@ public class ChannelSnapshot extends Channel {
 		super.setNoExternalMessages(channel.isNoExternalMessages());
 		super.setSecret(channel.isSecret());
 		super.setTopicProtection(channel.hasTopicProtection());
+	}
+
+	@Override
+	protected UserChannelDao<User, Channel> getDao() {
+		//Workaround for generics
+		return (UserChannelDao<User, Channel>) (Object) dao;
 	}
 
 	@Override
