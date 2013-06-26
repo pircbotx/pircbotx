@@ -28,6 +28,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.annotations.Test;
@@ -70,7 +71,7 @@ public class ListenerAdapterTest {
 		ListenerAdapter.class.getDeclaredMethod(methodName, eventClass);
 	}
 
-	@Test(dependsOnMethods = "eventImplementTest", 
+	@Test(dependsOnMethods = "eventImplementTest",
 			dataProviderClass = TestUtils.class, dataProvider = "eventAllDataProvider", description = "Verify all methods in ListenerAdapter throw an exception")
 	public void throwsExceptionTest(Class eventClass) throws NoSuchMethodException {
 		String methodName = "on" + StringUtils.removeEnd(StringUtils.capitalize(eventClass.getSimpleName()), "Event");
@@ -82,16 +83,23 @@ public class ListenerAdapterTest {
 
 	@Test(description = "Do an actual test with a sample ListenerAdapter")
 	public void usabilityTest() throws Exception {
-		TestListenerAdapter listener = new TestListenerAdapter();
+		final MutableBoolean onMessageCalled = new MutableBoolean(false);
+		final MutableBoolean onGenericMessageCalled = new MutableBoolean(false);
+		ListenerAdapter testListener = new ListenerAdapter() {
+			@Override
+			public void onMessage(MessageEvent event) throws Exception {
+				onMessageCalled.setValue(true);
+			}
 
-		//Test if onMessage got called
-		listener.onEvent(new MessageEvent(bot, null, null, null));
-		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
+			@Override
+			public void onGenericMessage(GenericMessageEvent event) throws Exception {
+				onGenericMessageCalled.setValue(true);
+			}
+		};
 
-		//Test if onGenericChannelMode (interface) got called
-		listener.setCalled(false);
-		listener.onEvent(new MessageEvent(bot, null, null, null));
-		assertTrue(listener.isCalled(), "onMessage wasn't called on MessageEvent");
+		testListener.onEvent(mock(MessageEvent.class));
+		assertTrue(onMessageCalled.isTrue(), "onMessage wasn't called on MessageEvent");
+		assertTrue(onGenericMessageCalled.isTrue(), "onGenericMessage wasn't called on MessageEvent");
 	}
 
 	@Test(description = "Test with an unknown Event to make sure it doesn't throw an exception")
@@ -172,21 +180,5 @@ public class ListenerAdapterTest {
 				+ SystemUtils.LINE_SEPARATOR
 				+ "Called: " + SystemUtils.LINE_SEPARATOR
 				+ StringUtils.join(calledMethods, SystemUtils.LINE_SEPARATOR));
-	}
-
-	@Data
-	@EqualsAndHashCode(callSuper = false)
-	protected static class TestListenerAdapter extends ListenerAdapter {
-		protected boolean called = false;
-
-		@Override
-		public void onGenericMessage(GenericMessageEvent event) throws Exception {
-			called = true;
-		}
-
-		@Override
-		public void onMessage(MessageEvent event) throws Exception {
-			called = true;
-		}
 	}
 }
