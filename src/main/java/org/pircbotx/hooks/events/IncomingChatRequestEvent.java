@@ -77,7 +77,7 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	 * to current time as reported by {@link System#currentTimeMillis() }
 	 * @param chat A DccChat object that represents the incoming chat request.
 	 */
-	public IncomingChatRequestEvent(T bot, @NonNull User user, @NonNull InetAddress chatAddress, int chatPort, @NonNull String chatToken, boolean passive) {
+	public IncomingChatRequestEvent(T bot, @NonNull User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.chatAddress = chatAddress;
