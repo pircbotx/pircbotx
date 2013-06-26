@@ -56,7 +56,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 * @param changed True if the topic has just been changed, false if
 	 * the topic was already there.
 	 */
-	public TopicEvent(T bot, @NonNull Channel channel, @NonNull String oldTopic, @NonNull String topic, @NonNull User user, long date, boolean changed) {
+	public TopicEvent(T bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull User user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.oldTopic = oldTopic;
