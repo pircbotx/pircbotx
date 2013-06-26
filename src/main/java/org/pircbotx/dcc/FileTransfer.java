@@ -43,7 +43,6 @@ public abstract class FileTransfer {
 	@NonNull
 	@Getter
 	protected final File file;
-	@NonNull
 	@Getter
 	protected final long startPosition;
 	@Getter
