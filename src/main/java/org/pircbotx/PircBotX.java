@@ -192,6 +192,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			if (socket == null || (socket != null && !socket.isConnected()))
 				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
 			state = State.CONNECTED;
+			socket.setSoTimeout(configuration.getSocketTimeout());
 			log.info("Connected to server.");
 
 			changeSocket(socket);
