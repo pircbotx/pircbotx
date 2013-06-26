@@ -69,7 +69,6 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
-@RequiredArgsConstructor
 @Slf4j
 public class PircBotX implements Comparable<PircBotX> {
 	/**
