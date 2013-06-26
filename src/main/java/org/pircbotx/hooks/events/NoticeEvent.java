@@ -51,7 +51,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * means that the target is us
 	 * @param notice The notice message.
 	 */
-	public NoticeEvent(T bot, @NonNull User user, @NonNull Channel channel, @NonNull String notice) {
+	public NoticeEvent(T bot, @NonNull User user, Channel channel, @NonNull String notice) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
