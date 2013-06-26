@@ -29,6 +29,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
+import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  * This event is dispatched whenever we receive a PING request from another
@@ -57,7 +58,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * means the target was us.
 	 * @param pingValue The value that was supplied as an argument to the PING command.
 	 */
-	public PingEvent(T bot, @NonNull User user, @NonNull Channel channel, @NonNull String pingValue) {
+	public PingEvent(T bot, @NonNull User user, Channel channel, @NonNull String pingValue) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

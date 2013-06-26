@@ -30,6 +30,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
+import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  * This event is dispatched whenever we receive a VERSION request.
@@ -42,7 +43,7 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T>, GenericChannelEvent<T> {
 	@Getter(onMethod = @_({@Override}))
 	protected final User user;
 	@Getter(onMethod = @_({@Override}))
@@ -55,7 +56,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * @param channel The target channel of the VERSION request. A value of <code>null</code>
 	 * means that that the target is us.
 	 */
-	public VersionEvent(T bot, @NonNull User user, @NonNull Channel channel) {
+	public VersionEvent(T bot, @NonNull User user, Channel channel) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;

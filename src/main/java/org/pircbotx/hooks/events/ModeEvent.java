@@ -56,7 +56,7 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * @param user The user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	public ModeEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String mode) {
+	public ModeEvent(T bot, @NonNull Channel channel, User user, @NonNull String mode) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

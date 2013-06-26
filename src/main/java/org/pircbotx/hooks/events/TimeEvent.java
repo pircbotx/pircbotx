@@ -29,6 +29,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
+import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  * This event is dispatched whenever we receive a TIME request.
@@ -55,7 +56,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * @param channel The target channel of the TIME request. A value of <code>null</code>
 	 * means that target is us
 	 */
-	public TimeEvent(T bot, @NonNull Channel channel, @NonNull User user) {
+	public TimeEvent(T bot, Channel channel, @NonNull User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

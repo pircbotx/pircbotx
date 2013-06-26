@@ -54,7 +54,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * is a private message, not a channel
 	 * @param action The action carried out by the user.
 	 */
-	public ActionEvent(T bot, @NonNull User user, @NonNull Channel channel, @NonNull String action) {
+	public ActionEvent(T bot, @NonNull User user, Channel channel, @NonNull String action) {
 		super(bot);
 		this.user = user;
 		this.channel = channel;
