@@ -161,23 +161,8 @@ public class ListenerAdapterTest {
 		});
 		doCallRealMethod().when(mockListener).onEvent(any(Event.class));
 
-		//Call the constructor in the Event, trying to give as many default values as possible
-		Constructor[] eventConstructors = eventClass.getDeclaredConstructors();
-		assertEquals(eventConstructors.length, 1, "Unexpected number of event constructors in " + eventClass);
-		Constructor eventConstructor = eventConstructors[0];
-		Class[] eventConstructorParamTypes = eventConstructor.getParameterTypes();
-		Object[] eventConstructorParams = new Object[eventConstructorParamTypes.length];
-		for (int i = 0; i < eventConstructorParams.length; i++)
-			if (eventConstructorParamTypes[i] == int.class || eventConstructorParamTypes[i] == long.class)
-				eventConstructorParams[i] = 0;
-			else if (eventConstructorParamTypes[i] == boolean.class)
-				eventConstructorParams[i] = false;
-			else if (eventConstructorParamTypes[i] == WhoisEvent.Builder.class)
-				eventConstructorParams[i] = new WhoisEvent.Builder();
-		eventConstructorParams[0] = bot;
-		Event eventObject = (Event) eventConstructor.newInstance(eventConstructorParams);
-
 		//Execute onEvent
+		Event eventObject = mock(eventClass);
 		mockListener.onEvent(eventObject);
 
 		//Make sure our methods were called
