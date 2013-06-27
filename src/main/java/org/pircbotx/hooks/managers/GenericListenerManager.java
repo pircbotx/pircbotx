@@ -56,11 +56,11 @@ public class GenericListenerManager<B extends PircBotX> implements ListenerManag
 	@Setter
 	protected long currentId = 0;
 
-	public boolean addListener(Listener<B> listener) {
+	public boolean addListener(Listener listener) {
 		return listeners.add(listener);
 	}
 
-	public boolean removeListener(Listener<B> listener) {
+	public boolean removeListener(Listener listener) {
 		return listeners.remove(listener);
 	}
 
@@ -77,7 +77,7 @@ public class GenericListenerManager<B extends PircBotX> implements ListenerManag
 		}
 	}
 
-	public boolean listenerExists(Listener<B> listener) {
+	public boolean listenerExists(Listener listener) {
 		return listeners.contains(listener);
 	}
 
