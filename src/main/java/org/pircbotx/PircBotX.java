@@ -212,7 +212,7 @@ public class PircBotX implements Comparable<PircBotX> {
 					+ " " + configuration.getWebIrcUsername()
 					+ " " + configuration.getWebIrcHostname()
 					+ " " + configuration.getWebIrcAddress().getHostAddress());
-		if (!StringUtils.isBlank(configuration.getServerPassword()))
+		if (StringUtils.isNotBlank(configuration.getServerPassword()))
 			sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());

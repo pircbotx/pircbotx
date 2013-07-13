@@ -164,14 +164,14 @@ public class Configuration<B extends PircBotX> {
 	protected Configuration(Builder<B> builder) {
 		//Check for basics
 		checkNotNull(builder.getListenerManager());
-		checkArgument(!StringUtils.isBlank(builder.getName()), "Must specify name");
-		checkArgument(!StringUtils.isBlank(builder.getLogin()), "Must specify login");
+		checkArgument(StringUtils.isNotBlank(builder.getName()), "Must specify name");
+		checkArgument(StringUtils.isNotBlank(builder.getLogin()), "Must specify login");
 		checkArgument(StringUtils.isNotBlank(builder.getRealname()), "Must specify realname");
-		checkArgument(!StringUtils.isBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
+		checkArgument(StringUtils.isNotBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
 		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
-		checkArgument(!StringUtils.isBlank(builder.getServerHostname()), "Must specify server hostname");
+		checkArgument(StringUtils.isNotBlank(builder.getServerHostname()), "Must specify server hostname");
 		checkArgument(builder.getServerPort() > 0 && builder.getServerPort() <= 65535, "Port must be between 1 and 65535");
 		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
 		checkNotNull(builder.getEncoding(), "Must specify encoding");
