@@ -216,7 +216,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());
-		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getVersion());
+		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealname());
 
 		//Start input to start accepting lines
 		startLineProcessing();
