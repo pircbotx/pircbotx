@@ -409,7 +409,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	/**
 	 * Calls shutdown allowing reconnect.
 	 */
-	public void shutdown() {
+	protected void shutdown() {
 		shutdown(false);
 	}
 
@@ -422,7 +422,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * 100% shutdown the bot
 	 */
 	@Synchronized("stateLock")
-	public void shutdown(boolean noReconnect) {
+	protected void shutdown(boolean noReconnect) {
 		UserChannelDaoSnapshot daoSnapshot;
 		synchronized (stateLock) {
 			state = State.DISCONNECTED;
