@@ -354,6 +354,23 @@ public class OutputChannel {
 	public void removeTopicProtection(Channel chan) {
 		setMode("-t");
 	}
+	
+	/**
+	 * Set the channel as private (+p). May require operator privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void setChannelPrivate(Channel chan) {
+		setMode("+p");
+	}
+
+	/**
+	 * Removes private (-p) status from the channel. May require operator
+	 * privileges in the channel
+	 * @param chan The channel to preform the mode change on
+	 */
+	public void removeChannelPrivate(Channel chan) {
+		setMode("-p");
+	}
 
 	/**
 	 * Bans a user from a channel. An example of a valid hostmask is
