@@ -309,11 +309,6 @@
 						<scope>system</scope>
 						<systemPath>${toolsjar}</systemPath>
 					</dependency>
-					<dependency>
-						<groupId>org.projectlombok</groupId>
-						<artifactId>lombok</artifactId>
-						<version>0.11.9-SNAPSHOT</version>
-					</dependency>
 				</dependencies>     
 				<executions>
 					<execution>
