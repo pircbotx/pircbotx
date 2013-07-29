@@ -48,7 +48,6 @@ public class UserChannelMap<U extends User, C extends Channel> {
 	}
 
 	public void addUserToChannel(U user, C channel) {
-		log.trace("MapAdd User: {} | Channel: {}", user, channel);
 		userToChannelMap.put(user, channel);
 		channelToUserMap.put(channel, user);
 	}
@@ -80,7 +79,6 @@ public class UserChannelMap<U extends User, C extends Channel> {
 	}
 
 	public boolean containsEntry(U user, C channel) {
-		log.trace("MapContains User: {} | Channel: {}", user, channel);
 		boolean channelToUserContains = channelToUserMap.containsEntry(channel, user);
 		boolean userToChannelContains = userToChannelMap.containsEntry(user, channel);
 		if (channelToUserContains != userToChannelContains)
