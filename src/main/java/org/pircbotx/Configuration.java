@@ -43,6 +43,7 @@ import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -229,50 +230,182 @@ public class Configuration<B extends PircBotX> {
 	@Data
 	public static class Builder<B extends PircBotX> {
 		//WebIRC
+		/**
+		 * Enable or disable sending WEBIRC line on connect
+		 */
 		protected boolean webIrcEnabled = false;
+		/**
+		 * Username of WEBIRC connection
+		 */
 		protected String webIrcUsername = null;
+		/**
+		 * Password of WEBIRC connection
+		 */
 		protected String webIrcHostname = null;
+		/**
+		 * IP address of WEBIRC connection
+		 */
 		protected InetAddress webIrcAddress = null;
+		/**
+		 * Password of WEBIRC connection
+		 */
 		protected String webIrcPassword = null;
 		//Bot information
+		/**
+		 * The base name to be used for the IRC connection (nick!login@host)
+		 */
 		protected String name = "PircBotX";
+		/**
+		 * The login to be used for the IRC connection (nick!login@host)
+		 */
 		protected String login = "PircBotX";
+		/**
+		 * CTCP version response. 
+		 */
 		protected String version = "PircBotX " + PircBotX.VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
+		/**
+		 * CTCP finger response
+		 */
 		protected String finger = "You ought to be arrested for fingering a bot!";
+		/**
+		 * The realname/fullname used for WHOIS info. Defaults to version
+		 */
 		protected String realname = version;
+		/**
+		 * Allowed channel prefix characters. Defaults to <code>#&+!</code>
+		 */
 		protected String channelPrefixes = "#&+!";
 		//DCC
+		/**
+		 * If true sends filenames in quotes, otherwise uses underscores. Defaults to false
+		 */
 		protected boolean dccFilenameQuotes = false;
+		/**
+		 * Ports to allow DCC incoming connections. Recommended to set multiple as
+		 * DCC connections will be rejected if no free port can be found
+		 */
 		protected List<Integer> dccPorts = new ArrayList<Integer>();
+		/**
+		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress() }
+		 */
 		protected InetAddress dccLocalAddress = null;
+		/**
+		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout() }
+		 */
 		protected int dccAcceptTimeout = -1;
+		/**
+		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout() }
+		 */
 		protected int dccResumeAcceptTimeout = -1;
+		/**
+		 * Size of the DCC file transfer buffer. Defaults to 1024
+		 */
 		protected int dccTransferBufferSize = 1024;
+		/**
+		 * Weather to send DCC Passive/reverse requests. Defaults to false
+		 */
 		protected boolean dccPassiveRequest = false;
 		//Connect information
+		/**
+		 * Hostname of the IRC server
+		 */
 		protected String serverHostname = null;
+		/**
+		 * Port number of IRC server. Defaults to 6667
+		 */
 		protected int serverPort = 6667;
+		/**
+		 * Password for IRC server
+		 */
 		protected String serverPassword = null;
+		/**
+		 * Socket factory for connections. Defaults to {@link SocketFactory#getDefault() }
+		 */
 		protected SocketFactory socketFactory = SocketFactory.getDefault();
+		/**
+		 * Address to bind to when connecting to IRC server. 
+		 */
 		protected InetAddress localAddress = null;
+		/**
+		 * Charset encoding to use for connection. Defaults to {@link Charset#defaultCharset()}
+		 */
 		protected Charset encoding = Charset.defaultCharset();
+		/**
+		 * Locale to use for connection. Defaults to {@link Locale#getDefault() }
+		 */
 		protected Locale locale = Locale.getDefault();
+		/**
+		 * Timeout of IRC connection before sending PING. Defaults to 5 minutes
+		 */
 		protected int socketTimeout = 1000 * 60 * 5;
+		/**
+		 * Maximum line length of IRC server. Defaults to 512
+		 */
 		protected int maxLineLength = 512;
+		/**
+		 * Enable or disable automatic message splitting to fit {@link #getMaxLineLength()}.
+		 * Note that messages might be truncated by the IRC server if not set. Defaults
+		 * to true
+		 */
 		protected boolean autoSplitMessage = true;
+		/**
+		 * Enable or disable automatic nick changing if a nick is in use by adding
+		 * a number to the end. If this is false and a nick is already in use, a 
+		 * {@link IrcException} will be thrown. Defaults to false. 
+		 */
 		protected boolean autoNickChange = false;
+		/**
+		 * Millisecond delay between sending messages with {@link OutputRaw#rawLine(java.lang.String) }.
+		 * Defaults to 1000 milliseconds
+		 */
 		protected long messageDelay = 1000;
+		/**
+		 * Enable or disable creating a JVM shutdown hook which will properly QUIT
+		 * the IRC server and shutdown the bot. Defaults to true
+		 */
 		protected boolean shutdownHookEnabled = true;
+		/**
+		 * Map of channels and keys to automatically join upon connecting.
+		 */
 		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
-		protected boolean identServerEnabled;
+		/**
+		 * Enable or disable use of an existing {@link IdentServer}. Note that the
+		 * IdentServer must be started separately or else an exception will be thrown.
+		 * Defaults to false
+		 * @see IdentServer
+		 */
+		protected boolean identServerEnabled = false;
+		/**
+		 * If set, password to authenticate against NICKSERV
+		 */
 		protected String nickservPassword;
+		/**
+		 * Enable or disable automatic reconnecting. Note that you MUST call 
+		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to 
+		 * reconnect anymore! Defaults to false
+		 */
 		protected boolean autoReconnect = false;
 		//Bot classes
+		/**
+		 * The {@link ListenerManager} to use to handle events.
+		 */
 		protected ListenerManager<B> listenerManager = null;
+		/**
+		 * Enable or disable CAP handling. Defaults to false
+		 */
 		protected boolean capEnabled = false;
+		/**
+		 * Registered {@link CapHandler}'s. 
+		 */
 		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
+		/**
+		 * The {@link BotFactory} to use
+		 */
 		protected BotFactory botFactory = new BotFactory();
 
+		/**
+		 * Default constructor, adding a multi-prefix {@link EnableCapHandler}
+		 */
 		public Builder() {
 			capHandlers.add(new EnableCapHandler("multi-prefix", true));
 		}
@@ -369,18 +502,33 @@ public class Configuration<B extends PircBotX> {
 			this.botFactory = otherBuilder.getBotFactory();
 		}
 
+		/**
+		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress() }
+		 */
 		public InetAddress getDccLocalAddress() {
 			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
 		}
 
+		/**
+		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout() }
+		 */
 		public int getDccAcceptTimeout() {
 			return (dccAcceptTimeout != -1) ? dccAcceptTimeout : socketTimeout;
 		}
 
+		/**
+		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout() }
+		 */
 		public int getDccResumeAcceptTimeout() {
 			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
 
+		/**
+		 * Utility method for <code>{@link #getCapHandlers()}.add(handler)</code>
+		 * so 
+		 * @param handler
+		 * @return 
+		 */
 		public Builder<B> addCapHandler(CapHandler handler) {
 			getCapHandlers().add(handler);
 			return this;
