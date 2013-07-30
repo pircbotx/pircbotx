@@ -26,7 +26,16 @@ import lombok.Data;
  */
 @Data
 public class ChannelListEntry {
+	/**
+	 * Channel name
+	 */
 	protected final String name;
+	/**
+	 * Number of users currently in the channel
+	 */
 	protected final int users;
+	/**
+	 * The current channel topic
+	 */
 	protected final String topic;
 }
