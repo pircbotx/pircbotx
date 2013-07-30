@@ -43,10 +43,19 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 @Getter
 @Setter(AccessLevel.PROTECTED)
 public class Channel implements Comparable<Channel> {
+	/**
+	 * The name of the channel. Will never change
+	 */
 	protected final String name;
+	/**
+	 * Unique UUID for this channel <i>instance</i>
+	 */
 	protected final UUID channelId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
 	protected final UserChannelDao<User, Channel> dao;
+	/**
+	 * The bot that this channel came from
+	 */
 	protected final PircBotX bot;
 	//Output is lazily created since it might not ever be used
 	@Getter(AccessLevel.NONE)
@@ -57,18 +66,51 @@ public class Channel implements Comparable<Channel> {
 		}
 	};
 	protected String mode = "";
+	/**
+	 * The current channel topic
+	 */
 	protected String topic = "";
+	/**
+	 * Timestamp of when the topic was created. Defaults to 0
+	 */
 	protected long topicTimestamp;
+	/**
+	 * Timestamp of when channel was created. Defaults to 0
+	 */
 	protected long createTimestamp;
+	/**
+	 * The user who set the topic. Default is blank
+	 */
 	protected String topicSetter = "";
+	/**
+	 * Moderated (+m) status
+	 */
 	protected boolean moderated = false;
+	/**
+	 * No external messages (+n) status
+	 */
 	protected boolean noExternalMessages = false;
+	/**
+	 * Invite only (+i) status
+	 */
 	protected boolean inviteOnly = false;
+	/**
+	 * Secret (+s) status
+	 */
 	protected boolean secret = false;
+	/**
+	 * Private (+p) status
+	 */
 	protected boolean channelPrivate = false;
 	@Getter(AccessLevel.NONE)
 	protected boolean topicProtection = false;
+	/**
+	 * Channel limit (+l #)
+	 */
 	protected int channelLimit = -1;
+	/**
+	 * Channel key (+k)
+	 */
 	protected String channelKey = null;
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
@@ -283,6 +325,10 @@ public class Channel implements Comparable<Channel> {
 		return getDao().levelContainsUser(UserLevel.HALFOP, this, user);
 	}
 
+	/**
+	 * Create an immutable snapshot of this channel. 
+	 * @return Immutable Channel copy minus the DAO
+	 */
 	public ChannelSnapshot createSnapshot() {
 		if (modeStale)
 			log.warn("Channel {} mode '{}' is stale", getName(), mode);

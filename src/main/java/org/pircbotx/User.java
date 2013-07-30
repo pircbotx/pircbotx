@@ -56,13 +56,37 @@ public class User implements Comparable<User> {
 			return bot.getConfiguration().getBotFactory().createOutputUser(bot, User.this);
 		}
 	};
+	/**
+	 * Current nick of the user.
+	 */
 	private String nick;
+	/**
+	 * Realname/fullname of the user. Never changes
+	 */
 	private String realName = "";
+	/**
+	 * Login of the user (user!login@hostmask). Never changes
+	 */
 	private String login = "";
+	/**
+	 * Hostmask of the user (user!login@hostmask). Never changes
+	 */
 	private String hostmask = "";
+	/**
+	 * User's away status
+	 */
 	private boolean away = false;
+	/**
+	 * Users IRCop status
+	 */
 	private boolean ircop = false;
+	/**
+	 * The server the user is on.
+	 */
 	private String server = "";
+	/**
+	 * Number of hops to reach the user.
+	 */
 	private int hops = 0;
 
 	@SuppressWarnings("unchecked")
