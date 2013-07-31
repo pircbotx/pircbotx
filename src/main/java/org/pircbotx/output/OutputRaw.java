@@ -25,7 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 import org.slf4j.Marker;
@@ -43,6 +42,13 @@ public class OutputRaw {
 	protected final PircBotX bot;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
+	protected final long delayNanos;
+	protected long lastSentLine = 0;
+
+	public OutputRaw(PircBotX bot) {
+		this.bot = bot;
+		this.delayNanos = bot.getConfiguration().getMessageDelay() * 1000000;
+	}
 
 	/**
 	 * Sends a raw line through the outgoing message queue.
@@ -55,14 +61,18 @@ public class OutputRaw {
 			throw new NullPointerException("Cannot send null messages to server");
 		if (!bot.isConnected())
 			throw new RuntimeException("Not connected to server");
+		log.debug("Received line " + line);
 		writeLock.lock();
 		try {
+			//Block until we can send, taking into account a changing lastSentLine
+			long curNanos = System.nanoTime();
+			while (lastSentLine + delayNanos > curNanos) {
+				writeNowCondition.await(lastSentLine + delayNanos - curNanos, TimeUnit.NANOSECONDS);
+				curNanos = System.nanoTime();
+			}
 			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
-			//Block for messageDelay. If rawLineNow is called with resetDelay
-			//the condition is tripped and we wait again
-			while (writeNowCondition.await(bot.getConfiguration().getMessageDelay(), TimeUnit.MILLISECONDS)) {
-			}
+			lastSentLine = System.nanoTime();
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't pause thread for message delay", e);
 		} finally {
@@ -94,6 +104,7 @@ public class OutputRaw {
 		try {
 			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
+			lastSentLine = System.nanoTime();
 			if (resetDelay)
 				//Reset the 
 				writeNowCondition.signalAll();
