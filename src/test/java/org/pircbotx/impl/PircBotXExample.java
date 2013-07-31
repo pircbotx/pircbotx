@@ -18,27 +18,15 @@
  */
 package org.pircbotx.impl;
 
-import java.io.File;
-import javax.net.SocketFactory;
 import org.pircbotx.Configuration;
-import org.pircbotx.MultiBotManager;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
-import org.pircbotx.cap.EnableCapHandler;
-import org.pircbotx.cap.SASLCapHandler;
 import org.pircbotx.cap.TLSCapHandler;
-import org.pircbotx.dcc.SendChat;
-import org.pircbotx.dcc.ReceiveChat;
-import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
-import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.events.IncomingChatRequestEvent;
-import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
@@ -62,30 +50,11 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 	 * the {@link ListenerManager} handle it. This can be removed though if not needed
 	 */
 	@Override
-	public void onMessage(MessageEvent event) throws Exception {
+	public void onMessage(final MessageEvent event) throws Exception {
 		//Hello world
 		//This way to handle commands is useful for listeners that listen for multiple commands
 		if (event.getMessage().startsWith("?hello"))
 			event.respond("Hello World!");
-
-		if (event.getMessage().startsWith("?dccSendFile")) {
-			File file = new File("C:\\Users\\Leon\\Downloads\\pircbotx-1.9.jar");
-			event.getUser().send().dccFile(file).transfer();
-			event.respond("Done sending you a file!");
-		}
-		
-		if(event.getMessage().startsWith("?getMode")) {
-			event.respond(event.getChannel().getMode());
-		}
-
-		if (event.getMessage().startsWith("?dccChat")) {
-			SendChat chat = event.getUser().send().dccChat();
-			System.out.println("Chat");
-			chat.sendLine("Hello!");
-			String line;
-			while ((line = chat.readLine()) != null)
-				chat.sendLine("You said " + line);
-		}
 
 		//If this isn't a waittest, ignore
 		//This way to handle commands is useful for listers that only listen for one command
@@ -114,19 +83,6 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			}
 		}
 	}
-
-	@Override
-	public void onNickChange(NickChangeEvent event) throws Exception {
-		event.respond("Event oldnick: " + event.getOldNick() + " | Event newnick: " + event.getNewNick()
-				+ " | User nick: " + event.getUser().getNick() + " | User realname: " + event.getUser().getRealName()) ;
-	}
-
-	@Override
-	public void onAction(ActionEvent event) throws Exception {
-		event.respond("You said " + event.getMessage());
-	}
-	
-	
 
 	/**
 	 * Older way to handle events. We are given a generic event and must cast
@@ -160,26 +116,6 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 			if (event.getMessage().startsWith("?hi"))
 				event.getChannel().send().message("Hello");
 		}
-
-	}
-
-	@Override
-	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
-		ReceiveChat chat = event.accept();
-		chat.sendLine("Hello incomming request!");
-		String line;
-		while ((line = chat.readLine()) != null)
-			chat.sendLine("You said " + line);
-		System.out.println("Chat ended");
-	}
-
-	@Override
-	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
-		event.respond("Receiving file " + event.getSafeFilename());
-		File file = File.createTempFile("pircbotx-dcc", event.getSafeFilename());
-		event.accept(file).transfer();
-
-		event.respond("Received file " + event.getSafeFilename() + " to " + file.getAbsolutePath());
 	}
 
 	public static void main(String[] args) {
