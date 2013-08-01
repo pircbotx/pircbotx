@@ -61,7 +61,6 @@ public class OutputRaw {
 			throw new NullPointerException("Cannot send null messages to server");
 		if (!bot.isConnected())
 			throw new RuntimeException("Not connected to server");
-		log.debug("Received line " + line);
 		writeLock.lock();
 		try {
 			//Block until we can send, taking into account a changing lastSentLine
