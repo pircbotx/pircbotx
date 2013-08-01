@@ -204,75 +204,6 @@
 					</execution>                  
 				</executions>
 			</plugin>
-			<!--Deploy site with Mercurial (Hg)-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
-				<dependencies>
-					<dependency><!-- add support for scm -->
-						<groupId>org.apache.maven.wagon</groupId>
-						<artifactId>wagon-scm</artifactId>
-						<version>2.4</version>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.maven.scm</groupId>
-						<artifactId>maven-scm-provider-hg</artifactId>
-						<version>1.8.1</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<reportPlugins>
-						<!--JavaDoc setup for Site-->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.9</version>
-							<configuration>
-								<defaultAuthor>Leon Blakey</defaultAuthor>
-								<defaultVersion>${project.version}</defaultVersion>
-								<sourcepath>target/delombok</sourcepath>
-								<show>public</show>
-							</configuration>
-						</plugin>
-						<!-- Test coverage -->
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.5.2</version>
-						</plugin>
-						<!-- Checkstyle site -->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.10</version>
-							<configuration>
-								<configLocation>src/etc/checkstyle.xml</configLocation>
-							</configuration>
-						</plugin>
-						<!-- FindBugs static analysis -->
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>findbugs-maven-plugin</artifactId>
-							<version>2.5.2</version>
-							<configuration>
-								<effort>Max</effort>
-								<threshold>Exp</threshold>
-								<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
-							</configuration>
-						</plugin>
-						<!-- PMD Static Analysis -->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<version>3.0.1</version>
-							<configuration>
-								<source>1.5</source>
-							</configuration>
-						</plugin>
-					</reportPlugins> 
-				</configuration>
-			</plugin>
 			<!-- Update version in PircBotX.java -->
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -294,46 +225,6 @@
 							<value>public static final String VERSION = "${project.version}";</value>
 						</replacement>
 					</replacements>                        
-				</configuration>
-			</plugin>
-			<!--Delombok sources for tools like javadoc-->
-			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>0.11.8.0</version>
-				<dependencies>
-					<dependency>
-						<groupId>sun.jdk</groupId>
-						<artifactId>tools</artifactId>
-						<version>1.6</version>
-						<scope>system</scope>
-						<systemPath>${toolsjar}</systemPath>
-					</dependency>
-				</dependencies>     
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<addOutputDirectory>false</addOutputDirectory>
-					<sourceDirectory>src/main/java</sourceDirectory>
-					<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
-					<outputDirectory>target/delombok</outputDirectory>
-				</configuration>
-			</plugin>
-			<!--JavaDoc setup for Jars-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<defaultAuthor>Leon Blakey</defaultAuthor>
-					<defaultVersion>${project.version}</defaultVersion>
-					<sourcepath>target/delombok</sourcepath>
 				</configuration>
 			</plugin>
 			<!--Use very verbose logging while testing-->
@@ -413,6 +304,122 @@
 			<properties>
 				<toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
 			</properties>
+		</profile>
+		<!--Delombok sources for tools like javadoc-->
+		<profile>
+			<id>complete-build</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok-maven-plugin</artifactId>
+						<version>0.11.8.0</version>
+						<dependencies>
+							<dependency>
+								<groupId>sun.jdk</groupId>
+								<artifactId>tools</artifactId>
+								<version>1.6</version>
+								<scope>system</scope>
+								<systemPath>${toolsjar}</systemPath>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>delombok</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<addOutputDirectory>false</addOutputDirectory>
+							<sourceDirectory>src/main/java</sourceDirectory>
+							<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
+							<outputDirectory>target/delombok</outputDirectory>
+						</configuration>
+					</plugin>
+					<!--JavaDoc setup for Jars-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9</version>
+						<configuration>
+							<defaultAuthor>Leon Blakey</defaultAuthor>
+							<defaultVersion>${project.version}</defaultVersion>
+							<sourcepath>target/delombok</sourcepath>
+						</configuration>
+					</plugin>
+					<!--Deploy site with Mercurial (Hg)-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-site-plugin</artifactId>
+						<version>3.3</version>
+						<dependencies>
+							<dependency><!-- add support for scm -->
+								<groupId>org.apache.maven.wagon</groupId>
+								<artifactId>wagon-scm</artifactId>
+								<version>2.4</version>
+							</dependency>
+							<dependency>
+								<groupId>org.apache.maven.scm</groupId>
+								<artifactId>maven-scm-provider-hg</artifactId>
+								<version>1.8.1</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<reportPlugins>
+								<!--JavaDoc setup for Site-->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-javadoc-plugin</artifactId>
+									<version>2.9</version>
+									<configuration>
+										<defaultAuthor>Leon Blakey</defaultAuthor>
+										<defaultVersion>${project.version}</defaultVersion>
+										<sourcepath>target/delombok</sourcepath>
+										<show>public</show>
+									</configuration>
+								</plugin>
+								<!-- Test coverage -->
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>cobertura-maven-plugin</artifactId>
+									<version>2.5.2</version>
+								</plugin>
+								<!-- Checkstyle site -->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-checkstyle-plugin</artifactId>
+									<version>2.10</version>
+									<configuration>
+										<configLocation>src/etc/checkstyle.xml</configLocation>
+									</configuration>
+								</plugin>
+								<!-- FindBugs static analysis -->
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>findbugs-maven-plugin</artifactId>
+									<version>2.5.2</version>
+									<configuration>
+										<effort>Max</effort>
+										<threshold>Exp</threshold>
+										<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
+									</configuration>
+								</plugin>
+								<!-- PMD Static Analysis -->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-pmd-plugin</artifactId>
+									<version>3.0.1</version>
+									<configuration>
+										<source>1.5</source>
+									</configuration>
+								</plugin>
+							</reportPlugins> 
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>
