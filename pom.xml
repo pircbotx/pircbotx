@@ -336,7 +336,6 @@
 								<groupId>org.projectlombok</groupId>
 								<artifactId>lombok</artifactId>
 								<version>0.12.0</version>
-								<scope>provided</scope>
 							</dependency>
 						</dependencies>
 						<executions>
