@@ -331,6 +331,13 @@
 								<scope>system</scope>
 								<systemPath>${toolsjar}</systemPath>
 							</dependency>
+							<!-- Override lombok version -->
+							<dependency>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>0.12.0</version>
+								<scope>provided</scope>
+							</dependency>
 						</dependencies>
 						<executions>
 							<execution>
@@ -381,7 +388,7 @@
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-javadoc-plugin</artifactId>
-									<version>2.9</version>
+									<version>2.9.1</version>
 									<configuration>
 										<defaultAuthor>Leon Blakey</defaultAuthor>
 										<defaultVersion>${project.version}</defaultVersion>
