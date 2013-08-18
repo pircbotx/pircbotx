@@ -18,7 +18,6 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;

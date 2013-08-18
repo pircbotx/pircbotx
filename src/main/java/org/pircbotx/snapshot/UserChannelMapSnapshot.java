@@ -22,10 +22,7 @@
  */
 package org.pircbotx.snapshot;
 
-import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
 import org.pircbotx.UserChannelMap;
 
 /**

@@ -18,7 +18,6 @@
  */
 package org.pircbotx.snapshot;
 
-import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
