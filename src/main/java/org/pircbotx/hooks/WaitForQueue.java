@@ -18,7 +18,6 @@
  */
 package org.pircbotx.hooks;
 
-import com.google.common.collect.Lists;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Arrays;

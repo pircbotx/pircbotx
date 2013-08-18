@@ -19,8 +19,6 @@
 package org.pircbotx.cap;
 
 import com.google.common.collect.ImmutableList;
-import java.net.Socket;
-import java.util.List;
 import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import org.pircbotx.PircBotX;

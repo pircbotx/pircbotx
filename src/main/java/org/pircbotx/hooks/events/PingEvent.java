@@ -29,7 +29,6 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
-import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  * This event is dispatched whenever we receive a PING request from another

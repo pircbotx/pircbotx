@@ -18,12 +18,10 @@
  */
 package org.pircbotx.output;
 
-import java.util.Arrays;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
-import org.pircbotx.Utils;
 
 /**
  * IRCv3 CAP Negoation commands. See <a href="http://ircv3.atheme.org/">http://ircv3.atheme.org/</a>

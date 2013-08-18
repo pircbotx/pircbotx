@@ -36,9 +36,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
@@ -48,12 +46,8 @@ import org.pircbotx.Utils;
 import org.pircbotx.exception.DccException;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
-import org.pircbotx.hooks.managers.ListenerManager;
-import org.pircbotx.output.OutputDCC;
 import static com.google.common.base.Preconditions.*;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import lombok.NonNull;
 
 /**
@@ -67,10 +61,10 @@ public class DccHandler implements Closeable {
 	protected static final int TOKEN_RANDOM_MAX = 20000;
 	@NonNull
 	protected final PircBotX bot;
-	protected final Map<PendingRecieveFileTransfer, CountDownLatch> pendingReceiveTransfers = new HashMap();
-	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList();
-	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap();
-	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap();
+	protected final Map<PendingRecieveFileTransfer, CountDownLatch> pendingReceiveTransfers = new HashMap<PendingRecieveFileTransfer, CountDownLatch>();
+	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList<PendingSendFileTransfer>();
+	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap<PendingSendFileTransferPassive, CountDownLatch>();
+	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap<PendingSendChatPassive, CountDownLatch>();
 	protected boolean shuttingDown = false;
 
 	public boolean processDcc(final User user, String request) throws IOException {

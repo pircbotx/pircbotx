@@ -19,7 +19,6 @@
 package org.pircbotx.cap;
 
 import com.google.common.collect.ImmutableList;
-import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.Charsets;
