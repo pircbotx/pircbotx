@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -228,7 +227,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());
-		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealname());
+		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
 
 		//Start input to start accepting lines
 		startLineProcessing();
