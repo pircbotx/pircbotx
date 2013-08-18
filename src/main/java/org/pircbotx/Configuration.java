@@ -74,7 +74,7 @@ public class Configuration<B extends PircBotX> {
 	protected final String login;
 	protected final String version;
 	protected final String finger;
-	protected final String realname;
+	protected final String realName;
 	protected final String channelPrefixes;
 	//DCC
 	protected final boolean dccFilenameQuotes;
@@ -118,7 +118,7 @@ public class Configuration<B extends PircBotX> {
 		checkNotNull(builder.getListenerManager());
 		checkArgument(StringUtils.isNotBlank(builder.getName()), "Must specify name");
 		checkArgument(StringUtils.isNotBlank(builder.getLogin()), "Must specify login");
-		checkArgument(StringUtils.isNotBlank(builder.getRealname()), "Must specify realname");
+		checkArgument(StringUtils.isNotBlank(builder.getRealName()), "Must specify realName");
 		checkArgument(StringUtils.isNotBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
@@ -145,7 +145,7 @@ public class Configuration<B extends PircBotX> {
 		this.login = builder.getLogin();
 		this.version = builder.getVersion();
 		this.finger = builder.getFinger();
-		this.realname = builder.getRealname();
+		this.realName = builder.getRealName();
 		this.channelPrefixes = builder.getChannelPrefixes();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
@@ -219,9 +219,9 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected String finger = "You ought to be arrested for fingering a bot!";
 		/**
-		 * The realname/fullname used for WHOIS info. Defaults to version
+		 * The realName/fullname used for WHOIS info. Defaults to version
 		 */
-		protected String realname = version;
+		protected String realName = version;
 		/**
 		 * Allowed channel prefix characters. Defaults to <code>#&+!</code>
 		 */
@@ -375,7 +375,7 @@ public class Configuration<B extends PircBotX> {
 			this.login = configuration.getLogin();
 			this.version = configuration.getVersion();
 			this.finger = configuration.getFinger();
-			this.realname = configuration.getRealname();
+			this.realName = configuration.getRealName();
 			this.channelPrefixes = configuration.getChannelPrefixes();
 			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
 			this.dccPorts.addAll(configuration.getDccPorts());
@@ -421,7 +421,7 @@ public class Configuration<B extends PircBotX> {
 			this.login = otherBuilder.getLogin();
 			this.version = otherBuilder.getVersion();
 			this.finger = otherBuilder.getFinger();
-			this.realname = otherBuilder.getRealname();
+			this.realName = otherBuilder.getRealName();
 			this.channelPrefixes = otherBuilder.getChannelPrefixes();
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
