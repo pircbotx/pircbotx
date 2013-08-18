@@ -428,6 +428,9 @@
 									<version>3.0.1</version>
 									<configuration>
 										<source>1.5</source>
+										<rulesets>
+											<ruleset>src/etc/pmd-rules.xml</ruleset>
+										</rulesets>
 									</configuration>
 								</plugin>
 							</reportPlugins> 
