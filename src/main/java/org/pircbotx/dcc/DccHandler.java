@@ -459,6 +459,7 @@ public class DccHandler implements Closeable {
 					break;
 				} catch (Exception e) {
 					// Do nothing; go round and try another port.
+					log.debug("Failed to create server socket on port " + currentPort + ", trying next one", e);
 				}
 			if (ss == null)
 				// No ports could be used.
