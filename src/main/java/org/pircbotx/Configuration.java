@@ -56,56 +56,7 @@ import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Configuration<B> class for PircBotX
- * 
- * Bot information:
- * <ul><li>name - Name of the bot, which will be used as its nick when it
- * tries to join an IRC server.</li>
- * <li>login - Login of the bot</li>
- * <li>version - CTCP version response</li>
- * <li>finger - CTCP finger response</li>
- * </ul>
- * 
- * WebIRC:
- * 
- * DCC:
- * <ul><li>dccLocalAddress - Sets the InetAddress to be used when sending DCC chat or file transfers.
- * This can be very useful when you are running a bot on a machine which
- * is behind a firewall and you need to tell receiving clients to connect
- * to a NAT/router, which then forwards the connection.</li>
- * </ul>
- * 
- * Connect information
- * <ul><li>serverHostname - The hostname of the server (eg irc.freenode.net)</li>
- * <li>serverPort - The port of the IRC server (default: 6667)</li>
- * <li>serverPassword - The password of the IRC server</li>
- * <li>messageDelay - number of milliseconds to delay between consecutive</li>
- * messages
- * <li>socketFactory - SocketFactory to use to connect to the IRC server (default:
- * {@link SocketFactory#getDefault() }</li>
- * <li>inetAddress - Local address to use when connecting to the IRC server</li>
- * <li>encoding - The encoding {@link Charset} to use for the connection (default:
- * {@link Charset#defaultCharset()}</li>
- * <li>socketTimeout - Number of milliseconds to wait before the socket times out on read
- * operations. This does not mean the socket is invalid. By default its 5 minutes
- * minutes</li>
- * <li>maxLineLength - Maximum length of any line that is sent. (default: IRC 
- * RFC default (including \r\n) 512 bytes)</li>
- * <li>autoSplitMessage - Enable or disable sendRawLineSplit splitting all lines
- * to maxLineLength (default: true)</li>
- * <li>autoNickChange - Enable or disable changing nick in case it is already 
- * in use on the server by adding numbers until an unused nick is found</li>
- * </ul>
- * 
- * Bot classes:
- * <ul>
- * <li>listenerManager - Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
- * when this method is called. If you do not want this, remove CoreHooks with
- * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }</li>
- * <li>capEnabled - If true, CAP handling is enabled (default: false)</li>
- * <li>capHandlers - All CAP Handlers (default: a {@link EnableCapHandler}</li>
- * for multi-prefix, ignoring errors)
- * </ul>
+ * Immutable configuration for PircBotX. Use {@link Configuration.Builder} to create
  * 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -525,7 +476,6 @@ public class Configuration<B extends PircBotX> {
 
 		/**
 		 * Utility method for <code>{@link #getCapHandlers()}.add(handler)</code>
-		 * so 
 		 * @param handler
 		 * @return 
 		 */
@@ -534,26 +484,53 @@ public class Configuration<B extends PircBotX> {
 			return this;
 		}
 
+		/**
+		 * Utility method for <code>{@link #getListenerManager().add(listener)</code>
+		 * @param listener
+		 * @return 
+		 */
 		public Builder<B> addListener(Listener<B> listener) {
 			getListenerManager().addListener(listener);
 			return this;
 		}
 
+		/**
+		 * Utility method for <code>{@link #getAutoJoinChannels().put(channel, "")</code>
+		 * @param channel
+		 * @return 
+		 */
 		public Builder<B> addAutoJoinChannel(String channel) {
 			getAutoJoinChannels().put(channel, "");
 			return this;
 		}
 
+		/**
+		 * Utility method for <code>{@link #getAutoJoinChannels().put(channel, key)</code>
+		 * @param channel
+		 * @return 
+		 */
 		public Builder<B> addAutoJoinChannel(String channel, String key) {
 			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
 
+		/**
+		 * Utility method to set server hostname and port
+		 * @param hostname
+		 * @param port
+		 * @return 
+		 */
 		public Builder<B> setServer(String hostname, int port) {
 			return setServerHostname(hostname)
 					.setServerPort(port);
 		}
 
+		/**
+		 * Utility method to set server hostname, port, and password
+		 * @param hostname
+		 * @param port
+		 * @return 
+		 */
 		public Builder<B> setServer(String hostname, int port, String password) {
 			return setServer(hostname, port).setServerPassword(password);
 		}
@@ -586,16 +563,32 @@ public class Configuration<B extends PircBotX> {
 			return listenerManager;
 		}
 
+		/**
+		 * Build a new configuration from this Builder
+		 * @return 
+		 */
 		public Configuration<B> buildConfiguration() {
 			return new Configuration<B>(this);
 		}
 		
+		/**
+		 * Create a <b>new</b> builder with the specified hostname then build 
+		 * a configuration. Useful for template builders
+		 * @param hostname
+		 * @return 
+		 */
 		public Configuration<B> buildForServer(String hostname) {
 			return new Builder<B>(this)
 					.setServerHostname(serverHostname)
 					.buildConfiguration();
 		}
 		
+		/**
+		 * Create a <b>new</b> builder with the specified hostname and port then build 
+		 * a configuration. Useful for template builders
+		 * @param hostname
+		 * @return 
+		 */
 		public Configuration<B> buildForServer(String hostname, int port) {
 			return new Builder<B>(this)
 					.setServerHostname(serverHostname)
@@ -603,6 +596,12 @@ public class Configuration<B extends PircBotX> {
 					.buildConfiguration();
 		}
 		
+		/**
+		 * Create a <b>new</b> builder with the specified hostname, port, and password
+		 * then build a configuration. Useful for template builders
+		 * @param hostname
+		 * @return 
+		 */
 		public Configuration<B> buildForServer(String hostname, int port, String password) {
 			return new Builder<B>(this)
 					.setServerHostname(serverHostname)
@@ -612,6 +611,9 @@ public class Configuration<B extends PircBotX> {
 		}
 	}
 
+	/**
+	 * Factory for various bot classes. 
+	 */
 	public static class BotFactory {
 		public UserChannelDao createUserChannelDao(PircBotX bot) {
 			return new UserChannelDao(bot, bot.getConfiguration().getBotFactory());
