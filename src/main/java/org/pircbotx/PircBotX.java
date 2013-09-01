@@ -186,6 +186,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			enabledCapabilities = new ArrayList<String>();
 
 			// Connect to the server by DNS server
+			Exception lastConnectException = null;
 			for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
 				log.debug("Trying address " + curAddress);
 				try {
@@ -194,13 +195,14 @@ public class PircBotX implements Comparable<PircBotX> {
 					//No exception, assume successful
 					break;
 				} catch (Exception e) {
+					lastConnectException = e;
 					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
 				}
 			}
 
 			//Make sure were connected
 			if (socket == null || (socket != null && !socket.isConnected()))
-				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)");
+				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)", lastConnectException);
 			state = State.CONNECTED;
 			socket.setSoTimeout(configuration.getSocketTimeout());
 			log.info("Connected to server.");
