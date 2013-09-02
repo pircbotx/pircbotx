@@ -53,6 +53,7 @@ import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.ModeEvent;
 import org.pircbotx.hooks.events.MotdEvent;
+import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
@@ -226,15 +227,18 @@ public class InputParser implements Closeable {
 				autoConnectChannels = configuration.getAutoJoinChannels();
 			for (Map.Entry<String, String> channelEntry : autoConnectChannels.entrySet())
 				bot.sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
-		} else if (code.equals("433"))
-			//EXAMPLE: AnAlreadyUsedName :Nickname already in use
+		} else if (code.equals("433")) {
+			//EXAMPLE: * AnAlreadyUsedName :Nickname already in use
 			//Nickname in use, rename
-			if (configuration.isAutoNickChange()) {
+			String usedNick = parsedLine.get(1);
+			boolean autoNickChange = configuration.isAutoNickChange();
+			String autoNewNick = null;
+			if (autoNickChange) {
 				nickSuffix++;
-				bot.sendIRC().changeNick(configuration.getName() + nickSuffix);
-			} else
-				throw new IrcException(IrcException.Reason.NickAlreadyInUse, "Line: " + rawLine);
-		else if (code.equals("439")) {
+				bot.sendIRC().changeNick(autoNewNick = configuration.getName() + nickSuffix);
+			} 
+			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent<PircBotX>(bot, usedNick, autoNewNick, autoNickChange));
+		} else if (code.equals("439")) {
 			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 			// No action required.
 		} else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP")) {

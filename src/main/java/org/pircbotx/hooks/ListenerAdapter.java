@@ -65,6 +65,8 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			onMode((ModeEvent<T>) event);
 		else if (event instanceof MotdEvent)
 			onMotd((MotdEvent<T>) event);
+		else if (event instanceof NickAlreadyInUseEvent)
+			onNickAlreadyInUse((NickAlreadyInUseEvent<T>) event);
 		else if (event instanceof NickChangeEvent)
 			onNickChange((NickChangeEvent<T>) event);
 		else if (event instanceof NoticeEvent)
@@ -203,6 +205,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	public void onMotd(MotdEvent<T> event) throws Exception {
 	}
 
+	public void onNickAlreadyInUse(NickAlreadyInUseEvent<T> event) throws Exception {
+	}
+
 	public void onNickChange(NickChangeEvent<T> event) throws Exception {
 	}
 
@@ -331,13 +336,13 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onGenericMessage(GenericMessageEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericChannel(GenericChannelEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericUser(GenericUserEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericChannelUser(GenericChannelUserEvent<T> event) throws Exception {
 	}
 }

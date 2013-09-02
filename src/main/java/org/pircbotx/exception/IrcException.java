@@ -49,6 +49,5 @@ public class IrcException extends Exception {
 		AlreadyConnected,
 		CannotLogin,
 		ReconnectBeforeConnect,
-		NickAlreadyInUse
 	}
 }
