@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -133,9 +134,7 @@ public class InputParser implements Closeable {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	public void handleLine(String line) throws IOException, IrcException {
-		if (line == null)
-			throw new IllegalArgumentException("Can't process null line");
+	public void handleLine(@NonNull String line) throws IOException, IrcException {
 		log.info(INPUT_MARKER, line);
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
@@ -443,8 +442,6 @@ public class InputParser implements Closeable {
 	 */
 	public void processServerResponse(int code, String rawResponse, List<String> parsedResponseOrig) {
 		ImmutableList<String> parsedResponse = ImmutableList.copyOf(parsedResponseOrig);
-		if (parsedResponse == null)
-			throw new IllegalArgumentException("Can't process null response");
 		//Parsed response format: Everything after code
 		//eg: Response 321 Channel :Users Name gives us [Channel, Users Name]
 		if (code == RPL_LISTSTART) {
