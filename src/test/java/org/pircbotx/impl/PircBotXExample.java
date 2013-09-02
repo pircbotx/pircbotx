@@ -35,7 +35,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public class PircBotXExample extends ListenerAdapter implements Listener {
+public class PircBotXExample extends ListenerAdapter {
 	/**
 	 * Easy and recommended way to handle events: Override respective methods in
 	 * {@link ListenerAdapter}.
@@ -81,40 +81,6 @@ public class PircBotXExample extends ListenerAdapter implements Listener {
 				//will continue forever!
 				return;
 			}
-		}
-	}
-
-	/**
-	 * Older way to handle events. We are given a generic event and must cast
-	 * to the event type that we want. This is helpful for when you need to funnel
-	 * all events into a single method, eg logging
-	 * <p>
-	 * This also shows the other way to send messages: With PircBotX's send*
-	 * methods. These should be used when the respond() method of the event
-	 * doesn't send the message to where you want it to go.
-	 * <p>
-	 * *WARNING:* If you are extending ListenerAdapter and implementing Listener
-	 * in the same class (as this does) you *must* call super.onEvent(event);
-	 * otherwise none of the methods in ListenerAdapter will get called!
-	 * @param rawevent A generic event
-	 * @throws Exception If any Exceptions might be thrown, throw them up and let
-	 * the {@link ListenerManager} handle it. This can be removed though if not needed
-	 */
-	@Override
-	public void onEvent(Event rawevent) throws Exception {
-		//Since we extend ListenerAdapter and implement Listener in the same class
-		//call the super onEvent so ListenerAdapter will work
-		//Unless you are doing that, this line shouldn't be added
-		super.onEvent(rawevent);
-
-		//Make sure were dealing with a message
-		if (rawevent instanceof MessageEvent) {
-			//Cast to get access to all the MessageEvent specific methods
-			MessageEvent event = (MessageEvent) rawevent;
-
-			//Basic hello
-			if (event.getMessage().startsWith("?hi"))
-				event.getChannel().send().message("Hello");
 		}
 	}
 
