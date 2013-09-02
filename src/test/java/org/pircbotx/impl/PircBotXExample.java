@@ -22,12 +22,11 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.cap.TLSCapHandler;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Basic example class for various features of PircBotX. Heavily documented
@@ -37,20 +36,15 @@ import org.pircbotx.hooks.managers.ListenerManager;
  */
 public class PircBotXExample extends ListenerAdapter {
 	/**
-	 * Easy and recommended way to handle events: Override respective methods in
-	 * {@link ListenerAdapter}.
-	 * <p>
-	 * This example shows how to work with the waitFor ability of PircBotX. Follow
-	 * the inline comments for how this works
-	 * <p>
-	 * *WARNING:* This example requires using a Threaded listener manager
-	 * (this is PircBotX's default)
-	 * @param event A MessageEvent
+	 * This example shows how to handle messages from both channels and private 
+	 * messages. It also shows how to use WaitForQueue to have multi-line
+	 * commands. 
+	 * @param event A GenericMessageEvent from a channel or private message
 	 * @throws Exception If any Exceptions might be thrown, throw them up and let
 	 * the {@link ListenerManager} handle it. This can be removed though if not needed
 	 */
 	@Override
-	public void onMessage(final MessageEvent event) throws Exception {
+	public void onGenericMessage(final GenericMessageEvent event) throws Exception {
 		//Hello world
 		//This way to handle commands is useful for listeners that listen for multiple commands
 		if (event.getMessage().startsWith("?hello"))
