@@ -22,8 +22,10 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.cap.TLSCapHandler;
+import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.WaitForQueue;
+import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -36,9 +38,9 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 public class PircBotXExample extends ListenerAdapter {
 	/**
-	 * This example shows how to handle messages from both channels and private 
-	 * messages. It also shows how to use WaitForQueue to have multi-line
-	 * commands. 
+	 * This example shows how to handle messages, actions, and notices from both 
+	 * channels and private messages. It also shows how to use WaitForQueue to 
+	 * have multi-line commands. 
 	 * @param event A GenericMessageEvent from a channel or private message
 	 * @throws Exception If any Exceptions might be thrown, throw them up and let
 	 * the {@link ListenerManager} handle it. This can be removed though if not needed
@@ -76,6 +78,30 @@ public class PircBotXExample extends ListenerAdapter {
 				return;
 			}
 		}
+	}
+
+	/**
+	 * This basic example shows how to handle incoming DCC chat requests. It basically
+	 * repeats what the user said and says how many characters are in their message
+	 * @param event A incoming DCC chat request event
+	 * @throws Exception 
+	 */
+	@Override
+	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
+		//Accept the incoming chat request. If it fails it will throw an exception
+		ReceiveChat chat = event.accept();
+		//Read lines from the server
+		String line;
+		while ((line = chat.readLine()) != null)
+			if (line.equalsIgnoreCase("done")) {
+				//Shut down the chat
+				chat.close();
+				break;
+			} else {
+				//Fun example
+				int lineLength = line.length();
+				chat.sendLine("Line '" + line + "' contains " + lineLength + " characters");
+			}
 	}
 
 	public static void main(String[] args) {
