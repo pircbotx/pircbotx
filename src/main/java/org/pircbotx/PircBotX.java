@@ -118,6 +118,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected ImmutableMap<String, String> reconnectChannels;
 	private State state = State.INIT;
 	protected final Object stateLock = new Object();
+	protected Exception disconnectException;
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
@@ -258,6 +259,7 @@ public class PircBotX implements Comparable<PircBotX> {
 					log.info("Shutdown has been called, closing InputParser");
 					return;
 				} else {
+					disconnectException = e;
 					//Something is wrong. Assume its bad and begin disconnect
 					log.error("Exception encountered when reading next line from server", e);
 					line = null;
@@ -471,7 +473,8 @@ public class PircBotX implements Comparable<PircBotX> {
 		}
 
 		//Dispatch event
-		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, daoSnapshot));
+		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, daoSnapshot, disconnectException));
+		disconnectException = null;
 		log.debug("Disconnected.");
 
 		//Shutdown listener manager
