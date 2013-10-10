@@ -37,7 +37,7 @@ public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, Channel
 
 	@Override
 	public UserSnapshot getUser(String nick) {
-		UserSnapshot user = userNickMap.get(nick);
+		UserSnapshot user = userNickMap.get(nick.toLowerCase());
 		if (user == null)
 			throw new RuntimeException("User " + nick + " does not exist");
 		return user;
@@ -45,7 +45,7 @@ public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, Channel
 
 	@Override
 	public ChannelSnapshot getChannel(String name) {
-		ChannelSnapshot channel = channelNameMap.get(name);
+		ChannelSnapshot channel = channelNameMap.get(name.toLowerCase());
 		if (channel == null)
 			throw new RuntimeException("Channel " + channel + " does not exist");
 		return channel;
