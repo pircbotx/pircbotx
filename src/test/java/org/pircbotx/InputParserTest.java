@@ -202,6 +202,21 @@ public class InputParserTest {
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
 		assertTrue(dao.userExists("AUser"));
 	}
+	
+	@Test(description = "Verifies DAO allows case insensitive lookups")
+	public void insensitiveLookupTest() throws IOException, IrcException {
+		Channel aChannel = dao.getChannel("#aChannel");
+		User aUser = dao.getUser("AUser");
+		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
+		
+		assertEquals(dao.getUser("AUSER"), aUser, "Cannot lookup AUSER ignoring case");
+		assertEquals(dao.getUser("aUser"), aUser, "Cannot lookup aUser ignoring case");
+		assertEquals(dao.getUser("auser"), aUser, "Cannot lookup auser ignoring case");
+		
+		assertEquals(dao.getChannel("#ACHANNEL"), aChannel, "Cannot lookup #ACHANNEL ignoring case");
+		assertEquals(dao.getChannel("#aChannel"), aChannel, "Cannot lookup #aChannel ignoring case");
+		assertEquals(dao.getChannel("#achannel"), aChannel, "Cannot lookup #achannel ignoring case");
+	}
 
 	@Test(description = "Verify Channel creation date is set - Freenode")
 	public void channelCreationDateFreenode() throws IOException, IrcException {

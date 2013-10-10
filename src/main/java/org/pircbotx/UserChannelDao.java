@@ -75,19 +75,19 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	public U getUser(String nick) {
 		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
-		U user = userNickMap.get(nick);
+		U user = userNickMap.get(nick.toLowerCase());
 		if (user != null)
 			return user;
 
 		//Create new user
 		user = (U) botFactory.createUser(bot, nick);
-		userNickMap.put(nick, user);
+		userNickMap.put(nick.toLowerCase(), user);
 		return user;
 	}
 
 	@Synchronized("accessLock")
 	public boolean userExists(String nick) {
-		return userNickMap.containsKey(nick);
+		return userNickMap.containsKey(nick.toLowerCase());
 	}
 
 	/**
@@ -201,19 +201,19 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected void renameUser(U user, String newNick) {
 		user.setNick(newNick);
 		userNickMap.inverse().remove(user);
-		userNickMap.put(newNick, user);
+		userNickMap.put(newNick.toLowerCase(), user);
 	}
 
 	@Synchronized("accessLock")
 	public C getChannel(String name) {
 		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
-		C chan = channelNameMap.get(name);
+		C chan = channelNameMap.get(name.toLowerCase());
 		if (chan != null)
 			return chan;
 
 		//Channel does not exist, create one
 		chan = (C) botFactory.createChannel(bot, name);
-		channelNameMap.put(name, chan);
+		channelNameMap.put(name.toLowerCase(), chan);
 		return chan;
 	}
 
@@ -224,7 +224,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@Synchronized("accessLock")
 	public boolean channelExists(String name) {
-		return channelNameMap.containsKey(name);
+		return channelNameMap.containsKey(name.toLowerCase());
 	}
 
 	@Synchronized("accessLock")
