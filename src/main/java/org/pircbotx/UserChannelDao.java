@@ -200,9 +200,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	protected void renameUser(U user, String newNick) {
 		user.setNick(newNick);
-		BiMap<U, String> inverseUserNickMap = userNickMap.inverse();
-		inverseUserNickMap.remove(user);
-		inverseUserNickMap.put(user, newNick);
+		userNickMap.inverse().remove(user);
+		userNickMap.put(newNick, user);
 	}
 
 	@Synchronized("accessLock")
@@ -250,7 +249,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			curLevelMap.removeChannel(channel);
 
 		//Remove remaining locations
-		channelNameMap.remove(channel.getName());
+		channelNameMap.inverse().remove(channel);
 	}
 
 	@Synchronized("accessLock")
