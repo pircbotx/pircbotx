@@ -28,6 +28,7 @@ import com.google.common.collect.Maps;
 import java.io.Closeable;
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -51,6 +52,7 @@ import org.pircbotx.snapshot.UserSnapshot;
 public class UserChannelDao<U extends User, C extends Channel> implements Closeable {
 	protected final PircBotX bot;
 	protected final Configuration.BotFactory botFactory;
+	protected final Locale locale;
 	protected final Object accessLock = new Object();
 	protected final UserChannelMap<U, C> mainMap;
 	protected final EnumMap<UserLevel, UserChannelMap<U, C>> levelsMap;
@@ -61,6 +63,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
+		this.locale = bot.getConfiguration().getLocale();
 		this.mainMap = new UserChannelMap<U, C>();
 		this.userNickMap = HashBiMap.create();
 		this.channelNameMap = HashBiMap.create();
@@ -75,19 +78,19 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	public U getUser(String nick) {
 		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
-		U user = userNickMap.get(nick.toLowerCase());
+		U user = userNickMap.get(nick.toLowerCase(locale));
 		if (user != null)
 			return user;
 
 		//Create new user
 		user = (U) botFactory.createUser(bot, nick);
-		userNickMap.put(nick.toLowerCase(), user);
+		userNickMap.put(nick.toLowerCase(locale), user);
 		return user;
 	}
 
 	@Synchronized("accessLock")
 	public boolean userExists(String nick) {
-		return userNickMap.containsKey(nick.toLowerCase());
+		return userNickMap.containsKey(nick.toLowerCase(locale));
 	}
 
 	/**
@@ -201,19 +204,19 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected void renameUser(U user, String newNick) {
 		user.setNick(newNick);
 		userNickMap.inverse().remove(user);
-		userNickMap.put(newNick.toLowerCase(), user);
+		userNickMap.put(newNick.toLowerCase(locale), user);
 	}
 
 	@Synchronized("accessLock")
 	public C getChannel(String name) {
 		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
-		C chan = channelNameMap.get(name.toLowerCase());
+		C chan = channelNameMap.get(name.toLowerCase(locale));
 		if (chan != null)
 			return chan;
 
 		//Channel does not exist, create one
 		chan = (C) botFactory.createChannel(bot, name);
-		channelNameMap.put(name.toLowerCase(), chan);
+		channelNameMap.put(name.toLowerCase(locale), chan);
 		return chan;
 	}
 
@@ -224,7 +227,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@Synchronized("accessLock")
 	public boolean channelExists(String name) {
-		return channelNameMap.containsKey(name.toLowerCase());
+		return channelNameMap.containsKey(name.toLowerCase(locale));
 	}
 
 	@Synchronized("accessLock")
