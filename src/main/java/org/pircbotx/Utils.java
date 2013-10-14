@@ -21,6 +21,7 @@ package org.pircbotx;
 import com.google.common.base.CharMatcher;
 import java.util.ArrayList;
 import java.util.List;
+import org.pircbotx.hooks.Event;
 import org.slf4j.MDC;
 
 /**
@@ -32,6 +33,11 @@ public final class Utils {
 	private Utils() {
 	}
 
+	@SuppressWarnings("unchecked")
+	public static void dispatchEvent(PircBotX bot, Event event) {
+		bot.getConfiguration().getListenerManager().dispatchEvent(event);
+	}
+	
 	/**
 	 * Try to parse int string, returning -1 if it fails.
 	 * @param longString
