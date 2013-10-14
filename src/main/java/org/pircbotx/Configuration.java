@@ -21,7 +21,9 @@ package org.pircbotx;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.PeekingIterator;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -106,8 +108,9 @@ public class Configuration<B extends PircBotX> {
 	protected final ListenerManager<B> listenerManager;
 	protected final boolean capEnabled;
 	protected final ImmutableList<CapHandler> capHandlers;
+	protected final ImmutableSortedMap<Character, ChannelModeHandler> channelModeHandlers;
 	protected final BotFactory botFactory;
-	
+
 	/**
 	 * Use {@link Configuration.Builder#build() }.
 	 * @param builder 
@@ -131,7 +134,7 @@ public class Configuration<B extends PircBotX> {
 		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
-		if(builder.getNickservPassword() != null)
+		if (builder.getNickservPassword() != null)
 			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
@@ -173,6 +176,10 @@ public class Configuration<B extends PircBotX> {
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = ImmutableList.copyOf(builder.getCapHandlers());
+		ImmutableSortedMap.Builder<Character, ChannelModeHandler> channelModeHandlersBuilder = ImmutableSortedMap.naturalOrder();
+		for (ChannelModeHandler curHandler : builder.getChannelModeHandlers())
+			channelModeHandlersBuilder.put(curHandler.getMode(), curHandler);
+		this.channelModeHandlers = channelModeHandlersBuilder.build();
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
 		this.botFactory = builder.getBotFactory();
 	}
@@ -349,6 +356,7 @@ public class Configuration<B extends PircBotX> {
 		 * Registered {@link CapHandler}'s. 
 		 */
 		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
+		protected final List<ChannelModeHandler> channelModeHandlers = new ArrayList<ChannelModeHandler>();
 		/**
 		 * The {@link BotFactory} to use
 		 */
@@ -359,6 +367,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Builder() {
 			capHandlers.add(new EnableCapHandler("multi-prefix", true));
+			channelModeHandlers.addAll(InputParser.DEFAULT_CHANNEL_MODE_HANDLERS);
 		}
 
 		/**
@@ -403,6 +412,7 @@ public class Configuration<B extends PircBotX> {
 			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
 			this.capHandlers.addAll(configuration.getCapHandlers());
+			this.channelModeHandlers.addAll(configuration.getChannelModeHandlers().values());
 			this.shutdownHookEnabled = configuration.isShutdownHookEnabled();
 			this.botFactory = configuration.getBotFactory();
 		}
@@ -449,6 +459,7 @@ public class Configuration<B extends PircBotX> {
 			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();
 			this.capHandlers.addAll(otherBuilder.getCapHandlers());
+			this.channelModeHandlers.addAll(otherBuilder.getChannelModeHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
 			this.botFactory = otherBuilder.getBotFactory();
 		}
@@ -543,7 +554,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		@SuppressWarnings("unchecked")
 		public Builder<B> setListenerManager(ListenerManager<? extends B> listenerManager) {
-			this.listenerManager = (ListenerManager<B>)listenerManager;
+			this.listenerManager = (ListenerManager<B>) listenerManager;
 			for (Listener<B> curListener : this.listenerManager.getListeners())
 				if (curListener instanceof CoreHooks)
 					return this;
@@ -570,7 +581,7 @@ public class Configuration<B extends PircBotX> {
 		public Configuration<B> buildConfiguration() {
 			return new Configuration<B>(this);
 		}
-		
+
 		/**
 		 * Create a <b>new</b> builder with the specified hostname then build 
 		 * a configuration. Useful for template builders
@@ -582,7 +593,7 @@ public class Configuration<B extends PircBotX> {
 					.setServerHostname(serverHostname)
 					.buildConfiguration();
 		}
-		
+
 		/**
 		 * Create a <b>new</b> builder with the specified hostname and port then build 
 		 * a configuration. Useful for template builders
@@ -595,7 +606,7 @@ public class Configuration<B extends PircBotX> {
 					.setServerPort(serverPort)
 					.buildConfiguration();
 		}
-		
+
 		/**
 		 * Create a <b>new</b> builder with the specified hostname, port, and password
 		 * then build a configuration. Useful for template builders

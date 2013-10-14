@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
+import com.google.common.collect.PeekingIterator;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -110,6 +111,140 @@ public class InputParser implements Closeable {
 	 */
 	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005",
 			"251", "252", "253", "254", "255", "375", "376");
+	protected static final ImmutableList<ChannelModeHandler> DEFAULT_CHANNEL_MODE_HANDLERS;
+
+	static {
+		DEFAULT_CHANNEL_MODE_HANDLERS = ImmutableList.<ChannelModeHandler>builder()
+				.add(new OpChannelModeHandler('o', UserLevel.OP) {
+			@Override
+			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+				Utils.dispatchEvent(bot, new OpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+			}
+		})
+				.add(new OpChannelModeHandler('v', UserLevel.VOICE) {
+			@Override
+			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+				Utils.dispatchEvent(bot, new VoiceEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+			}
+		})
+				.add(new OpChannelModeHandler('h', UserLevel.HALFOP) {
+			@Override
+			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+				Utils.dispatchEvent(bot, new HalfOpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+			}
+		})
+				.add(new OpChannelModeHandler('a', UserLevel.SUPEROP) {
+			@Override
+			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+				Utils.dispatchEvent(bot, new SuperOpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+			}
+		})
+				.add(new OpChannelModeHandler('q', UserLevel.OWNER) {
+			@Override
+			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+				Utils.dispatchEvent(bot, new OwnerEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+			}
+		})
+				.add(new ChannelModeHandler('k') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				if (adding) {
+					String key = params.next();
+					channel.setChannelKey(key);
+					if (dispatchEvent)
+						Utils.dispatchEvent(bot, new SetChannelKeyEvent<PircBotX>(bot, channel, sourceUser, key));
+				} else {
+					String key = params.hasNext() ? params.next() : null;
+					channel.setChannelKey(null);
+					if (dispatchEvent)
+						Utils.dispatchEvent(bot, new RemoveChannelKeyEvent<PircBotX>(bot, channel, sourceUser, key));
+				}
+			}
+		})
+				.add(new ChannelModeHandler('l') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				if (adding) {
+					int limit = Integer.parseInt(params.next());
+					channel.setChannelLimit(limit);
+					Utils.dispatchEvent(bot, new SetChannelLimitEvent<PircBotX>(bot, channel, sourceUser, limit));
+				} else {
+					channel.setChannelLimit(-1);
+					Utils.dispatchEvent(bot, new RemoveChannelLimitEvent<PircBotX>(bot, channel, sourceUser));
+				}
+			}
+		})
+				.add(new ChannelModeHandler('b') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				if (adding)
+					Utils.dispatchEvent(bot, new SetChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
+				else
+					Utils.dispatchEvent(bot, new RemoveChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
+			}
+		})
+				.add(new ChannelModeHandler('t') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				channel.setTopicProtection(adding);
+				if (adding)
+					Utils.dispatchEvent(bot, new SetTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
+				else
+					Utils.dispatchEvent(bot, new RemoveTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
+			}
+		})
+				.add(new ChannelModeHandler('n') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				channel.setNoExternalMessages(adding);
+				if (adding)
+					Utils.dispatchEvent(bot, new SetNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
+				else
+					Utils.dispatchEvent(bot, new RemoveNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
+			}
+		})
+				.add(new ChannelModeHandler('i') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				channel.setInviteOnly(adding);
+				if (adding)
+					Utils.dispatchEvent(bot, new SetInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
+				else
+					Utils.dispatchEvent(bot, new RemoveInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
+			}
+		})
+				.add(new ChannelModeHandler('m') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				channel.setModerated(adding);
+				if (adding)
+					Utils.dispatchEvent(bot, new SetModeratedEvent<PircBotX>(bot, channel, sourceUser));
+				else
+					Utils.dispatchEvent(bot, new RemoveModeratedEvent<PircBotX>(bot, channel, sourceUser));
+			}
+		})
+				.add(new ChannelModeHandler('p') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				channel.setChannelPrivate(adding);
+				if (adding)
+					Utils.dispatchEvent(bot, new SetPrivateEvent<PircBotX>(bot, channel, sourceUser));
+				else
+					Utils.dispatchEvent(bot, new RemovePrivateEvent<PircBotX>(bot, channel, sourceUser));
+			}
+		})
+				.add(new ChannelModeHandler('s') {
+			@Override
+			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+				channel.setSecret(adding);
+				if (adding)
+					Utils.dispatchEvent(bot, new SetSecretEvent<PircBotX>(bot, channel, sourceUser));
+				else
+					Utils.dispatchEvent(bot, new RemoveSecretEvent<PircBotX>(bot, channel, sourceUser));
+			}
+		})
+				.build();
+	}
 	protected final Configuration<PircBotX> configuration;
 	protected final PircBotX bot;
 	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
@@ -235,7 +370,7 @@ public class InputParser implements Closeable {
 			if (autoNickChange) {
 				nickSuffix++;
 				bot.sendIRC().changeNick(autoNewNick = configuration.getName() + nickSuffix);
-			} 
+			}
 			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent<PircBotX>(bot, usedNick, autoNewNick, autoNickChange));
 		} else if (code.equals("439")) {
 			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
@@ -613,126 +748,21 @@ public class InputParser implements Closeable {
 			// The mode of a channel is being changed.
 			Channel channel = bot.getUserChannelDao().getChannel(target);
 			channel.parseMode(mode);
-			Iterator<String> params = Iterators.forArray(StringUtils.split(mode, ' '));
+			PeekingIterator<String> params = Iterators.peekingIterator(Iterators.forArray(StringUtils.split(mode, ' ')));
 
 			//Process modes letter by letter, grabbing paramaters as needed
 			boolean adding = true;
 			String modeLetters = params.next();
 			for (int i = 0; i < modeLetters.length(); i++) {
 				char curModeChar = modeLetters.charAt(i);
-
 				if (curModeChar == '+')
 					adding = true;
 				else if (curModeChar == '-')
 					adding = false;
-				else if (curModeChar == 'o') {
-					User recipient = bot.getUserChannelDao().getUser(params.next());
-					if (adding) {
-						bot.getUserChannelDao().addUserToLevel(UserLevel.OP, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new OpEvent<PircBotX>(bot, channel, user, recipient, true));
-					} else {
-						bot.getUserChannelDao().removeUserFromLevel(UserLevel.OP, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new OpEvent<PircBotX>(bot, channel, user, recipient, false));
-					}
-				} else if (curModeChar == 'v') {
-					User recipient = bot.getUserChannelDao().getUser(params.next());
-					if (adding) {
-						bot.getUserChannelDao().addUserToLevel(UserLevel.VOICE, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new VoiceEvent<PircBotX>(bot, channel, user, recipient, true));
-					} else {
-						bot.getUserChannelDao().removeUserFromLevel(UserLevel.VOICE, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new VoiceEvent<PircBotX>(bot, channel, user, recipient, false));
-					}
-				} else if (curModeChar == 'h') {
-					//Half-op change
-					User recipient = bot.getUserChannelDao().getUser(params.next());
-					if (adding) {
-						bot.getUserChannelDao().addUserToLevel(UserLevel.HALFOP, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new HalfOpEvent<PircBotX>(bot, channel, user, recipient, true));
-					} else {
-						bot.getUserChannelDao().removeUserFromLevel(UserLevel.HALFOP, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new HalfOpEvent<PircBotX>(bot, channel, user, recipient, false));
-					}
-				} else if (curModeChar == 'a') {
-					//SuperOp change
-					User recipient = bot.getUserChannelDao().getUser(params.next());
-					if (adding) {
-						bot.getUserChannelDao().addUserToLevel(UserLevel.SUPEROP, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new SuperOpEvent<PircBotX>(bot, channel, user, recipient, true));
-					} else {
-						bot.getUserChannelDao().removeUserFromLevel(UserLevel.SUPEROP, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new SuperOpEvent<PircBotX>(bot, channel, user, recipient, false));
-					}
-				} else if (curModeChar == 'q') {
-					//Owner change
-					User recipient = bot.getUserChannelDao().getUser(params.next());
-					if (adding) {
-						bot.getUserChannelDao().addUserToLevel(UserLevel.OWNER, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new OwnerEvent<PircBotX>(bot, channel, user, recipient, true));
-					} else {
-						bot.getUserChannelDao().removeUserFromLevel(UserLevel.OWNER, recipient, channel);
-						configuration.getListenerManager().dispatchEvent(new OwnerEvent<PircBotX>(bot, channel, user, recipient, false));
-					}
-				} else if (curModeChar == 'k')
-					if (adding) {
-						String key = params.next();
-						channel.setChannelKey(key);
-						configuration.getListenerManager().dispatchEvent(new SetChannelKeyEvent<PircBotX>(bot, channel, user, key));
-					} else {
-						String key = params.hasNext() ? params.next() : null;
-						channel.setChannelKey(null);
-						configuration.getListenerManager().dispatchEvent(new RemoveChannelKeyEvent<PircBotX>(bot, channel, user, key));
-					}
-				else if (curModeChar == 'l')
-					if (adding) {
-						int limit = Integer.parseInt(params.next());
-						channel.setChannelLimit(limit);
-						configuration.getListenerManager().dispatchEvent(new SetChannelLimitEvent<PircBotX>(bot, channel, user, limit));
-					} else {
-						channel.setChannelLimit(-1);
-						configuration.getListenerManager().dispatchEvent(new RemoveChannelLimitEvent<PircBotX>(bot, channel, user));
-					}
-				else if (curModeChar == 'b')
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetChannelBanEvent<PircBotX>(bot, channel, user, params.next()));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemoveChannelBanEvent<PircBotX>(bot, channel, user, params.next()));
-				else if (curModeChar == 't') {
-					channel.setTopicProtection(adding);
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetTopicProtectionEvent<PircBotX>(bot, channel, user));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemoveTopicProtectionEvent<PircBotX>(bot, channel, user));
-				} else if (curModeChar == 'n') {
-					channel.setNoExternalMessages(adding);
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetNoExternalMessagesEvent<PircBotX>(bot, channel, user));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemoveNoExternalMessagesEvent<PircBotX>(bot, channel, user));
-				} else if (curModeChar == 'i') {
-					channel.setInviteOnly(adding);
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetInviteOnlyEvent<PircBotX>(bot, channel, user));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemoveInviteOnlyEvent<PircBotX>(bot, channel, user));
-				} else if (curModeChar == 'm') {
-					channel.setModerated(adding);
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetModeratedEvent<PircBotX>(bot, channel, user));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemoveModeratedEvent<PircBotX>(bot, channel, user));
-				} else if (curModeChar == 'p') {
-					channel.setChannelPrivate(adding);
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetPrivateEvent<PircBotX>(bot, channel, user));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemovePrivateEvent<PircBotX>(bot, channel, user));
-				} else if (curModeChar == 's') {
-					channel.setSecret(adding);
-					if (adding)
-						configuration.getListenerManager().dispatchEvent(new SetSecretEvent<PircBotX>(bot, channel, user));
-					else
-						configuration.getListenerManager().dispatchEvent(new RemoveSecretEvent<PircBotX>(bot, channel, user));
+				else {
+					ChannelModeHandler modeHandler = configuration.getChannelModeHandlers().get(curModeChar);
+					if (modeHandler != null)
+						modeHandler.handleMode(bot, channel, user, params, adding, true);
 				}
 			}
 			configuration.getListenerManager().dispatchEvent(new ModeEvent<PircBotX>(bot, channel, user, mode));
@@ -767,5 +797,28 @@ public class InputParser implements Closeable {
 		motdBuilder = null;
 		channelListRunning = false;
 		channelListBuilder = null;
+	}
+
+	protected static abstract class OpChannelModeHandler extends ChannelModeHandler {
+		protected final UserLevel level;
+
+		public OpChannelModeHandler(char mode, UserLevel level) {
+			super(mode);
+			this.level = level;
+		}
+
+		@Override
+		public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+			User recipient = bot.getUserChannelDao().getUser(params.next());
+			if (adding)
+				bot.getUserChannelDao().addUserToLevel(level, recipient, channel);
+			else
+				bot.getUserChannelDao().removeUserFromLevel(level, recipient, channel);
+
+			if (dispatchEvent)
+				dispatchEvent(bot, channel, sourceUser, recipient, adding);
+		}
+
+		public abstract void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding);
 	}
 }
