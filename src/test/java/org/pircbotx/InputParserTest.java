@@ -379,31 +379,6 @@ public class InputParserTest {
 		assertNull(mevent.getUser(), "ModeEvent's user not null for mode response");
 	}
 
-	/**
-	 * Do setup and basic verification of channel modes
-	 * @param bot
-	 * @param events
-	 * @param mode
-	 */
-	protected void modeChangeTest(String mode, boolean checkChannelMode) throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
-		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
-
-		//Verify generic ModeEvent contents
-		ModeEvent mevent = getEvent(ModeEvent.class, "No ModeEvent dispatched with " + mode);
-		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given");
-		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given");
-		assertEquals(mevent.getMode(), mode, "ModeEvent's mode does not match given mode");
-
-		//Check channel mode if told to
-		if (checkChannelMode)
-			if (mode.substring(0, 1).equals("-"))
-				assertEquals(aChannel.getMode(), "", "Channel mode not empty after removing only mode");
-			else
-				assertEquals(aChannel.getMode(), mode.substring(1), "Channels mode not updated");
-	}
-
 	@DataProvider
 	public Object[][] channelUserModeProvider() {
 		return new Object[][]{{"+o", OpEvent.class, "isOp"},
