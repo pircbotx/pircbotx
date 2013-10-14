@@ -19,6 +19,8 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.PeekingIterator;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import lombok.AccessLevel;
@@ -27,6 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -122,7 +125,7 @@ public class Channel implements Comparable<Channel> {
 	@SuppressWarnings("unchecked")
 	protected Channel(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String name) {
 		this.bot = bot;
-		this.dao = (UserChannelDao<User, Channel>)dao;
+		this.dao = (UserChannelDao<User, Channel>) dao;
 		this.name = name;
 	}
 
@@ -266,6 +269,26 @@ public class Channel implements Comparable<Channel> {
 		this.modeStale = false;
 		if (modeLatch != null)
 			modeLatch.countDown();
+
+		
+		//Parse out mode
+		PeekingIterator<String> params = Iterators.peekingIterator(Iterators.forArray(StringUtils.split(mode, ' ')));
+
+		//Process modes letter by letter, grabbing paramaters as needed
+		boolean adding = true;
+		String modeLetters = params.next();
+		for (int i = 0; i < modeLetters.length(); i++) {
+			char curModeChar = modeLetters.charAt(i);
+			if (curModeChar == '+')
+				adding = true;
+			else if (curModeChar == '-')
+				adding = false;
+			else {
+				ChannelModeHandler modeHandler = bot.getConfiguration().getChannelModeHandlers().get(curModeChar);
+				if (modeHandler != null)
+					modeHandler.handleMode(bot, this, null, params, adding, false);
+			}
+		}
 	}
 
 	/**
