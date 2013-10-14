@@ -294,6 +294,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 		//Finally can create the snapshot object
 		UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,
+				locale,
 				mainMapSnapshot,
 				levelsMapSnapshot,
 				userNickMapSnapshotBuilder.build(),
