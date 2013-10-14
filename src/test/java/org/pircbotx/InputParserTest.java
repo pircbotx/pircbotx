@@ -378,6 +378,21 @@ public class InputParserTest {
 		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel doesn't match given");
 		assertNull(mevent.getUser(), "ModeEvent's user not null for mode response");
 	}
+	
+	@Test
+	public void initModeTest() throws IOException, IrcException {
+		Channel aChannel = dao.getChannel("#aChannel");
+		
+		assertFalse(aChannel.isModerated());
+		assertFalse(aChannel.isInviteOnly());
+		assertFalse(aChannel.isChannelPrivate());
+		
+		inputParser.handleLine(":irc.someserver.net 324 PircBotX #aChannel +ipmd");
+		
+		assertTrue(aChannel.isModerated());
+		assertTrue(aChannel.isInviteOnly());
+		assertTrue(aChannel.isChannelPrivate());
+	}
 
 	@DataProvider
 	public Object[][] channelUserModeProvider() {
