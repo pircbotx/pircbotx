@@ -167,80 +167,89 @@ public class InputParser implements Closeable {
 				if (adding) {
 					int limit = Integer.parseInt(params.next());
 					channel.setChannelLimit(limit);
-					Utils.dispatchEvent(bot, new SetChannelLimitEvent<PircBotX>(bot, channel, sourceUser, limit));
+					if (dispatchEvent)
+						Utils.dispatchEvent(bot, new SetChannelLimitEvent<PircBotX>(bot, channel, sourceUser, limit));
 				} else {
 					channel.setChannelLimit(-1);
-					Utils.dispatchEvent(bot, new RemoveChannelLimitEvent<PircBotX>(bot, channel, sourceUser));
+					if (dispatchEvent)
+						Utils.dispatchEvent(bot, new RemoveChannelLimitEvent<PircBotX>(bot, channel, sourceUser));
 				}
 			}
 		})
 				.add(new ChannelModeHandler('b') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				if (adding)
-					Utils.dispatchEvent(bot, new SetChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
-				else
-					Utils.dispatchEvent(bot, new RemoveChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
+					else
+						Utils.dispatchEvent(bot, new RemoveChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
 			}
 		})
 				.add(new ChannelModeHandler('t') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 				channel.setTopicProtection(adding);
-				if (adding)
-					Utils.dispatchEvent(bot, new SetTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
-				else
-					Utils.dispatchEvent(bot, new RemoveTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
+					else
+						Utils.dispatchEvent(bot, new RemoveTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
 			}
 		})
 				.add(new ChannelModeHandler('n') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 				channel.setNoExternalMessages(adding);
-				if (adding)
-					Utils.dispatchEvent(bot, new SetNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
-				else
-					Utils.dispatchEvent(bot, new RemoveNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
+					else
+						Utils.dispatchEvent(bot, new RemoveNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
 			}
 		})
 				.add(new ChannelModeHandler('i') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 				channel.setInviteOnly(adding);
-				if (adding)
-					Utils.dispatchEvent(bot, new SetInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
-				else
-					Utils.dispatchEvent(bot, new RemoveInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
+					else
+						Utils.dispatchEvent(bot, new RemoveInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
 			}
 		})
 				.add(new ChannelModeHandler('m') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 				channel.setModerated(adding);
-				if (adding)
-					Utils.dispatchEvent(bot, new SetModeratedEvent<PircBotX>(bot, channel, sourceUser));
-				else
-					Utils.dispatchEvent(bot, new RemoveModeratedEvent<PircBotX>(bot, channel, sourceUser));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetModeratedEvent<PircBotX>(bot, channel, sourceUser));
+					else
+						Utils.dispatchEvent(bot, new RemoveModeratedEvent<PircBotX>(bot, channel, sourceUser));
 			}
 		})
 				.add(new ChannelModeHandler('p') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 				channel.setChannelPrivate(adding);
-				if (adding)
-					Utils.dispatchEvent(bot, new SetPrivateEvent<PircBotX>(bot, channel, sourceUser));
-				else
-					Utils.dispatchEvent(bot, new RemovePrivateEvent<PircBotX>(bot, channel, sourceUser));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetPrivateEvent<PircBotX>(bot, channel, sourceUser));
+					else
+						Utils.dispatchEvent(bot, new RemovePrivateEvent<PircBotX>(bot, channel, sourceUser));
 			}
 		})
 				.add(new ChannelModeHandler('s') {
 			@Override
 			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 				channel.setSecret(adding);
-				if (adding)
-					Utils.dispatchEvent(bot, new SetSecretEvent<PircBotX>(bot, channel, sourceUser));
-				else
-					Utils.dispatchEvent(bot, new RemoveSecretEvent<PircBotX>(bot, channel, sourceUser));
+				if (dispatchEvent)
+					if (adding)
+						Utils.dispatchEvent(bot, new SetSecretEvent<PircBotX>(bot, channel, sourceUser));
+					else
+						Utils.dispatchEvent(bot, new RemoveSecretEvent<PircBotX>(bot, channel, sourceUser));
 			}
 		})
 				.build();
