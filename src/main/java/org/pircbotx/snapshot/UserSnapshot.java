@@ -45,7 +45,7 @@ public class UserSnapshot extends User {
 		generatedFrom = user;
 
 		//Clone fields
-		super.setAway(user.isAway());
+		super.setAwayMessage(user.getAwayMessage());
 		super.setHops(user.getHops());
 		super.setHostmask(user.getHostmask());
 		super.setIrcop(user.isIrcop());
@@ -66,7 +66,7 @@ public class UserSnapshot extends User {
 	}
 
 	@Override
-	protected void setAway(boolean away) {
+	protected void setAwayMessage(String away) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}
 
