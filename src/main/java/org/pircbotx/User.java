@@ -74,7 +74,7 @@ public class User implements Comparable<User> {
 	/**
 	 * User's away status
 	 */
-	private boolean away = false;
+	private String awayMessage = null;
 	/**
 	 * Users IRCop status
 	 */
@@ -233,5 +233,9 @@ public class User implements Comparable<User> {
 	 */
 	public int getHops() {
 		return hops;
+	}
+	
+	public boolean isAway() {
+		return awayMessage != null;
 	}
 }

@@ -792,7 +792,7 @@ public class InputParser implements Closeable {
 		if (prefix.contains("&"))
 			bot.getUserChannelDao().addUserToLevel(UserLevel.SUPEROP, user, chan);
 		//Assume here (H) if there is no G
-		user.setAway(prefix.contains("G"));
+		user.setAwayMessage(prefix.contains("G") ? "" : null);
 		user.setIrcop(prefix.contains("*"));
 	}
 
