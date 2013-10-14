@@ -385,7 +385,7 @@ public class InputParserTest {
 	 * @param events
 	 * @param mode
 	 */
-	protected void initModeTest(String mode, boolean checkChannelMode) throws IOException, IrcException {
+	protected void modeChangeTest(String mode, boolean checkChannelMode) throws IOException, IrcException {
 		Channel aChannel = dao.getChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
