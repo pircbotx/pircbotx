@@ -367,6 +367,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Builder() {
 			capHandlers.add(new EnableCapHandler("multi-prefix", true));
+			capHandlers.add(new EnableCapHandler("away-notify", true));
 			channelModeHandlers.addAll(InputParser.DEFAULT_CHANNEL_MODE_HANDLERS);
 		}
 
