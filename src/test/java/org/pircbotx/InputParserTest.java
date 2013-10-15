@@ -367,6 +367,15 @@ public class InputParserTest {
 		assertEquals(fevent.getUser(), aUser, "FingerEvent's user doesn't match given");
 		assertEquals(fevent.getChannel(), aChannel, "FingerEvent's channel doesn't match given");
 	}
+	
+	@Test
+	public void awayTest() throws IOException, IrcException {
+		User aUser = dao.getUser("AUser");
+		
+		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
+		inputParser.handleLine(":irc.someserver.net 301 PircBotXUser AUser :" + aString);
+		assertEquals(aUser.getAwayMessage(), aString, "Away message isn't expected");
+	}
 
 	@Test
 	public void modeResponseTest() throws IOException, IrcException {
