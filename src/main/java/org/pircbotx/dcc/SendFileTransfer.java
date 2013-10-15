@@ -61,6 +61,7 @@ public class SendFileTransfer extends FileTransfer {
 			socketOutput.flush();
 			socketInput.read(inBuffer, 0, inBuffer.length);
 			bytesTransfered += bytesRead;
+			onAfterSend();
 		}
 	}
 }

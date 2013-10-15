@@ -72,6 +72,16 @@ public abstract class FileTransfer {
 	protected abstract void transferFile() throws IOException;
 	
 	/**
+	 * Callback at end of read/write loop:
+	 * <p>
+	 * Receive: Socket read -> file write -> socket write (bytes transferred) -> callback -> repeat
+	 * <p>
+	 * Send: File read -> socket write -> socket read (bytes transferred) -> callback -> repeat
+	 */
+	protected void onAfterSend() {	
+	}
+	
+	/**
 	 * Is the transfer finished?
 	 * @return True if its finished
 	 */

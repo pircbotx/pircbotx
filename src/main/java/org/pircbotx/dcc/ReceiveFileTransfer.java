@@ -62,6 +62,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
 			outBuffer[3] = (byte) (bytesTransfered & 0xff);
 			socketOutput.write(outBuffer);
+			onAfterSend();
 		}
 	}
 }
