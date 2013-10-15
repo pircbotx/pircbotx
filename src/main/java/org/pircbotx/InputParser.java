@@ -702,7 +702,10 @@ public class InputParser implements Closeable {
 			builder.setHostname(parsedResponse.get(3));
 			builder.setRealname(parsedResponse.get(5));
 			whoisBuilder.put(whoisNick, builder);
-		} else if (code == RPL_WHOISCHANNELS) {
+		} else if (code == RPL_AWAY)
+			//Example: 301 PircBotXUser TheLQ_ :I'm away, sorry
+			bot.getUserChannelDao().getUser(parsedResponse.get(1)).setAwayMessage(parsedResponse.get(2));
+		else if (code == RPL_WHOISCHANNELS) {
 			//Example: 319 TheLQ Plazma :+#freenode
 			//Channel list from whois. Re-tokenize since they're after the :
 			String whoisNick = parsedResponse.get(1);
