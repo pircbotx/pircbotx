@@ -16,10 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.pircbotx;
 
 import java.io.BufferedInputStream;
@@ -56,7 +52,7 @@ public class CAPTest {
 	protected OutputStream botOut;
 	protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 	protected PircBotX bot;
-	
+
 	@BeforeMethod
 	public void resetCapHandlers() {
 		capHandlers.clear();
@@ -83,7 +79,7 @@ public class CAPTest {
 							botInWrite.flush();
 						}
 					} catch (Exception ex) {
-						log.error("Recieved error, closing bot and escelating",ex);
+						log.error("Recieved error, closing bot and escelating", ex);
 						connectionException.setValue(ex);
 						botInWrite.close();
 					}
@@ -92,7 +88,7 @@ public class CAPTest {
 					connectionException.setValue(ex);
 					try {
 						botInWrite.close();
-					} catch(Exception e) {
+					} catch (Exception e) {
 						throw new RuntimeException("Can't close botInWrite", e);
 					}
 				}
@@ -114,9 +110,9 @@ public class CAPTest {
 				.setAutoReconnect(false)
 				.buildConfiguration());
 
-		botInWrite.write((":ircd.test CAP * LS :"+cap+"\r\n").getBytes());
+		botInWrite.write((":ircd.test CAP * LS :" + cap + "\r\n").getBytes());
 		bot.connect();
-		if(connectionException.getValue() != null)
+		if (connectionException.getValue() != null)
 			throw connectionException.getValue();
 	}
 
@@ -127,7 +123,7 @@ public class CAPTest {
 	@Test
 	public void SASLTest() throws Exception {
 		capHandlers.add(new SASLCapHandler("jilles", "sesame"));
-		runTest("sasl",new OutputParser() {
+		runTest("sasl", new OutputParser() {
 			public String handleOutput(String output) throws Exception {
 				if (output.equals("CAP REQ :sasl"))
 					return ":ircd.test CAP * ACK :sasl";
@@ -136,7 +132,7 @@ public class CAPTest {
 				else if (output.equals("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU="))
 					//Done
 					return null;
-				else if(output.startsWith("AUTHENTICATE"))
+				else if (output.startsWith("AUTHENTICATE"))
 					//Unknown AUTHENTICATE, most likely an invalid username/password
 					throw new RuntimeException("Unknown or invalid SASL auth: " + output);
 				return "";
@@ -144,22 +140,22 @@ public class CAPTest {
 		});
 		assertTrue(bot.getEnabledCapabilities().contains("sasl"), "SASL isn't on the enabled capabilities list");
 	}
-	
+
 	@Test
 	public void EnableTest() throws Exception {
 		capHandlers.add(new EnableCapHandler("test-cap", true));
-		runTest("test-cap",new OutputParser() {
+		runTest("test-cap", new OutputParser() {
 			boolean acked = false;
+
 			public String handleOutput(String output) throws Exception {
 				if (output.equals("CAP REQ :test-cap")) {
 					acked = true;
 					return ":ircd.test CAP * ACK :test-cap";
-				}
-				else if(output.equals("CAP END"))
+				} else if (output.equals("CAP END"))
 					//Done
 					return null;
 				return "";
-				
+
 			}
 		});
 		assertTrue(bot.getEnabledCapabilities().contains("test-cap"), "SASL isn't on the enabled capabilities list");
