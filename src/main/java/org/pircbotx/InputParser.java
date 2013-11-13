@@ -333,6 +333,11 @@ public class InputParser implements Closeable {
 		else {
 			// We don't know what this line means.
 			configuration.getListenerManager().dispatchEvent(new UnknownEvent<PircBotX>(bot, line));
+			if (!bot.loggedIn)
+				//Pass to CapHandlers, could be important
+				for (CapHandler curCapHandler : configuration.getCapHandlers())
+					if (curCapHandler.handleUnknown(bot, line))
+						capHandlersFinished.add(curCapHandler);
 			// Return from the method;
 			return;
 		}
