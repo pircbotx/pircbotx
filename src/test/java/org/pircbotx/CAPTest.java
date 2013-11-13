@@ -133,7 +133,7 @@ public class CAPTest {
 					return ":ircd.test CAP * ACK :sasl";
 				else if (output.equals("AUTHENTICATE PLAIN"))
 					return "AUTHENTICATE +";
-				else if (output.equals("AUTHENTICATE amlsGVzAGppbGxlcwBzZXNhbWU="))
+				else if (output.equals("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU="))
 					//Done
 					return null;
 				else if(output.startsWith("AUTHENTICATE"))
