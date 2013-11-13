@@ -569,7 +569,8 @@ public class InputParserTest {
 	@Test(description = "Verify WHO response handling + UserListEvent")
 	public void whoTest() throws IOException, IrcException {
 		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
-		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4 " + aString);
+		//Issue #151: Test without full name
+		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4");
 		inputParser.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
 
 		//Make sure all information was created correctly
@@ -606,7 +607,7 @@ public class InputParserTest {
 		assertEquals(otherUser.getLogin(), "~OtherLogin", "Login doesn't match one given during WHO");
 		assertEquals(otherUser.getHostmask(), "some.host1", "Host doesn't match one given during WHO");
 		assertEquals(otherUser.getHops(), 4, "Hops doesn't match one given during WHO");
-		assertEquals(otherUser.getRealName(), aString, "RealName doesn't match one given during WHO");
+		assertEquals(otherUser.getRealName(), "", "RealName doesn't match one given during WHO");
 		assertEquals(otherUser.getServer(), "irc.otherserver.net", "Server doesn't match one given during WHO");
 		assertTrue(otherUser.isAway(), "User is not away though specified as here in WHO");
 		assertFalse(aChannel.isOp(otherUser), "User is labeled as an op even though specified as one in WHO");
