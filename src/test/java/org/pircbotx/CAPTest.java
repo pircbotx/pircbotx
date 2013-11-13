@@ -31,11 +31,17 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import javax.net.SocketFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.mutable.MutableObject;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
+import org.pircbotx.cap.CapHandler;
+import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.SASLCapHandler;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -48,8 +54,15 @@ public class CAPTest {
 	protected InputStream botIn;
 	protected PipedOutputStream botInWrite;
 	protected OutputStream botOut;
+	protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
+	protected PircBotX bot;
+	
+	@BeforeMethod
+	public void resetCapHandlers() {
+		capHandlers.clear();
+	}
 
-	public void runTest(final OutputParser callback) throws Exception {
+	public void runTest(String cap, final OutputParser callback) throws Exception {
 		final MutableObject<Exception> connectionException = new MutableObject<Exception>();
 		botInWrite = new PipedOutputStream();
 		botIn = new BufferedInputStream(new PipedInputStream(botInWrite));
@@ -90,18 +103,18 @@ public class CAPTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		SocketFactory socketFactory = mock(SocketFactory.class);
-		Configuration.Builder configurationBuilder = TestUtils.generateConfigurationBuilder().setServerHostname("127.0.0.1");
+		Configuration.Builder<PircBotX> configurationBuilder = TestUtils.generateConfigurationBuilder().setServerHostname("127.0.0.1");
 		when(socketFactory.createSocket(InetAddress.getByName(configurationBuilder.getServerHostname()), configurationBuilder.getServerPort(), configurationBuilder.getLocalAddress(), 0))
 				.thenReturn(socket);
 
 		configurationBuilder.getCapHandlers().clear();
-		PircBotX bot = new PircBotX(configurationBuilder
+		configurationBuilder.getCapHandlers().addAll(capHandlers);
+		bot = new PircBotX(configurationBuilder
 				.setSocketFactory(socketFactory)
-				.addCapHandler(new SASLCapHandler("jilles", "sesame"))
 				.setAutoReconnect(false)
 				.buildConfiguration());
 
-		botInWrite.write(":ircd.test CAP * LS :sasl\r\n".getBytes());
+		botInWrite.write((":ircd.test CAP * LS :"+cap+"\r\n").getBytes());
 		bot.connect();
 		if(connectionException.getValue() != null)
 			throw connectionException.getValue();
@@ -113,7 +126,8 @@ public class CAPTest {
 
 	@Test
 	public void SASLTest() throws Exception {
-		runTest(new OutputParser() {
+		capHandlers.add(new SASLCapHandler("jilles", "sesame"));
+		runTest("sasl",new OutputParser() {
 			public String handleOutput(String output) throws Exception {
 				if (output.equals("CAP REQ :sasl"))
 					return ":ircd.test CAP * ACK :sasl";
@@ -128,5 +142,26 @@ public class CAPTest {
 				return "";
 			}
 		});
+		assertTrue(bot.getEnabledCapabilities().contains("sasl"), "SASL isn't on the enabled capabilities list");
+	}
+	
+	@Test
+	public void EnableTest() throws Exception {
+		capHandlers.add(new EnableCapHandler("test-cap", true));
+		runTest("test-cap",new OutputParser() {
+			boolean acked = false;
+			public String handleOutput(String output) throws Exception {
+				if (output.equals("CAP REQ :test-cap")) {
+					acked = true;
+					return ":ircd.test CAP * ACK :test-cap";
+				}
+				else if(output.equals("CAP END"))
+					//Done
+					return null;
+				return "";
+				
+			}
+		});
+		assertTrue(bot.getEnabledCapabilities().contains("test-cap"), "SASL isn't on the enabled capabilities list");
 	}
 }
