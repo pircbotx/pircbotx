@@ -21,6 +21,7 @@ package org.pircbotx.cap;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
 import org.pircbotx.PircBotX;
@@ -31,6 +32,7 @@ import org.pircbotx.exception.CAPException;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
+@ToString(exclude = "password")
 public class SASLCapHandler implements CapHandler {
 	protected final String username;
 	protected final String password;
