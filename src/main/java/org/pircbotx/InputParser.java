@@ -647,8 +647,15 @@ public class InputParser implements Closeable {
 			//Extra parsing needed since tokenizer stopped at :
 			String rawEnding = parsedResponse.get(7);
 			int rawEndingSpaceIndex = rawEnding.indexOf(' ');
-			curUser.setHops(Integer.parseInt(rawEnding.substring(0, rawEndingSpaceIndex)));
-			curUser.setRealName(rawEnding.substring(rawEndingSpaceIndex + 1));
+			if (rawEndingSpaceIndex == -1) {
+				//parsedResponse data is trimmed, so if the index == -1, then there was no real name given and the space separating hops from real name was trimmed.
+				curUser.setHops(Integer.parseInt(rawEnding));
+				curUser.setRealName("");
+			} else {
+				//parsedResponse data contains a real name
+				curUser.setHops(Integer.parseInt(rawEnding.substring(0, rawEndingSpaceIndex)));
+				curUser.setRealName(rawEnding.substring(rawEndingSpaceIndex + 1));
+			}
 
 			//Associate with channel
 			bot.getUserChannelDao().addUserToChannel(curUser, channel);
