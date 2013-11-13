@@ -21,6 +21,7 @@ package org.pircbotx.cap;
 import com.google.common.collect.ImmutableList;
 import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
+import lombok.ToString;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
@@ -30,6 +31,7 @@ import org.pircbotx.exception.CAPException;
  * you will receive an "SSL peer shutdown incorrectly" exception
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@ToString
 public class TLSCapHandler extends EnableCapHandler {
 	@Getter
 	protected SSLSocketFactory sslSocketFactory;
