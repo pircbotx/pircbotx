@@ -21,6 +21,7 @@ package org.pircbotx.cap;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
@@ -32,6 +33,7 @@ import org.pircbotx.exception.CAPException;
  */
 @Slf4j
 @RequiredArgsConstructor
+@ToString
 public class EnableCapHandler implements CapHandler {
 	@Getter
 	protected final String cap;
