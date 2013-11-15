@@ -18,6 +18,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -48,6 +49,7 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	protected final String mode;
+	protected final ImmutableList<String> modeParsed;
 
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set
@@ -56,11 +58,12 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * @param user The user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
-	public ModeEvent(T bot, @NonNull Channel channel, User user, @NonNull String mode) {
+	public ModeEvent(T bot, @NonNull Channel channel, User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
 		this.mode = mode;
+		this.modeParsed = modeParsed;
 	}
 
 	/**
