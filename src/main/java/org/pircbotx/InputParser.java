@@ -668,10 +668,11 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			String mode = parsedResponse.get(2);
-
-			channel.setMode(mode);
-			configuration.getListenerManager().dispatchEvent(new ModeEvent<PircBotX>(bot, channel, null, mode));
+			ImmutableList<String> modeParsed = parsedResponse.subList(2, parsedResponse.size());
+			String mode = StringUtils.join(modeParsed, ' ');
+			
+			channel.setMode(mode, modeParsed);
+			configuration.getListenerManager().dispatchEvent(new ModeEvent<PircBotX>(bot, channel, null, mode, modeParsed));
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
@@ -775,7 +776,8 @@ public class InputParser implements Closeable {
 			// The mode of a channel is being changed.
 			Channel channel = bot.getUserChannelDao().getChannel(target);
 			channel.parseMode(mode);
-			PeekingIterator<String> params = Iterators.peekingIterator(Iterators.forArray(StringUtils.split(mode, ' ')));
+			ImmutableList<String> modeParsed = ImmutableList.copyOf(StringUtils.split(mode, ' '));
+			PeekingIterator<String> params = Iterators.peekingIterator(modeParsed.iterator());
 
 			//Process modes letter by letter, grabbing paramaters as needed
 			boolean adding = true;
@@ -792,7 +794,7 @@ public class InputParser implements Closeable {
 						modeHandler.handleMode(bot, channel, user, params, adding, true);
 				}
 			}
-			configuration.getListenerManager().dispatchEvent(new ModeEvent<PircBotX>(bot, channel, user, mode));
+			configuration.getListenerManager().dispatchEvent(new ModeEvent<PircBotX>(bot, channel, user, mode, modeParsed));
 		} else
 			// The mode of a user is being changed.
 			configuration.getListenerManager().dispatchEvent(new UserModeEvent<PircBotX>(bot, user, bot.getUserChannelDao().getUser(target), mode));
