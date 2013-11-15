@@ -18,6 +18,7 @@
  */
 package org.pircbotx.snapshot;
 
+import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -135,7 +136,7 @@ public class ChannelSnapshot extends Channel {
 	}
 
 	@Override
-	protected void setMode(String mode) {
+	protected void setMode(String mode, ImmutableList<String> modeParsed) {
 		SnapshotUtils.fail();
 	}
 }

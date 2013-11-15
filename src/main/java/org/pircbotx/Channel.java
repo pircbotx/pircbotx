@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
@@ -68,6 +69,7 @@ public class Channel implements Comparable<Channel> {
 			return bot.getConfiguration().getBotFactory().createOutputChannel(bot, Channel.this);
 		}
 	};
+	@Setter(AccessLevel.NONE)
 	protected String mode = "";
 	/**
 	 * The current channel topic
@@ -264,15 +266,14 @@ public class Channel implements Comparable<Channel> {
 	 * fire it.
 	 * @param mode
 	 */
-	protected void setMode(String mode) {
+	protected void setMode(String mode, ImmutableList<String> modeParsed) {
 		this.mode = mode;
 		this.modeStale = false;
 		if (modeLatch != null)
 			modeLatch.countDown();
 
-		
 		//Parse out mode
-		PeekingIterator<String> params = Iterators.peekingIterator(Iterators.forArray(StringUtils.split(mode, ' ')));
+		PeekingIterator<String> params = Iterators.peekingIterator(modeParsed.iterator());
 
 		//Process modes letter by letter, grabbing paramaters as needed
 		boolean adding = true;

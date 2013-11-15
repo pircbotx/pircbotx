@@ -506,9 +506,12 @@ public class InputParserTest {
 	public void channelModeChangeTest(String mode, String parentMode, Class<?> modeClass) throws IOException, IrcException {
 		Channel aChannel = dao.getChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
-		if (mode.startsWith("-"))
+		if (mode.startsWith("-")) {
 			//Set the mode first
-			aChannel.setMode((parentMode != null) ? parentMode : mode.substring(1));
+			String channelMode = (parentMode != null) ? parentMode : mode.substring(1);
+			ImmutableList<String> channelModeParsed = ImmutableList.copyOf(StringUtils.split(channelMode, ' '));
+			aChannel.setMode(channelMode, channelModeParsed);
+		}
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode);
 
 		//Verify generic ModeEvent contents
@@ -534,33 +537,76 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify SetChannelKeyEvent has the correct key")
 	public void setChannelKeyEventTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
 		SetChannelKeyEvent event = getEvent(SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
+		assertEquals(aChannel.getChannelKey(), "testPassword", "Key from channel doesn't match given");
+	}
+	
+	
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify Channel has the correct key")
+	public void setChannelKeyModeTest() throws IOException, IrcException {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
+		inputParser.handleLine(":irc.someserver.net 324 PircBotX #aChannel +k testPassword");
+		assertEquals(aChannel.getChannelKey(), "testPassword", "Key from channel doesn't match given");
 	}
 
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
 	public void removeChannelKeyEventEmptyTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k");
 		RemoveChannelKeyEvent event = getEvent(RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertNull(event.getKey(), "RemoveChannelKeyEvent key doesn't match given");
+		assertNull(aChannel.getChannelKey(), "Channel key doesn't match given");
 	}
 
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
 	public void removeChannelKeyEventTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k testPassword");
 		RemoveChannelKeyEvent event = getEvent(RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "RemoveChannelKeyEvent key doesn't match given");
+		assertNull(aChannel.getChannelKey(), "Channel key doesn't match given");
 	}
 
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify SetChannelLimitEvent has the correct limit")
 	public void setChannelLimitEvent() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel +l 10");
 		SetChannelLimitEvent event = getEvent(SetChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getLimit(), 10, "SetChannelLimitEvent key doesn't match given");
+		assertEquals(aChannel.getChannelLimit(), 10, "Channel limit doesn't match given");
+	}
+	
+	@Test(/*dependsOnMethods = "channelModeChangeTest", */description = "Verify SetChannelLimitEvent has the correct limit")
+	public void setChannelLimitModeEvent() throws IOException, IrcException {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
+		inputParser.handleLine(":irc.someserver.net 324 PircBotX #aChannel +l 10");
+		assertEquals(aChannel.getChannelLimit(), 10, "Channel limit doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelLimitEvent has the correct limit")
+	public void removeChannelLimitEvent() throws IOException, IrcException {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
+		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -l 10");
+		RemoveChannelLimitEvent event = getEvent(RemoveChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
+		assertEquals(aChannel.getChannelLimit(), -1, "Channel limit doesn't match given");
+	}
+	
+	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelLimitEvent has the correct limit")
+	public void removeChannelLimitEmptyEvent() throws IOException, IrcException {
+		//Since genericChannelModeTest does most of the verification, not much is needed here
+		Channel aChannel = dao.getChannel("#aChannel"); 
+		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -l");
+		RemoveChannelLimitEvent event = getEvent(RemoveChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
+		assertEquals(aChannel.getChannelLimit(), -1, "Channel limit doesn't match given");
 	}
 
 	/**
