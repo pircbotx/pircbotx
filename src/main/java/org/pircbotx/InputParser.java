@@ -105,7 +105,7 @@ import org.slf4j.MarkerFactory;
 @RequiredArgsConstructor
 @Slf4j
 public class InputParser implements Closeable {
-	protected static final Marker INPUT_MARKER = MarkerFactory.getMarker("pircbotx.input");
+	public static final Marker INPUT_MARKER = MarkerFactory.getMarker("pircbotx.input");
 	/**
 	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6).
 	 */
