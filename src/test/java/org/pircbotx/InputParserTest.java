@@ -660,7 +660,8 @@ public class InputParserTest {
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
 	}
 	
-	@Test(dependsOnMethods = "whoTest", description = "Veryfy that we don't falsely registers all WHO responses as valid channels")
+	//TODO: Issue #148: Re-enable in 2.1
+	@Test(dependsOnMethods = "whoTest", description = "Veryfy that we don't falsely registers all WHO responses as valid channels", enabled = false)
 	public void whoTestFalseChannels() throws IOException, IrcException {
 		assertFalse(dao.channelExists("#randomChannel"), "Intial test to ensure channel doesn't exist");
 		
