@@ -64,7 +64,7 @@ public class IdentServer implements Closeable, Runnable {
 	protected static final Object INSTANCE_CREATE_LOCK = new Object();
 	protected final Charset encoding;
 	protected final ServerSocket serverSocket;
-	protected final List<IdentEntry> identEntries = new ArrayList();
+	protected final List<IdentEntry> identEntries = new ArrayList<IdentEntry>();
 	protected Thread runningThread;
 	
 	/**

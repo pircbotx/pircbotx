@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
@@ -34,7 +35,7 @@ import org.pircbotx.User;
 @RequiredArgsConstructor
 public abstract class FileTransfer {
 	@NonNull
-	protected final Configuration configuration;
+	protected final Configuration<PircBotX> configuration;
 	@NonNull
 	protected final Socket socket;
 	@NonNull
