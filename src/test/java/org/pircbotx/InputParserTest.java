@@ -659,6 +659,18 @@ public class InputParserTest {
 		assertFalse(aChannel.isOp(otherUser), "User is labeled as an op even though specified as one in WHO");
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
 	}
+	
+	@Test(dependsOnMethods = "whoTest", description = "Veryfy that we don't falsely registers all WHO responses as valid channels")
+	public void whoTestFalseChannels() throws IOException, IrcException {
+		assertFalse(dao.channelExists("#randomChannel"), "Intial test to ensure channel doesn't exist");
+		
+		//Sending out a "WHO AUser" command
+		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #randomChannel ~ALogin 8dce28.83b021.3a4fde.2fed84 irc.someserver.net AUser H :0 " + aString);
+		inputParser.handleLine(":irc.someserver.net 315 PircBotXUser AUser :End of /WHO list.");
+
+		assertFalse(dao.channelExists("#randomChannel"), "WHO response for a user may not result in unrelated channel creation");
+		assertFalse(dao.channelExists("AUser"), "WHO response for a user may not result in channel creation");
+	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
 	public void kickTest() throws IOException, IrcException {
