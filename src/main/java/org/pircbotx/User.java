@@ -114,6 +114,7 @@ public class User implements Comparable<User> {
 	 * {@link PircBotX#waitFor(java.lang.Class) }
 	 * @return True if the user is verified
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean isVerified() {
 		try {
 			bot.sendRaw().rawLine("WHOIS " + getNick() + " " + getNick());

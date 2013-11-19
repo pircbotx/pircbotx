@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.Socket;
 import lombok.Cleanup;
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
@@ -33,7 +34,7 @@ import org.pircbotx.User;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SendFileTransfer extends FileTransfer {
-	public SendFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
+	public SendFileTransfer(Configuration<PircBotX> configuration, Socket socket, User user, File file, long startPosition) {
 		super(configuration, socket, user, file, startPosition);
 	}
 

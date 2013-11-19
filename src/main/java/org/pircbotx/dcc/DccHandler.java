@@ -104,9 +104,9 @@ public class DccHandler implements Closeable {
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, user, rawFilename, safeFilename, address, port, size, transferToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, user, rawFilename, safeFilename, address, port, size, transferToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, user, rawFilename, safeFilename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -160,7 +160,7 @@ public class DccHandler implements Closeable {
 				Iterator<Map.Entry<PendingRecieveFileTransfer, CountDownLatch>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
 				while (pendingItr.hasNext()) {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
-					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
+					IncomingFileTransferEvent<PircBotX> transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
 							&& transferEvent.getTransferToken().equals(transferToken)) {
 						curEntry.getKey().setPosition(position);
@@ -200,9 +200,9 @@ public class DccHandler implements Closeable {
 
 			//Nope, this is a new chat
 			if (port == 0 && chatToken != null)
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port, chatToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, user, address, port, chatToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, user, address, port, chatToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, user, address, port, chatToken, false));
 		} else
 			return false;
 		return true;
@@ -214,7 +214,7 @@ public class DccHandler implements Closeable {
 	 * @return An active {@link ReceiveChat}
 	 * @throws IOException If an error occurred during connection
 	 */
-	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
+	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent<PircBotX> event) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
@@ -235,7 +235,7 @@ public class DccHandler implements Closeable {
 	 * @return An active {@link ReceiveFileTransfer}
 	 * @throws IOException If an error occurred during connection
 	 */
-	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
+	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent<PircBotX> event, File destination) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		return acceptFileTransfer(event, destination, 0);
@@ -251,7 +251,7 @@ public class DccHandler implements Closeable {
 	 * @throws InterruptedException If this is interrupted while waiting for a connection
 	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
-	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
+	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent<PircBotX> event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
@@ -280,7 +280,7 @@ public class DccHandler implements Closeable {
 		return acceptFileTransfer(event, destination, pendingTransfer.getPosition());
 	}
 
-	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException {
+	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent<PircBotX> event, File destination, long startPosition) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
@@ -471,7 +471,7 @@ public class DccHandler implements Closeable {
 		//This is a slightly modified version of Utils.tokenizeLine to parse
 		//potential quotes in filenames
 		int quotesIndexEnd = request.lastIndexOf('"');
-		List<String> stringParts = new ArrayList();
+		List<String> stringParts = new ArrayList<String>();
 		int pos = 0, end;
 		while ((end = request.indexOf(' ', pos)) >= 0) {
 			if (pos >= quotesIndexBegin && end < quotesIndexEnd) {
@@ -537,7 +537,7 @@ public class DccHandler implements Closeable {
 
 	@Data
 	protected static class PendingRecieveFileTransfer {
-		protected final IncomingFileTransferEvent event;
+		protected final IncomingFileTransferEvent<PircBotX> event;
 		protected long position;
 	}
 
