@@ -118,6 +118,12 @@ public class Configuration<B extends PircBotX> {
 	 */
 	protected Configuration(Builder<B> builder) {
 		//Check for basics
+		if (builder.isWebIrcEnabled()) {
+			checkNotNull(builder.getWebIrcAddress(), "Must specify WEBIRC address if enabled");
+			checkArgument(StringUtils.isNotBlank(builder.getWebIrcHostname()), "Must specify WEBIRC hostname if enabled");
+			checkArgument(StringUtils.isNotBlank(builder.getWebIrcUsername()), "Must specify WEBIRC username if enabled");
+			checkArgument(StringUtils.isNotBlank(builder.getWebIrcPassword()), "Must specify WEBIRC password if enabled");
+		}
 		checkNotNull(builder.getListenerManager());
 		checkArgument(StringUtils.isNotBlank(builder.getName()), "Must specify name");
 		checkArgument(StringUtils.isNotBlank(builder.getLogin()), "Must specify login");
