@@ -23,5 +23,5 @@ package org.pircbotx;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public enum UserLevel {
-	OP, VOICE, HALFOP, SUPEROP, OWNER
+	VOICE, OP, HALFOP, SUPEROP, OWNER
 }
