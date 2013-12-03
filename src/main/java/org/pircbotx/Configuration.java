@@ -203,7 +203,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected String webIrcUsername = null;
 		/**
-		 * Password of WEBIRC connection
+		 * Hostname of WEBIRC connection
 		 */
 		protected String webIrcHostname = null;
 		/**
