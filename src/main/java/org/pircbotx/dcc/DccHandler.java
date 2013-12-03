@@ -214,7 +214,7 @@ public class DccHandler implements Closeable {
 	 * @return An active {@link ReceiveChat}
 	 * @throws IOException If an error occurred during connection
 	 */
-	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent<PircBotX> event) throws IOException {
+	public ReceiveChat acceptChatRequest(IncomingChatRequestEvent event) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
@@ -235,7 +235,7 @@ public class DccHandler implements Closeable {
 	 * @return An active {@link ReceiveFileTransfer}
 	 * @throws IOException If an error occurred during connection
 	 */
-	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent<PircBotX> event, File destination) throws IOException {
+	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		return acceptFileTransfer(event, destination, 0);
@@ -251,7 +251,7 @@ public class DccHandler implements Closeable {
 	 * @throws InterruptedException If this is interrupted while waiting for a connection
 	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
-	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent<PircBotX> event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
+	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
@@ -280,7 +280,7 @@ public class DccHandler implements Closeable {
 		return acceptFileTransfer(event, destination, pendingTransfer.getPosition());
 	}
 
-	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent<PircBotX> event, File destination, long startPosition) throws IOException {
+	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
