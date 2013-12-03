@@ -271,7 +271,7 @@ features and bug fixes in an official alternative distribution.
 				<configuration>
 					<mavenExecutorId>forked-path</mavenExecutorId>
 					<useReleaseProfile>false</useReleaseProfile>
-					<arguments>-P release,sonatype-oss-release</arguments>
+					<arguments>-P complete-build,release,sonatype-oss-release</arguments>
 				</configuration>
 			</plugin>
 		</plugins>
