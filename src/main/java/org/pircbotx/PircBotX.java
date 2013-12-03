@@ -114,7 +114,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected String nick = "";
 	protected boolean loggedIn = false;
 	protected Thread shutdownHook;
-	protected boolean reconnectStopped = false;
+	protected volatile boolean reconnectStopped = false;
 	protected ImmutableMap<String, String> reconnectChannels;
 	private State state = State.INIT;
 	protected final Object stateLock = new Object();
