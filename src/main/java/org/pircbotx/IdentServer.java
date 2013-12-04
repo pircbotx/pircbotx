@@ -30,6 +30,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -205,6 +206,17 @@ public class IdentServer implements Closeable, Runnable {
 	protected void addIdentEntry(InetAddress remoteAddress, int remotePort, int localPort, String login) {
 		synchronized (identEntries) {
 			identEntries.add(new IdentEntry(remoteAddress, remotePort, localPort, login));
+		}
+	}
+	
+	protected void removeIdentEntry(InetAddress remoteAddress, int remotePort, int localPort, String login) {
+		synchronized (identEntries) {
+			for (Iterator<IdentEntry> itr = identEntries.iterator(); itr.hasNext();) {
+				IdentEntry curEntry = itr.next();
+				if(curEntry.getRemoteAddress().equals(remoteAddress) && curEntry.getRemotePort() == remotePort
+						&& curEntry.getLocalPort() == localPort && curEntry.getLogin().equals(login))
+					itr.remove();
+			}
 		}
 	}
 
