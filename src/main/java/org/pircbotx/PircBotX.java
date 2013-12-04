@@ -442,6 +442,10 @@ public class PircBotX implements Comparable<PircBotX> {
 			if (state == State.DISCONNECTED)
 				throw new RuntimeException("Cannot call shutdown twice");
 			state = State.DISCONNECTED;
+			
+			if (configuration.isIdentServerEnabled())
+				IdentServer.getServer().removeIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
+			
 			try {
 				socket.close();
 			} catch (Exception e) {
