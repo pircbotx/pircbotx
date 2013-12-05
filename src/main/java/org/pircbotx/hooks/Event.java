@@ -19,6 +19,7 @@
 package org.pircbotx.hooks;
 
 import com.google.common.collect.ComparisonChain;
+import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
@@ -32,15 +33,15 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	protected final T bot;
 	protected final long id;
 
-	public Event(T bot) {
+	public Event(@NonNull T bot) {
 		this(bot, bot.getConfiguration().getListenerManager());
 	}
 
-	public Event(ListenerManager listenerManager) {
+	public Event(@NonNull ListenerManager listenerManager) {
 		this(null, listenerManager);
 	}
 
-	public Event(T bot, ListenerManager listenerManager) {
+	public Event(@NonNull T bot, @NonNull ListenerManager listenerManager) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
 		this.id = listenerManager.incrementCurrentId();
