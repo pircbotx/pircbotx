@@ -100,7 +100,7 @@ public abstract class ListenerManager<B extends PircBotX> {
 	}
 
 	/**
-	 * Get the current id for the next event and increment the id
+	 * Get the current id for the next event and increment the id for the next call
 	 *
 	 * @return The current id
 	 */
