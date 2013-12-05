@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.PircBotX;
+import org.pircbotx.Utils;
 import org.pircbotx.hooks.WaitForQueue;
 
 /**
@@ -63,6 +64,8 @@ public class GenericListenerManager<B extends PircBotX> extends ListenerManager<
 	}
 
 	public void dispatchEvent(Event<B> event) {
+		if (event.getBot() != null)
+			Utils.addBotToMDC(event.getBot());
 		for (Listener<B> curListener : listeners)
 			try {
 				curListener.onEvent(event);
