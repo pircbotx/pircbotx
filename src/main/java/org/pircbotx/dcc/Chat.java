@@ -39,8 +39,8 @@ import org.slf4j.MarkerFactory;
  */
 @Slf4j
 public class Chat {
-	protected static final Marker INPUT_CHAT_MARKER = MarkerFactory.getMarker("pircbotx.dccChat.input");
-	protected static final Marker OUTPUT_CHAT_MARKER = MarkerFactory.getMarker("pircbotx.dccChat.output");
+	public static final Marker INPUT_CHAT_MARKER = MarkerFactory.getMarker("pircbotx.dccChat.input");
+	public static final Marker OUTPUT_CHAT_MARKER = MarkerFactory.getMarker("pircbotx.dccChat.output");
 	@Getter
 	protected User user;
 	@Getter
