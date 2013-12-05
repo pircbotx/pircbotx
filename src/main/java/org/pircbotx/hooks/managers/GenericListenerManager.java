@@ -49,11 +49,8 @@ import org.pircbotx.PircBotX;
  */
 @Deprecated
 @Slf4j
-public class GenericListenerManager<B extends PircBotX> implements ListenerManager<B> {
+public class GenericListenerManager<B extends PircBotX> extends ListenerManager<B> {
 	protected Set<Listener<B>> listeners = new HashSet<Listener<B>>();
-	@Getter
-	@Setter
-	protected long currentId = 0;
 
 	public boolean addListener(Listener listener) {
 		return listeners.add(listener);
@@ -78,10 +75,6 @@ public class GenericListenerManager<B extends PircBotX> implements ListenerManag
 
 	public boolean listenerExists(Listener listener) {
 		return listeners.contains(listener);
-	}
-
-	public long incrementCurrentId() {
-		return currentId++;
 	}
 
 	public void shutdown(PircBotX bot) {

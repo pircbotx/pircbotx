@@ -19,6 +19,10 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.concurrent.atomic.AtomicLong;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -39,7 +43,8 @@ import org.pircbotx.hooks.Listener;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface ListenerManager<B extends PircBotX> {
+public abstract class ListenerManager<B extends PircBotX> {
+	protected AtomicLong currentId = new AtomicLong();
 	/**
 	 * Sends event to all appropriate listeners.
 	 * <p>
@@ -47,7 +52,7 @@ public interface ListenerManager<B extends PircBotX> {
 	 * on exception handling and performance.
 	 * @param event The event to send
 	 */
-	public void dispatchEvent(Event<B> event);
+	public abstract void dispatchEvent(Event<B> event);
 
 	/**
 	 * Adds an listener to the list of listeners for an event.
@@ -57,7 +62,7 @@ public interface ListenerManager<B extends PircBotX> {
 	 * @param listener The listener to add
 	 * @return True if the listener was successfully added, false if not
 	 */
-	public boolean addListener(Listener listener);
+	public abstract boolean addListener(Listener listener);
 
 	/**
 	 * Removes the specified Listener
@@ -68,14 +73,14 @@ public interface ListenerManager<B extends PircBotX> {
 	 * @return True if the listener was removed, false if it didn't exist or wasn't
 	 * removed
 	 */
-	public boolean removeListener(Listener listener);
+	public abstract boolean removeListener(Listener listener);
 
 	/**
 	 * Checks if the specified listener exists
 	 * @param listener The listener <i>instance</i> to look for
 	 * @return True if it the listener exists, false if it doesn't
 	 */
-	public boolean listenerExists(Listener listener);
+	public abstract boolean listenerExists(Listener listener);
 
 	/**
 	 * Gets all listeners that are in this ListenerManager
@@ -84,7 +89,7 @@ public interface ListenerManager<B extends PircBotX> {
 	 * on exception handling and performance.
 	 * @return An <b>immutable copy</b> of all listeners that are in this ListenerManager
 	 */
-	public ImmutableSet<Listener<B>> getListeners();
+	public abstract ImmutableSet<Listener<B>> getListeners();
 
 	/**
 	 * Set the current id used by the ListenerManager
@@ -93,7 +98,9 @@ public interface ListenerManager<B extends PircBotX> {
 	 * is going to have an id of 0
 	 * @param currentId The id to set this ListenerManager to
 	 */
-	public void setCurrentId(long currentId);
+	public void setCurrentId(long currentId) {
+		this.currentId.set(currentId);
+	}
 
 	/**
 	 * Gets the current id used by the ListenerManager
@@ -102,7 +109,9 @@ public interface ListenerManager<B extends PircBotX> {
 	 * means that this id has not been dispatched yet.
 	 * @return The current id
 	 */
-	public long getCurrentId();
+	public long getCurrentId() {
+		return currentId.get();
+	}
 
 	/**
 	 * Returns the current ID then increments by 1. This means that if the current
@@ -110,7 +119,9 @@ public interface ListenerManager<B extends PircBotX> {
 	 * returns 1.
 	 * @return The current id
 	 */
-	public long incrementCurrentId();
+	public long incrementCurrentId() {
+		return currentId.incrementAndGet();
+	}
 
-	public void shutdown(B bot);
+	public abstract void shutdown(B bot);
 }
