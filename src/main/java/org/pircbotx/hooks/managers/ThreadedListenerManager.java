@@ -78,8 +78,8 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	@Override
-	public boolean addListener(Listener listener) {
-		return getListenersReal().add(listener);
+	public void addListener(Listener listener) {
+		getListenersReal().add(listener);
 	}
 
 	@Override

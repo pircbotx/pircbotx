@@ -50,8 +50,8 @@ import org.pircbotx.hooks.WaitForQueue;
 public class GenericListenerManager<B extends PircBotX> extends ListenerManager<B> {
 	protected Set<Listener<B>> listeners = new HashSet<Listener<B>>();
 
-	public boolean addListener(Listener listener) {
-		return listeners.add(listener);
+	public void addListener(Listener listener) {
+		listeners.add(listener);
 	}
 
 	public boolean removeListener(Listener listener) {

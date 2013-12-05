@@ -38,21 +38,23 @@ import org.pircbotx.hooks.Listener;
  * <p>
  * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean) }
  * with isBackground set to true
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class BackgroundListenerManager extends ThreadedListenerManager {
 	protected Map<Listener, ExecutorService> backgroundListeners = new HashMap();
 	protected final AtomicInteger backgroundCount = new AtomicInteger();
 
-	public boolean addListener(Listener listener, boolean isBackground) {
+	public void addListener(Listener listener, boolean isBackground) {
 		if (!isBackground)
-			return super.addListener(listener);
-		BasicThreadFactory factory = new BasicThreadFactory.Builder()
-				.namingPattern("backgroundPool" + managerNumber + "-backgroundThread" + backgroundCount.getAndIncrement() + "-%d")
-				.daemon(true)
-				.build();
-		backgroundListeners.put(listener, Executors.newSingleThreadExecutor(factory));
-		return true;
+			super.addListener(listener);
+		else {
+			BasicThreadFactory factory = new BasicThreadFactory.Builder()
+					.namingPattern("backgroundPool" + managerNumber + "-backgroundThread" + backgroundCount.getAndIncrement() + "-%d")
+					.daemon(true)
+					.build();
+			backgroundListeners.put(listener, Executors.newSingleThreadExecutor(factory));
+		}
 	}
 
 	@Override
