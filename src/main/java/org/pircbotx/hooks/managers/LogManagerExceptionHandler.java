@@ -6,6 +6,7 @@ import org.pircbotx.hooks.Listener;
 
 /**
  * Write all exceptions to log
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j

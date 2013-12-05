@@ -29,8 +29,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * A standard ThreadListenerManager with dedicated background threads. Normal
- * Listeners execute in the same Thread Pool. Background Listeners however execute
+ * ThreadListenerManager with additional dedicated background threads. Normal
+ * Listeners execute in the same thread pool. Background Listeners however execute
  * in their own dedicated single threads separate from the rest
  * <p>
  * This class is useful for logging listeners or any other listener that needs

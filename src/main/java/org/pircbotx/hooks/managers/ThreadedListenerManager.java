@@ -41,8 +41,8 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * A listener manager that executes individual listeners in a thread pool. Will 
- * also shutdown all running listeners upon bot shutdown
+ * ListenerManager that runs individual listeners in their own thread per event.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
@@ -54,8 +54,7 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	protected final Multimap<B, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
-	 * Configures with default options: perHook is false and a
-	 * {@link Executors#newCachedThreadPool() cached threadpool} is used
+	 * Configures with default cached thread thread pool.
 	 */
 	public ThreadedListenerManager() {
 		managerNumber = MANAGER_COUNT.getAndIncrement();
@@ -69,9 +68,9 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	/**
-	 * Configures with default perHook mode (false) and specified
-	 * {@link ExecutorService}
-	 * @param pool
+	 * Configures with specified thread pool
+	 *
+	 * @param pool Thread pool to run listeners in
 	 */
 	public ThreadedListenerManager(ExecutorService pool) {
 		managerNumber = MANAGER_COUNT.getAndIncrement();
@@ -125,8 +124,9 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	/**
-	 * Shutdown the internal Threadpool. If you need to do more a advanced shutdown,
+	 * Shuts down the internal thread pool. If you need to do more a advanced shutdown,
 	 * the pool is returned.
+	 *
 	 * @return The internal thread pool the ThreadedListenerManager uses
 	 */
 	public ExecutorService shutdown() {
