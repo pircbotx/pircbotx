@@ -113,7 +113,8 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 		pool.execute(new ManagedFutureTask(listener, event, new Callable<Void>() {
 			public Void call() {
 				try {
-					Utils.addBotToMDC(event.getBot());
+					if (event.getBot() != null)
+						Utils.addBotToMDC(event.getBot());
 					listener.onEvent(event);
 				} catch (Throwable e) {
 					getExceptionHandler().onException(listener, event, e);
