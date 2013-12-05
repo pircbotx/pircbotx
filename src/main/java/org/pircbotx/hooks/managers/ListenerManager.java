@@ -46,6 +46,14 @@ import org.pircbotx.hooks.Listener;
 public abstract class ListenerManager<B extends PircBotX> {
 	protected AtomicLong currentId = new AtomicLong();
 	/**
+	 * Handler of any exception thrown by a listener while executing an event
+	 */
+	@NonNull
+	@Getter
+	@Setter
+	protected ManagerExceptionHandler exceptionHandler = new LogManagerExceptionHandler();
+	
+	/**
 	 * Sends event to all appropriate listeners.
 	 * <p>
 	 * <b>For implementations:</b> Please read {@link ListenerManager important information}
