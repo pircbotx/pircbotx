@@ -53,16 +53,14 @@ public abstract class ListenerManager<B extends PircBotX> {
 	 * Add a listener to this ListenerManager
 	 *
 	 * @param listener The listener to add
-	 * @return True if the listener was successfully added, false if not
 	 */
-	public abstract boolean addListener(Listener listener);
+	public abstract void addListener(Listener listener);
 
 	/**
 	 * Remove a listener from this ListenerManager
 	 *
 	 * @param listener The listener to remove
-	 * @return True if the listener was removed, false if it didn't exist or wasn't
-	 * removed
+	 * @return True if the listener was removed, false if it didn't exist
 	 */
 	public abstract boolean removeListener(Listener listener);
 
