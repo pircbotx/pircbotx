@@ -52,7 +52,7 @@ public class WaitForQueue implements Closeable {
 	 * It will be removed when {@link #done()} is called
 	 * @param bot 
 	 */
-	public WaitForQueue(PircBotX bot) {
+	public WaitForQueue(@NonNull PircBotX bot) {
 		this.bot = bot;
 		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
@@ -65,7 +65,7 @@ public class WaitForQueue implements Closeable {
 	 * @throws InterruptedException 
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit) 
 	 */
-	public <E extends Event> E waitFor(Class<E> eventClass) throws InterruptedException {
+	public <E extends Event> E waitFor(@NonNull Class<E> eventClass) throws InterruptedException {
 		List<Class<E>> eventList = new ArrayList<Class<E>>();
 		eventList.add(eventClass);
 		return (E)waitFor((List<Class<? extends Event>>)(Object)eventList);
@@ -78,7 +78,7 @@ public class WaitForQueue implements Closeable {
 	 * @throws InterruptedException 
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit) 
 	 */
-	public Event waitFor(Class<? extends Event>... eventClasses) throws InterruptedException {
+	public Event waitFor(@NonNull Class<? extends Event>... eventClasses) throws InterruptedException {
 		//Work around generics problems
 		return waitFor(Arrays.asList(eventClasses));
 	}
@@ -90,7 +90,7 @@ public class WaitForQueue implements Closeable {
 	 * @throws InterruptedException 
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit) 
 	 */
-	public Event waitFor(List<Class<? extends Event>> eventClasses) throws InterruptedException {
+	public Event waitFor(@NonNull List<Class<? extends Event>> eventClasses) throws InterruptedException {
 		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 
