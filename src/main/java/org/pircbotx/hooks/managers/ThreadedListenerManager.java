@@ -46,12 +46,11 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
-public class ThreadedListenerManager<B extends PircBotX> implements ListenerManager<B> {
+public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager<B> {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected ExecutorService pool;
 	protected Set<Listener<B>> listeners = Collections.synchronizedSet(new HashSet<Listener<B>>());
-	protected AtomicLong currentId = new AtomicLong();
 	protected final Multimap<B, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
@@ -123,21 +122,6 @@ public class ThreadedListenerManager<B extends PircBotX> implements ListenerMana
 				return null;
 			}
 		}));
-	}
-
-	@Override
-	public void setCurrentId(long currentId) {
-		this.currentId.set(currentId);
-	}
-
-	@Override
-	public long getCurrentId() {
-		return currentId.get();
-	}
-
-	@Override
-	public long incrementCurrentId() {
-		return currentId.getAndIncrement();
 	}
 
 	/**
