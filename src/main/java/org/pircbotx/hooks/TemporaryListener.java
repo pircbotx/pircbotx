@@ -18,24 +18,24 @@
  */
 package org.pircbotx.hooks;
 
+import lombok.NonNull;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
- * Listener that provides an easy way to make temporary listeners that aren't
- * needed after one use
+ * Listener for short one-off tasks. Listener methods will only be called if the event
+ * matches the specified bot. Listener can easily be removed with {@link #done() }.
  * <p>
- * Your listener will only get called if the bot that generated the event matches
- * the given one. Then when you are finished, call {@link #done()} and the listener
- * will be removed.
- * <p>
- * Note: The reason the {@link #done()} method is used instead of automatically
- * removing is that you may need to check for something before executing.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TemporaryListener extends ListenerAdapter {
 	protected final PircBotX bot;
 
-	public TemporaryListener(PircBotX bot) {
+	/**
+	 * Create a TemporaryListener for the specified bot
+	 * @param bot The bot that your interested in
+	 */
+	public TemporaryListener(@NonNull PircBotX bot) {
 		this.bot = bot;
 	}
 
@@ -45,6 +45,9 @@ public class TemporaryListener extends ListenerAdapter {
 			super.onEvent(event);
 	}
 
+	/**
+	 * Remove this listener from the {@link ListenerManager}
+	 */
 	public void done() {
 		bot.getConfiguration().getListenerManager().removeListener(this);
 	}
