@@ -115,8 +115,8 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 				try {
 					Utils.addBotToMDC(event.getBot());
 					listener.onEvent(event);
-				} catch (Exception e) {
-					log.error("Exception encountered when executing event " + event + " on listener " + listener, e);
+				} catch (Throwable e) {
+					getExceptionHandler().onException(listener, event, e);
 				}
 				return null;
 			}

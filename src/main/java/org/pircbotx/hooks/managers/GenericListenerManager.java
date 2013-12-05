@@ -63,12 +63,12 @@ public class GenericListenerManager<B extends PircBotX> extends ListenerManager<
 	}
 
 	public void dispatchEvent(Event<B> event) {
-		try {
-			for (Listener<B> curListener : listeners)
+		for (Listener<B> curListener : listeners)
+			try {
 				curListener.onEvent(event);
-		} catch (Exception e) {
-			log.error("Exception encountered when dispatching event " + event, e);
-		}
+			} catch (Throwable e) {
+				getExceptionHandler().onException(curListener, event, e);
+			}
 	}
 
 	public boolean listenerExists(Listener listener) {
