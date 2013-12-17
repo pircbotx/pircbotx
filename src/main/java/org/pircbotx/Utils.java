@@ -19,6 +19,7 @@
 package org.pircbotx;
 
 import com.google.common.base.CharMatcher;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.pircbotx.hooks.Event;
@@ -84,7 +85,7 @@ public final class Utils {
 	 * @param bot The bot that sends the raw line
 	 * @param rawLine The raw line to send
 	 */
-	public static void sendRawLineToServer(PircBotX bot, String rawLine) {
+	public static void sendRawLineToServer(PircBotX bot, String rawLine) throws IOException {
 		bot.sendRawLineToServer(rawLine);
 	}
 
