@@ -33,6 +33,7 @@ import org.slf4j.MarkerFactory;
 
 /**
  * Send raw lines to the server with locking and message delay support.
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -74,11 +75,11 @@ public class OutputRaw {
 			Utils.sendRawLineToServer(bot, line);
 			lastSentLine = System.nanoTime();
 		} catch (IOException e) {
-			throw new RuntimeException("IO exception when sending line to server, is the socket connected? Bot state: " + bot.getState(), e);
+			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
 		} catch (InterruptedException e) {
-			throw new RuntimeException("Couldn't pause thread for message delay. Bot state: " + bot.getState(), e);
+			throw new RuntimeException("Couldn't pause thread for message delay. " + exceptionDebug(), e);
 		} catch (Exception e) {
-			throw new RuntimeException("Could not send line to server", e);
+			throw new RuntimeException("Could not send line to server. " + exceptionDebug(), e);
 		} finally {
 			writeLock.unlock();
 		}
@@ -89,7 +90,7 @@ public class OutputRaw {
 	 * the message delay for messages waiting to send
 	 *
 	 * @param line The raw line to send to the IRC server.
-	 * @see #rawLineNow(java.lang.String, boolean) 
+	 * @see #rawLineNow(java.lang.String, boolean)
 	 */
 	public void rawLineNow(String line) {
 		rawLineNow(line, false);
@@ -97,6 +98,7 @@ public class OutputRaw {
 
 	/**
 	 * Sends a raw line to the IRC server as soon as possible
+	 * <p>
 	 * @param line The raw line to send to the IRC server
 	 * @param resetDelay If true, pending messages will reset their delay.
 	 */
@@ -113,9 +115,9 @@ public class OutputRaw {
 				//Reset the 
 				writeNowCondition.signalAll();
 		} catch (IOException e) {
-			throw new RuntimeException("IO exception when sending line to server, is the socket connected? Bot state: " + bot.getState(), e); 
+			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
 		} catch (Exception e) {
-			throw new RuntimeException("Could not send line to server", e);
+			throw new RuntimeException("Could not send line to server. " + exceptionDebug(), e);
 		} finally {
 			writeLock.unlock();
 		}
@@ -161,5 +163,9 @@ public class OutputRaw {
 	 */
 	public int getOutgoingQueueSize() {
 		return writeLock.getHoldCount();
+	}
+	
+	protected String exceptionDebug() {
+		return "Connected: " + bot.isConnected() + " | Bot State: " + bot.getState();
 	}
 }
