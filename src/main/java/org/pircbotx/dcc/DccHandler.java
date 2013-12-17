@@ -52,6 +52,7 @@ import lombok.NonNull;
 
 /**
  * Handler of all DCC requests
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -210,6 +211,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Accept chat request, blocking until the connection is active
+	 * <p>
 	 * @param event The chat request event
 	 * @return An active {@link ReceiveChat}
 	 * @throws IOException If an error occurred during connection
@@ -230,6 +232,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Accept file transfer at position 0, blocking until the connection is active
+	 * <p>
 	 * @param event The file request event
 	 * @param destination The destination file
 	 * @return An active {@link ReceiveFileTransfer}
@@ -243,10 +246,11 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Accept file transfer resuming at specified position, blocking until the connection is active
+	 * <p>
 	 * @param event The file request event
 	 * @param destination The destination file
 	 * @param startPosition The position to start the transfer at
-	 * @return An active {@link ReceiveFileTransfer} 
+	 * @return An active {@link ReceiveFileTransfer}
 	 * @throws IOException If an error occurred during connection
 	 * @throws InterruptedException If this is interrupted while waiting for a connection
 	 * @throws DccException If a timeout is reached or the bot is shutting down
@@ -301,6 +305,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send a chat request using {@link Configuration#isDccPassiveRequest()}
+	 * <p>
 	 * @param receiver The user to chat with
 	 * @return An active {@link SendChat}
 	 * @throws IOException If an error occurred during connection
@@ -313,6 +318,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send a chat request using passive parameter
+	 * <p>
 	 * @param receiver The user to chat with
 	 * @param passive Whether to connect passively
 	 * @return An active {@link SendChat}
@@ -355,6 +361,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send file using {@link Configuration#isDccPassiveRequest() }
+	 * <p>
 	 * @param file The file to send
 	 * @param receiver The user to send the file to
 	 * @return An active {@link SendFileTransfer}
@@ -368,6 +375,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send file using {@link Configuration#isDccPassiveRequest() }
+	 * <p>
 	 * @param file The file to send
 	 * @param receiver The user to send the file to
 	 * @param passive Whether to connect passively
@@ -427,7 +435,8 @@ public class DccHandler implements Closeable {
 	 * <ol><li>{@link Configuration#getDccLocalAddress()}</li>
 	 * <li>{@link Configuration#getLocalAddress()}</li>
 	 * <li>{@link PircBotX#getLocalAddress()}</li>
-	 * @return 
+	 * <p>
+	 * @return
 	 */
 	public InetAddress getRealDccAddress() {
 		//Try dccLocalAddress (which tries to default to dccLocalAddress
