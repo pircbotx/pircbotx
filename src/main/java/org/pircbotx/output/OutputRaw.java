@@ -19,6 +19,7 @@
 package org.pircbotx.output;
 
 import static com.google.common.base.Preconditions.*;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -72,8 +73,12 @@ public class OutputRaw {
 			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
 			lastSentLine = System.nanoTime();
+		} catch (IOException e) {
+			throw new RuntimeException("IO exception when sending line to server, is the socket connected? Bot state: " + bot.getState(), e);
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Couldn't pause thread for message delay. Bot state: " + bot.getState(), e);
 		} catch (Exception e) {
-			throw new RuntimeException("Couldn't pause thread for message delay", e);
+			throw new RuntimeException("Could not send line to server", e);
 		} finally {
 			writeLock.unlock();
 		}
@@ -107,6 +112,10 @@ public class OutputRaw {
 			if (resetDelay)
 				//Reset the 
 				writeNowCondition.signalAll();
+		} catch (IOException e) {
+			throw new RuntimeException("IO exception when sending line to server, is the socket connected? Bot state: " + bot.getState(), e); 
+		} catch (Exception e) {
+			throw new RuntimeException("Could not send line to server", e);
 		} finally {
 			writeLock.unlock();
 		}

@@ -292,16 +292,11 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * since it's only called from methods that handle locking
 	 * @param line 
 	 */
-	protected void sendRawLineToServer(String line) {
+	protected void sendRawLineToServer(String line) throws IOException {
 		if (line.length() > configuration.getMaxLineLength() - 2)
 			line = line.substring(0, configuration.getMaxLineLength() - 2);
-		try {
-			outputWriter.write(line + "\r\n");
-			outputWriter.flush();
-		} catch (Exception e) {
-			//Not much else we can do, but this requires attention of whatever is calling this
-			throw new RuntimeException("Exception encountered when writing to socket", e);
-		}
+		outputWriter.write(line + "\r\n");
+		outputWriter.flush();
 	}
 
 	protected void loggedIn(String nick) {
