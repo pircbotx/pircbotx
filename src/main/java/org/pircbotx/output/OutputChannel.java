@@ -236,7 +236,7 @@ public class OutputChannel {
 	 * operator privileges in the channel
 	 * @param chan
 	 */
-	public void removeChannelLimit(Channel chan) {
+	public void removeChannelLimit() {
 		setMode("-l");
 	}
 
@@ -270,7 +270,7 @@ public class OutputChannel {
 	 * the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void setInviteOnly(Channel chan) {
+	public void setInviteOnly() {
 		setMode("+i");
 	}
 
@@ -279,7 +279,7 @@ public class OutputChannel {
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void removeInviteOnly(Channel chan) {
+	public void removeInviteOnly() {
 		setMode("-i");
 	}
 
@@ -288,7 +288,7 @@ public class OutputChannel {
 	 * the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void setModerated(Channel chan) {
+	public void setModerated() {
 		setMode("+m");
 	}
 
@@ -297,7 +297,7 @@ public class OutputChannel {
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void removeModerated(Channel chan) {
+	public void removeModerated() {
 		setMode("-m");
 	}
 
@@ -306,7 +306,7 @@ public class OutputChannel {
 	 * operator privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void setNoExternalMessages(Channel chan) {
+	public void setNoExternalMessages() {
 		setMode("+n");
 	}
 
@@ -315,7 +315,7 @@ public class OutputChannel {
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void removeNoExternalMessages(Channel chan) {
+	public void removeNoExternalMessages() {
 		setMode("-n");
 	}
 
@@ -324,7 +324,7 @@ public class OutputChannel {
 	 * the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void setSecret(Channel chan) {
+	public void setSecret() {
 		setMode("+s");
 	}
 
@@ -333,7 +333,7 @@ public class OutputChannel {
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void removeSecret(Channel chan) {
+	public void removeSecret() {
 		setMode("-s");
 	}
 
@@ -342,7 +342,7 @@ public class OutputChannel {
 	 * require operator privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void setTopicProtection(Channel chan) {
+	public void setTopicProtection() {
 		setMode("+t");
 	}
 
@@ -351,7 +351,7 @@ public class OutputChannel {
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void removeTopicProtection(Channel chan) {
+	public void removeTopicProtection() {
 		setMode("-t");
 	}
 	
@@ -359,7 +359,7 @@ public class OutputChannel {
 	 * Set the channel as private (+p). May require operator privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void setChannelPrivate(Channel chan) {
+	public void setChannelPrivate() {
 		setMode("+p");
 	}
 
@@ -368,7 +368,7 @@ public class OutputChannel {
 	 * privileges in the channel
 	 * @param chan The channel to preform the mode change on
 	 */
-	public void removeChannelPrivate(Channel chan) {
+	public void removeChannelPrivate() {
 		setMode("-p");
 	}
 
