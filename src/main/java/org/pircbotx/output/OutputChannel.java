@@ -203,7 +203,7 @@ public class OutputChannel {
 			throw new IllegalArgumentException("Can't set mode on channel to null");
 		if (args == null)
 			throw new IllegalArgumentException("Can't set mode arguments to null");
-		setMode(mode + StringUtils.join(args, " "));
+		setMode(mode + " " + StringUtils.join(args, " "));
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class OutputChannel {
 			throw new IllegalArgumentException("Can't set user mode on channel to null");
 		if (user == null)
 			throw new IllegalArgumentException("Can't set user mode on null user");
-		setMode(mode + user.getNick());
+		setMode(mode + " " + user.getNick());
 	}
 
 	/**
