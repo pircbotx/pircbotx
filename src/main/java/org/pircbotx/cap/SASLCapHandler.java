@@ -43,6 +43,7 @@ public class SASLCapHandler implements CapHandler {
 	/**
 	 * Create SASLCapHandler not ignoring failed authentication and throwing
 	 * a CapException
+	 * <p>
 	 * @param username
 	 * @param password
 	 */
@@ -62,11 +63,13 @@ public class SASLCapHandler implements CapHandler {
 	}
 
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) {
-		if (capabilities.contains("sasl"))
+		if (capabilities.contains("sasl")) {
 			//Server acknowledges our request to use sasl 
 			bot.sendRaw().rawLineNow("AUTHENTICATE PLAIN");
-		//Still not finished
-		return false;
+			//Still not finished
+			return false;
+		} else
+			return true;
 	}
 
 	public boolean handleUnknown(PircBotX bot, String rawLine) throws CAPException {
