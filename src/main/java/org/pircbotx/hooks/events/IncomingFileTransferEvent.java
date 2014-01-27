@@ -85,7 +85,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	 * @param transfer The DcccFileTransfer that you may accept.
 	 */
 	public IncomingFileTransferEvent(T bot, @NonNull User user, @NonNull String rawFilename, @NonNull String safeFilename, 
-			@NonNull InetAddress address, int port, long filesize, @NonNull String transferToken, boolean passive) {
+			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.rawFilename = rawFilename;
