@@ -597,7 +597,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Configuration<B> buildForServer(String hostname) {
 			return new Builder<B>(this)
-					.setServerHostname(serverHostname)
+					.setServerHostname(hostname)
 					.buildConfiguration();
 		}
 
@@ -609,8 +609,8 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Configuration<B> buildForServer(String hostname, int port) {
 			return new Builder<B>(this)
-					.setServerHostname(serverHostname)
-					.setServerPort(serverPort)
+					.setServerHostname(hostname)
+					.setServerPort(port)
 					.buildConfiguration();
 		}
 
@@ -622,9 +622,9 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Configuration<B> buildForServer(String hostname, int port, String password) {
 			return new Builder<B>(this)
-					.setServerHostname(serverHostname)
-					.setServerPort(serverPort)
-					.setServerPassword(serverPassword)
+					.setServerHostname(hostname)
+					.setServerPort(port)
+					.setServerPassword(password)
 					.buildConfiguration();
 		}
 	}
