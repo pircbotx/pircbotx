@@ -35,6 +35,7 @@ import static org.testng.Assert.*;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Test(singleThreaded = true)
 public class TemporaryListenerTest {
 	protected PircBotX bot;
 	protected ListenerManager listenerManager;
