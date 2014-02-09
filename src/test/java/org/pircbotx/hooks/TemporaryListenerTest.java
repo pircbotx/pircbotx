@@ -35,7 +35,6 @@ import static org.testng.Assert.*;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@Test(singleThreaded = true)
 public class TemporaryListenerTest {
 	protected PircBotX bot;
 	protected ListenerManager listenerManager;
@@ -47,7 +46,7 @@ public class TemporaryListenerTest {
 		listenerManager = bot.getConfiguration().getListenerManager();
 	}
 
-	@Test
+	@Test(singleThreaded = true)
 	public void eventDispatched() throws IOException, IrcException {
 		final MutableObject<MessageEvent> mutableEvent = new MutableObject();
 		Listener listener = new TemporaryListener(bot) {
@@ -73,7 +72,7 @@ public class TemporaryListenerTest {
 		assertTrue(listenerManager.listenerExists(listener), "Listener doesn't exist in ListenerManager");
 	}
 
-	@Test
+	@Test(singleThreaded = true)
 	public void listenerGetsRemoved() throws IOException, IrcException {
 		TemporaryListener listener = new TemporaryListener(bot) {
 			@Override
