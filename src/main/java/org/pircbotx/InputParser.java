@@ -573,7 +573,10 @@ public class InputParser implements Closeable {
 				bot.getUserChannelDao().removeUser(source);
 		} else if (command.equals("AWAY"))
 			//IRCv3 AWAY notify
-			source.setAwayMessage(parsedLine.get(0));
+			if (parsedLine.isEmpty())
+				source.setAwayMessage("");
+			else
+				source.setAwayMessage(parsedLine.get(0));
 		else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
