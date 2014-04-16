@@ -385,6 +385,24 @@ public class InputParserTest {
 		inputParser.handleLine(":AUser!~ALogin@some.host AWAY :" + aString);
 		assertEquals(aUser.getAwayMessage(), aString, "Away message isn't expected");
 	}
+	
+	@Test
+	public void awayNotifyMessageEmptyTest() throws IOException, IrcException {
+		User aUser = dao.getUser("AUser");
+		
+		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
+		inputParser.handleLine(":AUser!~ALogin@some.host AWAY :");
+		assertEquals(aUser.getAwayMessage(), "", "Away message isn't empty");
+	}
+	
+	@Test
+	public void awayNotifyMessageMissingTest() throws IOException, IrcException {
+		User aUser = dao.getUser("AUser");
+		
+		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
+		inputParser.handleLine(":AUser!~ALogin@some.host AWAY");
+		assertEquals(aUser.getAwayMessage(), "", "Away message isn't empty");
+	}
 
 	@Test
 	public void modeResponseTest() throws IOException, IrcException {
