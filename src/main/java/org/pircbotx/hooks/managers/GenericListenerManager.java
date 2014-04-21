@@ -19,6 +19,7 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,7 +67,8 @@ public class GenericListenerManager<B extends PircBotX> extends ListenerManager<
 	public void dispatchEvent(Event<B> event) {
 		if (event.getBot() != null)
 			Utils.addBotToMDC(event.getBot());
-		for (Listener<B> curListener : listeners)
+		//Make copy in case listener removes itself causing ConcurrentModificationException's
+		for (Listener<B> curListener : new ArrayList<Listener<B>>(listeners))
 			try {
 				curListener.onEvent(event);
 			} catch (Throwable e) {
