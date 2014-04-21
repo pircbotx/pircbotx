@@ -28,6 +28,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -129,16 +130,17 @@ public class IdentServer implements Closeable, Runnable {
 	public void run() {
 		try {
 			log.info("IdentServer running on port " + PORT);
-			while (true)
+			while (!serverSocket.isClosed())
 				handleNextConnection();
 		} catch (Exception e) {
 			log.error("Exception encountered when running IdentServer", e);
 		} finally {
-			try {
-				close();
-			} catch (IOException e) {
-				log.error("Cannot close IdentServer socket", e);
-			}
+			if(!serverSocket.isClosed())
+				try {
+					close();
+				} catch (IOException e) {
+					log.error("Cannot close IdentServer socket", e);
+				}
 		}
 	}
 
@@ -147,8 +149,18 @@ public class IdentServer implements Closeable, Runnable {
 	 * @throws IOException If any error occurred during reading or writing
 	 */
 	public void handleNextConnection() throws IOException {
-		//Grab next connectin
-		Socket socket = serverSocket.accept();
+		//Grab next connection
+		Socket socket;
+		try {
+			socket = serverSocket.accept();
+		} catch (SocketException e) {
+			if (serverSocket.isClosed()) {
+				log.debug("Server socket closed, exiting connection loop");
+				return;
+			} else
+				//This is not from the server socket closing
+				throw e;
+		}
 		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), encoding));
 		InetSocketAddress remoteAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
@@ -205,12 +217,14 @@ public class IdentServer implements Closeable, Runnable {
 
 	protected void addIdentEntry(InetAddress remoteAddress, int remotePort, int localPort, String login) {
 		synchronized (identEntries) {
+			log.debug("Added ident entry for address " + remoteAddress + " on port " + remotePort + " for local port " + localPort + " for " + login);
 			identEntries.add(new IdentEntry(remoteAddress, remotePort, localPort, login));
 		}
 	}
 	
 	protected void removeIdentEntry(InetAddress remoteAddress, int remotePort, int localPort, String login) {
 		synchronized (identEntries) {
+			log.debug("Removed ident entry for address " + remoteAddress + " on port " + remotePort + " for local port " + localPort + " for " + login);
 			for (Iterator<IdentEntry> itr = identEntries.iterator(); itr.hasNext();) {
 				IdentEntry curEntry = itr.next();
 				if(curEntry.getRemoteAddress().equals(remoteAddress) && curEntry.getRemotePort() == remotePort
