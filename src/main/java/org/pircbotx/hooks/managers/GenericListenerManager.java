@@ -51,24 +51,28 @@ import org.pircbotx.hooks.WaitForQueue;
 @Slf4j
 public class GenericListenerManager<B extends PircBotX> extends ListenerManager<B> {
 	protected Set<Listener<B>> listeners = new HashSet<Listener<B>>();
+	protected ImmutableSet<Listener<B>> listenersImmutable = ImmutableSet.copyOf(listeners);
 
 	public void addListener(Listener listener) {
 		listeners.add(listener);
+		rebuildListeners();
 	}
 
 	public boolean removeListener(Listener listener) {
-		return listeners.remove(listener);
+		boolean result =  listeners.remove(listener);
+		rebuildListeners();
+		return result;
 	}
 
 	public ImmutableSet<Listener<B>> getListeners() {
-		return ImmutableSet.copyOf(listeners);
+		return listenersImmutable;
 	}
 
 	public void dispatchEvent(Event<B> event) {
 		if (event.getBot() != null)
 			Utils.addBotToMDC(event.getBot());
 		//Make copy in case listener removes itself causing ConcurrentModificationException's
-		for (Listener<B> curListener : new ArrayList<Listener<B>>(listeners))
+		for (Listener<B> curListener : listenersImmutable)
 			try {
 				curListener.onEvent(event);
 			} catch (Throwable e) {
@@ -77,10 +81,14 @@ public class GenericListenerManager<B extends PircBotX> extends ListenerManager<
 	}
 
 	public boolean listenerExists(Listener listener) {
-		return listeners.contains(listener);
+		return listenersImmutable.contains(listener);
 	}
 
 	public void shutdown(PircBotX bot) {
 		//Do nothing since dispatching an event executes all listeners immediately
+	}
+	
+	protected void rebuildListeners() {
+		listenersImmutable = ImmutableSet.copyOf(listeners);
 	}
 }
