@@ -199,7 +199,7 @@ public class IdentServer implements Closeable, Runnable {
 				}
 		}
 		if (identEntry == null) {
-			String response = localPort + ", " + remotePort + " ERROR : NO-USER";
+			String response = localPort + ", " + remotePort + " : ERROR : NO-USER";
 			log.error("Unknown ident " + line + " from " + remoteAddress + ", responding with: " + response);
 			writer.write(response + "\r\n");
 			writer.flush();
