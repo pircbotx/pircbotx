@@ -201,7 +201,7 @@ public class IdentServer implements Closeable, Runnable {
 		if (identEntry == null) {
 			String response = localPort + ", " + remotePort + " ERROR : NO-USER";
 			log.error("Unknown ident " + line + " from " + remoteAddress + ", responding with: " + response);
-			writer.write(line + "\r\n");
+			writer.write(response + "\r\n");
 			writer.flush();
 			socket.close();
 			return;
@@ -210,7 +210,7 @@ public class IdentServer implements Closeable, Runnable {
 		//Respond to correct ident entry with login
 		String response = line + " : USERID : UNIX : " + identEntry.getLogin();
 		log.debug("Responded to ident request from " + remoteAddress + " with: " + response);
-		writer.write(line + "\r\n");
+		writer.write(response + "\r\n");
 		writer.flush();
 		socket.close();
 	}
