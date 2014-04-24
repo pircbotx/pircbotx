@@ -201,7 +201,7 @@ public class PircBotX implements Comparable<PircBotX> {
 					String debugSuffix = serverAddresses.length == 0 ? "no more servers" : "trying to check another address";
 					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " 
 							+ curAddress.getHostAddress() + ", " + debugSuffix, e);
-					configuration.getListenerManager().dispatchEvent(new ConnectFailedEvent<PircBotX>(this, 
+					configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent<PircBotX>(this, 
 							curAddress, 
 							configuration.getServerPort(), 
 							configuration.getLocalAddress(), 
