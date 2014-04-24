@@ -43,8 +43,8 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			onChannelInfo((ChannelInfoEvent<T>) event);
 		else if (event instanceof ConnectEvent)
 			onConnect((ConnectEvent<T>) event);
-		else if (event instanceof ConnectFailedEvent)
-			onConnectFailed((ConnectFailedEvent<T>) event);
+		else if (event instanceof ConnectAttemptFailedEvent)
+			onConnectAttemptFailed((ConnectAttemptFailedEvent<T>) event);
 		else if (event instanceof DisconnectEvent)
 			onDisconnect((DisconnectEvent<T>) event);
 		else if (event instanceof FingerEvent)
@@ -174,7 +174,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	public void onConnect(ConnectEvent<T> event) throws Exception {
 	}
 	
-	public void onConnectFailed(ConnectFailedEvent<T> event) throws Exception {
+	public void onConnectAttemptFailed(ConnectAttemptFailedEvent<T> event) throws Exception {
 	}
 
 	public void onDisconnect(DisconnectEvent<T> event) throws Exception {
