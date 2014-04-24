@@ -29,6 +29,8 @@ import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.types.GenericMessageEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic example class for various features of PircBotX. Heavily documented
@@ -37,6 +39,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXExample extends ListenerAdapter {
+	public static Logger log = LoggerFactory.getLogger(PircBotXExample.class);
 	/**
 	 * This example shows how to handle messages, actions, and notices from both 
 	 * channels and private messages. It also shows how to use WaitForQueue to 
@@ -125,7 +128,7 @@ public class PircBotXExample extends ListenerAdapter {
 		} //In your code you should catch and handle each exception seperately,
 		//but here we just lump them all togeather for simpliciy
 		catch (Exception ex) {
-			ex.printStackTrace();
+			log.error("Failed to start bot", ex);
 		}
 	}
 }
