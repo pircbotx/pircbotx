@@ -185,10 +185,11 @@ public class PircBotX implements Comparable<PircBotX> {
 
 			//Reset capabilities
 			enabledCapabilities = new ArrayList<String>();
-
+			
 			// Connect to the server by DNS server
-			Exception lastConnectException = null;
-			for (InetAddress curAddress : InetAddress.getAllByName(configuration.getServerHostname())) {
+			InetAddress[] serverAddresses = InetAddress.getAllByName(configuration.getServerHostname());
+			Exception lastException = null;
+			for (InetAddress curAddress : serverAddresses) {
 				log.debug("Trying address " + curAddress);
 				try {
 					socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
@@ -196,14 +197,21 @@ public class PircBotX implements Comparable<PircBotX> {
 					//No exception, assume successful
 					break;
 				} catch (Exception e) {
-					lastConnectException = e;
-					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " + curAddress.getHostAddress() + ", trying to check another address.", e);
+					lastException = e;
+					String debugSuffix = serverAddresses.length == 0 ? "no more servers" : "trying to check another address";
+					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address " 
+							+ curAddress.getHostAddress() + ", " + debugSuffix, e);
+					configuration.getListenerManager().dispatchEvent(new ConnectFailedEvent<PircBotX>(this, 
+							curAddress, 
+							configuration.getServerPort(), 
+							configuration.getLocalAddress(), 
+							serverAddresses.length));
 				}
 			}
 
 			//Make sure were connected
 			if (socket == null || (socket != null && !socket.isConnected()))
-				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)", lastConnectException);
+				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)", lastException);
 			state = State.CONNECTED;
 			socket.setSoTimeout(configuration.getSocketTimeout());
 			log.info("Connected to server.");
