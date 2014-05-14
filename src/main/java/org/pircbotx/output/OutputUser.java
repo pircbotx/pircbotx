@@ -129,4 +129,18 @@ public class OutputUser {
 	public SendChat dccChat(boolean passive) throws IOException, InterruptedException {
 		return bot.getDccHandler().sendChat(user, passive);
 	}
+	
+	/**
+	 * Send "WHOIS nick"
+	 */
+	public void whois() {
+		bot.sendIRC().whois(user.getNick());
+	}
+	
+	/**
+	 * Send "WHOIS nick nick" for more detail
+	 */
+	public void whoisDetail() {
+		bot.sendIRC().whoisDetail(user.getNick());
+	}
 }
