@@ -263,4 +263,20 @@ public class OutputIRC {
 	public void mode(String target, String mode) {
 		bot.sendRaw().rawLine("MODE " + target + " " + mode);
 	}
+	
+	/**
+	 * Send "WHOIS target"
+	 * @param target 
+	 */
+	public void whois(String target) {
+		bot.sendRaw().rawLine("WHOIS " + target);
+	}
+	
+	/**
+	 * Send "WHOIS target target" for more detail
+	 * @param target 
+	 */
+	public void whoisDetail(String target) {
+		bot.sendRaw().rawLine("WHOIS " + target + " " + target);
+	}
 }
