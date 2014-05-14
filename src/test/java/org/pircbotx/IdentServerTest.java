@@ -49,6 +49,8 @@ public class IdentServerTest {
 	
 	@BeforeMethod
 	public void setup() {
+		//Set local address to get around build server restrictions
+		IdentServer.setServerLocalAddress(InetAddress.getLoopbackAddress());
 		IdentServer.startServer();
 		identServer = IdentServer.getServer();
 	}
@@ -56,6 +58,7 @@ public class IdentServerTest {
 	@AfterMethod
 	public void cleanup() throws IOException {
 		IdentServer.stopServer();
+		IdentServer.setServerLocalAddress(null);
 		identServer = null;
 	}
 	
