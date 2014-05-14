@@ -64,6 +64,7 @@ public class IdentServer implements Closeable, Runnable {
 	@Getter(AccessLevel.PROTECTED)
 	protected static IdentServer server;
 	protected static final Object INSTANCE_CREATE_LOCK = new Object();
+	protected static InetAddress SERVER_LOCAL_ADDRESS = null;
 	protected final Charset encoding;
 	protected final ServerSocket serverSocket;
 	protected final List<IdentEntry> identEntries = new ArrayList<IdentEntry>();
@@ -100,6 +101,16 @@ public class IdentServer implements Closeable, Runnable {
 		server.close();
 		server = null;
 	}
+	
+	@Synchronized("INSTANCE_CREATE_LOCK")
+	public static void setServerLocalAddress(InetAddress address) {
+		SERVER_LOCAL_ADDRESS = address;
+	}
+	
+	@Synchronized("INSTANCE_CREATE_LOCK")
+	public static InetAddress getServerLocalAddress() {
+		return SERVER_LOCAL_ADDRESS;
+	}
 
 	/**
 	 * Create an ident server on port 113 with the specified encoding
@@ -108,7 +119,7 @@ public class IdentServer implements Closeable, Runnable {
 	protected IdentServer(Charset encoding) {
 		try {
 			this.encoding = encoding;
-			this.serverSocket = new ServerSocket(PORT);
+			this.serverSocket = new ServerSocket(PORT, 50, SERVER_LOCAL_ADDRESS);
 		} catch (Exception e) {
 			throw new RuntimeException("Could not create server socket for IdentServer on port " + PORT, e);
 		}
