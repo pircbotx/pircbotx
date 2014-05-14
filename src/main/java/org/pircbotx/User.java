@@ -117,7 +117,7 @@ public class User implements Comparable<User> {
 	@SuppressWarnings("unchecked")
 	public boolean isVerified() {
 		try {
-			bot.sendRaw().rawLine("WHOIS " + getNick() + " " + getNick());
+			send().whoisDetail();
 			WaitForQueue waitForQueue = new WaitForQueue(bot);
 			while (true) {
 				WhoisEvent event = waitForQueue.waitFor(WhoisEvent.class);
