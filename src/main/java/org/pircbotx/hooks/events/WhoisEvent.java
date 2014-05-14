@@ -62,6 +62,15 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 		this.signOnTime = builder.getSignOnTime();
 		this.registeredAs = builder.getRegisteredAs();
 	}
+	
+	/**
+	 * Check if user is registered
+	 * @return True if user is registered
+	 * @see #getRegisteredAs() 
+	 */
+	public boolean isRegistered() {
+		return registeredAs != null;
+	}
 
 	@Override
 	public void respond(@Nullable String response) {
