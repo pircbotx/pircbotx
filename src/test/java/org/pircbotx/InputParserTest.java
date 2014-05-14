@@ -829,7 +829,7 @@ public class InputParserTest {
 		String realMotd = aString + "\n\n" + aString;
 		assertEquals(event.getMotd(), realMotd, "Motd does not match given");
 	}
-
+	
 	@Test
 	public void whoisTest() throws IOException, IrcException {
 		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
@@ -848,11 +848,45 @@ public class InputParserTest {
 		assertEquals(event.getServerInfo(), aString + aString, "Server info wrong");
 		assertEquals(event.getIdleSeconds(), 6077, "Idle time doesn't match given");
 		assertEquals(event.getSignOnTime(), 1347373349, "Sign on time doesn't match given");
+		assertNull(event.getRegisteredAs(), "User isn't registered");
 
 		//Verify channels
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
 		assertTrue(event.getChannels().contains("##anotherChannel"), "Doesn't contain second given channel");
 		assertEquals(event.getChannels().size(), 2, "Channels list size wrong");
+	}
+	
+	@Test
+	public void whoisRegistered307Test() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 307 PircBotXUser OtherUser :has identified for this nick");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser OtherUser :End of /WHOIS list.");
+		
+		//Check event contents
+		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getRegisteredAs(), "", "Nickserv account does not match given");
+	}
+	
+	@Test
+	public void whoisRegistered330NoNameTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 330 PircBotXUser OtherUser :is logged in as");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser OtherUser :End of /WHOIS list.");
+		
+		//Check event contents
+		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getRegisteredAs(), "", "Nickserv account does not match given");
+	}
+	
+	@Test
+	public void whoisRegistered330NameTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 330 PircBotXUser OtherUser nickservAccount :is logged in as");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser OtherUser :End of /WHOIS list.");
+		
+		//Check event contents
+		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getRegisteredAs(), "nickservAccount", "Nickserv account does not match given");
 	}
 
 	@Test

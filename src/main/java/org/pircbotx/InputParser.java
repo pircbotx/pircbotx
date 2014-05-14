@@ -745,11 +745,19 @@ public class InputParser implements Closeable {
 
 			whoisBuilder.get(whoisNick).setIdleSeconds(Long.parseLong(parsedResponse.get(2)));
 			whoisBuilder.get(whoisNick).setSignOnTime(Long.parseLong(parsedResponse.get(3)));
-		} else if (code == 330)
+		} else if (code == 330) {
 			//RPL_WHOISACCOUNT: Extra Whois info
 			//330 TheLQ Utoxin Utoxin :is logged in as
-			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs(parsedResponse.get(2));
-		else if (code == RPL_ENDOFWHOIS) {
+			//Make sure we set registered as to the nick, not to the note after the colon
+			String registeredNick = "";
+			if(!rawResponse.endsWith(":" + parsedResponse.get(2)))
+				registeredNick = parsedResponse.get(2);
+			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs(registeredNick);
+		} else if (code == 307) {
+			//If shown, tells us that the user is registered with nickserv
+			//307 TheLQ TheLQ-PircBotX :has identified for this nick
+			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs("");
+		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
