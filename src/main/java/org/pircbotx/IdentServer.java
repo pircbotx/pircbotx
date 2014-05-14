@@ -121,7 +121,7 @@ public class IdentServer implements Closeable, Runnable {
 			this.encoding = encoding;
 			this.serverSocket = new ServerSocket(PORT, 50, SERVER_LOCAL_ADDRESS);
 		} catch (Exception e) {
-			throw new RuntimeException("Could not create server socket for IdentServer on port " + PORT, e);
+			throw new RuntimeException("Could not create server socket for IdentServer on " + SERVER_LOCAL_ADDRESS.toString() + ", port " + PORT, e);
 		}
 	}
 
