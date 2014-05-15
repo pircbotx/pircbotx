@@ -389,9 +389,12 @@ public class InputParser implements Closeable {
 		} else if (code.equals("439")) {
 			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 			// No action required.
+			//TODO: Should we delay joining channels here or something?
+			log.warn("Ignoring too fast error");
 		} else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP")) {
 			//EXAMPLE: 451 CAP :You have not registered
 			//Ignore, this is from servers that don't support CAP
+			log.warn("Ignoring not registered error, server does not support cap");
 		} else if (code.startsWith("5") || code.startsWith("4"))
 			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
 		else if (code.equals("670")) {
