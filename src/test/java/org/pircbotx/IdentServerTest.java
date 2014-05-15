@@ -48,9 +48,9 @@ public class IdentServerTest {
 	}
 	
 	@BeforeMethod
-	public void setup() {
+	public void setup() throws UnknownHostException {
 		//Set local address to get around build server restrictions
-		IdentServer.setServerLocalAddress(InetAddress.getLoopbackAddress());
+		IdentServer.setServerLocalAddress(InetAddress.getByName("127.12.233.12"));
 		IdentServer.startServer();
 		identServer = IdentServer.getServer();
 	}
