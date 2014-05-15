@@ -110,10 +110,10 @@ public class ServerInfo {
 
 	protected void parse004(List<String> parsedLine) {
 		//004 PircBotX pratchett.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
-		serverName = parsedLine.get(1);
-		serverVersion = parsedLine.get(2);
-		userModes = parsedLine.get(3);
-		channelModes = parsedLine.get(4);
+		serverName = Utils.tryGetIndex(parsedLine, 1, null);
+		serverVersion = Utils.tryGetIndex(parsedLine, 2, null);
+		userModes = Utils.tryGetIndex(parsedLine, 3, null);
+		channelModes = Utils.tryGetIndex(parsedLine, 4, null);
 	}
 
 	protected void parse005(List<String> parsedLine) {
