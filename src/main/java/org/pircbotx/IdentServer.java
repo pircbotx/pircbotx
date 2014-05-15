@@ -139,62 +139,68 @@ public class IdentServer implements Closeable, Runnable {
 	 * appropriate response. 
 	 */
 	public void run() {
-		try {
-			log.info("IdentServer running on port " + PORT);
-			while (!serverSocket.isClosed())
-				handleNextConnection();
-		} catch (Exception e) {
-			log.error("Exception encountered when running IdentServer", e);
-		} finally {
-			if(!serverSocket.isClosed())
+		log.info("IdentServer running on port " + PORT);
+		//TODO: Multi-thread this
+		while (!serverSocket.isClosed()) {
+			Socket socket = null;
+			try {
+				socket = serverSocket.accept();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
+				OutputStreamWriter writer = new OutputStreamWriter(socket.getOutputStream(), encoding);
+				InetSocketAddress remoteAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
+				
+				//Read first line and process
+				String line = reader.readLine();
+				String response = handleNextConnection(remoteAddress, line);
+				if(response != null)
+					writer.write(response);
+			} catch(Exception e) {
+				if (serverSocket.isClosed()) {
+					log.debug("Server socket closed, exiting connection loop");
+					return;
+				} else
+					//This is not from the server socket closing
+					throw new RuntimeException("Exception encountered when opening user socket");
+			} finally {
+				//Close user socket
 				try {
-					close();
-				} catch (IOException e) {
-					log.error("Cannot close IdentServer socket", e);
+					if(socket != null)
+						socket.close();
+				} catch(IOException e) {
+					throw new RuntimeException("Exception encountered when closing user socket");
 				}
+			}
 		}
+		
+		//Done with connection loop, can safely close the socket now
+		if(!serverSocket.isClosed())
+			try {
+				close();
+			} catch (IOException e) {
+				log.error("Cannot close IdentServer socket", e);
+			}
 	}
 
 	/**
 	 * Wait for and process the next connection.
 	 * @throws IOException If any error occurred during reading or writing
 	 */
-	public void handleNextConnection() throws IOException {
-		//Grab next connection
-		Socket socket;
-		try {
-			socket = serverSocket.accept();
-		} catch (SocketException e) {
-			if (serverSocket.isClosed()) {
-				log.debug("Server socket closed, exiting connection loop");
-				return;
-			} else
-				//This is not from the server socket closing
-				throw e;
-		}
-		BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), encoding));
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), encoding));
-		InetSocketAddress remoteAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
-
+	public String handleNextConnection(InetSocketAddress remoteAddress, String line) throws IOException {
 		//Get and validate Ident from server
-		String line = reader.readLine();
 		if (StringUtils.isBlank(line)) {
 			log.error("Ignoring connection from " + remoteAddress + ", received blank line");
-			socket.close();
-			return;
+			return null;
 		}
 		String[] parsedLine = StringUtils.split(line, ", ");
 		if (parsedLine.length != 2) {
 			log.error("Ignoring connection from " + remoteAddress + ", recieved unknown line: " + line);
-			socket.close();
-			return;
+			return null;
 		}
 		int localPort = Utils.tryParseInt(parsedLine[0], -1);
 		int remotePort = Utils.tryParseInt(parsedLine[1], -1);
 		if (localPort == -1 || remotePort == -1) {
 			log.error("Ignoring connection from " + remoteAddress + ", recieved unparsable line: " + line);
-			socket.close();
-			return;
+			return null;
 		}
 
 		//Grab the IdentEntry for this ident
@@ -212,18 +218,13 @@ public class IdentServer implements Closeable, Runnable {
 		if (identEntry == null) {
 			String response = localPort + ", " + remotePort + " : ERROR : NO-USER";
 			log.error("Unknown ident " + line + " from " + remoteAddress + ", responding with: " + response);
-			writer.write(response + "\r\n");
-			writer.flush();
-			socket.close();
-			return;
+			return response;
 		}
 		
 		//Respond to correct ident entry with login
 		String response = line + " : USERID : UNIX : " + identEntry.getLogin();
 		log.debug("Responded to ident request from " + remoteAddress + " with: " + response);
-		writer.write(response + "\r\n");
-		writer.flush();
-		socket.close();
+		return response;
 	}
 
 	protected void addIdentEntry(InetAddress remoteAddress, int remotePort, int localPort, String login) {
