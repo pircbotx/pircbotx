@@ -47,6 +47,7 @@ public class PircBotXTest {
 
 	@Test(description = "Make sure channel doesn't return null and reliably returns the correct value")
 	public void getChannelTest() {
+		smallBot.getUserChannelDao().createChannel("#aChannel");
 		Channel channel = smallBot.getUserChannelDao().getChannel("#aChannel");
 		assertNotNull(channel, "getchannel returns null for unknown channel");
 		assertEquals(channel, smallBot.getUserChannelDao().getChannel("#aChannel"), "getChannel doesn't return the same channel during second call");
@@ -63,7 +64,7 @@ public class PircBotXTest {
 	@Test(dependsOnMethods = "getChannelTest", description = "Make sure channelExists works")
 	public void channelExistsTest() {
 		//Create channel by getting an unknown one
-		smallBot.getUserChannelDao().getChannel("#aChannel");
+		smallBot.getUserChannelDao().createChannel("#aChannel");
 		//Make sure it exists
 		assertTrue(smallBot.getUserChannelDao().channelExists("#aChannel"));
 	}
