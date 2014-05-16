@@ -219,6 +219,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		throw new DaoException(DaoException.Reason.UnknownChannel, name);
 	}
 	
+	@Synchronized("accessLock")
 	public C createChannel(String name) {
 		C chan = (C) botFactory.createChannel(bot, name);
 		channelNameMap.put(name.toLowerCase(locale), chan);
