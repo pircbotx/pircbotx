@@ -18,6 +18,7 @@
  */
 package org.pircbotx;
 
+import com.google.common.base.Preconditions;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -137,7 +138,7 @@ public class IdentServer implements Closeable, Runnable {
 	 * appropriate response. 
 	 */
 	public void run() {
-		log.info("IdentServer running on port " + port);
+		log.info("IdentServer running on port " + serverSocket.getLocalPort());
 		//TODO: Multi-thread this
 		while (!serverSocket.isClosed()) {
 			Socket socket = null;
@@ -243,6 +244,11 @@ public class IdentServer implements Closeable, Runnable {
 			}
 		}
 	}
+	
+	protected int getPort() {
+		Preconditions.checkState(!serverSocket.isClosed(), "Server socket is not open");
+		return serverSocket.getLocalPort();
+	}
 
 	/**
 	 * Close the server socket and clear pending ident responses.
@@ -252,7 +258,7 @@ public class IdentServer implements Closeable, Runnable {
 	public void close() throws IOException {
 		serverSocket.close();
 		identEntries.clear();
-		log.info("Closed ident server on port " + port);
+		log.info("Closed ident server on port " + port + "/" + serverSocket.getLocalPort());
 	}
 
 	@Data
