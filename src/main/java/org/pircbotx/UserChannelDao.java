@@ -35,6 +35,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.exception.DaoException;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
@@ -214,8 +215,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		if (chan != null)
 			return chan;
 
-		//Channel does not exist, create one
-		chan = (C) botFactory.createChannel(bot, name);
+		//Channel does not exist
+		throw new DaoException(DaoException.Reason.UnknownChannel, name);
+	}
+	
+	public C createChannel(String name) {
+		C chan = (C) botFactory.createChannel(bot, name);
 		channelNameMap.put(name.toLowerCase(locale), chan);
 		return chan;
 	}

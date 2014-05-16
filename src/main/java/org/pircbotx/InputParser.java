@@ -463,7 +463,8 @@ public class InputParser implements Closeable {
 	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
 		User source = bot.getUserChannelDao().getUser(sourceNick);
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) ? bot.getUserChannelDao().getChannel(target) : null;
+		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().channelExists(target)) 
+				? bot.getUserChannelDao().getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
 		// Check for CTCP requests.
@@ -505,6 +506,7 @@ public class InputParser implements Closeable {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
+				channel = bot.getUserChannelDao().createChannel(target);
 				bot.sendRaw().rawLine("WHO " + target);
 				bot.sendRaw().rawLine("MODE " + target);
 			}

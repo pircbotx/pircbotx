@@ -90,7 +90,7 @@ public class OutputTest {
 
 		//Setup useful vars
 		aUser = bot.getUserChannelDao().getUser("aUser");
-		aChannel = bot.getUserChannelDao().getChannel("#aChannel");
+		aChannel = bot.getUserChannelDao().createChannel("#aChannel");
 	}
 
 	@AfterMethod
@@ -204,6 +204,8 @@ public class OutputTest {
 
 	@Test(description = "Verify sendInvite to channel")
 	public void sendInviteChannelChannelTest() throws Exception {
+		bot.getUserChannelDao().createChannel("#aChannel");
+		bot.getUserChannelDao().createChannel("#otherChannel");
 		aChannel.send().invite(bot.getUserChannelDao().getChannel("#otherChannel"));
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
