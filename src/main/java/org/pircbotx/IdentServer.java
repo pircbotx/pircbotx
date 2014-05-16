@@ -151,8 +151,10 @@ public class IdentServer implements Closeable, Runnable {
 				//Read first line and process
 				String line = reader.readLine();
 				String response = handleNextConnection(remoteAddress, line);
-				if(response != null)
+				if(response != null) {
 					writer.write(response);
+					writer.flush();
+				}
 			} catch(Exception e) {
 				if (serverSocket.isClosed()) {
 					log.debug("Server socket closed, exiting connection loop");
