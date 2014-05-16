@@ -59,23 +59,24 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Slf4j
 public class IdentServer implements Closeable, Runnable {
-	protected static final int PORT = 113;
+	protected static final int DEFAULT_PORT = 113;
 	@Setter(AccessLevel.PROTECTED)
 	@Getter(AccessLevel.PROTECTED)
 	protected static IdentServer server;
 	protected static final Object INSTANCE_CREATE_LOCK = new Object();
-	protected static InetAddress SERVER_LOCAL_ADDRESS = null;
+	protected final InetAddress localAddress;
 	protected final Charset encoding;
 	protected final ServerSocket serverSocket;
 	protected final List<IdentEntry> identEntries = new ArrayList<IdentEntry>();
 	protected Thread runningThread;
+	protected int port;
 	
 	/**
 	 * Start the ident server with the systems default charset.
 	 * @see Charset#defaultCharset()
 	 */
 	public static void startServer() {
-		startServer(Charset.defaultCharset());
+		startServer(Charset.defaultCharset(), null);
 	}
 	
 	/**
@@ -83,10 +84,15 @@ public class IdentServer implements Closeable, Runnable {
 	 * @param encoding The encoding to use for connections
 	 */
 	@Synchronized("INSTANCE_CREATE_LOCK")
-	public static void startServer(Charset encoding) {
+	public static void startServer(Charset encoding, InetAddress localAddress) {
+		startServer(encoding, localAddress, DEFAULT_PORT);
+	}
+	
+	@Synchronized("INSTANCE_CREATE_LOCK")
+	protected static void startServer(Charset encoding, InetAddress localAddress, int port) {
 		if (server != null)
 			throw new RuntimeException("Already created an IdentServer instance");
-		server = new IdentServer(encoding);
+		server = new IdentServer(encoding, localAddress, port);
 		server.start();
 	}
 
@@ -101,27 +107,19 @@ public class IdentServer implements Closeable, Runnable {
 		server.close();
 		server = null;
 	}
-	
-	@Synchronized("INSTANCE_CREATE_LOCK")
-	public static void setServerLocalAddress(InetAddress address) {
-		SERVER_LOCAL_ADDRESS = address;
-	}
-	
-	@Synchronized("INSTANCE_CREATE_LOCK")
-	public static InetAddress getServerLocalAddress() {
-		return SERVER_LOCAL_ADDRESS;
-	}
 
 	/**
 	 * Create an ident server on port 113 with the specified encoding
 	 * @param encoding Encoding to use for sockets
 	 */
-	protected IdentServer(Charset encoding) {
+	protected IdentServer(Charset encoding, InetAddress localAddress, int port) {
 		try {
 			this.encoding = encoding;
-			this.serverSocket = new ServerSocket(PORT, 50, SERVER_LOCAL_ADDRESS);
+			this.localAddress = localAddress;
+			this.serverSocket = new ServerSocket(port, 50, localAddress);
+			this.port = port;
 		} catch (Exception e) {
-			throw new RuntimeException("Could not create server socket for IdentServer on " + SERVER_LOCAL_ADDRESS.toString() + ", port " + PORT, e);
+			throw new RuntimeException("Could not create server socket for IdentServer on " + localAddress.toString() + ", port " + port, e);
 		}
 	}
 
@@ -139,7 +137,7 @@ public class IdentServer implements Closeable, Runnable {
 	 * appropriate response. 
 	 */
 	public void run() {
-		log.info("IdentServer running on port " + PORT);
+		log.info("IdentServer running on port " + port);
 		//TODO: Multi-thread this
 		while (!serverSocket.isClosed()) {
 			Socket socket = null;
@@ -254,7 +252,7 @@ public class IdentServer implements Closeable, Runnable {
 	public void close() throws IOException {
 		serverSocket.close();
 		identEntries.clear();
-		log.info("Closed ident server on port " + PORT);
+		log.info("Closed ident server on port " + port);
 	}
 
 	@Data
