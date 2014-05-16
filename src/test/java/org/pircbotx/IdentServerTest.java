@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -50,15 +51,13 @@ public class IdentServerTest {
 	@BeforeMethod
 	public void setup() throws UnknownHostException {
 		//Set local address to get around build server restrictions
-		IdentServer.setServerLocalAddress(InetAddress.getByName("127.12.233.12"));
-		IdentServer.startServer();
+		IdentServer.startServer(Charset.defaultCharset(), InetAddress.getLoopbackAddress(), 0);
 		identServer = IdentServer.getServer();
 	}
 	
 	@AfterMethod
 	public void cleanup() throws IOException {
 		IdentServer.stopServer();
-		IdentServer.setServerLocalAddress(null);
 		identServer = null;
 	}
 	
@@ -91,7 +90,7 @@ public class IdentServerTest {
 		identServer.addIdentEntry(entryLocalAddress, entryRemotePort, entryLocalPort, entryUserName);
 		
 		//Send an ident reqeust
-		Socket socket = new Socket(InetAddress.getLoopbackAddress(), IdentServer.PORT, actualLocalAddress, 42121);
+		Socket socket = new Socket(InetAddress.getLoopbackAddress(), IdentServer.getServer().getPort(), actualLocalAddress, 42121);
 		OutputStreamWriter socketWriter = new OutputStreamWriter(socket.getOutputStream());
 		socketWriter.write(sentLocalPort + ", " + sentRemotePort + "\r\n");
 		socketWriter.flush();
