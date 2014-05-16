@@ -30,6 +30,7 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.exception.DaoException;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -178,7 +179,7 @@ public class InputParserTest {
 
 	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
 
@@ -205,7 +206,7 @@ public class InputParserTest {
 	
 	@Test(description = "Verifies DAO allows case insensitive lookups")
 	public void insensitiveLookupTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
 		
@@ -220,7 +221,7 @@ public class InputParserTest {
 
 	@Test(description = "Verify Channel creation date is set - Freenode")
 	public void channelCreationDateFreenode() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		long creationTime = 1328490732;
 		inputParser.handleLine(":irc.someserver.net 329 PircBotXUser #aChannel " + creationTime);
 
@@ -230,7 +231,7 @@ public class InputParserTest {
 
 	@Test(description = "Verify TopicEvent by user changing topic")
 	public void topicChangeTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host TOPIC #aChannel :" + aString);
 
@@ -246,14 +247,14 @@ public class InputParserTest {
 
 	@Test(description = "Verify TopicEvent from /JOIN or /TOPIC #channel commands")
 	public void topicResponseTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
 	}
 
 	@Test(description = "Verify TopicEvent's extended information from line sent after TOPIC line")
 	public void topicInfoTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
 		assertEquals(aChannel.getTopicSetter(), "AUser");
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
@@ -264,7 +265,7 @@ public class InputParserTest {
 
 	@Test(description = "Verify MessageEvent from channel message")
 	public void messageTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + aString);
 
@@ -294,7 +295,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify NoticeEvent from NOTICE")
 	public void noticeTest(String target) throws IOException, IrcException {
-		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
+		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host NOTICE " + target + " :" + aString);
 
@@ -307,7 +308,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify ActionEvent from /me from a user in a channel")
 	public void actionTest(String target) throws IOException, IrcException {
-		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
+		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001ACTION " + aString + "\u0001");
 
@@ -320,7 +321,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
 	public void versionTest(String target) throws IOException, IrcException {
-		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
+		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001VERSION\u0001");
 
@@ -332,7 +333,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify PingEvent from a user")
 	public void pingTest(String target) throws IOException, IrcException {
-		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
+		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
 		User aUser = dao.getUser("AUser");
 		String pingValue = "2435fdfd3f3d";
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001PING " + pingValue + "\u0001");
@@ -346,7 +347,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify TimeEvent from a user")
 	public void timeTest(String target) throws IOException, IrcException {
-		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
+		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001TIME\u0001");
 
@@ -358,7 +359,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify FingerEvent from a user")
 	public void fingerTest(String target) throws IOException, IrcException {
-		Channel aChannel = target.startsWith("#") ? dao.getChannel(target) : null;
+		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
 		User aUser = dao.getUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001FINGER\u0001");
 
@@ -406,7 +407,7 @@ public class InputParserTest {
 
 	@Test
 	public void modeResponseTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +cnt");
 
 		ModeEvent mevent = getEvent(ModeEvent.class, "ModeEvent not dispatched for mode response");
@@ -417,7 +418,7 @@ public class InputParserTest {
 	
 	@Test
 	public void initModeTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		
 		assertFalse(aChannel.isModerated());
 		assertFalse(aChannel.isInviteOnly());
@@ -446,7 +447,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelUserModeProvider", description = "Test setting various user modes and verifying events")
 	public void channelUserModeTest(String mode, Class<?> eventClass, String checkMethod) throws Exception {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		User otherUser = dao.getUser("OtherUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode + " OtherUser");
@@ -522,7 +523,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "channelModeProvider")
 	public void channelModeChangeTest(String mode, String parentMode, Class<?> modeClass) throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		if (mode.startsWith("-")) {
 			//Set the mode first
@@ -555,7 +556,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify SetChannelKeyEvent has the correct key")
 	public void setChannelKeyEventTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel +k testPassword");
 		SetChannelKeyEvent event = getEvent(SetChannelKeyEvent.class, "No SetChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "SetChannelKeyEvent key doesn't match given");
@@ -566,7 +567,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify Channel has the correct key")
 	public void setChannelKeyModeTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":irc.someserver.net 324 PircBotX #aChannel +k testPassword");
 		assertEquals(aChannel.getChannelKey(), "testPassword", "Key from channel doesn't match given");
 	}
@@ -574,7 +575,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelKeyEvent has a null key when not specified")
 	public void removeChannelKeyEventEmptyTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k");
 		RemoveChannelKeyEvent event = getEvent(RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertNull(event.getKey(), "RemoveChannelKeyEvent key doesn't match given");
@@ -584,7 +585,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelKeyEvent has the correct key")
 	public void removeChannelKeyEventTest() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -k testPassword");
 		RemoveChannelKeyEvent event = getEvent(RemoveChannelKeyEvent.class, "No RemoveChannelKeyEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getKey(), "testPassword", "RemoveChannelKeyEvent key doesn't match given");
@@ -594,7 +595,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify SetChannelLimitEvent has the correct limit")
 	public void setChannelLimitEvent() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel +l 10");
 		SetChannelLimitEvent event = getEvent(SetChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(event.getLimit(), 10, "SetChannelLimitEvent key doesn't match given");
@@ -604,7 +605,7 @@ public class InputParserTest {
 	@Test(/*dependsOnMethods = "channelModeChangeTest", */description = "Verify SetChannelLimitEvent has the correct limit")
 	public void setChannelLimitModeEvent() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":irc.someserver.net 324 PircBotX #aChannel +l 10");
 		assertEquals(aChannel.getChannelLimit(), 10, "Channel limit doesn't match given");
 	}
@@ -612,7 +613,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelLimitEvent has the correct limit")
 	public void removeChannelLimitEvent() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -l 10");
 		RemoveChannelLimitEvent event = getEvent(RemoveChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(aChannel.getChannelLimit(), -1, "Channel limit doesn't match given");
@@ -621,7 +622,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "channelModeChangeTest", description = "Verify RemoveChannelLimitEvent has the correct limit")
 	public void removeChannelLimitEmptyEvent() throws IOException, IrcException {
 		//Since genericChannelModeTest does most of the verification, not much is needed here
-		Channel aChannel = dao.getChannel("#aChannel"); 
+		Channel aChannel = dao.createChannel("#aChannel"); 
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel -l");
 		RemoveChannelLimitEvent event = getEvent(RemoveChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(aChannel.getChannelLimit(), -1, "Channel limit doesn't match given");
@@ -632,6 +633,7 @@ public class InputParserTest {
 	 */
 	@Test(description = "Verify WHO response handling + UserListEvent")
 	public void whoTest() throws IOException, IrcException {
+		dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		//Issue #151: Test without full name
 		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4");
@@ -678,7 +680,7 @@ public class InputParserTest {
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
 	}
 	
-	@Test(dependsOnMethods = "whoTest", description = "Veryfy that we don't falsely registers all WHO responses as valid channels", enabled = false)
+	@Test(dependsOnMethods = "whoTest", description = "Veryfy that we don't falsely registers all WHO responses as valid channels", expectedExceptions = DaoException.class)
 	public void whoTestFalseChannels() throws IOException, IrcException {
 		assertFalse(dao.channelExists("#randomChannel"), "Intial test to ensure channel doesn't exist");
 		
@@ -692,7 +694,7 @@ public class InputParserTest {
 	
 	@Test(dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
 	public void kickTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		User otherUser = dao.getUser("OtherUser");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
@@ -714,7 +716,7 @@ public class InputParserTest {
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
 	public void quitWithMessageTest() throws IOException, IrcException {
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		User otherUser = dao.getUser("OtherUser");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel +o OtherUser");
@@ -738,6 +740,7 @@ public class InputParserTest {
 
 	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
 	public void quitWithoutMessageTest() throws IOException, IrcException {
+		dao.createChannel("#aChannel");
 		User otherUser = dao.getUser("OtherUser");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT :");
@@ -750,6 +753,7 @@ public class InputParserTest {
 
 	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
 	public void quitWithoutMessageAndColonTest() throws IOException, IrcException {
+		dao.createChannel("#aChannel");
 		User otherUser = dao.getUser("OtherUser");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 QUIT");
@@ -763,7 +767,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "joinTest", description = "Verify part with message")
 	public void partWithMessageTest() throws IOException, IrcException {
 		User otherUser = dao.getUser("OtherUser");
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 PART #aChannel :" + aString);
 
@@ -777,7 +781,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
 	public void partWithoutMessageTest() throws IOException, IrcException {
 		User otherUser = dao.getUser("OtherUser");
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 PART #aChannel :");
 
@@ -791,7 +795,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
 	public void partWithoutMessageAndColonTest() throws IOException, IrcException {
 		User otherUser = dao.getUser("OtherUser");
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":OtherUser!~OtherLogin@some.host1 PART #aChannel");
 
@@ -805,7 +809,7 @@ public class InputParserTest {
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part with us")
 	public void partUs() throws IOException, IrcException {
 		User otherUser = dao.getUser("PircBotXBot");
-		Channel aChannel = dao.getChannel("#aChannel");
+		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":PircBotXBot!PircBotX@some.host1 JOIN :#aChannel");
 		inputParser.handleLine(":PircBotXBot!PircBotX@some.host1 PART #aChannel");
 
