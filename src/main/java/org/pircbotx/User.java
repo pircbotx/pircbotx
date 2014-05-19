@@ -126,7 +126,7 @@ public class User implements Comparable<User> {
 
 				//Got our event
 				waitForQueue.close();
-				return event.getRegisteredAs() != null && !event.getRegisteredAs().isEmpty();
+				return event.getRegisteredAs() != null;
 			}
 		} catch (InterruptedException ex) {
 			throw new RuntimeException("Couldn't finish querying user for verified status", ex);
