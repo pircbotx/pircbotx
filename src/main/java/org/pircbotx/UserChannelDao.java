@@ -84,6 +84,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			return user;
 
 		//Create new user
+		throw new DaoException(DaoException.Reason.UnknownUser, nick);
+	}
+	
+	@Synchronized("accessLock")
+	public U createUser(String nick) {
+		U user = (U) botFactory.createUser(bot, nick);
 		user = (U) botFactory.createUser(bot, nick);
 		userNickMap.put(nick.toLowerCase(locale), user);
 		return user;
