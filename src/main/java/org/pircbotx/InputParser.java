@@ -649,7 +649,7 @@ public class InputParser implements Closeable {
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 
 			//Setup user
-			User curUser = bot.getUserChannelDao().getUser(parsedResponse.get(5));
+			User curUser = bot.getUserChannelDao().createUser(parsedResponse.get(5));
 			curUser.setLogin(parsedResponse.get(2));
 			curUser.setHostmask(parsedResponse.get(3));
 			curUser.setServer(parsedResponse.get(4));
