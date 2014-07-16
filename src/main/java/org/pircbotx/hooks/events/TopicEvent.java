@@ -41,8 +41,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	protected final Channel channel;
 	protected final String oldTopic;
 	protected final String topic;
-	@Getter(onMethod = @_(@Override))
-	protected final User user;
+	protected final String user;
 	protected final boolean changed;
 	protected final long date;
 
@@ -56,7 +55,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 * @param changed True if the topic has just been changed, false if
 	 * the topic was already there.
 	 */
-	public TopicEvent(T bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull User user, long date, boolean changed) {
+	public TopicEvent(T bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull String user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.oldTopic = oldTopic;
@@ -74,6 +73,6 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 */
 	@Override
 	public void respond(@Nullable String response) {
-		getChannel().send().message(getUser(), response);
+		getChannel().send().message(bot.getUserChannelDao().getUser(user), response);
 	}
 }
