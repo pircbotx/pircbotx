@@ -165,6 +165,7 @@ public class InputParserTest {
 
 	@Test(description = "Verifies InviteEvent from incomming invite")
 	public void inviteTest() throws IOException, IrcException {
+		dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
 
 		//Verify event values
@@ -180,7 +181,7 @@ public class InputParserTest {
 	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
 
 		//Make sure the event gives us the same channels
@@ -207,7 +208,7 @@ public class InputParserTest {
 	@Test(description = "Verifies DAO allows case insensitive lookups")
 	public void insensitiveLookupTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
 		
 		assertEquals(dao.getUser("AUSER"), aUser, "Cannot lookup AUSER ignoring case");
@@ -232,7 +233,7 @@ public class InputParserTest {
 	@Test(description = "Verify TopicEvent by user changing topic")
 	public void topicChangeTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host TOPIC #aChannel :" + aString);
 
 		//Verify event contents
@@ -266,7 +267,7 @@ public class InputParserTest {
 	@Test(description = "Verify MessageEvent from channel message")
 	public void messageTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + aString);
 
 		//Verify event contents
@@ -278,7 +279,7 @@ public class InputParserTest {
 
 	@Test(description = "Verify PrivateMessage from random user")
 	public void privateMessageTest() throws IOException, IrcException {
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG PircBotXUser :" + aString);
 
 		//Verify event contents
@@ -309,7 +310,7 @@ public class InputParserTest {
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify ActionEvent from /me from a user in a channel")
 	public void actionTest(String target) throws IOException, IrcException {
 		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001ACTION " + aString + "\u0001");
 
 		//Verify event contents
@@ -322,7 +323,7 @@ public class InputParserTest {
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify VersionEvent from a user")
 	public void versionTest(String target) throws IOException, IrcException {
 		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001VERSION\u0001");
 
 		//Verify event contents
@@ -334,7 +335,7 @@ public class InputParserTest {
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify PingEvent from a user")
 	public void pingTest(String target) throws IOException, IrcException {
 		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		String pingValue = "2435fdfd3f3d";
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001PING " + pingValue + "\u0001");
 
@@ -348,7 +349,7 @@ public class InputParserTest {
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify TimeEvent from a user")
 	public void timeTest(String target) throws IOException, IrcException {
 		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001TIME\u0001");
 
 		//Verify event contents
@@ -360,7 +361,7 @@ public class InputParserTest {
 	@Test(dataProvider = "channelOrUserDataProvider", description = "Verify FingerEvent from a user")
 	public void fingerTest(String target) throws IOException, IrcException {
 		Channel aChannel = target.startsWith("#") ? dao.createChannel(target) : null;
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host PRIVMSG " + target + " :\u0001FINGER\u0001");
 
 		//Verify event contents
@@ -371,7 +372,7 @@ public class InputParserTest {
 	
 	@Test
 	public void awayTest() throws IOException, IrcException {
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		
 		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
 		inputParser.handleLine(":irc.someserver.net 301 PircBotXUser AUser :" + aString);
@@ -380,7 +381,7 @@ public class InputParserTest {
 	
 	@Test
 	public void awayNotifyTest() throws IOException, IrcException {
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		
 		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
 		inputParser.handleLine(":AUser!~ALogin@some.host AWAY :" + aString);
@@ -389,7 +390,7 @@ public class InputParserTest {
 	
 	@Test
 	public void awayNotifyMessageEmptyTest() throws IOException, IrcException {
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		
 		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
 		inputParser.handleLine(":AUser!~ALogin@some.host AWAY :");
@@ -398,7 +399,7 @@ public class InputParserTest {
 	
 	@Test
 	public void awayNotifyMessageMissingTest() throws IOException, IrcException {
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		
 		assertEquals(aUser.getAwayMessage(), null, "Away default isn't null");
 		inputParser.handleLine(":AUser!~ALogin@some.host AWAY");
@@ -448,8 +449,8 @@ public class InputParserTest {
 	@Test(dataProvider = "channelUserModeProvider", description = "Test setting various user modes and verifying events")
 	public void channelUserModeTest(String mode, Class<?> eventClass, String checkMethod) throws Exception {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
-		User otherUser = dao.getUser("OtherUser");
+		User aUser = dao.createUser("AUser");
+		User otherUser = dao.createUser("OtherUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host MODE #aChannel " + mode + " OtherUser");
 
 		//Verify generic ModeEvent contents
@@ -524,7 +525,7 @@ public class InputParserTest {
 	@Test(dataProvider = "channelModeProvider")
 	public void channelModeChangeTest(String mode, String parentMode, Class<?> modeClass) throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		if (mode.startsWith("-")) {
 			//Set the mode first
 			String channelMode = (parentMode != null) ? parentMode : mode.substring(1);
@@ -905,7 +906,7 @@ public class InputParserTest {
 
 	@Test
 	public void nickChangeOtherTest() throws IOException, IrcException {
-		User aUser = dao.getUser("AUser");
+		User aUser = dao.createUser("AUser");
 		inputParser.handleLine(":AUser!~ALogin@some.host NICK :AnotherUser");
 
 		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
@@ -916,7 +917,7 @@ public class InputParserTest {
 
 	@Test
 	public void nickChangeBotTest() throws IOException, IrcException {
-		User botUser = bot.getUserBot();
+		User botUser = dao.createUser(bot.getNick());
 		inputParser.handleLine(":PircBotXBot!~PircBotXBot@bot.host NICK :PircBotXBetter");
 
 		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
