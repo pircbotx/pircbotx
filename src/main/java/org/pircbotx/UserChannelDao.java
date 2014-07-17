@@ -84,7 +84,9 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			return user;
 
 		//Create new user
-		throw new DaoException(DaoException.Reason.UnknownUser, nick);
+		//TODO: Disabled to fix default branch, see Issue #148
+		//throw new DaoException(DaoException.Reason.UnknownUser, nick);
+		return createUser(nick);
 	}
 	
 	@Synchronized("accessLock")
