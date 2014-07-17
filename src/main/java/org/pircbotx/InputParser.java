@@ -260,7 +260,10 @@ public class InputParser implements Closeable {
 	protected boolean capEndSent = false;
 	protected BufferedReader inputReader;
 	//Builders
-	protected final Map<String, WhoisEvent.Builder<PircBotX>> whoisBuilder = Maps.newHashMap();
+	/**
+	 * Map to keep active WhoisEvents. Must be a treemap to be case insensitive
+	 */
+	protected final Map<String, WhoisEvent.Builder<PircBotX>> whoisBuilder = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;

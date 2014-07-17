@@ -892,6 +892,16 @@ public class InputParserTest {
 		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
 		assertEquals(event.getRegisteredAs(), "nickservAccount", "Nickserv account does not match given");
 	}
+	
+	@Test
+	public void whoisCaseInsensitiveTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser otheruser :End of /WHOIS list.");
+		
+		//Make sure we get the correct event
+		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getNick(), "OtherUser", "Nickserv account does not match given");
+	}
 
 	@Test
 	public void serverPingTest() throws IOException, IrcException {
