@@ -101,15 +101,32 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send an invite to the channel. See {@link #sendInvite(java.lang.String, java.lang.String) }
-	 * for more information
-	 * @param target The channel to send the invite to
+	 * Send an invite for this channel to another channel.
 	 * @param otherChannel The channel you are inviting the user to join.
+	 * @see OutputIRC#invite(java.lang.String, java.lang.String) 
 	 */
 	public void invite(Channel otherChannel) {
 		if (otherChannel == null)
 			throw new IllegalArgumentException("Can't send invite to null invite channel");
 		bot.sendIRC().invite(channel.getName(), otherChannel.getName());
+	}
+	
+	/**
+	 * Send an invite from this channel to a user
+	 * @param user 
+	 * @see OutputIRC#invite(java.lang.String, java.lang.String) 
+	 */
+	public void invite(@NonNull User user) {
+		bot.sendIRC().invite(user.getNick(), channel.getName());
+	}
+	
+	/**
+	 * Send an invite from this channel to a channel or user. 
+	 * @param target 
+	 * @see OutputIRC#invite(java.lang.String, java.lang.String) 
+	 */
+	public void invite(@NonNull String target) {
+		bot.sendIRC().invite(target, channel.getName());
 	}
 
 	/**
