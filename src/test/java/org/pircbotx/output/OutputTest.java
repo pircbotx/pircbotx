@@ -211,13 +211,13 @@ public class OutputTest {
 	}
 
 	@Test(description = "Verify sendInvite to channel by string")
-	public void sendInviteChannelStringlTest() throws Exception {
+	public void sendInviteChannelStringTest() throws Exception {
 		aUser.send().invite("#aChannel");
 		checkOutput("INVITE aUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite by string")
-	public void sendInviteStringlTest() throws Exception {
+	public void sendInviteStringTest() throws Exception {
 		bot.sendIRC().invite("aUser", "#aChannel");
 		checkOutput("INVITE aUser :#aChannel");
 	}
