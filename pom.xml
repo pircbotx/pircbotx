@@ -81,7 +81,7 @@ features and bug fixes in an official alternative distribution.
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lombok.version>1.12.6</lombok.version>
+		<lombok.version>1.14.4</lombok.version>
 	</properties>
 
 	<!--
@@ -98,7 +98,7 @@ features and bug fixes in an official alternative distribution.
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
-			<version>2.0.3</version>
+			<version>3.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Commons Lang for useful utilities -->
@@ -123,7 +123,7 @@ features and bug fixes in an official alternative distribution.
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>16.0.1</version>
+			<version>18.0-rc1</version>
 		</dependency>
 		<!-- Use TestNG as testing framework -->
 		<dependency>
