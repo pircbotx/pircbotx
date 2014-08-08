@@ -89,7 +89,7 @@ public class OutputTest {
 		verify(socketFactory).createSocket(localhost, 6667, null, 0);
 
 		//Setup useful vars
-		aUser = bot.getUserChannelDao().getUser("aUser");
+		aUser = bot.getUserChannelDao().createUser("aUser");
 		aChannel = bot.getUserChannelDao().createChannel("#aChannel");
 	}
 

@@ -44,6 +44,8 @@ public class TemporaryListenerTest {
 		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.buildConfiguration());
 		listenerManager = bot.getConfiguration().getListenerManager();
+		bot.getUserChannelDao().createChannel("#aChannel");
+		bot.getUserChannelDao().createUser("AUser");
 	}
 
 	@Test(singleThreaded = true)
@@ -61,7 +63,6 @@ public class TemporaryListenerTest {
 		assertTrue(listenerManager.listenerExists(listener), "Listener doesn't exist in ListenerManager");
 
 		//Send some arbitrary line
-		bot.getUserChannelDao().createChannel("#aChannel");
 		bot.getInputParser().handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
 		MessageEvent mevent = mutableEvent.getValue();
 
@@ -84,7 +85,6 @@ public class TemporaryListenerTest {
 		listenerManager.addListener(listener);
 
 		assertTrue(listenerManager.listenerExists(listener), "Listener wasn't added to ListenerManager");
-		bot.getUserChannelDao().createChannel("#aChannel");
 		bot.getInputParser().handleLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :Some very long message");
 		assertFalse(listenerManager.listenerExists(listener), "Listener wasn't removed from ListenerManager");
 	}
