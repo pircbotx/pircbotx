@@ -58,6 +58,7 @@ public class DCCTest {
 		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setLocalAddress(InetAddress.getByName("::1"))
 				.buildConfiguration());
+		bot.getUserChannelDao().createUser("ANick");
 	}
 
 	@Test
