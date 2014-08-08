@@ -108,7 +108,7 @@ public class OutputChannel {
 	public void invite(Channel otherChannel) {
 		if (otherChannel == null)
 			throw new IllegalArgumentException("Can't send invite to null invite channel");
-		bot.sendIRC().invite(channel.getName(), otherChannel.getName());
+		bot.sendIRC().invite(otherChannel.getName(), channel.getName());
 	}
 	
 	/**
