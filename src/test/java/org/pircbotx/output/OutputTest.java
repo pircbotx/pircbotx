@@ -213,7 +213,7 @@ public class OutputTest {
 		bot.getUserChannelDao().createChannel("#aChannel");
 		bot.getUserChannelDao().createChannel("#otherChannel");
 		aChannel.send().invite(bot.getUserChannelDao().getChannel("#otherChannel"));
-		checkOutput("INVITE #aChannel :#otherChannel");
+		checkOutput("INVITE #otherChannel :#aChannel");
 	}
 
 	@Test
