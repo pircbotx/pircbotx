@@ -238,7 +238,7 @@ public class InputParserTest {
 
 		//Verify event contents
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
-		assertEquals(tevent.getUser(), aUser, "TopicEvent's user doesn't match given");
+		assertEquals(tevent.getUser(), "AUser", "TopicEvent's user doesn't match given");
 		assertEquals(tevent.getChannel(), aChannel, "TopicEvent's channel doesn't match given");
 		assertEquals(tevent.getTopic(), aString, "TopicEvent's topic doesn't match given");
 		//Just make sure the time is reasonable since its based off of System.currentTimeMillis
