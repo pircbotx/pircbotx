@@ -854,6 +854,7 @@ public class InputParserTest {
 		assertEquals(event.getIdleSeconds(), 6077, "Idle time doesn't match given");
 		assertEquals(event.getSignOnTime(), 1347373349, "Sign on time doesn't match given");
 		assertNull(event.getRegisteredAs(), "User isn't registered");
+		assertTrue(event.isExists(), "User should exist");
 
 		//Verify channels
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
@@ -902,6 +903,19 @@ public class InputParserTest {
 		//Make sure we get the correct event
 		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
 		assertEquals(event.getNick(), "OtherUser", "Nickserv account does not match given");
+	}
+	
+	@Test
+	public void whoisInvalidUserTest() throws IOException, IrcException {
+		//Need 001 since processConnect fails on 4XX errors
+		inputParser.handleLine(":irc.someserver.net 001 PircBotXUser :Test server");
+		inputParser.handleLine(":irc.someserver.net 401 PircBotXUser randomuser :No such nick/channel");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser randomuser :End of /WHOIS list.");
+		
+		//Make sure we get the correct event
+		WhoisEvent event = getEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getNick(), "randomuser", "Nick does not match given");
+		assertFalse(event.isExists(), "User should not exist");
 	}
 
 	@Test

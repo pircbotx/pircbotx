@@ -772,8 +772,16 @@ public class InputParser implements Closeable {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
-
-			configuration.getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(bot));
+			WhoisEvent.Builder builder;
+			if(whoisBuilder.containsKey(whoisNick)) {
+				builder = whoisBuilder.get(whoisNick);
+				builder.setExists(true);
+			} else {
+				builder = new WhoisEvent.Builder();
+				builder.setNick(whoisNick);
+				builder.setExists(false);
+			}
+			configuration.getListenerManager().dispatchEvent(builder.generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
 		}
 		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent<PircBotX>(bot, code, rawResponse, parsedResponse));
