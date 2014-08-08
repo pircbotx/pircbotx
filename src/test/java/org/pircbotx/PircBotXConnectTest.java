@@ -79,7 +79,7 @@ public class PircBotXConnectTest {
 		configurationBuilder = TestUtils.generateConfigurationBuilder()
 				.addListener(new Listener() {
 			public void onEvent(Event event) throws Exception {
-				LoggerFactory.getLogger(getClass()).debug("Called");
+				LoggerFactory.getLogger(getClass()).debug("Called for " + event.getClass());
 				events.add(event);
 			}
 		})
