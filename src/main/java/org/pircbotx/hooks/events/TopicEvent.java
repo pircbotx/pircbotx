@@ -24,10 +24,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.Channel;
-import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericChannelUserEvent;
+import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  * This event is dispatched whenever a user sets the topic, or when
@@ -36,7 +35,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericChannelEvent<T> {
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
 	protected final String oldTopic;
