@@ -201,6 +201,12 @@ public class OutputTest {
 		aUser.send().invite(aChannel);
 		checkOutput("INVITE aUser :#aChannel");
 	}
+	
+	@Test(description = "Verify sendInvite to channel by string")
+	public void sendInviteUserStringTest() throws Exception {
+		aUser.send().invite("#aChannel");
+		checkOutput("INVITE aUser :#aChannel");
+	}
 
 	@Test(description = "Verify sendInvite to channel")
 	public void sendInviteChannelChannelTest() throws Exception {
@@ -210,10 +216,15 @@ public class OutputTest {
 		checkOutput("INVITE #aChannel :#otherChannel");
 	}
 
-	@Test(description = "Verify sendInvite to channel by string")
-	public void sendInviteChannelStringTest() throws Exception {
-		aUser.send().invite("#aChannel");
+	@Test
+	public void sendInviteChannelUserTest() throws Exception {
+		aChannel.send().invite(aUser);
 		checkOutput("INVITE aUser :#aChannel");
+	}
+	
+	public void sendInviteChannelStringTest() throws Exception {
+		aChannel.send().invite("randomUser");
+		checkOutput("INVITE randomUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite by string")
