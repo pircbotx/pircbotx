@@ -269,6 +269,11 @@ public class InputParser implements Closeable {
 	protected boolean channelListRunning = false;
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
+	/**
+	 * Stores all 401's as potentially failed WHOIS requests. This is not ideal.
+	 * @see Configuration.Builder#setWhoisFailedTrackingEnabled(boolean) 
+	 */
+	protected List<String> possibleFailedWhois = new ArrayList<String>();
 
 	public InputParser(PircBotX bot) {
 		this.bot = bot;
@@ -735,6 +740,9 @@ public class InputParser implements Closeable {
 		} else if (code == RPL_AWAY)
 			//Example: 301 PircBotXUser TheLQ_ :I'm away, sorry
 			bot.getUserChannelDao().getUser(parsedResponse.get(1)).setAwayMessage(parsedResponse.get(2));
+		else if (code == 401 && configuration.isWhoisFailedTrackingEnabled()) {
+			possibleFailedWhois.add(parsedResponse.get(1));
+		}
 		else if (code == RPL_WHOISCHANNELS) {
 			//Example: 319 TheLQ Plazma :+#freenode
 			//Channel list from whois. Re-tokenize since they're after the :
@@ -772,8 +780,17 @@ public class InputParser implements Closeable {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
-
-			configuration.getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(bot));
+			WhoisEvent.Builder<PircBotX> whois;
+			if(!whoisBuilder.containsKey(whoisNick) && possibleFailedWhois.contains(whoisNick)) {
+				//Whois doesn't exist
+				whois = new WhoisEvent.Builder();
+				whois.setNick(whoisNick);
+				whois.setExists(false);
+			} else {
+				whois = whoisBuilder.get(whoisNick);
+				whois.setExists(true);
+			}
+			configuration.getListenerManager().dispatchEvent(whois.generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
 		}
 		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent<PircBotX>(bot, code, rawResponse, parsedResponse));
@@ -848,6 +865,14 @@ public class InputParser implements Closeable {
 		motdBuilder = null;
 		channelListRunning = false;
 		channelListBuilder = null;
+	}
+	
+	/**
+	 * Flushes all potential failed whois requests. 
+	 * @see Configuration.Builder#setWhoisFailedTrackingEnabled(boolean) 
+	 */
+	public void flushPossibleFailedWhois() {
+		possibleFailedWhois.clear();
 	}
 
 	protected static abstract class OpChannelModeHandler extends ChannelModeHandler {

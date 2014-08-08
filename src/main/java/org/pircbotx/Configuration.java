@@ -110,6 +110,7 @@ public class Configuration<B extends PircBotX> {
 	protected final ImmutableList<CapHandler> capHandlers;
 	protected final ImmutableSortedMap<Character, ChannelModeHandler> channelModeHandlers;
 	protected final BotFactory botFactory;
+	protected final boolean whoisFailedTrackingEnabled;
 
 	/**
 	 * Use {@link Configuration.Builder#build() }.
@@ -188,6 +189,7 @@ public class Configuration<B extends PircBotX> {
 		this.channelModeHandlers = channelModeHandlersBuilder.build();
 		this.shutdownHookEnabled = builder.isShutdownHookEnabled();
 		this.botFactory = builder.getBotFactory();
+		this.whoisFailedTrackingEnabled = builder.isWhoisFailedTrackingEnabled();
 	}
 
 	@Accessors(chain = true)
@@ -367,6 +369,22 @@ public class Configuration<B extends PircBotX> {
 		 * The {@link BotFactory} to use
 		 */
 		protected BotFactory botFactory = new BotFactory();
+		/**
+		 * When a WHOIS request fails, the servers sends back a generic 401 (ERR_NOSUCHNICK)
+		 * and 318 (RPL_ENDOFWHOIS). However 401 is also used for failed PMs and other 
+		 * commands that are targeted to a nick. PircBotX's current design is unable to 
+		 * link a sent command and it's response, so upon encountering a 401 it doesn't
+		 * know if it's a failed WHOIS, a failed PM, or something else
+		 * <p>
+		 * The temporary fix is to track all 401's as potential failed WHOIS requests
+		 * and remove any that have a 318 following. But now there's a memory leak 
+		 * if there are any 401's that aren't failed WHOIS requests. Most bots should
+		 * not be affected but for convenience this workaround can be disabled.
+		 * <p>
+		 * By default this is enabled
+		 * @see org.pircbotx.InputParser#flushPossibleFailedWhois()
+		 */
+		protected boolean whoisFailedTrackingEnabled = true;
 
 		/**
 		 * Default constructor, adding a multi-prefix {@link EnableCapHandler}
@@ -422,6 +440,7 @@ public class Configuration<B extends PircBotX> {
 			this.channelModeHandlers.addAll(configuration.getChannelModeHandlers().values());
 			this.shutdownHookEnabled = configuration.isShutdownHookEnabled();
 			this.botFactory = configuration.getBotFactory();
+			this.whoisFailedTrackingEnabled = configuration.isWhoisFailedTrackingEnabled();
 		}
 
 		/**
@@ -469,6 +488,7 @@ public class Configuration<B extends PircBotX> {
 			this.channelModeHandlers.addAll(otherBuilder.getChannelModeHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
 			this.botFactory = otherBuilder.getBotFactory();
+			this.whoisFailedTrackingEnabled = otherBuilder.isWhoisFailedTrackingEnabled();
 		}
 
 		/**
