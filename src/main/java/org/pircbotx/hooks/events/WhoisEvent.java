@@ -48,7 +48,6 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	protected final long idleSeconds;
 	protected final long signOnTime;
 	protected final String registeredAs;
-	protected final boolean exists;
 
 	public WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
 		super(bot);
@@ -62,7 +61,6 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 		this.idleSeconds = builder.getIdleSeconds();
 		this.signOnTime = builder.getSignOnTime();
 		this.registeredAs = builder.getRegisteredAs();
-		this.exists = builder.isExists();
 	}
 	
 	/**
@@ -82,7 +80,6 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	@Data
 	@NoArgsConstructor
 	public static class Builder<B extends PircBotX> {
-		protected boolean exists;
 		@NonNull
 		protected String nick;
 		@NonNull
