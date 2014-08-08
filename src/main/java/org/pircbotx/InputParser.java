@@ -580,7 +580,7 @@ public class InputParser implements Closeable {
 			channel.setTopicSetter(sourceNick);
 			channel.setTopicTimestamp(currentTime);
 
-			configuration.getListenerManager().dispatchEvent(new TopicEvent<PircBotX>(bot, channel, oldTopic, message, source, currentTime, true));
+			configuration.getListenerManager().dispatchEvent(new TopicEvent<PircBotX>(bot, channel, oldTopic, message, sourceNick, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
@@ -644,11 +644,11 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			User setBy = bot.getUserChannelDao().getUser(parsedResponse.get(2));
+			String setBy = parsedResponse.get(2);
 			long date = Utils.tryParseLong(parsedResponse.get(3), -1);
 
 			channel.setTopicTimestamp(date * 1000);
-			channel.setTopicSetter(setBy.getNick());
+			channel.setTopicSetter(setBy);
 
 			configuration.getListenerManager().dispatchEvent(new TopicEvent<PircBotX>(bot, channel, null, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
