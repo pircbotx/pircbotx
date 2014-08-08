@@ -180,14 +180,14 @@ public class OutputIRC {
 	 * as "invite-only", so it may be useful to allow a bot to invite people
 	 * into it.
 	 *
-	 * @param nick The nick of the user to invite
-	 * @param channel The channel you are inviting the user to join.
+	 * @param target The nick or channel to invite
+	 * @param channel The channel you are inviting them to join.
 	 *
 	 */
-	public void invite(String nick, String channel) {
-		checkArgument(StringUtils.isNotBlank(nick), "Nick '%s' is blank", nick);
+	public void invite(String target, String channel) {
+		checkArgument(StringUtils.isNotBlank(target), "Nick '%s' is blank", target);
 		checkArgument(StringUtils.isNotBlank(channel), "Channel '%s' is blank", channel);
-		bot.sendRaw().rawLine("INVITE " + nick + " :" + channel);
+		bot.sendRaw().rawLine("INVITE " + target + " :" + channel);
 	}
 
 	/**

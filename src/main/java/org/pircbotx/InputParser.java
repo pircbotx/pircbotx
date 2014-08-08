@@ -260,7 +260,10 @@ public class InputParser implements Closeable {
 	protected boolean capEndSent = false;
 	protected BufferedReader inputReader;
 	//Builders
-	protected final Map<String, WhoisEvent.Builder<PircBotX>> whoisBuilder = Maps.newHashMap();
+	/**
+	 * Map to keep active WhoisEvents. Must be a treemap to be case insensitive
+	 */
+	protected final Map<String, WhoisEvent.Builder<PircBotX>> whoisBuilder = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;
@@ -769,8 +772,16 @@ public class InputParser implements Closeable {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
-
-			configuration.getListenerManager().dispatchEvent(whoisBuilder.get(whoisNick).generateEvent(bot));
+			WhoisEvent.Builder builder;
+			if(whoisBuilder.containsKey(whoisNick)) {
+				builder = whoisBuilder.get(whoisNick);
+				builder.setExists(true);
+			} else {
+				builder = new WhoisEvent.Builder();
+				builder.setNick(whoisNick);
+				builder.setExists(false);
+			}
+			configuration.getListenerManager().dispatchEvent(builder.generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
 		}
 		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent<PircBotX>(bot, code, rawResponse, parsedResponse));
