@@ -88,6 +88,11 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 	
 	@Synchronized("accessLock")
+	public U getUser(ServerUser serverUser) {
+		return getUser(serverUser.getNick());
+	}
+	
+	@Synchronized("accessLock")
 	public U createUser(String nick) {
 		U user = (U) botFactory.createUser(bot, nick);
 		user = (U) botFactory.createUser(bot, nick);
