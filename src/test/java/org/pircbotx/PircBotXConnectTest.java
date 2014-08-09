@@ -65,7 +65,13 @@ public class PircBotXConnectTest {
 	@BeforeMethod
 	public void botProvider() throws Exception {
 		//Setup stream
-		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
+		botIn = new ByteArrayInputStream(StringUtils.join(new String[] {
+			":ircd.test CAP * LS :sasl",
+			":ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b",
+			":ircd.test NOTICE * :*** Looking up your hostname...",
+			//Need to end with a newline
+			""
+		}, "\r\n").getBytes());
 		botOut = new ByteArrayOutputStream();
 		socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
