@@ -40,37 +40,14 @@ import org.pircbotx.output.OutputUser;
  * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Data
-@EqualsAndHashCode(of = {"userId", "bot"})
 @Setter(AccessLevel.PROTECTED)
-public class User implements Comparable<User> {
-	protected final PircBotX bot;
+public class User extends ServerUser {
 	@Getter(AccessLevel.PROTECTED)
-	protected final UserChannelDao<User, Channel> dao;
-	protected final UUID userId = UUID.randomUUID();
-	//Output is lazily created since it might not ever be used
-	@Getter(AccessLevel.NONE)
-	protected final AtomicSafeInitializer<OutputUser> output = new AtomicSafeInitializer<OutputUser>() {
-		@Override
-		protected OutputUser initialize() {
-			return bot.getConfiguration().getBotFactory().createOutputUser(bot, User.this);
-		}
-	};
-	/**
-	 * Current nick of the user.
-	 */
-	private String nick;
+	private final UserChannelDao<User, Channel> dao;
 	/**
 	 * Realname/fullname of the user. Never changes
 	 */
 	private String realName = "";
-	/**
-	 * Login of the user (user!login@hostmask). Never changes
-	 */
-	private String login = "";
-	/**
-	 * Hostmask of the user (user!login@hostmask). Never changes
-	 */
-	private String hostmask = "";
 	/**
 	 * User's away status
 	 */
@@ -89,22 +66,9 @@ public class User implements Comparable<User> {
 	private int hops = 0;
 
 	@SuppressWarnings("unchecked")
-	protected User(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String nick) {
-		this.bot = bot;
+	protected User(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String hostmask, String nick, String login, String hostname) {
+		super(bot, hostname, nick, login, hostmask);
 		this.dao = (UserChannelDao<User, Channel>)dao;
-		this.nick = nick;
-	}
-	
-	/**
-	 * Send a line to the user.
-	 * @return A {@link OutputUser} for this user
-	 */
-	public OutputUser send() {
-		try {
-			return output.get();
-		} catch (ConcurrentException ex) {
-			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
-		}
 	}
 
 	/**
@@ -118,10 +82,10 @@ public class User implements Comparable<User> {
 	public boolean isVerified() {
 		try {
 			send().whoisDetail();
-			WaitForQueue waitForQueue = new WaitForQueue(bot);
+			WaitForQueue waitForQueue = new WaitForQueue(getBot());
 			while (true) {
 				WhoisEvent event = waitForQueue.waitFor(WhoisEvent.class);
-				if (!event.getNick().equals(nick))
+				if (!event.getNick().equals(getNick()))
 					continue;
 
 				//Got our event
@@ -207,17 +171,6 @@ public class User implements Comparable<User> {
 	 */
 	public ImmutableSortedSet<Channel> getChannelsSuperOpIn() {
 		return getDao().getChannels(this, UserLevel.SUPEROP);
-	}
-
-	/**
-	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String) }.
-	 * This is useful for sorting lists of User objects.
-	 * @param other Other user to compare to
-	 * @return the result of calling compareToIgnoreCase user nicks.
-	 */
-	@Override
-	public int compareTo(User other) {
-		return getNick().compareToIgnoreCase(other.getNick());
 	}
 
 	/**
