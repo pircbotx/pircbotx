@@ -18,8 +18,15 @@
  */
 package org.pircbotx;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.status.WarnStatus;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -39,23 +47,23 @@ public class TestUtils {
 	public static Object[][] eventObjectDataProvider() throws IOException {
 		return generateEventArguments(true, false);
 	}
-	
+
 	@DataProvider
 	public static Object[][] eventGenericDataProvider() throws IOException {
 		return generateEventArguments(false, true);
 	}
-	
+
 	@DataProvider
 	public static Object[][] eventAllDataProvider() throws IOException {
 		return generateEventArguments(true, true);
 	}
-	
+
 	protected static Object[][] generateEventArguments(boolean includeEvents, boolean includeGeneric) throws IOException {
 		ClassPath classPath = ClassPath.from(TestUtils.class.getClassLoader());
 		ImmutableSet.Builder<ClassPath.ClassInfo> classesBuilder = ImmutableSet.builder();
-		if(includeEvents)
+		if (includeEvents)
 			classesBuilder.addAll(classPath.getTopLevelClasses(VoiceEvent.class.getPackage().getName()));
-		if(includeGeneric)
+		if (includeGeneric)
 			classesBuilder.addAll(classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName()));
 		List<Object[]> argumentBuilder = new ArrayList();
 		for (ClassPath.ClassInfo curClassInfo : classesBuilder.build()) {
@@ -77,8 +85,19 @@ public class TestUtils {
 		//Can't get anything, error out
 		throw new IllegalArgumentException("Cannot get root of class name " + aClass.toString());
 	}
-	
+
 	public static Configuration.Builder generateConfigurationBuilder() {
+		//when getting a logged exception, fail immediately
+		Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		
+		if(loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
+			ExceptionStopperAppender exAppender = new ExceptionStopperAppender();
+			exAppender.setContext(loggerRoot.getLoggerContext());
+			exAppender.start();
+			
+			loggerRoot.addAppender(exAppender);
+		}
+
 		return new Configuration.Builder()
 				.setCapEnabled(true)
 				.setServerHostname("example.com")
@@ -87,5 +106,59 @@ public class TestUtils {
 				.setMessageDelay(0)
 				.setShutdownHookEnabled(false)
 				.setAutoReconnect(false);
+	}
+
+	public static class ExceptionStopperAppender extends AppenderBase<ILoggingEvent> {
+		public static String NAME = "PircBotX-Test-Exception-Stopper";
+		static final int ALLOWED_REPEATS = 5;
+		private boolean guard = false;
+		private int statusRepeatCount = 0;
+
+		public ExceptionStopperAppender() {
+			setName(NAME);
+		}
+
+		@Override
+		protected void append(ILoggingEvent eventObject) {
+			ThrowableProxy throwProxy = (ThrowableProxy) eventObject.getThrowableProxy();
+			if (throwProxy == null)
+				return;
+			throw new RuntimeException("Captured logged exception " + throwProxy.getClassName()
+					+ ": " + throwProxy.getMessage(), throwProxy.getThrowable());
+		}
+
+		/**
+		 * Modified copy of AppenderBase.doAppend() with exception logging removed
+		 * @param eventObject 
+		 */
+		@Override
+		public synchronized void doAppend(ILoggingEvent eventObject) {
+			// WARNING: The guard check MUST be the first statement in the
+			// doAppend() method.
+
+			// prevent re-entry.
+			if (guard)
+				return;
+
+			try {
+				guard = true;
+
+				if (!this.started) {
+					if (statusRepeatCount++ < ALLOWED_REPEATS)
+						addStatus(new WarnStatus(
+								"Attempted to append to non started appender [" + name + "].",
+								this));
+					return;
+				}
+
+				if (getFilterChainDecision(eventObject) == FilterReply.DENY)
+					return;
+
+				// ok, we now invoke derived class' implementation of append
+				this.append(eventObject);
+			} finally {
+				guard = false;
+			}
+		}
 	}
 }
