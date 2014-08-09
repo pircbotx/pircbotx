@@ -19,6 +19,7 @@
 package org.pircbotx.hooks;
 
 import com.google.common.collect.ComparisonChain;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.managers.ListenerManager;
@@ -28,9 +29,23 @@ import org.pircbotx.hooks.types.GenericEvent;
  * An event representing what was received from the IRC server.
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Getter
 public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
+	/**
+	 * Returns the timestamp of when the event was created.
+	 * @return A timestamp as a long
+	 */
 	protected final long timestamp;
+	/**
+	 * Returns the {@link PircBotX} instance that this event originally came from.
+	 * @return A {@link PircBotX} instance
+	 */
 	protected final T bot;
+	/**
+	 * Returns the id of this event. This id is guaranteed to be unique in the
+	 * context of other events dispatched from the same listener manager.
+	 * @return The id of this event
+	 */
 	protected final long id;
 
 	public Event(@NonNull T bot) {
@@ -45,31 +60,6 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
 		this.id = listenerManager.incrementCurrentId();
-	}
-
-	/**
-	 * Returns the {@link PircBotX} instance that this event originally came from.
-	 * @return A {@link PircBotX} instance
-	 */
-	public T getBot() {
-		return bot;
-	}
-
-	/**
-	 * Returns the timestamp of when the event was created.
-	 * @return A timestamp as a long
-	 */
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	/**
-	 * Returns the id of this event. This id is guaranteed to be unique in the
-	 * context of other events dispatched from the same listener manager.
-	 * @return The id of this event
-	 */
-	public long getId() {
-		return id;
 	}
 
 	/**
