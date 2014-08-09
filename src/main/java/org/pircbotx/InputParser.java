@@ -306,7 +306,8 @@ public class InputParser implements Closeable {
 		String sourceNick;
 		String sourceLogin;
 		String sourceHostname;
-		String target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
+		//TODO: Removed isEmpty check, this should never be null
+		String target = parsedLine.get(0);
 
 		if (target.startsWith(":"))
 			target = target.substring(1);
