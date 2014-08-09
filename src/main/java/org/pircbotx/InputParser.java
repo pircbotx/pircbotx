@@ -304,8 +304,8 @@ public class InputParser implements Closeable {
 		}
 
 		String sourceNick;
-		String sourceLogin = "";
-		String sourceHostname = "";
+		String sourceLogin;
+		String sourceHostname;
 		String target = !parsedLine.isEmpty() ? parsedLine.get(0) : "";
 
 		if (target.startsWith(":"))
@@ -326,12 +326,15 @@ public class InputParser implements Closeable {
 					processServerResponse(code, line, parsedLine);
 					// Return from the method.
 					return;
-				} else
+				} else {
 					// This is not a server response.
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
-					//WARNING: Changed from origional PircBot. Instead of command as target, use channel/user (setup later)
-					sourceNick = senderInfo;
+					//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
+					sourceNick = null;
+					sourceLogin = null;
+					sourceHostname = null;
+				}
 			}
 		else {
 			// We don't know what this line means.
@@ -345,12 +348,16 @@ public class InputParser implements Closeable {
 			return;
 		}
 
-		if (sourceNick.startsWith(":"))
+		if (sourceNick != null && sourceNick.startsWith(":"))
 			sourceNick = sourceNick.substring(1);
+		
+		String source = senderInfo;
+		if(source.startsWith(":"))
+			source = source.substring(1);
 
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
-		processCommand(target, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
+		processCommand(target, source, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
 	}
 
 	/**
@@ -463,8 +470,8 @@ public class InputParser implements Closeable {
 		}
 	}
 
-	public void processCommand(String target, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
-		User source = bot.getUserChannelDao().getUser(sourceNick);
+	public void processCommand(String target, String source, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
+		User sourceUser = (sourceNick != null) ? bot.getUserChannelDao().getUser(sourceNick) : null;
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().channelExists(target)) 
 				? bot.getUserChannelDao().getChannel(target) : null;
@@ -475,22 +482,22 @@ public class InputParser implements Closeable {
 			String request = message.substring(1, message.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
-				configuration.getListenerManager().dispatchEvent(new VersionEvent<PircBotX>(bot, source, channel));
+				configuration.getListenerManager().dispatchEvent(new VersionEvent<PircBotX>(bot, sourceUser, channel));
 			else if (request.startsWith("ACTION "))
 				// ACTION request
-				configuration.getListenerManager().dispatchEvent(new ActionEvent<PircBotX>(bot, source, channel, request.substring(7)));
+				configuration.getListenerManager().dispatchEvent(new ActionEvent<PircBotX>(bot, sourceUser, channel, request.substring(7)));
 			else if (request.startsWith("PING "))
 				// PING request
-				configuration.getListenerManager().dispatchEvent(new PingEvent<PircBotX>(bot, source, channel, request.substring(5)));
+				configuration.getListenerManager().dispatchEvent(new PingEvent<PircBotX>(bot, sourceUser, channel, request.substring(5)));
 			else if (request.equals("TIME"))
 				// TIME request
-				configuration.getListenerManager().dispatchEvent(new TimeEvent<PircBotX>(bot, channel, source));
+				configuration.getListenerManager().dispatchEvent(new TimeEvent<PircBotX>(bot, channel, sourceUser));
 			else if (request.equals("FINGER"))
 				// FINGER request
-				configuration.getListenerManager().dispatchEvent(new FingerEvent<PircBotX>(bot, source, channel));
+				configuration.getListenerManager().dispatchEvent(new FingerEvent<PircBotX>(bot, sourceUser, channel));
 			else if (request.startsWith("DCC ")) {
 				// This is a DCC request.
-				boolean success = bot.getDccHandler().processDcc(source, request);
+				boolean success = bot.getDccHandler().processDcc(sourceUser, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
 					configuration.getListenerManager().dispatchEvent(new UnknownEvent<PircBotX>(bot, line));
@@ -499,12 +506,12 @@ public class InputParser implements Closeable {
 				configuration.getListenerManager().dispatchEvent(new UnknownEvent<PircBotX>(bot, line));
 		} else if (command.equals("PRIVMSG") && channel != null)
 			// This is a normal message to a channel.
-			configuration.getListenerManager().dispatchEvent(new MessageEvent<PircBotX>(bot, channel, source, message));
+			configuration.getListenerManager().dispatchEvent(new MessageEvent<PircBotX>(bot, channel, sourceUser, message));
 		else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
 			//Add to private message
-			bot.getUserChannelDao().addUserToPrivate(source);
-			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent<PircBotX>(bot, source, message));
+			bot.getUserChannelDao().addUserToPrivate(sourceUser);
+			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent<PircBotX>(bot, sourceUser, message));
 		} else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (sourceNick.equalsIgnoreCase(bot.getNick())) {
@@ -513,42 +520,42 @@ public class InputParser implements Closeable {
 				bot.sendRaw().rawLine("WHO " + target);
 				bot.sendRaw().rawLine("MODE " + target);
 			}
-			source.setLogin(sourceLogin);
-			source.setHostmask(sourceHostname);
-			bot.getUserChannelDao().addUserToChannel(source, channel);
-			configuration.getListenerManager().dispatchEvent(new JoinEvent<PircBotX>(bot, channel, source));
+			sourceUser.setLogin(sourceLogin);
+			sourceUser.setHostmask(sourceHostname);
+			bot.getUserChannelDao().addUserToChannel(sourceUser, channel);
+			configuration.getListenerManager().dispatchEvent(new JoinEvent<PircBotX>(bot, channel, sourceUser));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
 			ChannelSnapshot channelSnapshot = daoSnapshot.getChannel(channel.getName());
-			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source.getNick());
+			UserSnapshot sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
 			if (sourceNick.equals(bot.getNick()))
 				//We parted the channel
 				bot.getUserChannelDao().removeChannel(channel);
 			else
 				//Just remove the user from memory
-				bot.getUserChannelDao().removeUserFromChannel(source, channel);
+				bot.getUserChannelDao().removeUserFromChannel(sourceUser, channel);
 			configuration.getListenerManager().dispatchEvent(new PartEvent<PircBotX>(bot, daoSnapshot, channelSnapshot, sourceSnapshot, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			String newNick = target;
-			bot.getUserChannelDao().renameUser(source, newNick);
+			bot.getUserChannelDao().renameUser(sourceUser, newNick);
 			if (sourceNick.equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
 				bot.setNick(newNick);
-			configuration.getListenerManager().dispatchEvent(new NickChangeEvent<PircBotX>(bot, sourceNick, newNick, source));
+			configuration.getListenerManager().dispatchEvent(new NickChangeEvent<PircBotX>(bot, sourceNick, newNick, sourceUser));
 		} else if (command.equals("NOTICE"))
 			// Someone is sending a notice.
-			configuration.getListenerManager().dispatchEvent(new NoticeEvent<PircBotX>(bot, source, channel, message));
+			configuration.getListenerManager().dispatchEvent(new NoticeEvent<PircBotX>(bot, sourceUser, channel, message));
 		else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
-			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source.getNick());
+			UserSnapshot sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
 			//A real target is missing, so index is off
 			String reason = target;
 			// Someone has quit from the IRC server.
 			if (!sourceNick.equals(bot.getNick()))
 				//Someone else
-				bot.getUserChannelDao().removeUser(source);
+				bot.getUserChannelDao().removeUser(sourceUser);
 			configuration.getListenerManager().dispatchEvent(new QuitEvent<PircBotX>(bot, daoSnapshot, sourceSnapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
@@ -560,13 +567,17 @@ public class InputParser implements Closeable {
 			else
 				//Someone else
 				bot.getUserChannelDao().removeUserFromChannel(recipient, channel);
-			configuration.getListenerManager().dispatchEvent(new KickEvent<PircBotX>(bot, channel, source, recipient, parsedLine.get(2)));
+			configuration.getListenerManager().dispatchEvent(new KickEvent<PircBotX>(bot, channel, sourceUser, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
 			if (mode.startsWith(":"))
 				mode = mode.substring(1);
-			processMode(source, target, mode);
+			//Handle situations where source doesn't have a full username (IE server setting user mode on connect)
+			User sourceModeUser = sourceUser;
+			if(sourceModeUser == null)
+				sourceModeUser = bot.getUserChannelDao().getUser(source);
+			processMode(sourceModeUser, target, mode);
 		} else if (command.equals("TOPIC")) {
 			// Someone is changing the topic.
 			long currentTime = System.currentTimeMillis();
@@ -580,14 +591,14 @@ public class InputParser implements Closeable {
 			// Somebody is inviting somebody else into a channel.
 			//Use line method instead of channel since channel is wrong
 			configuration.getListenerManager().dispatchEvent(new InviteEvent<PircBotX>(bot, sourceNick, message));
-			if (bot.getUserChannelDao().getChannels(source).isEmpty())
-				bot.getUserChannelDao().removeUser(source);
+			if (bot.getUserChannelDao().getChannels(sourceUser).isEmpty())
+				bot.getUserChannelDao().removeUser(sourceUser);
 		} else if (command.equals("AWAY"))
 			//IRCv3 AWAY notify
 			if (parsedLine.isEmpty())
-				source.setAwayMessage("");
+				sourceUser.setAwayMessage("");
 			else
-				source.setAwayMessage(parsedLine.get(0));
+				sourceUser.setAwayMessage(parsedLine.get(0));
 		else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
