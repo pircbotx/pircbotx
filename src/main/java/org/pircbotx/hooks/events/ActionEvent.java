@@ -38,21 +38,22 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ActionEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+	/**
+	 * The user that sent the action message
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The channel that the action message was sent in. A value of <code>null</code> 
+	 * means that this is a private message, not a channel
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The action message.
+	 */
 	protected final String action;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user object representing the user that sent the message
-	 * @param channel The channel object representing the target channel of the
-	 * action. A value of <code>null</code> means that this is
-	 * is a private message, not a channel
-	 * @param action The action carried out by the user.
-	 */
 	public ActionEvent(T bot, @NonNull User user, Channel channel, @NonNull String action) {
 		super(bot);
 		this.user = user;

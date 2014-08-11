@@ -72,11 +72,6 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	@Getter(onMethod = @_(@Override))
 	protected final boolean passive;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param chat A DccChat object that represents the incoming chat request.
-	 */
 	public IncomingChatRequestEvent(T bot, @NonNull User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;

@@ -40,28 +40,33 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_({@Override}))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_({@Override}))
 	protected final User user;
+	/**
+	 * The nick of the user that got 'voiced'.
+	 */
 	@Getter(onMethod = @_({@Override}))
 	protected final User recipient;
+	/**
+	 * If the voice was given or removed.
+	 */
 	@Getter(AccessLevel.NONE)
 	protected final boolean hasVoice;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param recipient The nick of the user that got 'voiced'.
-	 */
-	public VoiceEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isVoice) {
+	public VoiceEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean hasVoice) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
 		this.recipient = recipient;
-		this.hasVoice = isVoice;
+		this.hasVoice = hasVoice;
 	}
 
 	/**

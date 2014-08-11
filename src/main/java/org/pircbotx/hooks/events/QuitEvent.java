@@ -38,15 +38,15 @@ import org.pircbotx.snapshot.UserSnapshot;
 @EqualsAndHashCode(callSuper = true)
 public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
 	protected final UserChannelDaoSnapshot daoSnapshot;
+	/**
+	 * The user that quit from the server in snapshot form.
+	 */
 	protected final UserSnapshot user;
+	/**
+	 * The reason the user quit from the server.
+	 */
 	protected final String reason;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that quit from the server in snapshot form
-	 * @param reason The reason given for quitting the server.
-	 */
 	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;

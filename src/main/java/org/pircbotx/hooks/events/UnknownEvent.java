@@ -35,14 +35,12 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UnknownEvent<T extends PircBotX> extends Event<T> {
+	/**
+	 * The raw line that was received from the server.
+	 */
 	@Getter(onMethod = @_({@Nonnull}))
 	protected final String line;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param line The raw line that was received from the server.
-	 */
 	public UnknownEvent(T bot, @NonNull String line) {
 		super(bot);
 		this.line = line;

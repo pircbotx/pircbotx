@@ -38,16 +38,19 @@ import org.pircbotx.snapshot.UserSnapshot;
 @EqualsAndHashCode(callSuper = true)
 public class PartEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
 	protected final UserChannelDaoSnapshot daoSnapshot;
+	/**
+	 * The channel which the user parted from.
+	 */
 	protected final ChannelSnapshot channel;
+	/**
+	 * The user who parted from the channel.
+	 */
 	protected final UserSnapshot user;
+	/**
+	 * The reason for leaving the channel.
+	 */
 	protected final String reason;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel which somebody parted from.
-	 * @param user The user who parted from the channel.
-	 */
 	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;

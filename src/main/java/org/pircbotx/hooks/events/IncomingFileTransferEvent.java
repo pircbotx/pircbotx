@@ -79,11 +79,6 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	@Getter(onMethod = @_(@Override))
 	protected final boolean passive;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param transfer The DcccFileTransfer that you may accept.
-	 */
 	public IncomingFileTransferEvent(T bot, @NonNull User user, @NonNull String rawFilename, @NonNull String safeFilename, 
 			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);

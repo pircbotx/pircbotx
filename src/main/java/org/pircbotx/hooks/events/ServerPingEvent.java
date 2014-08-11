@@ -38,13 +38,11 @@ import org.pircbotx.hooks.CoreHooks;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ServerPingEvent<T extends PircBotX> extends Event<T> {
+	/**
+	 * The response that should be given back in your PONG.
+	 */
 	protected final String response;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param response The response that should be given back in your PONG.
-	 */
 	public ServerPingEvent(T bot, @NonNull String response) {
 		super(bot);
 		this.response = response;

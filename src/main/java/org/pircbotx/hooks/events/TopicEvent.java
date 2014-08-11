@@ -36,24 +36,33 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericChannelEvent<T> {
+	/**
+	 * The channel that the topic belongs to.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
-	protected final String oldTopic;
-	protected final String topic;
-	protected final String user;
-	protected final boolean changed;
-	protected final long date;
-
 	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel that the topic belongs to.
-	 * @param topic The topic for the channel.
-	 * @param user The user that set the topic.
-	 * @param date When the topic was set (milliseconds since the epoch).
-	 * @param changed True if the topic has just been changed, false if
+	 * If known, the old topic of the channel before it was changed.
+	 */
+	protected final String oldTopic;
+	/**
+	 * The topic for the channel.
+	 */
+	protected final String topic;
+	/**
+	 * The user that set the topic.
+	 */
+	protected final String user;
+	/**
+	 * True if the topic has just been changed, false if
 	 * the topic was already there.
 	 */
+	protected final boolean changed;
+	/**
+	 * When the topic was set (milliseconds since the epoch).
+	 */
+	protected final long date;
+
 	public TopicEvent(T bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull String user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;

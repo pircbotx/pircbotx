@@ -42,19 +42,18 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+	/**
+	 * The target channel of the TIME request. A value of <code>null</code>
+	 * means that target is us
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that sent the TIME request.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
 	
-
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that sent the TIME request.
-	 * @param channel The target channel of the TIME request. A value of <code>null</code>
-	 * means that target is us
-	 */
 	public TimeEvent(T bot, Channel channel, @NonNull User user) {
 		super(bot);
 		this.channel = channel;

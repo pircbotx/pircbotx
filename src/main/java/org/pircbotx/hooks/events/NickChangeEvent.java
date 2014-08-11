@@ -36,18 +36,20 @@ import org.pircbotx.hooks.types.GenericUserEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class NickChangeEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
+	/**
+	 * The users old nick.
+	 */
 	protected final String oldNick;
+	/**
+	 * The users new nick.
+	 */
 	protected final String newNick;
+	/**
+	 * The user that changed their nick.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param oldNick The old nick.
-	 * @param newNick The new nick.
-	 * @param user The user that changed their nick
-	 */
 	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, @NonNull User user) {
 		super(bot);
 		this.oldNick = oldNick;

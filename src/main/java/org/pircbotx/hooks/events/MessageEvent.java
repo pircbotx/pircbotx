@@ -37,20 +37,22 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+	/**
+	 * The channel to which the message was sent.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user who sent the message.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The actual message sent to the channel.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final String message;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel to which the message was sent.
-	 * @param user The user who sent the message.
-	 * @param message The actual message sent to the channel.
-	 */
 	public MessageEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String message) {
 		super(bot);
 		this.channel = channel;

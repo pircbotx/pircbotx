@@ -39,19 +39,21 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RemoveChannelKeyEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The key that was in use before the channel key was removed.
+	 */
 	protected final String key;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param key The key that was in use before the channel key was removed.
-	 */
 	public RemoveChannelKeyEvent(T bot, @NonNull Channel channel, @NonNull User user, String key) {
 		super(bot);
 		this.channel = channel;

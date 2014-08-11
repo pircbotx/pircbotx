@@ -41,17 +41,17 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetModeratedEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 */
 	public SetModeratedEvent(T bot, @NonNull Channel channel, @NonNull User user) {
 		super(bot);
 		this.channel = channel;
@@ -60,8 +60,7 @@ public class SetModeratedEvent<T extends PircBotX> extends Event<T> implements G
 
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
-	 * in
-	 * <code>user: message</code> format
+	 * in <code>user: message</code> format
 	 * <p>
 	 * Note that depending on the bots status in the channel the message may not
 	 * get through
