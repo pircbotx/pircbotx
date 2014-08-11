@@ -157,12 +157,6 @@ features and bug fixes in an official alternative distribution.
 				<version>1.10.b1</version>
 				<configuration>
 					<header>src/etc/license-header.txt</header>
-					<properties>
-						<email>lord.quackstar at gmail.com</email>
-						<name>Leon Blakey</name>
-						<year>2010-2013</year>
-						<projectname>PircBotX</projectname>
-					</properties>
 					<excludes>
 						<exclude>**/*.txt</exclude>
 						<exclude>**/*.log</exclude>
