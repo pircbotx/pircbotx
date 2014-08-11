@@ -24,16 +24,16 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 
 /**
- * This event is dispatched once we successfully connected to
- * the IRC server.
+ * This event is dispatched once we successfully connected to the IRC server.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ConnectEvent<T extends PircBotX> extends Event<T> {
 	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
+	 * Default constructor to setup object. Timestamp is automatically set to
+	 * current time as reported by {@link System#currentTimeMillis() }
 	 */
 	public ConnectEvent(T bot) {
 		super(bot);
@@ -41,6 +41,7 @@ public class ConnectEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Responds by sending a <b>raw line</b> to the server.
+	 *
 	 * @param response The response to send
 	 */
 	@Override

@@ -28,8 +28,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
- * This event is dispatched whenever a user sets the topic, or when
- * we join a new channel and discovers its topic.
+ * This event is dispatched whenever a user sets the topic, or when we join a
+ * new channel and discovers its topic.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -38,7 +39,8 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	/**
 	 * The channel that the topic belongs to.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * If known, the old topic of the channel before it was changed.
@@ -53,8 +55,8 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 */
 	protected final String user;
 	/**
-	 * True if the topic has just been changed, false if
-	 * the topic was already there.
+	 * True if the topic has just been changed, false if the topic was already
+	 * there.
 	 */
 	protected final boolean changed;
 	/**
@@ -73,9 +75,9 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	}
 
 	/**
-	 * Respond with a channel message in
-	 * <code>user: message</code> format to the
-	 * user that set the message
+	 * Respond with a channel message in <code>user: message</code> format to
+	 * the user that set the message
+	 *
 	 * @param response The response to send
 	 */
 	@Override

@@ -31,6 +31,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Used whenever a message is sent to a channel.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -39,17 +40,20 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 	/**
 	 * The channel to which the message was sent.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user who sent the message.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The actual message sent to the channel.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final String message;
 
 	public MessageEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String message) {
@@ -60,9 +64,9 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 	}
 
 	/**
-	 * Respond with a channel message in
-	 * <code>user: message</code> format to
+	 * Respond with a channel message in <code>user: message</code> format to
 	 * the user that sent the message
+	 *
 	 * @param response The response to send
 	 */
 	@Override

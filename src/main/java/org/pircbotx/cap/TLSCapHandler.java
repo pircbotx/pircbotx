@@ -26,8 +26,9 @@ import org.pircbotx.exception.CAPException;
 
 /**
  * CAP STARTTLS support <b>*MUST BE LAST CAP HANDLER*</b>. Due to how STARTTLS
- * works and how PircBotX is designed this must be the last CAP handler, otherwise
- * you will receive an "SSL peer shutdown incorrectly" exception
+ * works and how PircBotX is designed this must be the last CAP handler,
+ * otherwise you will receive an "SSL peer shutdown incorrectly" exception
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @ToString

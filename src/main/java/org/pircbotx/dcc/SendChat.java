@@ -24,6 +24,7 @@ import org.pircbotx.User;
 
 /**
  * A DCC Chat initiated by the bot.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SendChat extends Chat {

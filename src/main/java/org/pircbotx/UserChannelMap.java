@@ -82,7 +82,7 @@ public class UserChannelMap<U extends User, C extends Channel> {
 		boolean userToChannelContains = userToChannelMap.containsEntry(user, channel);
 		if (channelToUserContains != userToChannelContains)
 			throw new RuntimeException("Map inconsistent! User: " + user + " | Channel: " + channel + " | channelToUserMap: " + channelToUserContains + " | userToChannelMap: " + userToChannelContains);
-		return  channelToUserContains;
+		return channelToUserContains;
 	}
 
 	public boolean containsUser(User user) {

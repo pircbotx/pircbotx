@@ -32,11 +32,15 @@ import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Represents a User on the server. 
+ * Represents a User on the server.
+ *
  * @since PircBot 1.0.0
  * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
+ * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ * href="http://www.jibble.org/pircbot.php">PircBot</a>
+ * <p>
+ * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Data
 @Setter(AccessLevel.PROTECTED)
@@ -67,7 +71,7 @@ public class User extends UserHostmask {
 	@SuppressWarnings("unchecked")
 	protected User(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String hostmask, String nick, String login, String hostname) {
 		super(bot, hostname, nick, login, hostmask);
-		this.dao = (UserChannelDao<User, Channel>)dao;
+		this.dao = (UserChannelDao<User, Channel>) dao;
 	}
 
 	/**
@@ -75,6 +79,7 @@ public class User extends UserHostmask {
 	 * This is intended to be a quick utility method, if you need more specific
 	 * info from the Whois then its recommended to listen for or use
 	 * {@link PircBotX#waitFor(java.lang.Class) }
+	 *
 	 * @return True if the user is verified
 	 */
 	@SuppressWarnings("unchecked")
@@ -99,9 +104,10 @@ public class User extends UserHostmask {
 	public UserSnapshot createSnapshot() {
 		return new UserSnapshot(this);
 	}
-	
+
 	/**
 	 * Get all the levels this user holds in the channel.
+	 *
 	 * @param channel The channel to get the levels from
 	 * @return An <b>immutable copy</b> of the levels this user holds
 	 */
@@ -111,6 +117,7 @@ public class User extends UserHostmask {
 
 	/**
 	 * Get all channels this user is a part of.
+	 *
 	 * @return All channels this user is a part of
 	 */
 	public ImmutableSortedSet<Channel> getChannels() {
@@ -118,9 +125,10 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Operator status in.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
+	 * Get all channels user has Operator status in. Be careful when storing the
+	 * result from this method as it may be out of date by the time you use it
+	 * again
+	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Operator status in
 	 */
@@ -129,9 +137,10 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Voice status in.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
+	 * Get all channels user has Voice status in. Be careful when storing the
+	 * result from this method as it may be out of date by the time you use it
+	 * again
+	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Voice status in
 	 */
@@ -140,9 +149,10 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Owner status in.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
+	 * Get all channels user has Owner status in. Be careful when storing the
+	 * result from this method as it may be out of date by the time you use it
+	 * again
+	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Owner status in
 	 */
@@ -151,9 +161,10 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Half Operator status in.
-	 * Be careful when storing the result from this method as it may be out of date
-	 * by the time you use it again
+	 * Get all channels user has Half Operator status in. Be careful when
+	 * storing the result from this method as it may be out of date by the time
+	 * you use it again
+	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Half Operator status in
 	 */
@@ -164,7 +175,7 @@ public class User extends UserHostmask {
 	/**
 	 * Get all channels user has Super Operator status in. Simply calls 
 	 * {@link UserChannelDao#getUsersSuperOps(org.pircbotx.User) }
-	 * 
+	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Super Operator status in
 	 */
@@ -174,6 +185,7 @@ public class User extends UserHostmask {
 
 	/**
 	 * The exact server that this user is joined to.
+	 *
 	 * @return The address of the server
 	 */
 	public String getServer() {
@@ -182,12 +194,13 @@ public class User extends UserHostmask {
 
 	/**
 	 * The number of hops it takes to this user.
+	 *
 	 * @return the hops
 	 */
 	public int getHops() {
 		return hops;
 	}
-	
+
 	public boolean isAway() {
 		return awayMessage != null;
 	}

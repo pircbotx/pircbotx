@@ -29,12 +29,13 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
- * Called when a channel is set to 'moderated' mode. If a channel is
- * moderated, then only users who have been 'voiced' or 'opped' may speak
- * or change their nicks.
+ * Called when a channel is set to 'moderated' mode. If a channel is moderated,
+ * then only users who have been 'voiced' or 'opped' may speak or change their
+ * nicks.
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -43,12 +44,14 @@ public class SetModeratedEvent<T extends PircBotX> extends Event<T> implements G
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 
 	public SetModeratedEvent(T bot, @NonNull Channel channel, @NonNull User user) {
@@ -58,11 +61,12 @@ public class SetModeratedEvent<T extends PircBotX> extends Event<T> implements G
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that set the mode
-	 * in <code>user: message</code> format
+	 * Respond by send a message in the channel to the user that set the mode in
+	 * <code>user: message</code> format
 	 * <p>
 	 * Note that depending on the bots status in the channel the message may not
 	 * get through
+	 *
 	 * @param response The response to send
 	 */
 	@Override

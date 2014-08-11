@@ -26,23 +26,28 @@ import org.pircbotx.hooks.types.GenericEvent;
 
 /**
  * An event representing what was received from the IRC server.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Getter
 public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	/**
 	 * Returns the timestamp of when the event was created.
+	 *
 	 * @return A timestamp as a long
 	 */
 	protected final long timestamp;
 	/**
-	 * Returns the {@link PircBotX} instance that this event originally came from.
+	 * Returns the {@link PircBotX} instance that this event originally came
+	 * from.
+	 *
 	 * @return A {@link PircBotX} instance
 	 */
 	protected final T bot;
 	/**
 	 * Returns the id of this event. This id is guaranteed to be unique in the
 	 * context of other events dispatched from the same listener manager.
+	 *
 	 * @return The id of this event
 	 */
 	protected final long id;
@@ -63,16 +68,20 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 
 	/**
 	 * A simple abstract method that all events must implement to respond to an
-	 * event happening. All implementing classes should delegate to the sendMessage
-	 * or other relevant methods in the main PircBotX class, not with custom lines
-	 * and calls to {@link PircBotX#sendRawLine(java.lang.String) }.
+	 * event happening. All implementing classes should delegate to the
+	 * sendMessage or other relevant methods in the main PircBotX class, not
+	 * with custom lines and calls to {@link PircBotX#sendRawLine(java.lang.String)
+	 * }.
+	 *
 	 * @param response The response to send
 	 */
 	public abstract void respond(String response);
 
 	/**
-	 * Compare events by {@link #getTimestamp()} and then {@link #getId()} to 
-	 * order by when they are received. This is useful for sorting lists of Channel objects.
+	 * Compare events by {@link #getTimestamp()} and then {@link #getId()} to
+	 * order by when they are received. This is useful for sorting lists of
+	 * Channel objects.
+	 *
 	 * @param other Other Event to compare to
 	 * @return the result of the comparison
 	 */

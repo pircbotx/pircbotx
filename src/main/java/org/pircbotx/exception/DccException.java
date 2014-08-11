@@ -23,6 +23,7 @@ import org.pircbotx.User;
 
 /**
  * A general exception for DCC errors
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DccException extends RuntimeException {

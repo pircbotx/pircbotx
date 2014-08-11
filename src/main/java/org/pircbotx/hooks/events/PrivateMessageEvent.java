@@ -29,6 +29,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * This event is dispatched whenever a private message is sent to us.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -37,12 +38,14 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 	/**
 	 * The user who sent the private message.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The actual message.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final String message;
 
 	public PrivateMessageEvent(T bot, @NonNull User user, @NonNull String message) {
@@ -53,6 +56,7 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 
 	/**
 	 * Respond with a private message to the user that sent the message
+	 *
 	 * @param response The response to send
 	 */
 	@Override

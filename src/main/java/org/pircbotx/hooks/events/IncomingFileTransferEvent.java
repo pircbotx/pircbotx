@@ -34,12 +34,11 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 
 /**
  * This event is dispatched whenever a DCC SEND request is sent to the PircBotX.
- * This means that a client has requested to send a file to us.
- * By default there are no {@link Listener listeners} for this event, which means
- * that all DCC SEND requests will be ignored by default. If you wish to receive
- * the file, then you must listen for this event and call the receive method
- * on the DccFileTransfer object, which connects to the sender and downloads
- * the file.
+ * This means that a client has requested to send a file to us. By default there
+ * are no {@link Listener listeners} for this event, which means that all DCC
+ * SEND requests will be ignored by default. If you wish to receive the file,
+ * then you must listen for this event and call the receive method on the
+ * DccFileTransfer object, which connects to the sender and downloads the file.
  * <p>
  * Example:
  * <pre>
@@ -50,24 +49,27 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  *     transfer.receive(file, true);
  * </pre>
  * <p>
- * <b>Warning:</b> Receiving an incoming file transfer will cause a file
- * to be written to disk. Please ensure that you make adequate security
- * checks so that this file does not overwrite anything important!
+ * <b>Warning:</b> Receiving an incoming file transfer will cause a file to be
+ * written to disk. Please ensure that you make adequate security checks so that
+ * this file does not overwrite anything important!
  * <p>
- * If you allow resuming and the file already partly exists, it will
- * be appended to instead of overwritten. If resuming is not enabled,
- * the file will be overwritten if it already exists.
+ * If you allow resuming and the file already partly exists, it will be appended
+ * to instead of overwritten. If resuming is not enabled, the file will be
+ * overwritten if it already exists.
  * <p>
  * You can throttle the speed of the transfer by calling
  * {@link DccFileTransfer#setPacketDelay(long) } method on the DccFileTransfer
- * object, either before you receive the file or at any moment during the transfer.
+ * object, either before you receive the file or at any moment during the
+ * transfer.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see DccFileTransfer
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	protected final String rawFilename;
 	protected final String safeFilename;
@@ -75,10 +77,11 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	protected final int port;
 	protected final long filesize;
 	protected final String transferToken;
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final boolean passive;
 
-	public IncomingFileTransferEvent(T bot, @NonNull User user, @NonNull String rawFilename, @NonNull String safeFilename, 
+	public IncomingFileTransferEvent(T bot, @NonNull User user, @NonNull String rawFilename, @NonNull String safeFilename,
 			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;
@@ -94,13 +97,14 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	public ReceiveFileTransfer accept(@NonNull File destination) throws IOException {
 		return user.getBot().getDccHandler().acceptFileTransfer(this, destination);
 	}
-	
+
 	public ReceiveFileTransfer acceptResume(@NonNull File destination, long startPosition) throws IOException, InterruptedException {
 		return user.getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
 	}
 
 	/**
 	 * Respond with a <i>private message</i> to the user that sent the request
+	 *
 	 * @param response The response to send
 	 */
 	@Override

@@ -33,6 +33,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -41,12 +42,14 @@ public class RemoveChannelLimitEvent<T extends PircBotX> extends Event<T> implem
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 
 	public RemoveChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull User user) {
@@ -56,9 +59,9 @@ public class RemoveChannelLimitEvent<T extends PircBotX> extends Event<T> implem
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that removed the mode
-	 * in
-	 * <code>user: message</code> format
+	 * Respond by send a message in the channel to the user that removed the
+	 * mode in <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

@@ -18,16 +18,15 @@
 package org.pircbotx;
 
 /**
- * The Colors class provides several static fields and methods that you may
- * find useful when writing an IRC Bot.
+ * The Colors class provides several static fields and methods that you may find
+ * useful when writing an IRC Bot.
  * <p>
- * This class contains constants that are useful for formatting lines
- * sent to IRC servers. These constants allow you to apply various
- * formatting to the lines, such as colours, boldness, underlining
- * and reverse text.
+ * This class contains constants that are useful for formatting lines sent to
+ * IRC servers. These constants allow you to apply various formatting to the
+ * lines, such as colours, boldness, underlining and reverse text.
  * <p>
- * The class contains static methods to remove colours and formatting
- * from lines of IRC text.
+ * The class contains static methods to remove colours and formatting from lines
+ * of IRC text.
  * <p>
  * Here are some examples of how to use the constants
  * <pre>
@@ -38,19 +37,21 @@ package org.pircbotx;
  * message(Colors.BOLD + Colors.RED + "Bold and red");
  * <b><font color="red">Bold and red</font></b></pre>
  * <p/>
- * Please note that some IRC channels may be configured to reject any
- * messages that use colours. Also note that older IRC clients may be
- * unable to correctly display lines that contain colours and other
- * control characters.
+ * Please note that some IRC channels may be configured to reject any messages
+ * that use colours. Also note that older IRC clients may be unable to correctly
+ * display lines that contain colours and other control characters.
  * <p>
- * Note that this class name has been spelt in the American style in
- * order to remain consistent with the rest of the Java API.
+ * Note that this class name has been spelt in the American style in order to
+ * remain consistent with the rest of the Java API.
  *
  *
  * @since PircBot 0.9.12
  * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
+ * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ * href="http://www.jibble.org/pircbot.php">PircBot</a>
+ * <p>
+ * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 public final class Colors {
 	/**

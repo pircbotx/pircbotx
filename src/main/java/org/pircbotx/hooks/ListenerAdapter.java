@@ -22,9 +22,9 @@ import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.types.*;
 
 /**
- * Adapter that provides methods to capture each event separately, removing
- * the need to check, cast, and call your custom method for each event you want
- * to capture.
+ * Adapter that provides methods to capture each event separately, removing the
+ * need to check, cast, and call your custom method for each event you want to
+ * capture.
  * <p>
  * To use, simply override the method that has the event you want to capture.
  * <p>
@@ -32,6 +32,7 @@ import org.pircbotx.hooks.types.*;
  * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
  * will be called!
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
@@ -172,7 +173,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onConnect(ConnectEvent<T> event) throws Exception {
 	}
-	
+
 	public void onConnectAttemptFailed(ConnectAttemptFailedEvent<T> event) throws Exception {
 	}
 

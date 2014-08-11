@@ -32,9 +32,11 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  * This event is dispatched whenever we receive a FINGER request.
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
- * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
- * Listeners of this event should <b>not</b> send a response as the user will get
- * two responses
+ * is removed from the
+ * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * this event should <b>not</b> send a response as the user will get two
+ * responses
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -57,6 +59,7 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 
 	/**
 	 * Respond with a CTCP response to the user
+	 *
 	 * @param response The response to send
 	 */
 	@Override

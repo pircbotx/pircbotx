@@ -42,8 +42,9 @@ import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
- * Stores and maintains relationships between users and channels. This class should
- * not be directly, it is meant to be the internal storage engine.
+ * Stores and maintains relationships between users and channels. This class
+ * should not be directly, it is meant to be the internal storage engine.
+ *
  * @see User
  * @see Channel
  * @author Leon Blakey <lord.quackstar at gmail.com>
@@ -85,12 +86,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		//Create new user
 		throw new DaoException(DaoException.Reason.UnknownUser, nick);
 	}
-	
+
 	@Synchronized("accessLock")
 	public U getUser(UserHostmask serverUser) {
 		return getUser(serverUser.getNick());
 	}
-	
+
 	@Synchronized("accessLock")
 	public U createUser(String nick) {
 		U user = (U) botFactory.createUser(bot, nick);
@@ -105,14 +106,15 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
-	 * Get all user's in the channel. There are some important things to note about this method:
+	 * Get all user's in the channel. There are some important things to note
+	 * about this method:
 	 * <ul>
-	 * <li>This method may not return a full list of users if you call it
-	 * before the complete nick list has arrived from the IRC server.</li>
-	 * <li>If you wish to find out which users are in a channel as soon
-	 * as you join it, then you should listen for a {@link UserListEvent}
-	 * instead of calling this method, as the {@link UserListEvent} is only
-	 * dispatched as soon as the full user list has been received.</li>
+	 * <li>This method may not return a full list of users if you call it before
+	 * the complete nick list has arrived from the IRC server.</li>
+	 * <li>If you wish to find out which users are in a channel as soon as you
+	 * join it, then you should listen for a {@link UserListEvent} instead of
+	 * calling this method, as the {@link UserListEvent} is only dispatched as
+	 * soon as the full user list has been received.</li>
 	 * <li>This method will return immediately, as it does not require any
 	 * interaction with the IRC server.</li>
 	 * </ul>
@@ -174,7 +176,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<C> getNormalUserChannels(U user) {
 		Set<C> remainingChannels = new HashSet<C>(mainMap.getChannels(user));
-		for (UserChannelMap<U, C>  curLevelMap : levelsMap.values())
+		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			remainingChannels.removeAll(curLevelMap.getChannels(user));
 		return ImmutableSortedSet.copyOf(remainingChannels);
 	}
@@ -228,7 +230,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		//Channel does not exist
 		throw new DaoException(DaoException.Reason.UnknownChannel, name);
 	}
-	
+
 	@Synchronized("accessLock")
 	public C createChannel(String name) {
 		C chan = (C) botFactory.createChannel(bot, name);
@@ -238,6 +240,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	/**
 	 * Check if the bot is currently in the given channel.
+	 *
 	 * @param name A channel name as a string
 	 * @return True if we are still connected to the channel, false if not
 	 */
@@ -316,13 +319,13 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 				userNickMapSnapshotBuilder.build(),
 				channelNameMapSnapshotBuilder.build(),
 				privateUserSnapshotBuilder.build());
-		
+
 		//Tell UserSnapshots and ChannelSnapshots what the new backing dao is
-		for(UserSnapshot curUserSnapshot : userSnapshotMap.values())
+		for (UserSnapshot curUserSnapshot : userSnapshotMap.values())
 			curUserSnapshot.setDao(daoSnapshot);
-		for(ChannelSnapshot curChannelSnapshot : channelSnapshotMap.values())
+		for (ChannelSnapshot curChannelSnapshot : channelSnapshotMap.values())
 			curChannelSnapshot.setDao(daoSnapshot);
-		
+
 		//Finally
 		return daoSnapshot;
 	}

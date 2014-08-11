@@ -163,7 +163,7 @@ public class OutputRaw {
 	public int getOutgoingQueueSize() {
 		return writeLock.getHoldCount();
 	}
-	
+
 	protected String exceptionDebug() {
 		return "Connected: " + bot.isConnected() + " | Bot State: " + bot.getState();
 	}

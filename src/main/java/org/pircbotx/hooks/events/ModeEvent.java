@@ -32,8 +32,8 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 /**
  * Used when the mode of a channel is set.
  * <p>
- * You may find it more convenient to decode the meaning of the mode
- * string by using instead {@link OpEvent}, {@link VoiceEvent},
+ * You may find it more convenient to decode the meaning of the mode string by
+ * using instead {@link OpEvent}, {@link VoiceEvent},
  * {@link SetChannelKeyEvent}, {@link RemoveChannelKeyEvent},
  * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent},
  * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
@@ -46,12 +46,14 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	/**
 	 * The channel that the mode operation applies to.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that set the mode.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The mode that has been set.
@@ -68,9 +70,9 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that set the mode
-	 * in
+	 * Respond by send a message in the channel to the user that set the mode in
 	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

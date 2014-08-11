@@ -24,6 +24,7 @@ import org.pircbotx.User;
 
 /**
  * A DCC Chat that was initiated by another user.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ReceiveChat extends Chat {
