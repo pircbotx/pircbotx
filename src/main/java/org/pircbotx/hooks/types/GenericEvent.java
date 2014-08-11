@@ -22,23 +22,28 @@ import org.pircbotx.hooks.Event;
 
 /**
  * Base interface that all Generic event interfaces must extend from.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericEvent<T extends PircBotX> extends Comparable<Event<T>> {
 	/**
 	 * Send a response using the underlying event's respond() method
+	 *
 	 * @param response The response to send
 	 */
 	public void respond(String response);
 
 	/**
-	 * Returns the {@link PircBotX} instance that this event originally came from
+	 * Returns the {@link PircBotX} instance that this event originally came
+	 * from
+	 *
 	 * @return A {@link PircBotX} instance
 	 */
 	public T getBot();
 
 	/**
 	 * Returns the timestamp of when the event was created
+	 *
 	 * @return A timestamp as a long
 	 */
 	public long getTimestamp();

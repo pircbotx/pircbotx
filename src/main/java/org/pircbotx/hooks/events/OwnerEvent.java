@@ -34,6 +34,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -42,17 +43,20 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The user that received the owner status.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User recipient;
 	/**
 	 * If the owner status was given or removed
@@ -69,8 +73,10 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 
 	/**
 	 * Gets the status of the mode change
+	 *
 	 * @return True if founder status was given, false if removed
-	 * @deprecated Use isOwner, this method being called isFounder is a bug. Will be removed in future versions
+	 * @deprecated Use isOwner, this method being called isFounder is a bug.
+	 * Will be removed in future versions
 	 */
 	@Deprecated
 	public boolean isFounder() {
@@ -80,8 +86,8 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * (<b>Warning:</b> not to the user that got owner status!) in
-	 * <code>user: message</code>
-	 * format
+	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

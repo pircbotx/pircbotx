@@ -32,21 +32,19 @@ import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
 
 /**
- * This event will be dispatched whenever a DCC Chat request is received.
- * This means that a client has requested to chat to us directly rather
- * than via the IRC server. This is useful for sending many lines of text
- * to and from the bot without having to worry about flooding the server
- * or any operators of the server being able to "spy" on what is being
- * said. By default there are no {@link Listener} for this event,
- * which means that all DCC CHAT requests will be ignored by default.
+ * This event will be dispatched whenever a DCC Chat request is received. This
+ * means that a client has requested to chat to us directly rather than via the
+ * IRC server. This is useful for sending many lines of text to and from the bot
+ * without having to worry about flooding the server or any operators of the
+ * server being able to "spy" on what is being said. By default there are no
+ * {@link Listener} for this event, which means that all DCC CHAT requests will
+ * be ignored by default.
  * <p>
- * If you wish to accept the connection, then you listen for this event
- * and call the {@link DccChat#accept()} method, which
- * connects to the sender of the chat request and allows lines to be
- * sent to and from the bot.
+ * If you wish to accept the connection, then you listen for this event and call
+ * the {@link DccChat#accept()} method, which connects to the sender of the chat
+ * request and allows lines to be sent to and from the bot.
  * <p>
- * Your bot must be able to connect directly to the user that sent the
- * request.
+ * Your bot must be able to connect directly to the user that sent the request.
  * <p>
  * Example:
  * <pre>
@@ -57,18 +55,21 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  *     String response = chat.readLine();
  *     chat.close();
  * </pre>
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see DccChat
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	protected final InetAddress chatAddress;
 	protected final int chatPort;
 	protected final String chatToken;
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final boolean passive;
 
 	public IncomingChatRequestEvent(T bot, @NonNull User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
@@ -87,6 +88,7 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 	/**
 	 * Respond with a <i>private message</i> to the user that sent the request,
 	 * <b>not a message over dcc</b> since it might not of been accepted yet
+	 *
 	 * @param response The response to send
 	 */
 	@Override

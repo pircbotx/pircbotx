@@ -33,6 +33,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -41,17 +42,20 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUser
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The user that received the Operator status
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User recipient;
 	/**
 	 * If the operator status was given or removed.
@@ -69,8 +73,8 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUser
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * (<b>Warning:</b> not to the user that got operator status!) in
-	 * <code>user: message</code>
-	 * format
+	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

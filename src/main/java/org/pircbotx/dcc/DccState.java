@@ -19,6 +19,7 @@ package org.pircbotx.dcc;
 
 /**
  * The state of a DCC connection
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public enum DccState {

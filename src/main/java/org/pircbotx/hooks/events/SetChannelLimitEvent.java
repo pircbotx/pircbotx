@@ -29,11 +29,12 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
- * Called when a user limit is set for a channel. The number of users in
- * the channel cannot exceed this limit.
+ * Called when a user limit is set for a channel. The number of users in the
+ * channel cannot exceed this limit.
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -42,12 +43,14 @@ public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implement
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The maximum number of users that may be in this channel at the same time.
@@ -62,9 +65,9 @@ public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implement
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that set the mode
-	 * in
+	 * Respond by send a message in the channel to the user that set the mode in
 	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

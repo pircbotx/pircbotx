@@ -26,19 +26,20 @@ import org.pircbotx.PircBotX;
 
 /**
  * Called when we are invited to a channel by a user.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class InviteEvent<T extends PircBotX> extends Event<T> {
 	/**
-	 * The user that sent the invitation. Provided as a string since
-	 * the user may or may not be in a channel were in
+	 * The user that sent the invitation. Provided as a string since the user
+	 * may or may not be in a channel were in
 	 */
 	protected final String user;
 	/**
-	 * The channel that we're being invited to. Provided as a string
-	 * since we are not joined to the channel yet
+	 * The channel that we're being invited to. Provided as a string since we
+	 * are not joined to the channel yet
 	 */
 	protected final String channel;
 
@@ -50,6 +51,7 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond with a private message to the user who sent the invite
+	 *
 	 * @param response The response to send
 	 */
 	@Override

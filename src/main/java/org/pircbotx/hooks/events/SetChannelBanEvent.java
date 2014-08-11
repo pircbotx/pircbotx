@@ -29,13 +29,14 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
- * Called when a user (possibly us) gets banned from a channel. Being
- * banned from a channel prevents any user with a matching hostmask from
- * joining the channel. For this reason, most bans are usually directly
- * followed by the user being kicked :-)
+ * Called when a user (possibly us) gets banned from a channel. Being banned
+ * from a channel prevents any user with a matching hostmask from joining the
+ * channel. For this reason, most bans are usually directly followed by the user
+ * being kicked :-)
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -44,12 +45,14 @@ public class SetChannelBanEvent<T extends PircBotX> extends Event<T> implements 
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The hostmask of the user that has been banned.
@@ -66,8 +69,8 @@ public class SetChannelBanEvent<T extends PircBotX> extends Event<T> implements 
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * (<b>Warning:</b> not to the user that got banned!) in
-	 * <code>user: message</code>
-	 * format
+	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

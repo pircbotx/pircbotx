@@ -28,6 +28,7 @@ import org.pircbotx.exception.CAPException;
 /**
  * Enables the specified capability with the server. This handler should cover
  * almost all CAP features except SASL since most only need to be requested.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
@@ -39,8 +40,8 @@ public class EnableCapHandler implements CapHandler {
 	protected final boolean ignoreFail;
 
 	/**
-	 * Create EnableCapHandler not ignoring if server doesn't support the requested
-	 * capability
+	 * Create EnableCapHandler not ignoring if server doesn't support the
+	 * requested capability
 	 */
 	public EnableCapHandler(String cap) {
 		this.cap = cap;

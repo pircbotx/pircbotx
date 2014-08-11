@@ -30,6 +30,7 @@ import org.pircbotx.User;
 
 /**
  * A DCC File Transfer initiated by the bot
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class SendFileTransfer extends FileTransfer {

@@ -31,6 +31,7 @@ import org.pircbotx.User;
 
 /**
  * A DCC File Transfer initiated by another user.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j

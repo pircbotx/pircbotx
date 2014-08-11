@@ -21,8 +21,9 @@ import org.pircbotx.PircBotX;
 
 /**
  * Any event dealing with DCC. This includes chat and file transfers. This is
- * more of a marker event then anything else as DCC events don't have much
- * in common
+ * more of a marker event then anything else as DCC events don't have much in
+ * common
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericDCCEvent<T extends PircBotX> extends GenericUserEvent<T> {

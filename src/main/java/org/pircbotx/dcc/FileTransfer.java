@@ -29,6 +29,7 @@ import org.pircbotx.User;
 
 /**
  * A general active DCC file transfer
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -53,6 +54,7 @@ public abstract class FileTransfer {
 
 	/**
 	 * Transfer the file to the user
+	 *
 	 * @throws IOException If an error occurred during transfer
 	 */
 	public void transfer() throws IOException {
@@ -70,22 +72,25 @@ public abstract class FileTransfer {
 	}
 
 	protected abstract void transferFile() throws IOException;
-	
+
 	/**
 	 * Callback at end of read/write loop:
 	 * <p>
-	 * Receive: Socket read -> file write -> socket write (bytes transferred) -> callback -> repeat
+	 * Receive: Socket read -> file write -> socket write (bytes transferred) ->
+	 * callback -> repeat
 	 * <p>
-	 * Send: File read -> socket write -> socket read (bytes transferred) -> callback -> repeat
+	 * Send: File read -> socket write -> socket read (bytes transferred) ->
+	 * callback -> repeat
 	 */
-	protected void onAfterSend() {	
+	protected void onAfterSend() {
 	}
-	
+
 	/**
 	 * Is the transfer finished?
+	 *
 	 * @return True if its finished
 	 */
 	public boolean isFinished() {
-		return state == DccState.DONE; 
+		return state == DccState.DONE;
 	}
 }

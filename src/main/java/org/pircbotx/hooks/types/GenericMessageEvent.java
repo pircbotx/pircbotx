@@ -26,11 +26,13 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
  * message, channel message, channel action, etc.
  * <p>
  * Used in {@link MessageEvent} and {@link PrivateMessageEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericMessageEvent<T extends PircBotX> extends GenericUserEvent<T> {
 	/**
 	 * The message the user sent
+	 *
 	 * @return The message
 	 */
 	public String getMessage();

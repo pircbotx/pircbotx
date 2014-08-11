@@ -34,9 +34,11 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  * user.
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
- * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
- * Listeners of this event should <b>not</b> send a response as the user will get
- * two responses
+ * is removed from the
+ * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * this event should <b>not</b> send a response as the user will get two
+ * responses
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -45,13 +47,15 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	/**
 	 * The user that sent the PING request.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The channel that received the ping request. A value of <code>null</code>
 	 * means the target was us.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The value that was supplied as an argument to the PING command.
@@ -67,6 +71,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 
 	/**
 	 * Respond with a CTCP response to the user
+	 *
 	 * @param response The response to send
 	 */
 	@Override

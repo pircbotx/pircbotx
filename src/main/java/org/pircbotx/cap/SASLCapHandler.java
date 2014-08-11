@@ -40,8 +40,8 @@ public class SASLCapHandler implements CapHandler {
 	protected boolean done = false;
 
 	/**
-	 * Create SASLCapHandler not ignoring failed authentication and throwing
-	 * a CapException
+	 * Create SASLCapHandler not ignoring failed authentication and throwing a
+	 * CapException
 	 * <p>
 	 * @param username
 	 * @param password

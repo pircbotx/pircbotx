@@ -40,10 +40,12 @@ public class ConnectAttemptFailedEvent<T extends PircBotX> extends Event<T> {
 		this.localAddress = localAddress;
 		this.remainingServers = remainingServers;
 	}
-	
+
 	/**
-	 * Does NOT respond to the server! This will throw an {@link UnsupportedOperationException}
-	 * since we can't respond to a server we didn't even connect to
+	 * Does NOT respond to the server! This will throw an
+	 * {@link UnsupportedOperationException} since we can't respond to a server
+	 * we didn't even connect to
+	 *
 	 * @param response The response to send
 	 */
 	@Override

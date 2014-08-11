@@ -30,6 +30,7 @@ import org.pircbotx.hooks.types.GenericUserEvent;
 /**
  * This event is dispatched whenever someone (possibly us) changes nick on any
  * of the channels that we are on.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -46,7 +47,8 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> implements Gen
 	/**
 	 * The user that changed their nick.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 
 	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, @NonNull User user) {
@@ -58,6 +60,7 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> implements Gen
 
 	/**
 	 * Respond by sending a <i>private message</i> to the user's new nick
+	 *
 	 * @param response The response to send
 	 */
 	@Override

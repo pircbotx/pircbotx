@@ -29,8 +29,9 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
- * This event is dispatched whenever someone (possibly us) parts a channel
- * which we are on.
+ * This event is dispatched whenever someone (possibly us) parts a channel which
+ * we are on.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -60,6 +61,7 @@ public class PartEvent<T extends PircBotX> extends Event<T> implements GenericCh
 
 	/**
 	 * Respond by sending a message to the channel
+	 *
 	 * @param response The response to send
 	 */
 	@Override

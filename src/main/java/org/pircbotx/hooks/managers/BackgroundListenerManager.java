@@ -29,13 +29,14 @@ import org.pircbotx.hooks.Listener;
 
 /**
  * ThreadListenerManager with additional dedicated background threads. Normal
- * Listeners execute in the same thread pool. Background Listeners however execute
- * in their own dedicated single threads separate from the rest
+ * Listeners execute in the same thread pool. Background Listeners however
+ * execute in their own dedicated single threads separate from the rest
  * <p>
  * This class is useful for logging listeners or any other listener that needs
  * to process events one at a time instead of simultaneously.
  * <p>
- * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean) }
+ * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean)
+ * }
  * with isBackground set to true
  * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>

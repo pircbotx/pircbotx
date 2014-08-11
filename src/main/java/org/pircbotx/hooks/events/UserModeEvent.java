@@ -29,6 +29,7 @@ import org.pircbotx.hooks.types.GenericUserEvent;
 
 /**
  * Called when the mode of a user is set.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -37,7 +38,8 @@ public class UserModeEvent<B extends PircBotX> extends Event<B> implements Gener
 	/**
 	 * The user that set the mode.
 	 */
-	@Getter(onMethod = @_({@Override}))
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final User user;
 	/**
 	 * The user that the mode operation applies to.
@@ -57,6 +59,7 @@ public class UserModeEvent<B extends PircBotX> extends Event<B> implements Gener
 
 	/**
 	 * Respond with a private message to the source user
+	 *
 	 * @param response The response to send
 	 */
 	@Override

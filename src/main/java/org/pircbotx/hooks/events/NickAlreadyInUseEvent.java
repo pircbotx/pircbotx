@@ -25,8 +25,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
 /**
- * A nick is already in use error from server. If auto nick change isn't enabled, 
- * must send a nick before server disconnects us. 
+ * A nick is already in use error from server. If auto nick change isn't
+ * enabled, must send a nick before server disconnects us.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -54,6 +55,7 @@ public class NickAlreadyInUseEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Respond by sending a <i>NICK</i> change
+	 *
 	 * @param newNick The nick to set
 	 */
 	@Override

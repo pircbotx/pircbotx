@@ -29,6 +29,7 @@ import org.pircbotx.PircBotX;
 /**
  * This event is dispatched whenever we receive a line from the server that
  * PircBotX has not been programmed to recognize.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -37,7 +38,8 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 	/**
 	 * The raw line that was received from the server.
 	 */
-	@Getter(onMethod = @_({@Nonnull}))
+	@Getter(onMethod = @_({
+		@Nonnull}))
 	protected final String line;
 
 	public UnknownEvent(T bot, @NonNull String line) {
@@ -47,6 +49,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 
 	/**
 	 * Responds by sending a <b>raw line</b> to the server.
+	 *
 	 * @param response The response to send
 	 */
 	@Override

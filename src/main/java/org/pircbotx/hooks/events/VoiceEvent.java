@@ -34,6 +34,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -42,17 +43,20 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_({@Override}))
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_({@Override}))
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final User user;
 	/**
 	 * The nick of the user that got 'voiced'.
 	 */
-	@Getter(onMethod = @_({@Override}))
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final User recipient;
 	/**
 	 * If the voice was given or removed.
@@ -70,8 +74,10 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericU
 
 	/**
 	 * Checks if this is a set or remove voice operation
+	 *
 	 * @return True if this was set, false if removed
-	 * @deprecated Use the better named hasVoice method. Will be removed in future versions
+	 * @deprecated Use the better named hasVoice method. Will be removed in
+	 * future versions
 	 * @see #hasVoice()
 	 */
 	@Deprecated
