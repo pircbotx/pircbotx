@@ -19,6 +19,7 @@
 package org.pircbotx.hooks.types;
 
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.User;
 
 /**
@@ -27,8 +28,13 @@ import org.pircbotx.User;
  */
 public interface GenericUserEvent<T extends PircBotX> extends GenericEvent<T> {
 	/**
-	 * The source user of the event
-	 * @return A user
+	 * The source user hostmask of the event.
+	 * @return The hostmask of the user
+	 */
+	public UserHostmask getServerUser();
+	/**
+	 * The source user of the event.
+	 * @return The user or null if the hostmask doesn't match a user
 	 */
 	public User getUser();
 }
