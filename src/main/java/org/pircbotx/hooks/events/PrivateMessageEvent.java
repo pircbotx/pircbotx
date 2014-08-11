@@ -35,17 +35,17 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
+	/**
+	 * The user who sent the private message.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The actual message.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final String message;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user who sent the private message.
-	 * @param message The actual message.
-	 */
 	public PrivateMessageEvent(T bot, @NonNull User user, @NonNull String message) {
 		super(bot);
 		this.user = user;

@@ -39,21 +39,26 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The user that received the Operator status
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User recipient;
+	/**
+	 * If the operator status was given or removed.
+	 */
 	protected final boolean isOp;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param recipient The user that got 'opped'.
-	 */
 	public OpEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isOp) {
 		super(bot);
 		this.channel = channel;

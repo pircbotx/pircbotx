@@ -37,20 +37,22 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class NoticeEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+	/**
+	 * The nick of the user that sent the notice.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The target channel of the notice. A value of <code>null</code>
+	 * means that the target is us
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The notice message.
+	 */
 	protected final String notice;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The nick of the user that sent the notice.
-	 * @param channel The target channel of the notice. A value of <code>null</code>
-	 * means that the target is us
-	 * @param notice The notice message.
-	 */
 	public NoticeEvent(T bot, @NonNull User user, Channel channel, @NonNull String notice) {
 		super(bot);
 		this.user = user;

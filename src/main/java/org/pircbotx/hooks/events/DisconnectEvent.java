@@ -48,10 +48,6 @@ public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	protected final UserChannelDaoSnapshot daoSnapshot;
 	protected final Exception disconnectException;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 */
 	public DisconnectEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, Exception disconnectException) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;

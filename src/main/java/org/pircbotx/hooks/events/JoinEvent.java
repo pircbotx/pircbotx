@@ -37,17 +37,17 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+	/**
+	 * The channel which somebody joined.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user who joined the channel.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel which somebody joined.
-	 * @param user The user who joined the channel.
-	 */
 	public JoinEvent(T bot, @NonNull Channel channel, @NonNull User user) {
 		super(bot);
 		this.channel = channel;

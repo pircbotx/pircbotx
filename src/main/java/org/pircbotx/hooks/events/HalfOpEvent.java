@@ -40,21 +40,26 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class HalfOpEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The user that received the half-op
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User recipient;
+	/**
+	 * If the half-op status was given or removed.
+	 */
 	protected final boolean isHalfOp;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param recipient The nick of the user that got 'voiced'.
-	 */
 	public HalfOpEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isHalfOp) {
 		super(bot);
 		this.channel = channel;

@@ -40,21 +40,26 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The user that received the owner status.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User recipient;
+	/**
+	 * If the owner status was given or removed
+	 */
 	protected final boolean isOwner;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param recipient The nick of the user that got owner status.
-	 */
 	public OwnerEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isOwner) {
 		super(bot);
 		this.channel = channel;

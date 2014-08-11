@@ -55,15 +55,19 @@ import org.pircbotx.ReplyConstants;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
+	/**
+	 * The three-digit numerical code for the response.
+	 */
 	protected final int code;
+	/**
+	 * The raw line of the response
+	 */
 	protected final String rawLine;
+	/**
+	 * Parsed raw line.
+	 */
 	protected final ImmutableList<String> parsedResponse;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param code The three-digit numerical code for the response.
-	 */
 	public ServerResponseEvent(T bot, int code, @NonNull String rawLine, @NonNull ImmutableList<String> parsedResponse) {
 		super(bot);
 		this.code = code;

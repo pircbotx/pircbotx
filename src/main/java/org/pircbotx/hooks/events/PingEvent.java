@@ -43,20 +43,22 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+	/**
+	 * The user that sent the PING request.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The channel that received the ping request. A value of <code>null</code>
+	 * means the target was us.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The value that was supplied as an argument to the PING command.
+	 */
 	protected final String pingValue;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that sent the PING request.
-	 * @param channel The channel that received the ping request. A value of <code>null</code>
-	 * means the target was us.
-	 * @param pingValue The value that was supplied as an argument to the PING command.
-	 */
 	public PingEvent(T bot, @NonNull User user, Channel channel, @NonNull String pingValue) {
 		super(bot);
 		this.user = user;

@@ -42,13 +42,11 @@ import org.pircbotx.hooks.Event;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChannelInfoEvent<T extends PircBotX> extends Event<T> {
+	/**
+	 * The results of the channel list.
+	 */
 	protected final ImmutableList<ChannelListEntry> list;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param list A list of ChannelList Entries
-	 */
 	public ChannelInfoEvent(T bot, @NonNull ImmutableList<ChannelListEntry> list) {
 		super(bot);
 		this.list = list;

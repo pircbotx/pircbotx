@@ -50,16 +50,16 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserListEvent<B extends PircBotX> extends Event<B> implements GenericChannelEvent<B> {
+	/**
+	 * The channel that the user list is from.
+	 */
 	@Getter(onMethod = @_({@Override}))
 	protected final Channel channel;
+	/**
+	 * An <b>immutable</b> Set of Users belonging to this channel.
+	 */
 	protected final ImmutableSortedSet<User> users;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel that the user list is from.
-	 * @param users An <b>immutable</b> Set of Users belonging to this channel.
-	 */
 	public UserListEvent(@NonNull B bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
 		super(bot);
 		this.channel = channel;

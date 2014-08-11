@@ -44,20 +44,22 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	/**
+	 * The channel that the mode operation applies to.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that set the mode.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The mode that has been set.
+	 */
 	protected final String mode;
 	protected final ImmutableList<String> modeParsed;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel that the mode operation applies to.
-	 * @param user The user that set the mode.
-	 * @param mode The mode that has been set.
-	 */
 	public ModeEvent(T bot, @NonNull Channel channel, User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
 		super(bot);
 		this.channel = channel;
