@@ -43,17 +43,10 @@ public class NickAlreadyInUseEvent<T extends PircBotX> extends Event<T> {
 	 */
 	protected final String autoNewNick;
 	/**
-	 * If auto nick change is enabled;
+	 * If auto nick change is enabled
 	 */
 	protected final boolean autoNickChange;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param oldNick The old nick.
-	 * @param newNick The new nick.
-	 * @param user The user that changed their nick
-	 */
 	public NickAlreadyInUseEvent(T bot, @NonNull String usedNick, @Nullable String autoNewNick, boolean autoNickChange) {
 		super(bot);
 		this.usedNick = usedNick;

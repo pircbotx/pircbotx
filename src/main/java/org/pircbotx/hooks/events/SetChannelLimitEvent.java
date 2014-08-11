@@ -40,19 +40,21 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The maximum number of users that may be in this channel at the same time.
+	 */
 	protected final int limit;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param limit The maximum number of users that may be in this channel at the same time.
-	 */
 	public SetChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull User user, int limit) {
 		super(bot);
 		this.channel = channel;

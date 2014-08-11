@@ -35,18 +35,20 @@ import org.pircbotx.hooks.types.GenericUserEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserModeEvent<B extends PircBotX> extends Event<B> implements GenericUserEvent<B> {
+	/**
+	 * The user that set the mode.
+	 */
 	@Getter(onMethod = @_({@Override}))
 	protected final User user;
+	/**
+	 * The user that the mode operation applies to.
+	 */
 	protected final User recipient;
+	/**
+	 * The mode that has been set.
+	 */
 	protected final String mode;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that set the mode.
-	 * @param recipient The user that the mode operation applies to.
-	 * @param mode The mode that has been set.
-	 */
 	public UserModeEvent(@NonNull B bot, @NonNull User user, @NonNull User recipient, @NonNull String mode) {
 		super(bot);
 		this.user = user;

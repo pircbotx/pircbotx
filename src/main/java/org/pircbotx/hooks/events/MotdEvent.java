@@ -34,13 +34,11 @@ import org.pircbotx.PircBotX;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MotdEvent<T extends PircBotX> extends Event<T> {
+	/**
+	 * The full motd separated by newlines (<code>\n</code>)
+	 */
 	protected final String motd;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param motd The full motd separated by newlines (<code>\n</code>)
-	 */
 	public MotdEvent(T bot, @NonNull String motd) {
 		super(bot);
 		this.motd = motd;

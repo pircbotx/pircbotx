@@ -41,15 +41,15 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+	/**
+	 * The user that sent the FINGER request.
+	 */
 	protected final User user;
+	/**
+	 * The target channel of the FINGER request.
+	 */
 	protected final Channel channel;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The user that sent the FINGER request.
-	 * @param channel The target channel of the FINGER request
-	 */
 	public FingerEvent(T bot, @NonNull User user, @Nullable Channel channel) {
 		super(bot);
 		this.user = user;

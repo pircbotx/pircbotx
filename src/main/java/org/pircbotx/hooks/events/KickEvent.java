@@ -37,21 +37,25 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class KickEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+	/**
+	 * The channel from which the recipient was kicked.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user who performed the kick.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The unfortunate recipient of the kick.
+	 */
 	protected final User recipient;
+	/**
+	 * The reason given by the user who performed the kick.
+	 */
 	protected final String reason;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel from which the recipient was kicked.
-	 * @param user The user who performed the kick.
-	 * @param recipient The unfortunate recipient of the kick.
-	 * @param reason The reason given by the user who performed the kick.
-	 */
 	public KickEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, @NonNull String reason) {
 		super(bot);
 		this.channel = channel;

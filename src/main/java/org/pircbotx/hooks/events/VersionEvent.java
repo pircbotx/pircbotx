@@ -43,18 +43,18 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T>, GenericChannelEvent<T> {
+	/**
+	 * The nick of the user that sent the VERSION request.
+	 */
 	@Getter(onMethod = @_({@Override}))
 	protected final User user;
-	@Getter(onMethod = @_({@Override}))
-	protected final Channel channel;
-
 	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param user The nick of the user that sent the VERSION request.
-	 * @param channel The target channel of the VERSION request. A value of <code>null</code>
+	 * The target channel of the VERSION request. A value of <code>null</code>
 	 * means that that the target is us.
 	 */
+	@Getter(onMethod = @_({@Override}))
+	protected final Channel channel;
+	
 	public VersionEvent(T bot, @NonNull User user, Channel channel) {
 		super(bot);
 		this.user = user;

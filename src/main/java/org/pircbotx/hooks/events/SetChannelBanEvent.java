@@ -42,19 +42,21 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelBanEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+	/**
+	 * The channel in which the mode change took place.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final Channel channel;
+	/**
+	 * The user that performed the mode change.
+	 */
 	@Getter(onMethod = @_(@Override))
 	protected final User user;
+	/**
+	 * The hostmask of the user that has been banned.
+	 */
 	protected final String hostmask;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel in which the mode change took place.
-	 * @param user The user that performed the mode change.
-	 * @param hostmask The hostmask of the user that has been banned.
-	 */
 	public SetChannelBanEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String hostmask) {
 		super(bot);
 		this.channel = channel;
