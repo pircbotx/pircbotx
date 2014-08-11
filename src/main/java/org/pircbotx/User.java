@@ -41,7 +41,7 @@ import org.pircbotx.output.OutputUser;
  */
 @Data
 @Setter(AccessLevel.PROTECTED)
-public class User extends ServerUser {
+public class User extends UserHostmask {
 	@Getter(AccessLevel.PROTECTED)
 	private final UserChannelDao<User, Channel> dao;
 	/**

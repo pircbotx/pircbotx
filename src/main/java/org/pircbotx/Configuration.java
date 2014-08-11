@@ -657,7 +657,7 @@ public class Configuration<B extends PircBotX> {
 			return new OutputChannel(bot, channel);
 		}
 
-		public OutputUser createOutputUser(PircBotX bot, ServerUser user) {
+		public OutputUser createOutputUser(PircBotX bot, UserHostmask user) {
 			return new OutputUser(bot, user);
 		}
 
@@ -689,8 +689,8 @@ public class Configuration<B extends PircBotX> {
 			return new ServerInfo(bot);
 		}
 		
-		public ServerUser createServerUser(PircBotX bot, String hostmask, String nick, String login, String hostname) {
-			return new ServerUser(bot, hostmask, nick, login, hostname);
+		public UserHostmask createUserHostmask(PircBotX bot, String hostmask, String nick, String login, String hostname) {
+			return new UserHostmask(bot, hostmask, nick, login, hostname);
 		}
 
 		public User createUser(PircBotX bot, String hostmask, String nick, String login, String hostname) {
