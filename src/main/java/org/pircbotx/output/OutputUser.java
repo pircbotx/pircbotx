@@ -24,7 +24,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.ServerUser;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.DccException;
@@ -38,7 +38,7 @@ public class OutputUser {
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
-	protected final ServerUser serverUser;
+	protected final UserHostmask serverUser;
 
 	/**
 	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String) }

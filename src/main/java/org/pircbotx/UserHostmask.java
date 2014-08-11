@@ -20,7 +20,7 @@ import org.pircbotx.output.OutputUser;
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"userId", "bot"})
 @Data
-public class ServerUser implements Comparable<User> {
+public class UserHostmask implements Comparable<User> {
 	@NonNull
 	private final PircBotX bot;
 	private final UUID userId = UUID.randomUUID();
@@ -31,7 +31,7 @@ public class ServerUser implements Comparable<User> {
 	protected final AtomicSafeInitializer<OutputUser> output = new AtomicSafeInitializer<OutputUser>() {
 		@Override
 		protected OutputUser initialize() {
-			return bot.getConfiguration().getBotFactory().createOutputUser(bot, ServerUser.this);
+			return bot.getConfiguration().getBotFactory().createOutputUser(bot, UserHostmask.this);
 		}
 	};
 	/**
