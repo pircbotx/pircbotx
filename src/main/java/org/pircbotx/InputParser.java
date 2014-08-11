@@ -286,9 +286,9 @@ public class InputParser implements Closeable {
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
-		String senderInfo = "";
+		String sourceRaw = "";
 		if (parsedLine.get(0).charAt(0) == ':')
-			senderInfo = parsedLine.remove(0);
+			sourceRaw = parsedLine.remove(0);
 
 		String command = parsedLine.remove(0).toUpperCase(configuration.getLocale());
 
@@ -303,22 +303,20 @@ public class InputParser implements Closeable {
 			return;
 		}
 
-		String sourceNick;
-		String sourceLogin;
-		String sourceHostname;
 		//TODO: Removed isEmpty check, this should never be null
 		String target = parsedLine.get(0);
-
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
-		int exclamation = senderInfo.indexOf('!');
-		int at = senderInfo.indexOf('@');
-		if (senderInfo.startsWith(":"))
+		UserHostmask source;
+		int exclamation = sourceRaw.indexOf('!');
+		int at = sourceRaw.indexOf('@');
+		if (sourceRaw.startsWith(":"))
 			if (exclamation > 0 && at > 0 && exclamation < at) {
-				sourceNick = senderInfo.substring(1, exclamation);
-				sourceLogin = senderInfo.substring(exclamation + 1, at);
-				sourceHostname = senderInfo.substring(at + 1);
+				source = new UserHostmask(bot, sourceRaw, 
+						sourceRaw.substring(1, exclamation), 
+						sourceRaw.substring(exclamation + 1, at), 
+						sourceRaw.substring(at + 1));
 			} else {
 				int code = Utils.tryParseInt(command, -1);
 				if (code != -1) {
@@ -332,9 +330,7 @@ public class InputParser implements Closeable {
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
 					//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
-					sourceNick = null;
-					sourceLogin = null;
-					sourceHostname = null;
+					source = new UserHostmask(bot, sourceRaw, null, null, null);
 				}
 			}
 		else {
@@ -349,16 +345,9 @@ public class InputParser implements Closeable {
 			return;
 		}
 
-		if (sourceNick != null && sourceNick.startsWith(":"))
-			sourceNick = sourceNick.substring(1);
-		
-		String source = senderInfo;
-		if(source.startsWith(":"))
-			source = source.substring(1);
-
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
-		processCommand(target, source, sourceNick, sourceLogin, sourceHostname, command, line, parsedLine);
+		processCommand(target, source, command, line, parsedLine);
 	}
 
 	/**
@@ -471,8 +460,7 @@ public class InputParser implements Closeable {
 		}
 	}
 
-	public void processCommand(String target, String source, String sourceNick, String sourceLogin, String sourceHostname, String command, String line, List<String> parsedLine) throws IOException {
-		User sourceUser = (sourceNick != null) ? bot.getUserChannelDao().getUser(sourceNick) : null;
+	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine) throws IOException {
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().channelExists(target)) 
 				? bot.getUserChannelDao().getChannel(target) : null;
@@ -738,7 +726,7 @@ public class InputParser implements Closeable {
 			//New whois is starting
 			String whoisNick = parsedResponse.get(1);
 
-			WhoisEvent.Builder<PircBotX> builder = new WhoisEvent.Builder<PircBotX>();
+			WhoisEvent.Builder<PircBotX> builder = WhoisEvent.builder();
 			builder.setNick(whoisNick);
 			builder.setLogin(parsedResponse.get(2));
 			builder.setHostname(parsedResponse.get(3));
