@@ -31,7 +31,7 @@ public interface GenericUserEvent<T extends PircBotX> extends GenericEvent<T> {
 	 *
 	 * @return The hostmask of the user
 	 */
-	public UserHostmask getServerUser();
+	public UserHostmask getUserHostmask();
 
 	/**
 	 * The source user of the event.
