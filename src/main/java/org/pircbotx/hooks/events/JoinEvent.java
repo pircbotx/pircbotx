@@ -29,8 +29,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
- * This event is dispatched whenever someone (possibly us) joins a channel
- * which we are on.
+ * This event is dispatched whenever someone (possibly us) joins a channel which
+ * we are on.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -39,12 +40,14 @@ public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	/**
 	 * The channel which somebody joined.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user who joined the channel.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 
 	public JoinEvent(T bot, @NonNull Channel channel, @NonNull User user) {
@@ -54,9 +57,9 @@ public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	}
 
 	/**
-	 * Respond with a channel message in
-	 * <code>user: message</code> format to
+	 * Respond with a channel message in <code>user: message</code> format to
 	 * the user that joined
+	 *
 	 * @param response The response to send
 	 */
 	@Override

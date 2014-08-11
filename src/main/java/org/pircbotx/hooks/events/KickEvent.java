@@ -29,8 +29,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
- * This event is dispatched whenever someone (possibly us) is kicked from
- * any of the channels that we are in.
+ * This event is dispatched whenever someone (possibly us) is kicked from any of
+ * the channels that we are in.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -39,12 +40,14 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	/**
 	 * The channel from which the recipient was kicked.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user who performed the kick.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The unfortunate recipient of the kick.
@@ -64,9 +67,9 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	}
 
 	/**
-	 * Respond with a channel message in
-	 * <code>user: message</code> format to
+	 * Respond with a channel message in <code>user: message</code> format to
 	 * the <i>user that preformed the kick</i>
+	 *
 	 * @param response The response to send
 	 */
 	@Override

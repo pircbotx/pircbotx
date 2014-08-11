@@ -22,8 +22,9 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
- * Listener for short one-off tasks. Listener methods will only be called if the event
- * matches the specified bot. Listener can easily be removed with {@link #done() }.
+ * Listener for short one-off tasks. Listener methods will only be called if the
+ * event matches the specified bot. Listener can easily be removed with {@link #done()
+ * }.
  * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -32,6 +33,7 @@ public class TemporaryListener extends ListenerAdapter {
 
 	/**
 	 * Create a TemporaryListener for the specified bot
+	 *
 	 * @param bot The bot that your interested in
 	 */
 	public TemporaryListener(@NonNull PircBotX bot) {

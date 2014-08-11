@@ -29,12 +29,13 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
- * Called when a channel key is set. When the channel key has been set,
- * other users may only join that channel if they know the key. Channel keys
- * are sometimes referred to as passwords.
+ * Called when a channel key is set. When the channel key has been set, other
+ * users may only join that channel if they know the key. Channel keys are
+ * sometimes referred to as passwords.
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -43,12 +44,14 @@ public class SetChannelKeyEvent<T extends PircBotX> extends Event<T> implements 
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The new key for the channel.
@@ -63,8 +66,9 @@ public class SetChannelKeyEvent<T extends PircBotX> extends Event<T> implements 
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that set the mode
-	 * in <code>user: message</code> format
+	 * Respond by send a message in the channel to the user that set the mode in
+	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

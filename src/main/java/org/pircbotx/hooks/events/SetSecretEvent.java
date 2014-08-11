@@ -29,11 +29,12 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
- * Called when a channel is set to be in 'secret' mode. Such channels
- * typically do not appear on a server's channel listing.
+ * Called when a channel is set to be in 'secret' mode. Such channels typically
+ * do not appear on a server's channel listing.
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -42,12 +43,14 @@ public class SetSecretEvent<T extends PircBotX> extends Event<T> implements Gene
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 
 	public SetSecretEvent(T bot, @NonNull Channel channel, @NonNull User user) {
@@ -57,9 +60,9 @@ public class SetSecretEvent<T extends PircBotX> extends Event<T> implements Gene
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that set the mode
-	 * in
+	 * Respond by send a message in the channel to the user that set the mode in
 	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

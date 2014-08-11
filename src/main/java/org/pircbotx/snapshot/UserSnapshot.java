@@ -28,6 +28,7 @@ import org.pircbotx.UserChannelDao;
 /**
  * A snapshot of a user in time. Useful to get information before a user leaves
  * a channel or server. Any attempts to modify data throw an exception
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 //Only use super implementation which uses UIDs
@@ -38,7 +39,7 @@ public class UserSnapshot extends User {
 	protected final User generatedFrom;
 	@Setter
 	protected UserChannelDaoSnapshot dao;
-	
+
 	public UserSnapshot(User user) {
 		super(user.getBot(), null, user.getNick());
 		generatedFrom = user;
@@ -52,7 +53,7 @@ public class UserSnapshot extends User {
 		super.setRealName(user.getRealName());
 		super.setServer(user.getServer());
 	}
-	
+
 	@Override
 	protected UserChannelDao<User, Channel> getDao() {
 		//Workaround for generics

@@ -63,9 +63,9 @@ public class Chat {
 	}
 
 	/**
-	 * Reads the next line of text from the client at the other end of our DCC Chat
-	 * connection. This method blocks until something can be returned.
-	 * If the connection has closed, null is returned.
+	 * Reads the next line of text from the client at the other end of our DCC
+	 * Chat connection. This method blocks until something can be returned. If
+	 * the connection has closed, null is returned.
 	 *
 	 * @return The next line of text from the client. Returns null if the
 	 * connection has closed normally.
@@ -84,8 +84,8 @@ public class Chat {
 	 * Sends a line of text to the client at the other end of our DCC Chat
 	 * connection.
 	 *
-	 * @param line The line of text to be sent. This should not include
-	 * linefeed characters.
+	 * @param line The line of text to be sent. This should not include linefeed
+	 * characters.
 	 *
 	 * @throws IOException If an I/O error occurs.
 	 */

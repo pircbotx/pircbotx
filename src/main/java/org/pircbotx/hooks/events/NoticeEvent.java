@@ -31,6 +31,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * This event is dispatched whenever we receive a notice.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -39,13 +40,15 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	/**
 	 * The nick of the user that sent the notice.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
-	 * The target channel of the notice. A value of <code>null</code>
-	 * means that the target is us
+	 * The target channel of the notice. A value of <code>null</code> means that
+	 * the target is us
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The notice message.
@@ -61,6 +64,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 
 	/**
 	 * Returns the notice the user sent
+	 *
 	 * @return The notice the user sent
 	 */
 	@Override
@@ -69,9 +73,10 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	}
 
 	/**
-	 * Respond by sending a message to the channel in <code>user: message</code>,
-	 * or if its a private message respond with a private message to the user
-	 * format.
+	 * Respond by sending a message to the channel in
+	 * <code>user: message</code>, or if its a private message respond with a
+	 * private message to the user format.
+	 *
 	 * @param response The response to send
 	 */
 	@Override

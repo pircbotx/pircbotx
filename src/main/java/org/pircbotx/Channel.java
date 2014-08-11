@@ -37,7 +37,8 @@ import org.pircbotx.output.OutputChannel;
 import org.pircbotx.snapshot.ChannelSnapshot;
 
 /**
- * Represents a Channel that we're joined to. 
+ * Represents a Channel that we're joined to.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @ToString(doNotUseGetters = true)
@@ -132,6 +133,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Send a line to the channel.
+	 *
 	 * @return A {@link OutputChannel} for this channel
 	 */
 	public OutputChannel send() {
@@ -165,14 +167,16 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Gets the channel mode. If mode is simple (no arguments), this will return immediately.
-	 * If its not (mode with arguments, eg channel key), then asks the server for the
-	 * correct mode, waiting until it gets a response
+	 * Gets the channel mode. If mode is simple (no arguments), this will return
+	 * immediately. If its not (mode with arguments, eg channel key), then asks
+	 * the server for the correct mode, waiting until it gets a response
 	 * <p>
-	 * <b>WARNING:</b> Because of the last checking, a threaded listener manager like
-	 * {@link ThreadedListenerManager} is required. Using a single threaded listener
-	 * manager like {@link org.pircbotx.hooks.managers.GenericListenerManager} will 
-	 * mean this method <i>never returns</i>!
+	 * <b>WARNING:</b> Because of the last checking, a threaded listener manager
+	 * like {@link ThreadedListenerManager} is required. Using a single threaded
+	 * listener manager like
+	 * {@link org.pircbotx.hooks.managers.GenericListenerManager} will mean this
+	 * method <i>never returns</i>!
+	 *
 	 * @return A known good mode, either immediately or soon.
 	 */
 	public String getMode() {
@@ -196,7 +200,8 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Check if the channel has topic protection (+t) set.
-	 * @return True if +t	
+	 *
+	 * @return True if +t
 	 */
 	public boolean hasTopicProtection() {
 		return topicProtection;
@@ -204,6 +209,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Get all levels the user holds in this channel.
+	 *
 	 * @param user The user to get the levels of
 	 * @return An <b>immutable copy</b> of the levels the user holds
 	 */
@@ -212,8 +218,10 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Get all users that don't have any special status in this channel. This means
-	 * that they aren't ops, have voice, superops, halops, or owners in this channel
+	 * Get all users that don't have any special status in this channel. This
+	 * means that they aren't ops, have voice, superops, halops, or owners in
+	 * this channel
+	 *
 	 * @return An <b>immutable copy</b> of normal users
 	 */
 	public ImmutableSortedSet<User> getNormalUsers() {
@@ -222,6 +230,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Get all opped users in this channel.
+	 *
 	 * @return An <b>immutable copy</b> of opped users
 	 */
 	public ImmutableSortedSet<User> getOps() {
@@ -230,6 +239,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Get all voiced users in this channel.
+	 *
 	 * @return An <b>immutable copy</b> of voiced users
 	 */
 	public ImmutableSortedSet<User> getVoices() {
@@ -238,6 +248,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Get all users with Owner status in this channel.
+	 *
 	 * @return An <b>immutable copy</b> of users with Owner status
 	 */
 	public ImmutableSortedSet<User> getOwners() {
@@ -246,6 +257,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Get all users with Half Operator status in this channel.
+	 *
 	 * @return An <b>immutable copy</b> of users with Half Operator status
 	 */
 	public ImmutableSortedSet<User> getHalfOps() {
@@ -254,6 +266,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Get all users with Super Operator status in this channel.
+	 *
 	 * @return An <b>immutable copy</b> of users with Super Operator status
 	 */
 	public ImmutableSortedSet<User> getSuperOps() {
@@ -263,6 +276,7 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * Sets the mode of the channel. If there is a getMode() waiting on this,
 	 * fire it.
+	 *
 	 * @param mode
 	 */
 	protected void setMode(String mode, ImmutableList<String> modeParsed) {
@@ -292,7 +306,9 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Get all users in this channel. Simply calls {@link PircBotX#getUsers(org.pircbotx.Channel) }
+	 * Get all users in this channel. Simply calls {@link PircBotX#getUsers(org.pircbotx.Channel)
+	 * }
+	 *
 	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
 	public ImmutableSortedSet<User> getUsers() {
@@ -302,6 +318,7 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * Get the user that set the topic. As the user may or may not be in the
 	 * channel return as a string
+	 *
 	 * @return The user that set the topic in String format
 	 */
 	public String getTopicSetter() {
@@ -310,6 +327,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Checks if the given user is an Operator in this channel
+	 *
 	 * @return True if the user is an Operator, false if not
 	 */
 	public boolean isOp(User user) {
@@ -318,6 +336,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Checks if the given user has Voice in this channel.
+	 *
 	 * @return True if the user has Voice, false if not
 	 */
 	public boolean hasVoice(User user) {
@@ -326,6 +345,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Checks if the given user is a Super Operator in this channel.
+	 *
 	 * @return True if the user is a Super Operator, false if not
 	 */
 	public boolean isSuperOp(User user) {
@@ -334,6 +354,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Checks if the given user is an Owner in this channel.
+	 *
 	 * @return True if the user is an Owner, false if not
 	 */
 	public boolean isOwner(User user) {
@@ -342,6 +363,7 @@ public class Channel implements Comparable<Channel> {
 
 	/**
 	 * Checks if the given user is a Half Operator in this channel.
+	 *
 	 * @return True if the user is a Half Operator, false if not
 	 */
 	public boolean isHalfOp(User user) {
@@ -349,7 +371,8 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Create an immutable snapshot of this channel. 
+	 * Create an immutable snapshot of this channel.
+	 *
 	 * @return Immutable Channel copy minus the DAO
 	 */
 	public ChannelSnapshot createSnapshot() {
@@ -359,8 +382,9 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Compare {@link #getName()} with {@link String#compareToIgnoreCase(java.lang.String) }.
-	 * This is useful for sorting lists of Channel objects.
+	 * Compare {@link #getName()} with {@link String#compareToIgnoreCase(java.lang.String)
+	 * }. This is useful for sorting lists of Channel objects.
+	 *
 	 * @param other Other channel to compare to
 	 * @return the result of calling compareToIgnoreCase on channel names.
 	 */

@@ -230,7 +230,8 @@ public class DccHandler implements Closeable {
 	}
 
 	/**
-	 * Accept file transfer at position 0, blocking until the connection is active
+	 * Accept file transfer at position 0, blocking until the connection is
+	 * active
 	 * <p>
 	 * @param event The file request event
 	 * @param destination The destination file
@@ -244,14 +245,16 @@ public class DccHandler implements Closeable {
 	}
 
 	/**
-	 * Accept file transfer resuming at specified position, blocking until the connection is active
+	 * Accept file transfer resuming at specified position, blocking until the
+	 * connection is active
 	 * <p>
 	 * @param event The file request event
 	 * @param destination The destination file
 	 * @param startPosition The position to start the transfer at
 	 * @return An active {@link ReceiveFileTransfer}
 	 * @throws IOException If an error occurred during connection
-	 * @throws InterruptedException If this is interrupted while waiting for a connection
+	 * @throws InterruptedException If this is interrupted while waiting for a
+	 * connection
 	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
 	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {

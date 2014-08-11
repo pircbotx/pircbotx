@@ -33,9 +33,11 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  * This event is dispatched whenever we receive a TIME request.
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
- * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
- * Listeners of this event should <b>not</b> send a response as the user will get
- * two responses
+ * is removed from the
+ * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * this event should <b>not</b> send a response as the user will get two
+ * responses
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -45,14 +47,16 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * The target channel of the TIME request. A value of <code>null</code>
 	 * means that target is us
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that sent the TIME request.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
-	
+
 	public TimeEvent(T bot, Channel channel, @NonNull User user) {
 		super(bot);
 		this.channel = channel;
@@ -61,6 +65,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 
 	/**
 	 * Respond with a CTCP response to the user
+	 *
 	 * @param response The response to send
 	 */
 	@Override

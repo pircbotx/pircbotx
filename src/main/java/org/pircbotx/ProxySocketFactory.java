@@ -26,7 +26,9 @@ import java.net.UnknownHostException;
 import javax.net.SocketFactory;
 
 /**
- * A basic SocketFactory for creating sockets that connect through the specified proxy.
+ * A basic SocketFactory for creating sockets that connect through the specified
+ * proxy.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ProxySocketFactory extends SocketFactory {
@@ -34,6 +36,7 @@ public class ProxySocketFactory extends SocketFactory {
 
 	/**
 	 * Create all sockets with the specified proxy.
+	 *
 	 * @param proxy An existing proxy
 	 */
 	public ProxySocketFactory(Proxy proxy) {
@@ -41,7 +44,9 @@ public class ProxySocketFactory extends SocketFactory {
 	}
 
 	/**
-	 * A convenience constructor for creating a proxy with the specified host and port.
+	 * A convenience constructor for creating a proxy with the specified host
+	 * and port.
+	 *
 	 * @param proxyType The type of proxy were connecting to
 	 * @param hostname The hostname of the proxy server
 	 * @param port The port of the proxy server

@@ -27,5 +27,6 @@ import com.google.common.collect.PeekingIterator;
 @Data
 public abstract class ChannelModeHandler {
 	protected final char mode;
+
 	public abstract void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent);
 }

@@ -34,9 +34,11 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * This event is dispatched whenever we receive a VERSION request.
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
- * is removed from the {@link PircBotX#getListenerManager() bot's ListenerManager},
- * Listeners of this event should <b>not</b> send a response as the user will get
- * two responses
+ * is removed from the
+ * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * this event should <b>not</b> send a response as the user will get two
+ * responses
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -45,15 +47,17 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	/**
 	 * The nick of the user that sent the VERSION request.
 	 */
-	@Getter(onMethod = @_({@Override}))
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final User user;
 	/**
 	 * The target channel of the VERSION request. A value of <code>null</code>
 	 * means that that the target is us.
 	 */
-	@Getter(onMethod = @_({@Override}))
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final Channel channel;
-	
+
 	public VersionEvent(T bot, @NonNull User user, Channel channel) {
 		super(bot);
 		this.user = user;
@@ -62,6 +66,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 
 	/**
 	 * Respond with a CTCP response to the user
+	 *
 	 * @param response The response to send
 	 */
 	@Override

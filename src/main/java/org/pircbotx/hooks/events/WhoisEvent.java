@@ -30,8 +30,9 @@ import org.pircbotx.hooks.Event;
 
 /**
  * Dispatched when we receive a completed Whois request. Note this is completely
- * independent of User and Channel objects since a user might not be connected to
- * us directly
+ * independent of User and Channel objects since a user might not be connected
+ * to us directly
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 //TODO: Add tests
@@ -58,7 +59,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	@NonNull
 	protected final String registeredAs;
 	protected final boolean exists;
-	
+
 	WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
 		super(bot);
 		this.nick = builder.nick;
@@ -73,11 +74,12 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 		this.registeredAs = builder.registeredAs;
 		this.exists = builder.exists;
 	}
-	
+
 	/**
 	 * Check if user is registered
+	 *
 	 * @return True if user is registered
-	 * @see #getRegisteredAs() 
+	 * @see #getRegisteredAs()
 	 */
 	public boolean isRegistered() {
 		return registeredAs != null;

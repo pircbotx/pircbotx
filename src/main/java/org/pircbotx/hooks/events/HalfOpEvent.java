@@ -29,11 +29,13 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
- * Called when a user (possibly us) gets halfop status granted in a channel. Note
- * that this isn't supported on all servers or may be used for something else
+ * Called when a user (possibly us) gets halfop status granted in a channel.
+ * Note that this isn't supported on all servers or may be used for something
+ * else
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -42,17 +44,20 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 	/**
 	 * The user that received the half-op
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User recipient;
 	/**
 	 * If the half-op status was given or removed.
@@ -70,8 +75,8 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	/**
 	 * Respond by send a message in the channel to the user that set the mode
 	 * (<b>Warning:</b> not to the user that got halfop status!) in
-	 * <code>user: message</code>
-	 * format
+	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

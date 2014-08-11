@@ -30,6 +30,7 @@ import org.pircbotx.exception.DccException;
 
 /**
  * Send lines to a serverUser.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -40,8 +41,10 @@ public class OutputUser {
 	protected final UserHostmask serverUser;
 
 	/**
-	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the CTCP command to
 	 * @param channel The channel you are inviting the serverUser to join.
 	 */
@@ -50,8 +53,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the invite to
 	 * @param channel The channel you are inviting the serverUser to join.
 	 */
@@ -60,8 +65,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a notice to the serverUser. See {@link #sendNotice(java.lang.String, java.lang.String) }
+	 * Send a notice to the serverUser. See {@link #sendNotice(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the notice to
 	 * @param notice The notice to send
 	 */
@@ -70,8 +77,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send an action to the serverUser. See {@link #sendAction(java.lang.String, java.lang.String) }
+	 * Send an action to the serverUser. See {@link #sendAction(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the action to
 	 * @param action The action message to send
 	 */
@@ -80,8 +89,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a private message to a serverUser. See {@link #sendMessage(java.lang.String, java.lang.String) }
+	 * Send a private message to a serverUser. See {@link #sendMessage(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the message to
 	 * @param message The message to send
 	 */
@@ -90,8 +101,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a CTCP command to the serverUser. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
+	 * Send a CTCP command to the serverUser. See {@link #sendCTCPCommand(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
@@ -100,42 +113,44 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a CTCP Response to the serverUser. See {@link #sendCTCPResponse(java.lang.String, java.lang.String) }
+	 * Send a CTCP Response to the serverUser. See {@link #sendCTCPResponse(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
+	 *
 	 * @param target The serverUser to send the CTCP Response to
 	 * @param message The response to send
 	 */
 	public void ctcpResponse(String message) {
 		bot.sendIRC().ctcpResponse(serverUser.getNick(), message);
 	}
-	
+
 	public void mode(String mode) {
 		bot.sendIRC().mode(serverUser.getNick(), mode);
 	}
-	
+
 	public SendFileTransfer dccFile(File file) throws IOException, DccException, InterruptedException {
 		return bot.getDccHandler().sendFile(file, bot.getUserChannelDao().getUser(serverUser));
 	}
-	
+
 	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
 		return bot.getDccHandler().sendFile(file, bot.getUserChannelDao().getUser(serverUser), passive);
 	}
-	
+
 	public SendChat dccChat() throws IOException, InterruptedException {
 		return bot.getDccHandler().sendChat(bot.getUserChannelDao().getUser(serverUser));
 	}
-	
+
 	public SendChat dccChat(boolean passive) throws IOException, InterruptedException {
 		return bot.getDccHandler().sendChat(bot.getUserChannelDao().getUser(serverUser), passive);
 	}
-	
+
 	/**
 	 * Send "WHOIS nick"
 	 */
 	public void whois() {
 		bot.sendIRC().whois(serverUser.getNick());
 	}
-	
+
 	/**
 	 * Send "WHOIS nick nick" for more detail
 	 */

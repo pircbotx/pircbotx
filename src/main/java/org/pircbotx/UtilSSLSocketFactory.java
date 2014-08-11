@@ -42,10 +42,16 @@ import lombok.ToString;
  * <p>
  * Most methods follow the builder pattern, meaning you can declare and setup
  * this Socket Factory in one line
- * @author Trusting all certificates code by <a href="http://www.howardism.org/Technical/Java/SelfSignedCerts.html">Howardism</a>
- * <p>Disabling Diffie Hellman code by <a href="http://stackoverflow.com/questions/6851461/java-why-does-ssl-handshake-give-could-not-generate-dh-keypair-exception/6862383#6862383">Sam on StackOverflow</a>
- * <p>Implemented and Maintained in PircBotX by:
- * Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * @author Trusting all certificates code by <a
+ * href="http://www.howardism.org/Technical/Java/SelfSignedCerts.html">Howardism</a>
+ * <p>
+ * Disabling Diffie Hellman code by <a
+ * href="http://stackoverflow.com/questions/6851461/java-why-does-ssl-handshake-give-could-not-generate-dh-keypair-exception/6862383#6862383">Sam
+ * on StackOverflow</a>
+ * <p>
+ * Implemented and Maintained in PircBotX by: Leon Blakey <lord.quackstar at
+ * gmail.com>
  */
 @EqualsAndHashCode(callSuper = false)
 @ToString
@@ -58,7 +64,8 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	protected boolean diffieHellmanDisabled = false;
 
 	/**
-	 * Setup UtilSSLSocketFactory wrapping {@link SSLSocketFactory#getDefault() }.
+	 * Setup UtilSSLSocketFactory wrapping {@link SSLSocketFactory#getDefault()
+	 * }.
 	 */
 	public UtilSSLSocketFactory() {
 		wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
@@ -66,6 +73,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 
 	/**
 	 * Setup UntilSSLSocketFactory wrapping the provided SSLSocketFactory.
+	 *
 	 * @param providedFactory An SSLSocketFactory to wrap
 	 */
 	public UtilSSLSocketFactory(SSLSocketFactory providedFactory) {
@@ -74,8 +82,9 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 
 	/**
 	 * By default, trust ALL certificates. <b>This is very insecure.</b> It also
-	 * defeats one of the points of SSL: Making sure your connecting to the right
-	 * server.
+	 * defeats one of the points of SSL: Making sure your connecting to the
+	 * right server.
+	 *
 	 * @return The current UtilSSLSocketFactory instance
 	 */
 	public UtilSSLSocketFactory trustAllCertificates() {
@@ -99,12 +108,13 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	 * around JDK bug #6521495 which throws an Exception when prime sizes are
 	 * above 1024 bits.
 	 * <p>
-	 * Note that this requires that the server supports other key exchange algorithms.
-	 * This socket factory (nor any other built in Socket Factory) cannot connect
-	 * to a server that only supports Diffie Hellman key exchange with prime sizes
-	 * larger than 1024 bits.
+	 * Note that this requires that the server supports other key exchange
+	 * algorithms. This socket factory (nor any other built in Socket Factory)
+	 * cannot connect to a server that only supports Diffie Hellman key exchange
+	 * with prime sizes larger than 1024 bits.
 	 * <p>
 	 * Also see PircBotX Issue #34
+	 *
 	 * @return The current UtilSSLSocketFactory instance
 	 */
 	public UtilSSLSocketFactory disableDiffieHellman() {
@@ -150,26 +160,36 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	}
 
 	/**
-	 * X509TrustManager that trusts all certificates. <b>This is very insecure</b>
+	 * X509TrustManager that trusts all certificates. <b>This is very
+	 * insecure</b>
 	 */
 	public static class TrustingX509TrustManager implements X509TrustManager {
 		/**
 		 * Doesn't throw an exception, so this is how it approves a certificate.
-		 * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], String)
-		 * */
+		 *
+		 * @see
+		 * javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[],
+		 * String)
+		 *
+		 */
 		public void checkClientTrusted(X509Certificate[] cert, String authType) throws CertificateException {
 		}
 
 		/**
 		 * Doesn't throw an exception, so this is how it approves a certificate.
-		 * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], String)
-		 * */
+		 *
+		 * @see
+		 * javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[],
+		 * String)
+		 *
+		 */
 		public void checkServerTrusted(X509Certificate[] cert, String authType) throws CertificateException {
 		}
 
 		/**
 		 * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
-		 * */
+		 *
+		 */
 		public X509Certificate[] getAcceptedIssuers() {
 			return new X509Certificate[0];
 		}

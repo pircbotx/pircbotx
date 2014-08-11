@@ -99,6 +99,7 @@ import org.slf4j.MarkerFactory;
 
 /**
  * Parse received input from IRC server.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -106,7 +107,8 @@ import org.slf4j.MarkerFactory;
 public class InputParser implements Closeable {
 	public static final Marker INPUT_MARKER = MarkerFactory.getMarker("pircbotx.input");
 	/**
-	 * Codes that say we are connected: Initial connection (001-4), user stats (251-5), or MOTD (375-6).
+	 * Codes that say we are connected: Initial connection (001-4), user stats
+	 * (251-5), or MOTD (375-6).
 	 */
 	protected static final ImmutableList<String> CONNECT_CODES = ImmutableList.of("001", "002", "003", "004", "005",
 			"251", "252", "253", "254", "255", "375", "376");
@@ -115,142 +117,142 @@ public class InputParser implements Closeable {
 	static {
 		DEFAULT_CHANNEL_MODE_HANDLERS = ImmutableList.<ChannelModeHandler>builder()
 				.add(new OpChannelModeHandler('o', UserLevel.OP) {
-			@Override
-			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
-				Utils.dispatchEvent(bot, new OpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
-			}
-		})
+					@Override
+					public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+						Utils.dispatchEvent(bot, new OpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+					}
+				})
 				.add(new OpChannelModeHandler('v', UserLevel.VOICE) {
-			@Override
-			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
-				Utils.dispatchEvent(bot, new VoiceEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
-			}
-		})
+					@Override
+					public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+						Utils.dispatchEvent(bot, new VoiceEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+					}
+				})
 				.add(new OpChannelModeHandler('h', UserLevel.HALFOP) {
-			@Override
-			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
-				Utils.dispatchEvent(bot, new HalfOpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
-			}
-		})
+					@Override
+					public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+						Utils.dispatchEvent(bot, new HalfOpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+					}
+				})
 				.add(new OpChannelModeHandler('a', UserLevel.SUPEROP) {
-			@Override
-			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
-				Utils.dispatchEvent(bot, new SuperOpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
-			}
-		})
+					@Override
+					public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+						Utils.dispatchEvent(bot, new SuperOpEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+					}
+				})
 				.add(new OpChannelModeHandler('q', UserLevel.OWNER) {
-			@Override
-			public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
-				Utils.dispatchEvent(bot, new OwnerEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
-			}
-		})
+					@Override
+					public void dispatchEvent(PircBotX bot, Channel channel, User sourceUser, User recipientUser, boolean adding) {
+						Utils.dispatchEvent(bot, new OwnerEvent<PircBotX>(bot, channel, sourceUser, recipientUser, adding));
+					}
+				})
 				.add(new ChannelModeHandler('k') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				if (adding) {
-					String key = params.next();
-					channel.setChannelKey(key);
-					if (dispatchEvent)
-						Utils.dispatchEvent(bot, new SetChannelKeyEvent<PircBotX>(bot, channel, sourceUser, key));
-				} else {
-					String key = params.hasNext() ? params.next() : null;
-					channel.setChannelKey(null);
-					if (dispatchEvent)
-						Utils.dispatchEvent(bot, new RemoveChannelKeyEvent<PircBotX>(bot, channel, sourceUser, key));
-				}
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						if (adding) {
+							String key = params.next();
+							channel.setChannelKey(key);
+							if (dispatchEvent)
+								Utils.dispatchEvent(bot, new SetChannelKeyEvent<PircBotX>(bot, channel, sourceUser, key));
+						} else {
+							String key = params.hasNext() ? params.next() : null;
+							channel.setChannelKey(null);
+							if (dispatchEvent)
+								Utils.dispatchEvent(bot, new RemoveChannelKeyEvent<PircBotX>(bot, channel, sourceUser, key));
+						}
+					}
+				})
 				.add(new ChannelModeHandler('l') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				if (adding) {
-					int limit = Integer.parseInt(params.next());
-					channel.setChannelLimit(limit);
-					if (dispatchEvent)
-						Utils.dispatchEvent(bot, new SetChannelLimitEvent<PircBotX>(bot, channel, sourceUser, limit));
-				} else {
-					channel.setChannelLimit(-1);
-					if (dispatchEvent)
-						Utils.dispatchEvent(bot, new RemoveChannelLimitEvent<PircBotX>(bot, channel, sourceUser));
-				}
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						if (adding) {
+							int limit = Integer.parseInt(params.next());
+							channel.setChannelLimit(limit);
+							if (dispatchEvent)
+								Utils.dispatchEvent(bot, new SetChannelLimitEvent<PircBotX>(bot, channel, sourceUser, limit));
+						} else {
+							channel.setChannelLimit(-1);
+							if (dispatchEvent)
+								Utils.dispatchEvent(bot, new RemoveChannelLimitEvent<PircBotX>(bot, channel, sourceUser));
+						}
+					}
+				})
 				.add(new ChannelModeHandler('b') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
-					else
-						Utils.dispatchEvent(bot, new RemoveChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
+							else
+								Utils.dispatchEvent(bot, new RemoveChannelBanEvent<PircBotX>(bot, channel, sourceUser, params.next()));
+					}
+				})
 				.add(new ChannelModeHandler('t') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				channel.setTopicProtection(adding);
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
-					else
-						Utils.dispatchEvent(bot, new RemoveTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						channel.setTopicProtection(adding);
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
+							else
+								Utils.dispatchEvent(bot, new RemoveTopicProtectionEvent<PircBotX>(bot, channel, sourceUser));
+					}
+				})
 				.add(new ChannelModeHandler('n') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				channel.setNoExternalMessages(adding);
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
-					else
-						Utils.dispatchEvent(bot, new RemoveNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						channel.setNoExternalMessages(adding);
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
+							else
+								Utils.dispatchEvent(bot, new RemoveNoExternalMessagesEvent<PircBotX>(bot, channel, sourceUser));
+					}
+				})
 				.add(new ChannelModeHandler('i') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				channel.setInviteOnly(adding);
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
-					else
-						Utils.dispatchEvent(bot, new RemoveInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						channel.setInviteOnly(adding);
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
+							else
+								Utils.dispatchEvent(bot, new RemoveInviteOnlyEvent<PircBotX>(bot, channel, sourceUser));
+					}
+				})
 				.add(new ChannelModeHandler('m') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				channel.setModerated(adding);
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetModeratedEvent<PircBotX>(bot, channel, sourceUser));
-					else
-						Utils.dispatchEvent(bot, new RemoveModeratedEvent<PircBotX>(bot, channel, sourceUser));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						channel.setModerated(adding);
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetModeratedEvent<PircBotX>(bot, channel, sourceUser));
+							else
+								Utils.dispatchEvent(bot, new RemoveModeratedEvent<PircBotX>(bot, channel, sourceUser));
+					}
+				})
 				.add(new ChannelModeHandler('p') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				channel.setChannelPrivate(adding);
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetPrivateEvent<PircBotX>(bot, channel, sourceUser));
-					else
-						Utils.dispatchEvent(bot, new RemovePrivateEvent<PircBotX>(bot, channel, sourceUser));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						channel.setChannelPrivate(adding);
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetPrivateEvent<PircBotX>(bot, channel, sourceUser));
+							else
+								Utils.dispatchEvent(bot, new RemovePrivateEvent<PircBotX>(bot, channel, sourceUser));
+					}
+				})
 				.add(new ChannelModeHandler('s') {
-			@Override
-			public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-				channel.setSecret(adding);
-				if (dispatchEvent)
-					if (adding)
-						Utils.dispatchEvent(bot, new SetSecretEvent<PircBotX>(bot, channel, sourceUser));
-					else
-						Utils.dispatchEvent(bot, new RemoveSecretEvent<PircBotX>(bot, channel, sourceUser));
-			}
-		})
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						channel.setSecret(adding);
+						if (dispatchEvent)
+							if (adding)
+								Utils.dispatchEvent(bot, new SetSecretEvent<PircBotX>(bot, channel, sourceUser));
+							else
+								Utils.dispatchEvent(bot, new RemoveSecretEvent<PircBotX>(bot, channel, sourceUser));
+					}
+				})
 				.build();
 	}
 	protected final Configuration<PircBotX> configuration;
@@ -311,12 +313,12 @@ public class InputParser implements Closeable {
 		int exclamation = sourceRaw.indexOf('!');
 		int at = sourceRaw.indexOf('@');
 		if (sourceRaw.startsWith(":"))
-			if (exclamation > 0 && at > 0 && exclamation < at) {
-				source = new UserHostmask(bot, sourceRaw, 
-						sourceRaw.substring(1, exclamation), 
-						sourceRaw.substring(exclamation + 1, at), 
+			if (exclamation > 0 && at > 0 && exclamation < at)
+				source = new UserHostmask(bot, sourceRaw,
+						sourceRaw.substring(1, exclamation),
+						sourceRaw.substring(exclamation + 1, at),
 						sourceRaw.substring(at + 1));
-			} else {
+			else {
 				int code = Utils.tryParseInt(command, -1);
 				if (code != -1) {
 					if (!bot.loggedIn)
@@ -324,13 +326,12 @@ public class InputParser implements Closeable {
 					processServerResponse(code, line, parsedLine);
 					// Return from the method.
 					return;
-				} else {
+				} else
 					// This is not a server response.
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
 					//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
 					source = new UserHostmask(bot, sourceRaw, null, null, null);
-				}
 			}
 		else {
 			// We don't know what this line means.
@@ -350,12 +351,15 @@ public class InputParser implements Closeable {
 	}
 
 	/**
-	 * Process any lines relevant to connect. Only called before bot is logged into the server
+	 * Process any lines relevant to connect. Only called before bot is logged
+	 * into the server
+	 *
 	 * @param rawLine Raw, unprocessed line from the server
-	 * @param code 
+	 * @param code
 	 * @param target
 	 * @param parsedLine Processed line
-	 * @throws IrcException If the server rejects the bot (nick already in use or a 4** or 5** code
+	 * @throws IrcException If the server rejects the bot (nick already in use
+	 * or a 4** or 5** code
 	 * @throws IOException If an error occurs during upgrading to SSL
 	 */
 	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
@@ -385,19 +389,19 @@ public class InputParser implements Closeable {
 				bot.sendIRC().changeNick(autoNewNick = configuration.getName() + nickSuffix);
 			}
 			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent<PircBotX>(bot, usedNick, autoNewNick, autoNickChange));
-		} else if (code.equals("439")) {
+		} else if (code.equals("439"))
 			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 			// No action required.
 			//TODO: Should we delay joining channels here or something?
-			log.warn("Ignoring too fast error"); 
-		} else if (configuration.isCapEnabled() && code.equals("421") && parsedLine.get(1).equals("CAP")) {
+			log.warn("Ignoring too fast error");
+		else if (configuration.isCapEnabled() && code.equals("421") && parsedLine.get(1).equals("CAP"))
 			//EXAMPLE: 421 you CAP :Unknown command
 			log.warn("Ignoring unknown command error, server does not support CAP negotiation");
-		} else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP")) {
+		else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP"))
 			//EXAMPLE: 451 CAP :You have not registered
 			//Ignore, this is from servers that don't support CAP
 			log.warn("Ignoring not registered error, server does not support CAP negotiation");
-		} else if (code.startsWith("5") || code.startsWith("4"))
+		else if (code.startsWith("5") || code.startsWith("4"))
 			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
 		else if (code.equals("670")) {
 			//Server is saying that we can upgrade to TLS
@@ -461,7 +465,7 @@ public class InputParser implements Closeable {
 
 	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine) throws IOException {
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().channelExists(target)) 
+		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().channelExists(target))
 				? bot.getUserChannelDao().getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 
@@ -563,7 +567,7 @@ public class InputParser implements Closeable {
 				mode = mode.substring(1);
 			//Handle situations where source doesn't have a full username (IE server setting user mode on connect)
 			User sourceModeUser = sourceUser;
-			if(sourceModeUser == null)
+			if (sourceModeUser == null)
 				sourceModeUser = bot.getUserChannelDao().getUser(source);
 			processMode(sourceModeUser, target, mode);
 		} else if (command.equals("TOPIC")) {
@@ -594,13 +598,13 @@ public class InputParser implements Closeable {
 	}
 
 	/**
-	 * This method is called by the PircBotX when a numeric response
-	 * is received from the IRC server. We use this method to
-	 * allow PircBotX to process various responses from the server
-	 * before then passing them on to the onServerResponse method.
+	 * This method is called by the PircBotX when a numeric response is received
+	 * from the IRC server. We use this method to allow PircBotX to process
+	 * various responses from the server before then passing them on to the
+	 * onServerResponse method.
 	 * <p>
-	 * Note that this method is private and should not appear in any
-	 * of the javadoc generated documentation.
+	 * Note that this method is private and should not appear in any of the
+	 * javadoc generated documentation.
 	 *
 	 * @param code The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
@@ -683,7 +687,7 @@ public class InputParser implements Closeable {
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 			ImmutableList<String> modeParsed = parsedResponse.subList(2, parsedResponse.size());
 			String mode = StringUtils.join(modeParsed, ' ');
-			
+
 			channel.setMode(mode, modeParsed);
 			configuration.getListenerManager().dispatchEvent(new ModeEvent<PircBotX>(bot, channel, null, mode, modeParsed));
 		} else if (code == 329) {
@@ -760,19 +764,19 @@ public class InputParser implements Closeable {
 			//330 TheLQ Utoxin Utoxin :is logged in as
 			//Make sure we set registered as to the nick, not to the note after the colon
 			String registeredNick = "";
-			if(!rawResponse.endsWith(":" + parsedResponse.get(2)))
+			if (!rawResponse.endsWith(":" + parsedResponse.get(2)))
 				registeredNick = parsedResponse.get(2);
 			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs(registeredNick);
-		} else if (code == 307) {
+		} else if (code == 307)
 			//If shown, tells us that the user is registered with nickserv
 			//307 TheLQ TheLQ-PircBotX :has identified for this nick
 			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs("");
-		} else if (code == RPL_ENDOFWHOIS) {
+		else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);
 			WhoisEvent.Builder builder;
-			if(whoisBuilder.containsKey(whoisNick)) {
+			if (whoisBuilder.containsKey(whoisNick)) {
 				builder = whoisBuilder.get(whoisNick);
 				builder.setExists(true);
 			} else {
@@ -787,12 +791,12 @@ public class InputParser implements Closeable {
 	}
 
 	/**
-	 * Called when the mode of a channel is set. We process this in
-	 * order to call the appropriate onOp, onDeop, etc method before
-	 * finally calling the override-able onMode method.
+	 * Called when the mode of a channel is set. We process this in order to
+	 * call the appropriate onOp, onDeop, etc method before finally calling the
+	 * override-able onMode method.
 	 * <p>
-	 * Note that this method is private and is not intended to appear
-	 * in the javadoc generated documentation.
+	 * Note that this method is private and is not intended to appear in the
+	 * javadoc generated documentation.
 	 *
 	 * @param target The channel or nick that the mode operation applies to.
 	 * @param sourceNick The nick of the user that set the mode.

@@ -57,8 +57,9 @@ import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Immutable configuration for PircBotX. Use {@link Configuration.Builder} to create
- * 
+ * Immutable configuration for PircBotX. Use {@link Configuration.Builder} to
+ * create
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -112,7 +113,8 @@ public class Configuration<B extends PircBotX> {
 
 	/**
 	 * Use {@link Configuration.Builder#build() }.
-	 * @param builder 
+	 *
+	 * @param builder
 	 * @see Configuration.Builder#build()
 	 */
 	protected Configuration(Builder<B> builder) {
@@ -223,7 +225,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected String login = "PircBotX";
 		/**
-		 * CTCP version response. 
+		 * CTCP version response.
 		 */
 		protected String version = "PircBotX " + PircBotX.VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
 		/**
@@ -240,24 +242,28 @@ public class Configuration<B extends PircBotX> {
 		protected String channelPrefixes = "#&+!";
 		//DCC
 		/**
-		 * If true sends filenames in quotes, otherwise uses underscores. Defaults to false
+		 * If true sends filenames in quotes, otherwise uses underscores.
+		 * Defaults to false
 		 */
 		protected boolean dccFilenameQuotes = false;
 		/**
-		 * Ports to allow DCC incoming connections. Recommended to set multiple as
-		 * DCC connections will be rejected if no free port can be found
+		 * Ports to allow DCC incoming connections. Recommended to set multiple
+		 * as DCC connections will be rejected if no free port can be found
 		 */
 		protected List<Integer> dccPorts = new ArrayList<Integer>();
 		/**
-		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress() }
+		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress()
+		 * }
 		 */
 		protected InetAddress dccLocalAddress = null;
 		/**
-		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout() }
+		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout()
+		 * }
 		 */
 		protected int dccAcceptTimeout = -1;
 		/**
-		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout() }
+		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout()
+		 * }
 		 */
 		protected int dccResumeAcceptTimeout = -1;
 		/**
@@ -282,19 +288,22 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected String serverPassword = null;
 		/**
-		 * Socket factory for connections. Defaults to {@link SocketFactory#getDefault() }
+		 * Socket factory for connections. Defaults to {@link SocketFactory#getDefault()
+		 * }
 		 */
 		protected SocketFactory socketFactory = SocketFactory.getDefault();
 		/**
-		 * Address to bind to when connecting to IRC server. 
+		 * Address to bind to when connecting to IRC server.
 		 */
 		protected InetAddress localAddress = null;
 		/**
-		 * Charset encoding to use for connection. Defaults to {@link Charset#defaultCharset()}
+		 * Charset encoding to use for connection. Defaults to
+		 * {@link Charset#defaultCharset()}
 		 */
 		protected Charset encoding = Charset.defaultCharset();
 		/**
-		 * Locale to use for connection. Defaults to {@link Locale#getDefault() }
+		 * Locale to use for connection. Defaults to {@link Locale#getDefault()
+		 * }
 		 */
 		protected Locale locale = Locale.getDefault();
 		/**
@@ -306,25 +315,25 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected int maxLineLength = 512;
 		/**
-		 * Enable or disable automatic message splitting to fit {@link #getMaxLineLength()}.
-		 * Note that messages might be truncated by the IRC server if not set. Defaults
-		 * to true
+		 * Enable or disable automatic message splitting to fit
+		 * {@link #getMaxLineLength()}. Note that messages might be truncated by
+		 * the IRC server if not set. Defaults to true
 		 */
 		protected boolean autoSplitMessage = true;
 		/**
-		 * Enable or disable automatic nick changing if a nick is in use by adding
-		 * a number to the end. If this is false and a nick is already in use, a 
-		 * {@link IrcException} will be thrown. Defaults to false. 
+		 * Enable or disable automatic nick changing if a nick is in use by
+		 * adding a number to the end. If this is false and a nick is already in
+		 * use, a {@link IrcException} will be thrown. Defaults to false.
 		 */
 		protected boolean autoNickChange = false;
 		/**
-		 * Millisecond delay between sending messages with {@link OutputRaw#rawLine(java.lang.String) }.
-		 * Defaults to 1000 milliseconds
+		 * Millisecond delay between sending messages with {@link OutputRaw#rawLine(java.lang.String)
+		 * }. Defaults to 1000 milliseconds
 		 */
 		protected long messageDelay = 1000;
 		/**
-		 * Enable or disable creating a JVM shutdown hook which will properly QUIT
-		 * the IRC server and shutdown the bot. Defaults to true
+		 * Enable or disable creating a JVM shutdown hook which will properly
+		 * QUIT the IRC server and shutdown the bot. Defaults to true
 		 */
 		protected boolean shutdownHookEnabled = true;
 		/**
@@ -332,9 +341,10 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
 		/**
-		 * Enable or disable use of an existing {@link IdentServer}. Note that the
-		 * IdentServer must be started separately or else an exception will be thrown.
-		 * Defaults to false
+		 * Enable or disable use of an existing {@link IdentServer}. Note that
+		 * the IdentServer must be started separately or else an exception will
+		 * be thrown. Defaults to false
+		 *
 		 * @see IdentServer
 		 */
 		protected boolean identServerEnabled = false;
@@ -344,7 +354,7 @@ public class Configuration<B extends PircBotX> {
 		protected String nickservPassword;
 		/**
 		 * Enable or disable automatic reconnecting. Note that you MUST call 
-		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to 
+		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to
 		 * reconnect anymore! Defaults to false
 		 */
 		protected boolean autoReconnect = false;
@@ -358,7 +368,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected boolean capEnabled = false;
 		/**
-		 * Registered {@link CapHandler}'s. 
+		 * Registered {@link CapHandler}'s.
 		 */
 		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 		protected final List<ChannelModeHandler> channelModeHandlers = new ArrayList<ChannelModeHandler>();
@@ -378,6 +388,7 @@ public class Configuration<B extends PircBotX> {
 
 		/**
 		 * Copy values from an existing Configuration.
+		 *
 		 * @param configuration Configuration<B> to copy values from
 		 */
 		public Builder(Configuration<B> configuration) {
@@ -424,8 +435,9 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Copy values from another builder. 
-		 * @param otherBuilder<B> 
+		 * Copy values from another builder.
+		 *
+		 * @param otherBuilder<B>
 		 */
 		public Builder(Builder<B> otherBuilder) {
 			this.webIrcEnabled = otherBuilder.isWebIrcEnabled();
@@ -471,30 +483,35 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress() }
+		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress()
+		 * }
 		 */
 		public InetAddress getDccLocalAddress() {
 			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
 		}
 
 		/**
-		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout() }
+		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout()
+		 * }
 		 */
 		public int getDccAcceptTimeout() {
 			return (dccAcceptTimeout != -1) ? dccAcceptTimeout : socketTimeout;
 		}
 
 		/**
-		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout() }
+		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout()
+		 * }
 		 */
 		public int getDccResumeAcceptTimeout() {
 			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
 
 		/**
-		 * Utility method for <code>{@link #getCapHandlers()}.add(handler)</code>
+		 * Utility method for
+		 * <code>{@link #getCapHandlers()}.add(handler)</code>
+		 *
 		 * @param handler
-		 * @return 
+		 * @return
 		 */
 		public Builder<B> addCapHandler(CapHandler handler) {
 			getCapHandlers().add(handler);
@@ -502,9 +519,11 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Utility method for <code>{@link #getListenerManager().add(listener)</code>
+		 * Utility method for
+		 * <code>{@link #getListenerManager().add(listener)</code>
+		 *
 		 * @param listener
-		 * @return 
+		 * @return
 		 */
 		public Builder<B> addListener(Listener<B> listener) {
 			getListenerManager().addListener(listener);
@@ -512,9 +531,11 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Utility method for <code>{@link #getAutoJoinChannels().put(channel, "")</code>
+		 * Utility method for
+		 * <code>{@link #getAutoJoinChannels().put(channel, "")</code>
+		 *
 		 * @param channel
-		 * @return 
+		 * @return
 		 */
 		public Builder<B> addAutoJoinChannel(String channel) {
 			getAutoJoinChannels().put(channel, "");
@@ -522,9 +543,11 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Utility method for <code>{@link #getAutoJoinChannels().put(channel, key)</code>
+		 * Utility method for
+		 * <code>{@link #getAutoJoinChannels().put(channel, key)</code>
+		 *
 		 * @param channel
-		 * @return 
+		 * @return
 		 */
 		public Builder<B> addAutoJoinChannel(String channel, String key) {
 			getAutoJoinChannels().put(channel, key);
@@ -533,9 +556,10 @@ public class Configuration<B extends PircBotX> {
 
 		/**
 		 * Utility method to set server hostname and port
+		 *
 		 * @param hostname
 		 * @param port
-		 * @return 
+		 * @return
 		 */
 		public Builder<B> setServer(String hostname, int port) {
 			return setServerHostname(hostname)
@@ -544,18 +568,21 @@ public class Configuration<B extends PircBotX> {
 
 		/**
 		 * Utility method to set server hostname, port, and password
+		 *
 		 * @param hostname
 		 * @param port
-		 * @return 
+		 * @return
 		 */
 		public Builder<B> setServer(String hostname, int port, String password) {
 			return setServer(hostname, port).setServerPassword(password);
 		}
 
 		/**
-		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are added
-		 * when this method is called. If you do not want this, remove CoreHooks with
+		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are
+		 * added when this method is called. If you do not want this, remove
+		 * CoreHooks with
 		 * {@link ListenerManager#removeListener(org.pircbotx.hooks.Listener) }
+		 *
 		 * @param listenerManager The listener manager
 		 */
 		@SuppressWarnings("unchecked")
@@ -569,9 +596,10 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Returns the current ListenerManager in use by this bot. Note that the default
-		 * listener manager ({@link ListenerManager}) is lazy loaded here unless one
-		 * was already set
+		 * Returns the current ListenerManager in use by this bot. Note that the
+		 * default listener manager ({@link ListenerManager}) is lazy loaded
+		 * here unless one was already set
+		 *
 		 * @return Current ListenerManager
 		 */
 		public ListenerManager<B> getListenerManager() {
@@ -582,17 +610,19 @@ public class Configuration<B extends PircBotX> {
 
 		/**
 		 * Build a new configuration from this Builder
-		 * @return 
+		 *
+		 * @return
 		 */
 		public Configuration<B> buildConfiguration() {
 			return new Configuration<B>(this);
 		}
 
 		/**
-		 * Create a <b>new</b> builder with the specified hostname then build 
-		 * a configuration. Useful for template builders
+		 * Create a <b>new</b> builder with the specified hostname then build a
+		 * configuration. Useful for template builders
+		 *
 		 * @param hostname
-		 * @return 
+		 * @return
 		 */
 		public Configuration<B> buildForServer(String hostname) {
 			return new Builder<B>(this)
@@ -601,10 +631,11 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Create a <b>new</b> builder with the specified hostname and port then build 
-		 * a configuration. Useful for template builders
+		 * Create a <b>new</b> builder with the specified hostname and port then
+		 * build a configuration. Useful for template builders
+		 *
 		 * @param hostname
-		 * @return 
+		 * @return
 		 */
 		public Configuration<B> buildForServer(String hostname, int port) {
 			return new Builder<B>(this)
@@ -614,10 +645,11 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
-		 * Create a <b>new</b> builder with the specified hostname, port, and password
-		 * then build a configuration. Useful for template builders
+		 * Create a <b>new</b> builder with the specified hostname, port, and
+		 * password then build a configuration. Useful for template builders
+		 *
 		 * @param hostname
-		 * @return 
+		 * @return
 		 */
 		public Configuration<B> buildForServer(String hostname, int port, String password) {
 			return new Builder<B>(this)
@@ -629,7 +661,7 @@ public class Configuration<B extends PircBotX> {
 	}
 
 	/**
-	 * Factory for various bot classes. 
+	 * Factory for various bot classes.
 	 */
 	public static class BotFactory {
 		public UserChannelDao createUserChannelDao(PircBotX bot) {
@@ -687,7 +719,7 @@ public class Configuration<B extends PircBotX> {
 		public ServerInfo createServerInfo(PircBotX bot) {
 			return new ServerInfo(bot);
 		}
-		
+
 		public UserHostmask createUserHostmask(PircBotX bot, String hostmask, String nick, String login, String hostname) {
 			return new UserHostmask(bot, hostmask, nick, login, hostname);
 		}

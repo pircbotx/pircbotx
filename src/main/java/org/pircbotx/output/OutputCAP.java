@@ -23,8 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 
 /**
- * IRCv3 CAP Negoation commands. See <a href="http://ircv3.atheme.org/">http://ircv3.atheme.org/</a>
+ * IRCv3 CAP Negoation commands. See <a
+ * href="http://ircv3.atheme.org/">http://ircv3.atheme.org/</a>
  * for more information
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -43,11 +45,11 @@ public class OutputCAP {
 	public void request(String... capability) {
 		bot.sendRaw().rawLineNow("CAP REQ :" + StringUtils.join(capability, " "));
 	}
-	
+
 	public void clear() {
 		bot.sendRaw().rawLineNow("CAP CLEAR");
 	}
-	
+
 	public void end() {
 		bot.sendRaw().rawLineNow("CAP END");
 	}

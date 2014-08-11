@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License along with
  * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package org.pircbotx;
 
 import java.util.UUID;
@@ -31,7 +29,8 @@ import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Represents any hostmask that may or may not be an actual user. 
+ * Represents any hostmask that may or may not be an actual user.
+ *
  * @author Leon
  */
 @AllArgsConstructor
@@ -68,9 +67,10 @@ public class UserHostmask implements Comparable<User> {
 	 * Hostname of the user (nick!login@hostname).
 	 */
 	private final String hostname;
-	
+
 	/**
 	 * Send a line to the user.
+	 *
 	 * @return A {@link OutputUser} for this user
 	 */
 	public OutputUser send() {
@@ -80,10 +80,11 @@ public class UserHostmask implements Comparable<User> {
 			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
 		}
 	}
-	
+
 	/**
-	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String) }.
-	 * This is useful for sorting lists of User objects.
+	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String)
+	 * }. This is useful for sorting lists of User objects.
+	 *
 	 * @param other Other user to compare to
 	 * @return the result of calling compareToIgnoreCase user nicks.
 	 */

@@ -18,12 +18,16 @@
 package org.pircbotx;
 
 /**
- * This interface contains the values of all numeric replies specified
- * in section 6 of RFC 1459. Refer to RFC 1459 for further information.
+ * This interface contains the values of all numeric replies specified in
+ * section 6 of RFC 1459. Refer to RFC 1459 for further information.
+ *
  * @since PircBot 1.0.0
  * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a href="http://pircbotx.googlecode.com">PircBotX</a>
+ * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ * href="http://www.jibble.org/pircbot.php">PircBot</a>
+ * <p>
+ * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 public final class ReplyConstants {
 	// Error Replies.
@@ -164,7 +168,7 @@ public final class ReplyConstants {
 	public static final int ERR_YOUWILLBEBANNED = 466;
 	public static final int ERR_BADCHANMASK = 476;
 	public static final int ERR_NOSERVICEHOST = 492;
-	
+
 	/**
 	 * Should not be initialized.
 	 */

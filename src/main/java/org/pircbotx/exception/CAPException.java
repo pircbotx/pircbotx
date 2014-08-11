@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * General Exception for problems during CAP negotiation
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class CAPException extends RuntimeException {
@@ -33,11 +34,11 @@ public class CAPException extends RuntimeException {
 		checkNotNull(reason, "Reason cannot be null");
 		checkNotNull(detail, "Detail cannot be null");
 	}
-	
+
 	protected static String generateMessage(Reason reason, String message) {
 		return reason + ": " + message;
 	}
-	
+
 	public static enum Reason {
 		UnsupportedCapability,
 		SASLFailed,

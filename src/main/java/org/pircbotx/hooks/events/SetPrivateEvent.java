@@ -33,6 +33,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -41,12 +42,14 @@ public class SetPrivateEvent<T extends PircBotX> extends Event<T> implements Gen
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_(@Override))
+	@Getter(onMethod = @_(
+			@Override))
 	protected final User user;
 
 	public SetPrivateEvent(T bot, @NonNull Channel channel, @NonNull User user) {
@@ -56,9 +59,9 @@ public class SetPrivateEvent<T extends PircBotX> extends Event<T> implements Gen
 	}
 
 	/**
-	 * Respond by send a message in the channel to the user that set the mode
-	 * in
+	 * Respond by send a message in the channel to the user that set the mode in
 	 * <code>user: message</code> format
+	 *
 	 * @param response The response to send
 	 */
 	@Override

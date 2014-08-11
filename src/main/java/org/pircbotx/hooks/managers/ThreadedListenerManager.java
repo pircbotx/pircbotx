@@ -124,8 +124,8 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	/**
-	 * Shuts down the internal thread pool. If you need to do more a advanced shutdown,
-	 * the pool is returned.
+	 * Shuts down the internal thread pool. If you need to do more a advanced
+	 * shutdown, the pool is returned.
 	 *
 	 * @return The internal thread pool the ThreadedListenerManager uses
 	 */
