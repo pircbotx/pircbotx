@@ -491,7 +491,7 @@ public class InputParser implements Closeable {
 				configuration.getListenerManager().dispatchEvent(new FingerEvent<PircBotX>(bot, source, sourceUser, channel));
 			else if (request.startsWith("DCC ")) {
 				// This is a DCC request.
-				boolean success = bot.getDccHandler().processDcc(sourceUser, request);
+				boolean success = bot.getDccHandler().processDcc(source, sourceUser, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
 					configuration.getListenerManager().dispatchEvent(new UnknownEvent<PircBotX>(bot, line));

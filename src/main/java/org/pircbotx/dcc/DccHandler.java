@@ -48,6 +48,7 @@ import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import lombok.NonNull;
+import org.pircbotx.UserHostmask;
 
 /**
  * Handler of all DCC requests
@@ -67,7 +68,7 @@ public class DccHandler implements Closeable {
 	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap<PendingSendChatPassive, CountDownLatch>();
 	protected boolean shuttingDown = false;
 
-	public boolean processDcc(final User user, String request) throws IOException {
+	public boolean processDcc(UserHostmask userHostmask, final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
 		String type = requestParts.get(1);
 		if (type.equals("SEND")) {
@@ -104,9 +105,9 @@ public class DccHandler implements Closeable {
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, user, rawFilename, safeFilename, address, port, size, transferToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, user, rawFilename, safeFilename, address, port, size, transferToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -200,9 +201,9 @@ public class DccHandler implements Closeable {
 
 			//Nope, this is a new chat
 			if (port == 0 && chatToken != null)
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, user, address, port, chatToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, userHostmask, user, address, port, chatToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, user, address, port, chatToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, userHostmask, user, address, port, chatToken, false));
 		} else
 			return false;
 		return true;
