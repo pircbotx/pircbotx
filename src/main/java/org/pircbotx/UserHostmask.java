@@ -17,13 +17,13 @@
  */
 package org.pircbotx;
 
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.output.OutputUser;
@@ -67,6 +67,22 @@ public class UserHostmask implements Comparable<User> {
 	 */
 	private final String hostname;
 
+	public UserHostmask(PircBotX bot, String rawHostmask) {
+		this.bot = bot;
+		if(StringUtils.containsAny(rawHostmask, "!@")) {
+			this.hostmask = rawHostmask;
+			String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
+			this.nick = hostmaskParts[0];
+			this.login = hostmaskParts[1];
+			this.hostname = hostmaskParts[2];
+		} else {
+			this.hostmask = rawHostmask;
+			this.nick = rawHostmask;
+			this.login = null;
+			this.hostname = null;
+		}
+	}
+	
 	public UserHostmask(UserHostmask otherHostmask) {
 		this.bot = otherHostmask.getBot();
 		this.hostmask = otherHostmask.getHostmask();
