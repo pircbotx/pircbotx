@@ -61,9 +61,9 @@ public class RemoveChannelBanEvent<T extends PircBotX> extends Event<T> implemen
 	/**
 	 * The ban hostmask that was set.
 	 */
-	protected final String hostmask;
+	protected final UserHostmask hostmask;
 
-	public RemoveChannelBanEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull String hostmask) {
+	public RemoveChannelBanEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull UserHostmask hostmask) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
