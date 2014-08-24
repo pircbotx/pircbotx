@@ -26,7 +26,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericChannelUserEvent;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * This event is dispatched whenever someone (possibly us) is kicked from any of
@@ -36,7 +37,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class KickEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+public class KickEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
 	/**
 	 * The channel from which the recipient was kicked.
 	 */
@@ -44,24 +45,41 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 			@Override))
 	protected final Channel channel;
 	/**
-	 * The user who performed the kick.
+	 * The user hostmask that performed the kick. 
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user who performed the kick.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
+	/**
+	 * The unfortunate recipient hostmask of the kick.
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask recipientHostmask;
 	/**
 	 * The unfortunate recipient of the kick.
 	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User recipient;
 	/**
 	 * The reason given by the user who performed the kick.
 	 */
 	protected final String reason;
 
-	public KickEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, @NonNull String reason) {
+	public KickEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String reason) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
+		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.reason = reason;
 	}

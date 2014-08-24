@@ -26,7 +26,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericUserModeEvent;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a user (possibly us) gets superop status granted in a channel.
@@ -40,7 +41,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SuperOpEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+public class SuperOpEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -52,7 +53,19 @@ public class SuperOpEvent<T extends PircBotX> extends Event<T> implements Generi
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that performed the mode change.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
+	/**
+	 * The nick of the user that got 'voiced'.
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask recipientHostmask;
 	/**
 	 * The nick of the user that got 'voiced'.
 	 */
@@ -64,10 +77,13 @@ public class SuperOpEvent<T extends PircBotX> extends Event<T> implements Generi
 	 */
 	protected final boolean isSuperOp;
 
-	public SuperOpEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isSuperOp) {
+	public SuperOpEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+			@NonNull UserHostmask recipientHostmask, User recipient, boolean isSuperOp) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
+		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.isSuperOp = isSuperOp;
 	}

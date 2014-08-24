@@ -26,7 +26,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericUserModeEvent;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a user (possibly us) gets granted operator status for a channel.
@@ -38,7 +39,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+public class OpEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -46,26 +47,41 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericUser
 			@Override))
 	protected final Channel channel;
 	/**
-	 * The user that performed the mode change
+	 * The user hostmask that performed the mode change
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that performed the mode change
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
+	/**
+	 * The user hostmask that received the Operator status
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask recipientHostmask;
 	/**
 	 * The user that received the Operator status
 	 */
 	@Getter(onMethod = @_(
-			@Override))
+			@Override, @Nullable))
 	protected final User recipient;
 	/**
 	 * If the operator status was given or removed.
 	 */
 	protected final boolean isOp;
 
-	public OpEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isOp) {
+	public OpEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+			@NonNull UserHostmask recipientHostmask, User recipient, boolean isOp) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
+		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.isOp = isOp;
 	}

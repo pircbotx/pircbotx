@@ -26,6 +26,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
@@ -38,10 +39,16 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @EqualsAndHashCode(callSuper = true)
 public class NoticeEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
 	/**
-	 * The nick of the user that sent the notice.
+	 * The user hostmask that sent the hostmask.
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that sent the notice.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The target channel of the notice. A value of <code>null</code> means that
@@ -55,9 +62,10 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	protected final String notice;
 
-	public NoticeEvent(T bot, @NonNull User user, Channel channel, @NonNull String notice) {
+	public NoticeEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String notice) {
 		super(bot);
 		this.user = user;
+		this.userHostmask = userHostmask;
 		this.channel = channel;
 		this.notice = notice;
 	}

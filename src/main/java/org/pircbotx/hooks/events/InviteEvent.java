@@ -20,9 +20,13 @@ package org.pircbotx.hooks.events;
 import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericUserEvent;
 
 /**
  * Called when we are invited to a channel by a user.
@@ -31,21 +35,29 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class InviteEvent<T extends PircBotX> extends Event<T> {
+public class InviteEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
 	/**
-	 * The user that sent the invitation. Provided as a string since the user
-	 * may or may not be in a channel were in
+	 * The user that sent the invite.
 	 */
-	protected final String user;
+	@Getter(onMethod = @_(
+		@Override, @Nullable))
+	protected final User user;
+	/**
+	 * The user hostmask that sent the invite.
+	 */
+	@Getter(onMethod = @_(
+		@Override))
+	protected final UserHostmask userHostmask;
 	/**
 	 * The channel that we're being invited to. Provided as a string since we
 	 * are not joined to the channel yet
 	 */
 	protected final String channel;
 
-	public InviteEvent(T bot, @NonNull String user, @NonNull String channel) {
+	public InviteEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String channel) {
 		super(bot);
 		this.user = user;
+		this.userHostmask = userHostmask;
 		this.channel = channel;
 	}
 
@@ -56,6 +68,6 @@ public class InviteEvent<T extends PircBotX> extends Event<T> {
 	 */
 	@Override
 	public void respond(@Nullable String response) {
-		getBot().sendIRC().message(getUser(), response);
+		getUserHostmask().send().message(response);
 	}
 }

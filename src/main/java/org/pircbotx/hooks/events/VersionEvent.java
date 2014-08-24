@@ -27,6 +27,7 @@ import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 
@@ -35,7 +36,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
- * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
  * this event should <b>not</b> send a response as the user will get two
  * responses
  *
@@ -44,9 +45,9 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T>, GenericChannelEvent<T> {
-	/**
-	 * The nick of the user that sent the VERSION request.
-	 */
+	@Getter(onMethod = @_({
+		@Override}))
+	protected final UserHostmask userHostmask;
 	@Getter(onMethod = @_({
 		@Override}))
 	protected final User user;
@@ -55,11 +56,12 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * means that that the target is us.
 	 */
 	@Getter(onMethod = @_({
-		@Override}))
+		@Override, @Nullable}))
 	protected final Channel channel;
 
-	public VersionEvent(T bot, @NonNull User user, Channel channel) {
+	public VersionEvent(T bot, @NonNull UserHostmask userHostmask, @NonNull User user, Channel channel) {
 		super(bot);
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.channel = channel;
 	}

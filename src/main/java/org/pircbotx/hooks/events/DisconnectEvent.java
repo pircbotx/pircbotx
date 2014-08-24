@@ -35,17 +35,19 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * lost, but neither we nor the server have explicitly closed the connection,
  * then it may take a few minutes to detect (this is commonly referred to as a
  * "ping timeout").
- * <p>
- * If you wish to get your IRC bot to automatically rejoin a server after the
- * connection has been lost, then this is probably the ideal event listen for to
- * implement such functionality.
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DisconnectEvent<T extends PircBotX> extends Event<T> {
+	/**
+	 * Snapshot of the user and channel info at time of disconnect
+	 */
 	protected final UserChannelDaoSnapshot daoSnapshot;
+	/**
+	 * Exception encountered during disconnection, if any
+	 */
 	protected final Exception disconnectException;
 
 	public DisconnectEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, Exception disconnectException) {

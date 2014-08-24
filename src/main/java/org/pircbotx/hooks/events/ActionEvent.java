@@ -25,6 +25,7 @@ import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
@@ -39,32 +40,40 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @EqualsAndHashCode(callSuper = true)
 public class ActionEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
 	/**
-	 * The user that sent the action message
+	 * The user hostmask that sent the action.
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that sent the action.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The channel that the action message was sent in. A value of
 	 * <code>null</code> means that this is a private message, not a channel
 	 */
 	@Getter(onMethod = @_(
-			@Override))
+			@Override,
+			@Nullable))
 	protected final Channel channel;
 	/**
 	 * The action message.
 	 */
 	protected final String action;
 
-	public ActionEvent(T bot, @NonNull User user, Channel channel, @NonNull String action) {
+	public ActionEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String action) {
 		super(bot);
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.channel = channel;
 		this.action = action;
 	}
 
 	/**
-	 * Returns the action sent by the user. Same result as getAction
+	 * Returns the action sent by the user. Same result as {@link #getAction() }
 	 *
 	 * @return Action sent by the user
 	 */
@@ -88,7 +97,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	@Override
 	public void respond(@Nullable String response) {
 		if (getChannel() == null)
-			getUser().send().action(response);
+			getUserHostmask().send().action(response);
 		else
 			getChannel().send().action(response);
 	}

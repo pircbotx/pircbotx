@@ -23,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
@@ -39,6 +40,10 @@ import org.pircbotx.snapshot.UserSnapshot;
 public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
 	protected final UserChannelDaoSnapshot daoSnapshot;
 	/**
+	 * The user hostmask that quit from the server.
+	 */
+	protected final UserHostmask userHostmask;
+	/**
 	 * The user that quit from the server in snapshot form.
 	 */
 	protected final UserSnapshot user;
@@ -47,9 +52,11 @@ public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUs
 	 */
 	protected final String reason;
 
-	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull UserSnapshot user, @NonNull String reason) {
+	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, 
+			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.reason = reason;
 	}

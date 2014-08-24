@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
@@ -47,13 +48,20 @@ public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * The user who joined the channel.
 	 */
 	@Getter(onMethod = @_(
-			@Override))
+			@Override, @Nullable))
 	protected final User user;
+	/**
+	 * The user hostmask who joined the channel.
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask userHostmask;
 
-	public JoinEvent(T bot, @NonNull Channel channel, @NonNull User user) {
+	public JoinEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
+		this.userHostmask = userHostmask;
 	}
 
 	/**

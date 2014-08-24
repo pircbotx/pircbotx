@@ -22,10 +22,12 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
@@ -33,7 +35,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
- * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
  * this event should <b>not</b> send a response as the user will get two
  * responses
  *
@@ -43,16 +45,26 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 @EqualsAndHashCode(callSuper = true)
 public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
 	/**
+	 * The user hostmask that sent the FINGER request.
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask userHostmask;
+	/**
 	 * The user that sent the FINGER request.
 	 */
+	@Getter(onMethod = @_({
+		@Override,
+		@Nullable}))
 	protected final User user;
 	/**
 	 * The target channel of the FINGER request.
 	 */
 	protected final Channel channel;
 
-	public FingerEvent(T bot, @NonNull User user, @Nullable Channel channel) {
+	public FingerEvent(T bot, @NonNull UserHostmask userHostmask, User user, @Nullable Channel channel) {
 		super(bot);
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.channel = channel;
 	}
@@ -64,6 +76,6 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	@Override
 	public void respond(@Nullable String response) {
-		getUser().send().ctcpResponse(response);
+		getUserHostmask().send().ctcpResponse(response);
 	}
 }
