@@ -26,6 +26,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
@@ -40,15 +41,12 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
-	/**
-	 * The channel in which the mode change took place.
-	 */
 	@Getter(onMethod = @_(
 			@Override))
 	protected final Channel channel;
-	/**
-	 * The user that performed the mode change.
-	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask userHostmask;
 	@Getter(onMethod = @_(
 			@Override))
 	protected final User user;
@@ -57,9 +55,10 @@ public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implement
 	 */
 	protected final int limit;
 
-	public SetChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull User user, int limit) {
+	public SetChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, int limit) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.limit = limit;
 	}

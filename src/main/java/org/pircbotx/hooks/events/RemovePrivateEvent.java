@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
@@ -39,22 +40,20 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RemovePrivateEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
-	/**
-	 * The channel in which the mode change took place.
-	 */
 	@Getter(onMethod = @_(
 			@Override))
 	protected final Channel channel;
-	/**
-	 * The user that performed the mode change.
-	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask userHostmask;
 	@Getter(onMethod = @_(
 			@Override))
 	protected final User user;
 
-	public RemovePrivateEvent(T bot, @NonNull Channel channel, @NonNull User user) {
+	public RemovePrivateEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 	}
 

@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
@@ -41,15 +42,12 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelKeyEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
-	/**
-	 * The channel in which the mode change took place.
-	 */
 	@Getter(onMethod = @_(
 			@Override))
 	protected final Channel channel;
-	/**
-	 * The user that performed the mode change.
-	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask userHostmask;
 	@Getter(onMethod = @_(
 			@Override))
 	protected final User user;
@@ -58,9 +56,10 @@ public class SetChannelKeyEvent<T extends PircBotX> extends Event<T> implements 
 	 */
 	protected final String key;
 
-	public SetChannelKeyEvent(T bot, @NonNull Channel channel, @NonNull User user, String key) {
+	public SetChannelKeyEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, String key) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.key = key;
 	}

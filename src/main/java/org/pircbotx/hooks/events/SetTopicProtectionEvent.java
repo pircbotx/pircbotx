@@ -60,7 +60,7 @@ public class SetTopicProtectionEvent<T extends PircBotX> extends Event<T> implem
 			@Override, @Nullable))
 	protected final User user;
 
-	public SetTopicProtectionEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask) {
+	public SetTopicProtectionEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
