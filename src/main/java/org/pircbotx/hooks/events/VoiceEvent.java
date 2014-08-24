@@ -65,7 +65,7 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 */
 	@Getter(onMethod = @_({
 			@Override}))
-	protected final User recipientHostmask;
+	protected final UserHostmask recipientHostmask;
 	/**
 	 * The nick of the user that got 'voiced'.
 	 */
@@ -76,7 +76,7 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericC
 	protected final boolean hasVoice;
 
 	public VoiceEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, 
-			User user, @NonNull User recipientHostmask, User recipient, boolean hasVoice) {
+			User user, @NonNull UserHostmask recipientHostmask, User recipient, boolean hasVoice) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
