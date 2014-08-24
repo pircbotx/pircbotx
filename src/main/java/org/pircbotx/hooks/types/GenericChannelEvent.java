@@ -26,9 +26,9 @@ import org.pircbotx.PircBotX;
  */
 public interface GenericChannelEvent<T extends PircBotX> extends GenericEvent<T> {
 	/**
-	 * The source channel of this event. This may be null
+	 * The source channel where this event took place.
 	 *
-	 * @return A channel or null
+	 * @return A channel or null if no channel was involved
 	 */
 	public Channel getChannel();
 }

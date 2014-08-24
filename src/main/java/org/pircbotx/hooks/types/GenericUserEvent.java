@@ -27,16 +27,17 @@ import org.pircbotx.User;
  */
 public interface GenericUserEvent<T extends PircBotX> extends GenericEvent<T> {
 	/**
-	 * The source user hostmask of the event.
+	 * The source user hostmask that generated the event.
 	 *
 	 * @return The hostmask of the user
 	 */
 	public UserHostmask getUserHostmask();
 
 	/**
-	 * The source user of the event.
+	 * The source user that generated the event.
 	 *
-	 * @return The user or null if the hostmask doesn't match a user
+	 * @return The user or null if the hostmask didn't match a user at creation
+	 * time
 	 */
 	public User getUser();
 }
