@@ -300,7 +300,7 @@ public class Channel implements Comparable<Channel> {
 			else {
 				ChannelModeHandler modeHandler = bot.getConfiguration().getChannelModeHandlers().get(curModeChar);
 				if (modeHandler != null)
-					modeHandler.handleMode(bot, this, null, params, adding, false);
+					modeHandler.handleMode(bot, this, null, null, params, adding, false);
 			}
 		}
 	}
