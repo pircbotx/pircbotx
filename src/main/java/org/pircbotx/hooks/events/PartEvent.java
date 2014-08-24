@@ -20,6 +20,7 @@ package org.pircbotx.hooks.events;
 import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
@@ -40,23 +41,26 @@ import org.pircbotx.snapshot.UserSnapshot;
 public class PartEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
 	protected final UserChannelDaoSnapshot daoSnapshot;
 	/**
-	 * The channel which the user parted from.
+	 * Snapshot of the channel as of before the user parted.
 	 */
+	@Getter(onMethod = @_(
+			@Override))
 	protected final ChannelSnapshot channel;
-	/**
-	 * The user hostmask that parted from the channel.
-	 */
+	@Getter(onMethod = @_(
+			@Override))
 	protected final UserHostmask userHostmask;
 	/**
-	 * The user who parted from the channel.
+	 * Snapshot of the user as of before the user parted.
 	 */
+	@Getter(onMethod = @_(
+			@Override))
 	protected final UserSnapshot user;
 	/**
 	 * The reason for leaving the channel.
 	 */
 	protected final String reason;
 
-	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel, 
+	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel,
 			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
