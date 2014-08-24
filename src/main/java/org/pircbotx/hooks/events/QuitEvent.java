@@ -20,6 +20,7 @@ package org.pircbotx.hooks.events;
 import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
@@ -38,14 +39,18 @@ import org.pircbotx.snapshot.UserSnapshot;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
-	protected final UserChannelDaoSnapshot daoSnapshot;
 	/**
-	 * The user hostmask that quit from the server.
+	 * Snapshot of the UserChannelDao as of before the user quit.
 	 */
+	protected final UserChannelDaoSnapshot daoSnapshot;
+	@Getter(onMethod = @_(
+			@Override))
 	protected final UserHostmask userHostmask;
 	/**
-	 * The user that quit from the server in snapshot form.
+	 * Snapshot of the user as of before the user quit.
 	 */
+	@Getter(onMethod = @_(
+			@Override))
 	protected final UserSnapshot user;
 	/**
 	 * The reason the user quit from the server.
