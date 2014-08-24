@@ -34,7 +34,7 @@ import org.pircbotx.output.OutputUser;
  * @author Leon
  */
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"userId", "bot"})
+@EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})
 @Data
 public class UserHostmask implements Comparable<User> {
 	@NonNull
