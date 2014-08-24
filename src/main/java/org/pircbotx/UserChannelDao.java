@@ -59,7 +59,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final EnumMap<UserLevel, UserChannelMap<U, C>> levelsMap;
 	protected final BiMap<String, U> userNickMap;
 	protected final BiMap<String, C> channelNameMap;
-	protected final Set<U> privateUsers;
+	protected final BiMap<String, U> privateUsers;
 
 	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
@@ -68,7 +68,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		this.mainMap = new UserChannelMap<U, C>();
 		this.userNickMap = HashBiMap.create();
 		this.channelNameMap = HashBiMap.create();
-		this.privateUsers = new HashSet<U>();
+		this.privateUsers = HashBiMap.create();
 
 		//Initialize levels map with a UserChannelMap for each level
 		this.levelsMap = Maps.newEnumMap(UserLevel.class);
@@ -101,8 +101,20 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
+	@Deprecated
 	public boolean userExists(String nick) {
 		return userNickMap.containsKey(nick.toLowerCase(locale));
+	}
+	
+	@Synchronized("accessLock")
+	public boolean containsUser(String nick) {
+		String nickLowercase = nick.toLowerCase(locale);
+		return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
+	}
+	
+	@Synchronized("accessLock")
+	public boolean containsUser(UserHostmask hostmask) {
+		return userNickMap.containsValue(hostmask) || privateUsers.containsValue(hostmask);
 	}
 
 	/**
@@ -138,7 +150,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	protected void addUserToPrivate(U user) {
-		privateUsers.add(user);
+		privateUsers.put(user.getNick().toLowerCase(locale), user);
 	}
 
 	@Synchronized("accessLock")
@@ -192,7 +204,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeUserFromChannel(user, channel);
 
-		if (!privateUsers.contains(user) && !mainMap.containsUser(user))
+		if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
 			//Completely remove user
 			userNickMap.inverse().remove(user);
 	}
@@ -308,7 +320,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
 			channelNameMapSnapshotBuilder.put(curName.getKey(), curName.getValue().createSnapshot());
 		ImmutableSortedSet.Builder<UserSnapshot> privateUserSnapshotBuilder = ImmutableSortedSet.naturalOrder();
-		for (User curUser : privateUsers)
+		for (User curUser : privateUsers.values())
 			privateUserSnapshotBuilder.add(curUser.createSnapshot());
 
 		//Finally can create the snapshot object
