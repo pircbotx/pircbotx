@@ -23,6 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
@@ -36,6 +37,7 @@ import org.pircbotx.output.OutputUser;
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})
 @Data
+@Setter(AccessLevel.PROTECTED)
 public class UserHostmask implements Comparable<User> {
 	@NonNull
 	private final PircBotX bot;
