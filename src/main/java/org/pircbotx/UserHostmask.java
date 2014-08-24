@@ -103,6 +103,11 @@ public class UserHostmask implements Comparable<User> {
 			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return hostmask;
+	}
 
 	/**
 	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String)
