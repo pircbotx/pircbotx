@@ -24,8 +24,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericUserEvent;
+import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
  * Called when the mode of a user is set.
@@ -34,25 +36,40 @@ import org.pircbotx.hooks.types.GenericUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserModeEvent<B extends PircBotX> extends Event<B> implements GenericUserEvent<B> {
+public class UserModeEvent<B extends PircBotX> extends Event<B> implements GenericUserModeEvent<B> {
+	/**
+	 * The user hostmask that set the mode.
+	 */
+	@Getter(onMethod = @_({
+		@Override}))
+	protected final User userHostmask;
 	/**
 	 * The user that set the mode.
 	 */
 	@Getter(onMethod = @_({
-		@Override}))
+		@Override, @Nullable}))
 	protected final User user;
+	/**
+	 * The user hostmask that the mode operation applies to.
+	 */
+	protected final UserHostmask recipientHostmask;
 	/**
 	 * The user that the mode operation applies to.
 	 */
+	@Getter(onMethod = @_({
+		@Override, @Nullable}))
 	protected final User recipient;
 	/**
 	 * The mode that has been set.
 	 */
 	protected final String mode;
 
-	public UserModeEvent(@NonNull B bot, @NonNull User user, @NonNull User recipient, @NonNull String mode) {
+	public UserModeEvent(@NonNull B bot, @NonNull UserHostmask userHostmask, User user, 
+			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String mode) {
 		super(bot);
+		this.userHostmask = user;
 		this.user = user;
+		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.mode = mode;
 	}
@@ -64,6 +81,6 @@ public class UserModeEvent<B extends PircBotX> extends Event<B> implements Gener
 	 */
 	@Override
 	public void respond(@Nullable String response) {
-		getUser().send().message(response);
+		getUserHostmask().send().message(response);
 	}
 }

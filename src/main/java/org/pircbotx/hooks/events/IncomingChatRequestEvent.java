@@ -27,6 +27,7 @@ import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
@@ -62,9 +63,12 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
+	@Getter(onMethod = @_({
+			@Override, @Nullable}))
+	protected final User user;
 	@Getter(onMethod = @_(
 			@Override))
-	protected final User user;
+	protected final UserHostmask userHostmask;
 	protected final InetAddress chatAddress;
 	protected final int chatPort;
 	protected final String chatToken;
@@ -72,9 +76,10 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 			@Override))
 	protected final boolean passive;
 
-	public IncomingChatRequestEvent(T bot, @NonNull User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
+	public IncomingChatRequestEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;
+		this.userHostmask = userHostmask;
 		this.chatAddress = chatAddress;
 		this.chatPort = chatPort;
 		this.chatToken = chatToken;

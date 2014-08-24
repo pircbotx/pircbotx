@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
@@ -44,10 +45,16 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 			@Override))
 	protected final Channel channel;
 	/**
-	 * The user who sent the message.
+	 * The user hostmask who sent the message.
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user who sent the message.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The actual message sent to the channel.
@@ -56,9 +63,10 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 			@Override))
 	protected final String message;
 
-	public MessageEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String message) {
+	public MessageEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.message = message;
 	}
