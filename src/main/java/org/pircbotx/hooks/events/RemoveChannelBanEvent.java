@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
@@ -50,15 +51,22 @@ public class RemoveChannelBanEvent<T extends PircBotX> extends Event<T> implemen
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that performed the mode change.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The ban hostmask that was set.
 	 */
 	protected final String hostmask;
 
-	public RemoveChannelBanEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull String hostmask) {
+	public RemoveChannelBanEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull String hostmask) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.hostmask = hostmask;
 	}
