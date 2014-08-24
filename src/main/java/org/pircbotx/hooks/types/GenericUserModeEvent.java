@@ -29,16 +29,17 @@ import org.pircbotx.hooks.events.OpEvent;
  */
 public interface GenericUserModeEvent<T extends PircBotX> extends GenericUserEvent<T> {
 	/**
-	 * The hostmask of the recipient mode change
+	 * The recipient user hostmask that this event applies to.
 	 *
-	 * @return The hostmask of the recipient of the mode change
+	 * @return The hostmask of the user
 	 */
 	public UserHostmask getRecipientHostmask();
 
 	/**
-	 * The recipient user of the mode change
+	 * The recipient user that this event applies to.
 	 *
-	 * @return The recipient user or null if the hostmask doesn't match a user
+	 * @return The user or null if the hostmask didn't match a user at creation
+	 * time
 	 */
 	public User getRecipient();
 }
