@@ -28,6 +28,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
 
 /**
  * This event is dispatched whenever someone (possibly us) is kicked from any of
@@ -37,7 +38,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class KickEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class KickEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
 	/**
 	 * The channel from which the recipient was kicked.
 	 */
