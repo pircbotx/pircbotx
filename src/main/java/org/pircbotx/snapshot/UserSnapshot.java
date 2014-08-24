@@ -41,15 +41,13 @@ public class UserSnapshot extends User {
 	protected UserChannelDaoSnapshot dao;
 
 	public UserSnapshot(User user) {
-		super(user.getBot(), null, user.getNick());
+		super(user);
 		generatedFrom = user;
 
 		//Clone fields
 		super.setAwayMessage(user.getAwayMessage());
 		super.setHops(user.getHops());
-		super.setHostmask(user.getHostmask());
 		super.setIrcop(user.isIrcop());
-		super.setLogin(user.getLogin());
 		super.setRealName(user.getRealName());
 		super.setServer(user.getServer());
 	}
@@ -82,11 +80,6 @@ public class UserSnapshot extends User {
 
 	@Override
 	protected void setIrcop(boolean ircop) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
-	}
-
-	@Override
-	protected void setLogin(String login) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}
 
