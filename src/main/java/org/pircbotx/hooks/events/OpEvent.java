@@ -28,6 +28,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
 
 /**
  * Called when a user (possibly us) gets granted operator status for a channel.
@@ -39,7 +40,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OpEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class OpEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
 	/**
 	 * The channel in which the mode change took place.
 	 */
