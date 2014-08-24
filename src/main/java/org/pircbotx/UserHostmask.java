@@ -39,7 +39,6 @@ import org.pircbotx.output.OutputUser;
 public class UserHostmask implements Comparable<User> {
 	@NonNull
 	private final PircBotX bot;
-	private final UUID userId = UUID.randomUUID();
 	/**
 	 * Lazily created output since it might not ever be used
 	 */
