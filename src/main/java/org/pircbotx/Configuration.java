@@ -724,8 +724,8 @@ public class Configuration<B extends PircBotX> {
 			return new UserHostmask(bot, hostmask, nick, login, hostname);
 		}
 
-		public User createUser(PircBotX bot, String hostmask, String nick, String login, String hostname) {
-			return new User(bot, bot.getUserChannelDao(), hostmask, nick, login, hostname);
+		public User createUser(UserHostmask userHostmask) {
+			return new User(userHostmask);
 		}
 
 		public Channel createChannel(PircBotX bot, String name) {

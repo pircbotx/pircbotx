@@ -67,6 +67,14 @@ public class UserHostmask implements Comparable<User> {
 	 */
 	private final String hostname;
 
+	public UserHostmask(UserHostmask otherHostmask) {
+		this.bot = otherHostmask.getBot();
+		this.hostmask = otherHostmask.getHostmask();
+		this.nick = otherHostmask.getNick();
+		this.login = otherHostmask.getLogin();
+		this.hostname = otherHostmask.getHostname();
+	}
+
 	/**
 	 * Send a line to the user.
 	 *

@@ -70,9 +70,13 @@ public class User extends UserHostmask {
 	 */
 	private int hops = 0;
 
+	protected User(UserHostmask hostmask) {
+		this(hostmask, hostmask.getBot().getUserChannelDao());
+	}
+	
 	@SuppressWarnings("unchecked")
-	protected User(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String hostmask, String nick, String login, String hostname) {
-		super(bot, hostname, nick, login, hostmask);
+	protected User(UserHostmask hostmask, UserChannelDao<? extends User, ? extends Channel> dao) {
+		super(hostmask);
 		this.dao = (UserChannelDao<User, Channel>) dao;
 	}
 
