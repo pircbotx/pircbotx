@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericUserEvent;
 
 /**
@@ -49,12 +50,20 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> implements Gen
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that changed their nick.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 
-	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, @NonNull User user) {
+	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, 
+			@NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.oldNick = oldNick;
 		this.newNick = newNick;
+		this.userHostmask = userHostmask;
 		this.user = user;
 	}
 

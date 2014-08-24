@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
 
@@ -35,7 +36,7 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
- * {@link PircBotX#getListenerManager() bot's ListenerManager}, Listeners of
+ * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
  * this event should <b>not</b> send a response as the user will get two
  * responses
  *
@@ -49,6 +50,12 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that sent the PING request.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The channel that received the ping request. A value of <code>null</code>
@@ -62,8 +69,9 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 */
 	protected final String pingValue;
 
-	public PingEvent(T bot, @NonNull User user, Channel channel, @NonNull String pingValue) {
+	public PingEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String pingValue) {
 		super(bot);
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.channel = channel;
 		this.pingValue = pingValue;

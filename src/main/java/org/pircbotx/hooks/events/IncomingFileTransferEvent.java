@@ -28,6 +28,7 @@ import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
@@ -69,8 +70,11 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	@Getter(onMethod = @_(
-			@Override))
+			@Override, @Nullable))
 	protected final User user;
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask userHostmask;
 	protected final String rawFilename;
 	protected final String safeFilename;
 	protected final InetAddress address;
@@ -81,10 +85,11 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 			@Override))
 	protected final boolean passive;
 
-	public IncomingFileTransferEvent(T bot, @NonNull User user, @NonNull String rawFilename, @NonNull String safeFilename,
+	public IncomingFileTransferEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String rawFilename, @NonNull String safeFilename,
 			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;
+		this.userHostmask = userHostmask;
 		this.rawFilename = rawFilename;
 		this.safeFilename = safeFilename;
 		this.address = address;
@@ -95,11 +100,11 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	}
 
 	public ReceiveFileTransfer accept(@NonNull File destination) throws IOException {
-		return user.getBot().getDccHandler().acceptFileTransfer(this, destination);
+		return getBot().getDccHandler().acceptFileTransfer(this, destination);
 	}
 
 	public ReceiveFileTransfer acceptResume(@NonNull File destination, long startPosition) throws IOException, InterruptedException {
-		return user.getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
+		return getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
 	}
 
 	/**

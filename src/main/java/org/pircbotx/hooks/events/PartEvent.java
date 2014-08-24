@@ -23,6 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
@@ -43,6 +44,10 @@ public class PartEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 */
 	protected final ChannelSnapshot channel;
 	/**
+	 * The user hostmask that parted from the channel.
+	 */
+	protected final UserHostmask userHostmask;
+	/**
 	 * The user who parted from the channel.
 	 */
 	protected final UserSnapshot user;
@@ -51,10 +56,12 @@ public class PartEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 */
 	protected final String reason;
 
-	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel, @NonNull UserSnapshot user, @NonNull String reason) {
+	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel, 
+			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.reason = reason;
 	}

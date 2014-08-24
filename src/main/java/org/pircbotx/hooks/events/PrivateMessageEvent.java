@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
@@ -36,10 +37,16 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 @EqualsAndHashCode(callSuper = true)
 public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
 	/**
-	 * The user who sent the private message.
+	 * The user hostmask who sent the private message.
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user who sent the private message.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The actual message.
@@ -48,8 +55,9 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 			@Override))
 	protected final String message;
 
-	public PrivateMessageEvent(T bot, @NonNull User user, @NonNull String message) {
+	public PrivateMessageEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
 		super(bot);
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.message = message;
 	}

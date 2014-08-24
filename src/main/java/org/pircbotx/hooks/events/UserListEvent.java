@@ -39,14 +39,11 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * event as soon as it has the full list.
  * <p>
  * To obtain the nick of each user in the channel, call the
- * {@link User#getNick()} method on each User object in the {@link Set}.
- * <p>
- * At a later time, you may call {@link PircBotX#getUsers(org.pircbotx.Channel)
- * }
- * to obtain an up to date list of the users in the channel.
+ * {@link User#getNick()} method on each User object in {@link #getUsers() }
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
+ * @see Channel#getUsers() 
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

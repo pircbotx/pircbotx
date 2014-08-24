@@ -27,7 +27,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelUserEvent;
 
 /**
  * Used when the mode of a channel is set.
@@ -42,7 +43,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
 	/**
 	 * The channel that the mode operation applies to.
 	 */
@@ -53,7 +54,13 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * The user that set the mode.
 	 */
 	@Getter(onMethod = @_(
-			@Override))
+			@Override, @Nullable))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that set the mode.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The mode that has been set.
@@ -61,9 +68,11 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	protected final String mode;
 	protected final ImmutableList<String> modeParsed;
 
-	public ModeEvent(T bot, @NonNull Channel channel, User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
+	public ModeEvent(T bot, @NonNull Channel channel, UserHostmask userHostmask, 
+			User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
 		this.mode = mode;
 		this.modeParsed = modeParsed;

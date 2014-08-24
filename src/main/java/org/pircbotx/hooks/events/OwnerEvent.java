@@ -26,7 +26,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.types.GenericUserModeEvent;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 
 /**
  * Called when a user (possibly us) gets owner status granted in a channel. Note
@@ -39,7 +40,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericUserModeEvent<T> {
+public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -47,26 +48,41 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericU
 			@Override))
 	protected final Channel channel;
 	/**
-	 * The user that performed the mode change.
+	 * The user hostmask that performed the mode change.
 	 */
 	@Getter(onMethod = @_(
 			@Override))
+	protected final UserHostmask userHostmask;
+	/**
+	 * The user that performed the mode change.
+	 */
+	@Getter(onMethod = @_(
+			@Override, @Nullable))
 	protected final User user;
+	/**
+	 * The user hostmask that received the owner status.
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserHostmask recipientHostmask;
 	/**
 	 * The user that received the owner status.
 	 */
 	@Getter(onMethod = @_(
-			@Override))
+			@Override, @Nullable))
 	protected final User recipient;
 	/**
 	 * If the owner status was given or removed
 	 */
 	protected final boolean isOwner;
 
-	public OwnerEvent(T bot, @NonNull Channel channel, @NonNull User user, @NonNull User recipient, boolean isOwner) {
+	public OwnerEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+			@NonNull UserHostmask recipientHostmask, User recipient, boolean isOwner) {
 		super(bot);
 		this.channel = channel;
+		this.userHostmask = userHostmask;
 		this.user = user;
+		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.isOwner = isOwner;
 	}
