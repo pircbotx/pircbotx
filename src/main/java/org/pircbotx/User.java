@@ -43,8 +43,10 @@ import org.pircbotx.output.OutputUser;
  * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Setter(AccessLevel.PROTECTED)
 public class User extends UserHostmask {
+	private final UUID userId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
 	private final UserChannelDao<User, Channel> dao;
 	/**
