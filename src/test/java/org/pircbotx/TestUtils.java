@@ -56,6 +56,26 @@ public class TestUtils {
 	public static Object[][] eventAllDataProvider() throws IOException {
 		return generateEventArguments(true, true);
 	}
+	
+	public static UserHostmask generateTestUserSource() {
+		return generateTestUserHostmask("MeUser");
+	}
+	
+	public static User generateTestUserSource(PircBotX bot) {
+		return bot.getUserChannelDao().createUser(generateTestUserSource());
+	}
+	
+	public static UserHostmask generateTestUserOther() {
+		return generateTestUserHostmask("OtherUser");
+	}
+	
+	public static User generateTestUserOther(PircBotX bot) {
+		return bot.getUserChannelDao().createUser(generateTestUserOther());
+	}
+	
+	public static UserHostmask generateTestUserHostmask(String nick) {
+		return new UserHostmask(null, nick, "SomeLogin", "host.test");
+	}
 
 	protected static Object[][] generateEventArguments(boolean includeEvents, boolean includeGeneric) throws IOException {
 		ClassPath classPath = ClassPath.from(TestUtils.class.getClassLoader());
