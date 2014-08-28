@@ -47,9 +47,9 @@ public class UserChannelDaoTest {
 	
 	@Test
 	public void getUserValidTest() {
-		User origUser = dao.createUser("SomeUser");
+		User origUser = TestUtils.generateTestUserSource(smallBot);
 		assertNotNull(origUser, "createUser returns null");
-		assertEquals(origUser, dao.getUser("SomeUser"), "getUser doesn't return the same user during second call");
+		assertEquals(origUser, dao.getUser(origUser.getNick()), "getUser doesn't return the same user during second call");
 	}
 
 	@Test(expectedExceptions = DaoException.class)
@@ -66,9 +66,9 @@ public class UserChannelDaoTest {
 
 	@Test(description = "Make sure userExists works")
 	public void userExistsTest() {
-		dao.createUser("SomeUser");
+		User origUser = TestUtils.generateTestUserOther(smallBot);
 		//Make sure it exists
-		assertTrue(dao.userExists("SomeUser"));
+		assertTrue(dao.containsUser(origUser.getNick()));
 	}
 
 	@Test(description = "Make sure channelExists works")
