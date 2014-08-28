@@ -128,9 +128,9 @@ public class InputParserTest {
 	@Test(description = "Verifies UserModeEvent from user mode being changed")
 	public void userModeTest() throws IOException, IrcException {
 		//Use two users to differentiate between source and target
-		User aUser = dao.createUser("PircBotXUser");
-		User aUser2 = dao.createUser("PircBotXUser2");
-		inputParser.handleLine(":PircBotXUser MODE PircBotXUser2 :+i");
+		User aUser = TestUtils.generateTestUserSource(bot);
+		User aUser2 = TestUtils.generateTestUserOther(bot);
+		inputParser.handleLine(":"+aUser.getNick()+" MODE "+aUser2.getNick()+" :+i");
 
 		//Verify event contents
 		UserModeEvent uevent = getEvent(UserModeEvent.class, "UserModeEvent not dispatched on change");
@@ -164,31 +164,35 @@ public class InputParserTest {
 
 	@Test(description = "Verifies InviteEvent from incomming invite")
 	public void inviteTest() throws IOException, IrcException {
-		dao.createUser("AUser");
-		inputParser.handleLine(":AUser!~ALogin@some.host INVITE PircBotXUser :#aChannel");
+		UserHostmask sourceUser = TestUtils.generateTestUserSource();
+		inputParser.handleLine(":"+sourceUser.getHostmask()+" INVITE PircBotXUser :#aChannel");
 
 		//Verify event values
 		InviteEvent ievent = getEvent(InviteEvent.class, "No InviteEvent dispatched");
-		assertEquals(ievent.getUser(), "AUser", "InviteEvent user is wrong");
+		assertEquals(ievent.getUserHostmask(), sourceUser, "InviteEvent user is wrong");
+		assertNull(ievent.getUser(), "Invite from unknown user should be null");
 		assertEquals(ievent.getChannel(), "#aChannel", "InviteEvent channel is wrong");
 
 		//Make sure the event doesn't create a user or a channel
 		assertFalse(dao.channelExists("#aChannel"), "InviteEvent created channel, shouldn't have");
-		assertFalse(dao.userExists("AUser"), "InviteEvent created user, shouldn't have");
+		assertFalse(dao.containsUser(sourceUser), "InviteEvent created user, shouldn't have");
 	}
 
 	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.createUser("AUser");
-		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSource();
+		inputParser.handleLine(":"+aUserHostmask.getHostmask()+" JOIN :#aChannel");
 
 		//Make sure the event gives us the same channels
 		JoinEvent jevent = getEvent(JoinEvent.class, "No aChannel dispatched");
 		assertEquals(jevent.getChannel(), aChannel, "Event's channel does not match origional channel");
-		assertEquals(jevent.getUser(), aUser, "Event's user does not match origional user");
+		assertEquals(jevent.getUserHostmask(), aUserHostmask, "Event's user does not match origional user");
 
 		//Make sure user info was updated
+		User aUser = dao.getUser(aUserHostmask);
+		assertEquals(jevent.getUser(), aUser, "User does not match");
+		assertEquals(aUser.getNick(), aUserHostmask.getNick(), "Nick is wrong");
 		assertEquals(aUser.getLogin(), "~ALogin", "User login wrong on JoinEvent");
 		assertEquals(aUser.getHostmask(), "some.host", "User hostmask wrong on JoinEvent");
 		Channel userChan = null;
@@ -201,15 +205,17 @@ public class InputParserTest {
 			if (curUser.getNick().equals("AUser"))
 				chanUser = curUser;
 		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
-		assertTrue(dao.userExists("AUser"));
+		assertTrue(dao.containsUser("AUser"));
 	}
 	
 	@Test(description = "Verifies DAO allows case insensitive lookups")
 	public void insensitiveLookupTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.createUser("AUser");
-		inputParser.handleLine(":AUser!~ALogin@some.host JOIN :#aChannel");
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSource();
+		inputParser.handleLine(":"+aUserHostmask.getHostmask()+" JOIN :#aChannel");
 		
+		User aUser = dao.getUser(aUserHostmask);
+		assertNotNull(aUser, "DAO User should not be null");
 		assertEquals(dao.getUser("AUSER"), aUser, "Cannot lookup AUSER ignoring case");
 		assertEquals(dao.getUser("aUser"), aUser, "Cannot lookup aUser ignoring case");
 		assertEquals(dao.getUser("auser"), aUser, "Cannot lookup auser ignoring case");
@@ -232,8 +238,8 @@ public class InputParserTest {
 	@Test(description = "Verify TopicEvent by user changing topic")
 	public void topicChangeTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		User aUser = dao.createUser("AUser");
-		inputParser.handleLine(":AUser!~ALogin@some.host TOPIC #aChannel :" + aString);
+		User aUser = TestUtils.generateTestUserSource(bot);
+		inputParser.handleLine(": TOPIC #aChannel :" + aString);
 
 		//Verify event contents
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
