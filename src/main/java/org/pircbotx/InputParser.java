@@ -378,17 +378,6 @@ public class InputParser implements Closeable {
 				autoConnectChannels = configuration.getAutoJoinChannels();
 			for (Map.Entry<String, String> channelEntry : autoConnectChannels.entrySet())
 				bot.sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
-		} else if (code.equals("433")) {
-			//EXAMPLE: * AnAlreadyUsedName :Nickname already in use
-			//Nickname in use, rename
-			String usedNick = parsedLine.get(1);
-			boolean autoNickChange = configuration.isAutoNickChange();
-			String autoNewNick = null;
-			if (autoNickChange) {
-				nickSuffix++;
-				bot.sendIRC().changeNick(autoNewNick = configuration.getName() + nickSuffix);
-			}
-			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent<PircBotX>(bot, usedNick, autoNewNick, autoNickChange));
 		} else if (code.equals("439")) {
 			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 			// No action required.
@@ -401,7 +390,8 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 451 CAP :You have not registered
 			//Ignore, this is from servers that don't support CAP
 			log.warn("Ignoring not registered error, server does not support CAP negotiation");
-		} else if (code.startsWith("5") || code.startsWith("4"))
+		} else if ((code.startsWith("5") || code.startsWith("4")) && !code.equals("433"))
+			//Ignore 433 NickAlreadyInUse, handled later
 			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
 		else if (code.equals("670")) {
 			//Server is saying that we can upgrade to TLS
@@ -609,8 +599,18 @@ public class InputParser implements Closeable {
 	public void processServerResponse(int code, String rawResponse, List<String> parsedResponseOrig) {
 		ImmutableList<String> parsedResponse = ImmutableList.copyOf(parsedResponseOrig);
 		//Parsed response format: Everything after code
-		//eg: Response 321 Channel :Users Name gives us [Channel, Users Name]
-		if (code == RPL_LISTSTART) {
+		if (code == 433) {
+			//EXAMPLE: * AnAlreadyUsedName :Nickname already in use
+			//Nickname in use, rename
+			String usedNick = parsedResponseOrig.get(1);
+			boolean autoNickChange = configuration.isAutoNickChange();
+			String autoNewNick = null;
+			if (autoNickChange) {
+				nickSuffix++;
+				bot.sendIRC().changeNick(autoNewNick = configuration.getName() + nickSuffix);
+			}
+			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent<PircBotX>(bot, usedNick, autoNewNick, autoNickChange));
+		} else if (code == RPL_LISTSTART) {
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
 			channelListBuilder = ImmutableList.builder();
