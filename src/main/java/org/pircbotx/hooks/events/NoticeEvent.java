@@ -80,4 +80,22 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 		else
 			getChannel().send().message(getUser(), response);
 	}
+	
+	/**
+	 * Respond with a message to the channel without the prefix
+	 * @param response The response to send
+	 */
+	public void respondChannel(@Nullable String response) {
+		if(getChannel() == null)
+			throw new RuntimeException("Event does not contain a channel");
+		getChannel().send().message(response);
+	}
+	
+	/**
+	 * Respond with a PM directly to the user
+	 * @param response The response to send
+	 */
+	public void respondPrivateMessage(@Nullable String response) {
+		getUser().send().message(response);
+	}
 }
