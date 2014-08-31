@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This is a giant info bean of various things about the server. This is separate
@@ -86,6 +87,8 @@ public class ServerInfo {
 	protected boolean callerID;
 	protected boolean accept;
 	protected String language;
+	protected String extBanPrefix;
+	protected String extBanList;
 	//Other information
 	@Setter(AccessLevel.PROTECTED)
 	protected String motd;
@@ -195,6 +198,16 @@ public class ServerInfo {
 				userIPExists = true;
 			else if (key.equalsIgnoreCase("CNOTICE"))
 				cNoticeExists = true;
+			else if (key.equalsIgnoreCase("EXTBAN")) {
+				if(value.contains(",")) {
+					String[] valueSplit = StringUtils.split(value, ",");
+					extBanPrefix = valueSplit[0];
+					extBanList = valueSplit[1];
+				} else {
+					extBanList = value;
+				}
+			}
+				
 		}
 		//Freenode
 		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
