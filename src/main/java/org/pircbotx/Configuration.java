@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.PeekingIterator;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -35,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.net.SocketFactory;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
@@ -144,6 +144,9 @@ public class Configuration<B extends PircBotX> {
 			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
+		for(Map.Entry<String, String> curEntry : builder.getAutoJoinChannels().entrySet())
+			if (StringUtils.isBlank(curEntry.getKey()))
+				throw new RuntimeException("Channel must not be blank");
 
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
@@ -517,7 +520,9 @@ public class Configuration<B extends PircBotX> {
 		 * @param channel
 		 * @return 
 		 */
-		public Builder<B> addAutoJoinChannel(String channel) {
+		public Builder<B> addAutoJoinChannel(@NonNull String channel) {
+			if (StringUtils.isBlank(channel))
+				throw new RuntimeException("Channel must not be blank");
 			getAutoJoinChannels().put(channel, "");
 			return this;
 		}
@@ -527,7 +532,11 @@ public class Configuration<B extends PircBotX> {
 		 * @param channel
 		 * @return 
 		 */
-		public Builder<B> addAutoJoinChannel(String channel, String key) {
+		public Builder<B> addAutoJoinChannel(@NonNull String channel, @NonNull String key) {
+			if (StringUtils.isBlank(channel))
+				throw new RuntimeException("Channel must not be blank");
+			if (StringUtils.isBlank(key))
+				throw new RuntimeException("Key must not be blank");
 			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
