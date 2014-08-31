@@ -3,26 +3,27 @@
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
@@ -125,8 +125,8 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	/**
-	 * Shuts down the internal thread pool. If you need to do more a advanced shutdown,
-	 * the pool is returned.
+	 * Shuts down the internal thread pool. If you need to do more a advanced
+	 * shutdown, the pool is returned.
 	 *
 	 * @return The internal thread pool the ThreadedListenerManager uses
 	 */
@@ -136,15 +136,20 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	public void shutdown(B bot) {
+		//Make local copy to avoid deadlocking ManagedFutureTask when it removes itself
+		List<ManagedFutureTask> remainingTasks;
 		synchronized (runningListeners) {
-			for (ManagedFutureTask curFuture : runningListeners.get(bot))
-				try {
-					log.debug("Waiting for listener " + curFuture.getListener() + " to execute event " + curFuture.getEvent());
-					curFuture.get();
-				} catch (Exception e) {
-					throw new RuntimeException("Cannot shutdown listener " + curFuture.getListener() + " executing event " + curFuture.getEvent(), e);
-				}
+			remainingTasks = new ArrayList(runningListeners.get(bot));
 		}
+		
+		//Wait for all remaining tasks to return
+		for (ManagedFutureTask curFuture : remainingTasks)
+			try {
+				log.debug("Waiting for listener " + curFuture.getListener() + " to execute event " + curFuture.getEvent());
+				curFuture.get();
+			} catch (Exception e) {
+				throw new RuntimeException("Cannot shutdown listener " + curFuture.getListener() + " executing event " + curFuture.getEvent(), e);
+			}
 	}
 
 	@Getter
