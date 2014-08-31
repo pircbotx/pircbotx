@@ -42,6 +42,7 @@ import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.ModeEvent;
+import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
@@ -950,6 +951,15 @@ public class InputParserTest {
 		assertEquals(bot.getNick(), "PircBotXBetter");
 		assertEquals(event.getUser(), botUser);
 		assertEquals(event.getUser(), bot.getUserBot());
+	}
+	
+	@Test
+	public void nickAlreadyInUseTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 433 * "+bot.getConfiguration().getName()+" :Nickname is already in use.");
+		
+		NickAlreadyInUseEvent event = getEvent(NickAlreadyInUseEvent.class, "NickAlreadyInUseEvent not dispatched for 433");
+		assertEquals(event.getUsedNick(), bot.getConfiguration().getName());
+		assertEquals(event.getAutoNewNick(), bot.getConfiguration().getName() + "1");
 	}
 
 	/**
