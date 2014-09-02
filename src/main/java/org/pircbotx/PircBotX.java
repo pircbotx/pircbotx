@@ -205,7 +205,8 @@ public class PircBotX implements Comparable<PircBotX> {
 							curAddress, 
 							configuration.getServerPort(), 
 							configuration.getLocalAddress(), 
-							serverAddresses.length));
+							serverAddresses.length,
+							e));
 				}
 			}
 
