@@ -44,7 +44,7 @@ public class TemporaryListenerTest {
 				.buildConfiguration());
 		listenerManager = bot.getConfiguration().getListenerManager();
 		bot.getUserChannelDao().createChannel("#aChannel");
-		bot.getUserChannelDao().createUser("AUser");
+		bot.getUserChannelDao().createUser(TestUtils.generateTestUserHostmask("AUser"));
 	}
 
 	@Test(singleThreaded = true)
