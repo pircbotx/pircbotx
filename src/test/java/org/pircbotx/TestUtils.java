@@ -71,7 +71,7 @@ public class TestUtils {
 	}
 	
 	public static UserHostmask generateTestUserSourceHostmask(PircBotX bot) {
-		return new UserHostmask(bot, "MeUser", "SomeTest", "host.test");
+		return new UserHostmask(bot, "SourceUser", "SomeTest", "host.test");
 	}
 	
 	public static User generateTestUserSource(PircBotX bot) {
