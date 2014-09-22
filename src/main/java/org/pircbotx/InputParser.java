@@ -878,7 +878,7 @@ public class InputParser implements Closeable {
 		public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 			String recipient = params.next();
 			UserHostmask recipientHostmask = new UserHostmask(bot, recipient, recipient, null, null);
-			User recipientUser = bot.getUserChannelDao().getUser(params.next());
+			User recipientUser = bot.getUserChannelDao().getUser(recipient);
 			if (adding)
 				bot.getUserChannelDao().addUserToLevel(level, recipientUser, channel);
 			else
