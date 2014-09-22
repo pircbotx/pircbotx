@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import org.apache.commons.lang3.StringUtils;
@@ -108,13 +109,15 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 	
 	@Synchronized("accessLock")
-	public boolean containsUser(String nick) {
+	public boolean containsUser(@NonNull String nick) {
 		String nickLowercase = nick.toLowerCase(locale);
 		return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
 	}
 	
 	@Synchronized("accessLock")
 	public boolean containsUser(UserHostmask hostmask) {
+		if(hostmask.getNick() == null)
+			return false;
 		return containsUser(hostmask.getNick());
 	}
 
