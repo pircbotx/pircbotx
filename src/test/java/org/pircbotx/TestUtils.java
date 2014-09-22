@@ -57,24 +57,20 @@ public class TestUtils {
 		return generateEventArguments(true, true);
 	}
 	
-	public static UserHostmask generateTestUserSource() {
-		return generateTestUserHostmask("MeUser");
+	public static UserHostmask generateTestUserSourceHostmask(PircBotX bot) {
+		return new UserHostmask(bot, "MeUser", "SomeTest", "host.test");
 	}
 	
 	public static User generateTestUserSource(PircBotX bot) {
-		return bot.getUserChannelDao().createUser(generateTestUserSource());
+		return bot.getUserChannelDao().createUser(generateTestUserSourceHostmask(bot));
 	}
 	
-	public static UserHostmask generateTestUserOther() {
-		return generateTestUserHostmask("OtherUser");
+	public static UserHostmask generateTestUserOtherHostmask(PircBotX bot) {
+		return new UserHostmask(bot, "OtherUser", "SomeTest", "host.test");
 	}
 	
 	public static User generateTestUserOther(PircBotX bot) {
-		return bot.getUserChannelDao().createUser(generateTestUserOther());
-	}
-	
-	public static UserHostmask generateTestUserHostmask(String nick) {
-		return new UserHostmask(null, nick, "SomeLogin", "host.test");
+		return bot.getUserChannelDao().createUser(generateTestUserOtherHostmask(bot));
 	}
 
 	protected static Object[][] generateEventArguments(boolean includeEvents, boolean includeGeneric) throws IOException {

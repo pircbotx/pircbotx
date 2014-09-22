@@ -164,7 +164,7 @@ public class InputParserTest {
 
 	@Test(description = "Verifies InviteEvent from incomming invite")
 	public void inviteTest() throws IOException, IrcException {
-		UserHostmask sourceUser = TestUtils.generateTestUserSource();
+		UserHostmask sourceUser = TestUtils.generateTestUserSource(bot);
 		inputParser.handleLine(":"+sourceUser.getHostmask()+" INVITE PircBotXUser :#aChannel");
 
 		//Verify event values
@@ -181,7 +181,7 @@ public class InputParserTest {
 	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		UserHostmask aUserHostmask = TestUtils.generateTestUserSource();
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSource(bot);
 		inputParser.handleLine(":"+aUserHostmask.getHostmask()+" JOIN :#aChannel");
 
 		//Make sure the event gives us the same channels
@@ -211,7 +211,7 @@ public class InputParserTest {
 	@Test(description = "Verifies DAO allows case insensitive lookups")
 	public void insensitiveLookupTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		UserHostmask aUserHostmask = TestUtils.generateTestUserSource();
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSource(bot);
 		inputParser.handleLine(":"+aUserHostmask.getHostmask()+" JOIN :#aChannel");
 		
 		User aUser = dao.getUser(aUserHostmask);
@@ -947,11 +947,12 @@ public class InputParserTest {
 
 	@Test
 	public void nickChangeBotTest() throws IOException, IrcException {
-		User botUser = dao.createUser(TestUtils.generateTestUserHostmask(bot.getNick()));
+		User botUser = TestUtils.generateTestUserSource(bot);
+		String oldNick = botUser.getNick();
 		inputParser.handleLine(":" + botUser.getHostmask() + " NICK :PircBotXBetter");
 
 		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
-		assertEquals(event.getOldNick(), "PircBotXBot");
+		assertEquals(event.getOldNick(), oldNick);
 		assertEquals(event.getNewNick(), "PircBotXBetter");
 		assertEquals(bot.getNick(), "PircBotXBetter");
 		assertEquals(event.getUser(), botUser);
