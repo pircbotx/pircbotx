@@ -210,7 +210,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 		if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
 			//Completely remove user
-			userNickMap.inverse().remove(user);
+			userNickMap.remove(user.getNick().toLowerCase(locale));
 	}
 
 	@Synchronized("accessLock")
@@ -220,8 +220,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			curLevelMap.removeUser(user);
 
 		//Remove remaining locations
-		userNickMap.inverse().remove(user);
-		privateUsers.remove(user);
+		userNickMap.remove(user.getNick().toLowerCase(locale));
+		privateUsers.remove(user.getNick().toLowerCase(locale));
 	}
 
 	@Synchronized("accessLock")
