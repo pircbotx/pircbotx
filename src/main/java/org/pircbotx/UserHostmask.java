@@ -98,7 +98,7 @@ public class UserHostmask implements Comparable<User> {
 		this.nick = nick;
 		this.login = login;
 		this.hostname = hostname;
-		this.hostmask = nick + ":" + login + "@" + hostname;
+		this.hostmask = nick + "!" + login + "@" + hostname;
 	}
 
 	/**
