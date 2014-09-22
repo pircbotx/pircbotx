@@ -115,7 +115,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	
 	@Synchronized("accessLock")
 	public boolean containsUser(UserHostmask hostmask) {
-		return userNickMap.containsValue(hostmask) || privateUsers.containsValue(hostmask);
+		return containsUser(hostmask.getNick());
 	}
 
 	/**
