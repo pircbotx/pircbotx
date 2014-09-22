@@ -216,9 +216,9 @@ public class InputParserTest {
 		
 		User aUser = dao.getUser(aUserHostmask);
 		assertNotNull(aUser, "DAO User should not be null");
-		assertEquals(dao.getUser("AUSER"), aUser, "Cannot lookup AUSER ignoring case");
-		assertEquals(dao.getUser("aUser"), aUser, "Cannot lookup aUser ignoring case");
-		assertEquals(dao.getUser("auser"), aUser, "Cannot lookup auser ignoring case");
+		assertEquals(dao.getUser("SOURCEUSER"), aUser, "Cannot lookup AUSER ignoring case");
+		assertEquals(dao.getUser("SourceUser"), aUser, "Cannot lookup aUser ignoring case");
+		assertEquals(dao.getUser("sourceuser"), aUser, "Cannot lookup auser ignoring case");
 		
 		assertEquals(dao.getChannel("#ACHANNEL"), aChannel, "Cannot lookup #ACHANNEL ignoring case");
 		assertEquals(dao.getChannel("#aChannel"), aChannel, "Cannot lookup #aChannel ignoring case");
