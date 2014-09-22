@@ -42,6 +42,19 @@ import org.testng.annotations.DataProvider;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestUtils {
+	static {
+		//when getting a logged exception, fail immediately
+		Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		
+		if(loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
+			ExceptionStopperAppender exAppender = new ExceptionStopperAppender();
+			exAppender.setContext(loggerRoot.getLoggerContext());
+			exAppender.start();
+			
+			loggerRoot.addAppender(exAppender);
+		}
+	}
+	
 	@DataProvider
 	public static Object[][] eventObjectDataProvider() throws IOException {
 		return generateEventArguments(true, false);
@@ -102,17 +115,6 @@ public class TestUtils {
 	}
 
 	public static Configuration.Builder generateConfigurationBuilder() {
-		//when getting a logged exception, fail immediately
-		Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		
-		if(loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
-			ExceptionStopperAppender exAppender = new ExceptionStopperAppender();
-			exAppender.setContext(loggerRoot.getLoggerContext());
-			exAppender.start();
-			
-			loggerRoot.addAppender(exAppender);
-		}
-
 		return new Configuration.Builder()
 				.setCapEnabled(true)
 				.setServerHostname("example.com")
