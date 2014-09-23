@@ -587,8 +587,6 @@ public class InputParser implements Closeable {
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			configuration.getListenerManager().dispatchEvent(new InviteEvent<PircBotX>(bot, source, sourceUser, message));
-			if (bot.getUserChannelDao().getChannels(sourceUser).isEmpty())
-				bot.getUserChannelDao().removeUser(sourceUser);
 		} else if (command.equals("AWAY"))
 			//IRCv3 AWAY notify
 			if (parsedLine.isEmpty())
