@@ -289,7 +289,7 @@ public class InputParser implements Closeable {
 
 		String sourceRaw = "";
 		if (parsedLine.get(0).charAt(0) == ':')
-			sourceRaw = parsedLine.remove(0).substring(1);
+			sourceRaw = parsedLine.remove(0);
 
 		String command = parsedLine.remove(0).toUpperCase(configuration.getLocale());
 
@@ -314,7 +314,7 @@ public class InputParser implements Closeable {
 		if (sourceRaw.startsWith(":"))
 			if (exclamation > 0 && at > 0 && exclamation < at)
 				source = new UserHostmask(bot, sourceRaw,
-						sourceRaw.substring(0, exclamation),
+						sourceRaw.substring(1, exclamation),
 						sourceRaw.substring(exclamation + 1, at),
 						sourceRaw.substring(at + 1));
 			else {
@@ -330,7 +330,7 @@ public class InputParser implements Closeable {
 					// It must be a nick without login and hostname.
 					// (or maybe a NOTICE or suchlike from the server)
 					//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
-					source = new UserHostmask(bot, sourceRaw, null, null, null);
+					source = new UserHostmask(bot, sourceRaw.substring(1), null, null, null);
 			}
 		else {
 			// We don't know what this line means.
