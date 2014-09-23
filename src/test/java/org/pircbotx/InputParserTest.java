@@ -195,17 +195,10 @@ public class InputParserTest {
 		assertEquals(aUser.getNick(), aUserHostmask.getNick(), "Nick is wrong");
 		assertEquals(aUser.getLogin(), "~SomeTest", "User login wrong on JoinEvent");
 		assertEquals(aUser.getHostname(), "host.test", "User hostmask wrong on JoinEvent");
-		Channel userChan = null;
-		for (Channel curChan : aUser.getChannels())
-			if (curChan.getName().equals("#aChannel"))
-				userChan = curChan;
-		assertNotNull(userChan, "User is not joined to channel after JoinEvent");
-		User chanUser = null;
-		for (User curUser : aChannel.getUsers())
-			if (curUser.getNick().equals("AUser"))
-				chanUser = curUser;
-		assertNotNull(chanUser, "Channel is not joined to user after JoinEvent");
-		assertTrue(dao.containsUser("AUser"));
+		
+		assertTrue(dao.containsUser(aUserHostmask.getNick()));
+		assertTrue(aUser.getChannels().contains(aChannel), "User is not joined to channel after JoinEvent. Channels: " + aUser.getChannels());
+		assertTrue(aChannel.getUsers().contains(aUser), "Channel is not joined to user after JoinEvent. Users: " + aChannel.getUsers());		
 	}
 	
 	@Test(description = "Verifies DAO allows case insensitive lookups")
