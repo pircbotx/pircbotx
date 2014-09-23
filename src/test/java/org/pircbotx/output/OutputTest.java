@@ -150,7 +150,7 @@ public class OutputTest {
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
 		aUser.send().action(aString);
-		checkOutput("PRIVMSG aUser :\u0001ACTION " + aString + "\u0001");
+		checkOutput("PRIVMSG SourceUser :\u0001ACTION " + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendAction to channel")
@@ -168,7 +168,7 @@ public class OutputTest {
 	@Test(description = "Verify sendCTCPCommand to user")
 	public void sendCTCPCommandUserTest() throws Exception {
 		aUser.send().ctcpCommand(aString);
-		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
+		checkOutput("PRIVMSG SourceUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPCommand to channel")
@@ -186,7 +186,7 @@ public class OutputTest {
 	@Test(description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
 		aUser.send().ctcpResponse(aString);
-		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
+		checkOutput("NOTICE SourceUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPResponse by string")
@@ -198,13 +198,13 @@ public class OutputTest {
 	@Test(description = "Verify sendInvite to user")
 	public void sendInviteUserChannelTest() throws Exception {
 		aUser.send().invite(aChannel);
-		checkOutput("INVITE aUser :#aChannel");
+		checkOutput("INVITE SourceUser :#aChannel");
 	}
 	
 	@Test(description = "Verify sendInvite to channel by string")
 	public void sendInviteUserStringTest() throws Exception {
 		aUser.send().invite("#aChannel");
-		checkOutput("INVITE aUser :#aChannel");
+		checkOutput("INVITE SourceUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite to channel")
@@ -218,7 +218,7 @@ public class OutputTest {
 	@Test
 	public void sendInviteChannelUserTest() throws Exception {
 		aChannel.send().invite(aUser);
-		checkOutput("INVITE aUser :#aChannel");
+		checkOutput("INVITE SourceUser :#aChannel");
 	}
 	
 	public void sendInviteChannelStringTest() throws Exception {
@@ -241,13 +241,13 @@ public class OutputTest {
 	@Test(description = "Verify sendMessage to user in channel")
 	public void sendMessageChannelUserTest() throws Exception {
 		aChannel.send().message(aUser, aString);
-		checkOutput("PRIVMSG #aChannel :aUser: " + aString);
+		checkOutput("PRIVMSG #aChannel :SourceUser: " + aString);
 	}
 
 	@Test(description = "Verify sendMessage to user")
 	public void sendMessageUserTest() throws Exception {
 		aUser.send().message(aString);
-		checkOutput("PRIVMSG aUser :" + aString);
+		checkOutput("PRIVMSG SourceUser :" + aString);
 	}
 
 	@Test(description = "Verify sendMessage by string")
@@ -265,7 +265,7 @@ public class OutputTest {
 	@Test(description = "Verify sendNotice to user")
 	public void sendNoticeUserTest() throws Exception {
 		aUser.send().notice(aString);
-		checkOutput("NOTICE aUser :" + aString);
+		checkOutput("NOTICE SourceUser :" + aString);
 	}
 
 	@Test(description = "Verify sendNotice by String")

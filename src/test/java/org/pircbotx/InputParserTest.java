@@ -194,7 +194,7 @@ public class InputParserTest {
 		assertEquals(jevent.getUser(), aUser, "User does not match");
 		assertEquals(aUser.getNick(), aUserHostmask.getNick(), "Nick is wrong");
 		assertEquals(aUser.getLogin(), "~SomeTest", "User login wrong on JoinEvent");
-		assertEquals(aUser.getHostmask(), "some.host", "User hostmask wrong on JoinEvent");
+		assertEquals(aUser.getHostname(), "host.test", "User hostmask wrong on JoinEvent");
 		Channel userChan = null;
 		for (Channel curChan : aUser.getChannels())
 			if (curChan.getName().equals("#aChannel"))
@@ -243,7 +243,7 @@ public class InputParserTest {
 
 		//Verify event contents
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
-		assertEquals(tevent.getUser(), "AUser", "TopicEvent's user doesn't match given");
+		assertEquals(tevent.getUser(), "SourceUser", "TopicEvent's user doesn't match given");
 		assertEquals(tevent.getChannel(), aChannel, "TopicEvent's channel doesn't match given");
 		assertEquals(tevent.getTopic(), aString, "TopicEvent's topic doesn't match given");
 		//Just make sure the time is reasonable since its based off of System.currentTimeMillis
@@ -668,7 +668,7 @@ public class InputParserTest {
 		//Verify AUser
 		assertEquals(aUser.getNick(), "AUser", "Login doesn't match one given during WHO");
 		assertEquals(aUser.getLogin(), "~ALogin", "Login doesn't match one given during WHO");
-		assertEquals(aUser.getHostmask(), "some.host", "Host doesn't match one given during WHO");
+		assertEquals(aUser.getHostname(), "some.host", "Host doesn't match one given during WHO");
 		assertEquals(aUser.getHops(), 2, "Hops doesn't match one given during WHO");
 		assertEquals(aUser.getRealName(), aString, "RealName doesn't match one given during WHO");
 		assertEquals(aUser.getServer(), "irc.someserver.net", "Server doesn't match one given during WHO");
