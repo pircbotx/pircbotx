@@ -164,7 +164,7 @@ public class InputParserTest {
 
 	@Test(description = "Verifies InviteEvent from incomming invite")
 	public void inviteTest() throws IOException, IrcException {
-		UserHostmask sourceUser = TestUtils.generateTestUserSource(bot);
+		UserHostmask sourceUser = TestUtils.generateTestUserSourceHostmask(bot);
 		inputParser.handleLine(":"+sourceUser.getHostmask()+" INVITE PircBotXUser :#aChannel");
 
 		//Verify event values
@@ -181,7 +181,7 @@ public class InputParserTest {
 	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		UserHostmask aUserHostmask = TestUtils.generateTestUserSource(bot);
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSourceHostmask(bot);
 		inputParser.handleLine(":"+aUserHostmask.getHostmask()+" JOIN :#aChannel");
 
 		//Make sure the event gives us the same channels
@@ -193,7 +193,7 @@ public class InputParserTest {
 		User aUser = dao.getUser(aUserHostmask);
 		assertEquals(jevent.getUser(), aUser, "User does not match");
 		assertEquals(aUser.getNick(), aUserHostmask.getNick(), "Nick is wrong");
-		assertEquals(aUser.getLogin(), "~ALogin", "User login wrong on JoinEvent");
+		assertEquals(aUser.getLogin(), "~SomeTest", "User login wrong on JoinEvent");
 		assertEquals(aUser.getHostmask(), "some.host", "User hostmask wrong on JoinEvent");
 		Channel userChan = null;
 		for (Channel curChan : aUser.getChannels())
@@ -211,7 +211,7 @@ public class InputParserTest {
 	@Test(description = "Verifies DAO allows case insensitive lookups")
 	public void insensitiveLookupTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		UserHostmask aUserHostmask = TestUtils.generateTestUserSource(bot);
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSourceHostmask(bot);
 		inputParser.handleLine(":"+aUserHostmask.getHostmask()+" JOIN :#aChannel");
 		
 		User aUser = dao.getUser(aUserHostmask);
@@ -239,7 +239,7 @@ public class InputParserTest {
 	public void topicChangeTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = TestUtils.generateTestUserSource(bot);
-		inputParser.handleLine(": TOPIC #aChannel :" + aString);
+		inputParser.handleLine(":"+aUser.getHostmask()+" TOPIC #aChannel :" + aString);
 
 		//Verify event contents
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
@@ -940,7 +940,7 @@ public class InputParserTest {
 		inputParser.handleLine(":" + aUser.getHostmask() + " NICK :AnotherUser");
 
 		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
-		assertEquals(event.getOldNick(), "AUser");
+		assertEquals(event.getOldNick(), "SourceUser");
 		assertEquals(event.getNewNick(), "AnotherUser");
 		assertEquals(event.getUser(), aUser);
 	}
@@ -948,7 +948,9 @@ public class InputParserTest {
 	@Test
 	public void nickChangeBotTest() throws IOException, IrcException {
 		User botUser = TestUtils.generateTestUserSource(bot);
+		bot.setNick(botUser.getNick());
 		String oldNick = botUser.getNick();
+		log.debug("Old nick" + oldNick);
 		inputParser.handleLine(":" + botUser.getHostmask() + " NICK :PircBotXBetter");
 
 		NickChangeEvent event = getEvent(NickChangeEvent.class, "NickChangeEvent not dispatched for NICK");
