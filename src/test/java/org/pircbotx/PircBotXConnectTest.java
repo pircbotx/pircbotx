@@ -100,7 +100,7 @@ public class PircBotXConnectTest {
 		assertTrue(event instanceof ConnectEvent, "Unknown third event: " + event);
 		assertEquals(event.getBot(), bot);
 		
-		event = events.get(4);
+		event = events.get(5);
 		assertTrue(event instanceof DisconnectEvent, "Unknown fifth event: " + event);
 		assertEquals(event.getBot(), bot);
 	}
