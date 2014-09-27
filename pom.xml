@@ -81,7 +81,7 @@ features and bug fixes in an official alternative distribution.
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lombok.version>1.14.4</lombok.version>
+		<lombok.version>1.14.8</lombok.version>
 	</properties>
 
 	<!--
@@ -123,7 +123,7 @@ features and bug fixes in an official alternative distribution.
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0-rc1</version>
+			<version>18.0</version>
 		</dependency>
 		<!-- Use TestNG as testing framework -->
 		<dependency>
@@ -225,7 +225,7 @@ features and bug fixes in an official alternative distribution.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.16</version>
+				<version>2.17</version>
 				<configuration>
 					<properties>
 						<property>
@@ -238,7 +238,7 @@ features and bug fixes in an official alternative distribution.
 			<!-- Make a unified jar with all of the dependencies -->
 			<plugin>              
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.2</version>
+				<version>2.3</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -316,7 +316,7 @@ features and bug fixes in an official alternative distribution.
 					<plugin>
 						<groupId>org.projectlombok</groupId>
 						<artifactId>lombok-maven-plugin</artifactId>
-						<version>1.12.6.0</version>
+						<version>1.14.8.0</version>
 						<dependencies>
 							<dependency>
 								<groupId>sun.jdk</groupId>
@@ -351,7 +351,7 @@ features and bug fixes in an official alternative distribution.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.9.1</version>
+						<version>2.10</version>
 						<configuration>
 							<defaultAuthor>Leon Blakey</defaultAuthor>
 							<defaultVersion>${project.version}</defaultVersion>
@@ -362,17 +362,17 @@ features and bug fixes in an official alternative distribution.
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-site-plugin</artifactId>
-						<version>3.3</version>
+						<version>3.4</version>
 						<dependencies>
 							<dependency><!-- add support for scm -->
 								<groupId>org.apache.maven.wagon</groupId>
 								<artifactId>wagon-scm</artifactId>
-								<version>2.4</version>
+								<version>2.7</version>
 							</dependency>
 							<dependency>
 								<groupId>org.apache.maven.scm</groupId>
 								<artifactId>maven-scm-provider-hg</artifactId>
-								<version>1.8.1</version>
+								<version>1.9.2</version>
 							</dependency>
 						</dependencies>
 						<configuration>
@@ -381,7 +381,7 @@ features and bug fixes in an official alternative distribution.
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-javadoc-plugin</artifactId>
-									<version>2.9.1</version>
+									<version>2.10</version>
 									<configuration>
 										<defaultAuthor>Leon Blakey</defaultAuthor>
 										<defaultVersion>${project.version}</defaultVersion>
@@ -399,7 +399,7 @@ features and bug fixes in an official alternative distribution.
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-checkstyle-plugin</artifactId>
-									<version>2.10</version>
+									<version>2.12.1</version>
 									<configuration>
 										<configLocation>src/etc/checkstyle.xml</configLocation>
 									</configuration>
@@ -419,7 +419,7 @@ features and bug fixes in an official alternative distribution.
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-pmd-plugin</artifactId>
-									<version>3.0.1</version>
+									<version>3.2</version>
 									<configuration>
 										<source>1.5</source>
 										<rulesets>
