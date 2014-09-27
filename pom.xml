@@ -111,7 +111,7 @@ features and bug fixes in an official alternative distribution.
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.7</version>
+			<version>1.7.6</version>
 		</dependency>
 		<!-- Commons codec for base64 -->
 		<dependency>
