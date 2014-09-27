@@ -43,7 +43,6 @@ import org.pircbotx.output.OutputUser;
  * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Setter(AccessLevel.PROTECTED)
 public class User extends UserHostmask {
 	private final UUID userId = UUID.randomUUID();
@@ -209,5 +208,15 @@ public class User extends UserHostmask {
 
 	public boolean isAway() {
 		return awayMessage != null;
+	}
+	
+	@Override
+	public boolean equals(Object user) {
+		return super.equals(user);
+	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 }
