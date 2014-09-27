@@ -656,7 +656,9 @@ public class InputParserTest {
 		assertEquals(uevent.getChannel(), aChannel, "UserListEvent's channel does not match given");
 		assertEquals(uevent.getUsers().size(), 2, "UserListEvent's users is larger than it should be");
 		assertTrue(uevent.getUsers().contains(aUser), "UserListEvent doesn't contain aUser");
-		assertTrue(uevent.getUsers().contains(aUser), "UserListEvent doesn't contain OtherUser");
+		assertTrue(uevent.getUsers().contains(otherUser), "UserListEvent doesn't contain OtherUser");
+		assertTrue(aChannel.getUsers().contains(aUser), "aChannel doens't contain aUser");
+		assertTrue(aChannel.getUsers().contains(otherUser), "aChannel doens't contain OtherUser");
 
 		//Verify AUser
 		assertEquals(aUser.getNick(), "AUser", "Login doesn't match one given during WHO");
@@ -666,13 +668,14 @@ public class InputParserTest {
 		assertEquals(aUser.getRealName(), aString, "RealName doesn't match one given during WHO");
 		assertEquals(aUser.getServer(), "irc.someserver.net", "Server doesn't match one given during WHO");
 		assertFalse(aUser.isAway(), "User is away even though specified as here in WHO");
+		assertTrue(aUser.getChannelsOpIn().contains(aChannel), "aUser not an op in aChannel: " + aUser.getChannelsOpIn().size());
 		assertTrue(aChannel.isOp(aUser), "User isn't labeled as an op even though specified as one in WHO");
 		assertTrue(aChannel.hasVoice(aUser), "User isn't voiced even though specified as one in WHO");
 
 		//Verify otherUser
 		assertEquals(otherUser.getNick(), "OtherUser", "Login doesn't match one given during WHO");
 		assertEquals(otherUser.getLogin(), "~OtherLogin", "Login doesn't match one given during WHO");
-		assertEquals(otherUser.getHostmask(), "some.host1", "Host doesn't match one given during WHO");
+		assertEquals(otherUser.getHostname(), "some.host1", "Host doesn't match one given during WHO");
 		assertEquals(otherUser.getHops(), 4, "Hops doesn't match one given during WHO");
 		assertEquals(otherUser.getRealName(), "", "RealName doesn't match one given during WHO");
 		assertEquals(otherUser.getServer(), "irc.otherserver.net", "Server doesn't match one given during WHO");
@@ -681,7 +684,7 @@ public class InputParserTest {
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
 	}
 	
-	@Test(dependsOnMethods = "whoTest", description = "Veryfy that we don't falsely registers all WHO responses as valid channels", expectedExceptions = DaoException.class)
+	@Test(description = "Veryfy that we don't falsely registers all WHO responses as valid channels", expectedExceptions = DaoException.class)
 	public void whoTestFalseChannels() throws IOException, IrcException {
 		assertFalse(dao.channelExists("#randomChannel"), "Intial test to ensure channel doesn't exist");
 		
