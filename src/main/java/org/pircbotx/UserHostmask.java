@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
@@ -38,6 +39,7 @@ import org.pircbotx.output.OutputUser;
 @EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})
 @Data
 @Setter(AccessLevel.PROTECTED)
+@ToString(exclude = {"bot", "output"})
 public class UserHostmask implements Comparable<User> {
 	@NonNull
 	private final PircBotX bot;
@@ -112,11 +114,6 @@ public class UserHostmask implements Comparable<User> {
 		} catch (ConcurrentException ex) {
 			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
 		}
-	}
-	
-	@Override
-	public String toString() {
-		return hostmask;
 	}
 
 	/**
