@@ -308,31 +308,8 @@ public class InputParser implements Closeable {
 		if (target.startsWith(":"))
 			target = target.substring(1);
 
-		UserHostmask source;
-		int exclamation = sourceRaw.indexOf('!');
-		int at = sourceRaw.indexOf('@');
-		if (sourceRaw.startsWith(":"))
-			if (exclamation > 0 && at > 0 && exclamation < at)
-				source = new UserHostmask(bot, sourceRaw,
-						sourceRaw.substring(1, exclamation),
-						sourceRaw.substring(exclamation + 1, at),
-						sourceRaw.substring(at + 1));
-			else {
-				int code = Utils.tryParseInt(command, -1);
-				if (code != -1) {
-					if (!bot.loggedIn)
-						processConnect(line, command, target, parsedLine);
-					processServerResponse(code, line, parsedLine);
-					// Return from the method.
-					return;
-				} else
-					// This is not a server response.
-					// It must be a nick without login and hostname.
-					// (or maybe a NOTICE or suchlike from the server)
-					//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
-					source = new UserHostmask(bot, sourceRaw.substring(1), null, null, null);
-			}
-		else {
+		//Make sure this is a valid IRC line
+		if (!sourceRaw.startsWith(":")) {
 			// We don't know what this line means.
 			configuration.getListenerManager().dispatchEvent(new UnknownEvent<PircBotX>(bot, line));
 			if (!bot.loggedIn)
@@ -343,9 +320,36 @@ public class InputParser implements Closeable {
 			// Return from the method;
 			return;
 		}
-
+		
+		//if user build source hostmask or call server parsing method
+		UserHostmask source;
+		int exclamation = sourceRaw.indexOf('!');
+		int at = sourceRaw.indexOf('@');
+		if (exclamation > 0 && at > 0 && exclamation < at)
+			source = new UserHostmask(bot, sourceRaw,
+					sourceRaw.substring(1, exclamation),
+					sourceRaw.substring(exclamation + 1, at),
+					sourceRaw.substring(at + 1));
+		else {
+			//Must be a backend code 
+			int code = Utils.tryParseInt(command, -1);
+			if (code != -1) {
+				if (!bot.loggedIn)
+					processConnect(line, command, target, parsedLine);
+				processServerResponse(code, line, parsedLine);
+				// Return from the method.
+				return;
+			} else
+				// This is not a server response.
+				// It must be a nick without login and hostname.
+				// (or maybe a NOTICE or suchlike from the server)
+				//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
+				source = new UserHostmask(bot, sourceRaw.substring(1), null, null, null);
+		}
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
+		
+		//Must be from user
 		processCommand(target, source, command, line, parsedLine);
 	}
 
