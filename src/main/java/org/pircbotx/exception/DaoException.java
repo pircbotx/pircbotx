@@ -28,12 +28,17 @@ public class DaoException extends RuntimeException {
 	protected final Reason reason;
 
 	public DaoException(Reason reason, String message) {
-		super(reason + ": " + message);
+		this(reason, message, null);
+	}
+	
+	public DaoException(Reason reason, String message, Exception e) {
+		super(reason + ": " + message, e);
 		this.reason = reason;
 	}
 
 	public static enum Reason {
 		UnknownChannel,
-		UnknownUser
+		UnknownUser,
+		UnknownUserHostmask,
 	}
 }

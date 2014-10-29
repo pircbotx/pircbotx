@@ -90,12 +90,16 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	public U getUser(UserHostmask userHostmask) {
-		//Rarely we don't get the full hostmask
-		//eg, the server setting your usermode when you connect to the server
-		if(userHostmask.getNick() == null)
-			//If this isn't a real user getUser will throw an exception for us
-			return getUser(userHostmask.getHostmask());
-		return getUser(userHostmask.getNick());
+		try {
+			//Rarely we don't get the full hostmask
+			//eg, the server setting your usermode when you connect to the server
+			if(userHostmask.getNick() == null)
+				//If this isn't a real user getUser will throw an exception for us
+				return getUser(userHostmask.getHostmask());
+			return getUser(userHostmask.getNick());
+		} catch(Exception e) {
+			throw new DaoException(DaoException.Reason.UnknownUserHostmask, userHostmask.toString(), e);
+		}
 	}
 
 	@Synchronized("accessLock")
@@ -123,13 +127,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public boolean containsUser(UserHostmask hostmask) {
 		//Rarely we don't get the full hostmask
 		//eg, the server setting your usermode when you connect to the server
-		if(hostmask.getNick() == null) {
-			if(containsUser(hostmask.getHostmask()))
-				return true;
-			//No nick and hostmask doesn't match anything, probably an ircd service
-			else
-				return false;
-		}
+		if(hostmask.getNick() == null)
+			return containsUser(hostmask.getHostmask());
 		return containsUser(hostmask.getNick());
 	}
 
