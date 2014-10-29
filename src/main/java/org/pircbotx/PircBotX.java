@@ -244,6 +244,9 @@ public class PircBotX implements Comparable<PircBotX> {
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
+		
+		//Pre-insert an initial User representing the bot itself
+		getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
 
 		//Start input to start accepting lines
 		startLineProcessing();
