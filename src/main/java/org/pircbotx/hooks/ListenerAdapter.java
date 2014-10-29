@@ -37,6 +37,11 @@ import org.pircbotx.hooks.types.*;
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
 	public void onEvent(Event<T> event) throws Exception {
+		//While reflection would make this significantly shorter, 
+		//nothing beats if statements in performance.
+		//Also polymorphism, while theoretically correct, just means that this code
+		//would be in every single Event and make an explicit dependency on this.
+		//This is just simple and fast
 		if (event instanceof ActionEvent)
 			onAction((ActionEvent<T>) event);
 		else if (event instanceof ChannelInfoEvent)
