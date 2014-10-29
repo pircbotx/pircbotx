@@ -38,7 +38,7 @@ import org.pircbotx.hooks.WaitForQueue;
  * executed in the same thread. Adding any listeners during bot operation (Eg by
  * using {@link WaitForQueue}) in another thread is risky since the set might be
  * in use already, throwing a {@link ConcurrentModificationException}.
- * <p/>
+ * <p>
  * @deprecated Due to multiple new functions of PircBotX theat depend on
  * multiple threads, this class is deprecated and is only kept for legacy
  * reasons or special cases. Use of this class will have unexpected results. All
