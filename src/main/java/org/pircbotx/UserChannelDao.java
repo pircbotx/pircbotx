@@ -94,7 +94,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			//Rarely we don't get the full hostmask
 			//eg, the server setting your usermode when you connect to the server
 			if(userHostmask.getNick() == null)
-				//If this isn't a real user getUser will throw an exception for us
 				return getUser(userHostmask.getHostmask());
 			return getUser(userHostmask.getNick());
 		} catch(Exception e) {
@@ -165,7 +164,10 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	protected void addUserToPrivate(U user) {
-		privateUsers.put(user.getNick().toLowerCase(locale), user);
+		String nick = user.getNick().toLowerCase(locale);
+		privateUsers.put(nick, user);
+		if(!userNickMap.containsKey(nick))
+			userNickMap.put(nick, user);
 	}
 
 	@Synchronized("accessLock")
