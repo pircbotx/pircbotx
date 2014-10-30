@@ -47,6 +47,7 @@ import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
+import java.net.Inet6Address;
 import lombok.NonNull;
 import org.pircbotx.UserHostmask;
 
@@ -77,7 +78,7 @@ public class DccHandler implements Closeable {
 			String rawFilename = requestParts.get(2);
 			final String safeFilename = (rawFilename.startsWith("\"") && rawFilename.endsWith("\""))
 					? rawFilename.substring(1, rawFilename.length() - 1) : rawFilename;
-			InetAddress address = integerToAddress(requestParts.get(3));
+			InetAddress address = parseRawAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
 			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
@@ -176,7 +177,7 @@ public class DccHandler implements Closeable {
 		} else if (type.equals("CHAT")) {
 			//Someone is trying to chat with us
 			//Example: DCC CHAT <protocol> <ip> <port> (protocol should be chat)
-			InetAddress address = integerToAddress(requestParts.get(3));
+			InetAddress address = parseRawAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
 			String chatToken = Utils.tryGetIndex(requestParts, 5, null);
 
@@ -518,12 +519,18 @@ public class DccHandler implements Closeable {
 	}
 
 	public static String addressToInteger(InetAddress address) {
+		if (address instanceof Inet6Address)
+			return address.getHostAddress();
 		return new BigInteger(1, address.getAddress()).toString();
 	}
 
-	public static InetAddress integerToAddress(String rawInteger) {
+	public static InetAddress parseRawAddress(String rawAddress) throws UnknownHostException {
+		//Some IPv6 clients are sending the full IPv6 address instead of a bigint
+		if (rawAddress.contains(":"))
+			return Inet6Address.getByName(rawAddress);
+		
 		//Convert the rawInteger into something usable
-		BigInteger bigIp = new BigInteger(rawInteger);
+		BigInteger bigIp = new BigInteger(rawAddress);
 		byte[] addressBytes = bigIp.toByteArray();
 
 		//If there aren't enough bytes, pad with 0 byte
@@ -543,7 +550,7 @@ public class DccHandler implements Closeable {
 		try {
 			return InetAddress.getByAddress(addressBytes);
 		} catch (UnknownHostException ex) {
-			throw new RuntimeException("Can't get InetAdrress version of int IP address " + rawInteger + " (bytes: " + Arrays.toString(addressBytes) + ")", ex);
+			throw new RuntimeException("Can't get InetAdrress version of int IP address " + rawAddress + " (bytes: " + Arrays.toString(addressBytes) + ")", ex);
 		}
 	}
 
