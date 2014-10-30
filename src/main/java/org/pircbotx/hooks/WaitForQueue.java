@@ -24,8 +24,10 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * Stores all events in a queue for processing. This is useful for sequential
@@ -43,6 +45,7 @@ import org.pircbotx.hooks.types.GenericEvent;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
+@Slf4j
 public class WaitForQueue implements Closeable {
 	protected final PircBotX bot;
 	protected LinkedBlockingQueue<Event<PircBotX>> eventQueue = new LinkedBlockingQueue<Event<PircBotX>>();
@@ -115,12 +118,15 @@ public class WaitForQueue implements Closeable {
 	 * @param eventClasses Events to wait for
 	 * @param timeout Timeout value
 	 * @param unit Unit of timeout value
-	 * @return One of the possible events
+	 * @return One of the possible events or null if timed out
 	 * @throws InterruptedException
 	 */
 	public <E extends GenericEvent> Event waitFor(@NonNull List<Class<? extends E>> eventClasses, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
 		while (true) {
 			Event curEvent = eventQueue.poll(timeout, unit);
+			//When poll times out it returns null. Repeat that behavior here
+			if (curEvent == null)
+				return null;
 			for (Class<? extends GenericEvent> curEventClass : eventClasses)
 				if (curEventClass.isInstance(curEvent))
 					return curEvent;
