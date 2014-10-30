@@ -476,6 +476,7 @@ public class InputParser implements Closeable {
 
 		// Check for CTCP requests.
 		if (command.equals("PRIVMSG") && message.startsWith("\u0001") && message.endsWith("\u0001")) {
+			sourceUser = createUserIfNull(sourceUser, source);
 			String request = message.substring(1, message.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
@@ -518,8 +519,7 @@ public class InputParser implements Closeable {
 				bot.sendRaw().rawLine("MODE " + target);
 			}
 			//Create user if it doesn't exist already
-			if(!bot.getUserChannelDao().containsUser(source))
-				sourceUser = bot.getUserChannelDao().createUser(source);
+			sourceUser = createUserIfNull(sourceUser, source);
 			
 			bot.getUserChannelDao().addUserToChannel(sourceUser, channel);
 			configuration.getListenerManager().dispatchEvent(new JoinEvent<PircBotX>(bot, channel, source, sourceUser));
@@ -854,6 +854,15 @@ public class InputParser implements Closeable {
 		//Assume here (H) if there is no G
 		user.setAwayMessage(prefix.contains("G") ? "" : null);
 		user.setIrcop(prefix.contains("*"));
+	}
+	
+	public User createUserIfNull(User otherUser, UserHostmask hostmask) {
+		if(otherUser != null)
+			if(bot.getUserChannelDao().containsUser(otherUser))
+				throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
+			else
+				return otherUser;
+		return bot.getUserChannelDao().createUser(hostmask);
 	}
 
 	/**
