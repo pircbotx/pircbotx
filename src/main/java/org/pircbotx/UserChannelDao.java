@@ -43,9 +43,11 @@ import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
- * Stores and maintains relationships between users and channels. This class
- * should not be directly, it is meant to be the internal storage engine.
- *
+ * User-channel model that tracks all channels, users, users' in channels, users'
+ * op level in channels, and private message users not in a channel. 
+ * <p>
+ * All methods will throw a {@link NullPointerException} when any argument is null
+ * 
  * @see User
  * @see Channel
  * @author Leon Blakey <lord.quackstar at gmail.com>
@@ -78,7 +80,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public U getUser(String nick) {
+	public U getUser(@NonNull String nick) {
 		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
 		U user = userNickMap.get(nick.toLowerCase(locale));
 		if (user != null)
@@ -89,7 +91,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public U getUser(UserHostmask userHostmask) {
+	public U getUser(@NonNull UserHostmask userHostmask) {
 		try {
 			//Rarely we don't get the full hostmask
 			//eg, the server setting your usermode when you connect to the server
@@ -102,7 +104,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public U createUser(UserHostmask userHostmask) {
+	public U createUser(@NonNull UserHostmask userHostmask) {
 		if (containsUser(userHostmask))
 			throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
 		U user = (U) botFactory.createUser(userHostmask);
@@ -112,7 +114,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	@Deprecated
-	public boolean userExists(String nick) {
+	public boolean userExists(@NonNull String nick) {
 		return userNickMap.containsKey(nick.toLowerCase(locale));
 	}
 
@@ -123,7 +125,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public boolean containsUser(UserHostmask hostmask) {
+	public boolean containsUser(@NonNull UserHostmask hostmask) {
 		//Rarely we don't get the full hostmask
 		//eg, the server setting your usermode when you connect to the server
 		if (hostmask.getNick() == null)
@@ -158,12 +160,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToChannel(U user, C channel) {
+	protected void addUserToChannel(@NonNull U user, @NonNull C channel) {
 		mainMap.addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToPrivate(U user) {
+	protected void addUserToPrivate(@NonNull U user) {
 		String nick = user.getNick().toLowerCase(locale);
 		privateUsers.put(nick, user);
 		if (!userNickMap.containsKey(nick))
@@ -171,17 +173,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	protected void addUserToLevel(UserLevel level, U user, C channel) {
+	protected void addUserToLevel(@NonNull UserLevel level, @NonNull U user, @NonNull C channel) {
 		levelsMap.get(level).addUserToChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void removeUserFromLevel(UserLevel level, U user, C channel) {
+	protected void removeUserFromLevel(@NonNull UserLevel level, @NonNull U user, @NonNull C channel) {
 		levelsMap.get(level).removeUserFromChannel(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<U> getNormalUsers(C channel) {
+	public ImmutableSortedSet<U> getNormalUsers(@NonNull C channel) {
 		Set<U> remainingUsers = new HashSet<U>(mainMap.getUsers(channel));
 		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			remainingUsers.removeAll(curLevelMap.getUsers(channel));
@@ -189,12 +191,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<U> getUsers(C channel, UserLevel level) {
+	public ImmutableSortedSet<U> getUsers(@NonNull C channel, @NonNull UserLevel level) {
 		return levelsMap.get(level).getUsers(channel);
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<UserLevel> getLevels(C channel, U user) {
+	public ImmutableSortedSet<UserLevel> getLevels(@NonNull C channel, @NonNull U user) {
 		ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.naturalOrder();
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curEntry : levelsMap.entrySet())
 			if (curEntry.getValue().containsEntry(user, channel))
@@ -203,7 +205,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<C> getNormalUserChannels(U user) {
+	public ImmutableSortedSet<C> getNormalUserChannels(@NonNull U user) {
 		Set<C> remainingChannels = new HashSet<C>(mainMap.getChannels(user));
 		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			remainingChannels.removeAll(curLevelMap.getChannels(user));
@@ -211,12 +213,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<C> getChannels(U user, UserLevel level) {
+	public ImmutableSortedSet<C> getChannels(@NonNull U user, @NonNull UserLevel level) {
 		return levelsMap.get(level).getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	protected void removeUserFromChannel(U user, C channel) {
+	protected void removeUserFromChannel(@NonNull U user, @NonNull C channel) {
 		mainMap.removeUserFromChannel(user, channel);
 		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeUserFromChannel(user, channel);
@@ -227,7 +229,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	protected void removeUser(U user) {
+	protected void removeUser(@NonNull U user) {
 		mainMap.removeUser(user);
 		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeUser(user);
@@ -238,19 +240,19 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	protected boolean levelContainsUser(UserLevel level, C channel, U user) {
+	protected boolean levelContainsUser(@NonNull UserLevel level, @NonNull C channel, @NonNull U user) {
 		return levelsMap.get(level).containsEntry(user, channel);
 	}
 
 	@Synchronized("accessLock")
-	protected void renameUser(U user, String newNick) {
+	protected void renameUser(@NonNull U user, @NonNull String newNick) {
 		user.setNick(newNick);
 		userNickMap.inverse().remove(user);
 		userNickMap.put(newNick.toLowerCase(locale), user);
 	}
 
 	@Synchronized("accessLock")
-	public C getChannel(String name) {
+	public C getChannel(@NonNull String name) {
 		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
 		C chan = channelNameMap.get(name.toLowerCase(locale));
 		if (chan != null)
@@ -261,7 +263,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public C createChannel(String name) {
+	public C createChannel(@NonNull String name) {
 		C chan = (C) botFactory.createChannel(bot, name);
 		channelNameMap.put(name.toLowerCase(locale), chan);
 		return chan;
@@ -274,12 +276,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @return True if we are still connected to the channel, false if not
 	 */
 	@Synchronized("accessLock")
-	public boolean channelExists(String name) {
+	public boolean channelExists(@NonNull String name) {
 		return channelNameMap.containsKey(name.toLowerCase(locale));
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<U> getUsers(C channel) {
+	public ImmutableSortedSet<U> getUsers(@NonNull C channel) {
 		return mainMap.getUsers(channel);
 	}
 
@@ -289,12 +291,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
-	public ImmutableSortedSet<C> getChannels(U user) {
+	public ImmutableSortedSet<C> getChannels(@NonNull U user) {
 		return mainMap.getChannels(user);
 	}
 
 	@Synchronized("accessLock")
-	protected void removeChannel(C channel) {
+	protected void removeChannel(@NonNull C channel) {
 		mainMap.removeChannel(channel);
 		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 			curLevelMap.removeChannel(channel);
