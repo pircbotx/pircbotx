@@ -93,17 +93,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		try {
 			//Rarely we don't get the full hostmask
 			//eg, the server setting your usermode when you connect to the server
-			if(userHostmask.getNick() == null)
+			if (userHostmask.getNick() == null)
 				return getUser(userHostmask.getHostmask());
 			return getUser(userHostmask.getNick());
-		} catch(Exception e) {
+		} catch (Exception e) {
 			throw new DaoException(DaoException.Reason.UnknownUserHostmask, userHostmask.toString(), e);
 		}
 	}
 
 	@Synchronized("accessLock")
 	public U createUser(UserHostmask userHostmask) {
-		if(containsUser(userHostmask))
+		if (containsUser(userHostmask))
 			throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
 		U user = (U) botFactory.createUser(userHostmask);
 		userNickMap.put(userHostmask.getNick().toLowerCase(locale), user);
@@ -115,18 +115,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public boolean userExists(String nick) {
 		return userNickMap.containsKey(nick.toLowerCase(locale));
 	}
-	
+
 	@Synchronized("accessLock")
 	public boolean containsUser(@NonNull String nick) {
 		String nickLowercase = nick.toLowerCase(locale);
 		return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
 	}
-	
+
 	@Synchronized("accessLock")
 	public boolean containsUser(UserHostmask hostmask) {
 		//Rarely we don't get the full hostmask
 		//eg, the server setting your usermode when you connect to the server
-		if(hostmask.getNick() == null)
+		if (hostmask.getNick() == null)
 			return containsUser(hostmask.getHostmask());
 		return containsUser(hostmask.getNick());
 	}
@@ -166,7 +166,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected void addUserToPrivate(U user) {
 		String nick = user.getNick().toLowerCase(locale);
 		privateUsers.put(nick, user);
-		if(!userNickMap.containsKey(nick))
+		if (!userNickMap.containsKey(nick))
 			userNickMap.put(nick, user);
 	}
 

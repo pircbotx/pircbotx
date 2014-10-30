@@ -64,7 +64,8 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @EqualsAndHashCode(callSuper = true)
 public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
 	@Getter(onMethod = @_({
-			@Override, @Nullable}))
+		@Override,
+		@Nullable}))
 	protected final User user;
 	@Getter(onMethod = @_(
 			@Override))

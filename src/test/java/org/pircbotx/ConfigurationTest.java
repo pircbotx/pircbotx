@@ -76,12 +76,12 @@ public class ConfigurationTest {
 		Object copiedObjectSpied = mock(copiedClass, withSettings()
 				.spiedInstance(copiedOpject)
 				.defaultAnswer(new Answer() {
-			public Object answer(InvocationOnMock invocation) throws Throwable {
-				if (invocation.getMethod().equals(methodToCall))
-					isMethodCalled.setValue(true);
-				return invocation.callRealMethod();
-			}
-		}));
+					public Object answer(InvocationOnMock invocation) throws Throwable {
+						if (invocation.getMethod().equals(methodToCall))
+							isMethodCalled.setValue(true);
+						return invocation.callRealMethod();
+					}
+				}));
 
 		//Call and test
 		containerClass.getDeclaredConstructor(copiedClass).newInstance(copiedObjectSpied);

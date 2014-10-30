@@ -54,7 +54,8 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * The user who sent the message.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The actual message sent to the channel.

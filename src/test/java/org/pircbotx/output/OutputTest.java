@@ -47,6 +47,7 @@ import org.pircbotx.TestUtils;
 
 /**
  * Test the output of PircBotX. Depend on ConnectTests to check mocked sockets
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
@@ -200,7 +201,7 @@ public class OutputTest {
 		aUser.send().invite(aChannel);
 		checkOutput("INVITE SourceUser :#aChannel");
 	}
-	
+
 	@Test(description = "Verify sendInvite to channel by string")
 	public void sendInviteUserStringTest() throws Exception {
 		aUser.send().invite("#aChannel");
@@ -220,7 +221,7 @@ public class OutputTest {
 		aChannel.send().invite(aUser);
 		checkOutput("INVITE SourceUser :#aChannel");
 	}
-	
+
 	public void sendInviteChannelStringTest() throws Exception {
 		aChannel.send().invite("randomUser");
 		checkOutput("INVITE randomUser :#aChannel");
@@ -288,6 +289,7 @@ public class OutputTest {
 
 	/**
 	 * Check the output for one line that equals the expected value.
+	 *
 	 * @param expected
 	 */
 	protected Iterator<String> checkOutput(String expected) throws IOException {

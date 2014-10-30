@@ -72,7 +72,7 @@ public class User extends UserHostmask {
 	protected User(UserHostmask hostmask) {
 		this(hostmask, hostmask.getBot().getUserChannelDao());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected User(UserHostmask hostmask, UserChannelDao<? extends User, ? extends Channel> dao) {
 		super(hostmask);
@@ -209,12 +209,12 @@ public class User extends UserHostmask {
 	public boolean isAway() {
 		return awayMessage != null;
 	}
-	
+
 	@Override
 	public boolean equals(Object user) {
 		return super.equals(user);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();

@@ -47,7 +47,8 @@ public class UserModeEvent<B extends PircBotX> extends Event<B> implements Gener
 	 * The user that set the mode.
 	 */
 	@Getter(onMethod = @_({
-		@Override, @Nullable}))
+		@Override,
+		@Nullable}))
 	protected final User user;
 	/**
 	 * The user hostmask that the mode operation applies to.
@@ -57,14 +58,15 @@ public class UserModeEvent<B extends PircBotX> extends Event<B> implements Gener
 	 * The user that the mode operation applies to.
 	 */
 	@Getter(onMethod = @_({
-		@Override, @Nullable}))
+		@Override,
+		@Nullable}))
 	protected final User recipient;
 	/**
 	 * The mode that has been set.
 	 */
 	protected final String mode;
 
-	public UserModeEvent(@NonNull B bot, @NonNull UserHostmask userHostmask, User user, 
+	public UserModeEvent(@NonNull B bot, @NonNull UserHostmask userHostmask, User user,
 			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String mode) {
 		super(bot);
 		this.userHostmask = user;

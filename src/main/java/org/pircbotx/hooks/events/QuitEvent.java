@@ -57,7 +57,7 @@ public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUs
 	 */
 	protected final String reason;
 
-	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, 
+	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot,
 			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;

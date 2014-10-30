@@ -59,7 +59,8 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * The user that performed the mode change.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The user hostmask that received the half-op
@@ -71,7 +72,8 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * The user that received the half-op
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User recipient;
 	/**
 	 * If the half-op status was given or removed.

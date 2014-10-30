@@ -42,8 +42,9 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 
 /**
- * Do various connect tests. Note that this is in a separate class since PircBotXOutputTest
- * relies on a working mock implementation
+ * Do various connect tests. Note that this is in a separate class since
+ * PircBotXOutputTest relies on a working mock implementation
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(groups = "ConnectTests", singleThreaded = true)
@@ -64,7 +65,7 @@ public class PircBotXConnectTest {
 	@BeforeMethod
 	public void botProvider() throws Exception {
 		//Setup stream
-		botIn = new ByteArrayInputStream(StringUtils.join(new String[] {
+		botIn = new ByteArrayInputStream(StringUtils.join(new String[]{
 			":ircd.test CAP * LS :sasl",
 			":ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b",
 			":ircd.test NOTICE * :*** Looking up your hostname...",
@@ -83,11 +84,11 @@ public class PircBotXConnectTest {
 		events = new ArrayList<Event>();
 		configurationBuilder = TestUtils.generateConfigurationBuilder()
 				.addListener(new Listener() {
-			public void onEvent(Event event) throws Exception {
-				LoggerFactory.getLogger(getClass()).debug("Called for " + event.getClass());
-				events.add(event);
-			}
-		})
+					public void onEvent(Event event) throws Exception {
+						LoggerFactory.getLogger(getClass()).debug("Called for " + event.getClass());
+						events.add(event);
+					}
+				})
 				.setName("PircBotXBot");
 	}
 
@@ -99,7 +100,7 @@ public class PircBotXConnectTest {
 		event = events.get(2);
 		assertTrue(event instanceof ConnectEvent, "Unknown third event: " + event);
 		assertEquals(event.getBot(), bot);
-		
+
 		event = events.get(5);
 		assertTrue(event instanceof DisconnectEvent, "Unknown fifth event: " + event);
 		assertEquals(event.getBot(), bot);

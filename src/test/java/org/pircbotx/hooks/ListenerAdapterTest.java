@@ -59,6 +59,7 @@ public class ListenerAdapterTest {
 
 	/**
 	 * Makes sure adapter uses all events
+	 *
 	 * @throws Exception
 	 */
 	@Test(dataProviderClass = TestUtils.class, dataProvider = "eventAllDataProvider", description = "Verify ListenerAdapter has methods for all events")

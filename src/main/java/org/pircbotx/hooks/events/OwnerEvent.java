@@ -58,7 +58,8 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 * The user that performed the mode change.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The user hostmask that received the owner status.
@@ -70,7 +71,8 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 * The user that received the owner status.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User recipient;
 	/**
 	 * If the owner status was given or removed

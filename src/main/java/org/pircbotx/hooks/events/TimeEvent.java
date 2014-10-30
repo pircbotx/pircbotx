@@ -35,9 +35,9 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
- * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
- * this event should <b>not</b> send a response as the user will get two
- * responses
+ * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager},
+ * Listeners of this event should <b>not</b> send a response as the user will
+ * get two responses
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -61,9 +61,10 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 * The user that sent the TIME request.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
-		
+
 	public TimeEvent(T bot, Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;

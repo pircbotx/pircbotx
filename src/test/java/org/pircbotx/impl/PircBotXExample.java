@@ -32,20 +32,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Basic example class for various features of PircBotX. Heavily documented
- * to explain what's going on
+ * Basic example class for various features of PircBotX. Heavily documented to
+ * explain what's going on
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXExample extends ListenerAdapter {
 	public static Logger log = LoggerFactory.getLogger(PircBotXExample.class);
+
 	/**
-	 * This example shows how to handle messages, actions, and notices from both 
-	 * channels and private messages. It also shows how to use WaitForQueue to 
-	 * have multi-line commands. 
+	 * This example shows how to handle messages, actions, and notices from both
+	 * channels and private messages. It also shows how to use WaitForQueue to
+	 * have multi-line commands.
+	 *
 	 * @param event A GenericMessageEvent from a channel or private message
-	 * @throws Exception If any Exceptions might be thrown, throw them up and let
-	 * the {@link ListenerManager} handle it. This can be removed though if not needed
+	 * @throws Exception If any Exceptions might be thrown, throw them up and
+	 * let the {@link ListenerManager} handle it. This can be removed though if
+	 * not needed
 	 */
 	@Override
 	public void onGenericMessage(final GenericMessageEvent event) throws Exception {
@@ -83,10 +86,12 @@ public class PircBotXExample extends ListenerAdapter {
 	}
 
 	/**
-	 * This basic example shows how to handle incoming DCC chat requests. It basically
-	 * repeats what the user said and says how many characters are in their message
+	 * This basic example shows how to handle incoming DCC chat requests. It
+	 * basically repeats what the user said and says how many characters are in
+	 * their message
+	 *
 	 * @param event A incoming DCC chat request event
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Override
 	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {

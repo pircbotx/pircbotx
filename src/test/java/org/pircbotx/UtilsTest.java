@@ -33,7 +33,7 @@ public class UtilsTest {
 	public Object[][] suffixDataProvider() {
 		return new Object[][]{{""}, {"    "}};
 	}
-	
+
 	@Test(dataProvider = "suffixDataProvider")
 	public void tokenizeChannelMessageTest(String suffix) {
 		List<String> tokens = Utils.tokenizeLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + testString + suffix);
