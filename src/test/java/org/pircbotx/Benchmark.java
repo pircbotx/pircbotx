@@ -20,12 +20,6 @@ package org.pircbotx;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.util.StatusPrinter;
-import com.google.common.io.ByteStreams;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.security.SecureRandom;
-import java.util.Random;
-import java.util.concurrent.Executors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.pircbotx.exception.IrcException;
@@ -33,11 +27,14 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.impl.PircBotXJMeter;
-import org.pircbotx.output.OutputRaw;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Random;
+import java.util.concurrent.Executors;
+
 /**
- *
  * @author Leon
  */
 public class Benchmark {
@@ -151,10 +148,11 @@ public class Benchmark {
 	}
 
 	/**
-	 * Copied from Collections.shuffle and Collections.swap, this is actually what 
+	 * Copied from Collections.shuffle and Collections.swap, this is actually what
 	 * they do, just on Collections instead of arrays
+	 *
 	 * @param array
-	 * @return 
+	 * @return
 	 */
 	private static final void shuffleArray(String[][] array, Random rnd) {
 		for (int i = array.length; i > 1; i--) {

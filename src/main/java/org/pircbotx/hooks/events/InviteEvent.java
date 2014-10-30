@@ -17,16 +17,17 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericUserEvent;
+
+import javax.annotation.Nullable;
 
 /**
  * Called when we are invited to a channel by a user.
@@ -40,13 +41,13 @@ public class InviteEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * The user that sent the invite.
 	 */
 	@Getter(onMethod = @_(
-		@Override, @Nullable))
+			@Override, @Nullable))
 	protected final User user;
 	/**
 	 * The user hostmask that sent the invite.
 	 */
 	@Getter(onMethod = @_(
-		@Override))
+			@Override))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The channel that we're being invited to. Provided as a string since we

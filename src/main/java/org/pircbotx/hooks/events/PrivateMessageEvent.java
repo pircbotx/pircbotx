@@ -17,16 +17,17 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
-import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericMessageEvent;
+
+import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever a private message is sent to us.

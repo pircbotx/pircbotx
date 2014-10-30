@@ -17,30 +17,27 @@
  */
 package org.pircbotx;
 
-import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
-import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
-import org.pircbotx.output.OutputUser;
+import org.pircbotx.snapshot.UserSnapshot;
+
+import java.util.UUID;
 
 /**
  * Represents a User on the server.
  *
- * @since PircBot 1.0.0
  * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
- * href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>
- * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
- * href="http://pircbotx.googlecode.com">PircBotX</a>
+ *         <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ *         href="http://www.jibble.org/pircbot.php">PircBot</a>
+ *         <p/>
+ *         Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ *         href="http://pircbotx.googlecode.com">PircBotX</a>
+ * @since PircBot 1.0.0
  */
 @Data
 @Setter(AccessLevel.PROTECTED)
@@ -72,7 +69,7 @@ public class User extends UserHostmask {
 	protected User(UserHostmask hostmask) {
 		this(hostmask, hostmask.getBot().getUserChannelDao());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected User(UserHostmask hostmask, UserChannelDao<? extends User, ? extends Channel> dao) {
 		super(hostmask);
@@ -178,7 +175,7 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Super Operator status in. Simply calls 
+	 * Get all channels user has Super Operator status in. Simply calls
 	 * {@link UserChannelDao#getUsersSuperOps(org.pircbotx.User) }
 	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
@@ -209,12 +206,12 @@ public class User extends UserHostmask {
 	public boolean isAway() {
 		return awayMessage != null;
 	}
-	
+
 	@Override
 	public boolean equals(Object user) {
 		return super.equals(user);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return super.hashCode();

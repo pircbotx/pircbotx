@@ -19,8 +19,8 @@
 
 -->
 <!DOCTYPE module PUBLIC
-          "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
-          "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+		"-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+		"http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <!--
 
@@ -29,10 +29,10 @@ Slightly modified version of standard sun coding convention
 -->
 
 <module name="Checker">
-    <!--
-        If you set the basedir property below, then all reported file
-        names will be relative to the specified directory. See
-        http://checkstyle.sourceforge.net/5.x/config.html#Checker
+	<!--
+		If you set the basedir property below, then all reported file
+		names will be relative to the specified directory. See
+		http://checkstyle.sourceforge.net/5.x/config.html#Checker
 
 		<property name="basedir" value="${basedir}"/>
 	-->
@@ -48,11 +48,11 @@ Slightly modified version of standard sun coding convention
 	<!-- Checks that property files contain the same keys.         -->
 	<!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
 	<module name="Translation"/>
-    
+
 	<!-- Checks for Size Violations.                    -->
 	<!-- See http://checkstyle.sf.net/config_sizes.html -->
 	<!-- Removed. SLOC != complexity <module name="FileLength"> -->
-	
+
 	<!-- Checks for whitespace                               -->
 	<!-- See http://checkstyle.sf.net/config_whitespace.html -->
 	<!-- Removed, its 2013. Use a real editor from the last 20 years so you can set your own width
@@ -103,14 +103,15 @@ Slightly modified version of standard sun coding convention
 		<!-- Checks for imports                              -->
 		<!-- See http://checkstyle.sf.net/config_import.html -->
 		<module name="AvoidStarImport"/>
-		<module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+		<module name="IllegalImport"/>
+		<!-- defaults to sun.* packages -->
 		<module name="RedundantImport"/>
 		<module name="UnusedImports"/>
 
 
 		<!-- Checks for Size Violations.                    -->
 		<!-- See http://checkstyle.sf.net/config_sizes.html -->
-		<!-- Removed, its 2013, use a real editor 
+		<!-- Removed, its 2013, use a real editor
 		<module name="LineLength"/>-->
 		<module name="MethodLength"/>
 		<module name="ParameterNumber"/>
@@ -128,12 +129,13 @@ Slightly modified version of standard sun coding convention
 		<module name="TypecastParenPad"/>
 		<module name="WhitespaceAfter"/>
 		<module name="WhitespaceAround"/>
-		
+
 		<!-- Enforce tabs instead of spaces -->
 		<module name="RegexpSinglelineJava">
 			<metadata name="net.sf.eclipsecs.core.comment" value="MAZ"/>
 			<property name="format" value="^\t* +\t*\S"/>
-			<property name="message" value="Line has leading space characters; indentation should be performed with tabs only."/>
+			<property name="message"
+			          value="Line has leading space characters; indentation should be performed with tabs only."/>
 			<property name="ignoreComments" value="true"/>
 		</module>
 
@@ -142,8 +144,8 @@ Slightly modified version of standard sun coding convention
 		<!-- See http://checkstyle.sf.net/config_modifiers.html -->
 		<module name="ModifierOrder"/>
 		<module name="RedundantModifier">
-			
-			 <property name="tokens" value="METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF"/>
+
+			<property name="tokens" value="METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF"/>
 		</module>
 
 

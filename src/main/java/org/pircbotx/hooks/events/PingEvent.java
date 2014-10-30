@@ -17,23 +17,24 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
+
+import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever we receive a PING request from another
  * user.
- * <p>
+ * <p/>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
  * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of

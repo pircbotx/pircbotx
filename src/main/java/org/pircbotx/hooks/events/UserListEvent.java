@@ -18,32 +18,32 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Set;
-import javax.annotation.Nullable;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericChannelEvent;
+
+import javax.annotation.Nullable;
 
 /**
  * This event is dispatched when we receive a user list from the server after
  * joining a channel.
- * <p>
+ * <p/>
  * Shortly after joining a channel, the IRC server sends a list of all users in
  * that channel. The PircBotX collects this information and dispatched this
  * event as soon as it has the full list.
- * <p>
+ * <p/>
  * To obtain the nick of each user in the channel, call the
  * {@link User#getNick()} method on each User object in {@link #getUsers() }
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
- * @see Channel#getUsers() 
+ * @see Channel#getUsers()
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -52,7 +52,7 @@ public class UserListEvent<B extends PircBotX> extends Event<B> implements Gener
 	 * The channel that the user list is from.
 	 */
 	@Getter(onMethod = @_({
-		@Override}))
+			@Override}))
 	protected final Channel channel;
 	/**
 	 * An <b>immutable</b> Set of Users belonging to this channel.

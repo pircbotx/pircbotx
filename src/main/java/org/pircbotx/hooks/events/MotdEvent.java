@@ -17,12 +17,13 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+
+import javax.annotation.Nullable;
 
 /**
  * This event is dispatched when the Motd is finished being sent. Motd lines are

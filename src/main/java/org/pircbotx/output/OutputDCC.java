@@ -18,10 +18,11 @@
 package org.pircbotx.output;
 
 import com.google.common.base.Joiner;
-import java.net.InetAddress;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.PircBotX;
 import org.pircbotx.dcc.DccHandler;
+
+import java.net.InetAddress;
 
 /**
  * Implementation of the DCC protocol. <b>NOTE: This class will not handle the

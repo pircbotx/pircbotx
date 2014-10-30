@@ -18,22 +18,23 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
-import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.ReplyConstants;
+import org.pircbotx.hooks.Event;
+
+import javax.annotation.Nullable;
 
 /**
  * This is called when we receive a numeric response from the IRC server.
- * <p>
+ * <p/>
  * Numerics in the range from 001 to 099 are used for client-server connections
  * only and should never travel between servers. Replies generated in response
  * to commands are found in the range from 200 to 399. Error replies are found
  * in the range from 400 to 599.
- * <p>
+ * <p/>
  * For example, we can use this event to discover the topic of a channel when we
  * join it. If we join the channel #test which has a topic of &quot;I am King of
  * Test&quot; then the response will be &quot;
@@ -41,12 +42,12 @@ import org.pircbotx.ReplyConstants;
  * signify that this is a topic. (This is just an example - note that listening
  * for {@link TopicEvent} is an easier way of finding the topic for a channel).
  * Check the IRC RFC for the full list of other command response codes.
- * <p>
+ * <p/>
  * PircBotX uses the class ReplyConstants, which contains constants that you may
  * find useful here.
  *
- * @see ReplyConstants
  * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @see ReplyConstants
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

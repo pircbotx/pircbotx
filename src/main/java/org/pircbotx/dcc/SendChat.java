@@ -17,10 +17,11 @@
  */
 package org.pircbotx.dcc;
 
+import org.pircbotx.User;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import org.pircbotx.User;
 
 /**
  * A DCC Chat initiated by the bot.

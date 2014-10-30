@@ -18,11 +18,12 @@
 package org.pircbotx.cap;
 
 import com.google.common.collect.ImmutableList;
-import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.ToString;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
+
+import javax.net.ssl.SSLSocketFactory;
 
 /**
  * CAP STARTTLS support <b>*MUST BE LAST CAP HANDLER*</b>. Due to how STARTTLS

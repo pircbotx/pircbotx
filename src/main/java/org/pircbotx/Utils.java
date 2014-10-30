@@ -18,11 +18,12 @@
 package org.pircbotx;
 
 import com.google.common.base.CharMatcher;
+import org.pircbotx.hooks.Event;
+import org.slf4j.MDC;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.pircbotx.hooks.Event;
-import org.slf4j.MDC;
 
 /**
  * Useful utilities for internal PircBotX use. Users should not use this class
@@ -88,7 +89,7 @@ public final class Utils {
 	 * can stay protected but still be callable from the org.pircbotx.output
 	 * package
 	 *
-	 * @param bot The bot that sends the raw line
+	 * @param bot     The bot that sends the raw line
 	 * @param rawLine The raw line to send
 	 */
 	public static void sendRawLineToServer(PircBotX bot, String rawLine) throws IOException {

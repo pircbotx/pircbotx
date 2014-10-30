@@ -17,14 +17,12 @@
  */
 package org.pircbotx;
 
-import java.lang.reflect.Method;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
 /**
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestLogger extends TestListenerAdapter {

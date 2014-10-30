@@ -17,18 +17,19 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
+
+import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever someone (possibly us) parts a channel which
@@ -61,7 +62,7 @@ public class PartEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	protected final String reason;
 
 	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel,
-			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
+	                 @NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
 		this.channel = channel;

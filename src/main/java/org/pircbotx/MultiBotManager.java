@@ -20,24 +20,8 @@ package org.pircbotx;
 import com.google.common.base.Joiner;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-import static com.google.common.util.concurrent.Service.State;
-import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableSortedSet;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.google.common.util.concurrent.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
@@ -47,10 +31,21 @@ import org.pircbotx.output.OutputIRC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.util.concurrent.Service.State;
+
 /**
  * Manager that makes connecting and running multiple bots an easy, painless
  * process.
- * <p>
+ * <p/>
  * Lifecycle:
  * <ol><li>When created, any added bots or configurations are queued</li>
  * <li>When {@link #start()} is called, all queued bots are connected. Any bots
@@ -71,10 +66,10 @@ public class MultiBotManager<B extends PircBotX> {
 	protected final BiMap<B, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
+	protected final Object stateLock = new Object[0];
 	//Code for starting
 	protected List<B> startQueue = new ArrayList<B>();
 	protected State state = State.NEW;
-	protected final Object stateLock = new Object[0];
 
 	/**
 	 * Create MultiBotManager with a cached thread pool.

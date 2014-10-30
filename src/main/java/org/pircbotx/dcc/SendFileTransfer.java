@@ -17,16 +17,13 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.Socket;
 import lombok.Cleanup;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+
+import java.io.*;
+import java.net.Socket;
 
 /**
  * A DCC File Transfer initiated by the bot

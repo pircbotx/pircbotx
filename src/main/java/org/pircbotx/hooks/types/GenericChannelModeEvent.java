@@ -22,6 +22,7 @@ import org.pircbotx.PircBotX;
 /**
  * Generic Channel Mode (not users status in the channel) change event
  * <p/>
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericChannelModeEvent<T extends PircBotX> extends GenericChannelUserEvent<T> {

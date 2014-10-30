@@ -18,19 +18,19 @@
     PircBotX. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<ruleset name="myExclude"
-		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         name="myExclude"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>Exclude unnessesary rules</description>
-	
+
 	<rule ref="rulesets/java/basic.xml">
 	</rule>
-	
+
 	<rule ref="rulesets/java/unusedcode.xml">
 		<exclude name="UnusedModifier"/>
 	</rule>
-	
+
 	<rule ref="rulesets/java/imports.xml">
 	</rule>
 </ruleset>

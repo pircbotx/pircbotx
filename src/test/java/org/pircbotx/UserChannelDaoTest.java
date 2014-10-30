@@ -20,6 +20,7 @@ package org.pircbotx;
 import org.pircbotx.exception.DaoException;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
 import static org.testng.Assert.*;
 
 /**
@@ -44,7 +45,7 @@ public class UserChannelDaoTest {
 	public void getUserInvalidTest() {
 		smallBot.getUserChannelDao().getUser("RandomInvalidUser");
 	}
-	
+
 	@Test
 	public void getUserValidTest() {
 		User origUser = TestUtils.generateTestUserSource(smallBot);
@@ -56,7 +57,7 @@ public class UserChannelDaoTest {
 	public void getChannelInvalidTest() {
 		dao.getChannel("#randomChannel");
 	}
-	
+
 	@Test(description = "Make sure channel doesn't return null and reliably returns the correct value")
 	public void getChannelValidTest() {
 		Channel channel = dao.createChannel("#aChannel");

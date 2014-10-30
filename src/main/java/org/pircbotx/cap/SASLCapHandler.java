@@ -27,7 +27,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
 /**
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -42,7 +41,8 @@ public class SASLCapHandler implements CapHandler {
 	/**
 	 * Create SASLCapHandler not ignoring failed authentication and throwing a
 	 * CapException
-	 * <p>
+	 * <p/>
+	 *
 	 * @param username
 	 * @param password
 	 */
@@ -63,7 +63,7 @@ public class SASLCapHandler implements CapHandler {
 
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) {
 		if (capabilities.contains("sasl")) {
-			//Server acknowledges our request to use sasl 
+			//Server acknowledges our request to use sasl
 			bot.sendRaw().rawLineNow("AUTHENTICATE PLAIN");
 			//Still not finished
 			return false;
@@ -78,7 +78,7 @@ public class SASLCapHandler implements CapHandler {
 			bot.sendRaw().rawLineNow("AUTHENTICATE " + encodedAuth);
 		}
 
-		//Check for 904 and 905 
+		//Check for 904 and 905
 		String[] parsedLine = rawLine.split(" ", 4);
 		if (parsedLine.length >= 1)
 			if (parsedLine[1].equals("904") || parsedLine[1].equals("905")) {

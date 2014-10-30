@@ -21,6 +21,6 @@
 <FindBugsFilter>
 	<Match>
 		<!-- Treating runtime exceptions as special is rarely what we want to do -->
-		<Bug pattern="REC_CATCH_EXCEPTION" />
+		<Bug pattern="REC_CATCH_EXCEPTION"/>
 	</Match>
 </FindBugsFilter>
