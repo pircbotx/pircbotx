@@ -73,7 +73,7 @@ public class UserHostmask implements Comparable<User> {
 
 	public UserHostmask(PircBotX bot, String rawHostmask) {
 		this.bot = bot;
-		if(StringUtils.containsAny(rawHostmask, "!@")) {
+		if (StringUtils.containsAny(rawHostmask, "!@")) {
 			this.hostmask = rawHostmask;
 			String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
 			this.nick = hostmaskParts[0];
@@ -86,7 +86,7 @@ public class UserHostmask implements Comparable<User> {
 			this.hostname = null;
 		}
 	}
-	
+
 	public UserHostmask(UserHostmask otherHostmask) {
 		this.bot = otherHostmask.getBot();
 		this.hostmask = otherHostmask.getHostmask();

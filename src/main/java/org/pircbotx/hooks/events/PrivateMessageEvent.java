@@ -46,7 +46,8 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 	 * The user who sent the private message.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The actual message.

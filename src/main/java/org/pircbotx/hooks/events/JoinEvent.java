@@ -48,7 +48,8 @@ public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * The user who joined the channel.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The user hostmask who joined the channel.

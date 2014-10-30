@@ -122,16 +122,16 @@ public class Benchmark {
 				.setListenerManager(listenerManager)
 				.addListener(new PircBotXJMeter())
 				.buildConfiguration()) {
-			@Override
-			public boolean isConnected() {
-				return true;
-			}
+					@Override
+					public boolean isConnected() {
+						return true;
+					}
 
-			@Override
-			protected void sendRawLineToServer(String line) {
-				//Do nothing
-			}
-		};
+					@Override
+					protected void sendRawLineToServer(String line) {
+						//Do nothing
+					}
+				};
 		inputParser = bot.getInputParser();
 
 		System.out.println("Waiting 5 seconds");
@@ -151,10 +151,11 @@ public class Benchmark {
 	}
 
 	/**
-	 * Copied from Collections.shuffle and Collections.swap, this is actually what 
-	 * they do, just on Collections instead of arrays
+	 * Copied from Collections.shuffle and Collections.swap, this is actually
+	 * what they do, just on Collections instead of arrays
+	 *
 	 * @param array
-	 * @return 
+	 * @return
 	 */
 	private static final void shuffleArray(String[][] array, Random rnd) {
 		for (int i = array.length; i > 1; i--) {

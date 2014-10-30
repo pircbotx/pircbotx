@@ -45,16 +45,16 @@ public class TestUtils {
 	static {
 		//when getting a logged exception, fail immediately
 		Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		
-		if(loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
+
+		if (loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
 			ExceptionStopperAppender exAppender = new ExceptionStopperAppender();
 			exAppender.setContext(loggerRoot.getLoggerContext());
 			exAppender.start();
-			
+
 			loggerRoot.addAppender(exAppender);
 		}
 	}
-	
+
 	@DataProvider
 	public static Object[][] eventObjectDataProvider() throws IOException {
 		return generateEventArguments(true, false);
@@ -69,19 +69,19 @@ public class TestUtils {
 	public static Object[][] eventAllDataProvider() throws IOException {
 		return generateEventArguments(true, true);
 	}
-	
+
 	public static UserHostmask generateTestUserSourceHostmask(PircBotX bot) {
 		return new UserHostmask(bot, "SourceUser", "~SomeTest", "host.test");
 	}
-	
+
 	public static User generateTestUserSource(PircBotX bot) {
 		return bot.getUserChannelDao().createUser(generateTestUserSourceHostmask(bot));
 	}
-	
+
 	public static UserHostmask generateTestUserOtherHostmask(PircBotX bot) {
 		return new UserHostmask(bot, "OtherUser", "~SomeTest", "host.test");
 	}
-	
+
 	public static User generateTestUserOther(PircBotX bot) {
 		return bot.getUserChannelDao().createUser(generateTestUserOtherHostmask(bot));
 	}
@@ -145,8 +145,10 @@ public class TestUtils {
 		}
 
 		/**
-		 * Modified copy of AppenderBase.doAppend() with exception logging removed
-		 * @param eventObject 
+		 * Modified copy of AppenderBase.doAppend() with exception logging
+		 * removed
+		 *
+		 * @param eventObject
 		 */
 		@Override
 		public synchronized void doAppend(ILoggingEvent eventObject) {

@@ -39,7 +39,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 	 * The raw line that was received from the server.
 	 */
 	@Getter(onMethod = @_(
-		@Nonnull))
+			@Nonnull))
 	protected final String line;
 
 	public UnknownEvent(T bot, @NonNull String line) {

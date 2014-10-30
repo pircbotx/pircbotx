@@ -57,7 +57,8 @@ public class SetTopicProtectionEvent<T extends PircBotX> extends Event<T> implem
 	 * The user that performed the mode change.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 
 	public SetTopicProtectionEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {

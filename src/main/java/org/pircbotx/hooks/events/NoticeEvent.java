@@ -48,7 +48,8 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * The user that sent the notice.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The target channel of the notice. A value of <code>null</code> means that

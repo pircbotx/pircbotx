@@ -49,7 +49,8 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * The user that sent the action.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The channel that the action message was sent in. A value of

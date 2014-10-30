@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License along with
  * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.pircbotx.hooks.types;
 
 import org.pircbotx.PircBotX;
@@ -24,6 +23,6 @@ import org.pircbotx.PircBotX;
  *
  * @author Leon
  */
-public interface GenericChannelModeRecipientEvent<T extends PircBotX> extends GenericUserModeEvent<T>, GenericChannelModeEvent<T>{
-	
+public interface GenericChannelModeRecipientEvent<T extends PircBotX> extends GenericUserModeEvent<T>, GenericChannelModeEvent<T> {
+
 }

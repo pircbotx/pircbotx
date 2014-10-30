@@ -54,13 +54,15 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * The user that set the mode.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that set the mode.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The mode that has been set.
@@ -68,7 +70,7 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	protected final String mode;
 	protected final ImmutableList<String> modeParsed;
 
-	public ModeEvent(T bot, @NonNull Channel channel, UserHostmask userHostmask, 
+	public ModeEvent(T bot, @NonNull Channel channel, UserHostmask userHostmask,
 			User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
 		super(bot);
 		this.channel = channel;

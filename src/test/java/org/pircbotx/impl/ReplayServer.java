@@ -30,16 +30,13 @@ import org.pircbotx.PircBotX;
 /**
  * Helpful server for replaying a raw log to the bot.
  * <p>
- * <b>NOTE:</b> In order to avoid write exceptions in the client you must override
- * {@link PircBotX#sendRawLine(java.lang.String) } to simply print the output
- * instead of sending it to this server!
- * <code>
+ * <b>NOTE:</b> In order to avoid write exceptions in the client you must
+ * override {@link PircBotX#sendRawLine(java.lang.String) } to simply print the
+ * output instead of sending it to this server!  <code>
  * PircBotX bot = new PircBotX() {
- * @Override
- * public void sendRawLine(String line) {
- * System.out.println(">>>" + line);
- * }
- * };
+ *
+ * @Override public void sendRawLine(String line) { System.out.println(">>>" +
+ * line); } };
  * </code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */

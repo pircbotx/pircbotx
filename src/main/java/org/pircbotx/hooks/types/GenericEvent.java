@@ -34,8 +34,7 @@ public interface GenericEvent<T extends PircBotX> extends Comparable<Event<T>> {
 	public void respond(String response);
 
 	/**
-	 * The {@link PircBotX} instance that this event originally came
-	 * from
+	 * The {@link PircBotX} instance that this event originally came from
 	 *
 	 * @return A {@link PircBotX} instance
 	 */
@@ -45,7 +44,7 @@ public interface GenericEvent<T extends PircBotX> extends Comparable<Event<T>> {
 	 * The timestamp of when the event was created
 	 *
 	 * @return A timestamp as a long
-	 * @see System#currentTimeMillis() 
+	 * @see System#currentTimeMillis()
 	 */
 	public long getTimestamp();
 }

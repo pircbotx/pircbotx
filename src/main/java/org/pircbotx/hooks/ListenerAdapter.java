@@ -342,7 +342,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onGenericChannelMode(GenericChannelModeEvent<T> event) throws Exception {
 	}
-	
+
 	public void onGenericChannelModeRecipient(GenericChannelModeRecipientEvent<T> event) throws Exception {
 	}
 

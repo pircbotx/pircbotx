@@ -46,7 +46,7 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 			@Override))
 	protected final Channel channel;
 	/**
-	 * The user hostmask that performed the kick. 
+	 * The user hostmask that performed the kick.
 	 */
 	@Getter(onMethod = @_(
 			@Override))
@@ -55,7 +55,8 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * The user who performed the kick.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The unfortunate recipient hostmask of the kick.
@@ -67,7 +68,8 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 * The unfortunate recipient of the kick.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User recipient;
 	/**
 	 * The reason given by the user who performed the kick.

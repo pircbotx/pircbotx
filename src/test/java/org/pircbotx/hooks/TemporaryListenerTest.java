@@ -62,7 +62,7 @@ public class TemporaryListenerTest {
 		assertTrue(listenerManager.listenerExists(listener), "Listener doesn't exist in ListenerManager");
 
 		//Send some arbitrary line
-		bot.getInputParser().handleLine(":"+userSource.getHostmask()+" PRIVMSG #aChannel :Some very long message");
+		bot.getInputParser().handleLine(":" + userSource.getHostmask() + " PRIVMSG #aChannel :Some very long message");
 		MessageEvent mevent = mutableEvent.getValue();
 
 		//Verify event contents
@@ -84,7 +84,7 @@ public class TemporaryListenerTest {
 		listenerManager.addListener(listener);
 
 		assertTrue(listenerManager.listenerExists(listener), "Listener wasn't added to ListenerManager");
-		bot.getInputParser().handleLine(":"+userSource.getHostmask()+" PRIVMSG #aChannel :Some very long message");
+		bot.getInputParser().handleLine(":" + userSource.getHostmask() + " PRIVMSG #aChannel :Some very long message");
 		assertFalse(listenerManager.listenerExists(listener), "Listener wasn't removed from ListenerManager");
 	}
 }

@@ -143,7 +143,7 @@ Slightly modified version of standard sun coding convention
 		<module name="ModifierOrder"/>
 		<module name="RedundantModifier">
 			
-			 <property name="tokens" value="METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF"/>
+			<property name="tokens" value="METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF"/>
 		</module>
 
 

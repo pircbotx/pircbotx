@@ -57,7 +57,8 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericChan
 	 * The user that performed the mode change
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The user hostmask that received the Operator status
@@ -69,7 +70,8 @@ public class OpEvent<T extends PircBotX> extends Event<T> implements GenericChan
 	 * The user that received the Operator status
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User recipient;
 	/**
 	 * If the operator status was given or removed.

@@ -43,7 +43,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
- * @see Channel#getUsers() 
+ * @see Channel#getUsers()
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
