@@ -31,7 +31,6 @@ public class WaitForQueueTest {
 		
 		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class, MotdEvent.class));
 		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class));
-		event = queue.waitFor(Arrays.asList(MessageEvent.class));
 	}
 }
 
