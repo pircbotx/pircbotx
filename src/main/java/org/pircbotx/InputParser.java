@@ -502,12 +502,14 @@ public class InputParser implements Closeable {
 			} else
 				// An unknown CTCP message - ignore it.
 				configuration.getListenerManager().dispatchEvent(new UnknownEvent<PircBotX>(bot, line));
-		} else if (command.equals("PRIVMSG") && channel != null)
+		} else if (command.equals("PRIVMSG") && channel != null) {
 			// This is a normal message to a channel.
+			sourceUser = createUserIfNull(sourceUser, source);
 			configuration.getListenerManager().dispatchEvent(new MessageEvent<PircBotX>(bot, channel, source, sourceUser, message));
-		else if (command.equals("PRIVMSG")) {
+		} else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
 			//Add to private message
+			sourceUser = createUserIfNull(sourceUser, source);
 			bot.getUserChannelDao().addUserToPrivate(sourceUser);
 			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent<PircBotX>(bot, source, sourceUser, message));
 		} else if (command.equals("JOIN")) {
@@ -537,16 +539,18 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new PartEvent<PircBotX>(bot, daoSnapshot, channelSnapshot, source, sourceSnapshot, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
+			sourceUser = createUserIfNull(sourceUser, source);
 			String newNick = target;
 			bot.getUserChannelDao().renameUser(sourceUser, newNick);
 			if (source.getNick().equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
 				bot.setNick(newNick);
 			configuration.getListenerManager().dispatchEvent(new NickChangeEvent<PircBotX>(bot, source.getNick(), newNick, source, sourceUser));
-		} else if (command.equals("NOTICE"))
+		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
+			sourceUser = createUserIfNull(sourceUser, source);
 			configuration.getListenerManager().dispatchEvent(new NoticeEvent<PircBotX>(bot, source, sourceUser, channel, message));
-		else if (command.equals("QUIT")) {
+		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
 			UserSnapshot sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
 			//A real target is missing, so index is off
@@ -569,6 +573,7 @@ public class InputParser implements Closeable {
 				bot.getUserChannelDao().removeUserFromChannel(recipient, channel);
 			configuration.getListenerManager().dispatchEvent(new KickEvent<PircBotX>(bot, channel, source, sourceUser, recipientHostmask, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
+			sourceUser = createUserIfNull(sourceUser, source);
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
 			if (mode.startsWith(":"))
@@ -581,6 +586,7 @@ public class InputParser implements Closeable {
 			processMode(source, sourceUser, target, mode);
 		} else if (command.equals("TOPIC")) {
 			// Someone is changing the topic.
+			sourceUser = createUserIfNull(sourceUser, source);
 			long currentTime = System.currentTimeMillis();
 			String oldTopic = channel.getTopic();
 			channel.setTopic(message);
@@ -590,6 +596,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new TopicEvent<PircBotX>(bot, channel, oldTopic, message, source.getNick(), currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
+			sourceUser = createUserIfNull(sourceUser, source);
 			configuration.getListenerManager().dispatchEvent(new InviteEvent<PircBotX>(bot, source, sourceUser, message));
 		} else if (command.equals("AWAY"))
 			//IRCv3 AWAY notify
@@ -858,10 +865,9 @@ public class InputParser implements Closeable {
 
 	public User createUserIfNull(User otherUser, UserHostmask hostmask) {
 		if (otherUser != null)
-			if (bot.getUserChannelDao().containsUser(otherUser))
-				throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
-			else
 				return otherUser;
+		else if (bot.getUserChannelDao().containsUser(hostmask))
+				throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
 		return bot.getUserChannelDao().createUser(hostmask);
 	}
 
