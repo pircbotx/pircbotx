@@ -22,6 +22,8 @@ import java.util.List;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.MotdEvent;
+import org.pircbotx.hooks.types.GenericCTCPEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.testng.collections.Lists;
 
 /**
@@ -45,6 +47,10 @@ public class WaitForQueueTest {
 		
 		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class, MotdEvent.class));
 		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class));
+		
+		GenericMessageEvent gevent =  queue.waitFor(GenericMessageEvent.class);
+		event = queue.waitFor(Arrays.asList(GenericMessageEvent.class, GenericCTCPEvent.class));
+		event = queue.waitFor(Arrays.asList(GenericMessageEvent.class, ActionEvent.class));
 		
 		//This does not compile for some reason
 		//However there is 0 reason to use this syntax
