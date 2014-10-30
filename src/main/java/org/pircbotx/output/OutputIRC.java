@@ -17,17 +17,15 @@
  */
 package org.pircbotx.output;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.DisconnectEvent;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Implements the basic IRC protocol.
@@ -53,7 +51,7 @@ public class OutputIRC {
 	 * Joins a channel with a key.
 	 *
 	 * @param channel The name of the channel to join (eg "#cs").
-	 * @param key     The key that will be used to join the channel.
+	 * @param key The key that will be used to join the channel.
 	 */
 	public void joinChannel(String channel, String key) {
 		checkArgument(StringUtils.isNotBlank(channel), "Channel '%s' is blank", channel);
@@ -90,10 +88,11 @@ public class OutputIRC {
 	 * type of response to such commands is largely dependant on the target
 	 * client software.
 	 *
-	 * @param target  The name of the channel or user to send the CTCP message
-	 *                to.
-	 * @param command The CTCP command to send.
 	 * @since PircBot 0.9.5
+	 *
+	 * @param target The name of the channel or user to send the CTCP message
+	 * to.
+	 * @param command The CTCP command to send.
 	 */
 	public void ctcpCommand(String target, String command) {
 		checkArgument(StringUtils.isNotBlank(target), "Target '%s' is blank", target, command);
@@ -106,7 +105,7 @@ public class OutputIRC {
 	 * {@link CoreHooks} class already handles responding to the most common
 	 * CTCP commands. Only respond to other commands that aren't implemented
 	 *
-	 * @param target  The target of the response
+	 * @param target The target of the response
 	 * @param message The message to send
 	 */
 	public void ctcpResponse(String target, String message) {
@@ -118,19 +117,20 @@ public class OutputIRC {
 	 * Sends a message to a channel or a private message to a user. These
 	 * messages are added to the outgoing message queue and sent at the earliest
 	 * possible opportunity.
-	 * <p/>
+	 * <p>
 	 * Some examples: -
 	 * <pre>    // Send the message "Hello!" to the channel #cs.
 	 *    sendMessage("#cs", "Hello!");
-	 * <p/>
+	 *
 	 *    // Send a private message to Paul that says "Hi".
 	 *    sendMessage("Paul", "Hi");</pre>
-	 * <p/>
+	 *
 	 * You may optionally apply colours, boldness, underlining, etc to the
 	 * message by using the <code>Colors</code> class.
 	 *
-	 * @param target  The name of the channel or user nick to send to.
+	 * @param target The name of the channel or user nick to send to.
 	 * @param message The message to send.
+	 *
 	 * @see Colors
 	 */
 	public void message(String target, String message) {
@@ -143,6 +143,7 @@ public class OutputIRC {
 	 *
 	 * @param target The name of the channel or user nick to send to.
 	 * @param action The action to send.
+	 *
 	 * @see Colors
 	 */
 	public void action(String target, String action) {
@@ -178,8 +179,9 @@ public class OutputIRC {
 	 * "invite-only", so it may be useful to allow a bot to invite people into
 	 * it.
 	 *
-	 * @param target  The nick or channel to invite
+	 * @param target The nick or channel to invite
 	 * @param channel The channel you are inviting them to join.
+	 *
 	 */
 	public void invite(String target, String channel) {
 		checkArgument(StringUtils.isNotBlank(target), "Nick '%s' is blank", target);
@@ -192,7 +194,7 @@ public class OutputIRC {
 	 * PircBotX receives information for each channel, a
 	 * {@link ChannelInfoEvent} will be dispatched which you will need to listen
 	 * for if you want to do anything useful.
-	 * <p/>
+	 * <p>
 	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 *
 	 * @see ChannelInfoEvent
@@ -206,15 +208,16 @@ public class OutputIRC {
 	 * PircBotX receives information for each channel, a
 	 * {@link ChannelInfoEvent} will be dispatched which you will need to listen
 	 * for if you want to do anything useful
-	 * <p/>
+	 * <p>
 	 * Some IRC servers support certain parameters for LIST requests. One
 	 * example is a parameter of ">10" to list only those channels that have
 	 * more than 10 users in them. Whether these parameters are supported or not
 	 * will depend on the IRC server software.
-	 * <p/>
+	 * <p>
 	 * <b>NOTE:</b> This will do nothing if a channel list is already in effect
 	 *
 	 * @param parameters The parameters to supply when requesting the list.
+	 *
 	 * @see ChannelInfoEvent
 	 */
 	public void listChannels(String parameters) {
@@ -234,7 +237,7 @@ public class OutputIRC {
 	 * with NickServ, this method can be used to <i>identify</i> with the
 	 * supplied password. It usually makes sense to identify with NickServ
 	 * immediately after connecting to a server.
-	 * <p/>
+	 * <p>
 	 * This method issues a raw NICKSERV command to the server, and is therefore
 	 * safer than the alternative approach of sending a private message to
 	 * NickServ. The latter approach is considered dangerous, as it may cause
@@ -244,13 +247,13 @@ public class OutputIRC {
 	 * network is only compatible with the private message approach, you may
 	 * typically identify like so:
 	 * <pre>sendMessage("NickServ", "identify PASSWORD");</pre>
-	 * <p/>
+	 * <p>
 	 * Note that this method will add a temporary listener for ConnectEvent if
 	 * the bot is not logged in yet. If the bot is logged in the command is sent
 	 * immediately to the server
 	 *
 	 * @param password The password which will be used to identify with
-	 *                 NickServ.
+	 * NickServ.
 	 */
 	public void identify(final String password) {
 		checkArgument(StringUtils.isNotBlank(password), "Password '%s' is blank", password);

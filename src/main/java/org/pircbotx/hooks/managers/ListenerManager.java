@@ -18,14 +18,13 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Manages {@link Listener}'s and handles dispatching events
@@ -81,21 +80,21 @@ public abstract class ListenerManager<B extends PircBotX> {
 	public abstract ImmutableSet<Listener<B>> getListeners();
 
 	/**
-	 * Get the current id for the next event
-	 *
-	 * @return The current id
-	 */
-	public long getCurrentId() {
-		return currentId.get();
-	}
-
-	/**
 	 * Reset the current id to the specified value for the next event
 	 *
 	 * @param currentId The id to set this ListenerManager to
 	 */
 	public void setCurrentId(long currentId) {
 		this.currentId.set(currentId);
+	}
+
+	/**
+	 * Get the current id for the next event
+	 *
+	 * @return The current id
+	 */
+	public long getCurrentId() {
+		return currentId.get();
 	}
 
 	/**

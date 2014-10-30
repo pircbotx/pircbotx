@@ -18,65 +18,58 @@
 package org.pircbotx;
 
 import com.google.common.base.Preconditions;
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A simple IdentServer (also know as "The Identification Protocol"). An ident
  * server provides a means to determine the identity of a user of a particular
  * TCP connection.
- * <p/>
+ * <p>
  * Most IRC servers attempt to contact the ident server on connecting hosts in
  * order to determine the user's identity. A few IRC servers will not allow you
  * to connect unless this information is provided.
- * <p/>
+ * <p>
  * So when a PircBotX is run on a machine that does not run an ident server, it
  * may be necessary to provide a "faked" response by starting up its own ident
  * server and sending out apparently correct responses.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
  * @since PircBot 0.9c
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
 public class IdentServer implements Closeable, Runnable {
 	protected static final int DEFAULT_PORT = 113;
-	protected static final Object INSTANCE_CREATE_LOCK = new Object();
 	@Setter(AccessLevel.PROTECTED)
 	@Getter(AccessLevel.PROTECTED)
 	protected static IdentServer server;
+	protected static final Object INSTANCE_CREATE_LOCK = new Object();
 	protected final InetAddress localAddress;
 	protected final Charset encoding;
 	protected final ServerSocket serverSocket;
 	protected final List<IdentEntry> identEntries = new ArrayList<IdentEntry>();
 	protected Thread runningThread;
 	protected int port;
-
-	/**
-	 * Create an ident server on port 113 with the specified encoding
-	 *
-	 * @param encoding Encoding to use for sockets
-	 */
-	protected IdentServer(Charset encoding, InetAddress localAddress, int port) {
-		try {
-			this.encoding = encoding;
-			this.localAddress = localAddress;
-			this.serverSocket = new ServerSocket(port, 50, localAddress);
-			this.port = port;
-		} catch (Exception e) {
-			throw new RuntimeException("Could not create server socket for IdentServer on " + localAddress.toString() + ", port " + port, e);
-		}
-	}
 
 	/**
 	 * Start the ident server with the systems default charset.
@@ -116,6 +109,22 @@ public class IdentServer implements Closeable, Runnable {
 			throw new RuntimeException("Never created an IdentServer");
 		server.close();
 		server = null;
+	}
+
+	/**
+	 * Create an ident server on port 113 with the specified encoding
+	 *
+	 * @param encoding Encoding to use for sockets
+	 */
+	protected IdentServer(Charset encoding, InetAddress localAddress, int port) {
+		try {
+			this.encoding = encoding;
+			this.localAddress = localAddress;
+			this.serverSocket = new ServerSocket(port, 50, localAddress);
+			this.port = port;
+		} catch (Exception e) {
+			throw new RuntimeException("Could not create server socket for IdentServer on " + localAddress.toString() + ", port " + port, e);
+		}
 	}
 
 	/**
@@ -233,7 +242,7 @@ public class IdentServer implements Closeable, Runnable {
 	protected void removeIdentEntry(InetAddress remoteAddress, int remotePort, int localPort, String login) {
 		synchronized (identEntries) {
 			log.debug("Removed ident entry for address " + remoteAddress + " on port " + remotePort + " for local port " + localPort + " for " + login);
-			for (Iterator<IdentEntry> itr = identEntries.iterator(); itr.hasNext(); ) {
+			for (Iterator<IdentEntry> itr = identEntries.iterator(); itr.hasNext();) {
 				IdentEntry curEntry = itr.next();
 				if (curEntry.getRemoteAddress().equals(remoteAddress) && curEntry.getRemotePort() == remotePort
 						&& curEntry.getLocalPort() == localPort && curEntry.getLogin().equals(login))

@@ -17,24 +17,23 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * Called when a channel is set to 'moderated' mode. If a channel is moderated,
  * then only users who have been 'voiced' or 'opped' may speak or change their
  * nicks.
- * <p/>
+ * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  *
@@ -63,7 +62,7 @@ public class SetModeratedEvent<T extends PircBotX> extends Event<T> implements G
 	/**
 	 * Respond by send a message in the channel to the user that set the mode in
 	 * <code>user: message</code> format
-	 * <p/>
+	 * <p>
 	 * Note that depending on the bots status in the channel the message may not
 	 * get through
 	 *

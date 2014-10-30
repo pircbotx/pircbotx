@@ -17,69 +17,30 @@
  */
 package org.pircbotx.impl;
 
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.*;
+import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
+import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.KickEvent;
+import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.SocketConnectEvent;
+import org.pircbotx.hooks.events.UnknownEvent;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 /**
+ *
  * @author lordquackstar
  */
 public class PircBotXJMeter extends ListenerAdapter {
-	public static void main(String[] args) {
-		if (args.length != 1) {
-			System.err.println("No JMeter IRC server specified");
-			System.exit(2);
-		}
-		String server = args[0];
-		System.out.println("Connecting to server: " + server);
-
-		//Our custom thread pool (copied Executors.newCachedThreadPool)
-		final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-
-		//Print thread count every 2 seconds
-		new Thread() {
-			@Override
-			public void run() {
-				while (true) {
-					System.out.println("Pool Size: " + executor.getPoolSize());
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}.start();
-
-		Configuration configuration = new Configuration.Builder()
-				.setName("jmeterBot")
-				.setMessageDelay(0)
-				.setListenerManager(new ThreadedListenerManager(executor))
-				.addListener(new PircBotXJMeter())
-				.addAutoJoinChannel("#jmeter")
-				.buildConfiguration();
-
-		//bot.connect throws various exceptions for failures
-		try {
-			PircBotX bot = new PircBotX(configuration);
-			//Connect to the freenode IRC network
-			bot.startBot();
-		} //In your code you should catch and handle each exception seperately,
-		//but here we just lump them all togeather for simpliciy
-		catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
 	@Override
 	public void onGenericMessage(GenericMessageEvent event) throws Exception {
 		event.respond(event.getMessage().trim());
@@ -134,5 +95,51 @@ public class PircBotXJMeter extends ListenerAdapter {
 	@Override
 	public void onDisconnect(DisconnectEvent event) throws Exception {
 		System.out.println("Disconnected from server");
+	}
+
+	public static void main(String[] args) {
+		if (args.length != 1) {
+			System.err.println("No JMeter IRC server specified");
+			System.exit(2);
+		}
+		String server = args[0];
+		System.out.println("Connecting to server: " + server);
+
+		//Our custom thread pool (copied Executors.newCachedThreadPool)
+		final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+
+		//Print thread count every 2 seconds
+		new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					System.out.println("Pool Size: " + executor.getPoolSize());
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}.start();
+
+		Configuration configuration = new Configuration.Builder()
+				.setName("jmeterBot")
+				.setMessageDelay(0)
+				.setListenerManager(new ThreadedListenerManager(executor))
+				.addListener(new PircBotXJMeter())
+				.addAutoJoinChannel("#jmeter")
+				.buildConfiguration();
+
+		//bot.connect throws various exceptions for failures
+		try {
+			PircBotX bot = new PircBotX(configuration);
+			//Connect to the freenode IRC network
+			bot.startBot();
+		} //In your code you should catch and handle each exception seperately,
+		//but here we just lump them all togeather for simpliciy
+		catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

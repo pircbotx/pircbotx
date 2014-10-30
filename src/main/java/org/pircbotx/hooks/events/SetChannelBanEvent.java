@@ -17,25 +17,24 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * Called when a user (possibly us) gets banned from a channel. Being banned
  * from a channel prevents any user with a matching hostmask from joining the
  * channel. For this reason, most bans are usually directly followed by the user
  * being kicked :-)
- * <p/>
+ * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  *

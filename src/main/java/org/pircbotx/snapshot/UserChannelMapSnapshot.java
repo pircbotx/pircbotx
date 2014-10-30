@@ -21,6 +21,7 @@ import com.google.common.collect.Multimap;
 import org.pircbotx.UserChannelMap;
 
 /**
+ *
  * @author Leon
  */
 public class UserChannelMapSnapshot extends UserChannelMap<UserSnapshot, ChannelSnapshot> {

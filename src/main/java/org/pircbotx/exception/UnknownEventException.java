@@ -17,9 +17,9 @@
  */
 package org.pircbotx.exception;
 
-import org.pircbotx.hooks.Event;
+import static com.google.common.base.Preconditions.*;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.pircbotx.hooks.Event;
 
 /**
  * An unknown event error.

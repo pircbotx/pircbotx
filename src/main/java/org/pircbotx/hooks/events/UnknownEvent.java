@@ -17,15 +17,14 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.pircbotx.PircBotX;
 
 /**
  * This event is dispatched whenever we receive a line from the server that
@@ -40,7 +39,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 	 * The raw line that was received from the server.
 	 */
 	@Getter(onMethod = @_(
-			@Nonnull))
+		@Nonnull))
 	protected final String line;
 
 	public UnknownEvent(T bot, @NonNull String line) {

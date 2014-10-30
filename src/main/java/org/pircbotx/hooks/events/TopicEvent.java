@@ -17,16 +17,15 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever a user sets the topic, or when we join a

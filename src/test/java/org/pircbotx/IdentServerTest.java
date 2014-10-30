@@ -17,11 +17,6 @@
  */
 package org.pircbotx;
 
-import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,18 +25,22 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import lombok.extern.slf4j.Slf4j;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import static org.testng.Assert.*;
+import org.testng.annotations.AfterTest;
 
 /**
+ *
  * @author Leon
  */
 @Slf4j
 public class IdentServerTest {
+	protected IdentServer identServer;
 	protected final String entryUserName = "WorkingIrcUser";
 	protected final InetAddress entryLocalAddress;
-	protected IdentServer identServer;
 
 	public IdentServerTest() throws UnknownHostException {
 		entryLocalAddress = InetAddress.getByName("127.23.32.32");

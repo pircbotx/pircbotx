@@ -17,17 +17,16 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
+import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericUserEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever someone (possibly us) changes nick on any
@@ -59,8 +58,8 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> implements Gen
 			@Override, @Nullable))
 	protected final User user;
 
-	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick,
-	                       @NonNull UserHostmask userHostmask, User user) {
+	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, 
+			@NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.oldNick = oldNick;
 		this.newNick = newNick;

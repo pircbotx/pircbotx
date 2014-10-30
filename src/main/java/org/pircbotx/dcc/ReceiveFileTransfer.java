@@ -17,14 +17,17 @@
  */
 package org.pircbotx.dcc;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.net.Socket;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-
-import java.io.*;
-import java.net.Socket;
 
 /**
  * A DCC File Transfer initiated by another user.

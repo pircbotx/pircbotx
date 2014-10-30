@@ -17,18 +17,18 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever someone (possibly us) is kicked from any of
@@ -46,7 +46,7 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 			@Override))
 	protected final Channel channel;
 	/**
-	 * The user hostmask that performed the kick.
+	 * The user hostmask that performed the kick. 
 	 */
 	@Getter(onMethod = @_(
 			@Override))
@@ -75,7 +75,7 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	protected final String reason;
 
 	public KickEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
-	                 @NonNull UserHostmask recipientHostmask, User recipient, @NonNull String reason) {
+			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String reason) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

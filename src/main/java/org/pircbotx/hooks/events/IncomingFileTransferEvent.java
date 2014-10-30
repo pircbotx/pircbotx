@@ -17,22 +17,21 @@
  */
 package org.pircbotx.hooks.events;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.ReceiveFileTransfer;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
-
-import javax.annotation.Nullable;
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
 
 /**
  * This event is dispatched whenever a DCC SEND request is sent to the PircBotX.
@@ -41,7 +40,7 @@ import java.net.InetAddress;
  * SEND requests will be ignored by default. If you wish to receive the file,
  * then you must listen for this event and call the receive method on the
  * DccFileTransfer object, which connects to the sender and downloads the file.
- * <p/>
+ * <p>
  * Example:
  * <pre>
  *     DccFileTransfer transfer = event.getTransfer();
@@ -50,15 +49,15 @@ import java.net.InetAddress;
  *     // Receive the transfer and save it to the file, allowing resuming.
  *     transfer.receive(file, true);
  * </pre>
- * <p/>
+ * <p>
  * <b>Warning:</b> Receiving an incoming file transfer will cause a file to be
  * written to disk. Please ensure that you make adequate security checks so that
  * this file does not overwrite anything important!
- * <p/>
+ * <p>
  * If you allow resuming and the file already partly exists, it will be appended
  * to instead of overwritten. If resuming is not enabled, the file will be
  * overwritten if it already exists.
- * <p/>
+ * <p>
  * You can throttle the speed of the transfer by calling
  * {@link DccFileTransfer#setPacketDelay(long) } method on the DccFileTransfer
  * object, either before you receive the file or at any moment during the
@@ -87,7 +86,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 	protected final boolean passive;
 
 	public IncomingFileTransferEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String rawFilename, @NonNull String safeFilename,
-	                                 @NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
+			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;

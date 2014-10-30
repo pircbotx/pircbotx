@@ -18,15 +18,16 @@
 package org.pircbotx.snapshot;
 
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableSortedSet;
+import java.util.EnumMap;
+import java.util.Locale;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserChannelDao;
 import org.pircbotx.UserChannelMap;
 import org.pircbotx.UserLevel;
 
-import java.util.EnumMap;
-import java.util.Locale;
-
 /**
+ *
  * @author Leon
  */
 public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, ChannelSnapshot> {

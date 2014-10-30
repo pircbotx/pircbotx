@@ -17,20 +17,19 @@
  */
 package org.pircbotx.hooks;
 
-import lombok.NonNull;
-import org.pircbotx.PircBotX;
-
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import lombok.NonNull;
+import org.pircbotx.PircBotX;
 
 /**
  * Stores all events in a queue for processing. This is useful for sequential
  * processing of many similar events.
- * <p/>
+ * <p>
  * Example:
  * <pre>
  * WaitForQueue queue = new WaitForQueue();
@@ -62,7 +61,7 @@ public class WaitForQueue implements Closeable {
 	/**
 	 * Wait indefinitely for the specified event to be dispatched
 	 *
-	 * @param <E>        Event class
+	 * @param <E> Event class
 	 * @param eventClass The event class to wait for
 	 * @return The event
 	 * @throws InterruptedException
@@ -106,8 +105,8 @@ public class WaitForQueue implements Closeable {
 	 * discarded
 	 *
 	 * @param eventClasses Events to wait for
-	 * @param timeout      Timeout value
-	 * @param unit         Unit of timeout value
+	 * @param timeout Timeout value
+	 * @param unit Unit of timeout value
 	 * @return One of the possible events
 	 * @throws InterruptedException
 	 */

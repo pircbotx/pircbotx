@@ -17,7 +17,7 @@
  */
 package org.pircbotx.exception;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * General Exception for problems during CAP negotiation

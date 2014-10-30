@@ -17,35 +17,39 @@
  */
 package org.pircbotx;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import javax.net.SocketFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.mutable.MutableObject;
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.SASLCapHandler;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.net.SocketFactory;
-import java.io.*;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertTrue;
-
 /**
+ *
  * @author Leon
  */
 @Slf4j
 public class CAPTest {
 	protected final int EOL = Character.getNumericValue('\n');
-	protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 	protected InputStream botIn;
 	protected PipedOutputStream botInWrite;
 	protected OutputStream botOut;
+	protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
 	protected PircBotX bot;
 
 	@BeforeMethod
@@ -111,6 +115,10 @@ public class CAPTest {
 			throw connectionException.getValue();
 	}
 
+	protected static interface OutputParser {
+		public String handleOutput(String output) throws Exception;
+	}
+
 	@Test
 	public void SASLTest() throws Exception {
 		capHandlers.add(new SASLCapHandler("jilles", "sesame"));
@@ -150,9 +158,5 @@ public class CAPTest {
 			}
 		});
 		assertTrue(bot.getEnabledCapabilities().contains("test-cap"), "SASL isn't on the enabled capabilities list");
-	}
-
-	protected static interface OutputParser {
-		public String handleOutput(String output) throws Exception;
 	}
 }
