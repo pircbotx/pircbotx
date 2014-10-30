@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -123,16 +122,16 @@ public class Benchmark {
 				.setListenerManager(listenerManager)
 				.addListener(new PircBotXJMeter())
 				.buildConfiguration()) {
-			@Override
-			public boolean isConnected() {
-				return true;
-			}
+					@Override
+					public boolean isConnected() {
+						return true;
+					}
 
-			@Override
-			protected void sendRawLineToServer(String line) {
-				//Do nothing
-			}
-		};
+					@Override
+					protected void sendRawLineToServer(String line) {
+						//Do nothing
+					}
+				};
 		inputParser = bot.getInputParser();
 
 		System.out.println("Waiting 5 seconds");
@@ -152,10 +151,11 @@ public class Benchmark {
 	}
 
 	/**
-	 * Copied from Collections.shuffle and Collections.swap, this is actually what 
-	 * they do, just on Collections instead of arrays
+	 * Copied from Collections.shuffle and Collections.swap, this is actually
+	 * what they do, just on Collections instead of arrays
+	 *
 	 * @param array
-	 * @return 
+	 * @return
 	 */
 	private static final void shuffleArray(String[][] array, Random rnd) {
 		for (int i = array.length; i > 1; i--) {

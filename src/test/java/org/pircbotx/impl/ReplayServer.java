@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.impl;
 
@@ -31,16 +30,13 @@ import org.pircbotx.PircBotX;
 /**
  * Helpful server for replaying a raw log to the bot.
  * <p>
- * <b>NOTE:</b> In order to avoid write exceptions in the client you must override
- * {@link PircBotX#sendRawLine(java.lang.String) } to simply print the output
- * instead of sending it to this server!
- * <code>
+ * <b>NOTE:</b> In order to avoid write exceptions in the client you must
+ * override {@link PircBotX#sendRawLine(java.lang.String) } to simply print the
+ * output instead of sending it to this server!  <code>
  * PircBotX bot = new PircBotX() {
- * @Override
- * public void sendRawLine(String line) {
- * System.out.println(">>>" + line);
- * }
- * };
+ *
+ * @Override public void sendRawLine(String line) { System.out.println(">>>" +
+ * line); } };
  * </code>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */

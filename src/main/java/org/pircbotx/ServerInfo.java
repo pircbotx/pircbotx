@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -28,10 +27,11 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * This is a giant info bean of various things about the server. This is separate
- * from the {@link PircBotX} class due to its length
+ * This is a giant info bean of various things about the server. This is
+ * separate from the {@link PircBotX} class due to its length
  * <p/>
- * Most info thanks to <a href="www.irc.org/tech_docs/005.html">this great website
+ * Most info thanks to <a href="www.irc.org/tech_docs/005.html">this great
+ * website
  * </a> on what each one does
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
@@ -217,11 +217,12 @@ public class ServerInfo {
 		//005 PircBotX CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 TOPICLEN=390 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ NETWORK=Rizon MAXLIST=beI:100 TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1 CHANTYPES=# :are supported by this server
 		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
 	}
-	
+
 	/**
 	 * Get all supported server options as a map. Be careful about calling this
-	 * very early in the connection phase as we might not of received all the 005
-	 * lines yet
+	 * very early in the connection phase as we might not of received all the
+	 * 005 lines yet
+	 *
 	 * @return An <i>immutable copy</i> of the current supported options
 	 */
 	public ImmutableMap<String, String> getIsupportRaw() {
