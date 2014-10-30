@@ -57,6 +57,13 @@ public class WaitForQueue implements Closeable {
 		this.bot = bot;
 		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
+	
+	/**
+	 * Testing constructor with 0 init
+	 */
+	WaitForQueue() {
+		this.bot = null;
+	}
 
 	/**
 	 * Wait indefinitely for the specified event to be dispatched
