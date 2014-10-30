@@ -7,3 +7,7 @@ glob:nb-configuration.xml
 \.chg\..*$
 \.rej$
 \.conflict\~$
+syntax: glob
+.idea/*
+*.iml
+

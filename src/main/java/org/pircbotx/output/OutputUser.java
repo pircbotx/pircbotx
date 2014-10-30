@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.output;
 
@@ -24,13 +23,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.DccException;
 
 /**
- * Send lines to a user.
+ * Send lines to a serverUser.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -38,109 +38,123 @@ public class OutputUser {
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
-	protected final User user;
+	protected final UserHostmask serverUser;
 
 	/**
-	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the CTCP command to
-	 * @param channel The channel you are inviting the user to join.
+	 *
+	 * @param target The serverUser to send the CTCP command to
+	 * @param channel The channel you are inviting the serverUser to join.
 	 */
 	public void invite(String channel) {
-		bot.sendIRC().invite(user.getNick(), channel);
+		bot.sendIRC().invite(serverUser.getNick(), channel);
 	}
 
 	/**
-	 * Send an invite to the user. See {@link #sendInvite(java.lang.String, java.lang.String) }
+	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the invite to
-	 * @param channel The channel you are inviting the user to join.
+	 *
+	 * @param target The serverUser to send the invite to
+	 * @param channel The channel you are inviting the serverUser to join.
 	 */
 	public void invite(Channel channel) {
-		bot.sendIRC().invite(user.getNick(), channel.getName());
+		bot.sendIRC().invite(serverUser.getNick(), channel.getName());
 	}
 
 	/**
-	 * Send a notice to the user. See {@link #sendNotice(java.lang.String, java.lang.String) }
+	 * Send a notice to the serverUser. See {@link #sendNotice(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the notice to
+	 *
+	 * @param target The serverUser to send the notice to
 	 * @param notice The notice to send
 	 */
 	public void notice(String notice) {
-		bot.sendIRC().notice(user.getNick(), notice);
+		bot.sendIRC().notice(serverUser.getNick(), notice);
 	}
 
 	/**
-	 * Send an action to the user. See {@link #sendAction(java.lang.String, java.lang.String) }
+	 * Send an action to the serverUser. See {@link #sendAction(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the action to
+	 *
+	 * @param target The serverUser to send the action to
 	 * @param action The action message to send
 	 */
 	public void action(String action) {
-		bot.sendIRC().action(user.getNick(), action);
+		bot.sendIRC().action(serverUser.getNick(), action);
 	}
 
 	/**
-	 * Send a private message to a user. See {@link #sendMessage(java.lang.String, java.lang.String) }
+	 * Send a private message to a serverUser. See {@link #sendMessage(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the message to
+	 *
+	 * @param target The serverUser to send the message to
 	 * @param message The message to send
 	 */
 	public void message(String message) {
-		bot.sendIRC().message(user.getNick(), message);
+		bot.sendIRC().message(serverUser.getNick(), message);
 	}
 
 	/**
-	 * Send a CTCP command to the user. See {@link #sendCTCPCommand(java.lang.String, java.lang.String) }
+	 * Send a CTCP command to the serverUser. See {@link #sendCTCPCommand(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the CTCP command to
+	 *
+	 * @param target The serverUser to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
-		bot.sendIRC().ctcpCommand(user.getNick(), command);
+		bot.sendIRC().ctcpCommand(serverUser.getNick(), command);
 	}
 
 	/**
-	 * Send a CTCP Response to the user. See {@link #sendCTCPResponse(java.lang.String, java.lang.String) }
+	 * Send a CTCP Response to the serverUser. See {@link #sendCTCPResponse(java.lang.String, java.lang.String)
+	 * }
 	 * for more information
-	 * @param target The user to send the CTCP Response to
+	 *
+	 * @param target The serverUser to send the CTCP Response to
 	 * @param message The response to send
 	 */
 	public void ctcpResponse(String message) {
-		bot.sendIRC().ctcpResponse(user.getNick(), message);
+		bot.sendIRC().ctcpResponse(serverUser.getNick(), message);
 	}
-	
+
 	public void mode(String mode) {
-		bot.sendIRC().mode(user.getNick(), mode);
+		bot.sendIRC().mode(serverUser.getNick(), mode);
 	}
-	
+
 	public SendFileTransfer dccFile(File file) throws IOException, DccException, InterruptedException {
-		return bot.getDccHandler().sendFile(file, user);
+		return bot.getDccHandler().sendFile(file, bot.getUserChannelDao().getUser(serverUser));
 	}
-	
+
 	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
-		return bot.getDccHandler().sendFile(file, user, passive);
+		return bot.getDccHandler().sendFile(file, bot.getUserChannelDao().getUser(serverUser), passive);
 	}
-	
+
 	public SendChat dccChat() throws IOException, InterruptedException {
-		return bot.getDccHandler().sendChat(user);
+		return bot.getDccHandler().sendChat(bot.getUserChannelDao().getUser(serverUser));
 	}
-	
+
 	public SendChat dccChat(boolean passive) throws IOException, InterruptedException {
-		return bot.getDccHandler().sendChat(user, passive);
+		return bot.getDccHandler().sendChat(bot.getUserChannelDao().getUser(serverUser), passive);
 	}
-	
+
 	/**
 	 * Send "WHOIS nick"
 	 */
 	public void whois() {
-		bot.sendIRC().whois(user.getNick());
+		bot.sendIRC().whois(serverUser.getNick());
 	}
-	
+
 	/**
 	 * Send "WHOIS nick nick" for more detail
 	 */
 	public void whoisDetail() {
-		bot.sendIRC().whoisDetail(user.getNick());
+		bot.sendIRC().whoisDetail(serverUser.getNick());
 	}
 }

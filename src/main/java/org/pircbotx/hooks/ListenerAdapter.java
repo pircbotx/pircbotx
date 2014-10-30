@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks;
 
@@ -23,9 +22,9 @@ import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.types.*;
 
 /**
- * Adapter that provides methods to capture each event separately, removing
- * the need to check, cast, and call your custom method for each event you want
- * to capture.
+ * Adapter that provides methods to capture each event separately, removing the
+ * need to check, cast, and call your custom method for each event you want to
+ * capture.
  * <p>
  * To use, simply override the method that has the event you want to capture.
  * <p>
@@ -33,10 +32,16 @@ import org.pircbotx.hooks.types.*;
  * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
  * will be called!
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
 	public void onEvent(Event<T> event) throws Exception {
+		//While reflection would make this significantly shorter, 
+		//nothing beats if statements in performance.
+		//Also polymorphism, while theoretically correct, just means that this code
+		//would be in every single Event and make an explicit dependency on this.
+		//This is just simple and fast
 		if (event instanceof ActionEvent)
 			onAction((ActionEvent<T>) event);
 		else if (event instanceof ChannelInfoEvent)
@@ -153,6 +158,8 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 			onGenericUserMode((GenericUserModeEvent<T>) event);
 		if (event instanceof GenericChannelModeEvent)
 			onGenericChannelMode((GenericChannelModeEvent<T>) event);
+		if (event instanceof GenericChannelModeRecipientEvent)
+			onGenericChannelModeRecipient((GenericChannelModeRecipientEvent<T>) event);
 		if (event instanceof GenericDCCEvent)
 			onGenericDCC((GenericDCCEvent<T>) event);
 		if (event instanceof GenericMessageEvent)
@@ -173,7 +180,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onConnect(ConnectEvent<T> event) throws Exception {
 	}
-	
+
 	public void onConnectAttemptFailed(ConnectAttemptFailedEvent<T> event) throws Exception {
 	}
 
@@ -334,6 +341,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onGenericChannelMode(GenericChannelModeEvent<T> event) throws Exception {
+	}
+
+	public void onGenericChannelModeRecipient(GenericChannelModeRecipientEvent<T> event) throws Exception {
 	}
 
 	public void onGenericDCC(GenericDCCEvent<T> event) throws Exception {

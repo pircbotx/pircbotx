@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks;
 
@@ -27,13 +26,14 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
- * Core Hooks of PircBotX that preform basic and expected operations. Any listener
- * that wishes to duplicate functionality should <b>replace</b> CoreHooks in
- * the {@link ListenerManager} with a subclass of this class (this way you don't
- * have to duplicate all the functionality).
+ * Core Hooks of PircBotX that preform basic and expected operations. Any
+ * listener that wishes to duplicate functionality should <b>replace</b>
+ * CoreHooks in the {@link ListenerManager} with a subclass of this class (this
+ * way you don't have to duplicate all the functionality).
  * <p>
- * <b>Warning:</b> Removing CoreHooks without providing a replacement will produce
- * undesired results like server timeouts due to not responding to pings.
+ * <b>Warning:</b> Removing CoreHooks without providing a replacement will
+ * produce undesired results like server timeouts due to not responding to
+ * pings.
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
