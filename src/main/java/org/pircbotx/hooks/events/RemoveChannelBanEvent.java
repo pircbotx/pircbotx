@@ -56,7 +56,8 @@ public class RemoveChannelBanEvent<T extends PircBotX> extends Event<T> implemen
 	 * The user that performed the mode change.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The ban hostmask that was set.

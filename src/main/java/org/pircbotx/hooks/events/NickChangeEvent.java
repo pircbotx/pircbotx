@@ -55,10 +55,11 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> implements Gen
 	 * The user that changed their nick.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 
-	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick, 
+	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick,
 			@NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.oldNick = oldNick;

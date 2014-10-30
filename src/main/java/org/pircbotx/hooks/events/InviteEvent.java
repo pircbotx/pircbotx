@@ -40,13 +40,14 @@ public class InviteEvent<T extends PircBotX> extends Event<T> implements Generic
 	 * The user that sent the invite.
 	 */
 	@Getter(onMethod = @_(
-		@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The user hostmask that sent the invite.
 	 */
 	@Getter(onMethod = @_(
-		@Override))
+			@Override))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The channel that we're being invited to. Provided as a string since we

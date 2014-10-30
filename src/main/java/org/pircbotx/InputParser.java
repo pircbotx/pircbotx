@@ -320,7 +320,7 @@ public class InputParser implements Closeable {
 			// Return from the method;
 			return;
 		}
-		
+
 		//if user build source hostmask or call server parsing method
 		UserHostmask source;
 		int exclamation = sourceRaw.indexOf('!');
@@ -348,7 +348,7 @@ public class InputParser implements Closeable {
 		}
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
-		
+
 		//Must be from user
 		processCommand(target, source, command, line, parsedLine);
 	}
@@ -520,7 +520,7 @@ public class InputParser implements Closeable {
 			}
 			//Create user if it doesn't exist already
 			sourceUser = createUserIfNull(sourceUser, source);
-			
+
 			bot.getUserChannelDao().addUserToChannel(sourceUser, channel);
 			configuration.getListenerManager().dispatchEvent(new JoinEvent<PircBotX>(bot, channel, source, sourceUser));
 		} else if (command.equals("PART")) {
@@ -855,10 +855,10 @@ public class InputParser implements Closeable {
 		user.setAwayMessage(prefix.contains("G") ? "" : null);
 		user.setIrcop(prefix.contains("*"));
 	}
-	
+
 	public User createUserIfNull(User otherUser, UserHostmask hostmask) {
-		if(otherUser != null)
-			if(bot.getUserChannelDao().containsUser(otherUser))
+		if (otherUser != null)
+			if (bot.getUserChannelDao().containsUser(otherUser))
 				throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
 			else
 				return otherUser;

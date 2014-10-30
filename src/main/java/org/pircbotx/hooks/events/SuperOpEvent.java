@@ -59,7 +59,8 @@ public class SuperOpEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * The user that performed the mode change.
 	 */
 	@Getter(onMethod = @_(
-			@Override, @Nullable))
+			@Override,
+			@Nullable))
 	protected final User user;
 	/**
 	 * The nick of the user that got 'voiced'.

@@ -30,7 +30,7 @@ public class DaoException extends RuntimeException {
 	public DaoException(Reason reason, String message) {
 		this(reason, message, null);
 	}
-	
+
 	public DaoException(Reason reason, String message, Exception e) {
 		super(reason + ": " + message, e);
 		this.reason = reason;

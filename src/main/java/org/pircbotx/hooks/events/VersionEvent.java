@@ -36,9 +36,9 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
- * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
- * this event should <b>not</b> send a response as the user will get two
- * responses
+ * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager},
+ * Listeners of this event should <b>not</b> send a response as the user will
+ * get two responses
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
@@ -56,7 +56,8 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 	 * means that that the target is us.
 	 */
 	@Getter(onMethod = @_({
-		@Override, @Nullable}))
+		@Override,
+		@Nullable}))
 	protected final Channel channel;
 
 	public VersionEvent(T bot, @NonNull UserHostmask userHostmask, @NonNull User user, Channel channel) {

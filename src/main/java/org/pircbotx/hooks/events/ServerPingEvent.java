@@ -30,9 +30,9 @@ import org.pircbotx.hooks.CoreHooks;
  * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
- * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
- * this event should <b>not</b> send a response as the user will get two
- * responses
+ * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager},
+ * Listeners of this event should <b>not</b> send a response as the user will
+ * get two responses
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
