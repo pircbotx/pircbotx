@@ -389,7 +389,7 @@ public class InputParser implements Closeable {
 		else if (configuration.isCapEnabled() && code.equals("421") && parsedLine.get(1).equals("CAP"))
 			//EXAMPLE: 421 you CAP :Unknown command
 			log.warn("Ignoring unknown command error, server does not support CAP negotiation");
-		else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP"))
+		else if (configuration.isCapEnabled() && code.equals("451") && target.equals("CAP")) {
 			//EXAMPLE: 451 CAP :You have not registered
 			//Ignore, this is from servers that don't support CAP
 			log.warn("Ignoring not registered error, server does not support CAP negotiation");
