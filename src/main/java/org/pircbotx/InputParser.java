@@ -17,85 +17,34 @@
  */
 package org.pircbotx;
 
-import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.base.CharMatcher;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Maps;
-import com.google.common.collect.PeekingIterator;
-import java.io.BufferedReader;
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+import com.google.common.collect.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.exception.IrcException;
-import org.pircbotx.hooks.events.ActionEvent;
-import org.pircbotx.hooks.events.ChannelInfoEvent;
-import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.FingerEvent;
-import org.pircbotx.hooks.events.HalfOpEvent;
-import org.pircbotx.hooks.events.InviteEvent;
-import org.pircbotx.hooks.events.JoinEvent;
-import org.pircbotx.hooks.events.KickEvent;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.events.ModeEvent;
-import org.pircbotx.hooks.events.MotdEvent;
-import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
-import org.pircbotx.hooks.events.NickChangeEvent;
-import org.pircbotx.hooks.events.NoticeEvent;
-import org.pircbotx.hooks.events.OpEvent;
-import org.pircbotx.hooks.events.OwnerEvent;
-import org.pircbotx.hooks.events.PartEvent;
-import org.pircbotx.hooks.events.PingEvent;
-import org.pircbotx.hooks.events.PrivateMessageEvent;
-import org.pircbotx.hooks.events.QuitEvent;
-import org.pircbotx.hooks.events.RemoveChannelBanEvent;
-import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
-import org.pircbotx.hooks.events.RemoveChannelLimitEvent;
-import org.pircbotx.hooks.events.RemoveInviteOnlyEvent;
-import org.pircbotx.hooks.events.RemoveModeratedEvent;
-import org.pircbotx.hooks.events.RemoveNoExternalMessagesEvent;
-import org.pircbotx.hooks.events.RemovePrivateEvent;
-import org.pircbotx.hooks.events.RemoveSecretEvent;
-import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
-import org.pircbotx.hooks.events.ServerPingEvent;
-import org.pircbotx.hooks.events.ServerResponseEvent;
-import org.pircbotx.hooks.events.SetChannelBanEvent;
-import org.pircbotx.hooks.events.SetChannelKeyEvent;
-import org.pircbotx.hooks.events.SetChannelLimitEvent;
-import org.pircbotx.hooks.events.SetInviteOnlyEvent;
-import org.pircbotx.hooks.events.SetModeratedEvent;
-import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
-import org.pircbotx.hooks.events.SetPrivateEvent;
-import org.pircbotx.hooks.events.SetSecretEvent;
-import org.pircbotx.hooks.events.SetTopicProtectionEvent;
-import org.pircbotx.hooks.events.SuperOpEvent;
-import org.pircbotx.hooks.events.TimeEvent;
-import org.pircbotx.hooks.events.TopicEvent;
-import org.pircbotx.hooks.events.UnknownEvent;
-import org.pircbotx.hooks.events.UserListEvent;
-import org.pircbotx.hooks.events.UserModeEvent;
-import org.pircbotx.hooks.events.VersionEvent;
-import org.pircbotx.hooks.events.VoiceEvent;
-import org.pircbotx.hooks.events.WhoisEvent;
+import org.pircbotx.hooks.events.*;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
+import org.pircbotx.snapshot.UserSnapshot;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static org.pircbotx.ReplyConstants.*;
 
 /**
  * Parse received input from IRC server.
@@ -255,16 +204,17 @@ public class InputParser implements Closeable {
 				})
 				.build();
 	}
+
 	protected final Configuration<PircBotX> configuration;
 	protected final PircBotX bot;
 	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
-	protected boolean capEndSent = false;
-	protected BufferedReader inputReader;
-	//Builders
 	/**
 	 * Map to keep active WhoisEvents. Must be a treemap to be case insensitive
 	 */
 	protected final Map<String, WhoisEvent.Builder<PircBotX>> whoisBuilder = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+	protected boolean capEndSent = false;
+	//Builders
+	protected BufferedReader inputReader;
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;
@@ -320,7 +270,7 @@ public class InputParser implements Closeable {
 			// Return from the method;
 			return;
 		}
-		
+
 		//if user build source hostmask or call server parsing method
 		UserHostmask source;
 		int exclamation = sourceRaw.indexOf('!');
@@ -331,7 +281,7 @@ public class InputParser implements Closeable {
 					sourceRaw.substring(exclamation + 1, at),
 					sourceRaw.substring(at + 1));
 		else {
-			//Must be a backend code 
+			//Must be a backend code
 			int code = Utils.tryParseInt(command, -1);
 			if (code != -1) {
 				if (!bot.loggedIn)
@@ -348,7 +298,7 @@ public class InputParser implements Closeable {
 		}
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
-		
+
 		//Must be from user
 		processCommand(target, source, command, line, parsedLine);
 	}
@@ -357,13 +307,13 @@ public class InputParser implements Closeable {
 	 * Process any lines relevant to connect. Only called before bot is logged
 	 * into the server
 	 *
-	 * @param rawLine Raw, unprocessed line from the server
+	 * @param rawLine    Raw, unprocessed line from the server
 	 * @param code
 	 * @param target
 	 * @param parsedLine Processed line
 	 * @throws IrcException If the server rejects the bot (nick already in use
-	 * or a 4** or 5** code
-	 * @throws IOException If an error occurs during upgrading to SSL
+	 *                      or a 4** or 5** code
+	 * @throws IOException  If an error occurs during upgrading to SSL
 	 */
 	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
 		if (CONNECT_CODES.contains(code)) {
@@ -520,7 +470,7 @@ public class InputParser implements Closeable {
 			}
 			//Create user if it doesn't exist already
 			sourceUser = createUserIfNull(sourceUser, source);
-			
+
 			bot.getUserChannelDao().addUserToChannel(sourceUser, channel);
 			configuration.getListenerManager().dispatchEvent(new JoinEvent<PircBotX>(bot, channel, source, sourceUser));
 		} else if (command.equals("PART")) {
@@ -608,11 +558,11 @@ public class InputParser implements Closeable {
 	 * from the IRC server. We use this method to allow PircBotX to process
 	 * various responses from the server before then passing them on to the
 	 * onServerResponse method.
-	 * <p>
+	 * <p/>
 	 * Note that this method is private and should not appear in any of the
 	 * javadoc generated documentation.
 	 *
-	 * @param code The three-digit numerical code for the response.
+	 * @param code     The three-digit numerical code for the response.
 	 * @param response The full response from the IRC server.
 	 */
 	public void processServerResponse(int code, String rawResponse, List<String> parsedResponseOrig) {
@@ -798,15 +748,15 @@ public class InputParser implements Closeable {
 	 * Called when the mode of a channel is set. We process this in order to
 	 * call the appropriate onOp, onDeop, etc method before finally calling the
 	 * override-able onMode method.
-	 * <p>
+	 * <p/>
 	 * Note that this method is private and is not intended to appear in the
 	 * javadoc generated documentation.
 	 *
-	 * @param target The channel or nick that the mode operation applies to.
-	 * @param sourceNick The nick of the user that set the mode.
-	 * @param sourceLogin The login of the user that set the mode.
+	 * @param target         The channel or nick that the mode operation applies to.
+	 * @param sourceNick     The nick of the user that set the mode.
+	 * @param sourceLogin    The login of the user that set the mode.
 	 * @param sourceHostname The hostname of the user that set the mode.
-	 * @param mode The mode that has been set.
+	 * @param mode           The mode that has been set.
 	 */
 	public void processMode(UserHostmask userHostmask, User user, String target, String mode) {
 		if (configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) {
@@ -855,10 +805,10 @@ public class InputParser implements Closeable {
 		user.setAwayMessage(prefix.contains("G") ? "" : null);
 		user.setIrcop(prefix.contains("*"));
 	}
-	
+
 	public User createUserIfNull(User otherUser, UserHostmask hostmask) {
-		if(otherUser != null)
-			if(bot.getUserChannelDao().containsUser(otherUser))
+		if (otherUser != null)
+			if (bot.getUserChannelDao().containsUser(otherUser))
 				throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
 			else
 				return otherUser;

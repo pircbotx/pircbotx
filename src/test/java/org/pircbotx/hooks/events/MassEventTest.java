@@ -17,26 +17,31 @@
  */
 package org.pircbotx.hooks.events;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
-import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+
+import static org.testng.Assert.assertEquals;
+
 /**
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class MassEventTest {
+	public static String wrapClass(Class aClass, String message) {
+		return message + " in class " + aClass.toString();
+	}
+
 	@Test(dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")
 	public void singleConstructorTest(Class<?> event) {
 		assertEquals(event.getDeclaredConstructors().length, 1, wrapClass(event, "No constructor or extra constructor found"));
 	}
 
-	@Test(dependsOnMethods = "singleConstructorTest", 
+	@Test(dependsOnMethods = "singleConstructorTest",
 			dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")
 	public void firstConstructorArgBotTest(Class<?> event) {
 		Constructor constructor = event.getDeclaredConstructors()[0];
@@ -46,24 +51,20 @@ public class MassEventTest {
 	@Test(dependsOnMethods = "singleConstructorTest",
 			dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify number of class fields and number of constructor params match")
 	public void constructorParamToFieldTest(Class<?> event) {
-		if(event == WhoisEvent.class) {
+		if (event == WhoisEvent.class) {
 			//This uses a builder
 			//TODO: Verify?
 			return;
 		}
-			
+
 		//Manually count fields to exclude synthetic ones
 		int fieldCount = 0;
-		for(Field curField : event.getDeclaredFields())
-			if(!curField.isSynthetic())
+		for (Field curField : event.getDeclaredFields())
+			if (!curField.isSynthetic())
 				fieldCount++;
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		//(subtract one parameter to account for bot)
 		assertEquals(constructor.getParameterTypes().length - 1, fieldCount, wrapClass(event, "Number of constructor parameters don't match number of fields"
 				+ SystemUtils.LINE_SEPARATOR + "Constructor params: " + StringUtils.join(constructor.getParameterTypes(), ", ")));
-	}
-	
-	public static String wrapClass(Class aClass, String message) {
-		return message + " in class " + aClass.toString();
 	}
 }

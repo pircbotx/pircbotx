@@ -18,18 +18,13 @@
 package org.pircbotx;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -37,24 +32,27 @@ import org.pircbotx.hooks.types.GenericEvent;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TestUtils {
 	static {
 		//when getting a logged exception, fail immediately
 		Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-		
-		if(loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
+
+		if (loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
 			ExceptionStopperAppender exAppender = new ExceptionStopperAppender();
 			exAppender.setContext(loggerRoot.getLoggerContext());
 			exAppender.start();
-			
+
 			loggerRoot.addAppender(exAppender);
 		}
 	}
-	
+
 	@DataProvider
 	public static Object[][] eventObjectDataProvider() throws IOException {
 		return generateEventArguments(true, false);
@@ -69,19 +67,19 @@ public class TestUtils {
 	public static Object[][] eventAllDataProvider() throws IOException {
 		return generateEventArguments(true, true);
 	}
-	
+
 	public static UserHostmask generateTestUserSourceHostmask(PircBotX bot) {
 		return new UserHostmask(bot, "SourceUser", "~SomeTest", "host.test");
 	}
-	
+
 	public static User generateTestUserSource(PircBotX bot) {
 		return bot.getUserChannelDao().createUser(generateTestUserSourceHostmask(bot));
 	}
-	
+
 	public static UserHostmask generateTestUserOtherHostmask(PircBotX bot) {
 		return new UserHostmask(bot, "OtherUser", "~SomeTest", "host.test");
 	}
-	
+
 	public static User generateTestUserOther(PircBotX bot) {
 		return bot.getUserChannelDao().createUser(generateTestUserOtherHostmask(bot));
 	}
@@ -126,8 +124,8 @@ public class TestUtils {
 	}
 
 	public static class ExceptionStopperAppender extends AppenderBase<ILoggingEvent> {
-		public static String NAME = "PircBotX-Test-Exception-Stopper";
 		static final int ALLOWED_REPEATS = 5;
+		public static String NAME = "PircBotX-Test-Exception-Stopper";
 		private boolean guard = false;
 		private int statusRepeatCount = 0;
 
@@ -146,7 +144,8 @@ public class TestUtils {
 
 		/**
 		 * Modified copy of AppenderBase.doAppend() with exception logging removed
-		 * @param eventObject 
+		 *
+		 * @param eventObject
 		 */
 		@Override
 		public synchronized void doAppend(ILoggingEvent eventObject) {

@@ -21,9 +21,8 @@ package org.pircbotx.hooks.types;
 import org.pircbotx.PircBotX;
 
 /**
- *
  * @author Leon
  */
-public interface GenericChannelModeRecipientEvent<T extends PircBotX> extends GenericUserModeEvent<T>, GenericChannelModeEvent<T>{
-	
+public interface GenericChannelModeRecipientEvent<T extends PircBotX> extends GenericUserModeEvent<T>, GenericChannelModeEvent<T> {
+
 }

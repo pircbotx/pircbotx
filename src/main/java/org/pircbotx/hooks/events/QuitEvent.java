@@ -17,17 +17,18 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
+
+import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever someone (possibly us) quits from the
@@ -57,8 +58,8 @@ public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUs
 	 */
 	protected final String reason;
 
-	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, 
-			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
+	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot,
+	                 @NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
 		this.userHostmask = userHostmask;

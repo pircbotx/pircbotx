@@ -17,19 +17,19 @@
  */
 package org.pircbotx.exception;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A fatal IRC error.
  *
- * @since PircBot 0.9
  * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
- * href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>
- * Forked and Maintained by in <a
- * href="http://pircbotx.googlecode.com">PircBotX</a>: Leon Blakey
- * <lord.quackstar at gmail.com>
+ *         <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ *         href="http://www.jibble.org/pircbot.php">PircBot</a>
+ *         <p/>
+ *         Forked and Maintained by in <a
+ *         href="http://pircbotx.googlecode.com">PircBotX</a>: Leon Blakey
+ *         <lord.quackstar at gmail.com>
+ * @since PircBot 0.9
  */
 public class IrcException extends Exception {
 	/**

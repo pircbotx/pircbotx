@@ -17,23 +17,24 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
-import org.pircbotx.Channel;
-import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 
+import javax.annotation.Nullable;
+
 /**
  * This event is dispatched whenever we receive a VERSION request.
- * <p>
+ * <p/>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
  * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
@@ -46,17 +47,17 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
 @EqualsAndHashCode(callSuper = true)
 public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T>, GenericChannelEvent<T> {
 	@Getter(onMethod = @_({
-		@Override}))
+			@Override}))
 	protected final UserHostmask userHostmask;
 	@Getter(onMethod = @_({
-		@Override}))
+			@Override}))
 	protected final User user;
 	/**
 	 * The target channel of the VERSION request. A value of <code>null</code>
 	 * means that that the target is us.
 	 */
 	@Getter(onMethod = @_({
-		@Override, @Nullable}))
+			@Override, @Nullable}))
 	protected final Channel channel;
 
 	public VersionEvent(T bot, @NonNull UserHostmask userHostmask, @NonNull User user, Channel channel) {

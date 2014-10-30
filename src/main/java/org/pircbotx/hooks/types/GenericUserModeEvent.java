@@ -25,6 +25,7 @@ import org.pircbotx.hooks.events.OpEvent;
 /**
  * Any user status change in a channel. Eg {@link OpEvent}
  * <p/>
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public interface GenericUserModeEvent<T extends PircBotX> extends GenericUserEvent<T> {

@@ -20,14 +20,14 @@ package org.pircbotx;
 /**
  * The Colors class provides several static fields and methods that you may find
  * useful when writing an IRC Bot.
- * <p>
+ * <p/>
  * This class contains constants that are useful for formatting lines sent to
  * IRC servers. These constants allow you to apply various formatting to the
  * lines, such as colours, boldness, underlining and reverse text.
- * <p>
+ * <p/>
  * The class contains static methods to remove colours and formatting from lines
  * of IRC text.
- * <p>
+ * <p/>
  * Here are some examples of how to use the constants
  * <pre>
  * message(Colors.BOLD + "A bold hello!");
@@ -36,22 +36,21 @@ package org.pircbotx;
  * <font color="red">Red</font> text
  * message(Colors.BOLD + Colors.RED + "Bold and red");
  * <b><font color="red">Bold and red</font></b></pre>
- * <p/>
+ *
  * Please note that some IRC channels may be configured to reject any messages
  * that use colours. Also note that older IRC clients may be unable to correctly
  * display lines that contain colours and other control characters.
- * <p>
+ *
  * Note that this class name has been spelt in the American style in order to
  * remain consistent with the rest of the Java API.
  *
- *
- * @since PircBot 0.9.12
  * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
- * href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>
- * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
- * href="http://pircbotx.googlecode.com">PircBotX</a>
+ *         <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ *         href="http://www.jibble.org/pircbot.php">PircBot</a>
+ *         <p/>
+ *         Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ *         href="http://pircbotx.googlecode.com">PircBotX</a>
+ * @since PircBot 0.9.12
  */
 public final class Colors {
 	/**
@@ -144,11 +143,9 @@ public final class Colors {
 	/**
 	 * Removes all colours from a line of IRC text.
 	 *
-	 * @since PircBot 1.2.0
-	 *
 	 * @param line the input text.
-	 *
 	 * @return the same text, but with all colours removed.
+	 * @since PircBot 1.2.0
 	 */
 	public static String removeColors(String line) {
 		int length = line.length();
@@ -205,11 +202,9 @@ public final class Colors {
 	/**
 	 * Remove formatting from a line of IRC text.
 	 *
-	 * @since PircBot 1.2.0
-	 *
 	 * @param line the input text.
-	 *
 	 * @return the same text, but without any bold, underlining, reverse, etc.
+	 * @since PircBot 1.2.0
 	 */
 	public static String removeFormatting(String line) {
 		int length = line.length();
@@ -226,12 +221,9 @@ public final class Colors {
 	/**
 	 * Removes all formatting and colours from a line of IRC text.
 	 *
-	 * @since PircBot 1.2.0
-	 *
 	 * @param line the input text.
-	 *
 	 * @return the same text, but without formatting and colour characters.
-	 *
+	 * @since PircBot 1.2.0
 	 */
 	public static String removeFormattingAndColors(String line) {
 		return removeFormatting(removeColors(line));

@@ -18,15 +18,14 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
-import java.util.LinkedList;
-import java.util.List;
-import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
+
+import javax.annotation.Nullable;
 
 /**
  * Dispatched when we receive a completed Whois request. Note this is completely

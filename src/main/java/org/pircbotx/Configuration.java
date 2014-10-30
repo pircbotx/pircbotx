@@ -17,12 +17,25 @@
  */
 package org.pircbotx;
 
-import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.PeekingIterator;
+import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.cap.CapHandler;
+import org.pircbotx.cap.EnableCapHandler;
+import org.pircbotx.dcc.*;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.output.*;
+
+import javax.net.SocketFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -32,29 +45,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.net.SocketFactory;
-import lombok.Data;
-import lombok.ToString;
-import lombok.experimental.Accessors;
-import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.cap.CapHandler;
-import org.pircbotx.cap.EnableCapHandler;
-import org.pircbotx.dcc.DccHandler;
-import org.pircbotx.dcc.ReceiveChat;
-import org.pircbotx.dcc.ReceiveFileTransfer;
-import org.pircbotx.dcc.SendChat;
-import org.pircbotx.dcc.SendFileTransfer;
-import org.pircbotx.exception.IrcException;
-import org.pircbotx.hooks.CoreHooks;
-import org.pircbotx.hooks.Listener;
-import org.pircbotx.hooks.managers.ListenerManager;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
-import org.pircbotx.output.OutputCAP;
-import org.pircbotx.output.OutputChannel;
-import org.pircbotx.output.OutputDCC;
-import org.pircbotx.output.OutputIRC;
-import org.pircbotx.output.OutputRaw;
-import org.pircbotx.output.OutputUser;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Immutable configuration for PircBotX. Use {@link Configuration.Builder} to
@@ -196,6 +189,15 @@ public class Configuration<B extends PircBotX> {
 	public static class Builder<B extends PircBotX> {
 		//WebIRC
 		/**
+		 * Map of channels and keys to automatically join upon connecting.
+		 */
+		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
+		/**
+		 * Registered {@link CapHandler}'s.
+		 */
+		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
+		protected final List<ChannelModeHandler> channelModeHandlers = new ArrayList<ChannelModeHandler>();
+		/**
 		 * Enable or disable sending WEBIRC line on connect
 		 */
 		protected boolean webIrcEnabled = false;
@@ -203,6 +205,7 @@ public class Configuration<B extends PircBotX> {
 		 * Username of WEBIRC connection
 		 */
 		protected String webIrcUsername = null;
+		//Bot information
 		/**
 		 * Hostname of WEBIRC connection
 		 */
@@ -215,7 +218,6 @@ public class Configuration<B extends PircBotX> {
 		 * Password of WEBIRC connection
 		 */
 		protected String webIrcPassword = null;
-		//Bot information
 		/**
 		 * The base name to be used for the IRC connection (nick!login@host)
 		 */
@@ -228,6 +230,7 @@ public class Configuration<B extends PircBotX> {
 		 * CTCP version response.
 		 */
 		protected String version = "PircBotX " + PircBotX.VERSION + ", a fork of PircBot, the Java IRC bot - pircbotx.googlecode.com";
+		//DCC
 		/**
 		 * CTCP finger response
 		 */
@@ -240,7 +243,6 @@ public class Configuration<B extends PircBotX> {
 		 * Allowed channel prefix characters. Defaults to <code>#&+!</code>
 		 */
 		protected String channelPrefixes = "#&+!";
-		//DCC
 		/**
 		 * If true sends filenames in quotes, otherwise uses underscores.
 		 * Defaults to false
@@ -261,6 +263,7 @@ public class Configuration<B extends PircBotX> {
 		 * }
 		 */
 		protected int dccAcceptTimeout = -1;
+		//Connect information
 		/**
 		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout()
 		 * }
@@ -274,7 +277,6 @@ public class Configuration<B extends PircBotX> {
 		 * Weather to send DCC Passive/reverse requests. Defaults to false
 		 */
 		protected boolean dccPassiveRequest = false;
-		//Connect information
 		/**
 		 * Hostname of the IRC server
 		 */
@@ -337,10 +339,6 @@ public class Configuration<B extends PircBotX> {
 		 */
 		protected boolean shutdownHookEnabled = true;
 		/**
-		 * Map of channels and keys to automatically join upon connecting.
-		 */
-		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
-		/**
 		 * Enable or disable use of an existing {@link IdentServer}. Note that
 		 * the IdentServer must be started separately or else an exception will
 		 * be thrown. Defaults to false
@@ -348,17 +346,17 @@ public class Configuration<B extends PircBotX> {
 		 * @see IdentServer
 		 */
 		protected boolean identServerEnabled = false;
+		//Bot classes
 		/**
 		 * If set, password to authenticate against NICKSERV
 		 */
 		protected String nickservPassword;
 		/**
-		 * Enable or disable automatic reconnecting. Note that you MUST call 
+		 * Enable or disable automatic reconnecting. Note that you MUST call
 		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to
 		 * reconnect anymore! Defaults to false
 		 */
 		protected boolean autoReconnect = false;
-		//Bot classes
 		/**
 		 * The {@link ListenerManager} to use to handle events.
 		 */
@@ -367,11 +365,6 @@ public class Configuration<B extends PircBotX> {
 		 * Enable or disable CAP handling. Defaults to false
 		 */
 		protected boolean capEnabled = false;
-		/**
-		 * Registered {@link CapHandler}'s.
-		 */
-		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
-		protected final List<ChannelModeHandler> channelModeHandlers = new ArrayList<ChannelModeHandler>();
 		/**
 		 * The {@link BotFactory} to use
 		 */
@@ -578,6 +571,19 @@ public class Configuration<B extends PircBotX> {
 		}
 
 		/**
+		 * Returns the current ListenerManager in use by this bot. Note that the
+		 * default listener manager ({@link ListenerManager}) is lazy loaded
+		 * here unless one was already set
+		 *
+		 * @return Current ListenerManager
+		 */
+		public ListenerManager<B> getListenerManager() {
+			if (listenerManager == null)
+				setListenerManager(new ThreadedListenerManager<B>());
+			return listenerManager;
+		}
+
+		/**
 		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are
 		 * added when this method is called. If you do not want this, remove
 		 * CoreHooks with
@@ -593,19 +599,6 @@ public class Configuration<B extends PircBotX> {
 					return this;
 			listenerManager.addListener(new CoreHooks());
 			return this;
-		}
-
-		/**
-		 * Returns the current ListenerManager in use by this bot. Note that the
-		 * default listener manager ({@link ListenerManager}) is lazy loaded
-		 * here unless one was already set
-		 *
-		 * @return Current ListenerManager
-		 */
-		public ListenerManager<B> getListenerManager() {
-			if (listenerManager == null)
-				setListenerManager(new ThreadedListenerManager<B>());
-			return listenerManager;
 		}
 
 		/**

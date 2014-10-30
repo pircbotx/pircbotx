@@ -17,20 +17,21 @@
  */
 package org.pircbotx.hooks.events;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.ReceiveChat;
+import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * This event will be dispatched whenever a DCC Chat request is received. This
@@ -40,13 +41,13 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * server being able to "spy" on what is being said. By default there are no
  * {@link Listener} for this event, which means that all DCC CHAT requests will
  * be ignored by default.
- * <p>
+ * <p/>
  * If you wish to accept the connection, then you listen for this event and call
  * the {@link DccChat#accept()} method, which connects to the sender of the chat
  * request and allows lines to be sent to and from the bot.
- * <p>
+ * <p/>
  * Your bot must be able to connect directly to the user that sent the request.
- * <p>
+ * <p/>
  * Example:
  * <pre>
  *     DccChat chat = event.getChat();
