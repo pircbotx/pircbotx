@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -77,12 +76,12 @@ public class ConfigurationTest {
 		Object copiedObjectSpied = mock(copiedClass, withSettings()
 				.spiedInstance(copiedOpject)
 				.defaultAnswer(new Answer() {
-			public Object answer(InvocationOnMock invocation) throws Throwable {
-				if (invocation.getMethod().equals(methodToCall))
-					isMethodCalled.setValue(true);
-				return invocation.callRealMethod();
-			}
-		}));
+					public Object answer(InvocationOnMock invocation) throws Throwable {
+						if (invocation.getMethod().equals(methodToCall))
+							isMethodCalled.setValue(true);
+						return invocation.callRealMethod();
+					}
+				}));
 
 		//Call and test
 		containerClass.getDeclaredConstructor(copiedClass).newInstance(copiedObjectSpied);

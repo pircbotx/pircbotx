@@ -15,20 +15,14 @@
  * You should have received a copy of the GNU General Public License along with
  * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx.snapshot;
+package org.pircbotx.hooks.types;
+
+import org.pircbotx.PircBotX;
 
 /**
  *
  * @author Leon
  */
-public final class SnapshotUtils {
-	/**
-	 * Utility class, do not create instances
-	 */
-	private SnapshotUtils() {
-	}
+public interface GenericChannelModeRecipientEvent<T extends PircBotX> extends GenericUserModeEvent<T>, GenericChannelModeEvent<T> {
 
-	protected static void fail() throws RuntimeException {
-		throw new RuntimeException("Attempting to modify a snapshot object");
-	}
 }

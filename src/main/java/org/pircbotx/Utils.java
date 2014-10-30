@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -26,7 +25,9 @@ import org.pircbotx.hooks.Event;
 import org.slf4j.MDC;
 
 /**
- * Useful utilities for internal PircBotX use. Users should not use this class directly
+ * Useful utilities for internal PircBotX use. Users should not use this class
+ * directly
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public final class Utils {
@@ -38,9 +39,10 @@ public final class Utils {
 	public static void dispatchEvent(PircBotX bot, Event event) {
 		bot.getConfiguration().getListenerManager().dispatchEvent(event);
 	}
-	
+
 	/**
 	 * Try to parse int string, returning -1 if it fails.
+	 *
 	 * @param longString
 	 * @return The string as an int or -1
 	 */
@@ -54,6 +56,7 @@ public final class Utils {
 
 	/**
 	 * Try to parse long string, returning -1 if it fails.
+	 *
 	 * @param longString
 	 * @return The string as a long or -1
 	 */
@@ -78,10 +81,13 @@ public final class Utils {
 		MDC.put("pircbotx.server", configuration.getServerHostname());
 		MDC.put("pircbotx.port", String.valueOf(configuration.getServerPort()));
 	}
-	
+
 	/**
-	 * Sends a raw line to the server. Needed so {@link PircBotX#sendRawLineToServer(java.lang.String) }
-	 * can stay protected but still be callable from the org.pircbotx.output package
+	 * Sends a raw line to the server. Needed so {@link PircBotX#sendRawLineToServer(java.lang.String)
+	 * }
+	 * can stay protected but still be callable from the org.pircbotx.output
+	 * package
+	 *
 	 * @param bot The bot that sends the raw line
 	 * @param rawLine The raw line to send
 	 */
@@ -90,8 +96,9 @@ public final class Utils {
 	}
 
 	/**
-	 * Tokenize IRC raw input into it's components, keeping the
-	 * 'sender' and 'message' fields intact.
+	 * Tokenize IRC raw input into it's components, keeping the 'sender' and
+	 * 'message' fields intact.
+	 *
 	 * @param input A string in the format [:]item [item] ... [:item [item] ...]
 	 * @return List of strings.
 	 */

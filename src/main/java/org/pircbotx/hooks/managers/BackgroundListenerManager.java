@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks.managers;
 
@@ -30,13 +29,14 @@ import org.pircbotx.hooks.Listener;
 
 /**
  * ThreadListenerManager with additional dedicated background threads. Normal
- * Listeners execute in the same thread pool. Background Listeners however execute
- * in their own dedicated single threads separate from the rest
+ * Listeners execute in the same thread pool. Background Listeners however
+ * execute in their own dedicated single threads separate from the rest
  * <p>
  * This class is useful for logging listeners or any other listener that needs
  * to process events one at a time instead of simultaneously.
  * <p>
- * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean) }
+ * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean)
+ * }
  * with isBackground set to true
  * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>

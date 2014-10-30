@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks.events;
 
@@ -32,34 +31,34 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
- * This event is dispatched when we receive a user list from the server
- * after joining a channel.
+ * This event is dispatched when we receive a user list from the server after
+ * joining a channel.
  * <p>
- * Shortly after joining a channel, the IRC server sends a list of all
- * users in that channel. The PircBotX collects this information and
- * dispatched this event as soon as it has the full list.
+ * Shortly after joining a channel, the IRC server sends a list of all users in
+ * that channel. The PircBotX collects this information and dispatched this
+ * event as soon as it has the full list.
  * <p>
- * To obtain the nick of each user in the channel, call the {@link User#getNick()}
- * method on each User object in the {@link Set}.
- * <p>
- * At a later time, you may call {@link PircBotX#getUsers(org.pircbotx.Channel) }
- * to obtain an up to date list of the users in the channel.
+ * To obtain the nick of each user in the channel, call the
+ * {@link User#getNick()} method on each User object in {@link #getUsers() }
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
+ * @see Channel#getUsers()
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserListEvent<B extends PircBotX> extends Event<B> implements GenericChannelEvent<B> {
-	@Getter(onMethod = @_({@Override}))
+	/**
+	 * The channel that the user list is from.
+	 */
+	@Getter(onMethod = @_({
+		@Override}))
 	protected final Channel channel;
+	/**
+	 * An <b>immutable</b> Set of Users belonging to this channel.
+	 */
 	protected final ImmutableSortedSet<User> users;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel that the user list is from.
-	 * @param users An <b>immutable</b> Set of Users belonging to this channel.
-	 */
 	public UserListEvent(@NonNull B bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
 		super(bot);
 		this.channel = channel;
@@ -68,6 +67,7 @@ public class UserListEvent<B extends PircBotX> extends Event<B> implements Gener
 
 	/**
 	 * Respond with a message to the channel that the userlist was from
+	 *
 	 * @param response The response to send
 	 */
 	@Override

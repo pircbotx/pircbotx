@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.output;
 
@@ -48,6 +47,7 @@ import org.pircbotx.TestUtils;
 
 /**
  * Test the output of PircBotX. Depend on ConnectTests to check mocked sockets
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
@@ -89,7 +89,7 @@ public class OutputTest {
 		verify(socketFactory).createSocket(localhost, 6667, null, 0);
 
 		//Setup useful vars
-		aUser = bot.getUserChannelDao().getUser("aUser");
+		aUser = TestUtils.generateTestUserSource(bot);
 		aChannel = bot.getUserChannelDao().createChannel("#aChannel");
 	}
 
@@ -151,7 +151,7 @@ public class OutputTest {
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
 		aUser.send().action(aString);
-		checkOutput("PRIVMSG aUser :\u0001ACTION " + aString + "\u0001");
+		checkOutput("PRIVMSG SourceUser :\u0001ACTION " + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendAction to channel")
@@ -169,7 +169,7 @@ public class OutputTest {
 	@Test(description = "Verify sendCTCPCommand to user")
 	public void sendCTCPCommandUserTest() throws Exception {
 		aUser.send().ctcpCommand(aString);
-		checkOutput("PRIVMSG aUser :\u0001" + aString + "\u0001");
+		checkOutput("PRIVMSG SourceUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPCommand to channel")
@@ -187,7 +187,7 @@ public class OutputTest {
 	@Test(description = "Verify sendCTCPResponse to user")
 	public void sendCTCPResponseUserTest() throws Exception {
 		aUser.send().ctcpResponse(aString);
-		checkOutput("NOTICE aUser :\u0001" + aString + "\u0001");
+		checkOutput("NOTICE SourceUser :\u0001" + aString + "\u0001");
 	}
 
 	@Test(description = "Verify sendCTCPResponse by string")
@@ -199,13 +199,13 @@ public class OutputTest {
 	@Test(description = "Verify sendInvite to user")
 	public void sendInviteUserChannelTest() throws Exception {
 		aUser.send().invite(aChannel);
-		checkOutput("INVITE aUser :#aChannel");
+		checkOutput("INVITE SourceUser :#aChannel");
 	}
-	
+
 	@Test(description = "Verify sendInvite to channel by string")
 	public void sendInviteUserStringTest() throws Exception {
 		aUser.send().invite("#aChannel");
-		checkOutput("INVITE aUser :#aChannel");
+		checkOutput("INVITE SourceUser :#aChannel");
 	}
 
 	@Test(description = "Verify sendInvite to channel")
@@ -219,9 +219,9 @@ public class OutputTest {
 	@Test
 	public void sendInviteChannelUserTest() throws Exception {
 		aChannel.send().invite(aUser);
-		checkOutput("INVITE aUser :#aChannel");
+		checkOutput("INVITE SourceUser :#aChannel");
 	}
-	
+
 	public void sendInviteChannelStringTest() throws Exception {
 		aChannel.send().invite("randomUser");
 		checkOutput("INVITE randomUser :#aChannel");
@@ -242,13 +242,13 @@ public class OutputTest {
 	@Test(description = "Verify sendMessage to user in channel")
 	public void sendMessageChannelUserTest() throws Exception {
 		aChannel.send().message(aUser, aString);
-		checkOutput("PRIVMSG #aChannel :aUser: " + aString);
+		checkOutput("PRIVMSG #aChannel :SourceUser: " + aString);
 	}
 
 	@Test(description = "Verify sendMessage to user")
 	public void sendMessageUserTest() throws Exception {
 		aUser.send().message(aString);
-		checkOutput("PRIVMSG aUser :" + aString);
+		checkOutput("PRIVMSG SourceUser :" + aString);
 	}
 
 	@Test(description = "Verify sendMessage by string")
@@ -266,7 +266,7 @@ public class OutputTest {
 	@Test(description = "Verify sendNotice to user")
 	public void sendNoticeUserTest() throws Exception {
 		aUser.send().notice(aString);
-		checkOutput("NOTICE aUser :" + aString);
+		checkOutput("NOTICE SourceUser :" + aString);
 	}
 
 	@Test(description = "Verify sendNotice by String")
@@ -289,6 +289,7 @@ public class OutputTest {
 
 	/**
 	 * Check the output for one line that equals the expected value.
+	 *
 	 * @param expected
 	 */
 	protected Iterator<String> checkOutput(String expected) throws IOException {

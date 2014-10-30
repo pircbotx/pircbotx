@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.hooks.events;
 
@@ -29,31 +28,42 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
- * This event is dispatched whenever a user sets the topic, or when
- * we join a new channel and discovers its topic.
+ * This event is dispatched whenever a user sets the topic, or when we join a
+ * new channel and discovers its topic.
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericChannelEvent<T> {
-	@Getter(onMethod = @_(@Override))
+	/**
+	 * The channel that the topic belongs to.
+	 */
+	@Getter(onMethod = @_(
+			@Override))
 	protected final Channel channel;
+	/**
+	 * If known, the old topic of the channel before it was changed.
+	 */
 	protected final String oldTopic;
+	/**
+	 * The topic for the channel.
+	 */
 	protected final String topic;
+	/**
+	 * The user that set the topic.
+	 */
 	protected final String user;
+	/**
+	 * True if the topic has just been changed, false if the topic was already
+	 * there.
+	 */
 	protected final boolean changed;
+	/**
+	 * When the topic was set (milliseconds since the epoch).
+	 */
 	protected final long date;
 
-	/**
-	 * Default constructor to setup object. Timestamp is automatically set
-	 * to current time as reported by {@link System#currentTimeMillis() }
-	 * @param channel The channel that the topic belongs to.
-	 * @param topic The topic for the channel.
-	 * @param user The user that set the topic.
-	 * @param date When the topic was set (milliseconds since the epoch).
-	 * @param changed True if the topic has just been changed, false if
-	 * the topic was already there.
-	 */
 	public TopicEvent(T bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull String user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
@@ -65,9 +75,9 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	}
 
 	/**
-	 * Respond with a channel message in
-	 * <code>user: message</code> format to the
-	 * user that set the message
+	 * Respond with a channel message in <code>user: message</code> format to
+	 * the user that set the message
+	 *
 	 * @param response The response to send
 	 */
 	@Override

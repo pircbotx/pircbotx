@@ -1,20 +1,19 @@
 /**
- * Copyright (C) 2010-2013 Leon Blakey <lord.quackstar at gmail.com>
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
  *
  * This file is part of PircBotX.
  *
- * PircBotX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * PircBotX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx;
 
@@ -43,8 +42,9 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 
 /**
- * Do various connect tests. Note that this is in a separate class since PircBotXOutputTest
- * relies on a working mock implementation
+ * Do various connect tests. Note that this is in a separate class since
+ * PircBotXOutputTest relies on a working mock implementation
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(groups = "ConnectTests", singleThreaded = true)
@@ -65,7 +65,13 @@ public class PircBotXConnectTest {
 	@BeforeMethod
 	public void botProvider() throws Exception {
 		//Setup stream
-		botIn = new ByteArrayInputStream(":ircd.test CAP * LS :sasl\r\n:ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b\r\n".getBytes());
+		botIn = new ByteArrayInputStream(StringUtils.join(new String[]{
+			":ircd.test CAP * LS :sasl",
+			":ircd.test 004 PircBotXUser ircd.test jmeter-ircd-basic-0.1 ov b",
+			":ircd.test NOTICE * :*** Looking up your hostname...",
+			//Need to end with a newline
+			""
+		}, "\r\n").getBytes());
 		botOut = new ByteArrayOutputStream();
 		socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
@@ -78,11 +84,11 @@ public class PircBotXConnectTest {
 		events = new ArrayList<Event>();
 		configurationBuilder = TestUtils.generateConfigurationBuilder()
 				.addListener(new Listener() {
-			public void onEvent(Event event) throws Exception {
-				LoggerFactory.getLogger(getClass()).debug("Called");
-				events.add(event);
-			}
-		})
+					public void onEvent(Event event) throws Exception {
+						LoggerFactory.getLogger(getClass()).debug("Called for " + event.getClass());
+						events.add(event);
+					}
+				})
 				.setName("PircBotXBot");
 	}
 
@@ -94,8 +100,8 @@ public class PircBotXConnectTest {
 		event = events.get(2);
 		assertTrue(event instanceof ConnectEvent, "Unknown third event: " + event);
 		assertEquals(event.getBot(), bot);
-		
-		event = events.get(4);
+
+		event = events.get(5);
 		assertTrue(event instanceof DisconnectEvent, "Unknown fifth event: " + event);
 		assertEquals(event.getBot(), bot);
 	}
