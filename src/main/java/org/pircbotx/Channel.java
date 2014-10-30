@@ -21,20 +21,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
 import org.pircbotx.output.OutputChannel;
 import org.pircbotx.snapshot.ChannelSnapshot;
+
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Represents a Channel that we're joined to.
@@ -170,7 +166,7 @@ public class Channel implements Comparable<Channel> {
 	 * Gets the channel mode. If mode is simple (no arguments), this will return
 	 * immediately. If its not (mode with arguments, eg channel key), then asks
 	 * the server for the correct mode, waiting until it gets a response
-	 * <p>
+	 * <p/>
 	 * <b>WARNING:</b> Because of the last checking, a threaded listener manager
 	 * like {@link ThreadedListenerManager} is required. Using a single threaded
 	 * listener manager like

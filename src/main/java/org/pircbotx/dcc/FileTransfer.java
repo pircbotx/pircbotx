@@ -17,15 +17,16 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.Socket;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * A general active DCC file transfer
@@ -46,11 +47,11 @@ public abstract class FileTransfer {
 	protected final File file;
 	@Getter
 	protected final long startPosition;
+	protected final Object stateLock = new Object();
 	@Getter
 	protected long bytesTransfered;
 	@Getter
 	protected DccState state = DccState.INIT;
-	protected final Object stateLock = new Object();
 
 	/**
 	 * Transfer the file to the user
@@ -75,10 +76,10 @@ public abstract class FileTransfer {
 
 	/**
 	 * Callback at end of read/write loop:
-	 * <p>
+	 * <p/>
 	 * Receive: Socket read -> file write -> socket write (bytes transferred) ->
 	 * callback -> repeat
-	 * <p>
+	 * <p/>
 	 * Send: File read -> socket write -> socket read (bytes transferred) ->
 	 * callback -> repeat
 	 */

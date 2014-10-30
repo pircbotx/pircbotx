@@ -17,39 +17,75 @@
  */
 package org.pircbotx.hooks;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.pircbotx.PircBotX;
+import org.pircbotx.TestUtils;
+import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.types.GenericEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
 import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.types.GenericMessageEvent;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+
 import static org.mockito.Mockito.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
-import org.pircbotx.TestUtils;
-import org.pircbotx.hooks.events.WhoisEvent;
-import org.pircbotx.hooks.managers.GenericListenerManager;
-import org.pircbotx.hooks.types.GenericEvent;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class ListenerAdapterTest {
 	protected PircBotX bot;
+
+	@DataProvider
+	public static Object[][] onEventTestDataProvider() {
+		//Map events to methods
+		Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			//Filter out methods by basic criteria
+			if (curMethod.getName().equals("onEvent") || curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
+				continue;
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			//Filter out methods that don't have the right param or are already added
+			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
+					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
+				continue;
+			Set methods = new HashSet();
+			methods.add(curMethod);
+			eventToMethod.put((Class<? extends Event>) curClass, methods);
+		}
+
+		//Now that we have all the events, start mapping interfaces
+		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
+			//Make sure this is an event method
+			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
+				continue;
+			Class<?> curClass = curMethod.getParameterTypes()[0];
+			if (!curClass.isInterface() || !GenericEvent.class.isAssignableFrom(curClass))
+				continue;
+			//Add this interface method to all events that implement it
+			for (Class curEvent : eventToMethod.keySet())
+				if (curClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
+					eventToMethod.get(curEvent).add(curMethod);
+		}
+
+		//Build object array that TestNG understands
+		Object[][] params = new Object[eventToMethod.size()][];
+		int paramsCounter = 0;
+		for (Map.Entry<Class<? extends Event>, Set<Method>> curEntry : eventToMethod.entrySet())
+			params[paramsCounter++] = new Object[]{curEntry.getKey(), curEntry.getValue()};
+		return params;
+	}
 
 	@BeforeMethod
 	public void setUp() {
@@ -59,6 +95,7 @@ public class ListenerAdapterTest {
 
 	/**
 	 * Makes sure adapter uses all events
+	 *
 	 * @throws Exception
 	 */
 	@Test(dataProviderClass = TestUtils.class, dataProvider = "eventAllDataProvider", description = "Verify ListenerAdapter has methods for all events")
@@ -113,46 +150,6 @@ public class ListenerAdapterTest {
 		};
 
 		customListener.onEvent(customEvent);
-	}
-
-	@DataProvider
-	public static Object[][] onEventTestDataProvider() {
-		//Map events to methods
-		Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
-		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
-			//Filter out methods by basic criteria
-			if (curMethod.getName().equals("onEvent") || curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
-				continue;
-			Class<?> curClass = curMethod.getParameterTypes()[0];
-			//Filter out methods that don't have the right param or are already added
-			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
-					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
-				continue;
-			Set methods = new HashSet();
-			methods.add(curMethod);
-			eventToMethod.put((Class<? extends Event>) curClass, methods);
-		}
-
-		//Now that we have all the events, start mapping interfaces
-		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
-			//Make sure this is an event method
-			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
-				continue;
-			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if (!curClass.isInterface() || !GenericEvent.class.isAssignableFrom(curClass))
-				continue;
-			//Add this interface method to all events that implement it
-			for (Class curEvent : eventToMethod.keySet())
-				if (curClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
-					eventToMethod.get(curEvent).add(curMethod);
-		}
-
-		//Build object array that TestNG understands
-		Object[][] params = new Object[eventToMethod.size()][];
-		int paramsCounter = 0;
-		for (Map.Entry<Class<? extends Event>, Set<Method>> curEntry : eventToMethod.entrySet())
-			params[paramsCounter++] = new Object[]{curEntry.getKey(), curEntry.getValue()};
-		return params;
 	}
 
 	@Test(dependsOnMethods = {"eventImplementTest"}, dataProvider = "onEventTestDataProvider",

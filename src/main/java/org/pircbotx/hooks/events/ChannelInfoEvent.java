@@ -18,20 +18,21 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
-import javax.annotation.Nullable;
-import org.pircbotx.PircBotX;
-import org.pircbotx.ChannelListEntry;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import org.pircbotx.ChannelListEntry;
+import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
+
+import javax.annotation.Nullable;
 
 /**
  * After calling the listChannels() method in PircBotX, the server will start to
  * send us information about each channel on the server. You may listen for this
  * event in order to receive the information about each channel as soon as it is
  * received.
- * <p>
+ * <p/>
  * Note that certain channels, such as those marked as hidden, may not appear in
  * channel listings.
  *

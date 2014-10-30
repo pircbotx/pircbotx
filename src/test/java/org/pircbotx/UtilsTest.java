@@ -17,13 +17,14 @@
  */
 package org.pircbotx;
 
-import java.util.List;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
 
 /**
- *
  * @author Leon
  */
 public class UtilsTest {
@@ -33,7 +34,7 @@ public class UtilsTest {
 	public Object[][] suffixDataProvider() {
 		return new Object[][]{{""}, {"    "}};
 	}
-	
+
 	@Test(dataProvider = "suffixDataProvider")
 	public void tokenizeChannelMessageTest(String suffix) {
 		List<String> tokens = Utils.tokenizeLine(":AUser!~ALogin@some.host PRIVMSG #aChannel :" + testString + suffix);

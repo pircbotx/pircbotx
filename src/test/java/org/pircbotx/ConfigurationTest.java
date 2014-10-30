@@ -20,23 +20,25 @@ package org.pircbotx;
 import com.google.common.base.Function;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
+import static org.testng.Assert.assertTrue;
 
 /**
- *
  * @author Leon
  */
 public class ConfigurationTest {
@@ -50,17 +52,17 @@ public class ConfigurationTest {
 
 				//Constructors to test
 				params.add(new Object[]{Configuration.class,
-					Configuration.Builder.class,
-					TestUtils.generateConfigurationBuilder(),
-					prefix + name});
+						Configuration.Builder.class,
+						TestUtils.generateConfigurationBuilder(),
+						prefix + name});
 				params.add(new Object[]{Configuration.Builder.class,
-					Configuration.Builder.class,
-					TestUtils.generateConfigurationBuilder(),
-					prefix + name});
+						Configuration.Builder.class,
+						TestUtils.generateConfigurationBuilder(),
+						prefix + name});
 				params.add(new Object[]{Configuration.Builder.class,
-					Configuration.class,
-					TestUtils.generateConfigurationBuilder().buildConfiguration(),
-					prefix + name});
+						Configuration.class,
+						TestUtils.generateConfigurationBuilder().buildConfiguration(),
+						prefix + name});
 			}
 		return params.toArray(new Object[0][]);
 	}
@@ -76,12 +78,12 @@ public class ConfigurationTest {
 		Object copiedObjectSpied = mock(copiedClass, withSettings()
 				.spiedInstance(copiedOpject)
 				.defaultAnswer(new Answer() {
-			public Object answer(InvocationOnMock invocation) throws Throwable {
-				if (invocation.getMethod().equals(methodToCall))
-					isMethodCalled.setValue(true);
-				return invocation.callRealMethod();
-			}
-		}));
+					public Object answer(InvocationOnMock invocation) throws Throwable {
+						if (invocation.getMethod().equals(methodToCall))
+							isMethodCalled.setValue(true);
+						return invocation.callRealMethod();
+					}
+				}));
 
 		//Call and test
 		containerClass.getDeclaredConstructor(copiedClass).newInstance(copiedObjectSpied);

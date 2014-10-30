@@ -18,12 +18,13 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.StringTokenizer;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * This is a giant info bean of various things about the server. This is

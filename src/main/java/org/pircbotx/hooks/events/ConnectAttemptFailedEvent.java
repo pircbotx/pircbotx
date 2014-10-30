@@ -17,14 +17,14 @@
  */
 package org.pircbotx.hooks.events;
 
-import java.net.InetAddress;
-import javax.annotation.Nullable;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
+import javax.annotation.Nullable;
+import java.net.InetAddress;
+
 /**
- *
  * @author Leon
  */
 public class ConnectAttemptFailedEvent<T extends PircBotX> extends Event<T> {
