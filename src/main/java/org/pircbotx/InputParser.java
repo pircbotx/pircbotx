@@ -548,7 +548,6 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new NickChangeEvent<PircBotX>(bot, source.getNick(), newNick, source, sourceUser));
 		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
-			sourceUser = createUserIfNull(sourceUser, source);
 			configuration.getListenerManager().dispatchEvent(new NoticeEvent<PircBotX>(bot, source, sourceUser, channel, message));
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
@@ -586,7 +585,6 @@ public class InputParser implements Closeable {
 			processMode(source, sourceUser, target, mode);
 		} else if (command.equals("TOPIC")) {
 			// Someone is changing the topic.
-			sourceUser = createUserIfNull(sourceUser, source);
 			long currentTime = System.currentTimeMillis();
 			String oldTopic = channel.getTopic();
 			channel.setTopic(message);
@@ -863,7 +861,7 @@ public class InputParser implements Closeable {
 		user.setIrcop(prefix.contains("*"));
 	}
 
-	public User createUserIfNull(User otherUser, UserHostmask hostmask) {
+	public User createUserIfNull(User otherUser, @NonNull UserHostmask hostmask) {
 		if (otherUser != null)
 				return otherUser;
 		else if (bot.getUserChannelDao().containsUser(hostmask))
