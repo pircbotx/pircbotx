@@ -6,9 +6,11 @@
 package org.pircbotx.hooks;
 
 import java.util.Arrays;
+import java.util.List;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.MotdEvent;
+import org.testng.collections.Lists;
 
 /**
  *
@@ -31,6 +33,16 @@ public class WaitForQueueTest {
 		
 		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class, MotdEvent.class));
 		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class));
+		
+		//This does not compile for some reason
+		//However there is 0 reason to use this syntax
+		//event = queue.waitFor(Arrays.asList(MessageEvent.class));
+		
+		List<Class<? extends Event>> eventList = Lists.newArrayList();
+		eventList.add(MessageEvent.class);
+		eventList.add(ActionEvent.class);
+		eventList.add(MotdEvent.class);
+		event = queue.waitFor(eventList);
 	}
 }
 
