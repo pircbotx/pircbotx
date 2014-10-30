@@ -19,6 +19,18 @@ package org.pircbotx;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.InterruptedIOException;
+import java.io.OutputStreamWriter;
+import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Synchronized;
@@ -27,48 +39,36 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.events.ConnectAttemptFailedEvent;
-import org.pircbotx.hooks.events.ConnectEvent;
-import org.pircbotx.hooks.events.DisconnectEvent;
-import org.pircbotx.hooks.events.SocketConnectEvent;
+import org.pircbotx.hooks.events.*;
 import org.pircbotx.output.OutputCAP;
 import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 
-import java.io.*;
-import java.lang.ref.WeakReference;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
- * <p/>
+ * <p>
  * It provides an event-driven architecture to handle common IRC events, flood
  * protection, DCC support, ident support, and more. The comprehensive logfile
  * format is suitable for use with pisg to generate channel statistics.
- * <p/>
+ * <p>
  * Methods of the PircBotX class can be called to send events to the IRC server
  * that it connects to. For example, calling the sendMessage method will send a
  * message to a channel or user on the IRC server. Multiple servers can be
  * supported using multiple instances of PircBotX.
- * <p/>
+ * <p>
  * To perform an action when the PircBotX receives a normal message from the IRC
  * server, you would listen for the MessageEvent in your listener (see
  * {@link ListenerAdapter}). Many other events are dispatched as well for other
  * incoming lines
  *
  * @author Origionally by:
- *         <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
- *         href="http://www.jibble.org/pircbot.php">PircBot</a>
- *         <p/>
- *         Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
- *         href="http://pircbotx.googlecode.com">PircBotX</a>
+ * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
+ * href="http://www.jibble.org/pircbot.php">PircBot</a>
+ * <p>
+ * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Slf4j
 public class PircBotX implements Comparable<PircBotX> {
@@ -99,16 +99,15 @@ public class PircBotX implements Comparable<PircBotX> {
 	@Getter
 	protected final DccHandler dccHandler;
 	protected final ServerInfo serverInfo;
-	protected final OutputRaw outputRaw;
-	protected final OutputIRC outputIRC;
-	protected final OutputCAP outputCAP;
-	protected final OutputDCC outputDCC;
-	protected final Object stateLock = new Object();
 	//Connection stuff.
 	@Getter(AccessLevel.PROTECTED)
 	protected Socket socket;
 	protected BufferedReader inputReader;
 	protected OutputStreamWriter outputWriter;
+	protected final OutputRaw outputRaw;
+	protected final OutputIRC outputIRC;
+	protected final OutputCAP outputCAP;
+	protected final OutputDCC outputDCC;
 	/**
 	 * Enabled CAP features
 	 */
@@ -119,8 +118,9 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected Thread shutdownHook;
 	protected volatile boolean reconnectStopped = false;
 	protected ImmutableMap<String, String> reconnectChannels;
-	protected Exception disconnectException;
 	private State state = State.INIT;
+	protected final Object stateLock = new Object();
+	protected Exception disconnectException;
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
@@ -145,7 +145,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * reconnect to the server until {@link #stopBot()} is called or an
 	 * exception is thrown from connecting
 	 *
-	 * @throws IOException  if it was not possible to connect to the server.
+	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException
 	 */
 	public void startBot() throws IOException, IrcException {
@@ -167,15 +167,16 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * number, password, and socketFactory. On success a {@link ConnectEvent}
 	 * will be dispatched
 	 *
-	 * @param hostname      The hostname of the server to connect to.
-	 * @param port          The port number to connect to on the server.
-	 * @param password      The password to use to join the server.
+	 * @param hostname The hostname of the server to connect to.
+	 * @param port The port number to connect to on the server.
+	 * @param password The password to use to join the server.
 	 * @param socketFactory The factory to use for creating sockets, including
-	 *                      secure sockets
-	 * @throws IOException               if it was not possible to connect to the server.
-	 * @throws IrcException              if the server would not let us join it.
+	 * secure sockets
+	 *
+	 * @throws IOException if it was not possible to connect to the server.
+	 * @throws IrcException if the server would not let us join it.
 	 * @throws NickAlreadyInUseException if our nick is already in use on the
-	 *                                   server.
+	 * server.
 	 */
 	protected void connect() throws IOException, IrcException {
 		synchronized (stateLock) {
@@ -243,7 +244,7 @@ public class PircBotX implements Comparable<PircBotX> {
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
-
+		
 		//Pre-insert an initial User representing the bot itself
 		getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
 
@@ -340,18 +341,6 @@ public class PircBotX implements Comparable<PircBotX> {
 	}
 
 	/**
-	 * Returns the current nick of the bot. Note that if you have just changed
-	 * your nick, this method will still return the old nick until confirmation
-	 * of the nick change is received from the server.
-	 *
-	 * @return The current nick of the bot.
-	 * @since PircBot 1.0.0
-	 */
-	public String getNick() {
-		return nick;
-	}
-
-	/**
 	 * Sets the internal nick of the bot. This is only to be called by the
 	 * PircBotX class in response to notification of nick changes that apply to
 	 * us.
@@ -360,6 +349,19 @@ public class PircBotX implements Comparable<PircBotX> {
 	 */
 	protected void setNick(String nick) {
 		this.nick = nick;
+	}
+
+	/**
+	 * Returns the current nick of the bot. Note that if you have just changed
+	 * your nick, this method will still return the old nick until confirmation
+	 * of the nick change is received from the server.
+	 *
+	 * @since PircBot 1.0.0
+	 *
+	 * @return The current nick of the bot.
+	 */
+	public String getNick() {
+		return nick;
 	}
 
 	/**
@@ -381,15 +383,16 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * PircBotX instance to achieve multiple server connectivity. The format of
 	 * this String may change between different versions of PircBotX but is
 	 * currently something of the form 	 <code>
-	 * Version{PircBotX x.y.z Java IRC Bot - www.jibble.org}
-	 * Connected{true}
-	 * Server{irc.dal.net}
-	 * Port{6667}
-	 * Password{}
+	 *   Version{PircBotX x.y.z Java IRC Bot - www.jibble.org}
+	 *   Connected{true}
+	 *   Server{irc.dal.net}
+	 *   Port{6667}
+	 *   Password{}
 	 * </code>
 	 *
-	 * @return a String representation of this object.
 	 * @since PircBot 0.9.10
+	 *
+	 * @return a String representation of this object.
 	 */
 	@Override
 	public String toString() {
@@ -443,9 +446,8 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * connections to the server, kill background threads, clear server specific
 	 * state, and dispatch a DisconnectedEvent
 	 * <p/>
-	 *
 	 * @param noReconnect Toggle whether to reconnect if enabled. Set to true to
-	 *                    100% shutdown the bot
+	 * 100% shutdown the bot
 	 */
 	protected void shutdown(boolean noReconnect) {
 		UserChannelDaoSnapshot daoSnapshot;
@@ -515,12 +517,6 @@ public class PircBotX implements Comparable<PircBotX> {
 		return state;
 	}
 
-	public static enum State {
-		INIT,
-		CONNECTED,
-		DISCONNECTED
-	}
-
 	protected static class BotShutdownHook extends Thread {
 		protected final WeakReference<PircBotX> thisBotRef;
 
@@ -541,5 +537,11 @@ public class PircBotX implements Comparable<PircBotX> {
 						thisBot.shutdown(true);
 				}
 		}
+	}
+
+	public static enum State {
+		INIT,
+		CONNECTED,
+		DISCONNECTED
 	}
 }

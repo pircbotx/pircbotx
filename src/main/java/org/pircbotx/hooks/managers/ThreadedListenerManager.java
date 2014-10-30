@@ -20,6 +20,16 @@ package org.pircbotx.hooks.managers;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +38,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ListenerManager that runs individual listeners in their own thread per event.
@@ -44,9 +48,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager<B> {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final Multimap<B, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 	protected ExecutorService pool;
 	protected Set<Listener<B>> listeners = Collections.synchronizedSet(new HashSet<Listener<B>>());
+	protected final Multimap<B, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
 	 * Configures with default cached thread thread pool.

@@ -17,23 +17,22 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
-import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericCTCPEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * This event is dispatched whenever we receive a TIME request.
- * <p/>
+ * <p>
  * {@link CoreHooks} automatically responds correctly. Unless {@link CoreHooks}
  * is removed from the
  * {@link org.pircbotx.Configuration#getListenerManager() bot's ListenerManager}, Listeners of
@@ -64,7 +63,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	@Getter(onMethod = @_(
 			@Override, @Nullable))
 	protected final User user;
-
+		
 	public TimeEvent(T bot, Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;

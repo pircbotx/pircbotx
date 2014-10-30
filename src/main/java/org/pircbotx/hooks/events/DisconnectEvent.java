@@ -17,20 +17,19 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
-
-import javax.annotation.Nullable;
 
 /**
  * This event is dispatched when we get disconnected. It is meant for the bot to
  * carry out actions upon disconnection. This may happen if the PircBotX quits
  * from the server, or if the connection is unexpectedly lost.
- * <p/>
+ * <p>
  * Disconnection from the IRC server is detected immediately if either we or the
  * server close the connection normally. If the connection to the server is
  * lost, but neither we nor the server have explicitly closed the connection,

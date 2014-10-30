@@ -1,12 +1,11 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<!--Sonatype Parent POM-->
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
 	</parent>
-
+	
 	<!--
 		Maven Information
 	-->
@@ -15,14 +14,14 @@
 	<artifactId>pircbotx</artifactId>
 	<packaging>jar</packaging>
 	<version>2.1-SNAPSHOT</version>
-
+	
 	<!--
 		Project information
 	-->
 	<name>pircbotx</name>
-	<description>PircBotX is a simple, easy to use, Java IRC Bot Framework based
-		off of a fork of the popular PircBot framework, bringing many new up-to-date
-		features and bug fixes in an official alternative distribution.
+	<description>PircBotX is a simple, easy to use, Java IRC Bot Framework based 
+off of a fork of the popular PircBot framework, bringing many new up-to-date 
+features and bug fixes in an official alternative distribution. 
 	</description>
 	<url>http://pircbotx.googlecode.com/</url>
 	<inceptionYear>2010</inceptionYear>
@@ -55,7 +54,7 @@
 		<system>Google Code</system>
 		<url>http://code.google.com/p/pircbotx/issues/list/</url>
 	</issueManagement>
-
+        
 	<ciManagement>
 		<url>https://thelq.ci.cloudbees.com/job/PircBotX/</url>
 	</ciManagement>
@@ -64,9 +63,9 @@
 		<connection>scm:hg:http://code.google.com/p/pircbotx/</connection>
 		<developerConnection>scm:hg:https://code.google.com/p/pircbotx/</developerConnection>
 		<url>https://code.google.com/p/pircbotx/</url>
-		<tag>HEAD</tag>
-	</scm>
-
+	  <tag>HEAD</tag>
+  </scm>
+	
 	<mailingLists>
 		<mailingList>
 			<name>pircbotx</name>
@@ -148,7 +147,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
+	
 	<build>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
@@ -192,11 +191,11 @@
 						<phase>test-compile</phase>
 						<configuration>
 							<showDeprecation>false</showDeprecation>
-						</configuration>
+						</configuration> 
 						<goals>
 							<goal>testCompile</goal>
 						</goals>
-					</execution>
+					</execution>                  
 				</executions>
 			</plugin>
 			<!-- Update version in PircBotX.java -->
@@ -204,7 +203,7 @@
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>maven-replacer-plugin</artifactId>
 				<version>1.4.1</version>
-				<executions>
+				<executions>                
 					<execution>
 						<phase>process-sources</phase>
 						<goals>
@@ -219,7 +218,7 @@
 							<token>public static final String VERSION .+</token>
 							<value>public static final String VERSION = "${project.version}";</value>
 						</replacement>
-					</replacements>
+					</replacements>                        
 				</configuration>
 			</plugin>
 			<!--Use very verbose logging while testing-->
@@ -237,7 +236,7 @@
 				</configuration>
 			</plugin>
 			<!-- Make a unified jar with all of the dependencies -->
-			<plugin>
+			<plugin>              
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.3</version>
 				<executions>
@@ -248,12 +247,11 @@
 						</goals>
 						<configuration>
 							<transformers>
-								<transformer
-										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
 										<Main-Class>org.thelq.pircbotx.Main</Main-Class>
 										<Class-Path>.</Class-Path>
-									</manifestEntries>
+									</manifestEntries>									
 								</transformer>
 							</transformers>
 							<finalName>${project.artifactId}-unified</finalName>
@@ -283,7 +281,7 @@
 			<url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
 		</site>
 	</distributionManagement>
-
+	
 	<profiles>
 		<!--Lombok tools.jar config-->
 		<profile>
@@ -429,7 +427,7 @@
 										</rulesets>
 									</configuration>
 								</plugin>
-							</reportPlugins>
+							</reportPlugins> 
 						</configuration>
 					</plugin>
 				</plugins>

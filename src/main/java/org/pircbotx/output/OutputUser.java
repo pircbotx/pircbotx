@@ -17,6 +17,8 @@
  */
 package org.pircbotx.output;
 
+import java.io.File;
+import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.pircbotx.Channel;
@@ -25,9 +27,6 @@ import org.pircbotx.UserHostmask;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
 import org.pircbotx.exception.DccException;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Send lines to a serverUser.
@@ -46,7 +45,7 @@ public class OutputUser {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The serverUser to send the CTCP command to
+	 * @param target The serverUser to send the CTCP command to
 	 * @param channel The channel you are inviting the serverUser to join.
 	 */
 	public void invite(String channel) {
@@ -58,7 +57,7 @@ public class OutputUser {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The serverUser to send the invite to
+	 * @param target The serverUser to send the invite to
 	 * @param channel The channel you are inviting the serverUser to join.
 	 */
 	public void invite(Channel channel) {
@@ -94,7 +93,7 @@ public class OutputUser {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The serverUser to send the message to
+	 * @param target The serverUser to send the message to
 	 * @param message The message to send
 	 */
 	public void message(String message) {
@@ -106,7 +105,7 @@ public class OutputUser {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The serverUser to send the CTCP command to
+	 * @param target The serverUser to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
@@ -118,7 +117,7 @@ public class OutputUser {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The serverUser to send the CTCP Response to
+	 * @param target The serverUser to send the CTCP Response to
 	 * @param message The response to send
 	 */
 	public void ctcpResponse(String message) {

@@ -35,45 +35,17 @@ import org.slf4j.LoggerFactory;
  * Basic example class for various features of PircBotX. Heavily documented
  * to explain what's going on
  * <p/>
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class PircBotXExample extends ListenerAdapter {
 	public static Logger log = LoggerFactory.getLogger(PircBotXExample.class);
-
-	public static void main(String[] args) {
-		//Setup this bot
-		Configuration configuration = new Configuration.Builder()
-				.setName("PircBotX") //Set the nick of the bot. CHANGE IN YOUR CODE
-				.setLogin("LQ") //login part of hostmask, eg name:login@host
-				.setAutoNickChange(true) //Automatically change nick when the current one is in use
-				.setCapEnabled(true) //Enable CAP features
-				.addCapHandler(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true))
-				.addListener(new PircBotXExample()) //This class is a listener, so add it to the bots known listeners
-				.setServerHostname("irc.freenode.net")
-				.addAutoJoinChannel("#pircbotx") //Join the official #pircbotx channel
-				.buildConfiguration();
-
-		//bot.connect throws various exceptions for failures
-		try {
-			PircBotX bot = new PircBotX(configuration);
-			//Connect to the freenode IRC network
-			bot.startBot();
-		} //In your code you should catch and handle each exception seperately,
-		//but here we just lump them all togeather for simpliciy
-		catch (Exception ex) {
-			log.error("Failed to start bot", ex);
-		}
-	}
-
 	/**
-	 * This example shows how to handle messages, actions, and notices from both
-	 * channels and private messages. It also shows how to use WaitForQueue to
-	 * have multi-line commands.
-	 *
+	 * This example shows how to handle messages, actions, and notices from both 
+	 * channels and private messages. It also shows how to use WaitForQueue to 
+	 * have multi-line commands. 
 	 * @param event A GenericMessageEvent from a channel or private message
 	 * @throws Exception If any Exceptions might be thrown, throw them up and let
-	 *                   the {@link ListenerManager} handle it. This can be removed though if not needed
+	 * the {@link ListenerManager} handle it. This can be removed though if not needed
 	 */
 	@Override
 	public void onGenericMessage(final GenericMessageEvent event) throws Exception {
@@ -99,7 +71,7 @@ public class PircBotXExample extends ListenerAdapter {
 			//Check if this message is the "ping" command
 			if (currentEvent.getMessage().startsWith("?waitTest ping"))
 				event.respond("pong");
-				//Check if this message is the "end" command
+			//Check if this message is the "end" command
 			else if (currentEvent.getMessage().startsWith("?waitTest end")) {
 				event.respond("Stopping");
 				queue.close();
@@ -113,9 +85,8 @@ public class PircBotXExample extends ListenerAdapter {
 	/**
 	 * This basic example shows how to handle incoming DCC chat requests. It basically
 	 * repeats what the user said and says how many characters are in their message
-	 *
 	 * @param event A incoming DCC chat request event
-	 * @throws Exception
+	 * @throws Exception 
 	 */
 	@Override
 	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
@@ -133,5 +104,30 @@ public class PircBotXExample extends ListenerAdapter {
 				int lineLength = line.length();
 				chat.sendLine("Line '" + line + "' contains " + lineLength + " characters");
 			}
+	}
+
+	public static void main(String[] args) {
+		//Setup this bot
+		Configuration configuration = new Configuration.Builder()
+				.setName("PircBotX") //Set the nick of the bot. CHANGE IN YOUR CODE
+				.setLogin("LQ") //login part of hostmask, eg name:login@host
+				.setAutoNickChange(true) //Automatically change nick when the current one is in use
+				.setCapEnabled(true) //Enable CAP features
+				.addCapHandler(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true))
+				.addListener(new PircBotXExample()) //This class is a listener, so add it to the bots known listeners
+				.setServerHostname("irc.freenode.net")
+				.addAutoJoinChannel("#pircbotx") //Join the official #pircbotx channel
+				.buildConfiguration();
+
+		//bot.connect throws various exceptions for failures
+		try {
+			PircBotX bot = new PircBotX(configuration);
+			//Connect to the freenode IRC network
+			bot.startBot();
+		} //In your code you should catch and handle each exception seperately,
+		//but here we just lump them all togeather for simpliciy
+		catch (Exception ex) {
+			log.error("Failed to start bot", ex);
+		}
 	}
 }

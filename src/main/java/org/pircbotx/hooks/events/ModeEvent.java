@@ -18,29 +18,27 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
+import javax.annotation.Nullable;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * Used when the mode of a channel is set.
- * <p/>
+ * <p>
  * You may find it more convenient to decode the meaning of the mode string by
  * using instead {@link OpEvent}, {@link VoiceEvent},
  * {@link SetChannelKeyEvent}, {@link RemoveChannelKeyEvent},
  * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent},
  * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
- * <p/>
- *
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Data
@@ -70,8 +68,8 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	protected final String mode;
 	protected final ImmutableList<String> modeParsed;
 
-	public ModeEvent(T bot, @NonNull Channel channel, UserHostmask userHostmask,
-	                 User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
+	public ModeEvent(T bot, @NonNull Channel channel, UserHostmask userHostmask, 
+			User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

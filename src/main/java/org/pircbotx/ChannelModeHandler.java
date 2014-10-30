@@ -17,10 +17,11 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.PeekingIterator;
 import lombok.Data;
+import com.google.common.collect.PeekingIterator;
 
 /**
+ *
  * @author Leon
  */
 @Data

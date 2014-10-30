@@ -17,19 +17,11 @@
  */
 package org.pircbotx.output;
 
-import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.TestUtils;
-import org.pircbotx.User;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import javax.net.SocketFactory;
+import java.io.BufferedReader;
+import java.io.IOException;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -38,14 +30,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
-
+import java.util.concurrent.Future;
+import javax.net.SocketFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Channel;
+import org.pircbotx.Configuration;
+import org.pircbotx.InputParser;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import org.pircbotx.TestUtils;
 
 /**
  * Test the output of PircBotX. Depend on ConnectTests to check mocked sockets
- *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
@@ -58,11 +59,6 @@ public class OutputTest {
 	protected Channel aChannel;
 	protected CountDownLatch inputLatch;
 	protected InputStream in;
-
-	protected static String tryGetNextLine(Iterator<String> itr) {
-		assertTrue(itr.hasNext(), "No more lines to get");
-		return itr.next();
-	}
 
 	@BeforeMethod
 	public void botSetup() throws Exception {
@@ -136,9 +132,9 @@ public class OutputTest {
 			seedStringBuilder.append((char) (random.nextInt(26) + 'a'));
 		String seedString = seedStringBuilder.toString();
 		String[] stringParts = new String[]{
-				"1" + seedString,
-				"2" + seedString,
-				"3" + seedString.substring(0, botMaxLineLength / 2)
+			"1" + seedString,
+			"2" + seedString,
+			"3" + seedString.substring(0, botMaxLineLength / 2)
 		};
 
 		//Send the message, joining all the message parts into one big chunck
@@ -204,7 +200,7 @@ public class OutputTest {
 		aUser.send().invite(aChannel);
 		checkOutput("INVITE SourceUser :#aChannel");
 	}
-
+	
 	@Test(description = "Verify sendInvite to channel by string")
 	public void sendInviteUserStringTest() throws Exception {
 		aUser.send().invite("#aChannel");
@@ -224,7 +220,7 @@ public class OutputTest {
 		aChannel.send().invite(aUser);
 		checkOutput("INVITE SourceUser :#aChannel");
 	}
-
+	
 	public void sendInviteChannelStringTest() throws Exception {
 		aChannel.send().invite("randomUser");
 		checkOutput("INVITE randomUser :#aChannel");
@@ -292,7 +288,6 @@ public class OutputTest {
 
 	/**
 	 * Check the output for one line that equals the expected value.
-	 *
 	 * @param expected
 	 */
 	protected Iterator<String> checkOutput(String expected) throws IOException {
@@ -308,5 +303,10 @@ public class OutputTest {
 		//assertEquals(lines.length, 1, "Too many/few lines: " + StringUtils.join(lines, System.getProperty("line.separator")));
 
 		return outputItr;
+	}
+
+	protected static String tryGetNextLine(Iterator<String> itr) {
+		assertTrue(itr.hasNext(), "No more lines to get");
+		return itr.next();
 	}
 }

@@ -17,10 +17,9 @@
  */
 package org.pircbotx.exception;
 
+import static com.google.common.base.Preconditions.*;
 import lombok.Getter;
 import org.pircbotx.User;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A general exception for DCC errors
