@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericEvent;
 
 /**
  * Stores all events in a queue for processing. This is useful for sequential
@@ -74,7 +75,7 @@ public class WaitForQueue implements Closeable {
 	 * @throws InterruptedException
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit)
 	 */
-	public <E extends Event> E waitFor(@NonNull Class<E> eventClass) throws InterruptedException {
+	public <E extends GenericEvent> E waitFor(@NonNull Class<E> eventClass) throws InterruptedException {
 		List<Class<E>> eventList = new ArrayList<Class<E>>();
 		eventList.add(eventClass);
 		return (E) waitFor((List<Class<? extends E>>) (Object) eventList);
@@ -88,7 +89,7 @@ public class WaitForQueue implements Closeable {
 	 * @throws InterruptedException
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit)
 	 */
-	public <E extends Event> Event waitFor(@NonNull Class<? extends E>... eventClasses) throws InterruptedException {
+	public <E extends GenericEvent> Event waitFor(@NonNull Class<? extends E>... eventClasses) throws InterruptedException {
 		//Work around generics problems
 		return waitFor(Arrays.asList(eventClasses));
 	}
@@ -101,7 +102,7 @@ public class WaitForQueue implements Closeable {
 	 * @throws InterruptedException
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit)
 	 */
-	public <E extends Event> Event waitFor(@NonNull List<Class<? extends E>> eventClasses) throws InterruptedException {
+	public <E extends GenericEvent> Event waitFor(@NonNull List<Class<? extends E>> eventClasses) throws InterruptedException {
 		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 
@@ -117,10 +118,10 @@ public class WaitForQueue implements Closeable {
 	 * @return One of the possible events
 	 * @throws InterruptedException
 	 */
-	public <E extends Event> Event waitFor(@NonNull List<Class<? extends E>> eventClasses, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
+	public <E extends GenericEvent> Event waitFor(@NonNull List<Class<? extends E>> eventClasses, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
 		while (true) {
 			Event curEvent = eventQueue.poll(timeout, unit);
-			for (Class<? extends Event> curEventClass : eventClasses)
+			for (Class<? extends GenericEvent> curEventClass : eventClasses)
 				if (curEventClass.isInstance(curEvent))
 					return curEvent;
 		}
