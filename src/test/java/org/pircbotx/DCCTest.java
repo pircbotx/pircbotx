@@ -17,27 +17,31 @@
  */
 package org.pircbotx;
 
+import org.testng.annotations.DataProvider;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 /**
+ *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class DCCTest {
@@ -96,14 +100,14 @@ public class DCCTest {
 	public Object[][] addressDataProvider() {
 		//Note: All numbers are verified with another tool
 		return new Object[][]{
-				//IPv4 Tests
-				{"127.0.0.1", "2130706433"},
-				{"192.168.21.6", "3232240902"},
-				{"75.221.45.21", "1272786197"},
-				//IPv6 tests
-				{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "42540766452641154071740215577757643572"},
-				{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
-				{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
+			//IPv4 Tests	
+			{"127.0.0.1", "2130706433"},
+			{"192.168.21.6", "3232240902"},
+			{"75.221.45.21", "1272786197"},
+			//IPv6 tests
+			{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "42540766452641154071740215577757643572"},
+			{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
+			{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
 	}
 
 	protected void debug(String type, InetAddress address) {

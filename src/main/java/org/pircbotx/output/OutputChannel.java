@@ -51,7 +51,7 @@ public class OutputChannel {
 	 * Parts a channel, giving a reason.
 	 *
 	 * @param channel The name of the channel to leave.
-	 * @param reason  The reason for parting the channel.
+	 * @param reason The reason for parting the channel.
 	 */
 	public void part(String reason) {
 		bot.sendRaw().rawLine("PART " + channel.getName() + " :" + reason);
@@ -62,7 +62,7 @@ public class OutputChannel {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The channel to send the message to
+	 * @param target The channel to send the message to
 	 * @param message The message to send
 	 */
 	public void message(String message) {
@@ -74,8 +74,8 @@ public class OutputChannel {
 	 * <code>user: message</code>. Very useful for responding directly to a
 	 * command
 	 *
-	 * @param chan    The channel to send the message to
-	 * @param user    The user to recieve the message in the channel
+	 * @param chan The channel to send the message to
+	 * @param user The user to recieve the message in the channel
 	 * @param message The message to send
 	 */
 	public void message(User user, String message) {
@@ -145,7 +145,7 @@ public class OutputChannel {
 	 * }
 	 * for more information
 	 *
-	 * @param target  The channel to send the CTCP command to
+	 * @param target The channel to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
@@ -157,7 +157,7 @@ public class OutputChannel {
 	 * after identifying
 	 *
 	 * @param chan The channel to part and join from. Note that the object will
-	 *             be invalid after this method executes and a new one will be created
+	 * be invalid after this method executes and a new one will be created
 	 */
 	public void cycle() {
 		cycle("");
@@ -168,8 +168,8 @@ public class OutputChannel {
 	 * auto privileges after identifying
 	 *
 	 * @param chan The channel to part and join from. Note that the object will
-	 *             be invalid after this method executes and a new one will be created
-	 * @param key  The key to use when rejoining the channel
+	 * be invalid after this method executes and a new one will be created
+	 * @param key The key to use when rejoining the channel
 	 */
 	public void cycle(final String key) {
 		final PircBotX bot = channel.getBot();
@@ -207,7 +207,8 @@ public class OutputChannel {
 	 *
 	 * @param chan The channel on which to perform the mode change.
 	 * @param mode The new mode to apply to the channel. This may include zero
-	 *             or more arguments if necessary.
+	 * or more arguments if necessary.
+	 *
 	 * @see #op(org.pircbotx.Channel, org.pircbotx.User)
 	 */
 	public void setMode(String mode) {
@@ -224,10 +225,10 @@ public class OutputChannel {
 	 *
 	 * @param chan The channel on which to perform the mode change.
 	 * @param mode The new mode to apply to the channel. This may include zero
-	 *             or more arguments if necessary.
+	 * or more arguments if necessary.
 	 * @param args Arguments to be passed to the mode. All will be converted to
-	 *             a string using {@link Object#toString() } and added together with a
-	 *             single space separating them
+	 * a string using {@link Object#toString() } and added together with a
+	 * single space separating them
 	 */
 	public void setMode(String mode, Object... args) {
 		if (mode == null)
@@ -258,7 +259,7 @@ public class OutputChannel {
 	 * Attempt to set the channel limit (+l) to specified value. May require
 	 * operator privileges in the channel
 	 *
-	 * @param chan  The channel to set the limit on
+	 * @param chan The channel to set the limit on
 	 * @param limit The maximum amount of people that can be in the channel
 	 */
 	public void setChannelLimit(int limit) {
@@ -280,7 +281,7 @@ public class OutputChannel {
 	 * require operator privileges in the channel
 	 *
 	 * @param chan The channel to preform the mode change on
-	 * @param key  The secret key to use
+	 * @param key The secret key to use
 	 */
 	public void setChannelKey(String key) {
 		if (key == null)
@@ -293,8 +294,8 @@ public class OutputChannel {
 	 * require operator privileges in the channel
 	 *
 	 * @param chan The channel to preform the mode change on
-	 * @param key  The secret key to remove. If this is not known a blank key or
-	 *             asterisk might work
+	 * @param key The secret key to remove. If this is not known a blank key or
+	 * asterisk might work
 	 */
 	public void removeChannelKey(String key) {
 		if (key == null)
@@ -428,7 +429,7 @@ public class OutputChannel {
 	 * method to permanently remove a user from a channel. Successful use of
 	 * this method may require the bot to have operator status itself.
 	 *
-	 * @param channel  The channel to ban the user from.
+	 * @param channel The channel to ban the user from.
 	 * @param hostmask A hostmask representing the user we're banning.
 	 */
 	public void ban(String hostmask) {
@@ -442,7 +443,7 @@ public class OutputChannel {
 	 * "*!*compu@*.18hp.net". Successful use of this method may require the bot
 	 * to have operator status itself.
 	 *
-	 * @param channel  The channel to unban the user from.
+	 * @param channel The channel to unban the user from.
 	 * @param hostmask A hostmask representing the user we're unbanning.
 	 */
 	public void unBan(String hostmask) {
@@ -506,7 +507,7 @@ public class OutputChannel {
 	/**
 	 * Grants owner privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have operator or halfOp status itself.
-	 * <p/>
+	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
@@ -522,7 +523,7 @@ public class OutputChannel {
 	/**
 	 * Removes owner privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have operator or halfOp status itself.
-	 * <p/>
+	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
@@ -538,7 +539,7 @@ public class OutputChannel {
 	/**
 	 * Grants owner privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have owner status itself.
-	 * <p/>
+	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
@@ -554,7 +555,7 @@ public class OutputChannel {
 	/**
 	 * Removes owner privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have owner status itself.
-	 * <p/>
+	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
@@ -570,7 +571,7 @@ public class OutputChannel {
 	/**
 	 * Grants superOp privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have owner or superOp status itself.
-	 * <p/>
+	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
@@ -586,7 +587,7 @@ public class OutputChannel {
 	/**
 	 * Removes superOp privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have owner or superOp status itself.
-	 * <p/>
+	 * <p>
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
@@ -604,8 +605,9 @@ public class OutputChannel {
 	 * channel. This may require the bot to have operator status if the topic is
 	 * protected.
 	 *
-	 * @param chan  The channel on which to perform the mode change.
+	 * @param chan The channel on which to perform the mode change.
 	 * @param topic The new topic for the channel.
+	 *
 	 */
 	public void setTopic(String topic) {
 		if (topic == null)
@@ -629,8 +631,8 @@ public class OutputChannel {
 	 * kick a user from a channel and may require the bot to have operator
 	 * status in the channel.
 	 *
-	 * @param chan   The channel to kick the user from.
-	 * @param user   The user to kick.
+	 * @param chan The channel to kick the user from.
+	 * @param user The user to kick.
 	 * @param reason A description of the reason for kicking a user.
 	 */
 	public void kick(User user, String reason) {

@@ -17,16 +17,6 @@
  */
 package org.pircbotx.dcc;
 
-import com.google.common.collect.ImmutableList;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.pircbotx.*;
-import org.pircbotx.exception.DccException;
-import org.pircbotx.hooks.events.IncomingChatRequestEvent;
-import org.pircbotx.hooks.events.IncomingFileTransferEvent;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -36,17 +26,33 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.Utils;
+import org.pircbotx.exception.DccException;
+import org.pircbotx.hooks.events.IncomingChatRequestEvent;
+import org.pircbotx.hooks.events.IncomingFileTransferEvent;
+import static com.google.common.base.Preconditions.*;
+import com.google.common.collect.ImmutableList;
+import lombok.NonNull;
+import org.pircbotx.UserHostmask;
 
 /**
  * Handler of all DCC requests
- * <p/>
- *
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -61,66 +67,6 @@ public class DccHandler implements Closeable {
 	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap<PendingSendFileTransferPassive, CountDownLatch>();
 	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap<PendingSendChatPassive, CountDownLatch>();
 	protected boolean shuttingDown = false;
-
-	protected static List<String> tokenizeDccRequest(String request) {
-		int quotesIndexBegin = request.indexOf('"');
-		if (quotesIndexBegin == -1)
-			//Just use tokenizeLine
-			return Utils.tokenizeLine(request);
-
-		//This is a slightly modified version of Utils.tokenizeLine to parse
-		//potential quotes in filenames
-		int quotesIndexEnd = request.lastIndexOf('"');
-		List<String> stringParts = new ArrayList<String>();
-		int pos = 0, end;
-		while ((end = request.indexOf(' ', pos)) >= 0) {
-			if (pos >= quotesIndexBegin && end < quotesIndexEnd) {
-				//We've entered the filename. Add and skip
-				stringParts.add(request.substring(quotesIndexBegin, quotesIndexEnd + 1));
-				pos = quotesIndexEnd + 2;
-				continue;
-			}
-			stringParts.add(request.substring(pos, end));
-			pos = end + 1;
-			if (request.charAt(pos) == ':') {
-				stringParts.add(request.substring(pos + 1));
-				return stringParts;
-			}
-		}
-		//No more spaces, add last part of line
-		stringParts.add(request.substring(pos));
-		return stringParts;
-	}
-
-	public static String addressToInteger(InetAddress address) {
-		return new BigInteger(1, address.getAddress()).toString();
-	}
-
-	public static InetAddress integerToAddress(String rawInteger) {
-		//Convert the rawInteger into something usable
-		BigInteger bigIp = new BigInteger(rawInteger);
-		byte[] addressBytes = bigIp.toByteArray();
-
-		//If there aren't enough bytes, pad with 0 byte
-		if (addressBytes.length == 5)
-			//Has signum, strip it
-			addressBytes = Arrays.copyOfRange(addressBytes, 1, 5);
-		else if (addressBytes.length < 4) {
-			byte[] newAddressBytes = new byte[4];
-			newAddressBytes[3] = addressBytes[0];
-			newAddressBytes[2] = (addressBytes.length > 1) ? addressBytes[1] : (byte) 0;
-			newAddressBytes[1] = (addressBytes.length > 2) ? addressBytes[2] : (byte) 0;
-			newAddressBytes[0] = (addressBytes.length > 3) ? addressBytes[3] : (byte) 0;
-			addressBytes = newAddressBytes;
-		} else if (addressBytes.length == 17)
-			//Has signum, strip it
-			addressBytes = Arrays.copyOfRange(addressBytes, 1, 17);
-		try {
-			return InetAddress.getByAddress(addressBytes);
-		} catch (UnknownHostException ex) {
-			throw new RuntimeException("Can't get InetAdrress version of int IP address " + rawInteger + " (bytes: " + Arrays.toString(addressBytes) + ")", ex);
-		}
-	}
 
 	public boolean processDcc(UserHostmask userHostmask, final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
@@ -265,8 +211,7 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Accept chat request, blocking until the connection is active
-	 * <p/>
-	 *
+	 * <p>
 	 * @param event The chat request event
 	 * @return An active {@link ReceiveChat}
 	 * @throws IOException If an error occurred during connection
@@ -288,9 +233,8 @@ public class DccHandler implements Closeable {
 	/**
 	 * Accept file transfer at position 0, blocking until the connection is
 	 * active
-	 * <p/>
-	 *
-	 * @param event       The file request event
+	 * <p>
+	 * @param event The file request event
 	 * @param destination The destination file
 	 * @return An active {@link ReceiveFileTransfer}
 	 * @throws IOException If an error occurred during connection
@@ -304,16 +248,15 @@ public class DccHandler implements Closeable {
 	/**
 	 * Accept file transfer resuming at specified position, blocking until the
 	 * connection is active
-	 * <p/>
-	 *
-	 * @param event         The file request event
-	 * @param destination   The destination file
+	 * <p>
+	 * @param event The file request event
+	 * @param destination The destination file
 	 * @param startPosition The position to start the transfer at
 	 * @return An active {@link ReceiveFileTransfer}
-	 * @throws IOException          If an error occurred during connection
+	 * @throws IOException If an error occurred during connection
 	 * @throws InterruptedException If this is interrupted while waiting for a
-	 *                              connection
-	 * @throws DccException         If a timeout is reached or the bot is shutting down
+	 * connection
+	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
 	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
 		checkNotNull(event, "Event cannot be null");
@@ -365,13 +308,12 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send a chat request using {@link Configuration#isDccPassiveRequest()}
-	 * <p/>
-	 *
+	 * <p>
 	 * @param receiver The user to chat with
 	 * @return An active {@link SendChat}
-	 * @throws IOException          If an error occurred during connection
+	 * @throws IOException If an error occurred during connection
 	 * @throws InterruptedException If passive connection was interrupted
-	 * @throws DccException         If a timeout is reached or the bot is shutting down
+	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
 	public SendChat sendChat(User receiver) throws IOException, InterruptedException {
 		return sendChat(receiver, bot.getConfiguration().isDccPassiveRequest());
@@ -379,14 +321,13 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send a chat request using passive parameter
-	 * <p/>
-	 *
+	 * <p>
 	 * @param receiver The user to chat with
-	 * @param passive  Whether to connect passively
+	 * @param passive Whether to connect passively
 	 * @return An active {@link SendChat}
-	 * @throws IOException          If an error occurred during connection
+	 * @throws IOException If an error occurred during connection
 	 * @throws InterruptedException If passive connection was interrupted
-	 * @throws DccException         If a timeout is reached or the bot is shutting down
+	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 */
 	public SendChat sendChat(User receiver, boolean passive) throws IOException, InterruptedException {
 		checkNotNull(receiver, "Receiver user cannot be null");
@@ -423,13 +364,12 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send file using {@link Configuration#isDccPassiveRequest() }
-	 * <p/>
-	 *
-	 * @param file     The file to send
+	 * <p>
+	 * @param file The file to send
 	 * @param receiver The user to send the file to
 	 * @return An active {@link SendFileTransfer}
-	 * @throws IOException          If an error occurred during connecting
-	 * @throws DccException         If a timeout is reached or the bot is shutting down
+	 * @throws IOException If an error occurred during connecting
+	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 * @throws InterruptedException If passive connection was interrupted
 	 */
 	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
@@ -438,14 +378,13 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Send file using {@link Configuration#isDccPassiveRequest() }
-	 * <p/>
-	 *
-	 * @param file     The file to send
+	 * <p>
+	 * @param file The file to send
 	 * @param receiver The user to send the file to
-	 * @param passive  Whether to connect passively
+	 * @param passive Whether to connect passively
 	 * @return An active {@link SendFileTransfer}
-	 * @throws IOException          If an error occurred during connecting
-	 * @throws DccException         If a timeout is reached or the bot is shutting down
+	 * @throws IOException If an error occurred during connecting
+	 * @throws DccException If a timeout is reached or the bot is shutting down
 	 * @throws InterruptedException If passive connection was interrupted
 	 */
 	public SendFileTransfer sendFile(File file, User receiver, boolean passive) throws IOException, DccException, InterruptedException {
@@ -499,8 +438,7 @@ public class DccHandler implements Closeable {
 	 * <ol><li>{@link Configuration#getDccLocalAddress()}</li>
 	 * <li>{@link Configuration#getLocalAddress()}</li>
 	 * <li>{@link PircBotX#getLocalAddress()}</li>
-	 * <p/>
-	 *
+	 * <p>
 	 * @return
 	 */
 	public InetAddress getRealDccAddress() {
@@ -536,6 +474,36 @@ public class DccHandler implements Closeable {
 		return ss;
 	}
 
+	protected static List<String> tokenizeDccRequest(String request) {
+		int quotesIndexBegin = request.indexOf('"');
+		if (quotesIndexBegin == -1)
+			//Just use tokenizeLine
+			return Utils.tokenizeLine(request);
+
+		//This is a slightly modified version of Utils.tokenizeLine to parse
+		//potential quotes in filenames
+		int quotesIndexEnd = request.lastIndexOf('"');
+		List<String> stringParts = new ArrayList<String>();
+		int pos = 0, end;
+		while ((end = request.indexOf(' ', pos)) >= 0) {
+			if (pos >= quotesIndexBegin && end < quotesIndexEnd) {
+				//We've entered the filename. Add and skip
+				stringParts.add(request.substring(quotesIndexBegin, quotesIndexEnd + 1));
+				pos = quotesIndexEnd + 2;
+				continue;
+			}
+			stringParts.add(request.substring(pos, end));
+			pos = end + 1;
+			if (request.charAt(pos) == ':') {
+				stringParts.add(request.substring(pos + 1));
+				return stringParts;
+			}
+		}
+		//No more spaces, add last part of line
+		stringParts.add(request.substring(pos));
+		return stringParts;
+	}
+
 	/**
 	 * Shutdown any pending dcc transfers
 	 */
@@ -547,6 +515,36 @@ public class DccHandler implements Closeable {
 			curCountdown.countDown();
 		for (CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
 			curCountdown.countDown();
+	}
+
+	public static String addressToInteger(InetAddress address) {
+		return new BigInteger(1, address.getAddress()).toString();
+	}
+
+	public static InetAddress integerToAddress(String rawInteger) {
+		//Convert the rawInteger into something usable
+		BigInteger bigIp = new BigInteger(rawInteger);
+		byte[] addressBytes = bigIp.toByteArray();
+
+		//If there aren't enough bytes, pad with 0 byte
+		if (addressBytes.length == 5)
+			//Has signum, strip it
+			addressBytes = Arrays.copyOfRange(addressBytes, 1, 5);
+		else if (addressBytes.length < 4) {
+			byte[] newAddressBytes = new byte[4];
+			newAddressBytes[3] = addressBytes[0];
+			newAddressBytes[2] = (addressBytes.length > 1) ? addressBytes[1] : (byte) 0;
+			newAddressBytes[1] = (addressBytes.length > 2) ? addressBytes[2] : (byte) 0;
+			newAddressBytes[0] = (addressBytes.length > 3) ? addressBytes[3] : (byte) 0;
+			addressBytes = newAddressBytes;
+		} else if (addressBytes.length == 17)
+			//Has signum, strip it
+			addressBytes = Arrays.copyOfRange(addressBytes, 1, 17);
+		try {
+			return InetAddress.getByAddress(addressBytes);
+		} catch (UnknownHostException ex) {
+			throw new RuntimeException("Can't get InetAdrress version of int IP address " + rawInteger + " (bytes: " + Arrays.toString(addressBytes) + ")", ex);
+		}
 	}
 
 	@Data

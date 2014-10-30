@@ -25,9 +25,9 @@ import org.pircbotx.hooks.types.*;
  * Adapter that provides methods to capture each event separately, removing the
  * need to check, cast, and call your custom method for each event you want to
  * capture.
- * <p/>
+ * <p>
  * To use, simply override the method that has the event you want to capture.
- * <p/>
+ * <p>
  * <b>WARNING:</b> If you are going to be implementing {@link Listener}'s
  * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
@@ -37,7 +37,7 @@ import org.pircbotx.hooks.types.*;
  */
 public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T> {
 	public void onEvent(Event<T> event) throws Exception {
-		//While reflection would make this significantly shorter,
+		//While reflection would make this significantly shorter, 
 		//nothing beats if statements in performance.
 		//Also polymorphism, while theoretically correct, just means that this code
 		//would be in every single Event and make an explicit dependency on this.
@@ -342,7 +342,7 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 
 	public void onGenericChannelMode(GenericChannelModeEvent<T> event) throws Exception {
 	}
-
+	
 	public void onGenericChannelModeRecipient(GenericChannelModeRecipientEvent<T> event) throws Exception {
 	}
 

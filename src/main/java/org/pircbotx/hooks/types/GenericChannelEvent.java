@@ -21,6 +21,7 @@ import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 
 /**
+ *
  * @author Leon
  */
 public interface GenericChannelEvent<T extends PircBotX> extends GenericEvent<T> {

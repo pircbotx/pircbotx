@@ -17,19 +17,23 @@
  */
 package org.pircbotx.hooks.events;
 
-import lombok.*;
-import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
-
 import javax.annotation.Nullable;
+import lombok.AccessLevel;
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericChannelModeEvent;
+import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
 
 /**
  * Called when a user (possibly us) gets voice status granted in a channel.
- * <p/>
+ * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  *
@@ -37,24 +41,24 @@ import javax.annotation.Nullable;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
+public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent <T> {
 	/**
 	 * The channel in which the mode change took place.
 	 */
 	@Getter(onMethod = @_({
-			@Override}))
+		@Override}))
 	protected final Channel channel;
 	/**
 	 * The user hostmask that performed the mode change.
 	 */
 	@Getter(onMethod = @_({
-			@Override}))
+		@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that performed the mode change.
 	 */
 	@Getter(onMethod = @_({
-			@Override, @Nullable}))
+		@Override, @Nullable}))
 	protected final User user;
 	/**
 	 * The user hostmask that got 'voiced'
@@ -66,13 +70,13 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 * The nick of the user that got 'voiced'.
 	 */
 	@Getter(onMethod = @_({
-			@Override, @Nullable}))
+		@Override, @Nullable}))
 	protected final User recipient;
 	@Getter(AccessLevel.NONE)
 	protected final boolean hasVoice;
 
-	public VoiceEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask,
-	                  User user, @NonNull UserHostmask recipientHostmask, User recipient, boolean hasVoice) {
+	public VoiceEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, 
+			User user, @NonNull UserHostmask recipientHostmask, User recipient, boolean hasVoice) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
@@ -86,9 +90,9 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 * Checks if this is a set or remove voice operation
 	 *
 	 * @return True if this was set, false if removed
-	 * @see #hasVoice()
 	 * @deprecated Use the better named hasVoice method. Will be removed in
 	 * future versions
+	 * @see #hasVoice()
 	 */
 	@Deprecated
 	public boolean isVoice() {

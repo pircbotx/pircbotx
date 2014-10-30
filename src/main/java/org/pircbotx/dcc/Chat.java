@@ -17,6 +17,14 @@
  */
 package org.pircbotx.dcc;
 
+import static com.google.common.base.Preconditions.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.nio.charset.Charset;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.User;
@@ -24,16 +32,9 @@ import org.pircbotx.exception.DccException;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.io.*;
-import java.net.Socket;
-import java.nio.charset.Charset;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Generic DCC chat handling class that represents an active dcc chat.
- * <p/>
- *
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
@@ -68,6 +69,7 @@ public class Chat {
 	 *
 	 * @return The next line of text from the client. Returns null if the
 	 * connection has closed normally.
+	 *
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public String readLine() throws IOException {
@@ -83,7 +85,8 @@ public class Chat {
 	 * connection.
 	 *
 	 * @param line The line of text to be sent. This should not include linefeed
-	 *             characters.
+	 * characters.
+	 *
 	 * @throws IOException If an I/O error occurs.
 	 */
 	public void sendLine(String line) throws IOException {

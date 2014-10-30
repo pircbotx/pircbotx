@@ -17,6 +17,11 @@
  */
 package org.pircbotx.output;
 
+import static com.google.common.base.Preconditions.*;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +30,9 @@ import org.pircbotx.Utils;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Send raw lines to the server with locking and message delay support.
- * <p/>
- *
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor
@@ -100,9 +97,8 @@ public class OutputRaw {
 
 	/**
 	 * Sends a raw line to the IRC server as soon as possible
-	 * <p/>
-	 *
-	 * @param line       The raw line to send to the IRC server
+	 * <p>
+	 * @param line The raw line to send to the IRC server
 	 * @param resetDelay If true, pending messages will reset their delay.
 	 */
 	public void rawLineNow(String line, boolean resetDelay) {
@@ -115,7 +111,7 @@ public class OutputRaw {
 			Utils.sendRawLineToServer(bot, line);
 			lastSentLine = System.nanoTime();
 			if (resetDelay)
-				//Reset the
+				//Reset the 
 				writeNowCondition.signalAll();
 		} catch (IOException e) {
 			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
@@ -160,8 +156,9 @@ public class OutputRaw {
 	 * If this returns 0, then the Queue is empty and any new message is likely
 	 * to be sent to the IRC server immediately.
 	 *
-	 * @return The number of lines in the outgoing message Queue.
 	 * @since PircBot 0.9.9
+	 *
+	 * @return The number of lines in the outgoing message Queue.
 	 */
 	public int getOutgoingQueueSize() {
 		return writeLock.getHoldCount();

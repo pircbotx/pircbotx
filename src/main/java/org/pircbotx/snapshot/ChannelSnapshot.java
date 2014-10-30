@@ -26,17 +26,18 @@ import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
 
 /**
+ *
  * @author Leon
  */
 @Slf4j
 public class ChannelSnapshot extends Channel {
+	@Setter
+	protected UserChannelDaoSnapshot dao;
 	@Getter
 	protected final Channel generatedFrom;
 	@Getter(onMethod = @_(
 			@Override))
 	protected final String mode;
-	@Setter
-	protected UserChannelDaoSnapshot dao;
 
 	public ChannelSnapshot(Channel channel, String mode) {
 		super(channel.getBot(), null, channel.getName());

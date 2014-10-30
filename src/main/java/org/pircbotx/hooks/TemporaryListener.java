@@ -25,8 +25,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * Listener for short one-off tasks. Listener methods will only be called if the
  * event matches the specified bot. Listener can easily be removed with {@link #done()
  * }.
- * <p/>
- *
+ * <p>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class TemporaryListener extends ListenerAdapter {

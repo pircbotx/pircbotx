@@ -17,7 +17,19 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.*;
+import static com.google.common.base.Preconditions.*;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Maps;
+import java.io.Closeable;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +42,13 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
-import java.io.Closeable;
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * Stores and maintains relationships between users and channels. This class
  * should not be directly, it is meant to be the internal storage engine.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
  * @see User
  * @see Channel
+ * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserChannelDao<U extends User, C extends Channel> implements Closeable {
@@ -86,17 +93,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		try {
 			//Rarely we don't get the full hostmask
 			//eg, the server setting your usermode when you connect to the server
-			if (userHostmask.getNick() == null)
+			if(userHostmask.getNick() == null)
 				return getUser(userHostmask.getHostmask());
 			return getUser(userHostmask.getNick());
-		} catch (Exception e) {
+		} catch(Exception e) {
 			throw new DaoException(DaoException.Reason.UnknownUserHostmask, userHostmask.toString(), e);
 		}
 	}
 
 	@Synchronized("accessLock")
 	public U createUser(UserHostmask userHostmask) {
-		if (containsUser(userHostmask))
+		if(containsUser(userHostmask))
 			throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
 		U user = (U) botFactory.createUser(userHostmask);
 		userNickMap.put(userHostmask.getNick().toLowerCase(locale), user);
@@ -108,18 +115,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public boolean userExists(String nick) {
 		return userNickMap.containsKey(nick.toLowerCase(locale));
 	}
-
+	
 	@Synchronized("accessLock")
 	public boolean containsUser(@NonNull String nick) {
 		String nickLowercase = nick.toLowerCase(locale);
 		return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
 	}
-
+	
 	@Synchronized("accessLock")
 	public boolean containsUser(UserHostmask hostmask) {
 		//Rarely we don't get the full hostmask
 		//eg, the server setting your usermode when you connect to the server
-		if (hostmask.getNick() == null)
+		if(hostmask.getNick() == null)
 			return containsUser(hostmask.getHostmask());
 		return containsUser(hostmask.getNick());
 	}
@@ -138,10 +145,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * interaction with the IRC server.</li>
 	 * </ul>
 	 *
+	 * @since PircBot 1.0.0
+	 *
 	 * @param chan The channel object to search in
 	 * @return A Set of all user's in the channel
+	 *
 	 * @see UserListEvent
-	 * @since PircBot 1.0.0
 	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<U> getAllUsers() {
@@ -157,7 +166,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected void addUserToPrivate(U user) {
 		String nick = user.getNick().toLowerCase(locale);
 		privateUsers.put(nick, user);
-		if (!userNickMap.containsKey(nick))
+		if(!userNickMap.containsKey(nick))
 			userNickMap.put(nick, user);
 	}
 

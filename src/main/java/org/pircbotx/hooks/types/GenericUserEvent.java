@@ -18,10 +18,11 @@
 package org.pircbotx.hooks.types;
 
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.User;
 
 /**
+ *
  * @author Leon
  */
 public interface GenericUserEvent<T extends PircBotX> extends GenericEvent<T> {

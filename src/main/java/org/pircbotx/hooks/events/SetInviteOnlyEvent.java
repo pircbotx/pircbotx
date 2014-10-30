@@ -17,23 +17,22 @@
  */
 package org.pircbotx.hooks.events;
 
+import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
-import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
-
-import javax.annotation.Nullable;
 
 /**
  * Called when a channel is set to 'invite only' mode. A user may only join the
  * channel if they are invited by someone who is already in the channel.
- * <p/>
+ * <p>
  * This is a type of mode change and therefor is also dispatched in a
  * {@link org.pircbotx.hooks.events.ModeEvent}
  *

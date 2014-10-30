@@ -17,7 +17,14 @@
  */
 package org.pircbotx;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
@@ -47,14 +54,6 @@ public class UserHostmask implements Comparable<User> {
 		}
 	};
 	/**
-	 * Login of the user (nick!login@hostname).
-	 */
-	private final String login;
-	/**
-	 * Hostname of the user (nick!login@hostname).
-	 */
-	private final String hostname;
-	/**
 	 * Hostmask of the user (The entire user!login@hostname).
 	 */
 	@NonNull
@@ -63,10 +62,18 @@ public class UserHostmask implements Comparable<User> {
 	 * Current nick of the user (nick!login@hostname).
 	 */
 	private String nick;
+	/**
+	 * Login of the user (nick!login@hostname).
+	 */
+	private final String login;
+	/**
+	 * Hostname of the user (nick!login@hostname).
+	 */
+	private final String hostname;
 
 	public UserHostmask(PircBotX bot, String rawHostmask) {
 		this.bot = bot;
-		if (StringUtils.containsAny(rawHostmask, "!@")) {
+		if(StringUtils.containsAny(rawHostmask, "!@")) {
 			this.hostmask = rawHostmask;
 			String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
 			this.nick = hostmaskParts[0];
@@ -79,7 +86,7 @@ public class UserHostmask implements Comparable<User> {
 			this.hostname = null;
 		}
 	}
-
+	
 	public UserHostmask(UserHostmask otherHostmask) {
 		this.bot = otherHostmask.getBot();
 		this.hostmask = otherHostmask.getHostmask();
