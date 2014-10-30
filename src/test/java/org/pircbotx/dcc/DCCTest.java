@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with
  * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx;
+package org.pircbotx.dcc;
 
 import org.testng.annotations.DataProvider;
 import java.io.IOException;
@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.pircbotx.PircBotX;
+import org.pircbotx.TestUtils;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
