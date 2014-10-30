@@ -94,7 +94,7 @@ public class DCCTest {
 	@Test(dataProvider = "addressDataProvider")
 	public void integerToAddressTest(String rawAddress, String integerAddress) throws UnknownHostException {
 		InetAddress realAddress = InetAddress.getByName(rawAddress);
-		InetAddress convertedAddress = DccHandler.integerToAddress(integerAddress);
+		InetAddress convertedAddress = DccHandler.parseRawAddress(integerAddress);
 		assertEquals(convertedAddress, realAddress, "Converted address doesn't match given");
 	}
 
@@ -106,10 +106,15 @@ public class DCCTest {
 			{"127.0.0.1", "2130706433"},
 			{"192.168.21.6", "3232240902"},
 			{"75.221.45.21", "1272786197"},
-			//IPv6 tests
-			{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "42540766452641154071740215577757643572"},
-			{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
-			{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
+			//IPv6 tests (Just make sure we get back what we put in)
+			{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "2001:db8:85a3:0:0:8a2e:370:7334"},
+			{"fe80:0:0:0:202:b3ff:fe1e:8329", "fe80:0:0:0:202:b3ff:fe1e:8329"},
+			{"fe80::202:b3ff:fe1e:5329", "fe80:0:0:0:202:b3ff:fe1e:5329"},
+			//IPv6 tests (Switch to returning full ip in 2.1) 
+			//{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "42540766452641154071740215577757643572"},
+			//{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
+			//{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
+		};
 	}
 
 	protected void debug(String type, InetAddress address) {
