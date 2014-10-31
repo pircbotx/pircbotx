@@ -562,7 +562,6 @@ public class InputParser implements Closeable {
 				bot.getUserChannelDao().removeUserFromChannel(recipient, channel);
 			configuration.getListenerManager().dispatchEvent(new KickEvent<PircBotX>(bot, channel, source, sourceUser, recipientHostmask, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
-			sourceUser = createUserIfNull(sourceUser, source);
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
 			if (mode.startsWith(":"))
