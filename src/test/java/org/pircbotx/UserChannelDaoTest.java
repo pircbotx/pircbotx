@@ -77,4 +77,20 @@ public class UserChannelDaoTest {
 		//Make sure it exists
 		assertTrue(dao.channelExists("#aChannel"));
 	}
+	
+	@Test
+	public void userHostmaskEqualsAndHashCodeTest() {
+		UserHostmask user1 = TestUtils.generateTestUserOtherHostmask(smallBot);
+		UserHostmask user2 = TestUtils.generateTestUserOtherHostmask(smallBot);
+		assertEquals(user1, user2);
+		assertEquals(user1.hashCode(), user2.hashCode());
+	}
+	
+	@Test
+	public void userEqualsAndHashCodeTest() {
+		User user1 = new User(TestUtils.generateTestUserOtherHostmask(smallBot));
+		User user2 = new User(TestUtils.generateTestUserOtherHostmask(smallBot));
+		assertEquals(user1, user2);
+		assertEquals(user1.hashCode(), user2.hashCode());
+	}
 }
