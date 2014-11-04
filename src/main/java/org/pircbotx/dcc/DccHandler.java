@@ -157,16 +157,26 @@ public class DccHandler implements Closeable {
 			//Example (passive): DCC ACCEPT <filename> 0 <position> <token>
 			//TODO how well does this handle non passive?
 			String filename = requestParts.get(2);
-			int dataPosition = (requestParts.size() == 5) ? 3 : 4;
-			long position = Integer.parseInt(requestParts.get(dataPosition));
-			String transferToken = requestParts.get(dataPosition + 1);
+			int port;
+			int position = Integer.parseInt(requestParts.get(4));
+			String transferToken;
+			if(requestParts.size() == 5) {
+				//Standard request
+				port = Integer.parseInt(requestParts.get(3));
+				transferToken = null;
+			} else {
+				//Passive request
+				port = 0;
+				transferToken = requestParts.get(5);
+			}
+			
 			synchronized (pendingReceiveTransfers) {
 				Iterator<Map.Entry<PendingRecieveFileTransfer, CountDownLatch>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
 				while (pendingItr.hasNext()) {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
 					IncomingFileTransferEvent<PircBotX> transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
-							&& transferEvent.getTransferToken().equals(transferToken)) {
+							&& transferEvent.getPort() == port && transferEvent.getTransferToken() == transferEvent.getTransferToken()) {
 						curEntry.getKey().setPosition(position);
 						log.debug("Receive file transfer of file {} to user {} set to position {}",
 								transferEvent.getRawFilename(), transferEvent.getUser().getNick(), position);
