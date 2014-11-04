@@ -50,12 +50,25 @@ public class ReceiveFileTransfer extends FileTransfer {
 		fileOutput.seek(startPosition);
 
 		//Recieve file
-		byte[] inBuffer = new byte[configuration.getDccTransferBufferSize()];
+		int defaultBufferSize = configuration.getDccTransferBufferSize();
+		byte[] inBuffer = new byte[defaultBufferSize];
 		byte[] outBuffer = new byte[4];
-		int bytesRead = 0;
-		while ((bytesRead = socketInput.read(inBuffer, 0, inBuffer.length)) != -1) {
+		while (true) {
+			//Adjust buffer based on remaining bytes (if we know how big the file is)
+			long remainingBytes = fileSize - bytesTransfered;
+			int bufferSize = (remainingBytes > 0 && remainingBytes < defaultBufferSize)
+					? (int)remainingBytes : defaultBufferSize;
+			
+			//Read next part of incomming file
+			int bytesRead = socketInput.read(inBuffer, 0, bufferSize);
+			if(bytesRead == -1)
+				//Done
+				break;
+			
+			//Write to file
 			fileOutput.write(inBuffer, 0, bytesRead);
 			bytesTransfered += bytesRead;
+			
 			//Send back an acknowledgement of how many bytes we have got so far.
 			//Convert bytesTransfered to an "unsigned, 4 byte integer in network byte order", per DCC specification
 			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
@@ -64,6 +77,10 @@ public class ReceiveFileTransfer extends FileTransfer {
 			outBuffer[3] = (byte) (bytesTransfered & 0xff);
 			socketOutput.write(outBuffer);
 			onAfterSend();
+			
+			if(remainingBytes - bufferSize == 0)
+				//Were done
+				break;
 		}
 	}
 }
