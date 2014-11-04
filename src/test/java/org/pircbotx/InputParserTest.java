@@ -965,6 +965,22 @@ public class InputParserTest {
 		assertEquals(event.getUsedNick(), bot.getConfiguration().getName());
 		assertEquals(event.getAutoNewNick(), bot.getConfiguration().getName() + "1");
 	}
+	
+	@Test
+	public void nickRenameTest() throws IOException, IrcException {
+		UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
+		UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
+		dao.createChannel("#testchannel");
+		
+		//Join both users, have 1 quit, the remaining user takes its nick, then quits
+		inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testChannel");
+		inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testChannel");
+		
+		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
+		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
+		
+		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
+	}
 
 	/**
 	 * After simulating a server response, call this to get a specific Event
