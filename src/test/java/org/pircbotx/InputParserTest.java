@@ -628,6 +628,16 @@ public class InputParserTest {
 		RemoveChannelLimitEvent event = getEvent(RemoveChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(aChannel.getChannelLimit(), -1, "Channel limit doesn't match given");
 	}
+	
+	@Test
+	public void modeRecipientWithGlobHostmask() throws IOException, IrcException {
+		dao.createChannel("#aChannel");
+		User aUser = TestUtils.generateTestUserSource(bot);
+		User otherUser = TestUtils.generateTestUserOther(bot);
+		inputParser.handleLine(":" + aUser.getHostmask() + " MODE #aChannel -q *!*@" + otherUser.getHostname());
+		OwnerEvent event = getEvent(OwnerEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
+		assertFalse(event.isOwner(), "Channel limit doesn't match given");
+	}
 
 	/**
 	 * Simulate WHO response.
