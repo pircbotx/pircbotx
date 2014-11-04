@@ -861,9 +861,9 @@ public class InputParser implements Closeable {
 
 	public User createUserIfNull(User otherUser, @NonNull UserHostmask hostmask) {
 		if (otherUser != null)
-				return otherUser;
+			return otherUser;
 		else if (bot.getUserChannelDao().containsUser(hostmask))
-				throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
+			throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
 		return bot.getUserChannelDao().createUser(hostmask);
 	}
 
@@ -891,11 +891,14 @@ public class InputParser implements Closeable {
 		public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 			String recipient = params.next();
 			UserHostmask recipientHostmask = new UserHostmask(bot, recipient, recipient, null, null);
-			User recipientUser = bot.getUserChannelDao().getUser(recipient);
-			if (adding)
-				bot.getUserChannelDao().addUserToLevel(level, recipientUser, channel);
-			else
-				bot.getUserChannelDao().removeUserFromLevel(level, recipientUser, channel);
+			User recipientUser = null;
+			if (bot.getUserChannelDao().containsUser(recipient)) {
+				recipientUser = bot.getUserChannelDao().getUser(recipient);
+				if (adding)
+					bot.getUserChannelDao().addUserToLevel(level, recipientUser, channel);
+				else
+					bot.getUserChannelDao().removeUserFromLevel(level, recipientUser, channel);
+			}
 
 			if (dispatchEvent)
 				dispatchEvent(bot, channel, sourceHostmask, sourceUser, recipientHostmask, recipientUser, adding);
