@@ -32,7 +32,6 @@ import org.pircbotx.User;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-@RequiredArgsConstructor
 public abstract class FileTransfer {
 	@NonNull
 	protected final Configuration<PircBotX> configuration;
@@ -47,10 +46,26 @@ public abstract class FileTransfer {
 	@Getter
 	protected final long startPosition;
 	@Getter
+	protected final long fileSize;
+	@Getter
 	protected long bytesTransfered;
 	@Getter
 	protected DccState state = DccState.INIT;
 	protected final Object stateLock = new Object();
+
+	public FileTransfer(Configuration<PircBotX> configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
+		this.configuration = configuration;
+		this.socket = socket;
+		this.user = user;
+		this.file = file;
+		this.startPosition = startPosition;
+		this.fileSize = fileSize;
+		
+		//Clients use bytesTransferred to see where we are in the file
+		this.bytesTransfered = startPosition;
+	}
+	
+	
 
 	/**
 	 * Transfer the file to the user

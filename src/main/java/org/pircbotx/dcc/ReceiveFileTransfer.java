@@ -36,8 +36,8 @@ import org.pircbotx.User;
  */
 @Slf4j
 public class ReceiveFileTransfer extends FileTransfer {
-	public ReceiveFileTransfer(Configuration<PircBotX> configuration, Socket socket, User user, File file, long startPosition) {
-		super(configuration, socket, user, file, startPosition);
+	public ReceiveFileTransfer(Configuration<PircBotX> configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
+		super(configuration, socket, user, file, startPosition, fileSize);
 	}
 
 	protected void transferFile() throws IOException {
