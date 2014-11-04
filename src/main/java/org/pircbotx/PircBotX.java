@@ -292,7 +292,7 @@ public class PircBotX implements Comparable<PircBotX> {
 				inputParser.handleLine(line);
 			} catch (Exception e) {
 				//Exception in client code. Just log and continue
-				log.error("Exception encountered when parsing line", e);
+				log.error("Exception encountered when parsing line " + line, e);
 			}
 
 			//Do nothing if this thread is being interrupted (meaning shutdown() was run)
