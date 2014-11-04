@@ -721,8 +721,8 @@ public class Configuration<B extends PircBotX> {
 			return new SendFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
 		}
 
-		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
-			return new ReceiveFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
+		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition, long fileSize) {
+			return new ReceiveFileTransfer(bot.getConfiguration(), socket, user, file, startPosition, fileSize);
 		}
 
 		public ServerInfo createServerInfo(PircBotX bot) {
