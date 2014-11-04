@@ -79,9 +79,7 @@ public class WaitForQueue implements Closeable {
 	 * @see #waitFor(java.util.List, long, java.util.concurrent.TimeUnit)
 	 */
 	public <E extends GenericEvent> E waitFor(@NonNull Class<E> eventClass) throws InterruptedException {
-		List<Class<E>> eventList = new ArrayList<Class<E>>();
-		eventList.add(eventClass);
-		return (E) waitFor((List<Class<? extends E>>) (Object) eventList);
+		return waitFor(eventClass, Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 
 	/**
@@ -107,6 +105,12 @@ public class WaitForQueue implements Closeable {
 	 */
 	public <E extends GenericEvent> Event waitFor(@NonNull List<Class<? extends E>> eventClasses) throws InterruptedException {
 		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+	}
+	
+	public <E extends GenericEvent> E waitFor(@NonNull Class<E> eventClass, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
+		List<Class<E>> eventList = new ArrayList<Class<E>>();
+		eventList.add(eventClass);
+		return (E) waitFor((List<Class<? extends E>>) (Object) eventList, timeout, unit);
 	}
 
 	/**
