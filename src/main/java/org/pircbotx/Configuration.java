@@ -603,6 +603,19 @@ public class Configuration<B extends PircBotX> {
 			listenerManager.addListener(new CoreHooks());
 			return this;
 		}
+		
+		public void replaceCoreHooksListener(CoreHooks extended) {
+			//Find the corehooks impl
+			CoreHooks orig = null;
+			for (Listener<B> curListener : this.listenerManager.getListeners())
+				if (curListener instanceof CoreHooks) 
+					orig = (CoreHooks)curListener;
+			
+			//Swap
+			if(orig != null)
+				this.listenerManager.removeListener(orig);
+			addListener(extended);
+		}
 
 		/**
 		 * Returns the current ListenerManager in use by this bot. Note that the
