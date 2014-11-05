@@ -335,14 +335,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
 			levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
 		ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, U> curNick : userNickMap.entrySet())
-			userNickMapSnapshotBuilder.put(curNick.getKey(), curNick.getValue().createSnapshot());
+		for (Map.Entry<String, U> curNickEntry : userNickMap.entrySet())
+			userNickMapSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
 		ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
 		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
-			channelNameMapSnapshotBuilder.put(curName.getKey(), curName.getValue().createSnapshot());
+			channelNameMapSnapshotBuilder.put(curName.getKey(), channelSnapshotMap.get(curName.getValue()));
 		ImmutableBiMap.Builder<String, UserSnapshot> privateUserSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, U> curNick : privateUsers.entrySet())
-			privateUserSnapshotBuilder.put(curNick.getKey(), curNick.getValue().createSnapshot());
+		for (Map.Entry<String, U> curNickEntry : privateUsers.entrySet())
+			privateUserSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
 
 		//Finally can create the snapshot object
 		UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,
