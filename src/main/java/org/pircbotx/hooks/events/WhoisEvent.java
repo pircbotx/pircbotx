@@ -59,6 +59,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	@NonNull
 	protected final String registeredAs;
 	protected final boolean exists;
+	protected final String awayMessage;
 
 	WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
 		super(bot);
@@ -73,6 +74,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 		this.signOnTime = builder.signOnTime;
 		this.registeredAs = builder.registeredAs;
 		this.exists = builder.exists;
+		this.awayMessage = builder.awayMessage;
 	}
 
 	/**
