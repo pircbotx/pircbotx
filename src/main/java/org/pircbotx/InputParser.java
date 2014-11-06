@@ -22,14 +22,15 @@ import com.google.common.base.CharMatcher;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.PeekingIterator;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.net.ssl.SSLSocket;
@@ -44,6 +45,7 @@ import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.events.ActionEvent;
+import org.pircbotx.hooks.events.BanListEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.FingerEvent;
@@ -270,6 +272,7 @@ public class InputParser implements Closeable {
 	protected boolean channelListRunning = false;
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
+	protected final Multimap<Channel, BanListEvent.Entry> banListBuilder = LinkedListMultimap.create();
 
 	public InputParser(PircBotX bot) {
 		this.bot = bot;
@@ -799,6 +802,22 @@ public class InputParser implements Closeable {
 			}
 			configuration.getListenerManager().dispatchEvent(builder.generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
+		} else if (code == 367) {
+			//Ban list entry
+			//367 TheLQ #aChannel *!*@test1.host TheLQ!~quackstar@some.host 1415143822
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			UserHostmask recipient = new UserHostmask(bot, parsedResponse.get(2));
+			UserHostmask source = new UserHostmask(bot, parsedResponse.get(3));
+			long time = Long.parseLong(parsedResponse.get(4));
+			banListBuilder.put(channel, new BanListEvent.Entry(recipient, source, time));
+			log.debug("Adding entry");
+		} else if (code == 368) {
+			//Ban list is finished
+			//368 TheLQ #aChannel :End of Channel Ban List
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			ImmutableList entries = ImmutableList.copyOf(banListBuilder.removeAll(channel));
+			log.debug("Dispatching event");
+			configuration.getListenerManager().dispatchEvent(new BanListEvent<PircBotX>(bot, channel, entries));
 		}
 		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent<PircBotX>(bot, code, rawResponse, parsedResponse));
 	}

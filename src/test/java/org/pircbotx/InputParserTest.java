@@ -34,6 +34,7 @@ import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ActionEvent;
+import org.pircbotx.hooks.events.BanListEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.InviteEvent;
@@ -988,8 +989,35 @@ public class InputParserTest {
 		
 		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
 		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
-		
+		assertTrue(dao.containsUser(testUser1), "Renamed failed, user 2 didn't get renamed to 1");
+		assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
 		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
+		assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
+	}
+	
+	@Test
+	public void banListTest() throws IOException, IrcException {
+		Channel channel = dao.createChannel("#aChannel");
+		User source = TestUtils.generateTestUserSource(bot);
+		long time = 1415143822;
+		
+		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel *!test1@host.test " + source.getHostmask() + " " + time);
+		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel test2!*@host.test " + source.getHostmask() + " " + (time+1));
+		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
+		
+		BanListEvent<PircBotX> event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
+		assertEquals(event.getChannel(), channel, "Channel is wrong");
+		
+		//Verify all the sources and times
+		int timeCounter = 0;
+		for(BanListEvent.Entry curEntry : event.getEntries()) {
+			assertEquals(curEntry.getSource(), source, "Source is wrong in entry " + curEntry);
+			assertEquals(curEntry.getTime(), time + (timeCounter++), "Time is wrong in entry " + curEntry);
+		}
+		
+		//Verify recipient hostmasks
+		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, "*", "test1", "host.test"), "Hostname in 0 is wrong");
+		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, "test2", "*", "host.test"), "Hostname in 0 is wrong");
 	}
 
 	/**
