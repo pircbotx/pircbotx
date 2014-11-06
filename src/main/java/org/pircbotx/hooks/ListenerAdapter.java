@@ -44,6 +44,8 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 		//This is just simple and fast
 		if (event instanceof ActionEvent)
 			onAction((ActionEvent<T>) event);
+		else if (event instanceof BanListEvent)
+			onBanList((BanListEvent<T>)event);
 		else if (event instanceof ChannelInfoEvent)
 			onChannelInfo((ChannelInfoEvent<T>) event);
 		else if (event instanceof ConnectEvent)
@@ -173,6 +175,9 @@ public abstract class ListenerAdapter<T extends PircBotX> implements Listener<T>
 	}
 
 	public void onAction(ActionEvent<T> event) throws Exception {
+	}
+	
+	public void onBanList(BanListEvent<T> event) throws Exception {
 	}
 
 	public void onChannelInfo(ChannelInfoEvent<T> event) throws Exception {
