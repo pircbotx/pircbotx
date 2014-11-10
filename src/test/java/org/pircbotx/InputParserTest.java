@@ -978,7 +978,7 @@ public class InputParserTest {
 	}
 	
 	@Test
-	public void nickRenameTest() throws IOException, IrcException {
+	public void nickRenameQuitTest() throws IOException, IrcException {
 		UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
 		UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
 		dao.createChannel("#testchannel");
@@ -991,9 +991,50 @@ public class InputParserTest {
 		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
 		assertTrue(dao.containsUser(testUser1), "Renamed failed, user 2 didn't get renamed to 1");
 		assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
+		
 		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
 		assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
 	}
+	
+	@Test
+	public void nickRenamePartTest() throws IOException, IrcException {
+		UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
+		UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
+		dao.createChannel("#testchannel");
+		
+		//Join both users, have 1 quit, the remaining user takes its nick, then quits
+		inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testChannel");
+		inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testChannel");
+		
+		inputParser.handleLine(":" + testUser1.getHostmask() + " PART #testChannel :");
+		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
+		assertTrue(dao.containsUser(testUser1), "Renamed failed, user 2 didn't get renamed to 1");
+		assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
+		
+		inputParser.handleLine(":" + testUser1.getHostmask() + " PART #testChannel :");
+		assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
+	}
+	
+	    @Test
+    public void nickRenameWithQuitTest() throws IOException, IrcException {
+        UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
+        UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
+        dao.createChannel("#testchannel");
+
+        inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testchannel");
+        inputParser.handleLine(":" + testUser1.getHostmask() + " NICK :" + testUser2.getNick());
+        inputParser.handleLine(":" + testUser2.getHostmask() + " QUIT :");
+
+        assertFalse(dao.containsUser(testUser1), "Renamed failed, user 1 still exists");
+        assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
+
+        inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testchannel");
+        inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
+        inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
+
+        assertFalse(dao.containsUser(testUser1), "quit failed, user 1 still exists");
+        assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
+    }
 	
 	@Test
 	public void banListTest() throws IOException, IrcException {

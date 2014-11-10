@@ -214,11 +214,21 @@ public class User extends UserHostmask {
 
 	@Override
 	public boolean equals(Object user) {
-		return super.equals(user);
+		if(user instanceof UserHostmask)
+			return super.equals(user);
+		else if(user instanceof User)
+			return userId.equals(((User)user).userId);
+		else
+			//No idea what this is
+			return false;
 	}
 
+	/**
+	 * Hash code generated from UUID
+	 * @return 
+	 */
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return userId.hashCode();
 	}
 }
