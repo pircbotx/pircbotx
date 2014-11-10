@@ -18,7 +18,7 @@
 package org.pircbotx.snapshot;
 
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.ImmutableMap;
 import java.util.EnumMap;
 import java.util.Locale;
 import org.pircbotx.PircBotX;
@@ -31,7 +31,7 @@ import org.pircbotx.UserLevel;
  * @author Leon
  */
 public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, ChannelSnapshot> {
-	public UserChannelDaoSnapshot(PircBotX bot, Locale locale, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableBiMap<String, UserSnapshot> userNickMap, ImmutableBiMap<String, ChannelSnapshot> channelNameMap, ImmutableBiMap<String, UserSnapshot> privateUsers) {
+	public UserChannelDaoSnapshot(PircBotX bot, Locale locale, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableMap<String, UserSnapshot> userNickMap, ImmutableMap<String, ChannelSnapshot> channelNameMap, ImmutableMap<String, UserSnapshot> privateUsers) {
 		super(bot, null, locale, mainMap, levelsMap, userNickMap, channelNameMap, privateUsers);
 	}
 
