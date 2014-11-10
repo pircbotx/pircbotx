@@ -214,13 +214,7 @@ public class User extends UserHostmask {
 
 	@Override
 	public boolean equals(Object user) {
-		if(user instanceof UserHostmask)
-			return super.equals(user);
-		else if(user instanceof User)
-			return userId.equals(((User)user).userId);
-		else
-			//No idea what this is
-			return false;
+		return super.equals(user);
 	}
 
 	/**
