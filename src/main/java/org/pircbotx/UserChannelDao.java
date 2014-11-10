@@ -69,7 +69,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		this.bot = bot;
 		this.botFactory = botFactory;
 		this.locale = bot.getConfiguration().getLocale();
-		this.mainMap = new UserChannelMap<U, C>("mainmap");
+		this.mainMap = new UserChannelMap<U, C>();
 		this.userNickMap = Maps.newHashMap();
 		this.channelNameMap = Maps.newHashMap();
 		this.privateUsers = Maps.newHashMap();
