@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import java.io.Closeable;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -60,18 +61,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Object accessLock = new Object();
 	protected final UserChannelMap<U, C> mainMap;
 	protected final EnumMap<UserLevel, UserChannelMap<U, C>> levelsMap;
-	protected final BiMap<String, U> userNickMap;
-	protected final BiMap<String, C> channelNameMap;
-	protected final BiMap<String, U> privateUsers;
-
+	protected final HashMap<String, U> userNickMap;
+	protected final HashMap<String, C> channelNameMap;
+	protected final HashMap<String, U> privateUsers;
+	
 	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
 		this.locale = bot.getConfiguration().getLocale();
-		this.mainMap = new UserChannelMap<U, C>();
-		this.userNickMap = HashBiMap.create();
-		this.channelNameMap = HashBiMap.create();
-		this.privateUsers = HashBiMap.create();
+		this.mainMap = new UserChannelMap<U, C>("mainmap");
+		this.userNickMap = Maps.newHashMap();
+		this.channelNameMap = Maps.newHashMap();
+		this.privateUsers = Maps.newHashMap();
 
 		//Initialize levels map with a UserChannelMap for each level
 		this.levelsMap = Maps.newEnumMap(UserLevel.class);
@@ -304,7 +305,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			curLevelMap.removeChannel(channel);
 
 		//Remove remaining locations
-		channelNameMap.inverse().remove(channel);
+		channelNameMap.remove(channel.getName());
 	}
 
 	@Synchronized("accessLock")
