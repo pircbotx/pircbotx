@@ -24,6 +24,7 @@ package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableList;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
@@ -36,6 +37,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * @author Leon
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class BanListEvent<T extends PircBotX> extends Event<T> implements GenericChannelEvent<T> {
 	@Getter(onMethod = @_(
 			@Override))
