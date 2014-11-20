@@ -17,7 +17,6 @@
  */
 package org.pircbotx;
 
-import com.beust.jcommander.internal.Lists;
 import com.google.common.collect.Sets;
 import java.lang.reflect.Field;
 import java.util.Set;
