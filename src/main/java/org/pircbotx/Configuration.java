@@ -414,6 +414,7 @@ public class Configuration<B extends PircBotX> {
 			this.finger = configuration.getFinger();
 			this.realName = configuration.getRealName();
 			this.channelPrefixes = configuration.getChannelPrefixes();
+			this.channelModeMessagePrefixes = configuration.getChannelModeMessagePrefixes();
 			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
 			this.dccPorts.addAll(configuration.getDccPorts());
 			this.dccLocalAddress = configuration.getDccLocalAddress();
@@ -462,6 +463,7 @@ public class Configuration<B extends PircBotX> {
 			this.finger = otherBuilder.getFinger();
 			this.realName = otherBuilder.getRealName();
 			this.channelPrefixes = otherBuilder.getChannelPrefixes();
+			this.channelModeMessagePrefixes = otherBuilder.getChannelModeMessagePrefixes();
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
