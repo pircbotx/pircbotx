@@ -61,15 +61,21 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 			@Nullable))
 	protected final Channel channel;
 	/**
+	 * The raw channel name, could be a special mode message eg +#channel that
+	 * only goes to voiced users.
+	 */
+	protected final String channelSource;
+	/**
 	 * The action message.
 	 */
 	protected final String action;
 
-	public ActionEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String action) {
+	public ActionEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String action) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.channel = channel;
+		this.channelSource = channelSource;
 		this.action = action;
 	}
 
@@ -100,7 +106,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 		if (getChannel() == null)
 			getUserHostmask().send().action(response);
 		else
-			getChannel().send().action(response);
+			getBot().sendIRC().action(channelSource, response);
 	}
 	
 	/**
@@ -110,7 +116,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	public void respondChannel(@Nullable String response) {
 		if(getChannel() == null)
 			throw new RuntimeException("Event does not contain a channel");
-		getChannel().send().message(response);
+		getBot().sendIRC().message(channelSource, response);
 	}
 	
 	/**

@@ -1060,6 +1060,19 @@ public class InputParserTest {
 		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, "*", "test1", "host.test"), "Hostname in 0 is wrong");
 		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, "test2", "*", "host.test"), "Hostname in 0 is wrong");
 	}
+	
+	@Test
+	public void channelModeMessageTest() throws IOException, IrcException {
+		Channel aChannel = dao.createChannel("#aChannel");
+		User aUser = TestUtils.generateTestUserSource(bot);
+		inputParser.handleLine(":" + aUser.getHostmask() + " PRIVMSG +#aChannel :" + aString);
+
+		//Verify event contents
+		MessageEvent mevent = getEvent(MessageEvent.class, "MessageEvent not dispatched");
+		assertEquals(mevent.getChannel(), aChannel, "Event channel and original channel do not match");
+		assertEquals(mevent.getUser(), aUser, "Event user and original user do not match");
+		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
+	}
 
 	/**
 	 * After simulating a server response, call this to get a specific Event
@@ -1074,9 +1087,11 @@ public class InputParserTest {
 	 */
 	protected <B> B getEvent(Class<B> clazz, String errorMessage) {
 		B cevent = null;
-		for (Event curEvent : events)
+		for (Event curEvent : events) {
+			log.debug("Dispatched event: " + curEvent);
 			if (curEvent.getClass().isAssignableFrom(clazz))
 				cevent = (B) curEvent;
+		}
 		//Failed, does not exist
 		assertNotNull(cevent, errorMessage);
 		return cevent;
