@@ -44,11 +44,12 @@ import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
- * User-channel model that tracks all channels, users, users' in channels, users'
- * op level in channels, and private message users not in a channel. 
+ * User-channel model that tracks all channels, users, users' in channels,
+ * users' op level in channels, and private message users not in a channel.
  * <p>
- * All methods will throw a {@link NullPointerException} when any argument is null
- * 
+ * All methods will throw a {@link NullPointerException} when any argument is
+ * null
+ *
  * @see User
  * @see Channel
  * @author Leon Blakey <lord.quackstar at gmail.com>
@@ -248,7 +249,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	protected void renameUser(@NonNull U user, @NonNull String newNick) {
 		String oldNick = user.getNick();
-		
+
 		user.setNick(newNick);
 		userNickMap.remove(oldNick.toLowerCase(locale));
 		userNickMap.put(newNick.toLowerCase(locale), user);
@@ -260,6 +261,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		C chan = channelNameMap.get(name.toLowerCase(locale));
 		if (chan != null)
 			return chan;
+
+		//This could potentially be a mode message, strip off prefixes till we get a channel
+		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
+		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
+			String nameTrimmed = name.toLowerCase(locale);
+			do {
+				nameTrimmed = nameTrimmed.substring(1);
+				chan = channelNameMap.get(nameTrimmed);
+				if (chan != null)
+					return chan;
+			} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
+		}
 
 		//Channel does not exist
 		throw new DaoException(DaoException.Reason.UnknownChannel, name);
@@ -280,7 +293,22 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@Synchronized("accessLock")
 	public boolean channelExists(@NonNull String name) {
-		return channelNameMap.containsKey(name.toLowerCase(locale));
+		if (channelNameMap.containsKey(name.toLowerCase(locale)))
+			return true;
+		
+		//This could potentially be a mode message, strip off prefixes till we get a channel
+		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
+		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
+			String nameTrimmed = name.toLowerCase(locale);
+			do {
+				nameTrimmed = nameTrimmed.substring(1);
+				if (channelNameMap.containsKey(nameTrimmed))
+					return true;
+			} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
+		}
+
+		//Nope, doesn't exist
+		return false;
 	}
 
 	@Synchronized("accessLock")

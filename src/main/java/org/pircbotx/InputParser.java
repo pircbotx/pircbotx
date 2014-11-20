@@ -461,7 +461,7 @@ public class InputParser implements Closeable {
 
 	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine) throws IOException {
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0 && bot.getUserChannelDao().channelExists(target))
+		Channel channel = (target.length() != 0 && bot.getUserChannelDao().channelExists(target))
 				? bot.getUserChannelDao().getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 		//Try to load the source user if it exists
@@ -476,7 +476,7 @@ public class InputParser implements Closeable {
 				configuration.getListenerManager().dispatchEvent(new VersionEvent<PircBotX>(bot, source, sourceUser, channel));
 			else if (request.startsWith("ACTION "))
 				// ACTION request
-				configuration.getListenerManager().dispatchEvent(new ActionEvent<PircBotX>(bot, source, sourceUser, channel, request.substring(7)));
+				configuration.getListenerManager().dispatchEvent(new ActionEvent<PircBotX>(bot, source, sourceUser, channel, target, request.substring(7)));
 			else if (request.startsWith("PING "))
 				// PING request
 				configuration.getListenerManager().dispatchEvent(new PingEvent<PircBotX>(bot, source, sourceUser, channel, request.substring(5)));
@@ -498,7 +498,7 @@ public class InputParser implements Closeable {
 		} else if (command.equals("PRIVMSG") && channel != null) {
 			// This is a normal message to a channel.
 			sourceUser = createUserIfNull(sourceUser, source);
-			configuration.getListenerManager().dispatchEvent(new MessageEvent<PircBotX>(bot, channel, source, sourceUser, message));
+			configuration.getListenerManager().dispatchEvent(new MessageEvent<PircBotX>(bot, channel, target, source, sourceUser, message));
 		} else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
 			//Add to private message
@@ -541,7 +541,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new NickChangeEvent<PircBotX>(bot, source.getNick(), newNick, source, sourceUser));
 		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
-			configuration.getListenerManager().dispatchEvent(new NoticeEvent<PircBotX>(bot, source, sourceUser, channel, message));
+			configuration.getListenerManager().dispatchEvent(new NoticeEvent<PircBotX>(bot,  source, sourceUser, channel, target, message));
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
 			UserSnapshot sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
