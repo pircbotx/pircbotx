@@ -286,13 +286,24 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
+	 * Check if the bot is currently in the given channel
+	 * @param name
+	 * @return
+	 * @deprecated Use {@link #containsChannel(java.lang.String) }
+	 */
+	@Deprecated
+	public boolean channelExists(@NonNull String name) {
+		return containsChannel(name);
+	}
+	
+	/**
 	 * Check if the bot is currently in the given channel.
 	 *
 	 * @param name A channel name as a string
 	 * @return True if we are still connected to the channel, false if not
 	 */
 	@Synchronized("accessLock")
-	public boolean channelExists(@NonNull String name) {
+	public boolean containsChannel(@NonNull String name) {
 		if (channelNameMap.containsKey(name.toLowerCase(locale)))
 			return true;
 		
