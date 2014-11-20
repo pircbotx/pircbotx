@@ -17,6 +17,8 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ImmutableMap;
+
 /**
  * The Colors class provides several static fields and methods that you may find
  * useful when writing an IRC Bot.
@@ -138,11 +140,46 @@ public final class Colors {
 	 * Italicized text.
 	 */
 	public static final String ITALICS = "\u001d";
+	/**
+	 * Pre-built lookup table by String for all the fields in this class. 
+	 */
+	public static final ImmutableMap<String, String> LOOKUP_TABLE = ImmutableMap.<String, String>builder()
+			.put("NORMAL", NORMAL)
+			.put("BOLD", BOLD)
+			.put("UNDERLINE", UNDERLINE)
+			.put("REVERSE", REVERSE)
+			.put("WHITE", WHITE)
+			.put("BLACK", BLACK)
+			.put("DARK_BLUE", DARK_BLUE)
+			.put("DARK_GREEN", DARK_GREEN)
+			.put("RED", RED)
+			.put("BROWN", BROWN)
+			.put("PURPLE", PURPLE)
+			.put("OLIVE", OLIVE)
+			.put("YELLOW", YELLOW)
+			.put("GREEN", GREEN)
+			.put("TEAL", TEAL)
+			.put("CYAN", CYAN)
+			.put("BLUE", BLUE)
+			.put("MAGENTA", MAGENTA)
+			.put("DARK_GRAY", DARK_GRAY)
+			.put("LIGHT_GRAY", LIGHT_GRAY)
+			.put("ITALICS", ITALICS)
+			.build();
 
 	/**
 	 * This class should not be constructed.
 	 */
 	private Colors() {
+	}
+	
+	/**
+	 * Lookup color as a String
+	 * @param colorName Name of field in this class, will be converted to uppercase
+	 * @return Color value or null
+	 */
+	public static String lookup(String colorName) {
+		return LOOKUP_TABLE.get(colorName.toUpperCase());
 	}
 
 	/**
