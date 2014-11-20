@@ -78,6 +78,7 @@ public class Configuration<B extends PircBotX> {
 	protected final String finger;
 	protected final String realName;
 	protected final String channelPrefixes;
+	protected final String channelModeMessagePrefixes;
 	//DCC
 	protected final boolean dccFilenameQuotes;
 	protected final ImmutableList<Integer> dccPorts;
@@ -130,6 +131,7 @@ public class Configuration<B extends PircBotX> {
 		checkArgument(StringUtils.isNotBlank(builder.getLogin()), "Must specify login");
 		checkArgument(StringUtils.isNotBlank(builder.getRealName()), "Must specify realName");
 		checkArgument(StringUtils.isNotBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
+		checkNotNull(builder.getChannelModeMessagePrefixes(), "Channel mode message prefixes cannot be null");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
 		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
@@ -160,6 +162,7 @@ public class Configuration<B extends PircBotX> {
 		this.finger = builder.getFinger();
 		this.realName = builder.getRealName();
 		this.channelPrefixes = builder.getChannelPrefixes();
+		this.channelModeMessagePrefixes = builder.getChannelModeMessagePrefixes();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
@@ -243,6 +246,11 @@ public class Configuration<B extends PircBotX> {
 		 * Allowed channel prefix characters. Defaults to <code>#&+!</code>
 		 */
 		protected String channelPrefixes = "#&+!";
+		/**
+		 * Supported channel prefixes that restrict a sent message to users with this mode.
+		 * Defaults to <code>+%&~!</code>
+		 */
+		protected String channelModeMessagePrefixes = "+%&~!";
 		//DCC
 		/**
 		 * If true sends filenames in quotes, otherwise uses underscores.
