@@ -134,6 +134,10 @@ public final class Colors {
 	 * Light gray coloured text.
 	 */
 	public static final String LIGHT_GRAY = "\u000315";
+	/**
+	 * Italicized text.
+	 */
+	public static final String ITALICS = "\u001d";
 
 	/**
 	 * This class should not be constructed.
