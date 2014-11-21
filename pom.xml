@@ -160,6 +160,7 @@
 					<excludes>
 						<exclude>**/*.txt</exclude>
 						<exclude>**/*.log</exclude>
+						<exclude>.hg*</exclude>
 						<exclude>**/nbactions.xml</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
