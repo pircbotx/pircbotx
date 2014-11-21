@@ -32,6 +32,7 @@ import org.testng.collections.Lists;
  * @author Leon
  */
 public class WaitForQueueTest {
+	@SuppressWarnings("unchecked")
 	private void syntaxCompileTest() throws InterruptedException {
 		if(true)
 			throw new RuntimeException("DO NOT CALL THIS");

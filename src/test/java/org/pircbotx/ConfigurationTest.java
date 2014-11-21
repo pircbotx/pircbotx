@@ -18,6 +18,7 @@
 package org.pircbotx;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import java.lang.reflect.Field;
@@ -42,7 +43,7 @@ import static org.testng.Assert.*;
 public class ConfigurationTest {
 	@DataProvider
 	public Object[][] fieldNamesDataProvider() throws NoSuchMethodException {
-		List<Object[]> params = new ArrayList();
+		List<Object[]> params = Lists.newArrayList();
 		for (Field curField : Configuration.class.getDeclaredFields())
 			if (!curField.isSynthetic()) {
 				String prefix = (curField.getType().equals(boolean.class)) ? "is" : "get";
@@ -67,6 +68,7 @@ public class ConfigurationTest {
 
 	@Test(dataProvider = "fieldNamesDataProvider", dependsOnMethods = "containSameFieldsTest",
 			description = "Make sure every getter in builder gets called when creating Configuration")
+	@SuppressWarnings("unchecked")
 	public void copyConstructorTest(Class containerClass, Class copiedClass, Object copiedOpject, String getterName) throws Exception {
 		//Get the method that is going to be called
 		final Method methodToCall = copiedClass.getDeclaredMethod(getterName);
