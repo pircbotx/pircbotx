@@ -97,9 +97,11 @@ public class CAPTest {
 		when(socket.isConnected()).thenReturn(true);
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
+		
+		Configuration.Builder<PircBotX> configurationBuilder = TestUtils.generateConfigurationBuilder();
+		
 		SocketFactory socketFactory = mock(SocketFactory.class);
-		Configuration.Builder<PircBotX> configurationBuilder = TestUtils.generateConfigurationBuilder().setServerHostname("127.0.0.1");
-		when(socketFactory.createSocket(InetAddress.getByName(configurationBuilder.getServerHostname()), configurationBuilder.getServerPort(), configurationBuilder.getLocalAddress(), 0))
+		when(socketFactory.createSocket(InetAddress.getByName(configurationBuilder.getServers().get(0).getHostname()), 6667, null, 0))
 				.thenReturn(socket);
 
 		configurationBuilder.getCapHandlers().clear();

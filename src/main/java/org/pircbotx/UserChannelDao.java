@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import java.io.Closeable;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -43,11 +44,12 @@ import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
- * User-channel model that tracks all channels, users, users' in channels, users'
- * op level in channels, and private message users not in a channel. 
+ * User-channel model that tracks all channels, users, users' in channels,
+ * users' op level in channels, and private message users not in a channel.
  * <p>
- * All methods will throw a {@link NullPointerException} when any argument is null
- * 
+ * All methods will throw a {@link NullPointerException} when any argument is
+ * null
+ *
  * @see User
  * @see Channel
  * @author Leon Blakey <lord.quackstar at gmail.com>
@@ -60,18 +62,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Object accessLock = new Object();
 	protected final UserChannelMap<U, C> mainMap;
 	protected final EnumMap<UserLevel, UserChannelMap<U, C>> levelsMap;
-	protected final BiMap<String, U> userNickMap;
-	protected final BiMap<String, C> channelNameMap;
-	protected final BiMap<String, U> privateUsers;
-
+	protected final Map<String, U> userNickMap;
+	protected final Map<String, C> channelNameMap;
+	protected final Map<String, U> privateUsers;
+	
 	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
 		this.locale = bot.getConfiguration().getLocale();
 		this.mainMap = new UserChannelMap<U, C>();
-		this.userNickMap = HashBiMap.create();
-		this.channelNameMap = HashBiMap.create();
-		this.privateUsers = HashBiMap.create();
+		this.userNickMap = Maps.newHashMap();
+		this.channelNameMap = Maps.newHashMap();
+		this.privateUsers = Maps.newHashMap();
 
 		//Initialize levels map with a UserChannelMap for each level
 		this.levelsMap = Maps.newEnumMap(UserLevel.class);
@@ -246,8 +248,10 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	@Synchronized("accessLock")
 	protected void renameUser(@NonNull U user, @NonNull String newNick) {
+		String oldNick = user.getNick();
+
 		user.setNick(newNick);
-		userNickMap.inverse().remove(user);
+		userNickMap.remove(oldNick.toLowerCase(locale));
 		userNickMap.put(newNick.toLowerCase(locale), user);
 	}
 
@@ -257,6 +261,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		C chan = channelNameMap.get(name.toLowerCase(locale));
 		if (chan != null)
 			return chan;
+
+		//This could potentially be a mode message, strip off prefixes till we get a channel
+		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
+		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
+			String nameTrimmed = name.toLowerCase(locale);
+			do {
+				nameTrimmed = nameTrimmed.substring(1);
+				chan = channelNameMap.get(nameTrimmed);
+				if (chan != null)
+					return chan;
+			} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
+		}
 
 		//Channel does not exist
 		throw new DaoException(DaoException.Reason.UnknownChannel, name);
@@ -270,14 +286,40 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
+	 * Check if the bot is currently in the given channel
+	 * @param name
+	 * @return
+	 * @deprecated Use {@link #containsChannel(java.lang.String) }
+	 */
+	@Deprecated
+	public boolean channelExists(@NonNull String name) {
+		return containsChannel(name);
+	}
+	
+	/**
 	 * Check if the bot is currently in the given channel.
 	 *
 	 * @param name A channel name as a string
 	 * @return True if we are still connected to the channel, false if not
 	 */
 	@Synchronized("accessLock")
-	public boolean channelExists(@NonNull String name) {
-		return channelNameMap.containsKey(name.toLowerCase(locale));
+	public boolean containsChannel(@NonNull String name) {
+		if (channelNameMap.containsKey(name.toLowerCase(locale)))
+			return true;
+		
+		//This could potentially be a mode message, strip off prefixes till we get a channel
+		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
+		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
+			String nameTrimmed = name.toLowerCase(locale);
+			do {
+				nameTrimmed = nameTrimmed.substring(1);
+				if (channelNameMap.containsKey(nameTrimmed))
+					return true;
+			} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
+		}
+
+		//Nope, doesn't exist
+		return false;
 	}
 
 	@Synchronized("accessLock")
@@ -302,7 +344,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			curLevelMap.removeChannel(channel);
 
 		//Remove remaining locations
-		channelNameMap.inverse().remove(channel);
+		channelNameMap.remove(channel.getName());
 	}
 
 	@Synchronized("accessLock")
@@ -333,14 +375,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
 			levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
 		ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, U> curNick : userNickMap.entrySet())
-			userNickMapSnapshotBuilder.put(curNick.getKey(), curNick.getValue().createSnapshot());
+		for (Map.Entry<String, U> curNickEntry : userNickMap.entrySet())
+			userNickMapSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
 		ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
 		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
-			channelNameMapSnapshotBuilder.put(curName.getKey(), curName.getValue().createSnapshot());
+			channelNameMapSnapshotBuilder.put(curName.getKey(), channelSnapshotMap.get(curName.getValue()));
 		ImmutableBiMap.Builder<String, UserSnapshot> privateUserSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, U> curNick : privateUsers.entrySet())
-			privateUserSnapshotBuilder.put(curNick.getKey(), curNick.getValue().createSnapshot());
+		for (Map.Entry<String, U> curNickEntry : privateUsers.entrySet())
+			privateUserSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
 
 		//Finally can create the snapshot object
 		UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,

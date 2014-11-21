@@ -74,7 +74,7 @@ public class DccHandler implements Closeable {
 		String type = requestParts.get(1);
 		if (type.equals("SEND")) {
 			//Someone is trying to send a file to us
-			//Example: DCC SEND <filename> <ip> <port> <file size> <transferToken> (note File size is optional)
+			//Example: DCC SEND <filename>  <ip> <port> <file size> <transferToken> (note File size is optional)
 			String rawFilename = requestParts.get(2);
 			final String safeFilename = (rawFilename.startsWith("\"") && rawFilename.endsWith("\""))
 					? rawFilename.substring(1, rawFilename.length() - 1) : rawFilename;
@@ -153,18 +153,30 @@ public class DccHandler implements Closeable {
 			throw new DccException(DccException.Reason.UnknownFileTransferResume, user, "Transfer line: " + request);
 		} else if (type.equals("ACCEPT")) {
 			//Someone is acknowledging a transfer resume
-			//Example: DCC ACCEPT <filename> 0 <position> <token> (if 0 exists then its a passive connection)
+			//Example (normal):  DCC ACCEPT <filename> <port> <position>
+			//Example (passive): DCC ACCEPT <filename> 0 <position> <token>
+			//TODO how well does this handle non passive?
 			String filename = requestParts.get(2);
-			int dataPosition = (requestParts.size() == 5) ? 3 : 4;
-			long position = Integer.parseInt(requestParts.get(dataPosition));
-			String transferToken = requestParts.get(dataPosition + 1);
+			int port;
+			int position = Integer.parseInt(requestParts.get(4));
+			String transferToken;
+			if(requestParts.size() == 5) {
+				//Standard request
+				port = Integer.parseInt(requestParts.get(3));
+				transferToken = null;
+			} else {
+				//Passive request
+				port = 0;
+				transferToken = requestParts.get(5);
+			}
+			
 			synchronized (pendingReceiveTransfers) {
 				Iterator<Map.Entry<PendingRecieveFileTransfer, CountDownLatch>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
 				while (pendingItr.hasNext()) {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
 					IncomingFileTransferEvent<PircBotX> transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
-							&& transferEvent.getTransferToken().equals(transferToken)) {
+							&& transferEvent.getPort() == port && transferEvent.getTransferToken() == transferEvent.getTransferToken()) {
 						curEntry.getKey().setPosition(position);
 						log.debug("Receive file transfer of file {} to user {} set to position {}",
 								transferEvent.getRawFilename(), transferEvent.getUser().getNick(), position);
@@ -271,16 +283,18 @@ public class DccHandler implements Closeable {
 			pendingReceiveTransfers.put(pendingTransfer, countdown);
 		}
 
-		//Request resume
+		//Tell user were going to resume transfering
 		if (event.isPassive())
 			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getTransferToken());
 		else
 			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
+		
+		//Wait for response
 		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
 			throw new DccException(DccException.Reason.FileTransferResumeTimeout, event.getUser(), "Event: " + event);
 		if (shuttingDown)
 			throw new DccException(DccException.Reason.FileTransferResumeCancelled, event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
-
+		
 		//User has accepted resume, begin transfer
 		if (pendingTransfer.getPosition() != startPosition)
 			log.warn("User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
@@ -300,10 +314,10 @@ public class DccHandler implements Closeable {
 
 			//User is connected, begin transfer
 			serverSocket.close();
-			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
+			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		} else {
 			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccAddress(), 0);
-			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition);
+			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		}
 	}
 

@@ -59,15 +59,21 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 			@Override))
 	protected final Channel channel;
 	/**
+	 * The raw channel name, could be a special mode message eg +#channel that
+	 * only goes to voiced users.
+	 */
+	protected final String channelSource;
+	/**
 	 * The notice message.
 	 */
 	protected final String notice;
 
-	public NoticeEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String notice) {
+	public NoticeEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String notice) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;
 		this.channel = channel;
+		this.channelSource = channelSource;
 		this.notice = notice;
 	}
 
@@ -93,6 +99,24 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 		if (getChannel() == null)
 			getUser().send().message(response);
 		else
-			getChannel().send().message(getUser(), response);
+			getBot().sendIRC().message(channelSource, response);
+	}
+	
+	/**
+	 * Respond with a message to the channel without the prefix
+	 * @param response The response to send
+	 */
+	public void respondChannel(@Nullable String response) {
+		if(getChannel() == null)
+			throw new RuntimeException("Event does not contain a channel");
+		getBot().sendIRC().message(channelSource, response);
+	}
+	
+	/**
+	 * Respond with a PM directly to the user
+	 * @param response The response to send
+	 */
+	public void respondPrivateMessage(@Nullable String response) {
+		getUser().send().message(response);
 	}
 }

@@ -42,6 +42,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.output.OutputIRC;
 import org.slf4j.Logger;
@@ -60,7 +61,8 @@ import org.slf4j.LoggerFactory;
  * optional {@link #stopAndWait() } method is provided to block until all bots
  * shutdown
  * </ol>
- *
+ * {@link #executeBot(org.pircbotx.PircBotX)} is overridable if you wish to 
+ * do your own connecting
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
@@ -214,15 +216,23 @@ public class MultiBotManager<B extends PircBotX> {
 	public B getBotById(int id) {
 		return runningBotsNumbers.inverse().get(id);
 	}
+	
+	/**
+	 * Called when 
+	 * @param bot 
+	 */
+	protected void executeBot(PircBotX bot) throws Exception {
+		bot.startBot();
+	}
 
 	@RequiredArgsConstructor
 	protected class BotRunner implements Callable<Void> {
 		@NonNull
 		protected final B bot;
 
-		public Void call() throws IOException, IrcException {
+		public Void call() throws Exception {
 			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotId());
-			bot.connect();
+			executeBot(bot);
 			return null;
 		}
 	}

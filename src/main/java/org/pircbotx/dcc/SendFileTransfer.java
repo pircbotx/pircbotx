@@ -35,7 +35,7 @@ import org.pircbotx.User;
  */
 public class SendFileTransfer extends FileTransfer {
 	public SendFileTransfer(Configuration<PircBotX> configuration, Socket socket, User user, File file, long startPosition) {
-		super(configuration, socket, user, file, startPosition);
+		super(configuration, socket, user, file, startPosition, file.length());
 	}
 
 	@Override

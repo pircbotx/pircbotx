@@ -50,6 +50,5 @@ public class IrcException extends Exception {
 	public static enum Reason {
 		AlreadyConnected,
 		CannotLogin,
-		ReconnectBeforeConnect,
 	}
 }

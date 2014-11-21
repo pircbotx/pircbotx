@@ -19,6 +19,7 @@ package org.pircbotx.hooks;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.MotdEvent;
@@ -51,6 +52,10 @@ public class WaitForQueueTest {
 		GenericMessageEvent gevent =  queue.waitFor(GenericMessageEvent.class);
 		event = queue.waitFor(Arrays.asList(GenericMessageEvent.class, GenericCTCPEvent.class));
 		event = queue.waitFor(Arrays.asList(GenericMessageEvent.class, ActionEvent.class));
+		
+		event = queue.waitFor(MessageEvent.class, 20, TimeUnit.DAYS);
+		
+		event = queue.waitFor(Arrays.asList(MessageEvent.class, ActionEvent.class), 20, TimeUnit.DAYS);
 		
 		//This does not compile for some reason
 		//However there is 0 reason to use this syntax
