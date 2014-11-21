@@ -461,7 +461,7 @@ public class InputParser implements Closeable {
 
 	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine) throws IOException {
 		//If the channel matches a prefix, then its a channel
-		Channel channel = (target.length() != 0 && bot.getUserChannelDao().channelExists(target))
+		Channel channel = (target.length() != 0 && bot.getUserChannelDao().containsChannel(target))
 				? bot.getUserChannelDao().getChannel(target) : null;
 		String message = parsedLine.size() >= 2 ? parsedLine.get(1) : "";
 		//Try to load the source user if it exists
