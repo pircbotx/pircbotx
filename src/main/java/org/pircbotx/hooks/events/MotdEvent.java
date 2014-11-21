@@ -32,13 +32,13 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MotdEvent<T extends PircBotX> extends Event<T> {
+public class MotdEvent extends Event {
 	/**
 	 * The full motd separated by newlines (<code>\n</code>)
 	 */
 	protected final String motd;
 
-	public MotdEvent(T bot, @NonNull String motd) {
+	public MotdEvent(PircBotX bot, @NonNull String motd) {
 		super(bot);
 		this.motd = motd;
 	}

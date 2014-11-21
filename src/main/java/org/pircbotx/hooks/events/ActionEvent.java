@@ -38,7 +38,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ActionEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+public class ActionEvent extends Event implements GenericMessageEvent, GenericChannelUserEvent {
 	/**
 	 * The user hostmask that sent the action.
 	 */
@@ -70,7 +70,7 @@ public class ActionEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	protected final String action;
 
-	public ActionEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String action) {
+	public ActionEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String action) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;

@@ -32,7 +32,7 @@ import org.pircbotx.hooks.Event;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NickAlreadyInUseEvent<T extends PircBotX> extends Event<T> {
+public class NickAlreadyInUseEvent extends Event {
 	/**
 	 * The nick already in use.
 	 */
@@ -46,7 +46,7 @@ public class NickAlreadyInUseEvent<T extends PircBotX> extends Event<T> {
 	 */
 	protected final boolean autoNickChange;
 
-	public NickAlreadyInUseEvent(T bot, @NonNull String usedNick, @Nullable String autoNewNick, boolean autoNickChange) {
+	public NickAlreadyInUseEvent(PircBotX bot, @NonNull String usedNick, @Nullable String autoNewNick, boolean autoNickChange) {
 		super(bot);
 		this.usedNick = usedNick;
 		this.autoNewNick = autoNewNick;

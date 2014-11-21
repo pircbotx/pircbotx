@@ -27,14 +27,14 @@ import org.pircbotx.hooks.Event;
  *
  * @author Leon
  */
-public class ConnectAttemptFailedEvent<T extends PircBotX> extends Event<T> {
+public class ConnectAttemptFailedEvent extends Event {
 	protected final InetAddress remoteAddress;
 	protected final int remotePort;
 	protected final InetAddress localAddress;
 	protected final int remainingServers;
 	protected final Exception connectException;
 
-	public ConnectAttemptFailedEvent(T bot, @NonNull InetAddress remoteAddress, int remotePort, InetAddress localAddress, int remainingServers, @NonNull Exception connectException) {
+	public ConnectAttemptFailedEvent(PircBotX bot, @NonNull InetAddress remoteAddress, int remotePort, InetAddress localAddress, int remainingServers, @NonNull Exception connectException) {
 		super(bot);
 		this.remoteAddress = remoteAddress;
 		this.remotePort = remotePort;

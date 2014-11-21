@@ -37,7 +37,6 @@ import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.Configuration.ServerEntry;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -90,7 +89,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * Configuration used for this bot
 	 */
 	@Getter
-	protected final Configuration<PircBotX> configuration;
+	protected final Configuration configuration;
 	@Getter
 	protected final InputParser inputParser;
 	/**
@@ -132,9 +131,9 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * Constructs a PircBotX with the provided configuration.
 	 */
 	@SuppressWarnings("unchecked")
-	public PircBotX(Configuration<? extends PircBotX> configuration) {
+	public PircBotX(Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
-		this.configuration = (Configuration<PircBotX>) configuration;
+		this.configuration = (Configuration) configuration;
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
@@ -218,7 +217,7 @@ public class PircBotX implements Comparable<PircBotX> {
 						String debugSuffix = serverAddresses.length == 0 ? "no more servers" : "trying to check another address";
 						log.debug("Unable to connect to " + curServerEntry.getHostname() + ":" + curServerEntry.getPort()
 								+ " using the IP address " + curAddress.getHostAddress() + ", " + debugSuffix, e);
-						configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent<PircBotX>(this,
+						configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent(this,
 								curAddress,
 								curServerEntry.getPort(),
 								configuration.getLocalAddress(),
@@ -239,7 +238,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			changeSocket(socket);
 		}
 
-		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent<PircBotX>(this));
+		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
 
 		if (configuration.isIdentServerEnabled())
 			IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
@@ -505,7 +504,7 @@ public class PircBotX implements Comparable<PircBotX> {
 		}
 
 		//Dispatch event
-		configuration.getListenerManager().dispatchEvent(new DisconnectEvent<PircBotX>(this, daoSnapshot, disconnectException));
+		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, daoSnapshot, disconnectException));
 		disconnectException = null;
 		log.debug("Disconnected.");
 

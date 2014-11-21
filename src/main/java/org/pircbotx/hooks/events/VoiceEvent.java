@@ -41,7 +41,7 @@ import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
+public class VoiceEvent extends Event implements GenericChannelModeRecipientEvent {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -77,7 +77,7 @@ public class VoiceEvent<T extends PircBotX> extends Event<T> implements GenericC
 	@Getter(AccessLevel.NONE)
 	protected final boolean hasVoice;
 
-	public VoiceEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask,
+	public VoiceEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask,
 			User user, @NonNull UserHostmask recipientHostmask, User recipient, boolean hasVoice) {
 		super(bot);
 		this.channel = channel;

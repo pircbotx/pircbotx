@@ -38,13 +38,13 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class BanListEvent<T extends PircBotX> extends Event<T> implements GenericChannelEvent<T> {
+public class BanListEvent extends Event implements GenericChannelEvent {
 	@Getter(onMethod = @_(
 			@Override))
 	private final Channel channel;
 	private final ImmutableList<Entry> entries;
 
-	public BanListEvent(T bot, Channel channel, ImmutableList<Entry> entries) {
+	public BanListEvent(PircBotX bot, Channel channel, ImmutableList<Entry> entries) {
 		super(bot);
 		this.channel = channel;
 		this.entries = entries;

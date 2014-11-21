@@ -42,7 +42,7 @@ import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class HalfOpEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
+public class HalfOpEvent extends Event implements GenericChannelModeRecipientEvent {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -80,7 +80,7 @@ public class HalfOpEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	protected final boolean isHalfOp;
 
-	public HalfOpEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull UserHostmask recipientHostmask, User recipient, boolean isHalfOp) {
+	public HalfOpEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull UserHostmask recipientHostmask, User recipient, boolean isHalfOp) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

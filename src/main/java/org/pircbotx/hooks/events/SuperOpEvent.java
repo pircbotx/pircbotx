@@ -42,7 +42,7 @@ import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SuperOpEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
+public class SuperOpEvent extends Event implements GenericChannelModeRecipientEvent {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -79,7 +79,7 @@ public class SuperOpEvent<T extends PircBotX> extends Event<T> implements Generi
 	 */
 	protected final boolean isSuperOp;
 
-	public SuperOpEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+	public SuperOpEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
 			@NonNull UserHostmask recipientHostmask, User recipient, boolean isSuperOp) {
 		super(bot);
 		this.channel = channel;

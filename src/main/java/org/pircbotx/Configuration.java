@@ -68,7 +68,7 @@ import org.pircbotx.output.OutputUser;
  */
 @Data
 @ToString(exclude = {"serverPassword", "nickservPassword"})
-public class Configuration<B extends PircBotX> {
+public class Configuration {
 	//WebIRC
 	protected final boolean webIrcEnabled;
 	protected final String webIrcUsername;
@@ -109,7 +109,7 @@ public class Configuration<B extends PircBotX> {
 	protected final String nickservPassword;
 	protected final boolean autoReconnect;
 	//Bot classes
-	protected final ListenerManager<B> listenerManager;
+	protected final ListenerManager listenerManager;
 	protected final boolean capEnabled;
 	protected final ImmutableList<CapHandler> capHandlers;
 	protected final ImmutableSortedMap<Character, ChannelModeHandler> channelModeHandlers;
@@ -121,7 +121,7 @@ public class Configuration<B extends PircBotX> {
 	 * @param builder
 	 * @see Configuration.Builder#build()
 	 */
-	protected Configuration(Builder<B> builder) {
+	protected Configuration(Builder builder) {
 		//Check for basics
 		if (builder.isWebIrcEnabled()) {
 			checkNotNull(builder.getWebIrcAddress(), "Must specify WEBIRC address if enabled");
@@ -203,7 +203,7 @@ public class Configuration<B extends PircBotX> {
 
 	@Accessors(chain = true)
 	@Data
-	public static class Builder<B extends PircBotX> {
+	public static class Builder {
 		//WebIRC
 		/**
 		 * Enable or disable sending WEBIRC line on connect
@@ -373,7 +373,7 @@ public class Configuration<B extends PircBotX> {
 		/**
 		 * The {@link ListenerManager} to use to handle events.
 		 */
-		protected ListenerManager<B> listenerManager = null;
+		protected ListenerManager listenerManager = null;
 		/**
 		 * Enable or disable CAP handling. Defaults to false
 		 */
@@ -400,9 +400,9 @@ public class Configuration<B extends PircBotX> {
 		/**
 		 * Copy values from an existing Configuration.
 		 *
-		 * @param configuration Configuration<B> to copy values from
+		 * @param configuration Configuration to copy values from
 		 */
-		public Builder(Configuration<B> configuration) {
+		public Builder(Configuration configuration) {
 			this.webIrcEnabled = configuration.isWebIrcEnabled();
 			this.webIrcUsername = configuration.getWebIrcUsername();
 			this.webIrcHostname = configuration.getWebIrcHostname();
@@ -448,9 +448,9 @@ public class Configuration<B extends PircBotX> {
 		/**
 		 * Copy values from another builder.
 		 *
-		 * @param otherBuilder<B>
+		 * @param otherBuilder
 		 */
-		public Builder(Builder<B> otherBuilder) {
+		public Builder(Builder otherBuilder) {
 			this.webIrcEnabled = otherBuilder.isWebIrcEnabled();
 			this.webIrcUsername = otherBuilder.getWebIrcUsername();
 			this.webIrcHostname = otherBuilder.getWebIrcHostname();
@@ -524,7 +524,7 @@ public class Configuration<B extends PircBotX> {
 		 * @param handler
 		 * @return
 		 */
-		public Builder<B> addCapHandler(CapHandler handler) {
+		public Builder addCapHandler(CapHandler handler) {
 			getCapHandlers().add(handler);
 			return this;
 		}
@@ -536,7 +536,7 @@ public class Configuration<B extends PircBotX> {
 		 * @param listener
 		 * @return
 		 */
-		public Builder<B> addListener(Listener<B> listener) {
+		public Builder addListener(Listener listener) {
 			getListenerManager().addListener(listener);
 			return this;
 		}
@@ -548,7 +548,7 @@ public class Configuration<B extends PircBotX> {
 		 * @param channel
 		 * @return
 		 */
-		public Builder<B> addAutoJoinChannel(@NonNull String channel) {
+		public Builder addAutoJoinChannel(@NonNull String channel) {
 			if (StringUtils.isBlank(channel))
 				throw new RuntimeException("Channel must not be blank");
 			getAutoJoinChannels().put(channel, "");
@@ -562,7 +562,7 @@ public class Configuration<B extends PircBotX> {
 		 * @param channel
 		 * @return
 		 */
-		public Builder<B> addAutoJoinChannel(@NonNull String channel, @NonNull String key) {
+		public Builder addAutoJoinChannel(@NonNull String channel, @NonNull String key) {
 			if (StringUtils.isBlank(channel))
 				throw new RuntimeException("Channel must not be blank");
 			if (StringUtils.isBlank(key))
@@ -571,12 +571,12 @@ public class Configuration<B extends PircBotX> {
 			return this;
 		}
 		
-		public Builder<B> addServer(@NonNull String server) {
+		public Builder addServer(@NonNull String server) {
 			servers.add(new ServerEntry(server, 6667));
 			return this;
 		}
 		
-		public Builder<B> addServer(@NonNull String server, int port) {
+		public Builder addServer(@NonNull String server, int port) {
 			servers.add(new ServerEntry(server, port));
 			return this;
 		}
@@ -590,9 +590,9 @@ public class Configuration<B extends PircBotX> {
 		 * @param listenerManager The listener manager
 		 */
 		@SuppressWarnings("unchecked")
-		public Builder<B> setListenerManager(ListenerManager<? extends B> listenerManager) {
-			this.listenerManager = (ListenerManager<B>) listenerManager;
-			for (Listener<B> curListener : this.listenerManager.getListeners())
+		public Builder setListenerManager(ListenerManager listenerManager) {
+			this.listenerManager = listenerManager;
+			for (Listener curListener : this.listenerManager.getListeners())
 				if (curListener instanceof CoreHooks)
 					return this;
 			listenerManager.addListener(new CoreHooks());
@@ -602,7 +602,7 @@ public class Configuration<B extends PircBotX> {
 		public void replaceCoreHooksListener(CoreHooks extended) {
 			//Find the corehooks impl
 			CoreHooks orig = null;
-			for (Listener<B> curListener : this.listenerManager.getListeners())
+			for (Listener curListener : this.listenerManager.getListeners())
 				if (curListener instanceof CoreHooks) 
 					orig = (CoreHooks)curListener;
 			
@@ -619,9 +619,9 @@ public class Configuration<B extends PircBotX> {
 		 *
 		 * @return Current ListenerManager
 		 */
-		public ListenerManager<B> getListenerManager() {
+		public ListenerManager getListenerManager() {
 			if (listenerManager == null)
-				setListenerManager(new ThreadedListenerManager<B>());
+				setListenerManager(new ThreadedListenerManager());
 			return listenerManager;
 		}
 
@@ -630,8 +630,8 @@ public class Configuration<B extends PircBotX> {
 		 *
 		 * @return
 		 */
-		public Configuration<B> buildConfiguration() {
-			return new Configuration<B>(this);
+		public Configuration buildConfiguration() {
+			return new Configuration(this);
 		}
 
 		/**
@@ -641,8 +641,8 @@ public class Configuration<B extends PircBotX> {
 		 * @param hostname
 		 * @return
 		 */
-		public Configuration<B> buildForServer(String hostname) {
-			return new Builder<B>(this)
+		public Configuration buildForServer(String hostname) {
+			return new Builder(this)
 					.addServer(hostname)
 					.buildConfiguration();
 		}
@@ -654,8 +654,8 @@ public class Configuration<B extends PircBotX> {
 		 * @param hostname
 		 * @return
 		 */
-		public Configuration<B> buildForServer(String hostname, int port) {
-			return new Builder<B>(this)
+		public Configuration buildForServer(String hostname, int port) {
+			return new Builder(this)
 					.addServer(hostname, port)
 					.buildConfiguration();
 		}
@@ -667,8 +667,8 @@ public class Configuration<B extends PircBotX> {
 		 * @param hostname
 		 * @return
 		 */
-		public Configuration<B> buildForServer(String hostname, int port, String password) {
-			return new Builder<B>(this)
+		public Configuration buildForServer(String hostname, int port, String password) {
+			return new Builder(this)
 					.addServer(hostname, port)
 					.setServerPassword(password)
 					.buildConfiguration();

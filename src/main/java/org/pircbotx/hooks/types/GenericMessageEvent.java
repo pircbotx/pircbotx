@@ -29,7 +29,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericMessageEvent<T extends PircBotX> extends GenericUserEvent<T> {
+public interface GenericMessageEvent extends GenericUserEvent {
 	/**
 	 * The message the user sent
 	 *

@@ -25,7 +25,7 @@ import org.pircbotx.hooks.Event;
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericEvent<T extends PircBotX> extends Comparable<Event<T>> {
+public interface GenericEvent extends Comparable<Event> {
 	/**
 	 * Send a response using the underlying event's respond() method
 	 *
@@ -38,7 +38,7 @@ public interface GenericEvent<T extends PircBotX> extends Comparable<Event<T>> {
 	 *
 	 * @return A {@link PircBotX} instance
 	 */
-	public T getBot();
+	public <T extends PircBotX> T getBot();
 
 	/**
 	 * The timestamp of when the event was created

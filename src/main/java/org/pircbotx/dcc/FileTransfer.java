@@ -34,7 +34,7 @@ import org.pircbotx.User;
  */
 public abstract class FileTransfer {
 	@NonNull
-	protected final Configuration<PircBotX> configuration;
+	protected final Configuration configuration;
 	@NonNull
 	protected final Socket socket;
 	@NonNull
@@ -53,7 +53,7 @@ public abstract class FileTransfer {
 	protected DccState state = DccState.INIT;
 	protected final Object stateLock = new Object();
 
-	public FileTransfer(Configuration<PircBotX> configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
+	public FileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
 		this.configuration = configuration;
 		this.socket = socket;
 		this.user = user;

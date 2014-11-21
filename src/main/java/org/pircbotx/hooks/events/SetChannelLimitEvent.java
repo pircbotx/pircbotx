@@ -40,7 +40,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class SetChannelLimitEvent extends Event implements GenericChannelModeEvent {
 	@Getter(onMethod = @_(
 			@Override))
 	protected final Channel channel;
@@ -55,7 +55,7 @@ public class SetChannelLimitEvent<T extends PircBotX> extends Event<T> implement
 	 */
 	protected final int limit;
 
-	public SetChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, int limit) {
+	public SetChannelLimitEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, int limit) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

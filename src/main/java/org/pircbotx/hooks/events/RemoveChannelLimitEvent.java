@@ -39,7 +39,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RemoveChannelLimitEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class RemoveChannelLimitEvent extends Event implements GenericChannelModeEvent {
 	@Getter(onMethod = @_(
 			@Override))
 	protected final Channel channel;
@@ -50,7 +50,7 @@ public class RemoveChannelLimitEvent<T extends PircBotX> extends Event<T> implem
 			@Override))
 	protected final User user;
 
-	public RemoveChannelLimitEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
+	public RemoveChannelLimitEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

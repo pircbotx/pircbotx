@@ -43,7 +43,7 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+public class TimeEvent extends Event implements GenericCTCPEvent {
 	/**
 	 * The target channel of the TIME request. A value of <code>null</code>
 	 * means that target is us
@@ -65,7 +65,7 @@ public class TimeEvent<T extends PircBotX> extends Event<T> implements GenericCT
 			@Nullable))
 	protected final User user;
 
-	public TimeEvent(T bot, Channel channel, @NonNull UserHostmask userHostmask, User user) {
+	public TimeEvent(PircBotX bot, Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

@@ -1046,7 +1046,7 @@ public class InputParserTest {
 		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel test2!*@host.test " + source.getHostmask() + " " + (time+1));
 		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
 		
-		BanListEvent<PircBotX> event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
+		BanListEvent event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
 		assertEquals(event.getChannel(), channel, "Channel is wrong");
 		
 		//Verify all the sources and times
@@ -1080,17 +1080,17 @@ public class InputParserTest {
 	 * error will be thrown. Also note that only the last occurrence of the
 	 * event will be fetched
 	 *
-	 * @param <B> The event type to be fetched
+	 * @param  The event type to be fetched
 	 * @param clazz The class of the event type
 	 * @param errorMessage An error message if the event type does not exist
 	 * @return A single requested event
 	 */
-	protected <B> B getEvent(Class<B> clazz, String errorMessage) {
-		B cevent = null;
+	protected <E> E getEvent(Class<E> clazz, String errorMessage) {
+		E cevent = null;
 		for (Event curEvent : events) {
 			log.debug("Dispatched event: " + curEvent);
 			if (curEvent.getClass().isAssignableFrom(clazz))
-				cevent = (B) curEvent;
+				cevent = (E) curEvent;
 		}
 		//Failed, does not exist
 		assertNotNull(cevent, errorMessage);

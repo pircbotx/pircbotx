@@ -46,12 +46,12 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
-public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager<B> {
+public class ThreadedListenerManager extends ListenerManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected ExecutorService pool;
-	protected Set<Listener<B>> listeners = Collections.synchronizedSet(new HashSet<Listener<B>>());
-	protected final Multimap<B, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
+	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
+	protected final Multimap<PircBotX, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
 	 * Configures with default cached thread thread pool.
@@ -88,11 +88,11 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 	}
 
 	@Override
-	public ImmutableSet<Listener<B>> getListeners() {
+	public ImmutableSet<Listener> getListeners() {
 		return ImmutableSet.copyOf(getListenersReal());
 	}
 
-	protected Set<Listener<B>> getListenersReal() {
+	protected Set<Listener> getListenersReal() {
 		return listeners;
 	}
 
@@ -103,13 +103,13 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 
 	@Override
 	@Synchronized("listeners")
-	public void dispatchEvent(Event<B> event) {
+	public void dispatchEvent(Event event) {
 		//For each Listener, add a new Runnable
-		for (Listener<B> curListener : getListenersReal())
+		for (Listener curListener : getListenersReal())
 			submitEvent(pool, curListener, event);
 	}
 
-	protected void submitEvent(ExecutorService pool, final Listener<B> listener, final Event<B> event) {
+	protected void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
 		pool.execute(new ManagedFutureTask(listener, event, new Callable<Void>() {
 			public Void call() {
 				try {
@@ -135,7 +135,7 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 		return pool;
 	}
 
-	public void shutdown(B bot) {
+	public void shutdown(PircBotX bot) {
 		//Make local copy to avoid deadlocking ManagedFutureTask when it removes itself
 		List<ManagedFutureTask> remainingTasks;
 		synchronized (runningListeners) {
@@ -154,10 +154,10 @@ public class ThreadedListenerManager<B extends PircBotX> extends ListenerManager
 
 	@Getter
 	public class ManagedFutureTask extends FutureTask<Void> {
-		protected final Listener<B> listener;
-		protected final Event<B> event;
+		protected final Listener listener;
+		protected final Event event;
 
-		public ManagedFutureTask(Listener<B> listener, Event<B> event, Callable<Void> callable) {
+		public ManagedFutureTask(Listener listener, Event event, Callable<Void> callable) {
 			super(callable);
 			this.listener = listener;
 			this.event = event;

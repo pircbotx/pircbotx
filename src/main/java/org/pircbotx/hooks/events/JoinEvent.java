@@ -37,7 +37,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+public class JoinEvent extends Event implements GenericChannelUserEvent {
 	/**
 	 * The channel which somebody joined.
 	 */
@@ -58,7 +58,7 @@ public class JoinEvent<T extends PircBotX> extends Event<T> implements GenericCh
 			@Override))
 	protected final UserHostmask userHostmask;
 
-	public JoinEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
+	public JoinEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;

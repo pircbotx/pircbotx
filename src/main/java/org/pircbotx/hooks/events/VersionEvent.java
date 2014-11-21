@@ -44,7 +44,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class VersionEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T>, GenericChannelEvent<T> {
+public class VersionEvent extends Event implements GenericCTCPEvent, GenericChannelEvent {
 	@Getter(onMethod = @_({
 		@Override}))
 	protected final UserHostmask userHostmask;
@@ -60,7 +60,7 @@ public class VersionEvent<T extends PircBotX> extends Event<T> implements Generi
 		@Nullable}))
 	protected final Channel channel;
 
-	public VersionEvent(T bot, @NonNull UserHostmask userHostmask, @NonNull User user, Channel channel) {
+	public VersionEvent(PircBotX bot, @NonNull UserHostmask userHostmask, @NonNull User user, Channel channel) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;
