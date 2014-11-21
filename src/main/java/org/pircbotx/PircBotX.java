@@ -29,6 +29,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
@@ -36,6 +37,7 @@ import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Configuration.ServerEntry;
 import org.pircbotx.dcc.DccHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -121,6 +123,10 @@ public class PircBotX implements Comparable<PircBotX> {
 	private State state = State.INIT;
 	protected final Object stateLock = new Object();
 	protected Exception disconnectException;
+	@Getter
+	protected String serverHostname;
+	@Getter
+	protected int serverPort;
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
@@ -192,32 +198,40 @@ public class PircBotX implements Comparable<PircBotX> {
 			enabledCapabilities = new ArrayList<String>();
 
 			// Connect to the server by DNS server
-			InetAddress[] serverAddresses = InetAddress.getAllByName(configuration.getServerHostname());
+			LinkedHashSet<String> serverHostnames = new LinkedHashSet<String>();
 			Exception lastException = null;
-			for (InetAddress curAddress : serverAddresses) {
-				log.debug("Trying address " + curAddress);
-				try {
-					socket = configuration.getSocketFactory().createSocket(curAddress, configuration.getServerPort(), configuration.getLocalAddress(), 0);
+			ServerEntryLoop:
+			for(Configuration.ServerEntry curServerEntry : configuration.getServers()) {
+				serverHostnames.add(curServerEntry.getHostname());
+				InetAddress[] serverAddresses = InetAddress.getAllByName(curServerEntry.getHostname());
+				for (InetAddress curAddress : serverAddresses) {
+					log.debug("Trying address " + curAddress);
+					try {
+						socket = configuration.getSocketFactory().createSocket(curAddress, curServerEntry.getPort(), configuration.getLocalAddress(), 0);
 
-					//No exception, assume successful
-					break;
-				} catch (Exception e) {
-					lastException = e;
-					String debugSuffix = serverAddresses.length == 0 ? "no more servers" : "trying to check another address";
-					log.debug("Unable to connect to " + configuration.getServerHostname() + " using the IP address "
-							+ curAddress.getHostAddress() + ", " + debugSuffix, e);
-					configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent<PircBotX>(this,
-							curAddress,
-							configuration.getServerPort(),
-							configuration.getLocalAddress(),
-							serverAddresses.length,
-							e));
+						//No exception, assume successful
+						this.serverHostname = curServerEntry.getHostname();
+						this.serverPort = curServerEntry.getPort();
+						break ServerEntryLoop;
+					} catch (Exception e) {
+						lastException = e;
+						String debugSuffix = serverAddresses.length == 0 ? "no more servers" : "trying to check another address";
+						log.debug("Unable to connect to " + curServerEntry.getHostname() + ":" + curServerEntry.getPort()
+								+ " using the IP address " + curAddress.getHostAddress() + ", " + debugSuffix, e);
+						configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent<PircBotX>(this,
+								curAddress,
+								curServerEntry.getPort(),
+								configuration.getLocalAddress(),
+								serverAddresses.length,
+								e));
+					}
 				}
 			}
 
 			//Make sure were connected
-			if (socket == null || (socket != null && !socket.isConnected()))
-				throw new IOException("Unable to connect to the IRC network " + configuration.getServerHostname() + " (last connection attempt exception attached)", lastException);
+			if (socket == null || (socket != null && !socket.isConnected())) {
+				throw new IOException("Unable to connect to the IRC servers " +serverHostnames + " (last connection attempt exception attached)", lastException);
+			}
 			state = State.CONNECTED;
 			socket.setSoTimeout(configuration.getSocketTimeout());
 			log.info("Connected to server.");
@@ -399,8 +413,8 @@ public class PircBotX implements Comparable<PircBotX> {
 	public String toString() {
 		return "Version{" + configuration.getVersion() + "}"
 				+ " Connected{" + isConnected() + "}"
-				+ " Server{" + configuration.getServerHostname() + "}"
-				+ " Port{" + configuration.getServerPort() + "}"
+				+ " Server{" + getServerHostname()+ "}"
+				+ " Port{" + getServerPort() + "}"
 				+ " Password{" + configuration.getServerPassword() + "}";
 	}
 
