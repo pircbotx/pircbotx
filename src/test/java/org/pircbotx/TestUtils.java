@@ -36,6 +36,7 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
+import org.testng.collections.Lists;
 
 /**
  *
@@ -93,7 +94,7 @@ public class TestUtils {
 			classesBuilder.addAll(classPath.getTopLevelClasses(VoiceEvent.class.getPackage().getName()));
 		if (includeGeneric)
 			classesBuilder.addAll(classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName()));
-		List<Object[]> argumentBuilder = new ArrayList();
+		List<Object[]> argumentBuilder = Lists.newArrayList();
 		for (ClassPath.ClassInfo curClassInfo : classesBuilder.build()) {
 			Class loadedClass = curClassInfo.load();
 			if (GenericEvent.class.isAssignableFrom(loadedClass) && !loadedClass.equals(GenericEvent.class))

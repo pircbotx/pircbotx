@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks;
 
+import com.google.common.collect.Sets;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -117,6 +118,7 @@ public class ListenerAdapterTest {
 	}
 
 	@DataProvider
+	@SuppressWarnings("unchecked")
 	public static Object[][] onEventTestDataProvider() {
 		//Map events to methods
 		Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
@@ -129,7 +131,7 @@ public class ListenerAdapterTest {
 			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
 					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
 				continue;
-			Set methods = new HashSet();
+			Set<Method> methods = Sets.newHashSet();
 			methods.add(curMethod);
 			eventToMethod.put((Class<? extends Event>) curClass, methods);
 		}
@@ -160,7 +162,7 @@ public class ListenerAdapterTest {
 			description = "Tests onEvent's completness")
 	public void onEventTest(Class<? extends Event> eventClass, Set<Method> methodsToCall) throws Exception {
 		//Init, using mocks to store method calls
-		final Set<Method> calledMethods = new HashSet();
+		final Set<Method> calledMethods = Sets.newHashSet();
 		ListenerAdapter mockListener = mock(ListenerAdapter.class, new Answer() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				calledMethods.add(invocation.getMethod());

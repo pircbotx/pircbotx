@@ -106,6 +106,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
+	@SuppressWarnings("unchecked")
 	public U createUser(@NonNull UserHostmask userHostmask) {
 		if (containsUser(userHostmask))
 			throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
@@ -279,6 +280,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	@Synchronized("accessLock")
+	@SuppressWarnings("unchecked")
 	public C createChannel(@NonNull String name) {
 		C chan = (C) botFactory.createChannel(bot, name);
 		channelNameMap.put(name.toLowerCase(locale), chan);

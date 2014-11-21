@@ -60,6 +60,7 @@ public class ChannelSnapshot extends Channel {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected UserChannelDao<User, Channel> getDao() {
 		//Workaround for generics
 		return (UserChannelDao<User, Channel>) (Object) dao;

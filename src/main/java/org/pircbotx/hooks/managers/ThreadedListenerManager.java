@@ -19,6 +19,7 @@ package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -139,7 +140,7 @@ public class ThreadedListenerManager extends ListenerManager {
 		//Make local copy to avoid deadlocking ManagedFutureTask when it removes itself
 		List<ManagedFutureTask> remainingTasks;
 		synchronized (runningListeners) {
-			remainingTasks = new ArrayList(runningListeners.get(bot));
+			remainingTasks = Lists.newArrayList(runningListeners.get(bot));
 		}
 		
 		//Wait for all remaining tasks to return

@@ -94,6 +94,7 @@ public abstract class Event implements GenericEvent {
 		return comparison.result();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T extends PircBotX> T getBot() {
 		return (T)bot;
 	}

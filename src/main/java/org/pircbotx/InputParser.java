@@ -815,7 +815,7 @@ public class InputParser implements Closeable {
 			//Ban list is finished
 			//368 TheLQ #aChannel :End of Channel Ban List
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			ImmutableList entries = ImmutableList.copyOf(banListBuilder.removeAll(channel));
+			ImmutableList<BanListEvent.Entry> entries = ImmutableList.copyOf(banListBuilder.removeAll(channel));
 			log.debug("Dispatching event");
 			configuration.getListenerManager().dispatchEvent(new BanListEvent(bot, channel, entries));
 		}
