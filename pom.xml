@@ -183,6 +183,7 @@
 					<target>1.5</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
+					<compilerArgument>-Xlint:unchecked</compilerArgument>
 				</configuration>
 				<!--Do NOT show depreciation in test compile-->
 				<executions>
