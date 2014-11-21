@@ -117,7 +117,7 @@ public class TestUtils {
 	public static Configuration.Builder generateConfigurationBuilder() {
 		return new Configuration.Builder()
 				.setCapEnabled(true)
-				.setServerHostname("example.com")
+				.addServer("127.1.1.1")
 				.setListenerManager(new GenericListenerManager())
 				.setName("PircBotXBot")
 				.setMessageDelay(0)

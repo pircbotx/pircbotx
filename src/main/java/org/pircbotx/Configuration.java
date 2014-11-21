@@ -21,13 +21,17 @@ import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -88,8 +92,7 @@ public class Configuration<B extends PircBotX> {
 	protected final int dccTransferBufferSize;
 	protected final boolean dccPassiveRequest;
 	//Connect information
-	protected final String serverHostname;
-	protected final int serverPort;
+	protected final ImmutableList<ServerEntry> servers;
 	protected final String serverPassword;
 	protected final SocketFactory socketFactory;
 	protected final InetAddress localAddress;
@@ -135,8 +138,10 @@ public class Configuration<B extends PircBotX> {
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
 		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
-		checkArgument(StringUtils.isNotBlank(builder.getServerHostname()), "Must specify server hostname");
-		checkArgument(builder.getServerPort() > 0 && builder.getServerPort() <= 65535, "Port must be between 1 and 65535");
+		for (ServerEntry serverEntry : builder.getServers()) {
+			checkArgument(StringUtils.isNotBlank(serverEntry.getHostname()), "Must specify server hostname");
+			checkArgument(serverEntry.getPort()> 0 && serverEntry.getPort()<= 65535, "Port must be between 1 and 65535");
+		}
 		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
 		checkNotNull(builder.getEncoding(), "Must specify encoding");
 		checkNotNull(builder.getLocale(), "Must specify locale");
@@ -170,8 +175,7 @@ public class Configuration<B extends PircBotX> {
 		this.dccResumeAcceptTimeout = builder.getDccResumeAcceptTimeout();
 		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
 		this.dccPassiveRequest = builder.isDccPassiveRequest();
-		this.serverHostname = builder.getServerHostname();
-		this.serverPort = builder.getServerPort();
+		this.servers = ImmutableList.copyOf(builder.getServers());
 		this.serverPassword = builder.getServerPassword();
 		this.socketFactory = builder.getSocketFactory();
 		this.localAddress = builder.getLocalAddress();
@@ -289,11 +293,7 @@ public class Configuration<B extends PircBotX> {
 		/**
 		 * Hostname of the IRC server
 		 */
-		protected String serverHostname = null;
-		/**
-		 * Port number of IRC server. Defaults to 6667
-		 */
-		protected int serverPort = 6667;
+		protected List<ServerEntry> servers = Lists.newLinkedList();
 		/**
 		 * Password for IRC server
 		 */
@@ -422,8 +422,7 @@ public class Configuration<B extends PircBotX> {
 			this.dccResumeAcceptTimeout = configuration.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
 			this.dccPassiveRequest = configuration.isDccPassiveRequest();
-			this.serverHostname = configuration.getServerHostname();
-			this.serverPort = configuration.getServerPort();
+			this.servers.addAll(configuration.getServers());
 			this.serverPassword = configuration.getServerPassword();
 			this.socketFactory = configuration.getSocketFactory();
 			this.localAddress = configuration.getLocalAddress();
@@ -471,8 +470,7 @@ public class Configuration<B extends PircBotX> {
 			this.dccResumeAcceptTimeout = otherBuilder.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
 			this.dccPassiveRequest = otherBuilder.isDccPassiveRequest();
-			this.serverHostname = otherBuilder.getServerHostname();
-			this.serverPort = otherBuilder.getServerPort();
+			this.servers.addAll(otherBuilder.getServers());
 			this.serverPassword = otherBuilder.getServerPassword();
 			this.socketFactory = otherBuilder.getSocketFactory();
 			this.localAddress = otherBuilder.getLocalAddress();
@@ -572,28 +570,15 @@ public class Configuration<B extends PircBotX> {
 			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
-
-		/**
-		 * Utility method to set server hostname and port
-		 *
-		 * @param hostname
-		 * @param port
-		 * @return
-		 */
-		public Builder<B> setServer(String hostname, int port) {
-			return setServerHostname(hostname)
-					.setServerPort(port);
+		
+		public Builder<B> addServer(@NonNull String server) {
+			servers.add(new ServerEntry(server, 6667));
+			return this;
 		}
-
-		/**
-		 * Utility method to set server hostname, port, and password
-		 *
-		 * @param hostname
-		 * @param port
-		 * @return
-		 */
-		public Builder<B> setServer(String hostname, int port, String password) {
-			return setServer(hostname, port).setServerPassword(password);
+		
+		public Builder<B> addServer(@NonNull String server, int port) {
+			servers.add(new ServerEntry(server, port));
+			return this;
 		}
 
 		/**
@@ -658,7 +643,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Configuration<B> buildForServer(String hostname) {
 			return new Builder<B>(this)
-					.setServerHostname(hostname)
+					.addServer(hostname)
 					.buildConfiguration();
 		}
 
@@ -671,8 +656,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Configuration<B> buildForServer(String hostname, int port) {
 			return new Builder<B>(this)
-					.setServerHostname(hostname)
-					.setServerPort(port)
+					.addServer(hostname, port)
 					.buildConfiguration();
 		}
 
@@ -685,8 +669,7 @@ public class Configuration<B extends PircBotX> {
 		 */
 		public Configuration<B> buildForServer(String hostname, int port, String password) {
 			return new Builder<B>(this)
-					.setServerHostname(hostname)
-					.setServerPort(port)
+					.addServer(hostname, port)
 					.setServerPassword(password)
 					.buildConfiguration();
 		}
@@ -763,5 +746,11 @@ public class Configuration<B extends PircBotX> {
 		public Channel createChannel(PircBotX bot, String name) {
 			return new Channel(bot, bot.getUserChannelDao(), name);
 		}
+	}
+	
+	@Data
+	public static class ServerEntry {
+		private final String hostname;
+		private final int port;
 	}
 }

@@ -120,7 +120,7 @@ public class PircBotXExample extends ListenerAdapter {
 				.setCapEnabled(true) //Enable CAP features
 				.addCapHandler(new TLSCapHandler(new UtilSSLSocketFactory().trustAllCertificates(), true))
 				.addListener(new PircBotXExample()) //This class is a listener, so add it to the bots known listeners
-				.setServerHostname("irc.freenode.net")
+				.addServer("irc.freenode.net")
 				.addAutoJoinChannel("#pircbotx") //Join the official #pircbotx channel
 				.buildConfiguration();
 
