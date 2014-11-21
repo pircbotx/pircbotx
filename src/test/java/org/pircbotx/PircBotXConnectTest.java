@@ -59,7 +59,7 @@ public class PircBotXConnectTest {
 
 	@BeforeClass
 	public void setUp() throws UnknownHostException {
-		address = InetAddress.getLocalHost();
+		address = InetAddress.getByName("127.1.1.1");
 	}
 
 	@BeforeMethod
@@ -78,7 +78,7 @@ public class PircBotXConnectTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket(address, 6667, null, 0)).thenReturn(socket);
+		when(socketFactory.createSocket(eq(address), anyInt(), eq((InetAddress)null), eq(0))).thenReturn(socket);
 
 		//Setup bot
 		events = new ArrayList<Event>();
@@ -90,6 +90,7 @@ public class PircBotXConnectTest {
 					}
 				})
 				.setName("PircBotXBot");
+		configurationBuilder.getServers().clear();
 	}
 
 	protected void validateEvents(PircBotX bot) throws Exception {
@@ -110,7 +111,7 @@ public class PircBotXConnectTest {
 	public void connectTest() throws Exception {
 		//Connect the bot to the socket
 		PircBotX bot = new PircBotX(configurationBuilder
-				.setServer(address.getHostName(), 6667)
+				.addServer(address.getHostName())
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
@@ -137,7 +138,7 @@ public class PircBotXConnectTest {
 		//Connect the bot to the socket
 		when(socketFactory.createSocket(address, 25622, null, 0)).thenReturn(socket);
 		PircBotX bot = new PircBotX(configurationBuilder
-				.setServer(address.getHostName(), 25622)
+				.addServer(address.getHostName(), 25622)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
@@ -163,7 +164,7 @@ public class PircBotXConnectTest {
 	public void connectWithPasswordTest() throws Exception {
 		//Connect the bot to the socket
 		PircBotX bot = new PircBotX(configurationBuilder
-				.setServer(address.getHostName(), 6667)
+				.addServer(address.getHostName(), 6667)
 				.setServerPassword("pa55w0rd")
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
@@ -193,7 +194,7 @@ public class PircBotXConnectTest {
 
 		//Connect the bot to the socket
 		PircBotX bot = new PircBotX(configurationBuilder
-				.setServer(address.getHostName(), 6667)
+				.addServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());

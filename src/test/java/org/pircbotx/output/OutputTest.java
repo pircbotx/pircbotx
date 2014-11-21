@@ -63,7 +63,7 @@ public class OutputTest {
 
 	@BeforeMethod
 	public void botSetup() throws Exception {
-		InetAddress localhost = InetAddress.getLocalHost();
+		InetAddress localhost = InetAddress.getByName("127.1.1.1");
 
 		//Setup streams for bot
 		inputLatch = new CountDownLatch(1);
@@ -79,7 +79,6 @@ public class OutputTest {
 		//Configure and connect bot
 		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setCapEnabled(true)
-				.setServer(localhost.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
