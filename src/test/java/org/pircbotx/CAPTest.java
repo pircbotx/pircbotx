@@ -98,7 +98,7 @@ public class CAPTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		
-		Configuration.Builder<PircBotX> configurationBuilder = TestUtils.generateConfigurationBuilder();
+		Configuration.Builder configurationBuilder = TestUtils.generateConfigurationBuilder();
 		
 		SocketFactory socketFactory = mock(SocketFactory.class);
 		when(socketFactory.createSocket(InetAddress.getByName(configurationBuilder.getServers().get(0).getHostname()), 6667, null, 0))

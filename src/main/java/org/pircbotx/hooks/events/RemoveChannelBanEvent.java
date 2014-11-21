@@ -39,7 +39,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RemoveChannelBanEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class RemoveChannelBanEvent extends Event implements GenericChannelModeEvent {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -64,7 +64,7 @@ public class RemoveChannelBanEvent<T extends PircBotX> extends Event<T> implemen
 	 */
 	protected final UserHostmask hostmask;
 
-	public RemoveChannelBanEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull UserHostmask hostmask) {
+	public RemoveChannelBanEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, @NonNull UserHostmask hostmask) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

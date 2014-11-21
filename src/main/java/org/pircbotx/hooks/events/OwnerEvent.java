@@ -41,7 +41,7 @@ import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
+public class OwnerEvent extends Event implements GenericChannelModeRecipientEvent {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -79,7 +79,7 @@ public class OwnerEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 */
 	protected final boolean isOwner;
 
-	public OwnerEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+	public OwnerEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
 			@NonNull UserHostmask recipientHostmask, User recipient, boolean isOwner) {
 		super(bot);
 		this.channel = channel;

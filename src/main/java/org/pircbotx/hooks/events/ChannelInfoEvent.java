@@ -41,13 +41,13 @@ import org.pircbotx.hooks.Event;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ChannelInfoEvent<T extends PircBotX> extends Event<T> {
+public class ChannelInfoEvent extends Event {
 	/**
 	 * The results of the channel list.
 	 */
 	protected final ImmutableList<ChannelListEntry> list;
 
-	public ChannelInfoEvent(T bot, @NonNull ImmutableList<ChannelListEntry> list) {
+	public ChannelInfoEvent(PircBotX bot, @NonNull ImmutableList<ChannelListEntry> list) {
 		super(bot);
 		this.list = list;
 	}

@@ -30,12 +30,12 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ConnectEvent<T extends PircBotX> extends Event<T> {
+public class ConnectEvent extends Event {
 	/**
 	 * Default constructor to setup object. Timestamp is automatically set to
 	 * current time as reported by {@link System#currentTimeMillis() }
 	 */
-	public ConnectEvent(T bot) {
+	public ConnectEvent(PircBotX bot) {
 		super(bot);
 	}
 

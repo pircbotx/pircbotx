@@ -25,7 +25,7 @@ import org.pircbotx.User;
  *
  * @author Leon
  */
-public interface GenericUserEvent<T extends PircBotX> extends GenericEvent<T> {
+public interface GenericUserEvent extends GenericEvent {
 	/**
 	 * The source user hostmask that generated the event.
 	 *

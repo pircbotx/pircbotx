@@ -76,7 +76,7 @@ public final class Utils {
 	}
 
 	public static void addBotToMDC(PircBotX bot) {
-		Configuration<PircBotX> configuration = bot.getConfiguration();
+		Configuration configuration = bot.getConfiguration();
 		MDC.put("pircbotx.id", String.valueOf(bot.getBotId()));
 		MDC.put("pircbotx.server", bot.getServerHostname());
 		MDC.put("pircbotx.port", String.valueOf(bot.getServerPort()));

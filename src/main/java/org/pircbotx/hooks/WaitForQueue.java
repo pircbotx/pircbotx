@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 @Slf4j
 public class WaitForQueue implements Closeable {
 	protected final PircBotX bot;
-	protected LinkedBlockingQueue<Event<PircBotX>> eventQueue = new LinkedBlockingQueue<Event<PircBotX>>();
+	protected LinkedBlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>();
 	protected WaitForQueueListener listener;
 
 	/**

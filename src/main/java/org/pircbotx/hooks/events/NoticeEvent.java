@@ -37,7 +37,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NoticeEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+public class NoticeEvent extends Event implements GenericMessageEvent, GenericChannelUserEvent {
 	/**
 	 * The user hostmask that sent the hostmask.
 	 */
@@ -68,7 +68,7 @@ public class NoticeEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	protected final String notice;
 
-	public NoticeEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String notice) {
+	public NoticeEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String notice) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;

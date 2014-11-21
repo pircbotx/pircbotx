@@ -48,9 +48,9 @@ import org.pircbotx.hooks.WaitForQueue;
  */
 @Deprecated
 @Slf4j
-public class GenericListenerManager<B extends PircBotX> extends ListenerManager<B> {
-	protected Set<Listener<B>> listeners = new HashSet<Listener<B>>();
-	protected ImmutableSet<Listener<B>> listenersImmutable = ImmutableSet.copyOf(listeners);
+public class GenericListenerManager extends ListenerManager {
+	protected Set<Listener> listeners = new HashSet<Listener>();
+	protected ImmutableSet<Listener> listenersImmutable = ImmutableSet.copyOf(listeners);
 
 	public void addListener(Listener listener) {
 		listeners.add(listener);
@@ -63,15 +63,15 @@ public class GenericListenerManager<B extends PircBotX> extends ListenerManager<
 		return result;
 	}
 
-	public ImmutableSet<Listener<B>> getListeners() {
+	public ImmutableSet<Listener> getListeners() {
 		return listenersImmutable;
 	}
 
-	public void dispatchEvent(Event<B> event) {
+	public void dispatchEvent(Event event) {
 		if (event.getBot() != null)
 			Utils.addBotToMDC(event.getBot());
 		//Make copy in case listener removes itself causing ConcurrentModificationException's
-		for (Listener<B> curListener : listenersImmutable)
+		for (Listener curListener : listenersImmutable)
 			try {
 				curListener.onEvent(event);
 			} catch (Throwable e) {

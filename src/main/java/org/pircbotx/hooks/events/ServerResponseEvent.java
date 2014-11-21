@@ -50,7 +50,7 @@ import org.pircbotx.ReplyConstants;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
+public class ServerResponseEvent extends Event {
 	/**
 	 * The three-digit numerical code for the response.
 	 */
@@ -64,7 +64,7 @@ public class ServerResponseEvent<T extends PircBotX> extends Event<T> {
 	 */
 	protected final ImmutableList<String> parsedResponse;
 
-	public ServerResponseEvent(T bot, int code, @NonNull String rawLine, @NonNull ImmutableList<String> parsedResponse) {
+	public ServerResponseEvent(PircBotX bot, int code, @NonNull String rawLine, @NonNull ImmutableList<String> parsedResponse) {
 		super(bot);
 		this.code = code;
 		this.rawLine = rawLine;

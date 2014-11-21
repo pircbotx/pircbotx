@@ -23,6 +23,6 @@ import org.pircbotx.PircBotX;
  *
  * @author Leon
  */
-public interface GenericChannelModeRecipientEvent<T extends PircBotX> extends GenericUserModeEvent<T>, GenericChannelModeEvent<T> {
+public interface GenericChannelModeRecipientEvent extends GenericUserModeEvent, GenericChannelModeEvent {
 
 }

@@ -39,7 +39,7 @@ import org.pircbotx.hooks.Event;
 @Builder(chain = true, fluent = false, builderClassName = "Builder", buildMethodName = "generateEvent")
 @EqualsAndHashCode(callSuper = true)
 @Getter
-public class WhoisEvent<B extends PircBotX> extends Event<B> {
+public class WhoisEvent extends Event {
 	@NonNull
 	protected final String nick;
 	@NonNull
@@ -61,7 +61,7 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 	protected final boolean exists;
 	protected final String awayMessage;
 
-	WhoisEvent(@NonNull B bot, @NonNull Builder<B> builder) {
+	WhoisEvent(@NonNull PircBotX bot, @NonNull Builder builder) {
 		super(bot);
 		this.nick = builder.nick;
 		this.login = builder.login;
@@ -92,9 +92,9 @@ public class WhoisEvent<B extends PircBotX> extends Event<B> {
 		getBot().sendIRC().message(getNick(), response);
 	}
 
-	public static class Builder<B extends PircBotX> {
-		public WhoisEvent<B> generateEvent(@NonNull B bot) {
-			return new WhoisEvent<B>(bot, this);
+	public static class Builder {
+		public WhoisEvent generateEvent(@NonNull PircBotX bot) {
+			return new WhoisEvent(bot, this);
 		}
 	}
 }

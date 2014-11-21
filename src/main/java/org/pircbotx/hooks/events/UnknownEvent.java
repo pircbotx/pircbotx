@@ -34,7 +34,7 @@ import org.pircbotx.PircBotX;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UnknownEvent<T extends PircBotX> extends Event<T> {
+public class UnknownEvent extends Event {
 	/**
 	 * The raw line that was received from the server.
 	 */
@@ -42,7 +42,7 @@ public class UnknownEvent<T extends PircBotX> extends Event<T> {
 			@Nonnull))
 	protected final String line;
 
-	public UnknownEvent(T bot, @NonNull String line) {
+	public UnknownEvent(PircBotX bot, @NonNull String line) {
 		super(bot);
 		this.line = line;
 	}

@@ -43,7 +43,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FingerEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+public class FingerEvent extends Event implements GenericChannelUserEvent {
 	/**
 	 * The user hostmask that sent the FINGER request.
 	 */
@@ -62,7 +62,7 @@ public class FingerEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	protected final Channel channel;
 
-	public FingerEvent(T bot, @NonNull UserHostmask userHostmask, User user, @Nullable Channel channel) {
+	public FingerEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @Nullable Channel channel) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;

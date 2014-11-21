@@ -44,7 +44,7 @@ import org.pircbotx.hooks.types.GenericCTCPEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCTCPEvent<T> {
+public class PingEvent extends Event implements GenericCTCPEvent {
 	/**
 	 * The user that sent the PING request.
 	 */
@@ -70,7 +70,7 @@ public class PingEvent<T extends PircBotX> extends Event<T> implements GenericCT
 	 */
 	protected final String pingValue;
 
-	public PingEvent(T bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String pingValue) {
+	public PingEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String pingValue) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;

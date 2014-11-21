@@ -37,7 +37,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T>, GenericChannelUserEvent<T> {
+public class MessageEvent extends Event implements GenericMessageEvent, GenericChannelUserEvent {
 	/**
 	 * The channel to which the message was sent.
 	 */
@@ -69,7 +69,7 @@ public class MessageEvent<T extends PircBotX> extends Event<T> implements Generi
 			@Override))
 	protected final String message;
 
-	public MessageEvent(T bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
+	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
 		super(bot);
 		this.channel = channel;
 		this.channelSource = channelSource;
