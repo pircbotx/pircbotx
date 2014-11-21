@@ -79,6 +79,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+import org.testng.collections.Lists;
 
 /**
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
@@ -486,7 +487,7 @@ public class InputParserTest {
 				new Object[]{"-t", null, RemoveTopicProtectionEvent.class},
 				new Object[]{"+p", null, SetPrivateEvent.class},
 				new Object[]{"-p", null, RemovePrivateEvent.class});
-		List<Object[]> testParams = new ArrayList();
+		List<Object[]> testParams = Lists.newArrayList();
 		for (Object[] curTemplate : testTemplates) {
 			//Normal version
 			testParams.add(curTemplate);
@@ -1085,6 +1086,7 @@ public class InputParserTest {
 	 * @param errorMessage An error message if the event type does not exist
 	 * @return A single requested event
 	 */
+	@SuppressWarnings("unchecked")
 	protected <E> E getEvent(Class<E> clazz, String errorMessage) {
 		E cevent = null;
 		for (Event curEvent : events) {

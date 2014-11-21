@@ -18,6 +18,7 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -42,7 +43,7 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class BackgroundListenerManager extends ThreadedListenerManager {
-	protected Map<Listener, ExecutorService> backgroundListeners = new HashMap();
+	protected Map<Listener, ExecutorService> backgroundListeners = Maps.newHashMap();
 	protected final AtomicInteger backgroundCount = new AtomicInteger();
 
 	public void addListener(Listener listener, boolean isBackground) {

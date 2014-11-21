@@ -107,6 +107,7 @@ public class WaitForQueue implements Closeable {
 		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <E extends GenericEvent> E waitFor(@NonNull Class<E> eventClass, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
 		List<Class<E>> eventList = new ArrayList<Class<E>>();
 		eventList.add(eventClass);

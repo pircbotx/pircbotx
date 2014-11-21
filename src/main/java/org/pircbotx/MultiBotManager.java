@@ -215,6 +215,7 @@ public class MultiBotManager {
 	 * @return A bot that has the specified id or null
 	 */
 	@Synchronized("runningBotsLock")
+	@SuppressWarnings("unchecked")
 	public <B extends PircBotX> B getBotById(int id) {
 		return (B)runningBotsNumbers.inverse().get(id);
 	}

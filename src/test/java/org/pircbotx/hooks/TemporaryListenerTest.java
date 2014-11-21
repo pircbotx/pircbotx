@@ -49,7 +49,7 @@ public class TemporaryListenerTest {
 
 	@Test(singleThreaded = true)
 	public void eventDispatched() throws IOException, IrcException {
-		final MutableObject<MessageEvent> mutableEvent = new MutableObject();
+		final MutableObject<MessageEvent> mutableEvent = new MutableObject<MessageEvent>();
 		Listener listener = new TemporaryListener(bot) {
 			@Override
 			public void onMessage(MessageEvent event) throws Exception {
