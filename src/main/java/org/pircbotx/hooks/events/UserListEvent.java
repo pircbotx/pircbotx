@@ -47,7 +47,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserListEvent<B extends PircBotX> extends Event<B> implements GenericChannelEvent<B> {
+public class UserListEvent extends Event implements GenericChannelEvent {
 	/**
 	 * The channel that the user list is from.
 	 */
@@ -59,7 +59,7 @@ public class UserListEvent<B extends PircBotX> extends Event<B> implements Gener
 	 */
 	protected final ImmutableSortedSet<User> users;
 
-	public UserListEvent(@NonNull B bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
+	public UserListEvent(@NonNull PircBotX bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
 		super(bot);
 		this.channel = channel;
 		this.users = users;

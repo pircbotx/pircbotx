@@ -35,7 +35,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements GenericMessageEvent<T> {
+public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	/**
 	 * The user hostmask who sent the private message.
 	 */
@@ -56,7 +56,7 @@ public class PrivateMessageEvent<T extends PircBotX> extends Event<T> implements
 			@Override))
 	protected final String message;
 
-	public PrivateMessageEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
+	public PrivateMessageEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;

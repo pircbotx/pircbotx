@@ -35,7 +35,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericChannelEvent<T> {
+public class TopicEvent extends Event implements GenericChannelEvent {
 	/**
 	 * The channel that the topic belongs to.
 	 */
@@ -64,7 +64,7 @@ public class TopicEvent<T extends PircBotX> extends Event<T> implements GenericC
 	 */
 	protected final long date;
 
-	public TopicEvent(T bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull String user, long date, boolean changed) {
+	public TopicEvent(PircBotX bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull String user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.oldTopic = oldTopic;

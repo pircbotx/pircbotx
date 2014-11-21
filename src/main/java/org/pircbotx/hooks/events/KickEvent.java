@@ -38,7 +38,7 @@ import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class KickEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeRecipientEvent<T> {
+public class KickEvent extends Event implements GenericChannelModeRecipientEvent {
 	/**
 	 * The channel from which the recipient was kicked.
 	 */
@@ -76,7 +76,7 @@ public class KickEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 */
 	protected final String reason;
 
-	public KickEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
+	public KickEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
 			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String reason) {
 		super(bot);
 		this.channel = channel;

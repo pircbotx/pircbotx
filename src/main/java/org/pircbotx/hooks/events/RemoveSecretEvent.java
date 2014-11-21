@@ -39,7 +39,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RemoveSecretEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class RemoveSecretEvent extends Event implements GenericChannelModeEvent {
 	@Getter(onMethod = @_(
 			@Override))
 	protected final Channel channel;
@@ -50,7 +50,7 @@ public class RemoveSecretEvent<T extends PircBotX> extends Event<T> implements G
 			@Override))
 	protected final User user;
 
-	public RemoveSecretEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
+	public RemoveSecretEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

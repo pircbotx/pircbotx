@@ -38,7 +38,7 @@ import org.pircbotx.snapshot.UserSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
+public class QuitEvent extends Event implements GenericUserEvent {
 	/**
 	 * Snapshot of the UserChannelDao as of before the user quit.
 	 */
@@ -57,7 +57,7 @@ public class QuitEvent<T extends PircBotX> extends Event<T> implements GenericUs
 	 */
 	protected final String reason;
 
-	public QuitEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot,
+	public QuitEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot,
 			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;

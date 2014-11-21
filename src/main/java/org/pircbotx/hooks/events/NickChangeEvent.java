@@ -36,7 +36,7 @@ import org.pircbotx.hooks.types.GenericUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class NickChangeEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
+public class NickChangeEvent extends Event implements GenericUserEvent {
 	/**
 	 * The users old nick.
 	 */
@@ -59,7 +59,7 @@ public class NickChangeEvent<T extends PircBotX> extends Event<T> implements Gen
 			@Nullable))
 	protected final User user;
 
-	public NickChangeEvent(T bot, @NonNull String oldNick, @NonNull String newNick,
+	public NickChangeEvent(PircBotX bot, @NonNull String oldNick, @NonNull String newNick,
 			@NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.oldNick = oldNick;

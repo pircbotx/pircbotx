@@ -40,7 +40,7 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DisconnectEvent<T extends PircBotX> extends Event<T> {
+public class DisconnectEvent extends Event {
 	/**
 	 * Snapshot of the user and channel info at time of disconnect
 	 */
@@ -50,7 +50,7 @@ public class DisconnectEvent<T extends PircBotX> extends Event<T> {
 	 */
 	protected final Exception disconnectException;
 
-	public DisconnectEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, Exception disconnectException) {
+	public DisconnectEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot, Exception disconnectException) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;
 		this.disconnectException = disconnectException;

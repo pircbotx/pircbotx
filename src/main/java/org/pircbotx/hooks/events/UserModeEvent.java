@@ -36,7 +36,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserModeEvent<B extends PircBotX> extends Event<B> implements GenericUserModeEvent<B> {
+public class UserModeEvent extends Event implements GenericUserModeEvent {
 	/**
 	 * The user hostmask that set the mode.
 	 */
@@ -66,7 +66,7 @@ public class UserModeEvent<B extends PircBotX> extends Event<B> implements Gener
 	 */
 	protected final String mode;
 
-	public UserModeEvent(@NonNull B bot, @NonNull UserHostmask userHostmask, User user,
+	public UserModeEvent(@NonNull PircBotX bot, @NonNull UserHostmask userHostmask, User user,
 			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String mode) {
 		super(bot);
 		this.userHostmask = user;

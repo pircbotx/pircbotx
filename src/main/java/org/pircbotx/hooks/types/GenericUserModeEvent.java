@@ -27,7 +27,7 @@ import org.pircbotx.hooks.events.OpEvent;
  * <p/>
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
-public interface GenericUserModeEvent<T extends PircBotX> extends GenericUserEvent<T> {
+public interface GenericUserModeEvent extends GenericUserEvent {
 	/**
 	 * The recipient user hostmask that this event applies to.
 	 *

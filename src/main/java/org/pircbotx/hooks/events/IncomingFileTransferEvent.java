@@ -68,7 +68,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
+public class IncomingFileTransferEvent extends Event implements GenericDCCEvent {
 	@Getter(onMethod = @_(
 			@Override,
 			@Nullable))
@@ -86,7 +86,7 @@ public class IncomingFileTransferEvent<T extends PircBotX> extends Event<T> impl
 			@Override))
 	protected final boolean passive;
 
-	public IncomingFileTransferEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String rawFilename, @NonNull String safeFilename,
+	public IncomingFileTransferEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull String rawFilename, @NonNull String safeFilename,
 			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
 		super(bot);
 		this.user = user;

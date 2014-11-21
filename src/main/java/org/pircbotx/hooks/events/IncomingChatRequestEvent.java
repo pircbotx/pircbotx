@@ -62,7 +62,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> implements GenericDCCEvent<T> {
+public class IncomingChatRequestEvent extends Event implements GenericDCCEvent {
 	@Getter(onMethod = @_({
 		@Override,
 		@Nullable}))
@@ -77,7 +77,7 @@ public class IncomingChatRequestEvent<T extends PircBotX> extends Event<T> imple
 			@Override))
 	protected final boolean passive;
 
-	public IncomingChatRequestEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
+	public IncomingChatRequestEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull InetAddress chatAddress, int chatPort, String chatToken, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;

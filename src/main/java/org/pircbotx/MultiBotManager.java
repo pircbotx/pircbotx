@@ -28,6 +28,8 @@ import com.google.common.util.concurrent.MoreExecutors;
 import static com.google.common.util.concurrent.Service.State;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -66,15 +68,15 @@ import org.slf4j.LoggerFactory;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Slf4j
-public class MultiBotManager<B extends PircBotX> {
+public class MultiBotManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final LinkedHashMap<B, ListenableFuture<Void>> runningBots = new LinkedHashMap<B, ListenableFuture<Void>>();
-	protected final BiMap<B, Integer> runningBotsNumbers = HashBiMap.create();
+	protected final LinkedHashMap<PircBotX, ListenableFuture<Void>> runningBots = Maps.newLinkedHashMap();
+	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
 	//Code for starting
-	protected List<B> startQueue = new ArrayList<B>();
+	protected List<PircBotX> startQueue = Lists.newArrayList();
 	protected State state = State.NEW;
 	protected final Object stateLock = new Object[0];
 
@@ -106,12 +108,12 @@ public class MultiBotManager<B extends PircBotX> {
 	 */
 	@Synchronized("stateLock")
 	@SuppressWarnings("unchecked")
-	public void addBot(Configuration<PircBotX> config) {
+	public void addBot(Configuration config) {
 		checkNotNull(config, "Configuration cannot be null");
 		//Since creating a bot is expensive, verify the state first
 		if (state != State.NEW && state != State.RUNNING)
 			throw new RuntimeException("MultiBotManager is not running. State: " + state);
-		addBot((B) new PircBotX(config));
+		addBot(new PircBotX(config));
 	}
 
 	/**
@@ -120,7 +122,7 @@ public class MultiBotManager<B extends PircBotX> {
 	 * @param bot An existing <b>unconnected</b> bot
 	 */
 	@Synchronized("stateLock")
-	public void addBot(B bot) {
+	public void addBot(PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
 		checkArgument(!bot.isConnected(), "Bot must not already be connected");
 		if (state == State.NEW) {
@@ -143,7 +145,7 @@ public class MultiBotManager<B extends PircBotX> {
 			state = State.STARTING;
 		}
 
-		for (B bot : startQueue)
+		for (PircBotX bot : startQueue)
 			startBot(bot);
 		startQueue.clear();
 
@@ -152,7 +154,7 @@ public class MultiBotManager<B extends PircBotX> {
 		}
 	}
 
-	protected ListenableFuture<Void> startBot(final B bot) {
+	protected ListenableFuture<Void> startBot(final PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
 		ListenableFuture<Void> future = botPool.submit(new BotRunner(bot));
 		synchronized (runningBotsLock) {
@@ -173,7 +175,7 @@ public class MultiBotManager<B extends PircBotX> {
 			state = State.STOPPING;
 		}
 
-		for (B bot : runningBots.keySet())
+		for (PircBotX bot : runningBots.keySet())
 			if (bot.isConnected())
 				bot.sendIRC().quitServer();
 
@@ -202,7 +204,7 @@ public class MultiBotManager<B extends PircBotX> {
 	 * @return An <i>immutable copy</i> of bots that are being managed
 	 */
 	@Synchronized("runningBotsLock")
-	public ImmutableSortedSet<B> getBots() {
+	public ImmutableSortedSet getBots() {
 		return ImmutableSortedSet.copyOf(runningBots.keySet());
 	}
 
@@ -213,8 +215,8 @@ public class MultiBotManager<B extends PircBotX> {
 	 * @return A bot that has the specified id or null
 	 */
 	@Synchronized("runningBotsLock")
-	public B getBotById(int id) {
-		return runningBotsNumbers.inverse().get(id);
+	public <B extends PircBotX> B getBotById(int id) {
+		return (B)runningBotsNumbers.inverse().get(id);
 	}
 	
 	/**
@@ -228,7 +230,7 @@ public class MultiBotManager<B extends PircBotX> {
 	@RequiredArgsConstructor
 	protected class BotRunner implements Callable<Void> {
 		@NonNull
-		protected final B bot;
+		protected final PircBotX bot;
 
 		public Void call() throws Exception {
 			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotId());
@@ -241,7 +243,7 @@ public class MultiBotManager<B extends PircBotX> {
 	protected class BotFutureCallback implements FutureCallback<Void> {
 		protected final Logger log = LoggerFactory.getLogger(getClass());
 		@NonNull
-		protected final B bot;
+		protected final PircBotX bot;
 
 		public void onSuccess(Void result) {
 			log.debug("Bot #" + bot.getBotId() + " finished");

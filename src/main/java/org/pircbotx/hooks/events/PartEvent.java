@@ -38,7 +38,7 @@ import org.pircbotx.snapshot.UserSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PartEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+public class PartEvent extends Event implements GenericChannelUserEvent {
 	protected final UserChannelDaoSnapshot daoSnapshot;
 	/**
 	 * Snapshot of the channel as of before the user parted.
@@ -60,7 +60,7 @@ public class PartEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	 */
 	protected final String reason;
 
-	public PartEvent(T bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel,
+	public PartEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel,
 			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.daoSnapshot = daoSnapshot;

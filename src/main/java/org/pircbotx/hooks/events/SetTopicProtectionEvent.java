@@ -40,7 +40,7 @@ import org.pircbotx.hooks.types.GenericChannelModeEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetTopicProtectionEvent<T extends PircBotX> extends Event<T> implements GenericChannelModeEvent<T> {
+public class SetTopicProtectionEvent extends Event implements GenericChannelModeEvent {
 	/**
 	 * The channel in which the mode change took place.
 	 */
@@ -61,7 +61,7 @@ public class SetTopicProtectionEvent<T extends PircBotX> extends Event<T> implem
 			@Nullable))
 	protected final User user;
 
-	public SetTopicProtectionEvent(T bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
+	public SetTopicProtectionEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;

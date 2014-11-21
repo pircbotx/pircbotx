@@ -43,7 +43,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericChannelUserEvent<T> {
+public class ModeEvent extends Event implements GenericChannelUserEvent {
 	/**
 	 * The channel that the mode operation applies to.
 	 */
@@ -70,7 +70,7 @@ public class ModeEvent<T extends PircBotX> extends Event<T> implements GenericCh
 	protected final String mode;
 	protected final ImmutableList<String> modeParsed;
 
-	public ModeEvent(T bot, @NonNull Channel channel, UserHostmask userHostmask,
+	public ModeEvent(PircBotX bot, @NonNull Channel channel, UserHostmask userHostmask,
 			User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
 		super(bot);
 		this.channel = channel;

@@ -106,9 +106,9 @@ public class DccHandler implements Closeable {
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent<PircBotX>(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -174,7 +174,7 @@ public class DccHandler implements Closeable {
 				Iterator<Map.Entry<PendingRecieveFileTransfer, CountDownLatch>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
 				while (pendingItr.hasNext()) {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
-					IncomingFileTransferEvent<PircBotX> transferEvent = curEntry.getKey().getEvent();
+					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
 							&& transferEvent.getPort() == port && transferEvent.getTransferToken() == transferEvent.getTransferToken()) {
 						curEntry.getKey().setPosition(position);
@@ -214,9 +214,9 @@ public class DccHandler implements Closeable {
 
 			//Nope, this is a new chat
 			if (port == 0 && chatToken != null)
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, userHostmask, user, address, port, chatToken, true));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, userHostmask, user, address, port, chatToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent<PircBotX>(bot, userHostmask, user, address, port, chatToken, false));
+				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, userHostmask, user, address, port, chatToken, false));
 		} else
 			return false;
 		return true;
@@ -570,7 +570,7 @@ public class DccHandler implements Closeable {
 
 	@Data
 	protected static class PendingRecieveFileTransfer {
-		protected final IncomingFileTransferEvent<PircBotX> event;
+		protected final IncomingFileTransferEvent event;
 		protected long position;
 	}
 

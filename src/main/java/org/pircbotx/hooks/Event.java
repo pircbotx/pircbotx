@@ -30,7 +30,7 @@ import org.pircbotx.hooks.types.GenericEvent;
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 @Getter
-public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
+public abstract class Event implements GenericEvent {
 	/**
 	 * Returns the timestamp of when the event was created.
 	 *
@@ -43,7 +43,7 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	 *
 	 * @return A {@link PircBotX} instance
 	 */
-	protected final T bot;
+	protected final PircBotX bot;
 	/**
 	 * Returns the id of this event. This id is guaranteed to be unique in the
 	 * context of other events dispatched from the same listener manager.
@@ -52,7 +52,7 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	 */
 	protected final long id;
 
-	public Event(@NonNull T bot) {
+	public Event(@NonNull PircBotX bot) {
 		this(bot, bot.getConfiguration().getListenerManager());
 	}
 
@@ -60,7 +60,7 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 		this(null, listenerManager);
 	}
 
-	public Event(@NonNull T bot, @NonNull ListenerManager listenerManager) {
+	public Event(@NonNull PircBotX bot, @NonNull ListenerManager listenerManager) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
 		this.id = listenerManager.incrementCurrentId();
@@ -85,12 +85,16 @@ public abstract class Event<T extends PircBotX> implements GenericEvent<T> {
 	 * @param other Other Event to compare to
 	 * @return the result of the comparison
 	 */
-	public int compareTo(Event<T> other) {
+	public int compareTo(Event other) {
 		ComparisonChain comparison = ComparisonChain.start()
 				.compare(getTimestamp(), other.getTimestamp())
 				.compare(getId(), other.getId());
 		if (bot != null && other.getBot() != null)
 			comparison.compare(bot.getBotId(), other.getBot().getBotId());
 		return comparison.result();
+	}
+	
+	public <T extends PircBotX> T getBot() {
+		return (T)bot;
 	}
 }

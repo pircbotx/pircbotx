@@ -38,13 +38,13 @@ import org.pircbotx.hooks.CoreHooks;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ServerPingEvent<T extends PircBotX> extends Event<T> {
+public class ServerPingEvent extends Event {
 	/**
 	 * The response that should be given back in your PONG.
 	 */
 	protected final String response;
 
-	public ServerPingEvent(T bot, @NonNull String response) {
+	public ServerPingEvent(PircBotX bot, @NonNull String response) {
 		super(bot);
 		this.response = response;
 	}

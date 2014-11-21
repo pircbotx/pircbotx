@@ -35,7 +35,7 @@ import org.pircbotx.hooks.types.GenericUserEvent;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class InviteEvent<T extends PircBotX> extends Event<T> implements GenericUserEvent<T> {
+public class InviteEvent extends Event implements GenericUserEvent {
 	/**
 	 * The user that sent the invite.
 	 */
@@ -55,7 +55,7 @@ public class InviteEvent<T extends PircBotX> extends Event<T> implements Generic
 	 */
 	protected final String channel;
 
-	public InviteEvent(T bot, @NonNull UserHostmask userHostmask, User user, @NonNull String channel) {
+	public InviteEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull String channel) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;
