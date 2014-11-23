@@ -204,7 +204,7 @@ public class MultiBotManager {
 	 * @return An <i>immutable copy</i> of bots that are being managed
 	 */
 	@Synchronized("runningBotsLock")
-	public ImmutableSortedSet getBots() {
+	public ImmutableSortedSet<PircBotX> getBots() {
 		return ImmutableSortedSet.copyOf(runningBots.keySet());
 	}
 
