@@ -115,6 +115,14 @@ public class UserHostmask implements Comparable<User> {
 			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
 		}
 	}
+	
+	/**
+	 * True if matches nick!login@hostmask format
+	 * @return 
+	 */
+	public boolean isFullHostmask() {
+		return StringUtils.isNoneBlank(getNick(), getLogin(), getHostname());
+	}
 
 	/**
 	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String)
