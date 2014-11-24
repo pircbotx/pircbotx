@@ -382,6 +382,9 @@ public class Configuration {
 		 * Registered {@link CapHandler}'s.
 		 */
 		protected final List<CapHandler> capHandlers = Lists.newArrayList();
+		/**
+		 * Handlers for channel modes. By default is built-in handlers
+		 */
 		protected final List<ChannelModeHandler> channelModeHandlers = Lists.newArrayList();
 		/**
 		 * The {@link BotFactory} to use
