@@ -140,15 +140,6 @@ public class UserHostmask implements Comparable<User> {
 	}
 
 	/**
-	 * True if matches nick!login@hostmask format
-	 *
-	 * @return
-	 */
-	public boolean isFullHostmask() {
-		return StringUtils.isNoneBlank(getNick(), getLogin(), getHostname());
-	}
-
-	/**
 	 * Compare {@link #getNick()} with {@link String#compareToIgnoreCase(java.lang.String)
 	 * }. This is useful for sorting lists of User objects.
 	 *
