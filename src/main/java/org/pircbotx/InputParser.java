@@ -806,10 +806,20 @@ public class InputParser implements Closeable {
 			//Ban list entry
 			//367 TheLQ #aChannel *!*@test1.host TheLQ!~quackstar@some.host 1415143822
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+						
+			//All servers have the prefix before a colon, eg 'prefix:nick!login@hostmask'
+			//Some also support just 'prefix' but there's no way to translate that here
+			String extbanPrefix = null;
 			UserHostmask recipient = new UserHostmask(bot, parsedResponse.get(2));
+			if(recipient.getNick() != null && recipient.getNick().contains(":")) {
+				String[] nickParts = StringUtils.split(recipient.getNick(), ':');
+				extbanPrefix = nickParts[0];
+				recipient = new UserHostmask(bot, nickParts[1], recipient.getLogin(), recipient.getHostname());
+			}
+			
 			UserHostmask source = new UserHostmask(bot, parsedResponse.get(3));
 			long time = Long.parseLong(parsedResponse.get(4));
-			banListBuilder.put(channel, new BanListEvent.Entry(recipient, source, time));
+			banListBuilder.put(channel, new BanListEvent.Entry(extbanPrefix, recipient, source, time));
 			log.debug("Adding entry");
 		} else if (code == 368) {
 			//Ban list is finished

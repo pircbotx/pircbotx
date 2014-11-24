@@ -1063,6 +1063,23 @@ public class InputParserTest {
 	}
 	
 	@Test
+	public void banExtbanListTest() throws IOException, IrcException {
+		Channel channel = dao.createChannel("#aChannel");
+		User source = TestUtils.generateTestUserSource(bot);
+		long time = 1415143822;
+		
+		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel $a:sutekh " + source.getHostmask() + " " + time);
+		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel ~b:sutekh!alogin@ahostmask " + source.getHostmask() + " " + time);
+		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
+		
+		BanListEvent event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
+		assertEquals(event.getEntries().get(0).getExtbanPrefix(), "$a", "No extban prefix on prefix:nick");
+		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, "sutekh", null, null));
+		assertEquals(event.getEntries().get(1).getExtbanPrefix(), "~b", "No extban prefix on prefix:nick!login@hostmask");
+		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, "sutekh", "alogin", "ahostmask"));
+	}
+	
+	@Test
 	public void channelModeMessageTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = TestUtils.generateTestUserSource(bot);
