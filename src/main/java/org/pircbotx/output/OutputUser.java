@@ -135,6 +135,18 @@ public class OutputUser {
 	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
 		return bot.getDccHandler().sendFile(file, bot.getUserChannelDao().getUser(serverUser), passive);
 	}
+	
+	public SendFileTransfer dccFileAndTransfer(File file) throws IOException, DccException, InterruptedException {
+		SendFileTransfer transfer = dccFile(file);
+		transfer.transfer();
+		return transfer;
+	}
+
+	public SendFileTransfer dccFileAndTransfer(File file, boolean passive) throws IOException, DccException, InterruptedException {
+		SendFileTransfer transfer = dccFile(file, passive);
+		transfer.transfer();
+		return transfer;
+	}
 
 	public SendChat dccChat() throws IOException, InterruptedException {
 		return bot.getDccHandler().sendChat(bot.getUserChannelDao().getUser(serverUser));
