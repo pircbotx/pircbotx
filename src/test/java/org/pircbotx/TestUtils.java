@@ -18,9 +18,7 @@
 package org.pircbotx;
 
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.spi.FilterReply;
@@ -28,7 +26,7 @@ import ch.qos.logback.core.status.WarnStatus;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.reflect.Member;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.events.VoiceEvent;
@@ -181,5 +179,9 @@ public class TestUtils {
 				guard = false;
 			}
 		}
+	}
+	
+	public static boolean isRealMember(Member member) {
+		return !member.isSynthetic() && !member.getName().startsWith("__");
 	}
 }

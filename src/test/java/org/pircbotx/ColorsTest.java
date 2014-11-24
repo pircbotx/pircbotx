@@ -32,9 +32,9 @@ public class ColorsTest {
 	public void lookupTableTest() {
 		//Gather all the field names of the class
 		Set<String> colorNames = Sets.newHashSet();
-		for (Field curField : Colors.class.getFields()) {
-			colorNames.add(curField.getName());
-		}
+		for (Field curField : Colors.class.getFields())
+			if(TestUtils.isRealMember(curField))
+				colorNames.add(curField.getName());
 		colorNames.remove("LOOKUP_TABLE");
 		
 		Sets.SetView<String> diff = Sets.symmetricDifference(colorNames, Colors.LOOKUP_TABLE.keySet());
