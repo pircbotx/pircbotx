@@ -609,7 +609,6 @@ public class InputParser implements Closeable {
 	 * javadoc generated documentation.
 	 *
 	 * @param code The three-digit numerical code for the response.
-	 * @param response The full response from the IRC server.
 	 */
 	public void processServerResponse(int code, String rawResponse, List<String> parsedResponseOrig) {
 		ImmutableList<String> parsedResponse = ImmutableList.copyOf(parsedResponseOrig);
@@ -832,9 +831,6 @@ public class InputParser implements Closeable {
 	 * javadoc generated documentation.
 	 *
 	 * @param target The channel or nick that the mode operation applies to.
-	 * @param sourceNick The nick of the user that set the mode.
-	 * @param sourceLogin The login of the user that set the mode.
-	 * @param sourceHostname The hostname of the user that set the mode.
 	 * @param mode The mode that has been set.
 	 */
 	public void processMode(UserHostmask userHostmask, User user, String target, String mode) {

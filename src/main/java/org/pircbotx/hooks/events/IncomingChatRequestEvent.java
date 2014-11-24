@@ -42,23 +42,21 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * be ignored by default.
  * <p>
  * If you wish to accept the connection, then you listen for this event and call
- * the {@link DccChat#accept()} method, which connects to the sender of the chat
+ * the {@link #accept() } method, which connects to the sender of the chat
  * request and allows lines to be sent to and from the bot.
  * <p>
  * Your bot must be able to connect directly to the user that sent the request.
  * <p>
  * Example:
  * <pre>
- *     DccChat chat = event.getChat();
  *     // Accept all chat, whoever it's from.
- *     chat.accept();
+ *     ReceiveChat chat = event.accept();
  *     chat.sendLine("Hello");
  *     String response = chat.readLine();
  *     chat.close();
  * </pre>
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
- * @see DccChat
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

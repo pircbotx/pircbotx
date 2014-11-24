@@ -21,17 +21,13 @@ import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimaps;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -116,10 +112,10 @@ public class Configuration {
 	protected final BotFactory botFactory;
 
 	/**
-	 * Use {@link Configuration.Builder#build() }.
+	 * Use {@link Configuration.Builder#buildConfiguration() }.
 	 *
 	 * @param builder
-	 * @see Configuration.Builder#build()
+	 * @see Configuration.Builder#buildConfiguration()
 	 */
 	protected Configuration(Builder builder) {
 		//Check for basics
@@ -522,7 +518,7 @@ public class Configuration {
 
 		/**
 		 * Utility method for
-		 * <code>{@link #getCapHandlers()}.add(handler)</code>
+		 * <code>{ @link #getCapHandlers() }.add(handler)</code>
 		 *
 		 * @param handler
 		 * @return
@@ -534,7 +530,7 @@ public class Configuration {
 
 		/**
 		 * Utility method for
-		 * <code>{@link #getListenerManager().add(listener)</code>
+		 * <code>{ @link #getListenerManager() }.add(listener)</code>
 		 *
 		 * @param listener
 		 * @return
@@ -546,7 +542,7 @@ public class Configuration {
 
 		/**
 		 * Utility method for
-		 * <code>{@link #getAutoJoinChannels().put(channel, "")</code>
+		 * <code>{ @link #getAutoJoinChannels() }.put(channel, "")</code>
 		 *
 		 * @param channel
 		 * @return
@@ -560,7 +556,7 @@ public class Configuration {
 
 		/**
 		 * Utility method for
-		 * <code>{@link #getAutoJoinChannels().put(channel, key)</code>
+		 * <code>{@link #getAutoJoinChannels()}.put(channel, key)</code>
 		 *
 		 * @param channel
 		 * @return

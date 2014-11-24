@@ -18,15 +18,12 @@
 package org.pircbotx;
 
 import static com.google.common.base.Preconditions.*;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import java.io.Closeable;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -152,7 +149,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 *
 	 * @since PircBot 1.0.0
 	 *
-	 * @param chan The channel object to search in
 	 * @return A Set of all user's in the channel
 	 *
 	 * @see UserListEvent

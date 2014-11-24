@@ -40,8 +40,6 @@ public class OutputChannel {
 
 	/**
 	 * Parts a channel.
-	 *
-	 * @param channel The name of the channel to leave.
 	 */
 	public void part() {
 		bot.sendRaw().rawLine("PART " + channel.getName());
@@ -50,7 +48,6 @@ public class OutputChannel {
 	/**
 	 * Parts a channel, giving a reason.
 	 *
-	 * @param channel The name of the channel to leave.
 	 * @param reason The reason for parting the channel.
 	 */
 	public void part(String reason) {
@@ -58,11 +55,8 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send a message to the channel. See {@link #sendMessage(java.lang.String, java.lang.String)
-	 * }
-	 * for more information
+	 * Send a message to the channel.
 	 *
-	 * @param target The channel to send the message to
 	 * @param message The message to send
 	 */
 	public void message(String message) {
@@ -74,7 +68,6 @@ public class OutputChannel {
 	 * <code>user: message</code>. Very useful for responding directly to a
 	 * command
 	 *
-	 * @param chan The channel to send the message to
 	 * @param user The user to recieve the message in the channel
 	 * @param message The message to send
 	 */
@@ -85,11 +78,8 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send an action to the channel. See {@link #sendAction(java.lang.String, java.lang.String)
-	 * }
-	 * for more information
+	 * Send an action to the channel. } for more information
 	 *
-	 * @param target The channel to send the action to
 	 * @param action The action message to send
 	 */
 	public void action(String action) {
@@ -97,11 +87,8 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send a notice to the channel. See {@link #sendNotice(java.lang.String, java.lang.String)
-	 * }
-	 * for more information
+	 * Send a notice to the channel. } for more information
 	 *
-	 * @param target The channel to send the notice to
 	 * @param notice The notice to send
 	 */
 	public void notice(String notice) {
@@ -141,11 +128,8 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send a CTCP command to the channel. See {@link #sendCTCPCommand(java.lang.String, java.lang.String)
-	 * }
-	 * for more information
+	 * Send a CTCP command to the channel. } for more information
 	 *
-	 * @param target The channel to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
@@ -155,9 +139,6 @@ public class OutputChannel {
 	/**
 	 * Part and rejoin specified channel. Useful for obtaining auto privileges
 	 * after identifying
-	 *
-	 * @param chan The channel to part and join from. Note that the object will
-	 * be invalid after this method executes and a new one will be created
 	 */
 	public void cycle() {
 		cycle("");
@@ -167,8 +148,6 @@ public class OutputChannel {
 	 * Part and rejoin specified channel using channel key. Useful for obtaining
 	 * auto privileges after identifying
 	 *
-	 * @param chan The channel to part and join from. Note that the object will
-	 * be invalid after this method executes and a new one will be created
 	 * @param key The key to use when rejoining the channel
 	 */
 	public void cycle(final String key) {
@@ -205,11 +184,10 @@ public class OutputChannel {
 	 * to "Dave" on the #cs channel by calling setMode("#cs", "+o Dave"); An
 	 * alternative way of doing this would be to use the op method.
 	 *
-	 * @param chan The channel on which to perform the mode change.
 	 * @param mode The new mode to apply to the channel. This may include zero
 	 * or more arguments if necessary.
 	 *
-	 * @see #op(org.pircbotx.Channel, org.pircbotx.User)
+	 * @see #op(org.pircbotx.User)
 	 */
 	public void setMode(String mode) {
 		if (mode == null)
@@ -219,11 +197,10 @@ public class OutputChannel {
 
 	/**
 	 * Set a mode for the channel with arguments. Nicer way to pass arguments
-	 * than with string concatenation. See {@link #setMode(org.pircbotx.Channel, java.lang.String)
+	 * than with string concatenation. See {@link #setMode(java.lang.String)
 	 * }
 	 * for more information
 	 *
-	 * @param chan The channel on which to perform the mode change.
 	 * @param mode The new mode to apply to the channel. This may include zero
 	 * or more arguments if necessary.
 	 * @param args Arguments to be passed to the mode. All will be converted to
@@ -239,13 +216,12 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Set a mode for a user. See {@link #setMode(org.pircbotx.Channel, java.lang.String)
+	 * Set a mode for a user. See {@link #setMode(java.lang.String)
 	 * }
 	 *
-	 * @param chan The channel on which to perform the mode change.
 	 * @param mode The new mode to apply to the channel.
 	 * @param user The user to perform the mode change on
-	 * @see #setMode(org.pircbotx.Channel, java.lang.String)
+	 * @see #setMode(java.lang.String)
 	 */
 	public void setMode(String mode, User user) {
 		if (mode == null)
@@ -259,7 +235,6 @@ public class OutputChannel {
 	 * Attempt to set the channel limit (+l) to specified value. May require
 	 * operator privileges in the channel
 	 *
-	 * @param chan The channel to set the limit on
 	 * @param limit The maximum amount of people that can be in the channel
 	 */
 	public void setChannelLimit(int limit) {
@@ -269,8 +244,6 @@ public class OutputChannel {
 	/**
 	 * Attempt to remove the channel limit (-l) on the specified channel. May
 	 * require operator privileges in the channel
-	 *
-	 * @param chan
 	 */
 	public void removeChannelLimit() {
 		setMode("-l");
@@ -280,7 +253,6 @@ public class OutputChannel {
 	 * Sets the channel key (+k) or password to get into the channel. May
 	 * require operator privileges in the channel
 	 *
-	 * @param chan The channel to preform the mode change on
 	 * @param key The secret key to use
 	 */
 	public void setChannelKey(String key) {
@@ -293,7 +265,6 @@ public class OutputChannel {
 	 * Removes the channel key (-k) or password to get into the channel. May
 	 * require operator privileges in the channel
 	 *
-	 * @param chan The channel to preform the mode change on
 	 * @param key The secret key to remove. If this is not known a blank key or
 	 * asterisk might work
 	 */
@@ -306,8 +277,6 @@ public class OutputChannel {
 	/**
 	 * Set the channel as invite only (+i). May require operator privileges in
 	 * the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void setInviteOnly() {
 		setMode("+i");
@@ -316,8 +285,6 @@ public class OutputChannel {
 	/**
 	 * Removes invite only (-i) status from the channel. May require operator
 	 * privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeInviteOnly() {
 		setMode("-i");
@@ -326,8 +293,6 @@ public class OutputChannel {
 	/**
 	 * Set the channel as moderated (+m). May require operator privileges in the
 	 * channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void setModerated() {
 		setMode("+m");
@@ -336,8 +301,6 @@ public class OutputChannel {
 	/**
 	 * Removes moderated (-m) status from the channel. May require operator
 	 * privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeModerated() {
 		setMode("-m");
@@ -346,8 +309,6 @@ public class OutputChannel {
 	/**
 	 * Prevent external messages from appearing in the channel (+n). May require
 	 * operator privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void setNoExternalMessages() {
 		setMode("+n");
@@ -356,8 +317,6 @@ public class OutputChannel {
 	/**
 	 * Allow external messages to appear in the channel (+n). May require
 	 * operator privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeNoExternalMessages() {
 		setMode("-n");
@@ -366,8 +325,6 @@ public class OutputChannel {
 	/**
 	 * Set the channel as secret (+s). May require operator privileges in the
 	 * channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void setSecret() {
 		setMode("+s");
@@ -376,8 +333,6 @@ public class OutputChannel {
 	/**
 	 * Removes secret (-s) status from the channel. May require operator
 	 * privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeSecret() {
 		setMode("-s");
@@ -386,8 +341,6 @@ public class OutputChannel {
 	/**
 	 * Prevent non-operator users from changing the channel topic (+t). May
 	 * require operator privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void setTopicProtection() {
 		setMode("+t");
@@ -396,8 +349,6 @@ public class OutputChannel {
 	/**
 	 * Allow non-operator users to change the channel topic (-t). May require
 	 * operator privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeTopicProtection() {
 		setMode("-t");
@@ -406,8 +357,6 @@ public class OutputChannel {
 	/**
 	 * Set the channel as private (+p). May require operator privileges in the
 	 * channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void setChannelPrivate() {
 		setMode("+p");
@@ -416,8 +365,6 @@ public class OutputChannel {
 	/**
 	 * Removes private (-p) status from the channel. May require operator
 	 * privileges in the channel
-	 *
-	 * @param chan The channel to preform the mode change on
 	 */
 	public void removeChannelPrivate() {
 		setMode("-p");
@@ -429,7 +376,6 @@ public class OutputChannel {
 	 * method to permanently remove a user from a channel. Successful use of
 	 * this method may require the bot to have operator status itself.
 	 *
-	 * @param channel The channel to ban the user from.
 	 * @param hostmask A hostmask representing the user we're banning.
 	 */
 	public void ban(String hostmask) {
@@ -443,7 +389,6 @@ public class OutputChannel {
 	 * "*!*compu@*.18hp.net". Successful use of this method may require the bot
 	 * to have operator status itself.
 	 *
-	 * @param channel The channel to unban the user from.
 	 * @param hostmask A hostmask representing the user we're unbanning.
 	 */
 	public void unBan(String hostmask) {
@@ -456,7 +401,6 @@ public class OutputChannel {
 	 * Grants operator privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have operator status itself.
 	 *
-	 * @param chan The channel we're opping the user on.
 	 * @param user The user we are opping.
 	 */
 	public void op(User user) {
@@ -469,7 +413,6 @@ public class OutputChannel {
 	 * Removes operator privileges from a user on a channel. Successful use of
 	 * this method may require the bot to have operator status itself.
 	 *
-	 * @param chan The channel we're deopping the user on.
 	 * @param user The user we are deopping.
 	 */
 	public void deOp(User user) {
@@ -482,7 +425,6 @@ public class OutputChannel {
 	 * Grants voice privileges to a user on a channel. Successful use of this
 	 * method may require the bot to have operator status itself.
 	 *
-	 * @param chan The channel we're voicing the user on.
 	 * @param user The user we are voicing.
 	 */
 	public void voice(User user) {
@@ -495,7 +437,6 @@ public class OutputChannel {
 	 * Removes voice privileges from a user on a channel. Successful use of this
 	 * method may require the bot to have operator status itself.
 	 *
-	 * @param chan The channel we're devoicing the user on.
 	 * @param user The user we are devoicing.
 	 */
 	public void deVoice(User user) {
@@ -511,7 +452,6 @@ public class OutputChannel {
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
-	 * @param chan
 	 * @param user
 	 */
 	public void halfOp(User user) {
@@ -527,7 +467,6 @@ public class OutputChannel {
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
-	 * @param chan
 	 * @param user
 	 */
 	public void deHalfOp(User user) {
@@ -543,7 +482,6 @@ public class OutputChannel {
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
-	 * @param chan
 	 * @param user
 	 */
 	public void owner(User user) {
@@ -559,7 +497,6 @@ public class OutputChannel {
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
-	 * @param chan
 	 * @param user
 	 */
 	public void deOwner(User user) {
@@ -575,7 +512,6 @@ public class OutputChannel {
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
-	 * @param chan
 	 * @param user
 	 */
 	public void superOp(User user) {
@@ -591,7 +527,6 @@ public class OutputChannel {
 	 * <b>Warning:</b> Not all IRC servers support this. Some servers may even
 	 * use it to mean something else!
 	 *
-	 * @param chan
 	 * @param user
 	 */
 	public void deSuperOp(User user) {
@@ -605,7 +540,6 @@ public class OutputChannel {
 	 * channel. This may require the bot to have operator status if the topic is
 	 * protected.
 	 *
-	 * @param chan The channel on which to perform the mode change.
 	 * @param topic The new topic for the channel.
 	 *
 	 */
@@ -619,7 +553,6 @@ public class OutputChannel {
 	 * Kicks a user from a channel. This method attempts to kick a user from a
 	 * channel and may require the bot to have operator status in the channel.
 	 *
-	 * @param chan The channel to kick the user from.
 	 * @param user The user to kick.
 	 */
 	public void kick(User user) {
@@ -631,7 +564,6 @@ public class OutputChannel {
 	 * kick a user from a channel and may require the bot to have operator
 	 * status in the channel.
 	 *
-	 * @param chan The channel to kick the user from.
 	 * @param user The user to kick.
 	 * @param reason A description of the reason for kicking a user.
 	 */

@@ -25,6 +25,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.output.OutputIRC;
 
 /**
  * After calling the listChannels() method in PircBotX, the server will start to
@@ -36,8 +37,7 @@ import org.pircbotx.hooks.Event;
  * channel listings.
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
- * @see PircBotX#listChannels()
- * @see PircBotX#listChannels(java.lang.String)
+ * @see OutputIRC#listChannels() 
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
