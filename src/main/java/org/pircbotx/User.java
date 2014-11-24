@@ -22,15 +22,11 @@ import com.google.common.collect.ImmutableSortedSet;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
-import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
-import org.pircbotx.output.OutputUser;
 
 /**
  * Represents a User on the server.
@@ -85,7 +81,7 @@ public class User extends UserHostmask {
 	 * Query the user with WHOIS to determine if they are verified *EXPENSIVE*.
 	 * This is intended to be a quick utility method, if you need more specific
 	 * info from the Whois then its recommended to listen for or use
-	 * {@link PircBotX#waitFor(java.lang.Class) }
+	 * {@link WaitForQueue }
 	 *
 	 * @return True if the user is verified
 	 */
@@ -180,8 +176,7 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Super Operator status in. Simply calls 
-	 * {@link UserChannelDao#getUsersSuperOps(org.pircbotx.User) }
+	 * Get all channels user has Super Operator status in. 
 	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Super Operator status in

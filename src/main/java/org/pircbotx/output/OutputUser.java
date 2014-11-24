@@ -41,11 +41,10 @@ public class OutputUser {
 	protected final UserHostmask serverUser;
 
 	/**
-	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String)
-	 * }
+	 * Send an invite to the serverUser
+	 * 
 	 * for more information
 	 *
-	 * @param target The serverUser to send the CTCP command to
 	 * @param channel The channel you are inviting the serverUser to join.
 	 */
 	public void invite(String channel) {
@@ -53,11 +52,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send an invite to the serverUser. See {@link #sendInvite(java.lang.String, java.lang.String)
-	 * }
+	 * Send an invite to the serverUser.
+	 * 
 	 * for more information
 	 *
-	 * @param target The serverUser to send the invite to
 	 * @param channel The channel you are inviting the serverUser to join.
 	 */
 	public void invite(Channel channel) {
@@ -65,11 +63,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a notice to the serverUser. See {@link #sendNotice(java.lang.String, java.lang.String)
+	 * Send a notice to the serverUser.
 	 * }
 	 * for more information
 	 *
-	 * @param target The serverUser to send the notice to
 	 * @param notice The notice to send
 	 */
 	public void notice(String notice) {
@@ -77,11 +74,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send an action to the serverUser. See {@link #sendAction(java.lang.String, java.lang.String)
+	 * Send an action to the serverUser.
 	 * }
 	 * for more information
 	 *
-	 * @param target The serverUser to send the action to
 	 * @param action The action message to send
 	 */
 	public void action(String action) {
@@ -89,11 +85,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a private message to a serverUser. See {@link #sendMessage(java.lang.String, java.lang.String)
+	 * Send a private message to a serverUser. 
 	 * }
 	 * for more information
 	 *
-	 * @param target The serverUser to send the message to
 	 * @param message The message to send
 	 */
 	public void message(String message) {
@@ -101,11 +96,10 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a CTCP command to the serverUser. See {@link #sendCTCPCommand(java.lang.String, java.lang.String)
+	 * Send a CTCP command to the serverUser.
 	 * }
 	 * for more information
 	 *
-	 * @param target The serverUser to send the CTCP command to
 	 * @param command The CTCP command to send
 	 */
 	public void ctcpCommand(String command) {
@@ -113,17 +107,20 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a CTCP Response to the serverUser. See {@link #sendCTCPResponse(java.lang.String, java.lang.String)
+	 * Send a CTCP Response to the serverUser.
 	 * }
 	 * for more information
 	 *
-	 * @param target The serverUser to send the CTCP Response to
 	 * @param message The response to send
 	 */
 	public void ctcpResponse(String message) {
 		bot.sendIRC().ctcpResponse(serverUser.getNick(), message);
 	}
 
+	/**
+	 * Send usermode
+	 * @param mode The modes to change
+	 */
 	public void mode(String mode) {
 		bot.sendIRC().mode(serverUser.getNick(), mode);
 	}

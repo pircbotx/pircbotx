@@ -43,7 +43,6 @@ public final class Utils {
 	/**
 	 * Try to parse int string, returning -1 if it fails.
 	 *
-	 * @param longString
 	 * @return The string as an int or -1
 	 */
 	public static int tryParseInt(String intString, int defaultValue) {

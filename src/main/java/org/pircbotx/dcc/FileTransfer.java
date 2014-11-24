@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.net.Socket;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
