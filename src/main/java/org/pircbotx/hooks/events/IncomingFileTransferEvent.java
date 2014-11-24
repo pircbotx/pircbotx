@@ -109,6 +109,33 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 	}
 
 	/**
+	 * Accept the request and transfer the file now, blocking until finished.
+	 *
+	 * @param destination
+	 * @return
+	 * @throws IOException
+	 */
+	public ReceiveFileTransfer acceptAndTransfer(File destination) throws IOException {
+		ReceiveFileTransfer transfer = accept(destination);
+		transfer.transfer();
+		return transfer;
+	}
+
+	/**
+	 * Accept the resume request and transfer the file now, blocking until
+	 * finished.
+	 *
+	 * @param destination
+	 * @return
+	 * @throws IOException
+	 */
+	public ReceiveFileTransfer acceptResumeAndTransfer(File destination, long startPosition) throws IOException, InterruptedException {
+		ReceiveFileTransfer transfer = acceptResume(destination, startPosition);
+		transfer.transfer();
+		return transfer;
+	}
+
+	/**
 	 * Respond with a <i>private message</i> to the user that sent the request
 	 *
 	 * @param response The response to send
