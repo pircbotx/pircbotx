@@ -23,7 +23,7 @@ import org.pircbotx.hooks.Event;
 /**
  * Base interface that all Generic event interfaces must extend from.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface GenericEvent extends Comparable<Event> {
 	/**

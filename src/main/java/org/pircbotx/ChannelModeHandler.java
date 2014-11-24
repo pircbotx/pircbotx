@@ -22,7 +22,7 @@ import com.google.common.collect.PeekingIterator;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 @Data
 public abstract class ChannelModeHandler {

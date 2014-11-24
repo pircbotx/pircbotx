@@ -85,7 +85,7 @@ import org.testng.collections.Lists;
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
  * Any other tests not involving processing lines should be in PircBotXTest
  * <p/>
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 @Test(singleThreaded = true)

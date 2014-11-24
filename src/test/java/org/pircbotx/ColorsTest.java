@@ -25,7 +25,7 @@ import static org.testng.Assert.*;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class ColorsTest {
 	@Test

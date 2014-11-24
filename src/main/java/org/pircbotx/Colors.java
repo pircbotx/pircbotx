@@ -52,7 +52,7 @@ import com.google.common.collect.ImmutableMap;
  * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
  * href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>
- * Forked and Maintained by Leon Blakey <lord.quackstar at gmail.com> in <a
+ * Forked and Maintained by Leon Blakey in <a
  * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 public final class Colors {

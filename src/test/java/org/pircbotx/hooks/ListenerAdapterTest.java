@@ -47,7 +47,7 @@ import org.testng.annotations.DataProvider;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class ListenerAdapterTest {
 	protected PircBotX bot;

@@ -28,7 +28,7 @@ import org.pircbotx.exception.CAPException;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor
 @ToString(exclude = "password")

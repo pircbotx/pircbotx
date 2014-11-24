@@ -27,7 +27,7 @@ import org.pircbotx.UserChannelDao;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 @Slf4j
 public class ChannelSnapshot extends Channel {

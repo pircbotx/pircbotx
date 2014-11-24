@@ -102,7 +102,7 @@ import org.slf4j.MarkerFactory;
 /**
  * Parse received input from IRC server.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor
 @Slf4j

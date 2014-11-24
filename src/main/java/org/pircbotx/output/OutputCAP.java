@@ -27,7 +27,7 @@ import org.pircbotx.PircBotX;
  * href="http://ircv3.atheme.org/">http://ircv3.atheme.org/</a>
  * for more information
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor
 public class OutputCAP {

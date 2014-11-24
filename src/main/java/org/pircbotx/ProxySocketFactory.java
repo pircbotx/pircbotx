@@ -29,7 +29,7 @@ import javax.net.SocketFactory;
  * A basic SocketFactory for creating sockets that connect through the specified
  * proxy.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class ProxySocketFactory extends SocketFactory {
 	protected final Proxy proxy;

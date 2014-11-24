@@ -34,7 +34,7 @@ import org.testng.annotations.AfterTest;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 @Slf4j
 public class IdentServerTest {

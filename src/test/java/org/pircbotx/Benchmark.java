@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class Benchmark {
 	protected final static int MAX_USERS = 200;

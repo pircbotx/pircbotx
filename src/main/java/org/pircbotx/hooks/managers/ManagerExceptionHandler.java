@@ -23,7 +23,7 @@ import org.pircbotx.hooks.Listener;
 /**
  * Handle exceptions from listeners
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface ManagerExceptionHandler {
 	/**

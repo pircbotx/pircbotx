@@ -46,7 +46,7 @@ import org.pircbotx.ReplyConstants;
  * find useful here.
  *
  * @see ReplyConstants
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

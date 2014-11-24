@@ -34,7 +34,7 @@ import org.pircbotx.snapshot.UserSnapshot;
  * server. We will only observe this if the user was in one of the channels to
  * which we are connected.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

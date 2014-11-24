@@ -31,7 +31,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 /**
  * This event is dispatched whenever a private message is sent to us.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

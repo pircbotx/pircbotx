@@ -24,7 +24,7 @@ import org.pircbotx.hooks.Event;
 /**
  * An unknown event error.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class UnknownEventException extends RuntimeException {
 	public UnknownEventException(Event event, Throwable cause) {

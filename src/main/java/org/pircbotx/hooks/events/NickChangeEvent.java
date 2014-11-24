@@ -32,7 +32,7 @@ import org.pircbotx.hooks.types.GenericUserEvent;
  * This event is dispatched whenever someone (possibly us) changes nick on any
  * of the channels that we are on.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

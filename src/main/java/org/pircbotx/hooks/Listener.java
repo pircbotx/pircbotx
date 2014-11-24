@@ -23,7 +23,7 @@ import org.pircbotx.PircBotX;
  * A generic listener to receive events. Almost all users should use
  * {@link org.pircbotx.hooks.ListenerAdapter}
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface Listener {
 	public void onEvent(Event event) throws Exception;

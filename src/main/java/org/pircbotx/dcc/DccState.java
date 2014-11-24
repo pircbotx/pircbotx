@@ -20,7 +20,7 @@ package org.pircbotx.dcc;
 /**
  * The state of a DCC connection
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public enum DccState {
 	INIT, RUNNING, DONE;

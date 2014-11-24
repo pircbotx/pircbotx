@@ -28,7 +28,7 @@ import org.pircbotx.dcc.DccHandler;
  * actual chat or sending of files. Use the dcc methods in {@link OutputUser}
  * </b>
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor
 public class OutputDCC {

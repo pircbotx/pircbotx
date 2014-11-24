@@ -28,7 +28,7 @@ import org.pircbotx.hooks.Event;
  * A nick is already in use error from server. If auto nick change isn't
  * enabled, must send a nick before server disconnects us.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

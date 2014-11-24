@@ -32,7 +32,7 @@ import org.pircbotx.User;
 /**
  * A DCC File Transfer initiated by another user.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 public class ReceiveFileTransfer extends FileTransfer {

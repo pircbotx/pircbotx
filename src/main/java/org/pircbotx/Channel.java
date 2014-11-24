@@ -38,7 +38,7 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 /**
  * Represents a Channel that we're joined to.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @ToString(doNotUseGetters = true)
 @EqualsAndHashCode(of = {"name", "bot"})

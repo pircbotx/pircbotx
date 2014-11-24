@@ -26,7 +26,7 @@ import org.pircbotx.PircBotX;
 /**
  * This event is dispatched once we successfully connected to the IRC server.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

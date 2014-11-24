@@ -48,7 +48,7 @@ import org.pircbotx.TestUtils;
 /**
  * Test the output of PircBotX. Depend on ConnectTests to check mocked sockets
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
 public class OutputTest {

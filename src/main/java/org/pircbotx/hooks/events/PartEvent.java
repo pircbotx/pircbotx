@@ -34,7 +34,7 @@ import org.pircbotx.snapshot.UserSnapshot;
  * This event is dispatched whenever someone (possibly us) parts a channel which
  * we are on.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

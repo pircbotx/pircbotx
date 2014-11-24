@@ -24,7 +24,7 @@ import org.pircbotx.PircBotX;
  * more of a marker event then anything else as DCC events don't have much in
  * common
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface GenericDCCEvent extends GenericUserEvent {
 	public boolean isPassive();

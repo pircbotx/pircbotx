@@ -36,7 +36,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * pings.
  * <p/>
  * @see org.pircbotx.Configuration.Builder#replaceCoreHooksListener(org.pircbotx.hooks.CoreHooks) 
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class CoreHooks extends ListenerAdapter {
 	@Override

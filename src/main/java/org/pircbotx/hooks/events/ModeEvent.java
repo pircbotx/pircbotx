@@ -39,7 +39,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  * {@link SetChannelLimitEvent}, {@link RemoveChannelLimitEvent},
  * {@link SetChannelBanEvent} or {@link RemoveChannelBanEvent} as appropriate.
  * <p>
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

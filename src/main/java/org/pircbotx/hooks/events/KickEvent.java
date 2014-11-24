@@ -34,7 +34,7 @@ import org.pircbotx.hooks.types.GenericChannelModeRecipientEvent;
  * This event is dispatched whenever someone (possibly us) is kicked from any of
  * the channels that we are in.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

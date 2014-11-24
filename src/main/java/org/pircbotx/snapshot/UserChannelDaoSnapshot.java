@@ -28,7 +28,7 @@ import org.pircbotx.UserLevel;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, ChannelSnapshot> {
 	public UserChannelDaoSnapshot(PircBotX bot, Locale locale, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableMap<String, UserSnapshot> userNickMap, ImmutableMap<String, ChannelSnapshot> channelNameMap, ImmutableMap<String, UserSnapshot> privateUsers) {

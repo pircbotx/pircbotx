@@ -39,7 +39,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  * Listeners of this event should <b>not</b> send a response as the user will
  * get two responses
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

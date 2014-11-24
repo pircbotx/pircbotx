@@ -36,7 +36,7 @@ import org.pircbotx.output.OutputIRC;
  * Note that certain channels, such as those marked as hidden, may not appear in
  * channel listings.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  * @see OutputIRC#listChannels() 
  */
 @Data

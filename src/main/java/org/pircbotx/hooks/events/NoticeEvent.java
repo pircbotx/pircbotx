@@ -33,7 +33,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 /**
  * This event is dispatched whenever we receive a notice.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -24,7 +24,7 @@ import org.pircbotx.hooks.Listener;
 /**
  * Write all exceptions to log
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 public class LogManagerExceptionHandler implements ManagerExceptionHandler {

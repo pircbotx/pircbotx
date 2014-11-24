@@ -29,7 +29,7 @@ import org.pircbotx.exception.CAPException;
  * works and how PircBotX is designed this must be the last CAP handler,
  * otherwise you will receive an "SSL peer shutdown incorrectly" exception
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @ToString
 public class TLSCapHandler extends EnableCapHandler {
