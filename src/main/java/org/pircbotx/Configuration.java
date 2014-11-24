@@ -104,6 +104,8 @@ public class Configuration {
 	protected final boolean identServerEnabled;
 	protected final String nickservPassword;
 	protected final boolean autoReconnect;
+	protected final int autoReconnectDelay;
+	protected final int autoReconnectAttempts;
 	//Bot classes
 	protected final ListenerManager listenerManager;
 	protected final boolean capEnabled;
@@ -144,6 +146,8 @@ public class Configuration {
 		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
+		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be positive");
+		checkArgument(builder.getAutoReconnectDelay()> 0, "setAutoReconnectAttempts must be positive");
 		if (builder.getNickservPassword() != null)
 			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
@@ -185,6 +189,8 @@ public class Configuration {
 		this.identServerEnabled = builder.isIdentServerEnabled();
 		this.nickservPassword = builder.getNickservPassword();
 		this.autoReconnect = builder.isAutoReconnect();
+		this.autoReconnectDelay = builder.getAutoReconnectDelay();
+		this.autoReconnectAttempts = builder.getAutoReconnectAttempts();
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.capEnabled = builder.isCapEnabled();
@@ -365,6 +371,14 @@ public class Configuration {
 		 * reconnect anymore! Defaults to false
 		 */
 		protected boolean autoReconnect = false;
+		/**
+		 * Delay in milliseconds between reconnect attempts. Default 0.
+		 */
+		protected int autoReconnectDelay = 0;
+		/**
+		 * Number of times to attempt to reconnect
+		 */
+		protected int autoReconnectAttempts = 5;
 		//Bot classes
 		/**
 		 * The {@link ListenerManager} to use to handle events.
@@ -435,6 +449,8 @@ public class Configuration {
 			this.listenerManager = configuration.getListenerManager();
 			this.nickservPassword = configuration.getNickservPassword();
 			this.autoReconnect = configuration.isAutoReconnect();
+			this.autoReconnectDelay = configuration.getAutoReconnectDelay();
+			this.autoReconnectAttempts = configuration.getAutoReconnectAttempts();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
 			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
@@ -483,6 +499,8 @@ public class Configuration {
 			this.listenerManager = otherBuilder.getListenerManager();
 			this.nickservPassword = otherBuilder.getNickservPassword();
 			this.autoReconnect = otherBuilder.isAutoReconnect();
+			this.autoReconnectDelay = otherBuilder.getAutoReconnectDelay();
+			this.autoReconnectAttempts = otherBuilder.getAutoReconnectAttempts();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
 			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();
