@@ -1073,9 +1073,9 @@ public class InputParserTest {
 		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
 		
 		BanListEvent event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
-		assertEquals(event.getEntries().get(0).getExtbanPrefix(), "$a", "No extban prefix on prefix:nick");
+		assertEquals(event.getEntries().get(0).getRecipient().getExtbanPrefix(), "$a", "No extban prefix on prefix:nick");
 		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, "sutekh", null, null));
-		assertEquals(event.getEntries().get(1).getExtbanPrefix(), "~b", "No extban prefix on prefix:nick!login@hostmask");
+		assertEquals(event.getEntries().get(1).getRecipient().getExtbanPrefix(), "~b", "No extban prefix on prefix:nick!login@hostmask");
 		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, "sutekh", "alogin", "ahostmask"));
 	}
 	

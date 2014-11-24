@@ -70,6 +70,10 @@ public class UserHostmask implements Comparable<User> {
 	 * Hostname of the user (nick!login@hostname).
 	 */
 	private final String hostname;
+	/**
+	 * Extban prefix if in format extban:nick or extban:nick!login@hostmask
+	 */
+	private final String extbanPrefix;
 
 	public UserHostmask(PircBotX bot, String rawHostmask) {
 		this.bot = bot;
@@ -85,6 +89,14 @@ public class UserHostmask implements Comparable<User> {
 			this.login = null;
 			this.hostname = null;
 		}
+
+		if (nick.contains(":")) {
+			String[] nickParts = StringUtils.split(nick, ":");
+			this.extbanPrefix = nickParts[0];
+			this.nick = nickParts[1];
+		} else {
+			this.extbanPrefix = null;
+		}
 	}
 
 	public UserHostmask(UserHostmask otherHostmask) {
@@ -93,16 +105,27 @@ public class UserHostmask implements Comparable<User> {
 		this.nick = otherHostmask.getNick();
 		this.login = otherHostmask.getLogin();
 		this.hostname = otherHostmask.getHostname();
+		this.extbanPrefix = otherHostmask.getExtbanPrefix();
 	}
-
+	
 	public UserHostmask(PircBotX bot, String nick, String login, String hostname) {
 		this.bot = bot;
 		this.nick = nick;
 		this.login = login;
 		this.hostname = hostname;
 		this.hostmask = nick + "!" + login + "@" + hostname;
+		this.extbanPrefix = null;
 	}
 
+	public UserHostmask(PircBotX bot, String hostmask, String nick, String login, String hostname) {
+		this.bot = bot;
+		this.nick = nick;
+		this.login = login;
+		this.hostname = hostname;
+		this.hostmask = hostmask;
+		this.extbanPrefix = null;
+	}
+	
 	/**
 	 * Send a line to the user.
 	 *
@@ -115,10 +138,11 @@ public class UserHostmask implements Comparable<User> {
 			throw new RuntimeException("Could not generate OutputChannel for " + getNick(), ex);
 		}
 	}
-	
+
 	/**
 	 * True if matches nick!login@hostmask format
-	 * @return 
+	 *
+	 * @return
 	 */
 	public boolean isFullHostmask() {
 		return StringUtils.isNoneBlank(getNick(), getLogin(), getHostname());
