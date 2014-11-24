@@ -61,6 +61,12 @@ public class BanListEvent extends Event implements GenericChannelEvent {
 	
 	@Data
 	public static class Entry {
+		/**
+		 * Extban prefix, from format extban:nick and extban:nick!login@hostmask 
+		 * but NOT just extban
+		 * @return extban or null
+		 */
+		private final String extbanPrefix;
 		private final UserHostmask recipient;
 		private final UserHostmask source;
 		private final long time;
