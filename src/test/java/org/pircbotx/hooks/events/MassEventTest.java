@@ -55,15 +55,15 @@ public class MassEventTest {
 		//Manually count fields to exclude synthetic ones
 		int fieldCount = 0;
 		for (Field curField : event.getDeclaredFields())
-			if (!curField.isSynthetic())
+			if (TestUtils.isRealMember(curField))
 				fieldCount++;
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		//(subtract one parameter to account for bot)
 		assertEquals(constructor.getParameterTypes().length - 1, fieldCount, wrapClass(event, "Number of constructor parameters don't match number of fields"
-				+ SystemUtils.LINE_SEPARATOR + "Constructor params: " + StringUtils.join(constructor.getParameterTypes(), ", ")));
+				+ SystemUtils.LINE_SEPARATOR + "Constructor params [" + StringUtils.join(constructor.getParameterTypes(), ", ") + "]"));
 	}
 
 	public static String wrapClass(Class aClass, String message) {
-		return message + " in class " + aClass.toString();
+		return message + " in " + aClass.toString();
 	}
 }
