@@ -33,7 +33,7 @@ import org.pircbotx.hooks.types.GenericMessageEvent;
 /**
  * Used whenever a message is sent to a channel.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

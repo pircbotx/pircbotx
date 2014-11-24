@@ -29,7 +29,7 @@ import org.pircbotx.exception.CAPException;
  * Enables the specified capability with the server. This handler should cover
  * almost all CAP features except SASL since most only need to be requested.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 @RequiredArgsConstructor

@@ -36,7 +36,7 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * then it may take a few minutes to detect (this is commonly referred to as a
  * "ping timeout").
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -22,7 +22,7 @@ import org.pircbotx.PircBotX;
 /**
  * Any event dealing with CTCP.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface GenericCTCPEvent extends GenericChannelUserEvent {
 }

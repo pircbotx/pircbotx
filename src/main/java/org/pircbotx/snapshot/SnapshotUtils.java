@@ -19,7 +19,7 @@ package org.pircbotx.snapshot;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public final class SnapshotUtils {
 	/**

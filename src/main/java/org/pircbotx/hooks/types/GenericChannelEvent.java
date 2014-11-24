@@ -22,7 +22,7 @@ import org.pircbotx.PircBotX;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public interface GenericChannelEvent extends GenericEvent {
 	/**

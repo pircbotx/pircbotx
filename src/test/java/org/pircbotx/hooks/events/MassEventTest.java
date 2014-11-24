@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class MassEventTest {
 	@Test(dataProvider = "eventObjectDataProvider", dataProviderClass = TestUtils.class, description = "Verify event has a single constructor")

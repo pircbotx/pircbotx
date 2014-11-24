@@ -56,7 +56,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  *     chat.close();
  * </pre>
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

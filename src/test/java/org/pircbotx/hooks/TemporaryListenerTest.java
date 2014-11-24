@@ -31,7 +31,7 @@ import static org.testng.Assert.*;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class TemporaryListenerTest {
 	protected PircBotX bot;

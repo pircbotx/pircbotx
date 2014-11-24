@@ -33,7 +33,7 @@ import org.slf4j.MarkerFactory;
 /**
  * Send raw lines to the server with locking and message delay support.
  * <p>
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor
 @Slf4j

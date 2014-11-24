@@ -31,7 +31,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * This event is dispatched whenever a user sets the topic, or when we join a
  * new channel and discovers its topic.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

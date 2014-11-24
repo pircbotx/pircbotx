@@ -25,7 +25,7 @@ import org.pircbotx.User;
 /**
  * A DCC Chat that was initiated by another user.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class ReceiveChat extends Chat {
 	public ReceiveChat(User user, Socket socket, Charset encoding) throws IOException {

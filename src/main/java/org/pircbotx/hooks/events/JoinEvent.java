@@ -33,7 +33,7 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
  * This event is dispatched whenever someone (possibly us) joins a channel which
  * we are on.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

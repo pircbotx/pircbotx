@@ -27,7 +27,7 @@ import org.pircbotx.hooks.events.PrivateMessageEvent;
  * <p>
  * Used in {@link MessageEvent} and {@link PrivateMessageEvent}
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface GenericMessageEvent extends GenericUserEvent {
 	/**

@@ -24,7 +24,7 @@ import org.testng.annotations.DataProvider;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class UtilsTest {
 	protected static final String testString = "Hi there: how are you?";

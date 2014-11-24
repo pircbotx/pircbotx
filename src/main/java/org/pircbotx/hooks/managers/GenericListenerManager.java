@@ -43,7 +43,7 @@ import org.pircbotx.hooks.WaitForQueue;
  * multiple threads, this class is deprecated and is only kept for legacy
  * reasons or special cases. Use of this class will have unexpected results. All
  * bots should now use {@link ThreadedListenerManager}.
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  * @see ThreadedListenerManager
  */
 @Deprecated

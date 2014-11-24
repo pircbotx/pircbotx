@@ -38,7 +38,7 @@ import org.testng.collections.Lists;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class TestUtils {
 	static {

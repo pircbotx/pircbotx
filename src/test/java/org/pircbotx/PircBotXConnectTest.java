@@ -45,7 +45,7 @@ import org.testng.annotations.BeforeClass;
  * Do various connect tests. Note that this is in a separate class since
  * PircBotXOutputTest relies on a working mock implementation
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Test(groups = "ConnectTests", singleThreaded = true)
 public class PircBotXConnectTest {

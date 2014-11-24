@@ -60,7 +60,7 @@ import org.pircbotx.output.OutputUser;
  * Immutable configuration for PircBotX. Use {@link Configuration.Builder} to
  * create
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @ToString(exclude = {"serverPassword", "nickservPassword"})

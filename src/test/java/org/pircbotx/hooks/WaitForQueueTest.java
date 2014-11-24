@@ -29,7 +29,7 @@ import org.testng.collections.Lists;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class WaitForQueueTest {
 	@SuppressWarnings("unchecked")

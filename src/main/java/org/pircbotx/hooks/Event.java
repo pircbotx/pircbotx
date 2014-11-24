@@ -27,7 +27,7 @@ import org.pircbotx.hooks.types.GenericEvent;
 /**
  * An event representing what was received from the IRC server.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Getter
 public abstract class Event implements GenericEvent {

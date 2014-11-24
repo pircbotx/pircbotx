@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
  * </ol>
  * {@link #executeBot(org.pircbotx.PircBotX)} is overridable if you wish to 
  * do your own connecting
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 public class MultiBotManager {
