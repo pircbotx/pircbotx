@@ -17,6 +17,8 @@
  */
 package org.pircbotx;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
 import org.pircbotx.hooks.events.ConnectEvent;
 import java.util.List;
 import org.pircbotx.hooks.Event;
@@ -27,9 +29,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import javax.net.SocketFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
@@ -47,6 +49,7 @@ import org.testng.annotations.BeforeClass;
  *
  * @author Leon Blakey
  */
+@Slf4j
 @Test(groups = "ConnectTests", singleThreaded = true)
 public class PircBotXConnectTest {
 	protected Configuration.Builder configurationBuilder;
@@ -94,16 +97,25 @@ public class PircBotXConnectTest {
 	}
 
 	protected void validateEvents(PircBotX bot) throws Exception {
-		Event event = events.get(0);
-		assertTrue(event instanceof SocketConnectEvent, "Unknown first event: " + event);
+		ClassToInstanceMap<Event> eventClasses = MutableClassToInstanceMap.create();
+		for(Event curEvent : events) {
+			Class clazz = curEvent.getClass();
+			if(eventClasses.containsKey(clazz))
+				eventClasses.put(clazz, null);
+			else
+				eventClasses.put(clazz, curEvent);
+		}
+		
+		Event event = eventClasses.get(SocketConnectEvent.class);
+		assertNotNull(event, "No SocketConnectEvent dispatched");
 		assertEquals(event.getBot(), bot);
 
-		event = events.get(2);
-		assertTrue(event instanceof ConnectEvent, "Unknown third event: " + event);
+		event = eventClasses.get(ConnectEvent.class);
+		assertNotNull(event, "No ConnectEvent dispatched");
 		assertEquals(event.getBot(), bot);
 
-		event = events.get(5);
-		assertTrue(event instanceof DisconnectEvent, "Unknown fifth event: " + event);
+		event = eventClasses.get(DisconnectEvent.class);
+		assertNotNull(event, "No DisconnectEvent dispatched");
 		assertEquals(event.getBot(), bot);
 	}
 
