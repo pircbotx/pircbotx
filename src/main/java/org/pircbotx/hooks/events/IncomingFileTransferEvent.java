@@ -29,6 +29,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.dcc.FileTransfer;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.types.GenericDCCEvent;
@@ -57,14 +58,9 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * If you allow resuming and the file already partly exists, it will be appended
  * to instead of overwritten. If resuming is not enabled, the file will be
  * overwritten if it already exists.
- * <p>
- * You can throttle the speed of the transfer by calling
- * {@link DccFileTransfer#setPacketDelay(long) } method on the DccFileTransfer
- * object, either before you receive the file or at any moment during the
- * transfer.
  *
  * @author Leon Blakey <lord.quackstar at gmail.com>
- * @see DccFileTransfer
+ * @see FileTransfer
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

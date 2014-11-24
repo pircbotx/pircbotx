@@ -27,7 +27,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericEvent;
-import org.slf4j.LoggerFactory;
 
 /**
  * Stores all events in a queue for processing. This is useful for sequential
@@ -53,7 +52,7 @@ public class WaitForQueue implements Closeable {
 
 	/**
 	 * Create and store a queue listener in the specified bot's ListenerManager.
-	 * It will be removed when {@link #done()} is called
+	 * It will be removed when {@link #close() } is called
 	 *
 	 * @param bot
 	 */

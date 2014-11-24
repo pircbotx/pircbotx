@@ -29,7 +29,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -306,7 +305,7 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	/**
-	 * Get all users in this channel. Simply calls {@link PircBotX#getUsers(org.pircbotx.Channel)
+	 * Get all users in this channel.
 	 * }
 	 *
 	 * @return An <i>Unmodifiable</i> Set of users in this channel

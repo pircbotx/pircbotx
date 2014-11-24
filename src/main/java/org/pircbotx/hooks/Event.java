@@ -70,8 +70,7 @@ public abstract class Event implements GenericEvent {
 	 * A simple abstract method that all events must implement to respond to an
 	 * event happening. All implementing classes should delegate to the
 	 * sendMessage or other relevant methods in the main PircBotX class, not
-	 * with custom lines and calls to {@link PircBotX#sendRawLine(java.lang.String)
-	 * }.
+	 * with custom lines and calls to the send() methods
 	 *
 	 * @param response The response to send
 	 */

@@ -129,6 +129,7 @@ public class PircBotX implements Comparable<PircBotX> {
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
+	 * @param configuration Fully built Configuration
 	 */
 	@SuppressWarnings("unchecked")
 	public PircBotX(Configuration configuration) {
@@ -147,7 +148,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	/**
 	 * Start the bot by connecting to the server. If
 	 * {@link Configuration#isAutoReconnect()} is true this will continuously
-	 * reconnect to the server until {@link #stopBot()} is called or an
+	 * reconnect to the server until {@link #stopBotReconnect() } is called or an
 	 * exception is thrown from connecting
 	 *
 	 * @throws IOException if it was not possible to connect to the server.
@@ -172,16 +173,8 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * number, password, and socketFactory. On success a {@link ConnectEvent}
 	 * will be dispatched
 	 *
-	 * @param hostname The hostname of the server to connect to.
-	 * @param port The port number to connect to on the server.
-	 * @param password The password to use to join the server.
-	 * @param socketFactory The factory to use for creating sockets, including
-	 * secure sockets
-	 *
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
-	 * @throws NickAlreadyInUseException if our nick is already in use on the
-	 * server.
 	 */
 	protected void connect() throws IOException, IrcException {
 		synchronized (stateLock) {
@@ -322,6 +315,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * SYNCHRONIZED since it's only called from methods that handle locking
 	 *
 	 * @param line
+	 * @throws java.io.IOException
 	 */
 	protected void sendRawLineToServer(String line) throws IOException {
 		if (line.length() > configuration.getMaxLineLength() - 2)
