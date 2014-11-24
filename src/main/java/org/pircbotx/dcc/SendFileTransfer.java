@@ -31,7 +31,7 @@ import org.pircbotx.User;
 /**
  * A DCC File Transfer initiated by the bot
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class SendFileTransfer extends FileTransfer {
 	public SendFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {

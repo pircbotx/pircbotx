@@ -25,7 +25,7 @@ import org.testng.TestListenerAdapter;
 
 /**
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class TestLogger extends TestListenerAdapter {
 	protected static boolean disableLogging = Boolean.valueOf(System.getProperty("pircbotx.disableTestDetail", "false"));

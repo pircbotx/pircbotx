@@ -41,7 +41,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
  * To obtain the nick of each user in the channel, call the
  * {@link User#getNick()} method on each User object in {@link #getUsers() }
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  * @see User
  * @see Channel#getUsers()
  */

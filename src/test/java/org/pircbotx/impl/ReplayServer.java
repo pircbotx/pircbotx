@@ -38,7 +38,7 @@ import org.pircbotx.PircBotX;
  * @Override public void sendRawLine(String line) { System.out.println(">>>" +
  * line); } };
  * </code>
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class ReplayServer {
 	public static void main(String[] args) throws Exception {

@@ -33,7 +33,7 @@ import org.pircbotx.hooks.types.*;
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
  * will be called!
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public abstract class ListenerAdapter implements Listener {
 	public void onEvent(Event event) throws Exception {

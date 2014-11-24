@@ -31,7 +31,7 @@ import org.pircbotx.hooks.types.GenericUserEvent;
 /**
  * Called when we are invited to a channel by a user.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

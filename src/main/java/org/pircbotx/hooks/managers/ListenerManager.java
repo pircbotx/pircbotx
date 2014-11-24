@@ -29,7 +29,7 @@ import org.pircbotx.hooks.Listener;
 /**
  * Manages {@link Listener}'s and handles dispatching events
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public abstract class ListenerManager {
 	protected AtomicLong currentId = new AtomicLong();

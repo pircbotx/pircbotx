@@ -42,7 +42,7 @@ import org.pircbotx.hooks.types.GenericEvent;
  * queue.done();
  * </pre>
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 public class WaitForQueue implements Closeable {

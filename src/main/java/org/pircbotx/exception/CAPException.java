@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.*;
 /**
  * General Exception for problems during CAP negotiation
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class CAPException extends RuntimeException {
 	public CAPException(Reason reason, String detail) {

@@ -44,7 +44,7 @@ import org.pircbotx.hooks.Listener;
 /**
  * ListenerManager that runs individual listeners in their own thread per event.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 public class ThreadedListenerManager extends ListenerManager {

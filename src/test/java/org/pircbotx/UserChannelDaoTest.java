@@ -26,7 +26,7 @@ import static org.testng.Assert.*;
  * Tests for PircBotX class. Any test that involves processing server lines
  * should be in PircBotXProcessingTest.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Test(singleThreaded = true)
 public class UserChannelDaoTest {

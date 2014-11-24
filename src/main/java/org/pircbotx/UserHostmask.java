@@ -33,7 +33,7 @@ import org.pircbotx.output.OutputUser;
 /**
  * Represents any hostmask that may or may not be an actual user.
  *
- * @author Leon
+ * @author Leon Blakey
  */
 @AllArgsConstructor
 @EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})

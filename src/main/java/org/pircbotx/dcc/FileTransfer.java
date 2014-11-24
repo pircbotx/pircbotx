@@ -28,7 +28,7 @@ import org.pircbotx.User;
 /**
  * A general active DCC file transfer
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public abstract class FileTransfer {
 	@NonNull

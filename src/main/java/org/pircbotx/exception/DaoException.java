@@ -21,7 +21,7 @@ import lombok.Getter;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class DaoException extends RuntimeException {
 	@Getter

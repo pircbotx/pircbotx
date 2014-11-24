@@ -28,7 +28,7 @@ import org.slf4j.MDC;
  * Useful utilities for internal PircBotX use. Users should not use this class
  * directly
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public final class Utils {
 	//Do not create instances of this

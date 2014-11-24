@@ -26,7 +26,7 @@ import org.pircbotx.exception.CAPException;
  * received. Connecting is not considered finished until a method
  * returns true
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public interface CapHandler {
 	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;

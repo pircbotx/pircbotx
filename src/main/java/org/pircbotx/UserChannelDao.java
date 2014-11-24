@@ -49,7 +49,7 @@ import org.pircbotx.snapshot.UserSnapshot;
  *
  * @see User
  * @see Channel
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserChannelDao<U extends User, C extends Channel> implements Closeable {

@@ -40,7 +40,7 @@ import org.pircbotx.hooks.Listener;
  * }
  * with isBackground set to true
  * <p>
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public class BackgroundListenerManager extends ThreadedListenerManager {
 	protected Map<Listener, ExecutorService> backgroundListeners = Maps.newHashMap();

@@ -30,7 +30,7 @@ import org.pircbotx.PircBotX;
  * This event is dispatched whenever we receive a line from the server that
  * PircBotX has not been programmed to recognize.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

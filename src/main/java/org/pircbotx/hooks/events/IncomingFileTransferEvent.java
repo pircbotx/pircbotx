@@ -59,7 +59,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * to instead of overwritten. If resuming is not enabled, the file will be
  * overwritten if it already exists.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  * @see FileTransfer
  */
 @Data

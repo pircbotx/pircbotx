@@ -23,7 +23,7 @@ import org.pircbotx.User;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public interface GenericUserEvent extends GenericEvent {
 	/**

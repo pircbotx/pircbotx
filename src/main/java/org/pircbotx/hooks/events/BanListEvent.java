@@ -34,7 +34,7 @@ import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

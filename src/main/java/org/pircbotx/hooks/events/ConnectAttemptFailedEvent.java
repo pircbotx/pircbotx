@@ -25,7 +25,7 @@ import org.pircbotx.hooks.Event;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class ConnectAttemptFailedEvent extends Event {
 	protected final InetAddress remoteAddress;

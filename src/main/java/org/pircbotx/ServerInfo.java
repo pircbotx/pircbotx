@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  * website
  * </a> on what each one does
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @Setter(AccessLevel.NONE)

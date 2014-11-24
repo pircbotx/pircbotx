@@ -55,7 +55,7 @@ import org.apache.commons.lang3.StringUtils;
  * server and sending out apparently correct responses.
  *
  * @since PircBot 0.9c
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Slf4j
 public class IdentServer implements Closeable, Runnable {

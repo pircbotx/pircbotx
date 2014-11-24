@@ -22,7 +22,7 @@ import org.pircbotx.UserChannelMap;
 
 /**
  *
- * @author Leon
+ * @author Leon Blakey
  */
 public class UserChannelMapSnapshot extends UserChannelMap<UserSnapshot, ChannelSnapshot> {
 	public UserChannelMapSnapshot(Multimap<UserSnapshot, ChannelSnapshot> userToChannelSnapshot, Multimap<ChannelSnapshot, UserSnapshot> channelToUserSnapshot) {

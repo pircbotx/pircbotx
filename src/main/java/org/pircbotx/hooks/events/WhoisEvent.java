@@ -33,7 +33,7 @@ import org.pircbotx.hooks.Event;
  * independent of User and Channel objects since a user might not be connected
  * to us directly
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 //TODO: Add tests
 @Builder(chain = true, fluent = false, builderClassName = "Builder", buildMethodName = "generateEvent")

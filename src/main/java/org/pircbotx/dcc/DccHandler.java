@@ -54,7 +54,7 @@ import org.pircbotx.UserHostmask;
 /**
  * Handler of all DCC requests
  * <p>
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @RequiredArgsConstructor
 @Slf4j

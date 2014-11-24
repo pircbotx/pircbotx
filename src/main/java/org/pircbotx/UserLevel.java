@@ -20,7 +20,7 @@ package org.pircbotx;
 /**
  * An enum to represent the possible levels a user can have.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 public enum UserLevel {
 	VOICE, OP, HALFOP, SUPEROP, OWNER

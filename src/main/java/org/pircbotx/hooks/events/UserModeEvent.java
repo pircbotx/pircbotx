@@ -32,7 +32,7 @@ import org.pircbotx.hooks.types.GenericUserModeEvent;
 /**
  * Called when the mode of a user is set.
  *
- * @author Leon Blakey <lord.quackstar at gmail.com>
+ * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
