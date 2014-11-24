@@ -265,7 +265,7 @@ public class Configuration {
 		 * Ports to allow DCC incoming connections. Recommended to set multiple
 		 * as DCC connections will be rejected if no free port can be found
 		 */
-		protected List<Integer> dccPorts = new ArrayList<Integer>();
+		protected List<Integer> dccPorts = Lists.newArrayList();
 		/**
 		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress()
 		 * }
@@ -381,8 +381,8 @@ public class Configuration {
 		/**
 		 * Registered {@link CapHandler}'s.
 		 */
-		protected final List<CapHandler> capHandlers = new ArrayList<CapHandler>();
-		protected final List<ChannelModeHandler> channelModeHandlers = new ArrayList<ChannelModeHandler>();
+		protected final List<CapHandler> capHandlers = Lists.newArrayList();
+		protected final List<ChannelModeHandler> channelModeHandlers = Lists.newArrayList();
 		/**
 		 * The {@link BotFactory} to use
 		 */
