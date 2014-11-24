@@ -400,8 +400,20 @@
 										<defaultAuthor>Leon Blakey</defaultAuthor>
 										<defaultVersion>${project.version}</defaultVersion>
 										<sourcepath>target/delombok</sourcepath>
-										<show>public</show>
+										<!-- Temporarily disable Java 8 super strict doclint -->
+										<additionalparam>-Xdoclint:none</additionalparam>
+										<links>
+											<link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
+										</links>
 									</configuration>
+									<reportSets>
+										<reportSet>
+											<id>html</id>
+											<reports>
+												<report>javadoc</report>
+											</reports>
+										</reportSet>
+									</reportSets>
 								</plugin>
 								<!-- Test coverage -->
 								<plugin>
@@ -413,7 +425,7 @@
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-checkstyle-plugin</artifactId>
-									<version>2.12.1</version>
+									<version>2.13</version>
 									<configuration>
 										<configLocation>src/etc/checkstyle.xml</configLocation>
 									</configuration>
@@ -422,7 +434,7 @@
 								<plugin>
 									<groupId>org.codehaus.mojo</groupId>
 									<artifactId>findbugs-maven-plugin</artifactId>
-									<version>2.5.2</version>
+									<version>3.0.0</version>
 									<configuration>
 										<effort>Max</effort>
 										<threshold>Exp</threshold>
@@ -433,7 +445,7 @@
 								<plugin>
 									<groupId>org.apache.maven.plugins</groupId>
 									<artifactId>maven-pmd-plugin</artifactId>
-									<version>3.2</version>
+									<version>3.3</version>
 									<configuration>
 										<source>1.5</source>
 										<rulesets>
