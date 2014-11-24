@@ -146,8 +146,8 @@ public class Configuration {
 		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
-		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be positive");
-		checkArgument(builder.getAutoReconnectDelay()> 0, "setAutoReconnectAttempts must be positive");
+		checkArgument(builder.getAutoReconnectAttempts() >= 0, "setAutoReconnectAttempts must be positive");
+		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectAttempts must be positive");
 		if (builder.getNickservPassword() != null)
 			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");

@@ -17,7 +17,6 @@
  */
 package org.pircbotx.hooks;
 
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.*;
 import org.pircbotx.hooks.types.*;
 
@@ -82,6 +81,8 @@ public abstract class ListenerAdapter implements Listener {
 			onNotice((NoticeEvent) event);
 		else if (event instanceof OpEvent)
 			onOp((OpEvent) event);
+		else if (event instanceof OutputEvent) 
+			onOutput((OutputEvent) event);
 		else if (event instanceof OwnerEvent)
 			onOwner((OwnerEvent) event);
 		else if (event instanceof PartEvent)
@@ -232,6 +233,9 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onOp(OpEvent event) throws Exception {
+	}
+	
+	public void onOutput(OutputEvent event) throws Exception {
 	}
 
 	public void onOwner(OwnerEvent event) throws Exception {
