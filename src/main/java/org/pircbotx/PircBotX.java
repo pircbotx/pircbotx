@@ -322,6 +322,9 @@ public class PircBotX implements Comparable<PircBotX> {
 			line = line.substring(0, configuration.getMaxLineLength() - 2);
 		outputWriter.write(line + "\r\n");
 		outputWriter.flush();
+		
+		List<String> lineParts = Utils.tokenizeLine(line);
+		getConfiguration().getListenerManager().dispatchEvent(new OutputEvent(this, line, lineParts));
 	}
 
 	protected void loggedIn(String nick) {
