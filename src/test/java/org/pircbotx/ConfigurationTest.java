@@ -45,7 +45,7 @@ public class ConfigurationTest {
 	public Object[][] fieldNamesDataProvider() throws NoSuchMethodException {
 		List<Object[]> params = Lists.newArrayList();
 		for (Field curField : Configuration.class.getDeclaredFields())
-			if (!curField.isSynthetic()) {
+			if (TestUtils.isRealMember(curField)) {
 				String prefix = (curField.getType().equals(boolean.class)) ? "is" : "get";
 				String name = StringUtils.capitalize(curField.getName());
 
