@@ -78,7 +78,7 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send an action to the channel. } for more information
+	 * Send an action to the channel. 
 	 *
 	 * @param action The action message to send
 	 */
@@ -87,7 +87,7 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send a notice to the channel. } for more information
+	 * Send a notice to the channel. 
 	 *
 	 * @param notice The notice to send
 	 */
