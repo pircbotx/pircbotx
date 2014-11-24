@@ -26,7 +26,7 @@ import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
 
 /**
- * Core Hooks of PircBotX that preform basic and expected operations. Any
+ * Several standard IRC client default responses. Any
  * listener that wishes to duplicate functionality should <b>replace</b>
  * CoreHooks in the {@link ListenerManager} with a subclass of this class (this
  * way you don't have to duplicate all the functionality).
@@ -35,6 +35,7 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * produce undesired results like server timeouts due to not responding to
  * pings.
  * <p/>
+ * @see org.pircbotx.Configuration.Builder#replaceCoreHooksListener(org.pircbotx.hooks.CoreHooks) 
  * @author Leon Blakey <lord.quackstar at gmail.com>
  */
 public class CoreHooks extends ListenerAdapter {
