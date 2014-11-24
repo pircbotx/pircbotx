@@ -96,14 +96,15 @@ public class PircBotXConnectTest {
 		configurationBuilder.getServers().clear();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void validateEvents(PircBotX bot) throws Exception {
 		ClassToInstanceMap<Event> eventClasses = MutableClassToInstanceMap.create();
 		for(Event curEvent : events) {
 			Class clazz = curEvent.getClass();
 			if(eventClasses.containsKey(clazz))
-				eventClasses.put(clazz, null);
+				eventClasses.putInstance(clazz, null);
 			else
-				eventClasses.put(clazz, curEvent);
+				eventClasses.putInstance(clazz, curEvent);
 		}
 		
 		Event event = eventClasses.get(SocketConnectEvent.class);
