@@ -969,11 +969,17 @@ public class InputParserTest {
 	
 	@Test
 	public void nickAlreadyInUseTest() throws IOException, IrcException {
+		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
+		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
 		inputParser.handleLine(":irc.someserver.net 433 * "+bot.getConfiguration().getName()+" :Nickname is already in use.");
 		
 		NickAlreadyInUseEvent event = getEvent(NickAlreadyInUseEvent.class, "NickAlreadyInUseEvent not dispatched for 433");
-		assertEquals(event.getUsedNick(), bot.getConfiguration().getName());
-		assertEquals(event.getAutoNewNick(), bot.getConfiguration().getName() + "1");
+		assertEquals(event.getUsedNick(), bot.getConfiguration().getName(), "event used nick doesn't match old one in config");
+		
+		String newNick = bot.getConfiguration().getName() + "1";
+		assertEquals(event.getAutoNewNick(), newNick, "event auto new nick doesn't match 'nick1'");
+		assertEquals(event.getBot().getNick(), newNick, "bots nick doesn't match events nick");
+		assertEquals(event.getBot().getUserBot().getNick(), newNick, "bots user nick doesn't match events nick");
 	}
 	
 	@Test
