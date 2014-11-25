@@ -18,6 +18,7 @@
 package org.pircbotx.hooks;
 
 import java.util.Date;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Configuration;
@@ -87,6 +88,11 @@ public class CoreHooks extends ListenerAdapter {
 				&& StringUtils.containsIgnoreCase(hostmask.getHostmask(), config.getNickservNick())
 				&& StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess())) {
 			Utils.setNickServIdentified(event.getBot());
+			
+			if(config.isNickservDelayJoin()) {
+				for (Map.Entry<String, String> channelEntry : config.getAutoJoinChannels().entrySet())
+					event.getBot().sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
+			}
 		}
 	}
 }
