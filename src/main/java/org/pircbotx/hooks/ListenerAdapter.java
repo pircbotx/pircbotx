@@ -44,11 +44,13 @@ public abstract class ListenerAdapter implements Listener {
 		if (event instanceof ActionEvent)
 			onAction((ActionEvent) event);
 		else if (event instanceof BanListEvent)
-			onBanList((BanListEvent)event);
+			onBanList((BanListEvent) event);
 		else if (event instanceof ChannelInfoEvent)
 			onChannelInfo((ChannelInfoEvent) event);
 		else if (event instanceof ConnectEvent)
 			onConnect((ConnectEvent) event);
+		else if (event instanceof ConnectFailedEvent)
+			onConnectFailed((ConnectFailedEvent) event);
 		else if (event instanceof ConnectAttemptFailedEvent)
 			onConnectAttemptFailed((ConnectAttemptFailedEvent) event);
 		else if (event instanceof DisconnectEvent)
@@ -81,7 +83,7 @@ public abstract class ListenerAdapter implements Listener {
 			onNotice((NoticeEvent) event);
 		else if (event instanceof OpEvent)
 			onOp((OpEvent) event);
-		else if (event instanceof OutputEvent) 
+		else if (event instanceof OutputEvent)
 			onOutput((OutputEvent) event);
 		else if (event instanceof OwnerEvent)
 			onOwner((OwnerEvent) event);
@@ -177,7 +179,7 @@ public abstract class ListenerAdapter implements Listener {
 
 	public void onAction(ActionEvent event) throws Exception {
 	}
-	
+
 	public void onBanList(BanListEvent event) throws Exception {
 	}
 
@@ -185,6 +187,9 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onConnect(ConnectEvent event) throws Exception {
+	}
+
+	public void onConnectFailed(ConnectFailedEvent event) throws Exception {
 	}
 
 	public void onConnectAttemptFailed(ConnectAttemptFailedEvent event) throws Exception {
@@ -234,7 +239,7 @@ public abstract class ListenerAdapter implements Listener {
 
 	public void onOp(OpEvent event) throws Exception {
 	}
-	
+
 	public void onOutput(OutputEvent event) throws Exception {
 	}
 

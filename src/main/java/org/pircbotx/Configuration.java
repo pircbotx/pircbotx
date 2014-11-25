@@ -811,5 +811,10 @@ public class Configuration {
 	public static class ServerEntry {
 		private final String hostname;
 		private final int port;
+		
+		@Override
+		public String toString() {
+			return hostname + ":" + port;
+		}
 	}
 }
