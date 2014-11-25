@@ -303,7 +303,7 @@ public class InputParser implements Closeable {
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
-			bot.shutdown(true);
+			bot.shutdown();
 			return;
 		}
 
