@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -126,6 +127,12 @@ public class PircBotX implements Comparable<PircBotX> {
 	protected String serverHostname;
 	@Getter
 	protected int serverPort;
+	/**
+	 * 
+	 */
+	@Getter
+	@Setter(AccessLevel.PROTECTED)
+	protected boolean nickservIdentified = false;
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.

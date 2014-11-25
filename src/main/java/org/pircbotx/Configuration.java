@@ -103,6 +103,8 @@ public class Configuration {
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean identServerEnabled;
 	protected final String nickservPassword;
+	protected final String nickservOnSuccess;
+	protected final String nickservNick;
 	protected final boolean autoReconnect;
 	protected final int autoReconnectDelay;
 	protected final int autoReconnectAttempts;
@@ -138,7 +140,7 @@ public class Configuration {
 		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
 		for (ServerEntry serverEntry : builder.getServers()) {
 			checkArgument(StringUtils.isNotBlank(serverEntry.getHostname()), "Must specify server hostname");
-			checkArgument(serverEntry.getPort()> 0 && serverEntry.getPort()<= 65535, "Port must be between 1 and 65535");
+			checkArgument(serverEntry.getPort() > 0 && serverEntry.getPort() <= 65535, "Port must be between 1 and 65535");
 		}
 		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
 		checkNotNull(builder.getEncoding(), "Must specify encoding");
@@ -152,9 +154,12 @@ public class Configuration {
 			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
-		for(Map.Entry<String, String> curEntry : builder.getAutoJoinChannels().entrySet())
+		for (Map.Entry<String, String> curEntry : builder.getAutoJoinChannels().entrySet())
 			if (StringUtils.isBlank(curEntry.getKey()))
 				throw new RuntimeException("Channel must not be blank");
+		if(builder.getNickservOnSuccess() != null) {
+			checkArgument(StringUtils.isNotBlank(builder.getNickservNick()), "Must specify nickserv nick");
+		}
 
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
@@ -188,6 +193,8 @@ public class Configuration {
 		this.messageDelay = builder.getMessageDelay();
 		this.identServerEnabled = builder.isIdentServerEnabled();
 		this.nickservPassword = builder.getNickservPassword();
+		this.nickservOnSuccess = builder.getNickservOnSuccess();
+		this.nickservNick = builder.getNickservNick();
 		this.autoReconnect = builder.isAutoReconnect();
 		this.autoReconnectDelay = builder.getAutoReconnectDelay();
 		this.autoReconnectAttempts = builder.getAutoReconnectAttempts();
@@ -253,8 +260,8 @@ public class Configuration {
 		 */
 		protected String channelPrefixes = "#&+!";
 		/**
-		 * Supported channel prefixes that restrict a sent message to users with this mode.
-		 * Defaults to <code>+%&~!</code>
+		 * Supported channel prefixes that restrict a sent message to users with
+		 * this mode. Defaults to <code>+%&~!</code>
 		 */
 		protected String channelModeMessagePrefixes = "+%&~!";
 		//DCC
@@ -366,6 +373,29 @@ public class Configuration {
 		 */
 		protected String nickservPassword;
 		/**
+		 * Case-insensitive message a user with 
+		 * {@link #setNickservNick(java.lang.String) } in its hostmask will
+		 * always contain when we have successfully identified, defaults to "you
+		 * are now" from "You are now identified for PircBotX". Known server
+		 * responses:
+		 * <ul>
+		 * <li>ircd-seven (freenode) - You are now identified for PircBotX</li>
+		 * <li>Unreal (swiftirc) - Password accepted - you are now
+		 * recognized.</li>
+		 * <li>InspIRCd (mozilla) - You are now logged in as PircBotX</li>
+		 * </ul>
+		 *
+		 * @see PircBotX#isNickservIdentified()
+		 * @see #setNickservNick(java.lang.String)
+		 */
+		protected String nickservOnSuccess = "you are now";
+		/**
+		 * The nick of the nickserv service account, default "nickserv".
+		 *
+		 * @see PircBotX#isNickservIdentified()
+		 */
+		protected String nickservNick = "nickserv";
+		/**
 		 * Enable or disable automatic reconnecting. Note that you MUST call 
 		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to
 		 * reconnect anymore! Defaults to false
@@ -448,6 +478,8 @@ public class Configuration {
 			this.messageDelay = configuration.getMessageDelay();
 			this.listenerManager = configuration.getListenerManager();
 			this.nickservPassword = configuration.getNickservPassword();
+			this.nickservOnSuccess = configuration.getNickservOnSuccess();
+			this.nickservNick = configuration.getNickservNick();
 			this.autoReconnect = configuration.isAutoReconnect();
 			this.autoReconnectDelay = configuration.getAutoReconnectDelay();
 			this.autoReconnectAttempts = configuration.getAutoReconnectAttempts();
@@ -498,6 +530,8 @@ public class Configuration {
 			this.messageDelay = otherBuilder.getMessageDelay();
 			this.listenerManager = otherBuilder.getListenerManager();
 			this.nickservPassword = otherBuilder.getNickservPassword();
+			this.nickservOnSuccess = otherBuilder.getNickservOnSuccess();
+			this.nickservNick = otherBuilder.getNickservNick();
 			this.autoReconnect = otherBuilder.isAutoReconnect();
 			this.autoReconnectDelay = otherBuilder.getAutoReconnectDelay();
 			this.autoReconnectAttempts = otherBuilder.getAutoReconnectAttempts();
@@ -573,8 +607,8 @@ public class Configuration {
 		}
 
 		/**
-		 * Utility method for
-		 * <code>{@link #getAutoJoinChannels()}.put(channel, key)</code>
+		 * Utility method for <code>{@link #getAutoJoinChannels()}.put(channel,
+		 * key)</code>
 		 *
 		 * @param channel
 		 * @return
@@ -587,12 +621,12 @@ public class Configuration {
 			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
-		
+
 		public Builder addServer(@NonNull String server) {
 			servers.add(new ServerEntry(server, 6667));
 			return this;
 		}
-		
+
 		public Builder addServer(@NonNull String server, int port) {
 			servers.add(new ServerEntry(server, port));
 			return this;
@@ -615,16 +649,16 @@ public class Configuration {
 			listenerManager.addListener(new CoreHooks());
 			return this;
 		}
-		
+
 		public void replaceCoreHooksListener(CoreHooks extended) {
 			//Find the corehooks impl
 			CoreHooks orig = null;
 			for (Listener curListener : this.listenerManager.getListeners())
-				if (curListener instanceof CoreHooks) 
-					orig = (CoreHooks)curListener;
-			
+				if (curListener instanceof CoreHooks)
+					orig = (CoreHooks) curListener;
+
 			//Swap
-			if(orig != null)
+			if (orig != null)
 				this.listenerManager.removeListener(orig);
 			addListener(extended);
 		}
@@ -764,7 +798,7 @@ public class Configuration {
 			return new Channel(bot, bot.getUserChannelDao(), name);
 		}
 	}
-	
+
 	@Data
 	public static class ServerEntry {
 		private final String hostname;
