@@ -575,11 +575,23 @@ public class Configuration {
 		public int getDccResumeAcceptTimeout() {
 			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
+		
+		/**
+		 * Add a collection of cap handlers
+		 * @see #getCapHandlers() 
+		 * @param handlers
+		 * @return 
+		 */
+		public Builder addCapHandlers(@NonNull Iterable<CapHandler> handlers) {
+			for(CapHandler curHandler : handlers) {
+				addCapHandler(curHandler);
+			}
+			return this;
+		}
 
 		/**
-		 * Utility method for
-		 * <code>{ @link #getCapHandlers() }.add(handler)</code>
-		 *
+		 * Add a cap handler
+		 * @see #getCapHandlers() 
 		 * @param handler
 		 * @return
 		 */
@@ -587,11 +599,23 @@ public class Configuration {
 			getCapHandlers().add(handler);
 			return this;
 		}
+		
+		/**
+		 * Add a collection of listeners to the current ListenerManager
+		 * @see #getListenerManager() 
+		 * @param listeners
+		 * @return 
+		 */
+		public Builder addListeners(@NonNull Iterable<Listener> listeners) {
+			for(Listener curListener : listeners) {
+				addListener(curListener);
+			}
+			return this;
+		}
 
 		/**
-		 * Utility method for
-		 * <code>{ @link #getListenerManager() }.add(listener)</code>
-		 *
+		 * Add a listener to the current ListenerManager
+		 * @see #getListenerManager() 
 		 * @param listener
 		 * @return
 		 */
@@ -600,10 +624,16 @@ public class Configuration {
 			return this;
 		}
 
+		public Builder addAutoJoinChannels(@NonNull Iterable<String> channels) {
+			for(String curChannel : channels) {
+				addAutoJoinChannel(curChannel);
+			}
+			return this;
+		}
+		
 		/**
-		 * Utility method for
-		 * <code>{ @link #getAutoJoinChannels() }.put(channel, "")</code>
-		 *
+		 * Add a channel to join on connect
+		 * @see #getAutoJoinChannels() 
 		 * @param channel
 		 * @return
 		 */
