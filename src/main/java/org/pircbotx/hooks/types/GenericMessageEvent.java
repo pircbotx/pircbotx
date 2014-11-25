@@ -17,7 +17,6 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 
@@ -36,4 +35,11 @@ public interface GenericMessageEvent extends GenericUserEvent {
 	 * @return The message
 	 */
 	public String getMessage();
+
+	/**
+	 * Send message directly to the user
+	 *
+	 * @param message
+	 */
+	public void respondPrivateMessage(String message);
 }
