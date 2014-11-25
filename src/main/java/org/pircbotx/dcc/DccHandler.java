@@ -525,11 +525,14 @@ public class DccHandler implements Closeable {
 	public void close() {
 		//Shutdown open reverse dcc servers
 		shuttingDown = true;
-		log.info("Terminating all transfers waiting to be accepted");
-		for (CountDownLatch curCountdown : pendingReceiveTransfers.values())
-			curCountdown.countDown();
-		for (CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
-			curCountdown.countDown();
+		int pendingCount = pendingReceiveTransfers.values().size() + pendingSendPassiveTransfers.values().size();
+		if(pendingCount > 0) {
+			log.info("Terminating {} DCC transfers waiting to be accepted", pendingCount);
+			for (CountDownLatch curCountdown : pendingReceiveTransfers.values())
+				curCountdown.countDown();
+			for (CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
+				curCountdown.countDown();
+		}
 	}
 
 	public static String addressToInteger(InetAddress address) {
