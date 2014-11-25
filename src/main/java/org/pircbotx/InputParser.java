@@ -380,8 +380,11 @@ public class InputParser implements Closeable {
 			if (configuration.getNickservPassword() != null)
 				bot.sendIRC().identify(configuration.getNickservPassword());
 			ImmutableMap<String, String> autoConnectChannels = bot.reconnectChannels();
-			if (autoConnectChannels == null && !configuration.isNickservDelayJoin())
-				autoConnectChannels = configuration.getAutoJoinChannels();
+			if (autoConnectChannels == null)
+				if (configuration.isNickservDelayJoin())
+					autoConnectChannels = ImmutableMap.of();
+				else
+					autoConnectChannels = configuration.getAutoJoinChannels();
 			for (Map.Entry<String, String> channelEntry : autoConnectChannels.entrySet())
 				bot.sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
 		} else if (code.equals("439"))
@@ -541,7 +544,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new NickChangeEvent(bot, source.getNick(), newNick, source, sourceUser));
 		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
-			configuration.getListenerManager().dispatchEvent(new NoticeEvent(bot,  source, sourceUser, channel, target, message));
+			configuration.getListenerManager().dispatchEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message));
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
 			UserSnapshot sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
@@ -749,9 +752,9 @@ public class InputParser implements Closeable {
 			//Can be sent during whois
 			String nick = parsedResponse.get(1);
 			String awayMessage = parsedResponse.get(2);
-			if(bot.getUserChannelDao().containsUser(nick))
+			if (bot.getUserChannelDao().containsUser(nick))
 				bot.getUserChannelDao().getUser(nick).setAwayMessage(awayMessage);
-			if(whoisBuilder.containsKey(nick))
+			if (whoisBuilder.containsKey(nick))
 				whoisBuilder.get(nick).setAwayMessage(awayMessage);
 		} else if (code == RPL_WHOISCHANNELS) {
 			//Example: 319 TheLQ Plazma :+#freenode
