@@ -30,8 +30,6 @@ import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,8 +42,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.pircbotx.exception.IrcException;
 import org.pircbotx.output.OutputIRC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,6 +231,7 @@ public class MultiBotManager {
 
 		public Void call() throws Exception {
 			Thread.currentThread().setName("botPool" + managerNumber + "-bot" + bot.getBotId());
+			Utils.addBotToMDC(bot);
 			executeBot(bot);
 			return null;
 		}
