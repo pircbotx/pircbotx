@@ -72,4 +72,9 @@ public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	public void respond(@Nullable String response) {
 		getUser().send().message(response);
 	}
+
+	@Override
+	public void respondPrivateMessage(String message) {
+		respond(message);
+	}
 }

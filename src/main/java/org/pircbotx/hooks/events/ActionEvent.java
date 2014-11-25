@@ -123,6 +123,7 @@ public class ActionEvent extends Event implements GenericMessageEvent, GenericCh
 	 * Respond with a PM directly to the user
 	 * @param response The response to send
 	 */
+	@Override
 	public void respondPrivateMessage(@Nullable String response) {
 		getUser().send().message(response);
 	}
