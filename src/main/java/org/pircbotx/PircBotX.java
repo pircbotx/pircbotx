@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
@@ -140,7 +141,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 * @param configuration Fully built Configuration
 	 */
 	@SuppressWarnings("unchecked")
-	public PircBotX(Configuration configuration) {
+	public PircBotX(@NonNull Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
 		this.configuration = configuration;
 		
