@@ -326,9 +326,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			//Get line from the server
 			String line;
 			try {
-				log.debug("before readline");
 				line = inputReader.readLine();
-				log.debug("after readline");
 			} catch (InterruptedIOException iioe) {
 				// This will happen if we haven't received anything from the server for a while.
 				// So we shall send it a ping to check that we are still connected.
