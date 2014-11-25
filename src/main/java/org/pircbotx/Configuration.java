@@ -105,6 +105,7 @@ public class Configuration {
 	protected final String nickservPassword;
 	protected final String nickservOnSuccess;
 	protected final String nickservNick;
+	protected final boolean nickservDelayJoin;
 	protected final boolean autoReconnect;
 	protected final int autoReconnectDelay;
 	protected final int autoReconnectAttempts;
@@ -195,6 +196,7 @@ public class Configuration {
 		this.nickservPassword = builder.getNickservPassword();
 		this.nickservOnSuccess = builder.getNickservOnSuccess();
 		this.nickservNick = builder.getNickservNick();
+		this.nickservDelayJoin = builder.isNickservDelayJoin();
 		this.autoReconnect = builder.isAutoReconnect();
 		this.autoReconnectDelay = builder.getAutoReconnectDelay();
 		this.autoReconnectAttempts = builder.getAutoReconnectAttempts();
@@ -396,6 +398,10 @@ public class Configuration {
 		 */
 		protected String nickservNick = "nickserv";
 		/**
+		 * Delay joining channels until were identified to nickserv
+		 */
+		protected boolean nickservDelayJoin = false;
+		/**
 		 * Enable or disable automatic reconnecting. Note that you MUST call 
 		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to
 		 * reconnect anymore! Defaults to false
@@ -480,6 +486,7 @@ public class Configuration {
 			this.nickservPassword = configuration.getNickservPassword();
 			this.nickservOnSuccess = configuration.getNickservOnSuccess();
 			this.nickservNick = configuration.getNickservNick();
+			this.nickservDelayJoin = configuration.isNickservDelayJoin();
 			this.autoReconnect = configuration.isAutoReconnect();
 			this.autoReconnectDelay = configuration.getAutoReconnectDelay();
 			this.autoReconnectAttempts = configuration.getAutoReconnectAttempts();
@@ -532,6 +539,7 @@ public class Configuration {
 			this.nickservPassword = otherBuilder.getNickservPassword();
 			this.nickservOnSuccess = otherBuilder.getNickservOnSuccess();
 			this.nickservNick = otherBuilder.getNickservNick();
+			this.nickservDelayJoin = otherBuilder.isNickservDelayJoin();
 			this.autoReconnect = otherBuilder.isAutoReconnect();
 			this.autoReconnectDelay = otherBuilder.getAutoReconnectDelay();
 			this.autoReconnectAttempts = otherBuilder.getAutoReconnectAttempts();
