@@ -142,8 +142,12 @@ public class PircBotX implements Comparable<PircBotX> {
 	@SuppressWarnings("unchecked")
 	public PircBotX(Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
-		this.configuration = (Configuration) configuration;
+		this.configuration = configuration;
+		
+		//Pre-insert an initial User representing the bot itself
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
+		getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
+		
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
@@ -212,6 +216,7 @@ public class PircBotX implements Comparable<PircBotX> {
 	 */
 	protected void connect() throws IOException, IrcException {
 		synchronized (stateLock) {
+			//Server id
 			Utils.addBotToMDC(this);
 			if (isConnected())
 				throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
@@ -233,15 +238,18 @@ public class PircBotX implements Comparable<PircBotX> {
 				int serverEntryCounter = 0;
 				for (Configuration.ServerEntry curServerEntry : configuration.getServers()) {
 					serverEntryCounter++;
+					serverHostname = curServerEntry.getHostname();
+					//Hostname and port
+					Utils.addBotToMDC(this);
 
 					int serverAddressCounter = 0;
-					InetAddress[] serverAddresses = InetAddress.getAllByName(curServerEntry.getHostname());
+					InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
 					for (InetAddress curAddress : serverAddresses) {
 						serverAddressCounter++;
 						String debug = Utils.format("[{}/{} address left from {}, {}/{} hostnames left] ",
 								String.valueOf(serverAddresses.length - serverAddressCounter),
 								String.valueOf(serverAddresses.length),
-								curServerEntry.getHostname(),
+								serverHostname,
 								String.valueOf(configuration.getServers().size() - serverEntryCounter),
 								String.valueOf(configuration.getServers().size())
 						);
@@ -250,8 +258,7 @@ public class PircBotX implements Comparable<PircBotX> {
 							socket = configuration.getSocketFactory().createSocket(curAddress, curServerEntry.getPort(), configuration.getLocalAddress(), 0);
 
 							//No exception, assume successful
-							this.serverHostname = curServerEntry.getHostname();
-							this.serverPort = curServerEntry.getPort();
+							serverPort = curServerEntry.getPort();
 							break ReconnectLoop;
 						} catch (Exception e) {
 							lastException = e;
@@ -306,8 +313,9 @@ public class PircBotX implements Comparable<PircBotX> {
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
 
 		//Pre-insert an initial User representing the bot itself
-		getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
-
+		if(!getUserChannelDao().containsUser(configuration.getName()))
+			getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
+		
 		//Connection is most likely sucesful at this point 
 		this.connectAttempts = 0;
 
