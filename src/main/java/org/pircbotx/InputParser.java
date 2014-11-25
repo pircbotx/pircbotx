@@ -624,7 +624,10 @@ public class InputParser implements Closeable {
 			String autoNewNick = null;
 			if (autoNickChange) {
 				nickSuffix++;
-				bot.sendIRC().changeNick(autoNewNick = configuration.getName() + nickSuffix);
+				autoNewNick = configuration.getName() + nickSuffix;
+				bot.sendIRC().changeNick(autoNewNick);
+				bot.setNick(autoNewNick);
+				bot.getUserChannelDao().renameUser(bot.getUserChannelDao().getUser(usedNick), autoNewNick);
 			}
 			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent(bot, usedNick, autoNewNick, autoNickChange));
 		} else if (code == RPL_LISTSTART) {
