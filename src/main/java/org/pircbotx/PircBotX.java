@@ -464,21 +464,11 @@ public class PircBotX implements Comparable<PircBotX> {
 	}
 
 	/**
-	 * Calls shutdown allowing reconnect.
-	 */
-	protected void shutdown() {
-		shutdown(false);
-	}
-
-	/**
 	 * Fully shutdown the bot and all internal resources. This will close the
 	 * connections to the server, kill background threads, clear server specific
 	 * state, and dispatch a DisconnectedEvent
-	 * <p/>
-	 * @param noReconnect Toggle whether to reconnect if enabled. Set to true to
-	 * 100% shutdown the bot
 	 */
-	protected void shutdown(boolean noReconnect) {
+	protected void shutdown() {
 		UserChannelDaoSnapshot daoSnapshot;
 		synchronized (stateLock) {
 			if (state == State.DISCONNECTED)
@@ -557,14 +547,11 @@ public class PircBotX implements Comparable<PircBotX> {
 		@Override
 		public void run() {
 			PircBotX thisBot = thisBotRef.get();
-			if (thisBot != null && thisBot.getState() != PircBotX.State.DISCONNECTED)
-				try {
-					thisBot.stopBotReconnect();
-					thisBot.sendIRC().quitServer();
-				} finally {
-					if (thisBot.getState() != PircBotX.State.DISCONNECTED)
-						thisBot.shutdown(true);
-				}
+			if (thisBot != null && thisBot.getState() != PircBotX.State.DISCONNECTED) {
+				thisBot.stopBotReconnect();
+				thisBot.sendIRC().quitServer();
+				thisBot.shutdown();
+			}
 		}
 	}
 
