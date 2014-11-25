@@ -75,18 +75,15 @@ public class CoreHooks extends ListenerAdapter {
 
 	@Override
 	public void onGenericMessage(GenericMessageEvent event) throws Exception {
-		log.debug("Generic message: " + event);
 		Configuration config = event.getBot().getConfiguration();
 		UserHostmask hostmask = event.getUserHostmask();
 		//There must be a passwork and on success text
 		//The hostmask must contain "nickserv"
 		//The message must contain the on success text
-		log.debug("on success " + (config.getNickservOnSuccess() != null) 
-				+ " | contains " + StringUtils.containsIgnoreCase(hostmask.getHostmask(), config.getNickservNick()) 
-				+ " | message contains " + StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess()));
 		if (config.getNickservOnSuccess() != null
 				&& StringUtils.containsIgnoreCase(hostmask.getHostmask(), config.getNickservNick())
 				&& StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess())) {
+			log.info("Successfully identified to nickserv");
 			Utils.setNickServIdentified(event.getBot());
 			
 			if(config.isNickservDelayJoin()) {
