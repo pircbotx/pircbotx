@@ -169,8 +169,9 @@ public class PircBotX implements Comparable<PircBotX> {
 			try {
 				connect();
 			} catch (Exception e) {
-				log.error("Exception encountered during connect",e);
-				shutdown();
+				log.error("Exception encountered during connect", e);
+				if (state != State.DISCONNECTED)
+					shutdown();
 				if (configuration.isAutoReconnect() && !reconnectStopped) {
 					//redirect exception
 					Utils.dispatchEvent(this, new ConnectFailedEvent(this, e));
@@ -179,15 +180,17 @@ public class PircBotX implements Comparable<PircBotX> {
 			}
 
 			//Wait
-			if (configuration.getAutoReconnectDelay() > 0)
+			if (configuration.getAutoReconnectDelay() > 0 && connectAttempts == configuration.getAutoReconnectAttempts())
 				try {
+					log.debug("Pausing for " + configuration.getAutoReconnectDelay() + " milliseconds before connecting again");
 					Thread.sleep(configuration.getAutoReconnectDelay());
 				} catch (InterruptedException e) {
+					log.debug("could not finish", e);
 					throw new RuntimeException("Could not finish pausing starting", e);
 				}
 		} while (configuration.isAutoReconnect() && !reconnectStopped && connectAttempts < configuration.getAutoReconnectAttempts());
-		
-		if(configuration.isAutoReconnect() && !reconnectStopped && connectAttempts == configuration.getAutoReconnectAttempts()) {
+
+		if (configuration.isAutoReconnect() && !reconnectStopped && connectAttempts == configuration.getAutoReconnectAttempts()) {
 			log.error("Maxed out connection attempts");
 		}
 	}
@@ -226,7 +229,7 @@ public class PircBotX implements Comparable<PircBotX> {
 			do {
 				connectAttempts++;
 				log.debug("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
-				
+
 				int serverEntryCounter = 0;
 				for (Configuration.ServerEntry curServerEntry : configuration.getServers()) {
 					serverEntryCounter++;
@@ -256,7 +259,7 @@ public class PircBotX implements Comparable<PircBotX> {
 									debug,
 									curAddress,
 									curServerEntry.getPort()/*,
-									e*/);
+							 e*/);
 							configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent(this,
 									curAddress,
 									curServerEntry.getPort(),
@@ -307,7 +310,7 @@ public class PircBotX implements Comparable<PircBotX> {
 
 		//Connection is most likely sucesful at this point 
 		this.connectAttempts = 0;
-		
+
 		//Start input to start accepting lines
 		startLineProcessing();
 	}
@@ -323,14 +326,20 @@ public class PircBotX implements Comparable<PircBotX> {
 			//Get line from the server
 			String line;
 			try {
+				log.debug("before readline");
 				line = inputReader.readLine();
+				log.debug("after readline");
 			} catch (InterruptedIOException iioe) {
 				// This will happen if we haven't received anything from the server for a while.
 				// So we shall send it a ping to check that we are still connected.
+				System.out.println("Iterupted io");
+				iioe.printStackTrace();
 				sendRaw().rawLine("PING " + (System.currentTimeMillis() / 1000));
 				// Now we go back to listening for stuff from the server...
 				continue;
 			} catch (Exception e) {
+				System.out.println("Iterupted io");
+				e.printStackTrace();
 				if (e instanceof SocketException && getState() == State.DISCONNECTED) {
 					log.info("Shutdown has been called, closing InputParser");
 					return;
@@ -340,6 +349,12 @@ public class PircBotX implements Comparable<PircBotX> {
 					log.error("Exception encountered when reading next line from server", e);
 					line = null;
 				}
+			}
+
+			if (Thread.interrupted()) {
+				System.out.println("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
+				stopBotReconnect();
+				break;
 			}
 
 			//End the loop if the line is null
@@ -354,12 +369,14 @@ public class PircBotX implements Comparable<PircBotX> {
 				log.error("Exception encountered when parsing line " + line, e);
 			}
 
-			//Do nothing if this thread is being interrupted (meaning shutdown() was run)
-			if (Thread.interrupted())
-				return;
+			if (Thread.interrupted()) {
+				System.out.println("--- PircBotX interrupted during parsing, aborting reconnect loop and shutting down ---");
+				stopBotReconnect();
+				break;
+			}
 		}
 
-		//Now that the socket is definatly closed call event, log, and kill the OutputThread
+		//Now that the socket is definitely closed call event, log, and kill the OutputThread
 		shutdown();
 	}
 
@@ -586,7 +603,12 @@ public class PircBotX implements Comparable<PircBotX> {
 			if (thisBot != null && thisBot.getState() != PircBotX.State.DISCONNECTED) {
 				thisBot.stopBotReconnect();
 				thisBot.sendIRC().quitServer();
-				thisBot.shutdown();
+				try {
+					if (thisBot.isConnected())
+						thisBot.socket.close();
+				} catch (IOException ex) {
+					log.debug("Unabloe to forcibly close socket", ex);
+				}
 			}
 		}
 	}
