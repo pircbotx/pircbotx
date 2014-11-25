@@ -18,16 +18,22 @@
 package org.pircbotx.hooks;
 
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Configuration;
+import org.pircbotx.UserHostmask;
+import org.pircbotx.Utils;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.PingEvent;
 import org.pircbotx.hooks.events.ServerPingEvent;
 import org.pircbotx.hooks.events.TimeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.managers.ListenerManager;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
- * Several standard IRC client default responses. Any
- * listener that wishes to duplicate functionality should <b>replace</b>
+ * Several standard IRC client default responses. Any listener that wishes to
+ * duplicate functionality should <b>replace</b>
  * CoreHooks in the {@link ListenerManager} with a subclass of this class (this
  * way you don't have to duplicate all the functionality).
  * <p>
@@ -35,9 +41,11 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * produce undesired results like server timeouts due to not responding to
  * pings.
  * <p/>
- * @see org.pircbotx.Configuration.Builder#replaceCoreHooksListener(org.pircbotx.hooks.CoreHooks) 
+ * @see
+ * org.pircbotx.Configuration.Builder#replaceCoreHooksListener(org.pircbotx.hooks.CoreHooks)
  * @author Leon Blakey
  */
+@Slf4j
 public class CoreHooks extends ListenerAdapter {
 	@Override
 	public void onFinger(FingerEvent event) {
@@ -62,5 +70,23 @@ public class CoreHooks extends ListenerAdapter {
 	@Override
 	public void onVersion(VersionEvent event) {
 		event.getUser().send().ctcpResponse("VERSION " + event.getBot().getConfiguration().getVersion());
+	}
+
+	@Override
+	public void onGenericMessage(GenericMessageEvent event) throws Exception {
+		log.debug("Generic message: " + event);
+		Configuration config = event.getBot().getConfiguration();
+		UserHostmask hostmask = event.getUserHostmask();
+		//There must be a passwork and on success text
+		//The hostmask must contain "nickserv"
+		//The message must contain the on success text
+		log.debug("on success " + (config.getNickservOnSuccess() != null) 
+				+ " | contains " + StringUtils.containsIgnoreCase(hostmask.getHostmask(), config.getNickservNick()) 
+				+ " | message contains " + StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess()));
+		if (config.getNickservOnSuccess() != null
+				&& StringUtils.containsIgnoreCase(hostmask.getHostmask(), config.getNickservNick())
+				&& StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess())) {
+			Utils.setNickServIdentified(event.getBot());
+		}
 	}
 }
