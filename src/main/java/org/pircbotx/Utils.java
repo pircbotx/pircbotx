@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.pircbotx.hooks.Event;
 import org.slf4j.MDC;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Useful utilities for internal PircBotX use. Users should not use this class
@@ -101,6 +102,10 @@ public final class Utils {
 	 */
 	public static void setNickServIdentified(PircBotX bot) {
 		bot.setNickservIdentified(true);
+	}
+	
+	public static String format(String messagePattern, Object... args) {
+		return MessageFormatter.arrayFormat(messagePattern, args).getMessage();
 	}
 
 	/**
