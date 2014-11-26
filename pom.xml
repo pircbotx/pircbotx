@@ -150,7 +150,6 @@
 	</dependencies>
 	
 	<build>
-		<sourceDirectory>target/delombok</sourceDirectory>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
@@ -176,40 +175,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.14.8.0</version>
-				<dependencies>
-					<dependency>
-						<groupId>sun.jdk</groupId>
-						<artifactId>tools</artifactId>
-						<version>1.6</version>
-						<scope>system</scope>
-						<systemPath>${toolsjar}</systemPath>
-					</dependency>
-					<!-- Override lombok version if plugin is behind lombok
-					<dependency>
-						<groupId>org.projectlombok</groupId>
-						<artifactId>lombok</artifactId>
-						<version>${lombok.version}</version>
-					</dependency>-->
-				</dependencies>
-				<executions>
-					<execution>
-						<phase>process-sources</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<addOutputDirectory>false</addOutputDirectory>
-					<sourceDirectory>src/main/java</sourceDirectory>
-					<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
-					<outputDirectory>target/delombok</outputDirectory>
-				</configuration>
-			</plugin>
 			<!--Specifically target Java 1.5-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -225,8 +190,8 @@
 						<arg>-Xlint:deprecation</arg>
 					</compilerArgs>
 				</configuration>
+				<!--Do NOT show depreciation in test compile-->
 				<executions>
-					<!--Do NOT show depreciation in test compile-->
 					<execution>
 						<id>default-testCompile</id>
 						<phase>test-compile</phase>
@@ -239,7 +204,7 @@
 						<goals>
 							<goal>testCompile</goal>
 						</goals>
-					</execution>            
+					</execution>                  
 				</executions>
 			</plugin>
 			<!-- Update version in PircBotX.java -->
@@ -357,6 +322,40 @@
 			<id>complete-build</id>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok-maven-plugin</artifactId>
+						<version>1.14.8.0</version>
+						<dependencies>
+							<dependency>
+								<groupId>sun.jdk</groupId>
+								<artifactId>tools</artifactId>
+								<version>1.6</version>
+								<scope>system</scope>
+								<systemPath>${toolsjar}</systemPath>
+							</dependency>
+							<!-- Override lombok version if plugin is behind lombok
+							<dependency>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</dependency>-->
+						</dependencies>
+						<executions>
+							<execution>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>delombok</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<addOutputDirectory>false</addOutputDirectory>
+							<sourceDirectory>src/main/java</sourceDirectory>
+							<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
+							<outputDirectory>target/delombok</outputDirectory>
+						</configuration>
+					</plugin>
 					<!--JavaDoc setup for Jars-->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
