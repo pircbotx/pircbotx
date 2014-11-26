@@ -200,9 +200,14 @@ public class ServerInfo {
 				cNoticeExists = true;
 			else if (key.equalsIgnoreCase("EXTBAN")) {
 				if(value.contains(",")) {
-					String[] valueSplit = StringUtils.split(value, ",");
-					extBanPrefix = valueSplit[0];
-					extBanList = valueSplit[1];
+					String[] valueSplit = StringUtils.split(value, ",", 2);
+					if(valueSplit.length == 2) {
+						extBanPrefix = valueSplit[0];
+						extBanList = valueSplit[1];
+					} else {
+						extBanPrefix = null;
+						extBanList =  valueSplit[0];
+					}
 				} else {
 					extBanList = value;
 				}
@@ -216,6 +221,10 @@ public class ServerInfo {
 		//Rizon
 		//005 PircBotX CALLERID CASEMAPPING=rfc1459 DEAF=D KICKLEN=160 MODES=4 NICKLEN=30 TOPICLEN=390 PREFIX=(qaohv)~&@%+ STATUSMSG=~&@%+ NETWORK=Rizon MAXLIST=beI:100 TARGMAX=ACCEPT:,KICK:1,LIST:1,NAMES:1,NOTICE:4,PRIVMSG:4,WHOIS:1 CHANTYPES=# :are supported by this server
 		//005 PircBotX CHANLIMIT=#:75 CHANNELLEN=50 CHANMODES=beI,k,l,BCMNORScimnpstz AWAYLEN=160 ELIST=CMNTU SAFELIST KNOCK NAMESX UHNAMES FNC EXCEPTS=e INVEX=I :are supported by this server
+		//Mozilla
+		//005 QTest AWAYLEN=200 CASEMAPPING=rfc1459 CHANMODES=Zbeg,k,FLfjl,ABCDKMNOQRSTcimnprstuz CHANNELLEN=64 CHANTYPES=# CHARSET=ascii ELIST=MU ESILENCE EXCEPTS=e EXTBAN=,ABCNOQRSTUcmprz FNC KICKLEN=255 MAP :are supported by this server
+		//005 QTest MAXBANS=60 MAXCHANNELS=100 MAXPARA=32 MAXTARGETS=20 MODES=20 NAMESX NETWORK=Mozilla NICKLEN=31 OPERLOG OVERRIDE PREFIX=(Yqaohv)!~&@%+ SECURELIST SILENCE=32 :are supported by this server
+		//005 QTest SSL=[::]:6697 STARTTLS STATUSMSG=!~&@%+ TOPICLEN=307 UHNAMES USERIP VBANLIST WALLCHOPS WALLVOICES WATCH=32 :are supported by this server
 	}
 
 	/**
