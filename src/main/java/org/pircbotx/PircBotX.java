@@ -134,6 +134,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	@Setter(AccessLevel.PROTECTED)
 	protected boolean nickservIdentified = false;
 	private int connectAttempts = 0;
+	private final AtomicInteger attemptCounter = new AtomicInteger();
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
@@ -172,6 +173,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		do {
 			//Connection attempt
 			try {
+				attemptCounter.incrementAndGet();
 				connect();
 			} catch (Exception e) {
 				log.error("Exception encountered during connect", e);
@@ -506,6 +508,10 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 	public InetAddress getLocalAddress() {
 		return socket.getLocalAddress();
+	}
+	
+	public int getConnectionId() {
+		return attemptCounter.get();
 	}
 
 	/**
