@@ -23,13 +23,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.PeekingIterator;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -259,7 +259,7 @@ public class InputParser implements Closeable {
 	}
 	protected final Configuration configuration;
 	protected final PircBotX bot;
-	protected final List<CapHandler> capHandlersFinished = new ArrayList<CapHandler>();
+	protected final List<CapHandler> capHandlersFinished = Lists.newArrayList();
 	protected boolean capEndSent = false;
 	protected BufferedReader inputReader;
 	//Builders
@@ -303,7 +303,7 @@ public class InputParser implements Closeable {
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
-			bot.shutdown();
+			bot.close();
 			return;
 		}
 
@@ -319,7 +319,7 @@ public class InputParser implements Closeable {
 				//Pass to CapHandlers, could be important
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
 					if (curCapHandler.handleUnknown(bot, line))
-						capHandlersFinished.add(curCapHandler);
+						addCapHandlerFinished(curCapHandler);
 			// Return from the method;
 			return;
 		}
@@ -404,6 +404,8 @@ public class InputParser implements Closeable {
 			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
 		else if (code.equals("670")) {
 			//Server is saying that we can upgrade to TLS
+			log.debug("Upgrading to TLS connecting with system default SSLSocketFactory");
+			
 			SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
 				if (curCapHandler instanceof TLSCapHandler)
@@ -415,47 +417,55 @@ public class InputParser implements Closeable {
 					true);
 			sslSocket.startHandshake();
 			bot.changeSocket(sslSocket);
+			
 			//Notify CAP Handlers
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
-				curCapHandler.handleUnknown(bot, rawLine);
+				if(curCapHandler.handleUnknown(bot, rawLine))
+					addCapHandlerFinished(curCapHandler);
 		} else if (code.equals("CAP")) {
 			//Handle CAP Code; remove extra from params
 			String capCommand = parsedLine.get(1);
 			ImmutableList<String> capParams = ImmutableList.copyOf(StringUtils.split(parsedLine.get(2)));
-			if (capCommand.equals("LS"))
-				for (CapHandler curCapHandler : configuration.getCapHandlers()) {
-					log.debug("Executing cap handler " + curCapHandler);
-					if (curCapHandler.handleLS(bot, capParams)) {
-						log.debug("Cap handler " + curCapHandler + " finished");
-						capHandlersFinished.add(curCapHandler);
-					}
+			if (capCommand.equals("LS")) {
+				log.debug("Starting Cap Handlers {}", getCapHandlersRemaining());
+				for (CapHandler curCapHandler : getCapHandlersRemaining()) {
+					if (curCapHandler.handleLS(bot, capParams))
+						addCapHandlerFinished(curCapHandler);
 				}
-			else if (capCommand.equals("ACK")) {
+			} else if (capCommand.equals("ACK")) {
 				//Server is enabling a capability, store that
 				bot.getEnabledCapabilities().addAll(capParams);
 
-				for (CapHandler curCapHandler : configuration.getCapHandlers())
-					if (curCapHandler.handleACK(bot, capParams)) {
-						log.trace("Removing cap handler " + curCapHandler);
-						capHandlersFinished.add(curCapHandler);
-					}
+				for (CapHandler curCapHandler : getCapHandlersRemaining())
+					if (curCapHandler.handleACK(bot, capParams))
+						addCapHandlerFinished(curCapHandler);		
 			} else if (capCommand.equals("NAK")) {
-				for (CapHandler curCapHandler : configuration.getCapHandlers())
+				for (CapHandler curCapHandler : getCapHandlersRemaining())
 					if (curCapHandler.handleNAK(bot, capParams))
-						capHandlersFinished.add(curCapHandler);
-			} else
+						addCapHandlerFinished(curCapHandler);
+			} else {
 				//Maybe the CapHandlers know how to use it
-				for (CapHandler curCapHandler : configuration.getCapHandlers())
+				for (CapHandler curCapHandler : getCapHandlersRemaining())
 					if (curCapHandler.handleUnknown(bot, rawLine))
-						capHandlersFinished.add(curCapHandler);
+						addCapHandlerFinished(curCapHandler);
+			}
 		} else
 			//Pass to CapHandlers, could be important
-			for (CapHandler curCapHandler : configuration.getCapHandlers())
+			for (CapHandler curCapHandler : getCapHandlersRemaining())
 				if (curCapHandler.handleUnknown(bot, rawLine))
-					capHandlersFinished.add(curCapHandler);
-
-		//Send CAP END if all CapHandlers are finished
-		if (configuration.isCapEnabled() && !capEndSent && capHandlersFinished.containsAll(configuration.getCapHandlers())) {
+					addCapHandlerFinished(curCapHandler);
+	}
+	
+	protected List<CapHandler> getCapHandlersRemaining() {
+		List<CapHandler> remaining = Lists.newArrayList(configuration.getCapHandlers());
+		remaining.removeAll(capHandlersFinished);
+		return remaining;
+	}
+	
+	protected void addCapHandlerFinished(CapHandler capHandler) {
+		log.debug("Cap Handler finished " + capHandler);
+		capHandlersFinished.add(capHandler);
+		if(!capEndSent && capHandlersFinished.size() == configuration.getCapHandlers().size()) {
 			capEndSent = true;
 			bot.sendCAP().end();
 			bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
@@ -890,6 +900,7 @@ public class InputParser implements Closeable {
 	public User createUserIfNull(User otherUser, @NonNull UserHostmask hostmask) {
 		if (otherUser != null)
 			return otherUser;
+		}
 		else if (bot.getUserChannelDao().containsUser(hostmask))
 			throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
 		return bot.getUserChannelDao().createUser(hostmask);
@@ -901,6 +912,7 @@ public class InputParser implements Closeable {
 	public void close() {
 		capEndSent = false;
 		capHandlersFinished.clear();
+		capHandlersFinished.addAll(configuration.getCapHandlers());
 		whoisBuilder.clear();
 		motdBuilder = null;
 		channelListRunning = false;
