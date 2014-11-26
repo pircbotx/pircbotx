@@ -21,7 +21,6 @@ import org.pircbotx.snapshot.UserSnapshot;
 import com.google.common.collect.ImmutableSortedSet;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -39,7 +38,7 @@ import org.pircbotx.hooks.events.WhoisEvent;
  * Forked and Maintained by Leon Blakey in <a
  * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
-@Data
+@Getter
 @ToString(callSuper = true)
 @Setter(AccessLevel.PROTECTED)
 public class User extends UserHostmask {
@@ -59,11 +58,13 @@ public class User extends UserHostmask {
 	 */
 	private boolean ircop = false;
 	/**
-	 * The server the user is on.
+	 * The exact server that this user is joined to.
+	 *
+	 * @return The address of the server
 	 */
 	private String server = "";
 	/**
-	 * Number of hops to reach the user.
+	 * The number of hops it takes to this user.
 	 */
 	private int hops = 0;
 
@@ -185,24 +186,7 @@ public class User extends UserHostmask {
 		return getDao().getChannels(this, UserLevel.SUPEROP);
 	}
 
-	/**
-	 * The exact server that this user is joined to.
-	 *
-	 * @return The address of the server
-	 */
-	public String getServer() {
-		return server;
-	}
-
-	/**
-	 * The number of hops it takes to this user.
-	 *
-	 * @return the hops
-	 */
-	public int getHops() {
-		return hops;
-	}
-
+	
 	public boolean isAway() {
 		return awayMessage != null;
 	}
