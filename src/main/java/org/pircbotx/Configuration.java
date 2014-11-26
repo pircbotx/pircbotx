@@ -669,6 +669,17 @@ public class Configuration {
 			servers.add(new ServerEntry(server, port));
 			return this;
 		}
+		
+		public Builder addServer(@NonNull ServerEntry serverEntry) {
+			servers.add(serverEntry);
+			return this;
+		}
+		
+		public Builder addServers(@NonNull Iterable<ServerEntry> serverEnteries) {
+			for(ServerEntry curServerEntry : serverEnteries)
+				servers.add(curServerEntry);
+			return this;
+		}
 
 		/**
 		 * Sets a new ListenerManager. <b>NOTE:</b> The {@link CoreHooks} are
@@ -839,6 +850,7 @@ public class Configuration {
 
 	@Data
 	public static class ServerEntry {
+		@NonNull
 		private final String hostname;
 		private final int port;
 		
