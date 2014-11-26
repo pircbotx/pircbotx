@@ -49,19 +49,19 @@ public class EnableCapHandler implements CapHandler {
 	}
 
 	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
-		if (capabilities.contains(cap))
+		if (capabilities.contains(cap)) {
 			//Server supports capability, send request to use it
+			log.debug("Supported capability " + cap);
 			bot.sendCAP().request(cap);
-		else if (!ignoreFail)
+			//Need to wait for server ACK
+			return false;
+		} else if (!ignoreFail)
 			throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
 		else {
 			//Server doesn't support capability but were ignoring exceptions
 			log.debug("Unsupported capability " + cap);
 			return true;
 		}
-		log.debug("Supported capability " + cap);
-		//Not finished yet
-		return false;
 	}
 
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
