@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
@@ -32,6 +33,7 @@ import org.pircbotx.exception.CAPException;
  * @author Leon Blakey
  */
 @ToString
+@Slf4j
 public class TLSCapHandler extends EnableCapHandler {
 	@Getter
 	protected SSLSocketFactory sslSocketFactory;
@@ -48,9 +50,13 @@ public class TLSCapHandler extends EnableCapHandler {
 
 	@Override
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
-		if (capabilities.contains("tls"))
+		if (capabilities.contains("tls")) {
+			log.debug("Supported capability tls, sending STARTTLS and awaiting 670 response");
 			bot.sendRaw().rawLineNow("STARTTLS");
-		//Not finished, still need to wait for 670 line
+			//Not finished, still need to wait for 670 line
+			return false;
+		}
+		//Ignore, not for us
 		return false;
 	}
 

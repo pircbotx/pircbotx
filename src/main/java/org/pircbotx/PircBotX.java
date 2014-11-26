@@ -20,6 +20,7 @@ package org.pircbotx;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
@@ -27,7 +28,6 @@ import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -73,7 +73,7 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Slf4j
-public class PircBotX implements Comparable<PircBotX> {
+public class PircBotX implements Comparable<PircBotX>, Closeable {
 	/**
 	 * The definitive version number of this release of PircBotX.
 	 */
@@ -144,11 +144,11 @@ public class PircBotX implements Comparable<PircBotX> {
 	public PircBotX(@NonNull Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
 		this.configuration = configuration;
-		
+
 		//Pre-insert an initial User representing the bot itself
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
-		
+
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
@@ -234,7 +234,6 @@ public class PircBotX implements Comparable<PircBotX> {
 			ReconnectLoop:
 			do {
 				connectAttempts++;
-				log.debug("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
 
 				int serverEntryCounter = 0;
 				for (Configuration.ServerEntry curServerEntry : configuration.getServers()) {
@@ -242,6 +241,7 @@ public class PircBotX implements Comparable<PircBotX> {
 					serverHostname = curServerEntry.getHostname();
 					//Hostname and port
 					Utils.addBotToMDC(this);
+					log.info("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
 
 					int serverAddressCounter = 0;
 					InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
@@ -314,11 +314,8 @@ public class PircBotX implements Comparable<PircBotX> {
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
 
 		//Pre-insert an initial User representing the bot itself
-		if(!getUserChannelDao().containsUser(configuration.getName()))
+		if (!getUserChannelDao().containsUser(configuration.getName()))
 			getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
-		
-		//Connection is most likely sucesful at this point 
-		this.connectAttempts = 0;
 
 		//Start input to start accepting lines
 		startLineProcessing();
@@ -339,17 +336,17 @@ public class PircBotX implements Comparable<PircBotX> {
 			} catch (InterruptedIOException iioe) {
 				// This will happen if we haven't received anything from the server for a while.
 				// So we shall send it a ping to check that we are still connected.
-				System.out.println("Iterupted io");
-				iioe.printStackTrace();
 				sendRaw().rawLine("PING " + (System.currentTimeMillis() / 1000));
 				// Now we go back to listening for stuff from the server...
 				continue;
 			} catch (Exception e) {
-				System.out.println("Iterupted io");
-				e.printStackTrace();
-				if (e instanceof SocketException && getState() == State.DISCONNECTED) {
-					log.info("Shutdown has been called, closing InputParser");
-					return;
+				if (Thread.interrupted()) {
+					System.out.println("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
+					stopBotReconnect();
+					break;
+				} else if (socket.isClosed()) {
+					log.info("Socket is closed, stopping read loop and shutting down");
+					break;
 				} else {
 					disconnectException = e;
 					//Something is wrong. Assume its bad and begin disconnect
@@ -523,11 +520,22 @@ public class PircBotX implements Comparable<PircBotX> {
 	}
 
 	/**
+	 * Close socket, causes read loop to terminate and shutdown PircBotX 
+	 */
+	public void close() {
+		try {
+			socket.close();
+		} catch (Exception e) {
+			log.error("Can't close socket", e);
+		}
+	}
+
+	/**
 	 * Fully shutdown the bot and all internal resources. This will close the
 	 * connections to the server, kill background threads, clear server specific
 	 * state, and dispatch a DisconnectedEvent
 	 */
-	protected void shutdown() {
+	private void shutdown() {
 		UserChannelDaoSnapshot daoSnapshot;
 		synchronized (stateLock) {
 			log.debug("---PircBotX shutdown started---");
