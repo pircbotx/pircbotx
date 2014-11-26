@@ -418,6 +418,10 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	public OutputIRC sendIRC() {
 		return outputIRC;
 	}
+	
+	public OutputIRC send() {
+		return outputIRC;
+	}
 
 	public OutputCAP sendCAP() {
 		return outputCAP;
