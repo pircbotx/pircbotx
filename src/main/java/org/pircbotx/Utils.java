@@ -21,6 +21,7 @@ import com.google.common.base.CharMatcher;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.slf4j.MDC;
 import org.slf4j.helpers.MessageFormatter;
@@ -77,8 +78,8 @@ public final class Utils {
 
 	public static void addBotToMDC(PircBotX bot) {
 		MDC.put("pircbotx.id", String.valueOf(bot.getBotId()));
-		MDC.put("pircbotx.connection", String.valueOf(bot.getConnectionId()));
-		MDC.put("pircbotx.server", bot.getServerHostname());
+		MDC.put("pircbotx.connectionId", bot.getServerHostname() + "-" + bot.getBotId() + "-" + bot.getConnectionId());
+		MDC.put("pircbotx.server", StringUtils.defaultString(bot.getServerHostname()));
 		MDC.put("pircbotx.port", String.valueOf(bot.getServerPort()));
 	}
 
