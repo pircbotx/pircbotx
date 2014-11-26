@@ -223,8 +223,6 @@
 					<compilerArgs>
 						<arg>-Xlint:unchecked</arg>
 						<arg>-Xlint:deprecation</arg>
-						<!--- hide warnings about Java 5 being old or underscores going to be removed in Java 9 -->
-						<arg>-Xlint:-options</arg>
 					</compilerArgs>
 				</configuration>
 				<executions>
