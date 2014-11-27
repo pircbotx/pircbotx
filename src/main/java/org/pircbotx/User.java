@@ -26,6 +26,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a User on the server.
@@ -45,6 +46,12 @@ public class User extends UserHostmask {
 	private final UUID userId = UUID.randomUUID();
 	@Getter(AccessLevel.PROTECTED)
 	private final UserChannelDao<User, Channel> dao;
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	private String botHostname;
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
+	private String botLogin;
 	/**
 	 * Realname/fullname of the user. Never changes
 	 */
@@ -103,6 +110,28 @@ public class User extends UserHostmask {
 		} catch (InterruptedException ex) {
 			throw new RuntimeException("Couldn't finish querying user for verified status", ex);
 		}
+	}
+
+	protected void setBotUserdata(UserHostmask userHostmask) {
+		if (botHostname == null && botLogin == null) {
+			LoggerFactory.getLogger(getClass()).debug("updating user data for " + getNick() + "!" + getLogin() + "@" + getHostname());
+			botHostname = userHostmask.getHostname();
+			botLogin = userHostmask.getLogin();
+		}
+	}
+
+	@Override
+	public String getHostmask() {
+		if (botHostname != null)
+			return botHostname;
+		return super.getHostmask();
+	}
+
+	@Override
+	public String getLogin() {
+		if (botLogin != null)
+			return botLogin;
+		return super.getLogin();
 	}
 
 	public UserSnapshot createSnapshot() {
@@ -177,7 +206,7 @@ public class User extends UserHostmask {
 	}
 
 	/**
-	 * Get all channels user has Super Operator status in. 
+	 * Get all channels user has Super Operator status in.
 	 *
 	 * @return An <i>unmodifiable</i> Set (IE snapshot) of all channels Get all
 	 * channels user has Super Operator status in
@@ -186,7 +215,6 @@ public class User extends UserHostmask {
 		return getDao().getChannels(this, UserLevel.SUPEROP);
 	}
 
-	
 	public boolean isAway() {
 		return awayMessage != null;
 	}
@@ -198,7 +226,8 @@ public class User extends UserHostmask {
 
 	/**
 	 * Hash code generated from UUID
-	 * @return 
+	 *
+	 * @return
 	 */
 	@Override
 	public int hashCode() {
