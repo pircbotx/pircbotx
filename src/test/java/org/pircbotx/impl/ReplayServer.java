@@ -21,14 +21,18 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
@@ -90,7 +94,7 @@ public class ReplayServer {
 
 		public ReplayListenerManager(Queue<Event> eventQueue, Listener... listeners) {
 			this.eventQueue = eventQueue;
-			for(Listener curListener : listeners)
+			for (Listener curListener : listeners)
 				addListener(curListener);
 		}
 
@@ -129,12 +133,18 @@ public class ReplayServer {
 			}
 		}
 	}
-
+	
 	public static void replayFile(File file) throws Exception {
 		if (!file.exists()) {
 			throw new IOException("File " + file + " does not exist");
 		}
-		log.info("---Replaying file {}---", file.getAbsolutePath());
+		replay(new FileInputStream(file), "file " + file.getCanonicalPath());
+	}
+
+	public static void replay(InputStream input, String title) throws Exception {
+		log.info("---Replaying {}---", title);
+		StopWatch timer = new StopWatch();
+		timer.start();
 
 		final LinkedList<Event> eventQueue = Lists.newLinkedList();
 		Configuration config = new Configuration.Builder()
@@ -150,7 +160,7 @@ public class ReplayServer {
 		final LinkedList<String> outputQueue = Lists.newLinkedList();
 		ReplayPircBotX bot = new ReplayPircBotX(config, outputQueue);
 
-		BufferedReader fileInput = new BufferedReader(new FileReader(file));
+		BufferedReader fileInput = new BufferedReader(new InputStreamReader(input));
 		boolean skippedHeader = false;
 		while (true) {
 			String lineRaw = fileInput.readLine();
@@ -204,7 +214,9 @@ public class ReplayServer {
 				log.debug("(events) " + curEvent);
 		}
 
-		log.debug("---File parsed successfully---");
+		timer.stop();
+		log.debug("---Replay successful in {}---", 
+				DurationFormatUtils.formatDuration(timer.getTime(), "mm'min'ss'sec'SSS'ms'"));
 	}
 
 	private static void assertEquals(String source, String equals, String error) {
