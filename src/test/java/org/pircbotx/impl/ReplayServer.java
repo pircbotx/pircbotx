@@ -31,8 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Helpful server for replaying a raw log to the bot.
@@ -49,6 +53,7 @@ public class ReplayServer {
 	 * Redirect output to given queue and trick code to believe its connected to
 	 * the IRC server
 	 */
+	@Slf4j
 	static class ReplayPircBotX extends PircBotX {
 		protected final Queue<String> outputQueue;
 		@Getter
@@ -79,8 +84,15 @@ public class ReplayServer {
 	 * Run all listeners in main thread and seperately queue events
 	 */
 	@RequiredArgsConstructor
+	@Slf4j
 	static class ReplayListenerManager extends GenericListenerManager {
 		protected final Queue<Event> eventQueue;
+
+		public ReplayListenerManager(Queue<Event> eventQueue, Listener... listeners) {
+			this.eventQueue = eventQueue;
+			for(Listener curListener : listeners)
+				addListener(curListener);
+		}
 
 		@Override
 		public void dispatchEvent(Event event) {
@@ -106,6 +118,18 @@ public class ReplayServer {
 		}
 	}
 
+	public static class ReplayListener extends ListenerAdapter {
+		@Override
+		public void onGenericMessage(GenericMessageEvent event) throws Exception {
+			if (event.getMessage().startsWith("?dumpusers")) {
+				System.out.println("===command dumpusers start===");
+				for (User curUser : event.getBot().getUserChannelDao().getAllUsers())
+					log.debug(curUser.getNick() + "!" + curUser.getLogin() + "@" + curUser.getHostname() + " - " + curUser.getHostmask());
+				System.out.println("===command dumpusers end===");
+			}
+		}
+	}
+
 	public static void replayFile(File file) throws Exception {
 		if (!file.exists()) {
 			throw new IOException("File " + file + " does not exist");
@@ -118,7 +142,8 @@ public class ReplayServer {
 				.setLogin("QP")
 				.addServer("example.com")
 				.setNickservPassword(System.getProperty("nickserv"))
-				.setListenerManager(new ReplayListenerManager(eventQueue))
+				.setMessageDelay(0)
+				.setListenerManager(new ReplayListenerManager(eventQueue, new ReplayListener()))
 				.setShutdownHookEnabled(false)
 				.buildConfiguration();
 
