@@ -133,6 +133,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	@Getter
 	@Setter(AccessLevel.PROTECTED)
 	protected boolean nickservIdentified = false;
+	@Setter(AccessLevel.PROTECTED)
 	private int connectAttempts = 0;
 	private final AtomicInteger attemptCounter = new AtomicInteger();
 
