@@ -902,6 +902,10 @@ public class InputParser implements Closeable {
 
 	public User createUserIfNull(User otherUser, @NonNull UserHostmask hostmask) {
 		if (otherUser != null) {
+			//Update our users hostmask once we know it
+			if (otherUser == bot.getUserBot()) {
+				otherUser.setBotUserdata(hostmask);
+			}
 			return otherUser;
 		}
 		else if (bot.getUserChannelDao().containsUser(hostmask))
