@@ -115,7 +115,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 */
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList<String>();
-	protected String nick = "";
+	protected String nick;
 	protected boolean loggedIn = false;
 	protected Thread shutdownHook;
 	protected volatile boolean reconnectStopped = false;
@@ -146,6 +146,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	public PircBotX(@NonNull Configuration configuration) {
 		botId = BOT_COUNT.getAndIncrement();
 		this.configuration = configuration;
+		this.nick = configuration.getName();
 
 		//Pre-insert an initial User representing the bot itself
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
