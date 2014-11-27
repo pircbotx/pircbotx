@@ -17,93 +17,173 @@
  */
 package org.pircbotx.impl;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.managers.GenericListenerManager;
 
 /**
  * Helpful server for replaying a raw log to the bot.
  * <p>
  * <b>NOTE:</b> In order to avoid write exceptions in the client you must
  * override {@link PircBotX#sendRawLine(java.lang.String) } to simply print the
- * output instead of sending it to this server!  <code>
- * PircBotX bot = new PircBotX() {
+ * output instead of sending it to this server!
  *
- * @Override public void sendRawLine(String line) { System.out.println(">>>" +
- * line); } };
- * </code>
  * @author Leon Blakey
  */
+@Slf4j
 public class ReplayServer {
+	/**
+	 * Redirect output to given queue and trick code to believe its connected to
+	 * the IRC server
+	 */
+	static class ReplayPircBotX extends PircBotX {
+		protected final Queue<String> outputQueue;
+		@Getter
+		protected boolean closed = false;
+
+		public ReplayPircBotX(Configuration configuration, Queue<String> outputQueue) {
+			super(configuration);
+			this.outputQueue = outputQueue;
+		}
+
+		@Override
+		protected void sendRawLineToServer(String line) throws IOException {
+			outputQueue.add(line);
+		}
+
+		@Override
+		public boolean isConnected() {
+			return true;
+		}
+
+		@Override
+		public void close() {
+			closed = true;
+		}
+	}
+
+	/**
+	 * Run all listeners in main thread and seperately queue events
+	 */
+	@RequiredArgsConstructor
+	static class ReplayListenerManager extends GenericListenerManager {
+		protected final Queue<Event> eventQueue;
+
+		@Override
+		public void dispatchEvent(Event event) {
+			eventQueue.add(event);
+			super.dispatchEvent(event);
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
-		//Make sure the user specified a file
-		if (args.length != 1 || args[0].trim().length() == 0) {
-			System.out.println("Usage: org.pircbotx.impl.ReplayServer [log]");
-			System.exit(5);
-		}
+		try {
+			//Make sure the user specified a file
+			if (args.length != 1 || args[0].trim().length() == 0) {
+				System.out.println("Usage: org.pircbotx.impl.ReplayServer [log]");
+				System.exit(1);
+			}
 
-		//Make sure the file exists
-		File file = new File(args[0].trim());
+			//Start replaying file
+			File file = new File(args[0].trim());
+			replayFile(file);
+		} catch (Exception t) {
+			log.debug("Caught exception in main, closing", t);
+			System.exit(3);
+		}
+	}
+
+	public static void replayFile(File file) throws Exception {
 		if (!file.exists()) {
-			System.out.println("Error: File " + args[0] + " does not exist");
-			System.exit(6);
+			throw new IOException("File " + file + " does not exist");
 		}
+		log.info("---Replaying file {}---", file.getAbsolutePath());
 
-		//Wait
-		System.out.println("*** Waiting for a client to connect");
-		ServerSocket server = new ServerSocket(6667);
-		Socket client = server.accept();
-		System.out.println("*** Client connected");
+		final LinkedList<Event> eventQueue = Lists.newLinkedList();
+		Configuration config = new Configuration.Builder()
+				.setName("QuackPirc")
+				.setLogin("QP")
+				.addServer("example.com")
+				.setNickservPassword(System.getProperty("nickserv"))
+				.setListenerManager(new ReplayListenerManager(eventQueue))
+				.setShutdownHookEnabled(false)
+				.buildConfiguration();
 
-		//Open up the streams
-		BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-		BufferedWriter output = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-		BufferedReader fileStream = new BufferedReader(new FileReader(file));
+		final LinkedList<String> outputQueue = Lists.newLinkedList();
+		ReplayPircBotX bot = new ReplayPircBotX(config, outputQueue);
 
-		//Wait till we get the NICK and USER lines so were not racing the bot
-		boolean nickGood = false;
-		boolean userGood = false;
-		String line;
-		while ((line = input.readLine()) != null) {
-			System.out.println("<<<" + line);
-			if (line.startsWith("USER"))
-				userGood = true;
-			else if (line.startsWith("NICK"))
-				nickGood = true;
-			if (nickGood && userGood)
+		BufferedReader fileInput = new BufferedReader(new FileReader(file));
+		boolean skippedHeader = false;
+		while (true) {
+			String lineRaw = fileInput.readLine();
+			if (bot.isClosed() && StringUtils.isNotBlank(lineRaw)) {
+				throw new RuntimeException("bot is closed but file still has line " + lineRaw);
+			} else if (!bot.isClosed() && StringUtils.isBlank(lineRaw)) {
+				throw new RuntimeException("bot is not closed but file doesn't have any more lines");
+			} else if (bot.isClosed() && StringUtils.isBlank(lineRaw)) {
+				log.debug("(done) Bot is closed and file doesn't have any more lines");
 				break;
+			}
+
+			log.debug("(line) " + lineRaw);
+			String[] lineParts = StringUtils.split(lineRaw, " ", 2);
+			String command = lineParts[0];
+			String line = lineParts[1];
+
+			//For now skip the info lines PircBotX is supposed to send on connect
+			//They are only sent when connect() is called which requires multithreading
+			if (!skippedHeader) {
+				if (command.equals("pircbotx.output"))
+					continue;
+				else if (command.equals("pircbotx.input")) {
+					log.debug("Finished skipping header");
+					skippedHeader = true;
+				} else
+					throw new RuntimeException("Unknown line " + lineRaw);
+			}
+
+			if (command.equals("pircbotx.input")) {
+				bot.getInputParser().handleLine(line);
+			} else if (command.equals("pircbotx.output")) {
+				String lastOutput = outputQueue.isEmpty() ? null : outputQueue.pop();
+				if (StringUtils.startsWith(line, "JOIN")) {
+					log.debug("Skipping JOIN output, server should send its own JOIN");
+				} else if (StringUtils.startsWith(line, "QUIT")) {
+					log.debug("Skipping QUIT output, server should send its own QUIT");
+				} else if (!line.equals(lastOutput)) {
+					log.debug("Expected last output: " + line);
+					log.error("Given last output: " + lastOutput);
+					for (String curOutput : outputQueue) {
+						log.debug("Queued output: " + curOutput);
+					}
+					throw new RuntimeException("Failed to verify output (see log)");
+				}
+			} else {
+				throw new RuntimeException("Unknown line " + lineRaw);
+			}
+
+			for (Event curEvent : Iterables.consumingIterable(eventQueue))
+				log.debug("(events) " + curEvent);
 		}
 
-		if (!nickGood || !userGood)
-			throw new RuntimeException("Premature end while waiting for USER and NICK lines");
+		log.debug("---File parsed successfully---");
+	}
 
-		System.out.println("*** Replaying file");
-
-		//Replay
-		while ((line = fileStream.readLine()) != null) {
-			if (input.ready())
-				System.out.println("<<<" + input.readLine());
-			output.write(line + "\r\n");
-			output.flush();
-			System.out.println(">>>" + line);
-		}
-
-		//Done, clear input from the client so we don't cause a recv error
-		while (input.ready())
-			input.readLine();
-
-		//Close
-		System.out.println("*** Done replaying file, closing");
-		input.close();
-		output.close();
-		fileStream.close();
-		client.close();
-		server.close();
+	private static void assertEquals(String source, String equals, String error) {
+		if (!source.equals(equals))
+			throw new RuntimeException(error);
 	}
 }
