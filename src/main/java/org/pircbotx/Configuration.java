@@ -421,9 +421,9 @@ public class Configuration {
 		 */
 		protected ListenerManager listenerManager = null;
 		/**
-		 * Enable or disable CAP handling. Defaults to false
+		 * Enable or disable CAP handling. Defaults to true
 		 */
-		protected boolean capEnabled = false;
+		protected boolean capEnabled = true;
 		/**
 		 * Registered {@link CapHandler}'s.
 		 */
