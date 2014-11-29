@@ -124,7 +124,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		return this;
 	}
 
-	protected Socket prepare(Socket socket) {
+	protected SSLSocket prepare(Socket socket) {
 		SSLSocket sslSocket = (SSLSocket) socket;
 		if (diffieHellmanDisabled) {
 			List<String> limited = new LinkedList<String>();
@@ -137,37 +137,37 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	}
 
 	@Override
-	public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+	public SSLSocket createSocket(String host, int port) throws IOException, UnknownHostException {
 		return prepare(wrappedFactory.createSocket(host, port));
 	}
 
 	@Override
-	public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+	public SSLSocket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
 		return prepare(wrappedFactory.createSocket(host, port, localHost, localPort));
 	}
 
 	@Override
-	public Socket createSocket(InetAddress address, int port) throws IOException {
+	public SSLSocket createSocket(InetAddress address, int port) throws IOException {
 		return prepare(wrappedFactory.createSocket(address, port));
 	}
 
 	@Override
-	public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+	public SSLSocket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
 		return prepare(wrappedFactory.createSocket(address, port, localAddress, localPort));
 	}
 
 	@Override
-	public Socket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
+	public SSLSocket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
 		return prepare(wrappedFactory.createSocket(s, host, port, autoClose));
 	}
 	
 	@Override
-	public Socket createSocket(Socket socket, InputStream in, boolean bln) throws IOException {
+	public SSLSocket createSocket(Socket socket, InputStream in, boolean bln) throws IOException {
 		return prepare(wrappedFactory.createSocket(socket, in, bln));
 	}
 	
 	@Override
-	public Socket createSocket() throws IOException {
+	public SSLSocket createSocket() throws IOException {
 		return prepare(wrappedFactory.createSocket());
 	}
 
