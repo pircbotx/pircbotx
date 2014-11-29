@@ -72,16 +72,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	}
 
 	/**
-	 * Setup UntilSSLSocketFactory wrapping the provided SSLSocketFactory.
-	 *
-	 * @param providedFactory An SSLSocketFactory to wrap
-	 */
-	public UtilSSLSocketFactory(SSLSocketFactory providedFactory) {
-		wrappedFactory = providedFactory;
-	}
-
-	/**
-	 * By default, trust ALL certificates. <b>This is very insecure.</b> It also
+	 * By default, trust ALL certificates. <b>This is <i>very</i> insecure.</b> It also
 	 * defeats one of the points of SSL: Making sure your connecting to the
 	 * right server.
 	 *
@@ -119,6 +110,18 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	 */
 	public UtilSSLSocketFactory disableDiffieHellman() {
 		diffieHellmanDisabled = true;
+		return this;
+	}
+	
+	/**
+	 * Disable the Diffie Hellman key exchange algorithm using the provided SSL
+	 * socket factory.
+	 * @see #disableDiffieHellman() 
+	 * @param sourceSocketFactory 
+	 * @return The current UtilSSLSocketFactory instance
+	 */
+	public UtilSSLSocketFactory disableDiffieHellman(SSLSocketFactory sourceSocketFactory) {
+		wrappedFactory = sourceSocketFactory;
 		return this;
 	}
 
