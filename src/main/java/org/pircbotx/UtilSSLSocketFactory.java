@@ -18,6 +18,7 @@
 package org.pircbotx;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -32,7 +33,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import lombok.experimental.Delegate;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -56,7 +56,6 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @ToString
 public class UtilSSLSocketFactory extends SSLSocketFactory {
-	@Delegate(excludes = SSLSocketFactoryDelegateExclude.class)
 	protected SSLSocketFactory wrappedFactory;
 	@Getter
 	protected boolean trustingAllCertificates = false;
@@ -161,6 +160,26 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	public Socket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
 		return prepare(wrappedFactory.createSocket(s, host, port, autoClose));
 	}
+	
+	@Override
+	public Socket createSocket(Socket socket, InputStream in, boolean bln) throws IOException {
+		return prepare(wrappedFactory.createSocket(socket, in, bln));
+	}
+	
+	@Override
+	public Socket createSocket() throws IOException {
+		return prepare(wrappedFactory.createSocket());
+	}
+
+	@Override
+	public String[] getDefaultCipherSuites() {
+		return wrappedFactory.getDefaultCipherSuites();
+	}
+
+	@Override
+	public String[] getSupportedCipherSuites() {
+		return wrappedFactory.getSupportedCipherSuites();
+	}
 
 	/**
 	 * X509TrustManager that trusts all certificates. <b>This is very
@@ -196,17 +215,5 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		public X509Certificate[] getAcceptedIssuers() {
 			return new X509Certificate[0];
 		}
-	}
-
-	protected interface SSLSocketFactoryDelegateExclude {
-		Socket createSocket(String host, int port) throws IOException, UnknownHostException;
-
-		Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException;
-
-		Socket createSocket(InetAddress address, int port) throws IOException;
-
-		Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException;
-
-		Socket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException;
 	}
 }
