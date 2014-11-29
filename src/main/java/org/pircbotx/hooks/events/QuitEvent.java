@@ -25,6 +25,7 @@ import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
+import org.pircbotx.hooks.types.GenericSnapshotEvent;
 import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
@@ -38,11 +39,10 @@ import org.pircbotx.snapshot.UserSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QuitEvent extends Event implements GenericUserEvent {
-	/**
-	 * Snapshot of the UserChannelDao as of before the user quit.
-	 */
-	protected final UserChannelDaoSnapshot daoSnapshot;
+public class QuitEvent extends Event implements GenericUserEvent, GenericSnapshotEvent {
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserChannelDaoSnapshot userChannelDaoSnapshot;
 	@Getter(onMethod = @_(
 			@Override))
 	protected final UserHostmask userHostmask;
@@ -57,13 +57,25 @@ public class QuitEvent extends Event implements GenericUserEvent {
 	 */
 	protected final String reason;
 
-	public QuitEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot,
+	public QuitEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot userChannelDaoSnapshot,
 			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
-		this.daoSnapshot = daoSnapshot;
+		this.userChannelDaoSnapshot = userChannelDaoSnapshot;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.reason = reason;
+	}
+
+	/**
+	 * @see #getUserChannelDaoSnapshot()
+	 * @see GenericSnapshotEvent
+	 * @return
+	 * @deprecated Use {@link #getUserChannelDaoSnapshot() } from
+	 * {@link GenericSnapshotEvent}
+	 */
+	@Deprecated
+	public UserChannelDaoSnapshot getDaoSnapshot() {
+		return userChannelDaoSnapshot;
 	}
 
 	/**

@@ -26,6 +26,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelUserEvent;
+import org.pircbotx.hooks.types.GenericSnapshotEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
@@ -38,8 +39,10 @@ import org.pircbotx.snapshot.UserSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PartEvent extends Event implements GenericChannelUserEvent {
-	protected final UserChannelDaoSnapshot daoSnapshot;
+public class PartEvent extends Event implements GenericChannelUserEvent, GenericSnapshotEvent {
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserChannelDaoSnapshot userChannelDaoSnapshot;
 	/**
 	 * Snapshot of the channel as of before the user parted.
 	 */
@@ -63,11 +66,23 @@ public class PartEvent extends Event implements GenericChannelUserEvent {
 	public PartEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel,
 			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
 		super(bot);
-		this.daoSnapshot = daoSnapshot;
+		this.userChannelDaoSnapshot = daoSnapshot;
 		this.channel = channel;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.reason = reason;
+	}
+
+	/**
+	 * @see #getUserChannelDaoSnapshot()
+	 * @see GenericSnapshotEvent
+	 * @return
+	 * @deprecated Use {@link #getUserChannelDaoSnapshot() } from
+	 * {@link GenericSnapshotEvent}
+	 */
+	@Deprecated
+	public UserChannelDaoSnapshot getDaoSnapshot() {
+		return userChannelDaoSnapshot;
 	}
 
 	/**
