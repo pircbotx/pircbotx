@@ -20,9 +20,11 @@ package org.pircbotx.hooks.events;
 import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.types.GenericSnapshotEvent;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 
 /**
@@ -40,20 +42,31 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DisconnectEvent extends Event {
-	/**
-	 * Snapshot of the user and channel info at time of disconnect
-	 */
-	protected final UserChannelDaoSnapshot daoSnapshot;
+public class DisconnectEvent extends Event implements GenericSnapshotEvent {
+	@Getter(onMethod = @_(
+			@Override))
+	protected final UserChannelDaoSnapshot userChannelDaoSnapshot;
 	/**
 	 * Exception encountered during disconnection, if any
 	 */
 	protected final Exception disconnectException;
 
-	public DisconnectEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot, Exception disconnectException) {
+	public DisconnectEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot userChannelDaoSnapshot, Exception disconnectException) {
 		super(bot);
-		this.daoSnapshot = daoSnapshot;
+		this.userChannelDaoSnapshot = userChannelDaoSnapshot;
 		this.disconnectException = disconnectException;
+	}
+
+	/**
+	 * @see #getUserChannelDaoSnapshot()
+	 * @see GenericSnapshotEvent
+	 * @return
+	 * @deprecated Use {@link #getUserChannelDaoSnapshot() } from
+	 * {@link GenericSnapshotEvent}
+	 */
+	@Deprecated
+	public UserChannelDaoSnapshot getDaoSnapshot() {
+		return userChannelDaoSnapshot;
 	}
 
 	/**
