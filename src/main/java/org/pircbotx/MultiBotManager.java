@@ -58,9 +58,9 @@ import org.slf4j.LoggerFactory;
  * on all bots. No more bots can be added, the Manager is finished. Note that an
  * optional {@link #stopAndWait() } method is provided to block until all bots
  * shutdown
- * </ol>
- * {@link #executeBot(org.pircbotx.PircBotX)} is overridable if you wish to 
- * do your own connecting
+ * </ol> {@link #executeBot(org.pircbotx.PircBotX)} is overridable if you wish
+ * to do your own connecting
+ *
  * @author Leon Blakey
  */
 @Slf4j
@@ -98,18 +98,40 @@ public class MultiBotManager {
 	}
 
 	/**
+	 * @deprecated Renamed to {@link #addNetwork(org.pircbotx.Configuration) }
+	 * to prevent confusion and to make the intent more clear
+	 * @param config
+	 * @see #addNetwork(org.pircbotx.Configuration)
+	 */
+	@Deprecated
+	public void addBot(Configuration config) {
+		addNetwork(config);
+	}
+
+	/**
 	 * Adds a managed bot using the specified configuration.
 	 *
 	 * @param config A configuration to pass to the created bot
 	 */
 	@Synchronized("stateLock")
 	@SuppressWarnings("unchecked")
-	public void addBot(Configuration config) {
+	public void addNetwork(Configuration config) {
 		checkNotNull(config, "Configuration cannot be null");
 		//Since creating a bot is expensive, verify the state first
 		if (state != State.NEW && state != State.RUNNING)
 			throw new RuntimeException("MultiBotManager is not running. State: " + state);
-		addBot(new PircBotX(config));
+		addNetwork(new PircBotX(config));
+	}
+
+	/**
+	 * @deprecated Renamed to {@link #addNetwork(org.pircbotx.PircBotX) } to
+	 * prevent confusion and to make the intent more clear
+	 * @param bot
+	 * @see #addNetwork(org.pircbotx.PircBotX)
+	 */
+	@Deprecated
+	public void addBot(PircBotX bot) {
+
 	}
 
 	/**
@@ -118,7 +140,7 @@ public class MultiBotManager {
 	 * @param bot An existing <b>unconnected</b> bot
 	 */
 	@Synchronized("stateLock")
-	public void addBot(PircBotX bot) {
+	public void addNetwork(PircBotX bot) {
 		checkNotNull(bot, "Bot cannot be null");
 		checkArgument(!bot.isConnected(), "Bot must not already be connected");
 		if (state == State.NEW) {
@@ -213,12 +235,13 @@ public class MultiBotManager {
 	@Synchronized("runningBotsLock")
 	@SuppressWarnings("unchecked")
 	public <B extends PircBotX> B getBotById(int id) {
-		return (B)runningBotsNumbers.inverse().get(id);
+		return (B) runningBotsNumbers.inverse().get(id);
 	}
-	
+
 	/**
-	 * Called when 
-	 * @param bot 
+	 * Called when
+	 *
+	 * @param bot
 	 */
 	protected void executeBot(PircBotX bot) throws Exception {
 		bot.startBot();
