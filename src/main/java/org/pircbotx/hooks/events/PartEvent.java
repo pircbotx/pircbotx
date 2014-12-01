@@ -63,8 +63,8 @@ public class PartEvent extends Event implements GenericChannelUserEvent, Generic
 	 */
 	protected final String reason;
 
-	public PartEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot daoSnapshot, @NonNull ChannelSnapshot channel,
-			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
+	public PartEvent(PircBotX bot, UserChannelDaoSnapshot daoSnapshot, ChannelSnapshot channel,
+			@NonNull UserHostmask userHostmask, UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.userChannelDaoSnapshot = daoSnapshot;
 		this.channel = channel;

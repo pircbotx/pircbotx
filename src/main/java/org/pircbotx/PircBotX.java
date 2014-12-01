@@ -582,7 +582,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 			//Clear relevant variables of information
 			loggedIn = false;
-			daoSnapshot = userChannelDao.createSnapshot();
+			daoSnapshot = (configuration.isSnapshotsEnabled()) ? userChannelDao.createSnapshot() : null;
 			userChannelDao.close();
 			inputParser.close();
 			dccHandler.close();
