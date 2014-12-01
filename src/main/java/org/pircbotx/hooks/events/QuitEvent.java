@@ -57,8 +57,8 @@ public class QuitEvent extends Event implements GenericUserEvent, GenericSnapsho
 	 */
 	protected final String reason;
 
-	public QuitEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot userChannelDaoSnapshot,
-			@NonNull UserHostmask userHostmask, @NonNull UserSnapshot user, @NonNull String reason) {
+	public QuitEvent(PircBotX bot, UserChannelDaoSnapshot userChannelDaoSnapshot,
+			@NonNull UserHostmask userHostmask, UserSnapshot user, @NonNull String reason) {
 		super(bot);
 		this.userChannelDaoSnapshot = userChannelDaoSnapshot;
 		this.userHostmask = userHostmask;

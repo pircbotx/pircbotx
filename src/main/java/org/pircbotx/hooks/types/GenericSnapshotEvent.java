@@ -17,6 +17,8 @@
  */
 package org.pircbotx.hooks.types;
 
+import javax.annotation.Nullable;
+import org.pircbotx.Configuration;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 
 /**
@@ -26,6 +28,8 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 public interface GenericSnapshotEvent {
 	/**
 	 * Snapshot of the UserChannelDao data before the event.
+	 * @see Configuration.Builder#setSnapshotsEnabled(boolean) 
 	 */
+	@Nullable
 	public UserChannelDaoSnapshot getUserChannelDaoSnapshot();
 }

@@ -79,6 +79,7 @@ public class Configuration {
 	protected final String realName;
 	protected final String channelPrefixes;
 	protected final String channelModeMessagePrefixes;
+	protected final boolean snapshotsEnabled;
 	//DCC
 	protected final boolean dccFilenameQuotes;
 	protected final ImmutableList<Integer> dccPorts;
@@ -158,7 +159,7 @@ public class Configuration {
 		for (Map.Entry<String, String> curEntry : builder.getAutoJoinChannels().entrySet())
 			if (StringUtils.isBlank(curEntry.getKey()))
 				throw new RuntimeException("Channel must not be blank");
-		if(builder.getNickservOnSuccess() != null) {
+		if (builder.getNickservOnSuccess() != null) {
 			checkArgument(StringUtils.isNotBlank(builder.getNickservNick()), "Must specify nickserv nick");
 		}
 
@@ -174,6 +175,7 @@ public class Configuration {
 		this.realName = builder.getRealName();
 		this.channelPrefixes = builder.getChannelPrefixes();
 		this.channelModeMessagePrefixes = builder.getChannelModeMessagePrefixes();
+		this.snapshotsEnabled = builder.isSnapshotsEnabled();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
@@ -266,6 +268,20 @@ public class Configuration {
 		 * this mode. Defaults to <code>+%&~!</code>
 		 */
 		protected String channelModeMessagePrefixes = "+%&~!";
+		/**
+		 * Enable creation of snapshots, default true. In bulk datasets or very
+		 * lower power devices, creating snapshots can be a relatively expensive
+		 * operation for every {@link GenericSnapshotEvent} (eg PartEvent,
+		 * QuitEvent) since the entire UserChannelDao with all of its users and
+		 * channels is cloned. This can optionally disabled by setting this to
+		 * false, however this makes all
+		 * {@link GenericSnapshotEvent#getUserChannelDaoSnapshot()} calls return
+		 * null.
+		 * <p>
+		 * In regular usage disabling snapshots is not necessary because there
+		 * relatively few user QUITs and PARTs per second.
+		 */
+		protected boolean snapshotsEnabled = true;
 		//DCC
 		/**
 		 * If true sends filenames in quotes, otherwise uses underscores.
@@ -464,6 +480,7 @@ public class Configuration {
 			this.realName = configuration.getRealName();
 			this.channelPrefixes = configuration.getChannelPrefixes();
 			this.channelModeMessagePrefixes = configuration.getChannelModeMessagePrefixes();
+			this.snapshotsEnabled = configuration.isSnapshotsEnabled();
 			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
 			this.dccPorts.addAll(configuration.getDccPorts());
 			this.dccLocalAddress = configuration.getDccLocalAddress();
@@ -517,6 +534,7 @@ public class Configuration {
 			this.realName = otherBuilder.getRealName();
 			this.channelPrefixes = otherBuilder.getChannelPrefixes();
 			this.channelModeMessagePrefixes = otherBuilder.getChannelModeMessagePrefixes();
+			this.snapshotsEnabled = otherBuilder.isSnapshotsEnabled();
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
@@ -575,15 +593,16 @@ public class Configuration {
 		public int getDccResumeAcceptTimeout() {
 			return (dccResumeAcceptTimeout != -1) ? dccResumeAcceptTimeout : getDccAcceptTimeout();
 		}
-		
+
 		/**
 		 * Add a collection of cap handlers
-		 * @see #getCapHandlers() 
+		 *
+		 * @see #getCapHandlers()
 		 * @param handlers
-		 * @return 
+		 * @return
 		 */
 		public Builder addCapHandlers(@NonNull Iterable<CapHandler> handlers) {
-			for(CapHandler curHandler : handlers) {
+			for (CapHandler curHandler : handlers) {
 				addCapHandler(curHandler);
 			}
 			return this;
@@ -591,7 +610,8 @@ public class Configuration {
 
 		/**
 		 * Add a cap handler
-		 * @see #getCapHandlers() 
+		 *
+		 * @see #getCapHandlers()
 		 * @param handler
 		 * @return
 		 */
@@ -599,15 +619,16 @@ public class Configuration {
 			getCapHandlers().add(handler);
 			return this;
 		}
-		
+
 		/**
 		 * Add a collection of listeners to the current ListenerManager
-		 * @see #getListenerManager() 
+		 *
+		 * @see #getListenerManager()
 		 * @param listeners
-		 * @return 
+		 * @return
 		 */
 		public Builder addListeners(@NonNull Iterable<Listener> listeners) {
-			for(Listener curListener : listeners) {
+			for (Listener curListener : listeners) {
 				addListener(curListener);
 			}
 			return this;
@@ -615,7 +636,8 @@ public class Configuration {
 
 		/**
 		 * Add a listener to the current ListenerManager
-		 * @see #getListenerManager() 
+		 *
+		 * @see #getListenerManager()
 		 * @param listener
 		 * @return
 		 */
@@ -625,15 +647,16 @@ public class Configuration {
 		}
 
 		public Builder addAutoJoinChannels(@NonNull Iterable<String> channels) {
-			for(String curChannel : channels) {
+			for (String curChannel : channels) {
 				addAutoJoinChannel(curChannel);
 			}
 			return this;
 		}
-		
+
 		/**
 		 * Add a channel to join on connect
-		 * @see #getAutoJoinChannels() 
+		 *
+		 * @see #getAutoJoinChannels()
 		 * @param channel
 		 * @return
 		 */
@@ -669,14 +692,14 @@ public class Configuration {
 			servers.add(new ServerEntry(server, port));
 			return this;
 		}
-		
+
 		public Builder addServer(@NonNull ServerEntry serverEntry) {
 			servers.add(serverEntry);
 			return this;
 		}
-		
+
 		public Builder addServers(@NonNull Iterable<ServerEntry> serverEnteries) {
-			for(ServerEntry curServerEntry : serverEnteries)
+			for (ServerEntry curServerEntry : serverEnteries)
 				servers.add(curServerEntry);
 			return this;
 		}
@@ -853,7 +876,7 @@ public class Configuration {
 		@NonNull
 		private final String hostname;
 		private final int port;
-		
+
 		@Override
 		public String toString() {
 			return hostname + ":" + port;
