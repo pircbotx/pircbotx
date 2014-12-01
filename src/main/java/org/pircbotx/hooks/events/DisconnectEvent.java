@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.types.GenericSnapshotEvent;
@@ -51,7 +50,7 @@ public class DisconnectEvent extends Event implements GenericSnapshotEvent {
 	 */
 	protected final Exception disconnectException;
 
-	public DisconnectEvent(PircBotX bot, @NonNull UserChannelDaoSnapshot userChannelDaoSnapshot, Exception disconnectException) {
+	public DisconnectEvent(PircBotX bot, UserChannelDaoSnapshot userChannelDaoSnapshot, Exception disconnectException) {
 		super(bot);
 		this.userChannelDaoSnapshot = userChannelDaoSnapshot;
 		this.disconnectException = disconnectException;

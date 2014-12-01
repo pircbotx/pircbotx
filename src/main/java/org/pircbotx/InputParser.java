@@ -373,7 +373,7 @@ public class InputParser implements Closeable {
 			// We're connected to the server.
 			bot.loggedIn(configuration.getName() + (nickSuffix == 0 ? "" : nickSuffix));
 			log.debug("Logged onto server.");
-			
+
 			//Were probably going to stay connected to the server after this point
 			bot.setConnectAttempts(0);
 
@@ -408,7 +408,7 @@ public class InputParser implements Closeable {
 		else if (code.equals("670")) {
 			//Server is saying that we can upgrade to TLS
 			log.debug("Upgrading to TLS connecting with system default SSLSocketFactory");
-			
+
 			SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
 				if (curCapHandler instanceof TLSCapHandler)
@@ -420,10 +420,10 @@ public class InputParser implements Closeable {
 					true);
 			sslSocket.startHandshake();
 			bot.changeSocket(sslSocket);
-			
+
 			//Notify CAP Handlers
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
-				if(curCapHandler.handleUnknown(bot, rawLine))
+				if (curCapHandler.handleUnknown(bot, rawLine))
 					addCapHandlerFinished(curCapHandler);
 		} else if (code.equals("CAP")) {
 			//Handle CAP Code; remove extra from params
@@ -441,7 +441,7 @@ public class InputParser implements Closeable {
 
 				for (CapHandler curCapHandler : getCapHandlersRemaining())
 					if (curCapHandler.handleACK(bot, capParams))
-						addCapHandlerFinished(curCapHandler);		
+						addCapHandlerFinished(curCapHandler);
 			} else if (capCommand.equals("NAK")) {
 				for (CapHandler curCapHandler : getCapHandlersRemaining())
 					if (curCapHandler.handleNAK(bot, capParams))
@@ -458,17 +458,17 @@ public class InputParser implements Closeable {
 				if (curCapHandler.handleUnknown(bot, rawLine))
 					addCapHandlerFinished(curCapHandler);
 	}
-	
+
 	protected List<CapHandler> getCapHandlersRemaining() {
 		List<CapHandler> remaining = Lists.newArrayList(configuration.getCapHandlers());
 		remaining.removeAll(capHandlersFinished);
 		return remaining;
 	}
-	
+
 	protected void addCapHandlerFinished(CapHandler capHandler) {
 		log.debug("Cap Handler finished " + capHandler);
 		capHandlersFinished.add(capHandler);
-		if(!capEndSent && capHandlersFinished.size() == configuration.getCapHandlers().size()) {
+		if (!capEndSent && capHandlersFinished.size() == configuration.getCapHandlers().size()) {
 			capEndSent = true;
 			bot.sendCAP().end();
 			bot.enabledCapabilities = Collections.unmodifiableList(bot.enabledCapabilities);
@@ -536,9 +536,19 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new JoinEvent(bot, channel, source, sourceUser));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
-			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
-			ChannelSnapshot channelSnapshot = daoSnapshot.getChannel(channel.getName());
-			UserSnapshot sourceSnapshot = daoSnapshot.getUser(source);
+			UserChannelDaoSnapshot daoSnapshot;
+			ChannelSnapshot channelSnapshot;
+			UserSnapshot sourceSnapshot;
+			if (configuration.isSnapshotsEnabled()) {
+				daoSnapshot = bot.getUserChannelDao().createSnapshot();
+				channelSnapshot = daoSnapshot.getChannel(channel.getName());
+				sourceSnapshot = daoSnapshot.getUser(source);
+			} else {
+				daoSnapshot = null;
+				channelSnapshot = null;
+				sourceSnapshot = null;
+			}
+			
 			if (source.getNick().equalsIgnoreCase(bot.getNick()))
 				//We parted the channel
 				bot.getUserChannelDao().removeChannel(channel);
@@ -559,8 +569,15 @@ public class InputParser implements Closeable {
 			// Someone is sending a notice.
 			configuration.getListenerManager().dispatchEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message));
 		} else if (command.equals("QUIT")) {
-			UserChannelDaoSnapshot daoSnapshot = bot.getUserChannelDao().createSnapshot();
-			UserSnapshot sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
+			UserChannelDaoSnapshot daoSnapshot;
+			UserSnapshot sourceSnapshot;
+			if (configuration.isSnapshotsEnabled()) {
+				daoSnapshot = bot.getUserChannelDao().createSnapshot();
+				sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
+			} else {
+				daoSnapshot = null;
+				sourceSnapshot = null;
+			}
 			//A real target is missing, so index is off
 			String reason = target;
 			// Someone has quit from the IRC server.
@@ -907,8 +924,7 @@ public class InputParser implements Closeable {
 				otherUser.setBotUserdata(hostmask);
 			}
 			return otherUser;
-		}
-		else if (bot.getUserChannelDao().containsUser(hostmask))
+		} else if (bot.getUserChannelDao().containsUser(hostmask))
 			throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");
 		return bot.getUserChannelDao().createUser(hostmask);
 	}
