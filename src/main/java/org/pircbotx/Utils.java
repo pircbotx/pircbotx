@@ -121,9 +121,9 @@ public final class Utils {
 		if (input == null || input.length() == 0)
 			return stringParts;
 
-		//Heavily optimized version string split by space with all characters after :
-		//added as a single entry. Under benchmarks, its faster than StringTokenizer,
-		//String.split, toCharArray, and charAt
+		//Heavily optimized string split by space with all characters after :
+		//added as a single entry. Under benchmarks, this is faster than 
+		//StringTokenizer, String.split, toCharArray, and charAt
 		String trimmedInput = CharMatcher.WHITESPACE.trimFrom(input);
 		int pos = 0, end;
 		while ((end = trimmedInput.indexOf(' ', pos)) >= 0) {
