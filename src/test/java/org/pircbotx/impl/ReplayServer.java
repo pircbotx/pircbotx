@@ -58,7 +58,7 @@ public class ReplayServer {
 	 * the IRC server
 	 */
 	@Slf4j
-	static class ReplayPircBotX extends PircBotX {
+	protected static class ReplayPircBotX extends PircBotX {
 		protected final Queue<String> outputQueue;
 		@Getter
 		protected boolean closed = false;
@@ -89,7 +89,7 @@ public class ReplayServer {
 	 */
 	@RequiredArgsConstructor
 	@Slf4j
-	static class ReplayListenerManager extends GenericListenerManager {
+	protected static class ReplayListenerManager extends GenericListenerManager {
 		protected final Queue<Event> eventQueue;
 
 		public ReplayListenerManager(Queue<Event> eventQueue, Listener... listeners) {
@@ -122,7 +122,7 @@ public class ReplayServer {
 		}
 	}
 
-	public static class ReplayListener extends ListenerAdapter {
+	static class ReplayListener extends ListenerAdapter {
 		@Override
 		public void onGenericMessage(GenericMessageEvent event) throws Exception {
 			if (event.getMessage().startsWith("?dumpusers")) {
@@ -217,10 +217,5 @@ public class ReplayServer {
 		timer.stop();
 		log.debug("---Replay successful in {}---", 
 				DurationFormatUtils.formatDuration(timer.getTime(), "mm'min'ss'sec'SSS'ms'"));
-	}
-
-	private static void assertEquals(String source, String equals, String error) {
-		if (!source.equals(equals))
-			throw new RuntimeException(error);
 	}
 }
