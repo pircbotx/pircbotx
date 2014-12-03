@@ -214,6 +214,10 @@ public class Configuration {
 		this.botFactory = builder.getBotFactory();
 	}
 
+	public <M extends ListenerManager> M getListenerManager() {
+		return (M) listenerManager;
+	}
+
 	@Accessors(chain = true)
 	@Data
 	public static class Builder {
@@ -742,10 +746,10 @@ public class Configuration {
 		 *
 		 * @return Current ListenerManager
 		 */
-		public ListenerManager getListenerManager() {
+		public <M extends ListenerManager> M getListenerManager() {
 			if (listenerManager == null)
 				setListenerManager(new ThreadedListenerManager());
-			return listenerManager;
+			return (M) listenerManager;
 		}
 
 		/**
