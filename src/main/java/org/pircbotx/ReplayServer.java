@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with
  * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.pircbotx.impl;
+package org.pircbotx;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -29,25 +29,19 @@ import java.util.LinkedList;
 import java.util.Queue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Delegate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
-import org.pircbotx.User;
 import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 
 /**
  * Helpful server for replaying a raw log to the bot.
- * <p>
- * <b>NOTE:</b> In order to avoid write exceptions in the client you must
- * override {@link PircBotX#sendRawLine(java.lang.String) } to simply print the
- * output instead of sending it to this server!
  *
  * @author Leon Blakey
  */
@@ -89,19 +83,18 @@ public class ReplayServer {
 	 */
 	@RequiredArgsConstructor
 	@Slf4j
-	protected static class ReplayListenerManager extends GenericListenerManager {
-		protected final Queue<Event> eventQueue;
-
-		public ReplayListenerManager(Queue<Event> eventQueue, Listener... listeners) {
-			this.eventQueue = eventQueue;
-			for (Listener curListener : listeners)
-				addListener(curListener);
+	protected static class WrapperListenerManager extends ListenerManager {
+		private static interface ImplExclude {
+			public void dispatchEvent(Event event);
 		}
+		@Delegate(excludes = ImplExclude.class)
+		protected final ListenerManager impl;
+		protected final Queue<Event> eventQueue;
 
 		@Override
 		public void dispatchEvent(Event event) {
 			eventQueue.add(event);
-			super.dispatchEvent(event);
+			impl.dispatchEvent(event);
 		}
 	}
 
@@ -138,27 +131,40 @@ public class ReplayServer {
 		if (!file.exists()) {
 			throw new IOException("File " + file + " does not exist");
 		}
-		replay(new FileInputStream(file), "file " + file.getCanonicalPath());
+		replay(generateConfig(), new FileInputStream(file), "file " + file.getCanonicalPath());
 	}
-
-	public static void replay(InputStream input, String title) throws Exception {
-		log.info("---Replaying {}---", title);
-		StopWatch timer = new StopWatch();
-		timer.start();
-
-		final LinkedList<Event> eventQueue = Lists.newLinkedList();
-		Configuration config = new Configuration.Builder()
+	
+	public static void replayFile(File file, Configuration.Builder config) throws Exception {
+		if (!file.exists()) {
+			throw new IOException("File " + file + " does not exist");
+		}
+		replay(config, new FileInputStream(file), "file " + file.getCanonicalPath());
+	}
+	
+	public static Configuration.Builder generateConfig() {
+		return new Configuration.Builder()
 				.setName("QuackPirc")
 				.setLogin("QP")
 				.addServer("example.com")
 				.setNickservPassword(System.getProperty("nickserv"))
 				.setMessageDelay(0)
-				.setListenerManager(new ReplayListenerManager(eventQueue, new ReplayListener()))
-				.setShutdownHookEnabled(false)
-				.buildConfiguration();
+				.setListenerManager(new GenericListenerManager())
+				.setShutdownHookEnabled(false);
+	}
 
+	public static void replay(Configuration.Builder config, InputStream input, String title) throws Exception {
+		log.info("---Replaying {}---", title);
+		StopWatch timer = new StopWatch();
+		timer.start();
+		
+		//Wrap listener manager with ours that siphons off events
+		final Queue<Event> eventQueue = Lists.newLinkedList();
+		WrapperListenerManager newManager = new WrapperListenerManager(config.getListenerManager(), eventQueue);
+		config.setListenerManager(newManager);
+		config.addListener(new ReplayListener());
+		
 		final LinkedList<String> outputQueue = Lists.newLinkedList();
-		ReplayPircBotX bot = new ReplayPircBotX(config, outputQueue);
+		ReplayPircBotX bot = new ReplayPircBotX(config.buildConfiguration(), outputQueue);
 
 		BufferedReader fileInput = new BufferedReader(new InputStreamReader(input));
 		boolean skippedHeader = false;
@@ -199,10 +205,10 @@ public class ReplayServer {
 				} else if (StringUtils.startsWith(line, "QUIT")) {
 					log.debug("Skipping QUIT output, server should send its own QUIT");
 				} else if (!line.equals(lastOutput)) {
-					log.debug("Expected last output: " + line);
+					log.error("Expected last output: " + line);
 					log.error("Given last output: " + lastOutput);
 					for (String curOutput : outputQueue) {
-						log.debug("Queued output: " + curOutput);
+						log.error("Queued output: " + curOutput);
 					}
 					throw new RuntimeException("Failed to verify output (see log)");
 				}
@@ -212,6 +218,8 @@ public class ReplayServer {
 
 			for (Event curEvent : Iterables.consumingIterable(eventQueue))
 				log.debug("(events) " + curEvent);
+			
+			log.debug("");
 		}
 
 		timer.stop();
