@@ -214,6 +214,7 @@ public class Configuration {
 		this.botFactory = builder.getBotFactory();
 	}
 
+	@SuppressWarnings("unchecked")
 	public <M extends ListenerManager> M getListenerManager() {
 		return (M) listenerManager;
 	}
@@ -746,6 +747,7 @@ public class Configuration {
 		 *
 		 * @return Current ListenerManager
 		 */
+		@SuppressWarnings("unchecked")
 		public <M extends ListenerManager> M getListenerManager() {
 			if (listenerManager == null)
 				setListenerManager(new ThreadedListenerManager());
