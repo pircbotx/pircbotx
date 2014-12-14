@@ -182,11 +182,13 @@ public class InputParser implements Closeable {
 				.add(new ChannelModeHandler('b') {
 					@Override
 					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
-						if (dispatchEvent)
+						if (dispatchEvent) {
+							UserHostmask banHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, params.next());
 							if (adding)
-								Utils.dispatchEvent(bot, new SetChannelBanEvent(bot, channel, sourceHostmask, sourceUser, new UserHostmask(bot, params.next())));
+								Utils.dispatchEvent(bot, new SetChannelBanEvent(bot, channel, sourceHostmask, sourceUser, banHostmask));
 							else
-								Utils.dispatchEvent(bot, new RemoveChannelBanEvent(bot, channel, sourceHostmask, sourceUser, new UserHostmask(bot, params.next())));
+								Utils.dispatchEvent(bot, new RemoveChannelBanEvent(bot, channel, sourceHostmask, sourceUser, banHostmask));
+						}
 					}
 				})
 				.add(new ChannelModeHandler('t') {
@@ -326,13 +328,8 @@ public class InputParser implements Closeable {
 
 		//if user build source hostmask or call server parsing method
 		UserHostmask source;
-		int exclamation = sourceRaw.indexOf('!');
-		int at = sourceRaw.indexOf('@');
-		if (exclamation > 0 && at > 0 && exclamation < at)
-			source = new UserHostmask(bot, sourceRaw,
-					sourceRaw.substring(1, exclamation),
-					sourceRaw.substring(exclamation + 1, at),
-					sourceRaw.substring(at + 1));
+		if (StringUtils.containsAny(target, '!', '@'))
+			source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, target);
 		else {
 			//Must be a backend code 
 			int code = Utils.tryParseInt(command, -1);
@@ -347,7 +344,7 @@ public class InputParser implements Closeable {
 				// It must be a nick without login and hostname.
 				// (or maybe a NOTICE or suchlike from the server)
 				//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
-				source = new UserHostmask(bot, sourceRaw.substring(1), null, null, null);
+				source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, sourceRaw.substring(1));
 		}
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
@@ -587,7 +584,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new QuitEvent(bot, daoSnapshot, source, sourceSnapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
-			UserHostmask recipientHostmask = new UserHostmask(bot, message, message, null, null);
+			UserHostmask recipientHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, message);
 			User recipient = bot.getUserChannelDao().getUser(message);
 
 			if (recipient.getNick().equals(bot.getNick()))
@@ -702,7 +699,7 @@ public class InputParser implements Closeable {
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 
 			//Setup user
-			UserHostmask curUserHostmask = new UserHostmask(bot, parsedResponse.get(5), parsedResponse.get(2), parsedResponse.get(3));
+			UserHostmask curUserHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, null, parsedResponse.get(5), parsedResponse.get(2), parsedResponse.get(3));
 			User curUser = (bot.getUserChannelDao().containsUser(curUserHostmask)) ? bot.getUserChannelDao().getUser(curUserHostmask) : bot.getUserChannelDao().createUser(curUserHostmask);
 			curUser.setServer(parsedResponse.get(4));
 			processUserStatus(channel, curUser, parsedResponse.get(6));
@@ -842,8 +839,8 @@ public class InputParser implements Closeable {
 			//367 TheLQ #aChannel *!*@test1.host TheLQ!~quackstar@some.host 1415143822
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 
-			UserHostmask recipient = new UserHostmask(bot, parsedResponse.get(2));
-			UserHostmask source = new UserHostmask(bot, parsedResponse.get(3));
+			UserHostmask recipient = bot.getConfiguration().getBotFactory().createUserHostmask(bot, parsedResponse.get(2));
+			UserHostmask source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, parsedResponse.get(3));
 			long time = Long.parseLong(parsedResponse.get(4));
 			banListBuilder.put(channel, new BanListEvent.Entry(recipient, source, time));
 			log.debug("Adding entry");
@@ -895,7 +892,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().dispatchEvent(new ModeEvent(bot, channel, userHostmask, user, mode, modeParsed));
 		} else {
 			// The mode of a user is being changed.
-			UserHostmask targetHostmask = new UserHostmask(bot, target, target, null, null);
+			UserHostmask targetHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, target);
 			User targetUser = bot.getUserChannelDao().getUser(target);
 			configuration.getListenerManager().dispatchEvent(new UserModeEvent(bot, userHostmask, user, targetHostmask, targetUser, mode));
 		}
@@ -953,7 +950,7 @@ public class InputParser implements Closeable {
 		@Override
 		public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 			String recipient = params.next();
-			UserHostmask recipientHostmask = new UserHostmask(bot, recipient, recipient, null, null);
+			UserHostmask recipientHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, recipient);
 			User recipientUser = null;
 			if (bot.getUserChannelDao().containsUser(recipient)) {
 				recipientUser = bot.getUserChannelDao().getUser(recipient);
