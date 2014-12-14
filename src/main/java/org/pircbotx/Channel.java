@@ -85,7 +85,7 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * The user who set the topic. Default is blank
 	 */
-	protected String topicSetter = "";
+	protected UserHostmask topicSetter;
 	/**
 	 * Moderated (+m) status
 	 */
@@ -320,7 +320,7 @@ public class Channel implements Comparable<Channel> {
 	 *
 	 * @return The user that set the topic in String format
 	 */
-	public String getTopicSetter() {
+	public UserHostmask getTopicSetter() {
 		return topicSetter;
 	}
 

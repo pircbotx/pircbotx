@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
+import org.pircbotx.UserHostmask;
 
 /**
  *
@@ -92,7 +93,7 @@ public class ChannelSnapshot extends Channel {
 	}
 
 	@Override
-	protected void setTopicSetter(String topicSetter) {
+	protected void setTopicSetter(UserHostmask topicSetter) {
 		SnapshotUtils.fail();
 	}
 

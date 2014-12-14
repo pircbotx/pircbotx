@@ -237,7 +237,7 @@ public class InputParserTest {
 
 		//Verify event contents
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
-		assertEquals(tevent.getUser(), "SourceUser", "TopicEvent's user doesn't match given");
+		assertEquals(tevent.getUser(), aUser, "TopicEvent's user doesn't match given");
 		assertEquals(tevent.getChannel(), aChannel, "TopicEvent's channel doesn't match given");
 		assertEquals(tevent.getTopic(), aString, "TopicEvent's topic doesn't match given");
 		//Just make sure the time is reasonable since its based off of System.currentTimeMillis
@@ -250,13 +250,26 @@ public class InputParserTest {
 		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 332 PircBotXUser #aChannel :" + aString + aString);
 		assertEquals(aChannel.getTopic(), aString + aString);
+		assertNull(aChannel.getTopicSetter(), "why is the topic setter set?");
 	}
 
 	@Test(description = "Verify TopicEvent's extended information from line sent after TOPIC line")
 	public void topicInfoTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel AUser 1268522937");
-		assertEquals(aChannel.getTopicSetter(), "AUser");
+		assertEquals(aChannel.getTopicSetter().getNick(), "AUser");
+		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
+
+		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");
+		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
+	}
+	
+	@Test(description = "Verify TopicEvent's extended information from line sent after TOPIC line")
+	public void topicInfoFullHostmaskTest() throws IOException, IrcException {
+		Channel aChannel = dao.createChannel("#aChannel");
+		UserHostmask aUser = TestUtils.generateTestUserSourceHostmask(bot);
+		inputParser.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel "+aUser.getHostmask()+" 1268522937");
+		assertEquals(aChannel.getTopicSetter(), aUser);
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
 
 		TopicEvent tevent = getEvent(TopicEvent.class, "No topic event dispatched");

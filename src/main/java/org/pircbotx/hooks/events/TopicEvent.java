@@ -25,6 +25,7 @@ import lombok.NonNull;
 import org.pircbotx.Channel;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.types.GenericChannelEvent;
 
 /**
@@ -53,7 +54,7 @@ public class TopicEvent extends Event implements GenericChannelEvent {
 	/**
 	 * The user that set the topic.
 	 */
-	protected final String user;
+	protected final UserHostmask user;
 	/**
 	 * True if the topic has just been changed, false if the topic was already
 	 * there.
@@ -64,7 +65,7 @@ public class TopicEvent extends Event implements GenericChannelEvent {
 	 */
 	protected final long date;
 
-	public TopicEvent(PircBotX bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull String user, long date, boolean changed) {
+	public TopicEvent(PircBotX bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull UserHostmask user, long date, boolean changed) {
 		super(bot);
 		this.channel = channel;
 		this.oldTopic = oldTopic;
@@ -82,6 +83,6 @@ public class TopicEvent extends Event implements GenericChannelEvent {
 	 */
 	@Override
 	public void respond(@Nullable String response) {
-		getChannel().send().message(bot.getUserChannelDao().getUser(user), response);
+		getChannel().send().message(user, response);
 	}
 }
