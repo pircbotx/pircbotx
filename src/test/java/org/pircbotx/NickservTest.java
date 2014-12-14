@@ -45,7 +45,40 @@ public class NickservTest {
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :");
 		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :You are now identified for PircBotX");
-		assertTrue(bot.isNickservIdentified(), "Nickserv identified too early");
+		assertTrue(bot.isNickservIdentified(), "Bot isn't identified even when nickserv");
+	}
+	
+	@Test
+	public void nickservCustomMessageTest() throws IOException, IrcException {
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
+				.setNickservPassword("testpw")
+				.setNickservOnSuccess("hello der")
+				.buildConfiguration());
+		InputParser inputParser = bot.getInputParser();
 		
+		assertFalse(bot.isNickservIdentified(), "Nickserv hasn't even started yet!");
+		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :jibberish");
+		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
+		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :");
+		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
+		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :hello der");
+		assertTrue(bot.isNickservIdentified(), "Bot isn't identified even when nickserv");
+	}
+	
+	@Test
+	public void nickservOtherNickTest() throws IOException, IrcException {
+		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
+				.setNickservPassword("testpw")
+				.setNickservNick("somenick")
+				.buildConfiguration());
+		InputParser inputParser = bot.getInputParser();
+		
+		assertFalse(bot.isNickservIdentified(), "Nickserv hasn't even started yet!");
+		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :jibberish");
+		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
+		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :");
+		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
+		inputParser.handleLine(":somenick!services@swiftirc.net NOTICE PircBotXUser :You are now identified for PircBotX");
+		assertTrue(bot.isNickservIdentified(), "Bot isn't identified even when nickserv");
 	}
 }
