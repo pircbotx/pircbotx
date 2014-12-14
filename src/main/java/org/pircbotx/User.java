@@ -119,14 +119,7 @@ public class User extends UserHostmask {
 			botLogin = userHostmask.getLogin();
 		}
 	}
-
-	@Override
-	public String getHostmask() {
-		if (botHostname != null)
-			return botHostname;
-		return super.getHostmask();
-	}
-
+	
 	@Override
 	public String getLogin() {
 		if (botLogin != null)
@@ -134,6 +127,13 @@ public class User extends UserHostmask {
 		return super.getLogin();
 	}
 
+	@Override
+	public String getHostname() {
+		if (botHostname != null)
+			return botHostname;
+		return super.getHostname();
+	}
+	
 	public UserSnapshot createSnapshot() {
 		return new UserSnapshot(this);
 	}

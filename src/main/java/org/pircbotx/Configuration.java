@@ -864,8 +864,12 @@ public class Configuration {
 			return new ServerInfo(bot);
 		}
 
-		public UserHostmask createUserHostmask(PircBotX bot, String hostmask, String nick, String login, String hostname) {
-			return new UserHostmask(bot, hostmask, nick, login, hostname);
+		public UserHostmask createUserHostmask(PircBotX bot, String hostmask) {
+			return new UserHostmask(bot, hostmask);
+		}
+		
+		public UserHostmask createUserHostmask(PircBotX bot, String extbanPrefix, String nick, String login, String hostname) {
+			return new UserHostmask(bot, extbanPrefix, nick, login, hostname);
 		}
 
 		public User createUser(UserHostmask userHostmask) {

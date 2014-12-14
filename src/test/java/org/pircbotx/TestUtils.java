@@ -70,7 +70,7 @@ public class TestUtils {
 	}
 
 	public static UserHostmask generateTestUserSourceHostmask(PircBotX bot) {
-		return new UserHostmask(bot, "SourceUser", "~SomeTest", "host.test");
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, "SourceUser!~SomeTest@host.test");
 	}
 
 	public static User generateTestUserSource(PircBotX bot) {
@@ -78,7 +78,7 @@ public class TestUtils {
 	}
 
 	public static UserHostmask generateTestUserOtherHostmask(PircBotX bot) {
-		return new UserHostmask(bot, "OtherUser", "~SomeTest", "host.test");
+		return bot.getConfiguration().getBotFactory().createUserHostmask(bot, "OtherUser!~SomeTest@host.test");
 	}
 
 	public static User generateTestUserOther(PircBotX bot) {
