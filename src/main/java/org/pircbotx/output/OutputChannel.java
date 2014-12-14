@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
-import org.pircbotx.User;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.PartEvent;
 
@@ -71,7 +71,7 @@ public class OutputChannel {
 	 * @param user The user to recieve the message in the channel
 	 * @param message The message to send
 	 */
-	public void message(User user, String message) {
+	public void message(UserHostmask user, String message) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't send message to null user");
 		message(user.getNick() + ": " + message);
@@ -113,7 +113,7 @@ public class OutputChannel {
 	 * @param user
 	 * @see OutputIRC#invite(java.lang.String, java.lang.String)
 	 */
-	public void invite(@NonNull User user) {
+	public void invite(@NonNull UserHostmask user) {
 		bot.sendIRC().invite(user.getNick(), channel.getName());
 	}
 
@@ -223,7 +223,7 @@ public class OutputChannel {
 	 * @param user The user to perform the mode change on
 	 * @see #setMode(java.lang.String)
 	 */
-	public void setMode(String mode, User user) {
+	public void setMode(String mode, UserHostmask user) {
 		if (mode == null)
 			throw new IllegalArgumentException("Can't set user mode on channel to null");
 		if (user == null)
@@ -403,7 +403,7 @@ public class OutputChannel {
 	 *
 	 * @param user The user we are opping.
 	 */
-	public void op(User user) {
+	public void op(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set op on null user");
 		setMode("+o " + user.getNick());
@@ -415,7 +415,7 @@ public class OutputChannel {
 	 *
 	 * @param user The user we are deopping.
 	 */
-	public void deOp(User user) {
+	public void deOp(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove op on null user");
 		setMode("-o " + user.getNick());
@@ -427,7 +427,7 @@ public class OutputChannel {
 	 *
 	 * @param user The user we are voicing.
 	 */
-	public void voice(User user) {
+	public void voice(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set voice on null user");
 		setMode("+v " + user.getNick());
@@ -439,7 +439,7 @@ public class OutputChannel {
 	 *
 	 * @param user The user we are devoicing.
 	 */
-	public void deVoice(User user) {
+	public void deVoice(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove voice on null user");
 		setMode("-v " + user.getNick());
@@ -454,7 +454,7 @@ public class OutputChannel {
 	 *
 	 * @param user
 	 */
-	public void halfOp(User user) {
+	public void halfOp(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set halfop on null user");
 		setMode("+h " + user.getNick());
@@ -469,7 +469,7 @@ public class OutputChannel {
 	 *
 	 * @param user
 	 */
-	public void deHalfOp(User user) {
+	public void deHalfOp(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove halfop on null user");
 		setMode("-h " + user.getNick());
@@ -484,7 +484,7 @@ public class OutputChannel {
 	 *
 	 * @param user
 	 */
-	public void owner(User user) {
+	public void owner(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set owner on null user");
 		setMode("+q " + user.getNick());
@@ -499,7 +499,7 @@ public class OutputChannel {
 	 *
 	 * @param user
 	 */
-	public void deOwner(User user) {
+	public void deOwner(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove owner on null user");
 		setMode("-q " + user.getNick());
@@ -514,7 +514,7 @@ public class OutputChannel {
 	 *
 	 * @param user
 	 */
-	public void superOp(User user) {
+	public void superOp(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't set super op on null user");
 		setMode("+a " + user.getNick());
@@ -529,7 +529,7 @@ public class OutputChannel {
 	 *
 	 * @param user
 	 */
-	public void deSuperOp(User user) {
+	public void deSuperOp(UserHostmask user) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't remove super op on null user");
 		setMode("-a " + user.getNick());
@@ -555,7 +555,7 @@ public class OutputChannel {
 	 *
 	 * @param user The user to kick.
 	 */
-	public void kick(User user) {
+	public void kick(UserHostmask user) {
 		kick(user, "");
 	}
 
@@ -567,7 +567,7 @@ public class OutputChannel {
 	 * @param user The user to kick.
 	 * @param reason A description of the reason for kicking a user.
 	 */
-	public void kick(User user, String reason) {
+	public void kick(UserHostmask user, String reason) {
 		if (user == null)
 			throw new IllegalArgumentException("Can't kick null user");
 		bot.sendRaw().rawLine("KICK " + channel.getName() + " " + user.getNick() + " :" + reason);
