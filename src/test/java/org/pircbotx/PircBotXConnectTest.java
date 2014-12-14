@@ -81,7 +81,7 @@ public class PircBotXConnectTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket(eq(address), anyInt(), eq((InetAddress)null), eq(0))).thenReturn(socket);
+		when(socketFactory.createSocket(eq(address), anyInt(), eq((InetAddress) null), eq(0))).thenReturn(socket);
 
 		//Setup bot
 		events = new ArrayList<Event>();
@@ -99,14 +99,14 @@ public class PircBotXConnectTest {
 	@SuppressWarnings("unchecked")
 	protected void validateEvents(PircBotX bot) throws Exception {
 		ClassToInstanceMap<Event> eventClasses = MutableClassToInstanceMap.create();
-		for(Event curEvent : events) {
+		for (Event curEvent : events) {
 			Class clazz = curEvent.getClass();
-			if(eventClasses.containsKey(clazz))
+			if (eventClasses.containsKey(clazz))
 				eventClasses.putInstance(clazz, null);
 			else
 				eventClasses.putInstance(clazz, curEvent);
 		}
-		
+
 		Event event = eventClasses.get(SocketConnectEvent.class);
 		assertNotNull(event, "No SocketConnectEvent dispatched");
 		assertEquals(event.getBot(), bot);
@@ -127,6 +127,7 @@ public class PircBotXConnectTest {
 				.addServer(address.getHostName())
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
+				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
 
@@ -146,6 +147,31 @@ public class PircBotXConnectTest {
 		validateEvents(bot);
 	}
 
+	@Test
+	public void connectNoCapTest() throws Exception {
+		//Connect the bot to the socket
+		PircBotX bot = new PircBotX(configurationBuilder
+				.addServer(address.getHostName())
+				.setServerPassword(null)
+				.setSocketFactory(socketFactory)
+				.setCapEnabled(false)
+				.buildConfiguration());
+		bot.connect();
+
+		//Make sure the bot is connected
+		verify(socketFactory).createSocket(address, 6667, null, 0);
+
+		//Verify lines
+		String[] lines = botOut.toString().split("\r\n");
+
+		assertEquals(lines.length, 2, "Extra line: " + StringUtils.join(lines, SystemUtils.LINE_SEPARATOR));
+
+		assertEquals(lines[0], "NICK PircBotXBot");
+		assertEquals(lines[1], "USER " + configurationBuilder.getLogin() + " 8 * :" + configurationBuilder.getVersion());
+
+		validateEvents(bot);
+	}
+
 	@Test(dependsOnMethods = "connectTest")
 	public void connectWithDifferentPortTest() throws Exception {
 		//Connect the bot to the socket
@@ -154,6 +180,7 @@ public class PircBotXConnectTest {
 				.addServer(address.getHostName(), 25622)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
+				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
 
@@ -180,6 +207,7 @@ public class PircBotXConnectTest {
 				.addServer(address.getHostName(), 6667)
 				.setServerPassword("pa55w0rd")
 				.setSocketFactory(socketFactory)
+				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
 
@@ -210,6 +238,7 @@ public class PircBotXConnectTest {
 				.addServer(address.getHostName(), 6667)
 				.setServerPassword(null)
 				.setSocketFactory(socketFactory)
+				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
 
