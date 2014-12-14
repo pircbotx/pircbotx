@@ -75,11 +75,6 @@ public class UserSnapshot extends User {
 	}
 
 	@Override
-	protected void setHostmask(String hostmask) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
-	}
-
-	@Override
 	protected void setIrcop(boolean ircop) {
 		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
 	}

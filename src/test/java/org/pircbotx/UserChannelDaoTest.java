@@ -79,6 +79,21 @@ public class UserChannelDaoTest {
 	}
 	
 	@Test
+	public void getUserByHostmaskFull() {
+		dao.createUser(TestUtils.generateTestUserSourceHostmask(smallBot));
+		assertTrue(dao.containsUser("SourceUser"));
+		assertTrue(dao.containsUser(TestUtils.generateTestUserSourceHostmask(smallBot)));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, null, "SourceUser", "~SomeTest", null)));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, null, "SourceUser", "~SomeTest", "")));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, null, "SourceUser", null, null)));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, null, "SourceUser", "", "")));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, null, "SourceUser", null, "")));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, null, "SourceUser", "", null)));
+		assertTrue(dao.containsUser(new UserHostmask(smallBot, "SourceUser")));
+		assertFalse(dao.containsUser(TestUtils.generateTestUserOtherHostmask(smallBot)));
+	}
+	
+	@Test
 	public void userHostmaskEqualsAndHashCodeTest() {
 		UserHostmask user1 = TestUtils.generateTestUserOtherHostmask(smallBot);
 		UserHostmask user2 = TestUtils.generateTestUserOtherHostmask(smallBot);

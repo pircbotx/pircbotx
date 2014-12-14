@@ -628,7 +628,7 @@ public class InputParserTest {
 		RemoveChannelLimitEvent event = getEvent(RemoveChannelLimitEvent.class, "No SetChannelLimitEvent dispatched + made it past genericChannelModeTest");
 		assertEquals(aChannel.getChannelLimit(), -1, "Channel limit doesn't match given");
 	}
-	
+
 	@Test
 	public void modeRecipientWithGlobHostmask() throws IOException, IrcException {
 		dao.createChannel("#aChannel");
@@ -929,7 +929,7 @@ public class InputParserTest {
 		assertEquals(event.getNick(), "randomuser", "Nick does not match given");
 		assertFalse(event.isExists(), "User should not exist");
 	}
-	
+
 	@Test
 	public void whoisNoChannelsTest() throws IOException, IrcException {
 		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
@@ -977,123 +977,123 @@ public class InputParserTest {
 		assertEquals(event.getUser(), botUser);
 		assertEquals(event.getUser(), bot.getUserBot());
 	}
-	
+
 	@Test
 	public void nickAlreadyInUseTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
-		inputParser.handleLine(":irc.someserver.net 433 * "+bot.getConfiguration().getName()+" :Nickname is already in use.");
-		
+		inputParser.handleLine(":irc.someserver.net 433 * " + bot.getConfiguration().getName() + " :Nickname is already in use.");
+
 		NickAlreadyInUseEvent event = getEvent(NickAlreadyInUseEvent.class, "NickAlreadyInUseEvent not dispatched for 433");
 		assertEquals(event.getUsedNick(), bot.getConfiguration().getName(), "event used nick doesn't match old one in config");
-		
+
 		String newNick = bot.getConfiguration().getName() + "1";
 		assertEquals(event.getAutoNewNick(), newNick, "event auto new nick doesn't match 'nick1'");
 		assertEquals(event.getBot().getNick(), newNick, "bots nick doesn't match events nick");
 		assertEquals(event.getBot().getUserBot().getNick(), newNick, "bots user nick doesn't match events nick");
 	}
-	
+
 	@Test
 	public void nickRenameQuitTest() throws IOException, IrcException {
-		UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
-		UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
+		UserHostmask testUser1 = TestUtils.generateTestUserSourceHostmask(bot);
+		UserHostmask testUser2 = TestUtils.generateTestUserOtherHostmask(bot);
 		dao.createChannel("#testchannel");
-		
+
 		//Join both users, have 1 quit, the remaining user takes its nick, then quits
 		inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testChannel");
 		inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testChannel");
-		
+
 		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
 		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
 		assertTrue(dao.containsUser(testUser1), "Renamed failed, user 2 didn't get renamed to 1");
 		assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
-		
+
 		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
 		assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
 	}
-	
+
 	@Test
 	public void nickRenamePartTest() throws IOException, IrcException {
-		UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
-		UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
+		UserHostmask testUser1 = TestUtils.generateTestUserSourceHostmask(bot);
+		UserHostmask testUser2 = TestUtils.generateTestUserOtherHostmask(bot);
 		dao.createChannel("#testchannel");
-		
+
 		//Join both users, have 1 quit, the remaining user takes its nick, then quits
 		inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testChannel");
 		inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testChannel");
-		
+
 		inputParser.handleLine(":" + testUser1.getHostmask() + " PART #testChannel :");
 		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
 		assertTrue(dao.containsUser(testUser1), "Renamed failed, user 2 didn't get renamed to 1");
 		assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
-		
+
 		inputParser.handleLine(":" + testUser1.getHostmask() + " PART #testChannel :");
 		assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
 	}
-	
-	    @Test
-    public void nickRenameWithQuitTest() throws IOException, IrcException {
-        UserHostmask testUser1 = TestUtils.generateTestUserOtherHostmask(bot);
-        UserHostmask testUser2 = new UserHostmask(bot, testUser1.getNick() + "2", testUser1.getLogin(), testUser1.getHostname());
-        dao.createChannel("#testchannel");
 
-        inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testchannel");
-        inputParser.handleLine(":" + testUser1.getHostmask() + " NICK :" + testUser2.getNick());
-        inputParser.handleLine(":" + testUser2.getHostmask() + " QUIT :");
+	@Test
+	public void nickRenameWithQuitTest() throws IOException, IrcException {
+		UserHostmask testUser1 = TestUtils.generateTestUserSourceHostmask(bot);
+		UserHostmask testUser2 = TestUtils.generateTestUserOtherHostmask(bot);
+		dao.createChannel("#testchannel");
 
-        assertFalse(dao.containsUser(testUser1), "Renamed failed, user 1 still exists");
-        assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
+		inputParser.handleLine(":" + testUser1.getHostmask() + " JOIN :#testchannel");
+		inputParser.handleLine(":" + testUser1.getHostmask() + " NICK :" + testUser2.getNick());
+		inputParser.handleLine(":" + testUser2.getHostmask() + " QUIT :");
 
-        inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testchannel");
-        inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
-        inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
+		assertFalse(dao.containsUser(testUser1), "Renamed failed, user 1 still exists");
+		assertFalse(dao.containsUser(testUser2), "quit failed, user 2 still exists");
 
-        assertFalse(dao.containsUser(testUser1), "quit failed, user 1 still exists");
-        assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
-    }
-	
+		inputParser.handleLine(":" + testUser2.getHostmask() + " JOIN :#testchannel");
+		inputParser.handleLine(":" + testUser2.getHostmask() + " NICK :" + testUser1.getNick());
+		inputParser.handleLine(":" + testUser1.getHostmask() + " QUIT :");
+
+		assertFalse(dao.containsUser(testUser1), "quit failed, user 1 still exists");
+		assertFalse(dao.containsUser(testUser2), "Renamed failed, user 2 still exists");
+	}
+
 	@Test
 	public void banListTest() throws IOException, IrcException {
 		Channel channel = dao.createChannel("#aChannel");
 		User source = TestUtils.generateTestUserSource(bot);
 		long time = 1415143822;
-		
+
 		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel *!test1@host.test " + source.getHostmask() + " " + time);
-		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel test2!*@host.test " + source.getHostmask() + " " + (time+1));
+		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel test2!*@host.test " + source.getHostmask() + " " + (time + 1));
 		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
-		
+
 		BanListEvent event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
 		assertEquals(event.getChannel(), channel, "Channel is wrong");
-		
+
 		//Verify all the sources and times
 		int timeCounter = 0;
-		for(BanListEvent.Entry curEntry : event.getEntries()) {
+		for (BanListEvent.Entry curEntry : event.getEntries()) {
 			assertEquals(curEntry.getSource(), source, "Source is wrong in entry " + curEntry);
 			assertEquals(curEntry.getTime(), time + (timeCounter++), "Time is wrong in entry " + curEntry);
 		}
-		
+
 		//Verify recipient hostmasks
-		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, "*", "test1", "host.test"), "Hostname in 0 is wrong");
-		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, "test2", "*", "host.test"), "Hostname in 0 is wrong");
+		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, null, "*", "test1", "host.test"), "Hostname in 0 is wrong");
+		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, null, "test2", "*", "host.test"), "Hostname in 0 is wrong");
 	}
-	
+
 	@Test
 	public void banExtbanListTest() throws IOException, IrcException {
 		Channel channel = dao.createChannel("#aChannel");
 		User source = TestUtils.generateTestUserSource(bot);
 		long time = 1415143822;
-		
+
 		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel $a:sutekh " + source.getHostmask() + " " + time);
 		inputParser.handleLine(":irc.someserver.net 367 PircBotXUser #aChannel ~b:sutekh!alogin@ahostmask " + source.getHostmask() + " " + time);
 		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
-		
+
 		BanListEvent event = getEvent(BanListEvent.class, "BanListEvent not dispatched");
 		assertEquals(event.getEntries().get(0).getRecipient().getExtbanPrefix(), "$a", "No extban prefix on prefix:nick");
-		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, "sutekh", null, null));
+		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, null, "sutekh", null, null));
 		assertEquals(event.getEntries().get(1).getRecipient().getExtbanPrefix(), "~b", "No extban prefix on prefix:nick!login@hostmask");
-		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, "sutekh", "alogin", "ahostmask"));
+		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, null, "sutekh", "alogin", "ahostmask"));
 	}
-	
+
 	@Test
 	public void channelModeMessageTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
@@ -1106,20 +1106,19 @@ public class InputParserTest {
 		assertEquals(mevent.getUser(), aUser, "Event user and original user do not match");
 		assertEquals(mevent.getMessage(), aString, "Message sent does not match");
 	}
-	
+
 	@Test
 	public void botUserDataTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getLogin(), "PircBotX", "User bots login doesn't match");
-		
+
 		String otherUser = TestUtils.generateTestUserOtherHostmask(bot).getHostmask();
-		inputParser.handleLine(":"+otherUser+" PRIVMSG #aChannel");
+		inputParser.handleLine(":" + otherUser + " PRIVMSG #aChannel");
 		assertEquals(bot.getUserBot().getLogin(), "PircBotX", "User bots login got changed");
-		
+
 		inputParser.handleLine(":PircBotXBot!~PircBotX@some.hostmask JOIN #aChannel");
 		assertEquals(bot.getUserBot().getLogin(), "~PircBotX", "User bots new login doesn't match");
-		assertEquals(bot.getUserBot().getHostmask(), "some.hostmask", "User bots new hostmask doesn't match");
-		
-		
+		assertEquals(bot.getUserBot().getHostname(), "some.hostmask", "User bots new hostmask doesn't match");
+
 	}
 
 	/**
@@ -1128,7 +1127,6 @@ public class InputParserTest {
 	 * error will be thrown. Also note that only the last occurrence of the
 	 * event will be fetched
 	 *
-	 * @param  The event type to be fetched
 	 * @param clazz The class of the event type
 	 * @param errorMessage An error message if the event type does not exist
 	 * @return A single requested event

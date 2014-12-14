@@ -17,9 +17,9 @@
  */
 package org.pircbotx;
 
+import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -35,10 +35,9 @@ import org.pircbotx.output.OutputUser;
  *
  * @author Leon Blakey
  */
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})
-@Data
-@Setter(AccessLevel.PROTECTED)
+@Getter
 @ToString(exclude = {"bot", "output"})
 public class UserHostmask implements Comparable<User> {
 	@NonNull
@@ -54,13 +53,13 @@ public class UserHostmask implements Comparable<User> {
 		}
 	};
 	/**
-	 * Hostmask of the user (The entire user!login@hostname).
+	 * Extban prefix if in format extban:nick or extban:nick!login@hostmask
 	 */
-	@NonNull
-	private String hostmask;
+	private final String extbanPrefix;
 	/**
 	 * Current nick of the user (nick!login@hostname).
 	 */
+	@Setter(AccessLevel.PROTECTED)
 	private String nick;
 	/**
 	 * Login of the user (nick!login@hostname).
@@ -70,21 +69,16 @@ public class UserHostmask implements Comparable<User> {
 	 * Hostname of the user (nick!login@hostname).
 	 */
 	private final String hostname;
-	/**
-	 * Extban prefix if in format extban:nick or extban:nick!login@hostmask
-	 */
-	private final String extbanPrefix;
 
-	public UserHostmask(PircBotX bot, String rawHostmask) {
+	protected UserHostmask(PircBotX bot, String rawHostmask) {
+		Preconditions.checkArgument(StringUtils.isNotBlank(rawHostmask), "Cannot parse blank hostmask");
 		this.bot = bot;
-		if (StringUtils.containsAny(rawHostmask, "!@")) {
-			this.hostmask = rawHostmask;
+		if (StringUtils.contains(rawHostmask, "!") && StringUtils.contains(rawHostmask, "@")) {
 			String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
 			this.nick = hostmaskParts[0];
 			this.login = hostmaskParts[1];
 			this.hostname = hostmaskParts[2];
 		} else {
-			this.hostmask = rawHostmask;
 			this.nick = rawHostmask;
 			this.login = null;
 			this.hostname = null;
@@ -99,33 +93,31 @@ public class UserHostmask implements Comparable<User> {
 		}
 	}
 
-	public UserHostmask(UserHostmask otherHostmask) {
+	protected UserHostmask(UserHostmask otherHostmask) {
 		this.bot = otherHostmask.getBot();
-		this.hostmask = otherHostmask.getHostmask();
 		this.nick = otherHostmask.getNick();
 		this.login = otherHostmask.getLogin();
 		this.hostname = otherHostmask.getHostname();
 		this.extbanPrefix = otherHostmask.getExtbanPrefix();
 	}
-	
-	public UserHostmask(PircBotX bot, String nick, String login, String hostname) {
-		this.bot = bot;
-		this.nick = nick;
-		this.login = login;
-		this.hostname = hostname;
-		this.hostmask = nick + "!" + login + "@" + hostname;
-		this.extbanPrefix = null;
+
+	/**
+	 * The full hostmask of the user in extban:user!login@hostname format. If
+	 * there's no extban prefix extban: is not returned. If there's no login nor
+	 * hostmask, meaning this is a service or the IRCd server "user", just the
+	 * nick is returned
+	 */
+	@NonNull
+	public String getHostmask() {
+		StringBuilder hostmask = new StringBuilder();
+		if(StringUtils.isNotBlank(extbanPrefix))
+			hostmask.append(extbanPrefix).append(":");
+		hostmask.append(nick);
+		if(StringUtils.isNotBlank(login) || StringUtils.isNotBlank(hostname))
+			hostmask.append("!").append(login).append("@").append(hostname);
+		return hostmask.toString();
 	}
 
-	public UserHostmask(PircBotX bot, String hostmask, String nick, String login, String hostname) {
-		this.bot = bot;
-		this.nick = nick;
-		this.login = login;
-		this.hostname = hostname;
-		this.hostmask = hostmask;
-		this.extbanPrefix = null;
-	}
-	
 	/**
 	 * Send a line to the user.
 	 *

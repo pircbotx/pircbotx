@@ -150,8 +150,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 		//Pre-insert an initial User representing the bot itself
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
-		getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
-
+		UserHostmask botHostmask = configuration.getBotFactory().createUserHostmask(this, null, configuration.getName(), configuration.getLogin(), null);
+			getUserChannelDao().createUser(botHostmask);
+		
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
@@ -232,6 +233,11 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 			//Reset capabilities
 			enabledCapabilities = new ArrayList<String>();
+
+			//Pre-insert an initial User representing the bot itself
+			getUserChannelDao().close();
+			UserHostmask botHostmask = configuration.getBotFactory().createUserHostmask(this, null, configuration.getName(), configuration.getLogin(), null);
+			getUserChannelDao().createUser(botHostmask);
 
 			// Connect to the server by DNS server
 			Exception lastException = null;
@@ -316,10 +322,6 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
-
-		//Pre-insert an initial User representing the bot itself
-		if (!getUserChannelDao().containsUser(configuration.getName()))
-			getUserChannelDao().addUserToPrivate(new User(new UserHostmask(this, configuration.getName(), configuration.getLogin(), null)));
 
 		//Start input to start accepting lines
 		startLineProcessing();
@@ -420,7 +422,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	public OutputIRC sendIRC() {
 		return outputIRC;
 	}
-	
+
 	public OutputIRC send() {
 		return outputIRC;
 	}
@@ -515,7 +517,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	public InetAddress getLocalAddress() {
 		return socket.getLocalAddress();
 	}
-	
+
 	public int getConnectionId() {
 		return attemptCounter.get();
 	}
@@ -532,7 +534,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	}
 
 	/**
-	 * Close socket, causes read loop to terminate and shutdown PircBotX 
+	 * Close socket, causes read loop to terminate and shutdown PircBotX
 	 */
 	public void close() {
 		try {
