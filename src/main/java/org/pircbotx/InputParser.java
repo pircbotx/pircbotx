@@ -610,10 +610,10 @@ public class InputParser implements Closeable {
 			long currentTime = System.currentTimeMillis();
 			String oldTopic = channel.getTopic();
 			channel.setTopic(message);
-			channel.setTopicSetter(source.getNick());
+			channel.setTopicSetter(source);
 			channel.setTopicTimestamp(currentTime);
 
-			configuration.getListenerManager().dispatchEvent(new TopicEvent(bot, channel, oldTopic, message, source.getNick(), currentTime, true));
+			configuration.getListenerManager().dispatchEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			configuration.getListenerManager().dispatchEvent(new InviteEvent(bot, source, sourceUser, message));
@@ -686,7 +686,7 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 333 PircBotX #aChannel ISetTopic 1564842512
 			//This is information on the topic of the channel we've just joined. From /JOIN or /TOPIC
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			String setBy = parsedResponse.get(2);
+			UserHostmask setBy = configuration.getBotFactory().createUserHostmask(bot, parsedResponse.get(2));
 			long date = Utils.tryParseLong(parsedResponse.get(3), -1);
 
 			channel.setTopicTimestamp(date * 1000);
