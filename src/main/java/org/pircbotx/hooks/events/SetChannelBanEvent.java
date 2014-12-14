@@ -55,14 +55,22 @@ public class SetChannelBanEvent extends Event implements GenericChannelModeEvent
 	/**
 	 * The hostmask of the user that has been banned.
 	 */
-	protected final UserHostmask hostmask;
+	protected final UserHostmask banHostmask;
 
-	public SetChannelBanEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, UserHostmask hostmask) {
+	public SetChannelBanEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, UserHostmask banHostmask) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
 		this.user = user;
-		this.hostmask = hostmask;
+		this.banHostmask = banHostmask;
+	}
+	
+	/**
+	 * @deprecated Use {@link #getBanHostmask() }
+	 */
+	@Deprecated
+	public UserHostmask getHostmask() {
+		return banHostmask;
 	}
 
 	/**
