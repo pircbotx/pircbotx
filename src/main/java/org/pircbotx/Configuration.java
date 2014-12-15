@@ -350,7 +350,9 @@ public class Configuration {
 		 */
 		protected Locale locale = Locale.getDefault();
 		/**
-		 * Timeout of IRC connection before sending PING. Defaults to 5 minutes
+		 * Milliseconds to wait with no data from the IRC server before sending
+		 * a PING request to check if the socket is still alive. Defaults to 5
+		 * minutes
 		 */
 		protected int socketTimeout = 1000 * 60 * 5;
 		/**
@@ -376,7 +378,7 @@ public class Configuration {
 		protected long messageDelay = 1000;
 		/**
 		 * Enable or disable creating a JVM shutdown hook which will properly
-		 * QUIT the IRC server and shutdown the bot. Defaults to true
+		 * QUIT the IRC server and shutdown the bot. Defaults true
 		 */
 		protected boolean shutdownHookEnabled = true;
 		/**
@@ -433,7 +435,7 @@ public class Configuration {
 		 */
 		protected int autoReconnectDelay = 0;
 		/**
-		 * Number of times to attempt to reconnect
+		 * Number of times to attempt to reconnect. Default 5.
 		 */
 		protected int autoReconnectAttempts = 5;
 		//Bot classes
@@ -867,7 +869,7 @@ public class Configuration {
 		public UserHostmask createUserHostmask(PircBotX bot, String hostmask) {
 			return new UserHostmask(bot, hostmask);
 		}
-		
+
 		public UserHostmask createUserHostmask(PircBotX bot, String extbanPrefix, String nick, String login, String hostname) {
 			return new UserHostmask(bot, extbanPrefix, nick, login, hostname);
 		}
