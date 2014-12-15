@@ -368,11 +368,8 @@ public class InputParser implements Closeable {
 	public void processConnect(String rawLine, String code, String target, List<String> parsedLine) throws IrcException, IOException {
 		if (CONNECT_CODES.contains(code)) {
 			// We're connected to the server.
-			bot.loggedIn(configuration.getName() + (nickSuffix == 0 ? "" : nickSuffix));
+			bot.onLoggedIn(configuration.getName() + (nickSuffix == 0 ? "" : nickSuffix));
 			log.debug("Logged onto server.");
-
-			//Were probably going to stay connected to the server after this point
-			bot.setConnectAttempts(0);
 
 			configuration.getListenerManager().dispatchEvent(new ConnectEvent(bot));
 
