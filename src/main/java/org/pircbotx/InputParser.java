@@ -419,7 +419,7 @@ public class InputParser implements Closeable {
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
 				if (curCapHandler.handleUnknown(bot, rawLine))
 					addCapHandlerFinished(curCapHandler);
-		} else if (code.equals("CAP")) {
+		} else if (code.equals("CAP") && configuration.isCapEnabled()) {
 			//Handle CAP Code; remove extra from params
 			String capCommand = parsedLine.get(1);
 			ImmutableList<String> capParams = ImmutableList.copyOf(StringUtils.split(parsedLine.get(2)));
