@@ -133,9 +133,8 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	@Getter
 	@Setter(AccessLevel.PROTECTED)
 	protected boolean nickservIdentified = false;
-	@Setter(AccessLevel.PROTECTED)
 	private int connectAttempts = 0;
-	private final AtomicInteger attemptCounter = new AtomicInteger();
+	private int connectAttemptTotal = 0;
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.
@@ -151,8 +150,8 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		//Pre-insert an initial User representing the bot itself
 		this.userChannelDao = configuration.getBotFactory().createUserChannelDao(this);
 		UserHostmask botHostmask = configuration.getBotFactory().createUserHostmask(this, null, configuration.getName(), configuration.getLogin(), null);
-			getUserChannelDao().createUser(botHostmask);
-		
+		getUserChannelDao().createUser(botHostmask);
+
 		this.serverInfo = configuration.getBotFactory().createServerInfo(this);
 		this.outputRaw = configuration.getBotFactory().createOutputRaw(this);
 		this.outputIRC = configuration.getBotFactory().createOutputIRC(this);
@@ -172,41 +171,54 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 * @throws IrcException
 	 */
 	public void startBot() throws IOException, IrcException {
+		//Begin magic
 		reconnectStopped = false;
 		do {
-			//Connection attempt
+			//Try to connect to the server
 			try {
-				attemptCounter.incrementAndGet();
+				connectAttemptTotal++;
+				connectAttempts++;
 				connect();
 			} catch (Exception e) {
 				log.error("Exception encountered during connect", e);
-				if (state != State.DISCONNECTED)
-					shutdown();
-				if (configuration.isAutoReconnect() && !reconnectStopped) {
-					//redirect exception
+
+				//Cleanup if not already called
+				synchronized (stateLock) {
+					if (state != State.DISCONNECTED)
+						shutdown();
+				}
+
+				if (configuration.isAutoReconnect()) {
 					Utils.dispatchEvent(this, new ConnectFailedEvent(this, e));
 				} else
 					throw new RuntimeException("Exception encountered during connect", e);
 			}
 
-			//Wait
-			if (configuration.getAutoReconnectDelay() > 0 && connectAttempts == configuration.getAutoReconnectAttempts())
+			//No longer connected to the server
+			if (!configuration.isAutoReconnect())
+				return;
+			if (reconnectStopped) {
+				log.debug("stopBotReconnect() called, exiting reconnect loop");
+				return;
+			}
+			if (connectAttempts == configuration.getAutoReconnectAttempts()) {
+				log.error("Maxed out connection attempts, exiting reconnect loop");
+				return;
+			}
+
+			//Optionally pause between attempts, useful if network is temporarily down
+			if (configuration.getAutoReconnectDelay() > 0)
 				try {
-					log.debug("Pausing for " + configuration.getAutoReconnectDelay() + " milliseconds before connecting again");
+					log.debug("Pausing for {} milliseconds before connecting again", configuration.getAutoReconnectDelay());
 					Thread.sleep(configuration.getAutoReconnectDelay());
 				} catch (InterruptedException e) {
-					log.debug("could not finish", e);
-					throw new RuntimeException("Could not finish pausing starting", e);
+					throw new RuntimeException("Interrupted while pausing before the next connect attempt", e);
 				}
-		} while (configuration.isAutoReconnect() && !reconnectStopped && connectAttempts < configuration.getAutoReconnectAttempts());
-
-		if (configuration.isAutoReconnect() && !reconnectStopped && connectAttempts == configuration.getAutoReconnectAttempts()) {
-			log.error("Maxed out connection attempts");
-		}
+		} while (connectAttempts < configuration.getAutoReconnectAttempts());
 	}
 
 	/**
-	 * Stops the bot from reconnecting constantly to the server in the future.
+	 * Do not try connecting again in the future.
 	 */
 	public void stopBotReconnect() {
 		reconnectStopped = true;
@@ -239,56 +251,51 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			UserHostmask botHostmask = configuration.getBotFactory().createUserHostmask(this, null, configuration.getName(), configuration.getLogin(), null);
 			getUserChannelDao().createUser(botHostmask);
 
-			// Connect to the server by DNS server
+			//On each server the user gives us, try to connect to all the IP addresses
 			Exception lastException = null;
-			ReconnectLoop:
-			do {
-				connectAttempts++;
+			int serverEntryCounter = 0;
+			ServerEntryLoop:
+			for (Configuration.ServerEntry curServerEntry : configuration.getServers()) {
+				serverEntryCounter++;
+				serverHostname = curServerEntry.getHostname();
+				//Hostname and port
+				Utils.addBotToMDC(this);
+				log.info("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
 
-				int serverEntryCounter = 0;
-				for (Configuration.ServerEntry curServerEntry : configuration.getServers()) {
-					serverEntryCounter++;
-					serverHostname = curServerEntry.getHostname();
-					//Hostname and port
-					Utils.addBotToMDC(this);
-					log.info("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
+				int serverAddressCounter = 0;
+				InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
+				for (InetAddress curAddress : serverAddresses) {
+					serverAddressCounter++;
+					String debug = Utils.format("[{}/{} address left from {}, {}/{} hostnames left] ",
+							String.valueOf(serverAddresses.length - serverAddressCounter),
+							String.valueOf(serverAddresses.length),
+							serverHostname,
+							String.valueOf(configuration.getServers().size() - serverEntryCounter),
+							String.valueOf(configuration.getServers().size())
+					);
+					log.debug("{}Atempting to connect to {} on port {}", debug, curAddress, curServerEntry.getPort());
+					try {
+						socket = configuration.getSocketFactory().createSocket(curAddress, curServerEntry.getPort(), configuration.getLocalAddress(), 0);
 
-					int serverAddressCounter = 0;
-					InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
-					for (InetAddress curAddress : serverAddresses) {
-						serverAddressCounter++;
-						String debug = Utils.format("[{}/{} address left from {}, {}/{} hostnames left] ",
-								String.valueOf(serverAddresses.length - serverAddressCounter),
-								String.valueOf(serverAddresses.length),
-								serverHostname,
-								String.valueOf(configuration.getServers().size() - serverEntryCounter),
-								String.valueOf(configuration.getServers().size())
-						);
-						log.debug("{}Atempting to connect to {} on port {}", debug, curAddress, curServerEntry.getPort());
-						try {
-							socket = configuration.getSocketFactory().createSocket(curAddress, curServerEntry.getPort(), configuration.getLocalAddress(), 0);
-
-							//No exception, assume successful
-							serverPort = curServerEntry.getPort();
-							break ReconnectLoop;
-						} catch (Exception e) {
-							lastException = e;
-							log.debug("{}Failed to connect to {} on port {}",
-									debug,
-									curAddress,
-									curServerEntry.getPort()/*,
-							 e*/);
-							configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent(this,
-									curAddress,
-									curServerEntry.getPort(),
-									configuration.getLocalAddress(),
-									serverAddresses.length,
-									e));
-						}
+						//No exception, assume successful
+						serverPort = curServerEntry.getPort();
+						break ServerEntryLoop;
+					} catch (Exception e) {
+						lastException = e;
+						log.debug("{}Failed to connect to {} on port {}",
+								debug,
+								curAddress,
+								curServerEntry.getPort(),
+								e);
+						configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent(this,
+								curAddress,
+								curServerEntry.getPort(),
+								configuration.getLocalAddress(),
+								serverAddresses.length,
+								e));
 					}
 				}
-
-			} while (configuration.isAutoReconnect() && configuration.getAutoReconnectAttempts() - connectAttempts <= 0);
+			}
 
 			//Make sure were connected
 			if (socket == null || (socket != null && !socket.isConnected())) {
@@ -407,9 +414,12 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		getConfiguration().getListenerManager().dispatchEvent(new OutputEvent(this, line, lineParts));
 	}
 
-	protected void loggedIn(String nick) {
+	protected void onLoggedIn(String nick) {
 		this.loggedIn = true;
 		setNick(nick);
+
+		//Were probably connected to the server at this point
+		this.connectAttempts = 0;
 
 		if (configuration.isShutdownHookEnabled())
 			Runtime.getRuntime().addShutdownHook(shutdownHook = new PircBotX.BotShutdownHook(this));
@@ -519,7 +529,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	}
 
 	public int getConnectionId() {
-		return attemptCounter.get();
+		return connectAttemptTotal;
 	}
 
 	/**
