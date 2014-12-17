@@ -18,6 +18,7 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.primitives.Ints;
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -27,8 +28,10 @@ import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
@@ -174,24 +177,30 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		//Begin magic
 		reconnectStopped = false;
 		do {
-			//Try to connect to the server
+			//Try to connect to the server, grabbing any exceptions
+			LinkedHashMap<InetSocketAddress, Exception> connectExceptions = Maps.newLinkedHashMap();
 			try {
 				connectAttemptTotal++;
 				connectAttempts++;
-				connect();
+				connectExceptions.putAll(connect());
 			} catch (Exception e) {
+				//Initial connect exceptions are returned in the map, this is a more serious error
 				log.error("Exception encountered during connect", e);
-
+				connectExceptions.put(new InetSocketAddress(serverHostname, serverPort), e);
+				
+				if (!configuration.isAutoReconnect())
+					throw new RuntimeException("Exception encountered during connect", e);				
+			} finally {
+				if (!connectExceptions.isEmpty())
+					Utils.dispatchEvent(this, new ConnectAttemptFailedEvent(this,
+							configuration.getAutoReconnectAttempts() - connectAttempts,
+							ImmutableMap.copyOf(connectExceptions)));
+				
 				//Cleanup if not already called
 				synchronized (stateLock) {
 					if (state != State.DISCONNECTED)
 						shutdown();
 				}
-
-				if (configuration.isAutoReconnect()) {
-					Utils.dispatchEvent(this, new ConnectFailedEvent(this, e));
-				} else
-					throw new RuntimeException("Exception encountered during connect", e);
 			}
 
 			//No longer connected to the server
@@ -231,7 +240,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 * @throws IOException if it was not possible to connect to the server.
 	 * @throws IrcException if the server would not let us join it.
 	 */
-	protected void connect() throws IOException, IrcException {
+	protected ImmutableMap<InetSocketAddress, Exception> connect() throws IOException, IrcException {
 		synchronized (stateLock) {
 			//Server id
 			Utils.addBotToMDC(this);
@@ -251,7 +260,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			getUserChannelDao().createUser(botHostmask);
 
 			//On each server the user gives us, try to connect to all the IP addresses
-			Exception lastException = null;
+			ImmutableMap.Builder<InetSocketAddress, Exception> connectExceptions = ImmutableMap.builder();
 			int serverEntryCounter = 0;
 			ServerEntryLoop:
 			for (Configuration.ServerEntry curServerEntry : configuration.getServers()) {
@@ -280,26 +289,19 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 						serverPort = curServerEntry.getPort();
 						break ServerEntryLoop;
 					} catch (Exception e) {
-						lastException = e;
-						log.debug("{}Failed to connect to {} on port {}",
+						connectExceptions.put(new InetSocketAddress(curAddress, curServerEntry.getPort()), e);
+						log.warn("{}Failed to connect to {} on port {}",
 								debug,
 								curAddress,
 								curServerEntry.getPort(),
 								e);
-						configuration.getListenerManager().dispatchEvent(new ConnectAttemptFailedEvent(this,
-								curAddress,
-								curServerEntry.getPort(),
-								configuration.getLocalAddress(),
-								serverAddresses.length,
-								e));
 					}
 				}
 			}
 
 			//Make sure were connected
 			if (socket == null || (socket != null && !socket.isConnected())) {
-				throw new IOException("Unable to connect to the IRC servers " + configuration.getServers()
-						+ " (last connection attempt exception attached)", lastException);
+				return connectExceptions.build();
 			}
 			state = State.CONNECTED;
 			socket.setSoTimeout(configuration.getSocketTimeout());
@@ -331,6 +333,8 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 		//Start input to start accepting lines
 		startLineProcessing();
+
+		return ImmutableMap.of();
 	}
 
 	protected void changeSocket(Socket socket) throws IOException {

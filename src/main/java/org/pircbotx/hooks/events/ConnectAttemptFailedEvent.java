@@ -17,7 +17,8 @@
  */
 package org.pircbotx.hooks.events;
 
-import java.net.InetAddress;
+import com.google.common.collect.ImmutableMap;
+import java.net.InetSocketAddress;
 import javax.annotation.Nullable;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
@@ -28,19 +29,13 @@ import org.pircbotx.hooks.Event;
  * @author Leon Blakey
  */
 public class ConnectAttemptFailedEvent extends Event {
-	protected final InetAddress remoteAddress;
-	protected final int remotePort;
-	protected final InetAddress localAddress;
-	protected final int remainingServers;
-	protected final Exception connectException;
+	protected final int remainingAttempts;
+	protected final ImmutableMap<InetSocketAddress, Exception> connectExceptions;
 
-	public ConnectAttemptFailedEvent(PircBotX bot, @NonNull InetAddress remoteAddress, int remotePort, InetAddress localAddress, int remainingServers, @NonNull Exception connectException) {
+	public ConnectAttemptFailedEvent(PircBotX bot, int remainingAttempts, @NonNull ImmutableMap<InetSocketAddress, Exception> connectExceptions) {
 		super(bot);
-		this.remoteAddress = remoteAddress;
-		this.remotePort = remotePort;
-		this.localAddress = localAddress;
-		this.remainingServers = remainingServers;
-		this.connectException = connectException;
+		this.remainingAttempts = remainingAttempts;
+		this.connectExceptions = connectExceptions;
 	}
 
 	/**
