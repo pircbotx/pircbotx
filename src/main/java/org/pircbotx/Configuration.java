@@ -57,8 +57,7 @@ import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Immutable configuration for PircBotX. Use {@link Configuration.Builder} to
- * create
+ * Immutable configuration for PircBotX created from {@link Configuration.Builder}
  *
  * @author Leon Blakey
  */
@@ -131,37 +130,43 @@ public class Configuration {
 			checkArgument(StringUtils.isNotBlank(builder.getWebIrcUsername()), "Must specify WEBIRC username if enabled");
 			checkArgument(StringUtils.isNotBlank(builder.getWebIrcPassword()), "Must specify WEBIRC password if enabled");
 		}
-		checkNotNull(builder.getListenerManager());
 		checkArgument(StringUtils.isNotBlank(builder.getName()), "Must specify name");
 		checkArgument(StringUtils.isNotBlank(builder.getLogin()), "Must specify login");
+		checkArgument(StringUtils.isNotBlank(builder.getVersion()), "Must specify version");
+		checkArgument(StringUtils.isNotBlank(builder.getFinger()), "Must specify finger");
 		checkArgument(StringUtils.isNotBlank(builder.getRealName()), "Must specify realName");
 		checkArgument(StringUtils.isNotBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
-		checkNotNull(builder.getChannelModeMessagePrefixes(), "Channel mode message prefixes cannot be null");
+		checkNotNull(StringUtils.isNotBlank(builder.getChannelModeMessagePrefixes()), "Channel mode message prefixes cannot be null");
+		checkNotNull(builder.getDccPorts(), "DCC ports list cannot be null");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
 		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
+		checkNotNull(builder.getServers(), "Servers list cannot be null");
+		checkArgument(!builder.getServers().isEmpty(), "Must specify servers to connect to");
 		for (ServerEntry serverEntry : builder.getServers()) {
 			checkArgument(StringUtils.isNotBlank(serverEntry.getHostname()), "Must specify server hostname");
 			checkArgument(serverEntry.getPort() > 0 && serverEntry.getPort() <= 65535, "Port must be between 1 and 65535");
 		}
-		checkNotNull(builder.getSocketFactory(), "Must specify socket factory");
-		checkNotNull(builder.getEncoding(), "Must specify encoding");
-		checkNotNull(builder.getLocale(), "Must specify locale");
-		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
+		checkNotNull(builder.getSocketFactory(), "Socket factory cannot be null");
+		checkNotNull(builder.getEncoding(), "Encoding cannot be null");
+		checkNotNull(builder.getLocale(), "Locale cannot be null");
+		checkArgument(builder.getSocketTimeout() > 0, "Socket timeout must greater than 0");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
-		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be greater than 0");
-		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectDelay must be positive or 0");
-		if (builder.getNickservPassword() != null)
-			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
-		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
-		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
+		checkNotNull(builder.getAutoJoinChannels(), "Auto join channels map cannot be null");
 		for (Map.Entry<String, String> curEntry : builder.getAutoJoinChannels().entrySet())
 			if (StringUtils.isBlank(curEntry.getKey()))
 				throw new RuntimeException("Channel must not be blank");
-		if (builder.getNickservOnSuccess() != null) {
-			checkArgument(StringUtils.isNotBlank(builder.getNickservNick()), "Must specify nickserv nick");
-		}
+		if (builder.getNickservPassword() != null)
+			checkArgument(StringUtils.isNotBlank(builder.getNickservPassword()), "Nickserv password cannot be empty");
+		checkArgument(StringUtils.isNotBlank(builder.getNickservOnSuccess()), "Nickserv on success cannot be blank");
+		checkArgument(StringUtils.isNotBlank(builder.getNickservNick()), "Nickserv nick cannot be blank");
+		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be greater than 0");
+		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectDelay must be positive or 0");
+		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
+		checkNotNull(builder.getCapHandlers(), "Cap handlers list cannot be null");
+		checkNotNull(builder.getChannelModeHandlers(), "Channel mode handlers list cannot be null");
+		checkNotNull(builder.getBotFactory(), "Must specify bot factory");
 
 		this.webIrcEnabled = builder.isWebIrcEnabled();
 		this.webIrcUsername = builder.getWebIrcUsername();
@@ -173,8 +178,8 @@ public class Configuration {
 		this.version = builder.getVersion();
 		this.finger = builder.getFinger();
 		this.realName = builder.getRealName();
-		this.channelPrefixes = builder.getChannelPrefixes();
-		this.channelModeMessagePrefixes = builder.getChannelModeMessagePrefixes();
+		this.channelPrefixes = builder.getChannelPrefixes().trim();
+		this.channelModeMessagePrefixes = builder.getChannelModeMessagePrefixes().trim();
 		this.snapshotsEnabled = builder.isSnapshotsEnabled();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
@@ -219,37 +224,42 @@ public class Configuration {
 		return (M) listenerManager;
 	}
 
+	/**
+	 * Builder to create an immutable {@link Configuration}. 
+	 */
 	@Accessors(chain = true)
 	@Data
 	public static class Builder {
 		//WebIRC
 		/**
-		 * Enable or disable sending WEBIRC line on connect
+		 * Enable or disable sending WEBIRC line on connect, default disabled
 		 */
 		protected boolean webIrcEnabled = false;
 		/**
-		 * Username of WEBIRC connection
+		 * Username of WEBIRC connection, must not be blank if WEBIRC is enabled
 		 */
 		protected String webIrcUsername = null;
 		/**
-		 * Hostname of WEBIRC connection
+		 * Hostname of WEBIRC connection, must not be blank if WEBIRC is enabled
 		 */
 		protected String webIrcHostname = null;
 		/**
-		 * IP address of WEBIRC connection
+		 * IP address of WEBIRC connection, must be set if WEBIRC is enabled
 		 */
 		protected InetAddress webIrcAddress = null;
 		/**
-		 * Password of WEBIRC connection
+		 * Password of WEBIRC connection, must not be blank if WEBIRC is enabled
 		 */
 		protected String webIrcPassword = null;
 		//Bot information
 		/**
-		 * The base name to be used for the IRC connection (nick!login@host)
+		 * The nick to be used for the IRC connection (nick!login@host), must
+		 * not be blank
 		 */
-		protected String name = "PircBotX";
+		protected String name;
 		/**
-		 * The login to be used for the IRC connection (nick!login@host)
+		 * The login to be used for the IRC connection (nick!login@host),
+		 * default PircBotX
 		 */
 		protected String login = "PircBotX";
 		/**
@@ -265,12 +275,13 @@ public class Configuration {
 		 */
 		protected String realName = version;
 		/**
-		 * Allowed channel prefix characters. Defaults to <code>#&+!</code>
+		 * Allowed channel prefix characters, default <code>#&+!</code>
 		 */
 		protected String channelPrefixes = "#&+!";
 		/**
 		 * Supported channel prefixes that restrict a sent message to users with
-		 * this mode. Defaults to <code>+%&~!</code>
+		 * this mode, eg <code>PRIVMSG +#channel :hello</code> will only send a
+		 * message to voiced or higher users, default <code>+%&~!</code>
 		 */
 		protected String channelModeMessagePrefixes = "+%&~!";
 		/**
@@ -289,96 +300,96 @@ public class Configuration {
 		protected boolean snapshotsEnabled = true;
 		//DCC
 		/**
-		 * If true sends filenames in quotes, otherwise uses underscores.
-		 * Defaults to false
+		 * If true sends filenames in quotes, otherwise uses underscores,
+		 * default enabled.
 		 */
 		protected boolean dccFilenameQuotes = false;
 		/**
-		 * Ports to allow DCC incoming connections. Recommended to set multiple
+		 * Ports to allow DCC incoming connections, recommended to set multiple
 		 * as DCC connections will be rejected if no free port can be found
 		 */
 		protected List<Integer> dccPorts = Lists.newArrayList();
 		/**
-		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress()
+		 * The local address to bind DCC connections to, defaults to {@link #getLocalAddress()
 		 * }
 		 */
 		protected InetAddress dccLocalAddress = null;
 		/**
-		 * Timeout for user to accept a sent DCC request. Defaults to {@link #getSocketTimeout()
+		 * Timeout for user to accept a sent DCC request, defaults to {@link #getSocketTimeout()
 		 * }
 		 */
 		protected int dccAcceptTimeout = -1;
 		/**
-		 * Timeout for a user to accept a resumed DCC request. Defaults to {@link #getDccResumeAcceptTimeout()
+		 * Timeout for a user to accept a resumed DCC request, defaults to {@link #getDccResumeAcceptTimeout()
 		 * }
 		 */
 		protected int dccResumeAcceptTimeout = -1;
 		/**
-		 * Size of the DCC file transfer buffer. Defaults to 1024
+		 * Size of the DCC file transfer buffer, default 1024
 		 */
 		protected int dccTransferBufferSize = 1024;
 		/**
-		 * Weather to send DCC Passive/reverse requests. Defaults to false
+		 * Send DCC requests as passive/reverse requests if not specified
+		 * otherwise, default false
 		 */
 		protected boolean dccPassiveRequest = false;
 		//Connect information
 		/**
-		 * Hostname of the IRC server
+		 * List of servers to connect to, easily add with the addServer methods
 		 */
 		protected List<ServerEntry> servers = Lists.newLinkedList();
 		/**
-		 * Password for IRC server
+		 * Password for IRC server, default null
 		 */
 		protected String serverPassword = null;
 		/**
-		 * Socket factory for connections. Defaults to {@link SocketFactory#getDefault()
+		 * Socket factory for connections, defaults to {@link SocketFactory#getDefault()
 		 * }
 		 */
 		protected SocketFactory socketFactory = SocketFactory.getDefault();
 		/**
-		 * Address to bind to when connecting to IRC server.
+		 * Address to bind to when connecting to IRC server, default null
 		 */
 		protected InetAddress localAddress = null;
 		/**
-		 * Charset encoding to use for connection. Defaults to
+		 * Charset encoding to use for connection, defaults to
 		 * {@link Charset#defaultCharset()}
 		 */
 		protected Charset encoding = Charset.defaultCharset();
 		/**
-		 * Locale to use for connection. Defaults to {@link Locale#getDefault()
+		 * Locale to use for connection, defaults to {@link Locale#getDefault()
 		 * }
 		 */
 		protected Locale locale = Locale.getDefault();
 		/**
 		 * Milliseconds to wait with no data from the IRC server before sending
-		 * a PING request to check if the socket is still alive. Defaults to 5
-		 * minutes
+		 * a PING request to check if the socket is still alive, default 5
+		 * minutes (1000x60x5=300,000 milliseconds)
 		 */
 		protected int socketTimeout = 1000 * 60 * 5;
 		/**
-		 * Maximum line length of IRC server. Defaults to 512
+		 * Maximum line length of IRC server, defaults 512 characters
 		 */
 		protected int maxLineLength = 512;
 		/**
 		 * Enable or disable automatic message splitting to fit
-		 * {@link #getMaxLineLength()}. Note that messages might be truncated by
-		 * the IRC server if not set. Defaults to true
+		 * {@link #getMaxLineLength()} to prevent the IRC server from possibly
+		 * truncating or rejecting the line, default true.
 		 */
 		protected boolean autoSplitMessage = true;
 		/**
 		 * Enable or disable automatic nick changing if a nick is in use by
-		 * adding a number to the end. If this is false and a nick is already in
-		 * use, a {@link IrcException} will be thrown. Defaults to false.
+		 * adding a number to the end, default false. If this is false and a
+		 * nick is already in use, a {@link IrcException} will be thrown.
 		 */
 		protected boolean autoNickChange = false;
 		/**
-		 * Millisecond delay between sending messages with {@link OutputRaw#rawLine(java.lang.String)
-		 * }. Defaults to 1000 milliseconds
+		 * Millisecond delay between sending messages, default 1000 milliseconds
 		 */
 		protected long messageDelay = 1000;
 		/**
 		 * Enable or disable creating a JVM shutdown hook which will properly
-		 * QUIT the IRC server and shutdown the bot. Defaults true
+		 * QUIT the IRC server and shutdown the bot, default true
 		 */
 		protected boolean shutdownHookEnabled = true;
 		/**
@@ -386,22 +397,23 @@ public class Configuration {
 		 */
 		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
 		/**
-		 * Enable or disable use of an existing {@link IdentServer}. Note that
-		 * the IdentServer must be started separately or else an exception will
-		 * be thrown. Defaults to false
+		 * Enable or disable use of an existing {@link IdentServer}, default
+		 * false. Note that the IdentServer must be started separately or else
+		 * an exception will be thrown
 		 *
 		 * @see IdentServer
 		 */
 		protected boolean identServerEnabled = false;
 		/**
-		 * If set, password to authenticate against NICKSERV
+		 * Password to authenticate against NICKSERV, default null (will not try
+		 * to identify)
 		 */
-		protected String nickservPassword;
+		protected String nickservPassword = null;
 		/**
 		 * Case-insensitive message a user with 
 		 * {@link #setNickservNick(java.lang.String) } in its hostmask will
 		 * always contain when we have successfully identified, defaults to "you
-		 * are now" from "You are now identified for PircBotX". Known server
+		 * are now" which which matches all of the following known server
 		 * responses:
 		 * <ul>
 		 * <li>ircd-seven (freenode) - You are now identified for PircBotX</li>
@@ -421,52 +433,57 @@ public class Configuration {
 		 */
 		protected String nickservNick = "nickserv";
 		/**
-		 * Delay joining channels until were identified to nickserv
+		 * Delay joining channels until were identified to nickserv, default
+		 * false
 		 */
 		protected boolean nickservDelayJoin = false;
 		/**
-		 * Enable or disable automatic reconnecting. Note that you MUST call 
-		 * {@link PircBotX#stopBotReconnect() } when you do not want the bot to
-		 * reconnect anymore! Defaults to false
+		 * Enable or disable automatic reconnecting, default false. Note that
+		 * you MUST call {@link PircBotX#stopBotReconnect() } when you do not
+		 * want the bot to reconnect anymore!
 		 */
 		protected boolean autoReconnect = false;
 		/**
-		 * Delay in milliseconds between reconnect attempts. Default 0. Must be positive.
+		 * Delay in milliseconds between reconnect attempts, default 0.
 		 */
 		protected int autoReconnectDelay = 0;
 		/**
-		 * Number of times to attempt to reconnect. Default 5. Must be greater than 0.
+		 * Number of times to attempt to reconnect, default 5.
 		 */
 		protected int autoReconnectAttempts = 5;
 		//Bot classes
 		/**
-		 * The {@link ListenerManager} to use to handle events.
+		 * The {@link ListenerManager} to use to handle events, default
+		 * {@link ThreadedListenerManager}.
 		 */
+		//This is lazy loaded in {@link #getListenerManager()} since creating a thread pool is expensive
 		protected ListenerManager listenerManager = null;
 		/**
-		 * Enable or disable CAP handling. Defaults to true
+		 * Enable or disable CAP handling, defaults true.
 		 */
 		protected boolean capEnabled = true;
 		/**
-		 * Registered {@link CapHandler}'s.
+		 * IRCv3 CAP features to try to use, default enables multi-prefix and
+		 * away-notify but ignoring if the server doesn't support them
 		 */
-		protected final List<CapHandler> capHandlers = Lists.newArrayList();
+		protected final List<CapHandler> capHandlers = Lists.<CapHandler>newArrayList(
+				new EnableCapHandler("multi-prefix", true),
+				new EnableCapHandler("away-notify", true)
+		);
 		/**
-		 * Handlers for channel modes. By default is built-in handlers
+		 * Handlers for channel modes, defaults to built-in handlers which cover
+		 * basic modes that are generally supported on most IRC servers
 		 */
-		protected final List<ChannelModeHandler> channelModeHandlers = Lists.newArrayList();
+		protected final List<ChannelModeHandler> channelModeHandlers = Lists.newArrayList(InputParser.DEFAULT_CHANNEL_MODE_HANDLERS);
 		/**
 		 * The {@link BotFactory} to use
 		 */
 		protected BotFactory botFactory = new BotFactory();
 
 		/**
-		 * Default constructor, adding a multi-prefix {@link EnableCapHandler}
+		 * Create with defaults that work in most situations and IRC servers
 		 */
 		public Builder() {
-			capHandlers.add(new EnableCapHandler("multi-prefix", true));
-			capHandlers.add(new EnableCapHandler("away-notify", true));
-			channelModeHandlers.addAll(InputParser.DEFAULT_CHANNEL_MODE_HANDLERS);
 		}
 
 		/**
@@ -807,7 +824,7 @@ public class Configuration {
 	}
 
 	/**
-	 * Factory for various bot classes.
+	 * Factory for various internal bot classes.
 	 */
 	public static class BotFactory {
 		public UserChannelDao createUserChannelDao(PircBotX bot) {
