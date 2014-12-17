@@ -49,8 +49,6 @@ public abstract class ListenerAdapter implements Listener {
 			onChannelInfo((ChannelInfoEvent) event);
 		else if (event instanceof ConnectEvent)
 			onConnect((ConnectEvent) event);
-		else if (event instanceof ConnectFailedEvent)
-			onConnectFailed((ConnectFailedEvent) event);
 		else if (event instanceof ConnectAttemptFailedEvent)
 			onConnectAttemptFailed((ConnectAttemptFailedEvent) event);
 		else if (event instanceof DisconnectEvent)
@@ -187,9 +185,6 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onConnect(ConnectEvent event) throws Exception {
-	}
-
-	public void onConnectFailed(ConnectFailedEvent event) throws Exception {
 	}
 
 	public void onConnectAttemptFailed(ConnectAttemptFailedEvent event) throws Exception {
