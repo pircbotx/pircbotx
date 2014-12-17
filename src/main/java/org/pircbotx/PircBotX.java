@@ -202,8 +202,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 				return;
 			}
 			if (connectAttempts == configuration.getAutoReconnectAttempts()) {
-				log.error("Maxed out connection attempts, exiting reconnect loop");
-				return;
+				throw new IOException("Failed to connect to IRC server(s) after " + connectAttempts + " attempts");
 			}
 
 			//Optionally pause between attempts, useful if network is temporarily down
