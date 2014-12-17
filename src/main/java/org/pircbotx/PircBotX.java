@@ -187,15 +187,15 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 				//Initial connect exceptions are returned in the map, this is a more serious error
 				log.error("Exception encountered during connect", e);
 				connectExceptions.put(new InetSocketAddress(serverHostname, serverPort), e);
-				
+
 				if (!configuration.isAutoReconnect())
-					throw new RuntimeException("Exception encountered during connect", e);				
+					throw new RuntimeException("Exception encountered during connect", e);
 			} finally {
 				if (!connectExceptions.isEmpty())
 					Utils.dispatchEvent(this, new ConnectAttemptFailedEvent(this,
 							configuration.getAutoReconnectAttempts() - connectAttempts,
 							ImmutableMap.copyOf(connectExceptions)));
-				
+
 				//Cleanup if not already called
 				synchronized (stateLock) {
 					if (state != State.DISCONNECTED)
@@ -547,7 +547,10 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	}
 
 	/**
-	 * Close socket, causes read loop to terminate and shutdown PircBotX
+	 * If for some reason you absolutely need to stop PircBotX now instead of
+	 * gracefully closing with {@link OutputIRC#quitServer() }, this will close the socket which
+	 * causes read loop to terminate which will shutdown PircBotX shortly. 
+	 * @see OutputIRC#quitServer()
 	 */
 	public void close() {
 		try {
