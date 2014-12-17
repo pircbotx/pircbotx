@@ -569,12 +569,6 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			if (configuration.isIdentServerEnabled())
 				IdentServer.getServer().removeIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
 
-			try {
-				socket.close();
-			} catch (Exception e) {
-				log.error("Can't close socket", e);
-			}
-
 			//Close the socket from here and let the threads die
 			if (socket != null && !socket.isClosed())
 				try {
