@@ -150,8 +150,8 @@ public class Configuration {
 		checkArgument(builder.getSocketTimeout() >= 0, "Socket timeout must be positive");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
 		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
-		checkArgument(builder.getAutoReconnectAttempts() >= 0, "setAutoReconnectAttempts must be positive");
-		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectAttempts must be positive");
+		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be greater than 0");
+		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectDelay must be positive or 0");
 		if (builder.getNickservPassword() != null)
 			checkArgument(!builder.getNickservPassword().trim().equals(""), "Nickserv password cannot be empty");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
@@ -431,11 +431,11 @@ public class Configuration {
 		 */
 		protected boolean autoReconnect = false;
 		/**
-		 * Delay in milliseconds between reconnect attempts. Default 0.
+		 * Delay in milliseconds between reconnect attempts. Default 0. Must be positive.
 		 */
 		protected int autoReconnectDelay = 0;
 		/**
-		 * Number of times to attempt to reconnect. Default 5.
+		 * Number of times to attempt to reconnect. Default 5. Must be greater than 0.
 		 */
 		protected int autoReconnectAttempts = 5;
 		//Bot classes
