@@ -71,13 +71,16 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	}
 
 	/**
-	 * By default, trust ALL certificates. <b>This is <i>very</i> insecure.</b> It also
-	 * defeats one of the points of SSL: Making sure your connecting to the
-	 * right server.
+	 * By default, trust ALL certificates. <b>This is <i>very</i> insecure.</b>
+	 * It also defeats one of the points of SSL: Making sure your connecting to
+	 * the right server. Cannot be combined with {@link #disableDiffieHellman(javax.net.ssl.SSLSocketFactory)
+	 * } since this overwrites the wrapped factory and will throw an exception!
 	 *
 	 * @return The current UtilSSLSocketFactory instance
 	 */
 	public UtilSSLSocketFactory trustAllCertificates() {
+		if (wrappedFactory != SSLSocketFactory.getDefault())
+			throw new RuntimeException("Cannot combine trustAllCertificates() and disableDiffieHellman(SSLSocketFactory)");
 		if (trustingAllCertificates)
 			//Already doing this, no need to do it again
 			return this;
@@ -111,15 +114,19 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		diffieHellmanDisabled = true;
 		return this;
 	}
-	
+
 	/**
 	 * Disable the Diffie Hellman key exchange algorithm using the provided SSL
-	 * socket factory.
-	 * @see #disableDiffieHellman() 
-	 * @param sourceSocketFactory 
+	 * socket factory. Cannot be combined with {@link #disableDiffieHellman(javax.net.ssl.SSLSocketFactory)
+	 * } since this overwrites the wrapped factory and will throw an exception!
+	 *
+	 * @see #disableDiffieHellman()
+	 * @param sourceSocketFactory
 	 * @return The current UtilSSLSocketFactory instance
 	 */
 	public UtilSSLSocketFactory disableDiffieHellman(SSLSocketFactory sourceSocketFactory) {
+		if (wrappedFactory != SSLSocketFactory.getDefault())
+			throw new RuntimeException("Cannot combine trustAllCertificates() and disableDiffieHellman(SSLSocketFactory)");
 		wrappedFactory = sourceSocketFactory;
 		return this;
 	}
@@ -160,12 +167,12 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	public SSLSocket createSocket(Socket s, String host, int port, boolean autoClose) throws IOException {
 		return prepare(wrappedFactory.createSocket(s, host, port, autoClose));
 	}
-	
+
 	@Override
 	public SSLSocket createSocket(Socket socket, InputStream in, boolean bln) throws IOException {
 		return prepare(wrappedFactory.createSocket(socket, in, bln));
 	}
-	
+
 	@Override
 	public SSLSocket createSocket() throws IOException {
 		return prepare(wrappedFactory.createSocket());
