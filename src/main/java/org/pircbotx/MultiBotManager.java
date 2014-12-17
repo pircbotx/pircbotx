@@ -98,12 +98,10 @@ public class MultiBotManager {
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #addNetwork(org.pircbotx.Configuration) }
-	 * to prevent confusion and to make the intent more clear
+	 * Alias of {@link #addNetwork(org.pircbotx.Configuration) }
 	 * @param config
 	 * @see #addNetwork(org.pircbotx.Configuration)
 	 */
-	@Deprecated
 	public void addBot(Configuration config) {
 		addNetwork(config);
 	}
@@ -124,14 +122,12 @@ public class MultiBotManager {
 	}
 
 	/**
-	 * @deprecated Renamed to {@link #addNetwork(org.pircbotx.PircBotX) } to
-	 * prevent confusion and to make the intent more clear
+	 * Alias of {@link #addNetwork(org.pircbotx.PircBotX) }
 	 * @param bot
 	 * @see #addNetwork(org.pircbotx.PircBotX)
 	 */
-	@Deprecated
 	public void addBot(PircBotX bot) {
-
+		addNetwork(bot);
 	}
 
 	/**
