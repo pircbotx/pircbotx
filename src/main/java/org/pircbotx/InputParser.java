@@ -401,8 +401,7 @@ public class InputParser implements Closeable {
 			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
 		else if (code.equals("670")) {
 			//Server is saying that we can upgrade to TLS
-			log.debug("Upgrading to TLS connecting with system default SSLSocketFactory");
-
+			log.debug("Upgrading to TLS connection");
 			SSLSocketFactory sslSocketFactory = ((SSLSocketFactory) SSLSocketFactory.getDefault());
 			for (CapHandler curCapHandler : configuration.getCapHandlers())
 				if (curCapHandler instanceof TLSCapHandler)

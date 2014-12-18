@@ -81,4 +81,22 @@ public class UtilSSLSocketFactoryTest {
 		}
 		return publicMethods;
 	}
+	
+	@Test
+	public void combineTestLegal() {
+		new UtilSSLSocketFactory().disableDiffieHellman();
+		new UtilSSLSocketFactory().trustAllCertificates();
+		new UtilSSLSocketFactory().trustAllCertificates().disableDiffieHellman();
+		new UtilSSLSocketFactory().disableDiffieHellman().trustAllCertificates();
+	}
+	
+	@Test(expectedExceptions = RuntimeException.class)
+	public void combineTestIllegal1() {
+		new UtilSSLSocketFactory().disableDiffieHellman((SSLSocketFactory)SSLSocketFactory.getDefault()).trustAllCertificates();
+	}
+	
+	@Test(expectedExceptions = RuntimeException.class)
+	public void combineTestIllegal2() {
+		new UtilSSLSocketFactory().trustAllCertificates().disableDiffieHellman((SSLSocketFactory)SSLSocketFactory.getDefault());
+	}
 }

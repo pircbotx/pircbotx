@@ -36,6 +36,7 @@ import javax.net.ssl.X509TrustManager;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Utility for doing various useful things to an SSL socket factory.
@@ -55,20 +56,14 @@ import lombok.ToString;
  */
 @EqualsAndHashCode(callSuper = false)
 @ToString
+@Slf4j
 public class UtilSSLSocketFactory extends SSLSocketFactory {
-	protected SSLSocketFactory wrappedFactory;
+	protected SSLSocketFactory wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 	@Getter
 	protected boolean trustingAllCertificates = false;
 	@Getter
 	protected boolean diffieHellmanDisabled = false;
-
-	/**
-	 * Setup UtilSSLSocketFactory wrapping {@link SSLSocketFactory#getDefault()
-	 * }.
-	 */
-	public UtilSSLSocketFactory() {
-		wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-	}
+	protected boolean wrappedFactoryChanged = false;
 
 	/**
 	 * By default, trust ALL certificates. <b>This is <i>very</i> insecure.</b>
@@ -79,7 +74,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	 * @return The current UtilSSLSocketFactory instance
 	 */
 	public UtilSSLSocketFactory trustAllCertificates() {
-		if (wrappedFactory != SSLSocketFactory.getDefault())
+		if (wrappedFactoryChanged)
 			throw new RuntimeException("Cannot combine trustAllCertificates() and disableDiffieHellman(SSLSocketFactory)");
 		if (trustingAllCertificates)
 			//Already doing this, no need to do it again
@@ -125,10 +120,11 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	 * @return The current UtilSSLSocketFactory instance
 	 */
 	public UtilSSLSocketFactory disableDiffieHellman(SSLSocketFactory sourceSocketFactory) {
-		if (wrappedFactory != SSLSocketFactory.getDefault())
+		if (trustingAllCertificates)
 			throw new RuntimeException("Cannot combine trustAllCertificates() and disableDiffieHellman(SSLSocketFactory)");
 		wrappedFactory = sourceSocketFactory;
-		return this;
+		wrappedFactoryChanged = true;
+		return disableDiffieHellman();
 	}
 
 	protected SSLSocket prepare(Socket socket) {
