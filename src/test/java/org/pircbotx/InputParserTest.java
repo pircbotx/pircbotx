@@ -73,6 +73,7 @@ import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
+import org.pircbotx.snapshot.ChannelSnapshot;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -740,7 +741,7 @@ public class InputParserTest {
 		assertFalse(dao.userExists("OtherUser"), "Bot still considers user to exist after kick");
 	}
 
-	@Test(dependsOnMethods = "joinTest", description = "Verify QuitEvent from user that just joined quitting")
+	@Test(description = "Verify QuitEvent from user that just joined quitting")
 	public void quitWithMessageTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = TestUtils.generateTestUserSource(bot);
@@ -754,6 +755,18 @@ public class InputParserTest {
 		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
 		//Since QuitEvent gives us a snapshot, compare contents
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
+		assertTrue(qevent.getUserChannelDaoSnapshot().containsChannel("#aChannel"), "QuitEvent doesn't contain channel");
+		assertTrue(qevent.getUserChannelDaoSnapshot().containsUser(aUser), "QuitEvent doesn't contain channel");
+		assertEquals(qevent.getUser().getChannels().size(), 1, "QuitEvent user contains unexpected channels");
+		assertEquals(qevent.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
+		assertEquals(qevent.getUser().getChannelsOpIn().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
+		assertEquals(qevent.getUser().getChannelsVoiceIn().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
+		assertTrue(qevent.getUser().getChannelsOwnerIn().isEmpty(), "QuitEvent user contains unexpected channels");
+		assertTrue(qevent.getUser().getChannelsHalfOpIn().isEmpty(), "QuitEvent user contains unexpected channels");
+		assertTrue(qevent.getUser().getChannelsSuperOpIn().isEmpty(), "QuitEvent user contains unexpected channels");
+		ChannelSnapshot aChannelSnap = qevent.getUserChannelDaoSnapshot().getChannel("#aChannel");
+		assertEquals(aChannelSnap.getUsers().size(), 1, "QuitEvent channel contains unexpected users");
+		assertEquals(aChannelSnap.getUsers().first(), qevent.getUser(), "Channel user doesn't match");
 		assertEquals(qevent.getReason(), aString, "QuitEvent's reason does not match given");
 
 		//Make sure user is gone
@@ -775,6 +788,7 @@ public class InputParserTest {
 		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
+		assertEquals(qevent.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
 	}
 
 	@Test(dependsOnMethods = "quitWithMessageTest", description = "Verify QuitEvent with no message")
@@ -788,6 +802,7 @@ public class InputParserTest {
 		QuitEvent qevent = getEvent(QuitEvent.class, "QuitEvent not dispatched");
 		assertEquals(qevent.getUser().getGeneratedFrom(), otherUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
+		assertEquals(qevent.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
 	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify part with message")
@@ -802,6 +817,7 @@ public class InputParserTest {
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
 		assertEquals(event.getUser().getGeneratedFrom(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), aString, "PartEvent's reason doesn't match given");
+		assertEquals(event.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
 	}
 
 	@Test(dependsOnMethods = "partWithMessageTest", description = "Verify part without message")
@@ -814,6 +830,8 @@ public class InputParserTest {
 		//Check event contents
 		PartEvent event = getEvent(PartEvent.class, "PartEvent not dispatched");
 		assertEquals(event.getChannel(), aChannel, "PartEvent's channel doesn't match given");
+		assertEquals(aChannel.getName(), "#aChannel", "Channel name doesn't match");
+		assertEquals(event.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
 		assertEquals(event.getUser().getGeneratedFrom(), otherUser, "PartEvent's user doesn't match given");
 		assertEquals(event.getReason(), "", "PartEvent's reason doesn't match given");
 	}
