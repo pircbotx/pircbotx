@@ -63,7 +63,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Map<String, C> channelNameMap;
 	protected final Map<String, U> privateUsers;
 	
-	public UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
+	protected UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
 		this.locale = bot.getConfiguration().getLocale();
