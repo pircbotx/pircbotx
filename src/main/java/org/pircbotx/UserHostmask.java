@@ -71,25 +71,29 @@ public class UserHostmask implements Comparable<User> {
 	private final String hostname;
 
 	protected UserHostmask(PircBotX bot, String rawHostmask) {
-		Preconditions.checkArgument(StringUtils.isNotBlank(rawHostmask), "Cannot parse blank hostmask");
-		this.bot = bot;
-		if (StringUtils.contains(rawHostmask, "!") && StringUtils.contains(rawHostmask, "@")) {
-			String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
-			this.nick = hostmaskParts[0];
-			this.login = hostmaskParts[1];
-			this.hostname = hostmaskParts[2];
-		} else {
-			this.nick = rawHostmask;
-			this.login = null;
-			this.hostname = null;
-		}
+		try {
+			Preconditions.checkArgument(StringUtils.isNotBlank(rawHostmask), "Cannot parse blank hostmask");
+			this.bot = bot;
+			if (StringUtils.contains(rawHostmask, "!") && StringUtils.contains(rawHostmask, "@")) {
+				String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
+				this.nick = hostmaskParts[0];
+				this.login = hostmaskParts[1];
+				this.hostname = hostmaskParts[2];
+			} else {
+				this.nick = rawHostmask;
+				this.login = null;
+				this.hostname = null;
+			}
 
-		if (nick.contains(":")) {
-			String[] nickParts = StringUtils.split(nick, ":");
-			this.extbanPrefix = nickParts[0];
-			this.nick = nickParts[1];
-		} else {
-			this.extbanPrefix = null;
+			if (nick.contains(":")) {
+				String[] nickParts = StringUtils.split(nick, ":");
+				this.extbanPrefix = nickParts[0];
+				this.nick = nickParts[1];
+			} else {
+				this.extbanPrefix = null;
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to parse hostmask " + rawHostmask, e);
 		}
 	}
 
@@ -110,11 +114,13 @@ public class UserHostmask implements Comparable<User> {
 	@NonNull
 	public String getHostmask() {
 		StringBuilder hostmask = new StringBuilder();
-		if(StringUtils.isNotBlank(extbanPrefix))
+		if (StringUtils.isNotBlank(extbanPrefix)) {
 			hostmask.append(extbanPrefix).append(":");
+		}
 		hostmask.append(nick);
-		if(StringUtils.isNotBlank(login) || StringUtils.isNotBlank(hostname))
+		if (StringUtils.isNotBlank(login) || StringUtils.isNotBlank(hostname)) {
 			hostmask.append("!").append(login).append("@").append(hostname);
+		}
 		return hostmask.toString();
 	}
 
