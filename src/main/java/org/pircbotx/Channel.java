@@ -313,6 +313,17 @@ public class Channel implements Comparable<Channel> {
 	public ImmutableSortedSet<User> getUsers() {
 		return getDao().getUsers(this);
 	}
+	
+	/**
+	 * Get all the user's nicks in this channel
+	 * @return An <i>Unmodifiable</i> Set of user's nicks as String in this channel
+	 */
+	public ImmutableSortedSet<String> getUsersNicks() {
+		ImmutableSortedSet.Builder<String> builder = ImmutableSortedSet.naturalOrder();
+		for(User curUser : getDao().getUsers(this))
+			builder.add(curUser.getNick());
+		return builder.build();
+	}
 
 	/**
 	 * Get the user that set the topic. As the user may or may not be in the
