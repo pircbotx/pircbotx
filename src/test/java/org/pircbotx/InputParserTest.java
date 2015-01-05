@@ -18,6 +18,7 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 import java.io.IOException;
 import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
@@ -199,8 +200,9 @@ public class InputParserTest {
 		assertEquals(aUser.getHostname(), "host.test", "User hostmask wrong on JoinEvent");
 
 		assertTrue(dao.containsUser(aUserHostmask.getNick()));
-		assertTrue(aUser.getChannels().contains(aChannel), "User is not joined to channel after JoinEvent. Channels: " + aUser.getChannels());
-		assertTrue(aChannel.getUsers().contains(aUser), "Channel is not joined to user after JoinEvent. Users: " + aChannel.getUsers());
+		assertEquals(aUser.getChannels(), ImmutableSortedSet.of(aChannel), "User is not joined to channel after JoinEvent. Channels: " + aUser.getChannels());
+		assertEquals(aChannel.getUsers(), ImmutableSortedSet.of(aUser), "Channel is not joined to user after JoinEvent. Users: " + aChannel.getUsers());
+		assertEquals(aChannel.getUsersNicks(), ImmutableSortedSet.of(aUserHostmask.getNick()), "Channel nicks doesn't contain user");
 	}
 
 	@Test(description = "Verifies DAO allows case insensitive lookups")
