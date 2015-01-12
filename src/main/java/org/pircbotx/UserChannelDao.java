@@ -41,8 +41,9 @@ import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
 
 /**
- * User-channel model that tracks all channels, users, users' in channels,
- * users' op level in channels, and private message users not in a channel.
+ * Model that creates and tracks Users and Channel and maintains relationships.
+ * This includes channel users, channel op/voice/etc users, private messages,
+ * etc
  * <p>
  * All methods will throw a {@link NullPointerException} when any argument is
  * null
@@ -62,7 +63,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Map<String, U> userNickMap;
 	protected final Map<String, C> channelNameMap;
 	protected final Map<String, U> privateUsers;
-	
+
 	protected UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
 		this.botFactory = botFactory;
@@ -78,17 +79,34 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			levelsMap.put(level, new UserChannelMap<U, C>());
 	}
 
+	/**
+	 * Lookup user by nick, throwing a {@link DaoException} if not found
+	 *
+	 * @param nick The nick of the user
+	 * @return Known active {@link User}
+	 * @throws DaoException If user does not exist, exception will contain
+	 * {@link DaoException.Reason.UnknownUser} and the nick that doesn't exist
+	 */
 	@Synchronized("accessLock")
-	public U getUser(@NonNull String nick) {
+	public U getUser(@NonNull String nick) throws DaoException {
 		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
 		U user = userNickMap.get(nick.toLowerCase(locale));
 		if (user != null)
 			return user;
 
-		//Create new user
+		//Does not exist
 		throw new DaoException(DaoException.Reason.UnknownUser, nick);
 	}
 
+	/**
+	 * Lookup user by UserHostmask, throwing a {@link DaoException} if not found
+	 *
+	 * @param userHostmask The hostmask of the user
+	 * @return Known active {@link User}
+	 * @throws DaoException If user does not exist, exception will contain
+	 * {@link DaoException.Reason.UnknownUserHostmask}, hostmask, and wrapped
+	 * exception with nick
+	 */
 	@Synchronized("accessLock")
 	public U getUser(@NonNull UserHostmask userHostmask) {
 		try {
@@ -98,10 +116,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 				return getUser(userHostmask.getHostmask());
 			return getUser(userHostmask.getNick());
 		} catch (Exception e) {
+			//Does not exist, wrap with detail about hostmask
 			throw new DaoException(DaoException.Reason.UnknownUserHostmask, userHostmask.toString(), e);
 		}
 	}
 
+	/**
+	 * Create a user from a hostmask, internally called when a valid, real user
+	 * contacts us
+	 *
+	 * @param userHostmask The hostmask of the user
+	 * @return Active {@link User} that was created
+	 */
 	@Synchronized("accessLock")
 	@SuppressWarnings("unchecked")
 	public U createUser(@NonNull UserHostmask userHostmask) {
@@ -112,18 +138,35 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return user;
 	}
 
+	/**
+	 * @deprecated Renamed {@link #containsUser(java.lang.String) } to match
+	 * Java Collections API
+	 * @see #containsUser(java.lang.String)
+	 */
 	@Synchronized("accessLock")
 	@Deprecated
 	public boolean userExists(@NonNull String nick) {
 		return userNickMap.containsKey(nick.toLowerCase(locale));
 	}
 
+	/**
+	 * Check if user exists by nick
+	 *
+	 * @param nick Nick of user
+	 * @return True if user exists
+	 */
 	@Synchronized("accessLock")
 	public boolean containsUser(@NonNull String nick) {
 		String nickLowercase = nick.toLowerCase(locale);
 		return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
 	}
 
+	/**
+	 * Check if user exists by hostmask
+	 *
+	 * @param hostmask Hostmask of user
+	 * @return True if user exists
+	 */
 	@Synchronized("accessLock")
 	public boolean containsUser(@NonNull UserHostmask hostmask) {
 		//Rarely we don't get the full hostmask
@@ -134,23 +177,10 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
-	 * Get all user's in the channel. There are some important things to note
-	 * about this method:
-	 * <ul>
-	 * <li>This method may not return a full list of users if you call it before
-	 * the complete nick list has arrived from the IRC server.</li>
-	 * <li>If you wish to find out which users are in a channel as soon as you
-	 * join it, then you should listen for a {@link UserListEvent} instead of
-	 * calling this method, as the {@link UserListEvent} is only dispatched as
-	 * soon as the full user list has been received.</li>
-	 * <li>This method will return immediately, as it does not require any
-	 * interaction with the IRC server.</li>
-	 * </ul>
+	 * Get all currently known users, except from just joined channels where the
+	 * WHO response hasn't finished (listen for {@link UserListEvent} instead)
 	 *
-	 * @since PircBot 1.0.0
-	 *
-	 * @return A Set of all user's in the channel
-	 *
+	 * @return An immutable set of the currently known users
 	 * @see UserListEvent
 	 */
 	@Synchronized("accessLock")
@@ -181,6 +211,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		levelsMap.get(level).removeUserFromChannel(user, channel);
 	}
 
+	/**
+	 * Gets all currently known users in a channel who do not hold a UserLevel
+	 * (op/voice/etc). A {@link UserListEvent} for the channel must of been
+	 * dispatched before this method will return complete results
+	 *
+	 * @param channel Known channel
+	 * @return An immutable sorted set of Users
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<U> getNormalUsers(@NonNull C channel) {
 		Set<U> remainingUsers = new HashSet<U>(mainMap.getUsers(channel));
@@ -189,11 +227,29 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return ImmutableSortedSet.copyOf(remainingUsers);
 	}
 
+	/**
+	 * Gets all currently known users in a channel that hold the specified
+	 * UserLevel. A {@link UserListEvent} for the channel must of been
+	 * dispatched before this method will return complete results
+	 *
+	 * @param channel Known channel
+	 * @param level Level users must hold
+	 * @return An immutable sorted set of Users
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<U> getUsers(@NonNull C channel, @NonNull UserLevel level) {
 		return levelsMap.get(level).getUsers(channel);
 	}
 
+	/**
+	 * Gets all currently known levels (op/voice/etc) a user holds in the
+	 * channel. A {@link UserListEvent} for the channel must of been dispatched
+	 * before this method will return complete results
+	 *
+	 * @param channel Known channel
+	 * @param user Known user
+	 * @return An immutable sorted set of UserLevels
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<UserLevel> getLevels(@NonNull C channel, @NonNull U user) {
 		ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.naturalOrder();
@@ -203,6 +259,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return builder.build();
 	}
 
+	/**
+	 * Gets all currently known channels the user is a part of as a normal user.
+	 * A {@link UserListEvent} for all channels must of been dispatched before
+	 * this method will return complete results
+	 *
+	 * @param user Known user
+	 * @return An immutable sorted set of Channels
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<C> getNormalUserChannels(@NonNull U user) {
 		Set<C> remainingChannels = new HashSet<C>(mainMap.getChannels(user));
@@ -211,6 +275,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return ImmutableSortedSet.copyOf(remainingChannels);
 	}
 
+	/**
+	 * Gets all currently known channels the user is a part of with the specified level.
+	 * A {@link UserListEvent} for all channels must of been dispatched before
+	 * this method will return complete results
+	 *
+	 * @param user Known user
+	 * @return An immutable sorted set of Channels
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<C> getChannels(@NonNull U user, @NonNull UserLevel level) {
 		return levelsMap.get(level).getChannels(user);
@@ -252,8 +324,13 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		userNickMap.put(newNick.toLowerCase(locale), user);
 	}
 
+	/**
+	 * Lookup channel by name, throwing a {@link DaoException} if not found
+	 * @param name Name of channel (eg #pircbotx)
+	 * @return A known channel
+	 */
 	@Synchronized("accessLock")
-	public C getChannel(@NonNull String name) {
+	public C getChannel(@NonNull String name) throws DaoException {
 		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
 		C chan = channelNameMap.get(name.toLowerCase(locale));
 		if (chan != null)
@@ -275,6 +352,11 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		throw new DaoException(DaoException.Reason.UnknownChannel, name);
 	}
 
+	/**
+	 * Creates a known channel, internally called when we join a channel
+	 * @param name
+	 * @return 
+	 */
 	@Synchronized("accessLock")
 	@SuppressWarnings("unchecked")
 	public C createChannel(@NonNull String name) {
@@ -284,27 +366,24 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
-	 * Check if the bot is currently in the given channel
-	 * @param name
-	 * @return
-	 * @deprecated Use {@link #containsChannel(java.lang.String) }
+	 * @deprecated Renamed {@link #containsChannel(java.lang.String) } to match the Java Collections API
+	 * @see #containsChannel(java.lang.String) 
 	 */
 	@Deprecated
 	public boolean channelExists(@NonNull String name) {
 		return containsChannel(name);
 	}
-	
+
 	/**
-	 * Check if the bot is currently in the given channel.
-	 *
-	 * @param name A channel name as a string
-	 * @return True if we are still connected to the channel, false if not
+	 * Check if we are currently in the given channel
+	 * @param name Channel name (eg #pircbotx)
+	 * @return True if we are still connected to the channel
 	 */
 	@Synchronized("accessLock")
 	public boolean containsChannel(@NonNull String name) {
 		if (channelNameMap.containsKey(name.toLowerCase(locale)))
 			return true;
-		
+
 		//This could potentially be a mode message, strip off prefixes till we get a channel
 		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
 		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
@@ -320,16 +399,33 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return false;
 	}
 
+	/**
+	 * Get all currently known users in a channel
+	 *
+	 * @param channel Known channel
+	 * @return An immutable set of users
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<U> getUsers(@NonNull C channel) {
 		return mainMap.getUsers(channel);
 	}
 
+	/**
+	 * Get all currently joined channels
+	 *
+	 * @return An immutable set of channels
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<C> getAllChannels() {
 		return ImmutableSortedSet.copyOf(channelNameMap.values());
 	}
 
+	/**
+	 * Get <i>channels we're joined to</i> that the user is joined to as well
+	 *
+	 * @param user A known user
+	 * @return An immutable set of channels
+	 */
 	@Synchronized("accessLock")
 	public ImmutableSortedSet<C> getChannels(@NonNull U user) {
 		return mainMap.getChannels(user);
@@ -345,6 +441,9 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		channelNameMap.remove(channel.getName());
 	}
 
+	/**
+	 * Clears all internal maps
+	 */
 	@Synchronized("accessLock")
 	public void close() {
 		mainMap.clear();
@@ -355,6 +454,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		userNickMap.clear();
 	}
 
+	/**
+	 * Create an immutable snapshot (copy) of all of contained Users, Channels,
+	 * and mappings, VERY EXPENSIVE.
+	 *
+	 * @return Copy of entire model
+	 */
 	@Synchronized("accessLock")
 	public UserChannelDaoSnapshot createSnapshot() {
 		//Create snapshots of all users and channels
