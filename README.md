@@ -1,9 +1,5 @@
-<a href="http://pircbotx.googlecode.com/">PircBotX Java IRC Library on Google Code</a>
-========
+##<a href="http://code.google.com/p/pircbotx/">Looking for PircBotX information, downloads, wiki, issue tracker, support, and other useful information? Click here!</a>
 
-Go here for more information, downloads, wiki, issue tracker, and other useful info.
+###PircBotX Java IRC Library - GitHub Mirror
 
-This Repository
-========
-
-This is a git mirror of the Mercurial repository on Google Code, synced nightly. Pull requests are accepted but please create issues on the Google Code site
+PircBotX for git users! Pull requests are accepted but please create issues on the Google Code site.
