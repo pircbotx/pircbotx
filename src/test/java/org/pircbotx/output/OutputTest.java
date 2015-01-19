@@ -51,7 +51,7 @@ import org.pircbotx.TestUtils;
  * @author Leon Blakey
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
-public class OutputTest {
+public class OutputTest {	
 	protected final String aString = "I'm some super long string that has multiple words";
 	protected PircBotX bot;
 	protected SocketFactory socketFactory;
@@ -117,35 +117,7 @@ public class OutputTest {
 		checkOutput(beginning + aString + ending);
 	}
 
-	@Test(description = "Verify sendRawLineSplit works correctly with long strings")
-	public void sendRawLineSplitLong() throws Exception {
-		//Generate string parts
-		String beginning = "BEGIN";
-		String ending = "END";
-
-		//Build a randomly generated seed string
-		Random random = new Random();
-		int botMaxLineLength = bot.getConfiguration().getMaxLineLength();
-		StringBuilder seedStringBuilder = new StringBuilder(128);
-		seedStringBuilder.append(" - ");
-		while ((beginning.length() + "1".length() + seedStringBuilder.length() + ending.length()) < botMaxLineLength - 2)
-			seedStringBuilder.append((char) (random.nextInt(26) + 'a'));
-		String seedString = seedStringBuilder.toString();
-		String[] stringParts = new String[]{
-			"1" + seedString,
-			"2" + seedString,
-			"3" + seedString.substring(0, botMaxLineLength / 2)
-		};
-
-		//Send the message, joining all the message parts into one big chunck
-		bot.sendRaw().rawLineSplit(beginning, StringUtils.join(stringParts, ""), ending);
-
-		//Verify sent lines, making sure they come out in parts
-		Iterator<String> outputItr = checkOutput(beginning + stringParts[0] + ending);
-		//Verify further lines
-		assertEquals(tryGetNextLine(outputItr), beginning + stringParts[1] + ending, "Second string part doesn't match");
-		assertEquals(tryGetNextLine(outputItr), beginning + stringParts[2] + ending, "Third string part doesn't match");
-	}
+	
 
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {
@@ -291,7 +263,7 @@ public class OutputTest {
 	 *
 	 * @param expected
 	 */
-	protected Iterator<String> checkOutput(String expected) throws IOException {
+	protected Iterator<String> checkOutput(String expected) {
 		List<String> outputLines = Arrays.asList(StringUtils.split(botOut.toString(), "\n\r"));
 		Iterator<String> outputItr = outputLines.iterator();
 		//Handle the first 3 lines from the bot
