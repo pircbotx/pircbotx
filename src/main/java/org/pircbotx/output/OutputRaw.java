@@ -18,13 +18,18 @@
 package org.pircbotx.output;
 
 import static com.google.common.base.Preconditions.*;
+import com.google.common.collect.Lists;
 import java.io.IOException;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 import org.slf4j.Marker;
@@ -142,12 +147,10 @@ public class OutputRaw {
 
 		//Too long, split it up
 		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
-		//Oh look, no function to split every nth char. Since regex is expensive, use this nonsense
-		int iterations = (int) Math.ceil(message.length() / (double) maxMessageLength);
-		for (int i = 0; i < iterations; i++) {
-			int endPoint = (i != iterations - 1) ? ((i + 1) * maxMessageLength) : message.length();
-			String curMessagePart = prefix + message.substring(i * maxMessageLength, endPoint) + suffix;
-			rawLine(curMessagePart);
+		log.trace("Max message length {}", maxMessageLength);
+		//v3 word split, just use Apache commons lang
+		for(String curPart : StringUtils.split(WordUtils.wrap(message, maxMessageLength, "\r\n", true), "\r\n")) {
+			rawLine(prefix + curPart + suffix);
 		}
 	}
 
