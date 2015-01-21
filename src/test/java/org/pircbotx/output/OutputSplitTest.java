@@ -22,6 +22,7 @@ import org.pircbotx.TestUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
+import org.testng.annotations.DataProvider;
 
 /**
  *
@@ -55,7 +56,7 @@ public class OutputSplitTest {
 			closed = true;
 		}
 	}
-	protected static final int MAX_LINE_LENGTH = 20;
+	protected static final int MAX_LINE_LENGTH = 70;
 	protected TestOutputPircBotX bot;
 	protected Queue<String> outputQueue;
 
@@ -71,28 +72,29 @@ public class OutputSplitTest {
 	}
 
 	@Test
-	public void sendRawLineSplitLongSimple() throws IOException {
+	public void sendRawLineSplit() throws IOException {
 		assertTrue(bot.getConfiguration().isAutoSplitMessage(), "Auto split not enabled");
 		assertEquals(bot.getConfiguration().getMaxLineLength(), MAX_LINE_LENGTH, "Size is different");
 
 		//Test strings
-		String test1, test2, test3;
 		List<String> testStrings = Arrays.asList(
-				test1 = "hbdpopqgllyl",
-				test2 = "nbmnqfttzczw",
-				test3 = "hjnxgjwrtmcb"
-		);
+				"bktwbljrgfmgsmvgaeqqpdcifkzgahlacilinoaufudgslavywgmuydysasdyg",
+				"ktmqoxzdudvexesxenqhwmrcqgaouahmrqlbvtbixtwfhevxsdptbbgtzbpbme",
+				"ckxavfsouqrdzugtmemxexwjdlufahcnlekbootyhpazkqciughdapgaxvcoze"
+				);
 		for (String curTest : testStrings) {
-			assertEquals(curTest.length(), MAX_LINE_LENGTH - 6/*ends*/ - 2/*Newline*/, "Test string length is wrong for " + curTest);
+			assertEquals(curTest.length(), MAX_LINE_LENGTH - 6/*prefix+suffix*/ - 2/*Newline*/, "Test string length is wrong for " + curTest);
 		}
 
 		//Combine and send
 		bot.sendRaw().rawLineSplit("BEG", StringUtils.join(testStrings, ""), "END");
 
 		//Verify output
-		checkOutput("BEG" + test1 + "END",
-				"BEG" + test2 + "END",
-				"BEG" + test3 + "END");
+		List<String> expectedStrings = Lists.newArrayList();
+		for(String curTestString : testStrings) {
+			expectedStrings.add("BEG" + curTestString + "END");
+		}
+		checkOutput(expectedStrings.toArray(new String[]{}));
 	}
 
 	protected void checkOutput(String... expected) {
