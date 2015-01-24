@@ -74,16 +74,22 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 	protected final UserHostmask userHostmask;
 	protected final String rawFilename;
 	protected final String safeFilename;
+	@Getter(onMethod = @_(
+			@Override))
 	protected final InetAddress address;
+	@Getter(onMethod = @_(
+			@Override))
 	protected final int port;
 	protected final long filesize;
-	protected final String transferToken;
+	@Getter(onMethod = @_(
+			@Override))
+	protected final String token;
 	@Getter(onMethod = @_(
 			@Override))
 	protected final boolean passive;
 
 	public IncomingFileTransferEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull String rawFilename, @NonNull String safeFilename,
-			@NonNull InetAddress address, int port, long filesize, String transferToken, boolean passive) {
+			@NonNull InetAddress address, int port, long filesize, String token, boolean passive) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;
@@ -92,8 +98,16 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 		this.address = address;
 		this.port = port;
 		this.filesize = filesize;
-		this.transferToken = transferToken;
+		this.token = token;
 		this.passive = passive;
+	}
+	
+	/**
+	 * @deprecated Use {@link #getToken() } from {@link GenericDCCEvent} interface
+	 */
+	@Deprecated
+	public String getTransferToken() {
+		return getToken();
 	}
 
 	public ReceiveFileTransfer accept(@NonNull File destination) throws IOException {
