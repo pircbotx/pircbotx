@@ -17,7 +17,7 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.PircBotX;
+import java.net.InetAddress;
 
 /**
  * Any event dealing with DCC. This includes chat and file transfers. This is
@@ -28,4 +28,7 @@ import org.pircbotx.PircBotX;
  */
 public interface GenericDCCEvent extends GenericUserEvent {
 	public boolean isPassive();
+	public InetAddress getAddress();
+	public int getPort();
+	public String getToken();
 }
