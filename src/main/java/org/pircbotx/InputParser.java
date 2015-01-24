@@ -287,7 +287,8 @@ public class InputParser implements Closeable {
 	 *
 	 * @param line The raw line of text from the server.
 	 */
-	public void handleLine(@NonNull String line) throws IOException, IrcException {
+	public void handleLine(@NonNull String rawLine) throws IOException, IrcException {
+		String line = CharMatcher.WHITESPACE.trimFrom(rawLine);
 		log.info(INPUT_MARKER, line);
 
 		List<String> parsedLine = Utils.tokenizeLine(line);
