@@ -440,6 +440,16 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		//Remove remaining locations
 		channelNameMap.remove(channel.getName());
 	}
+	
+	/**
+	 * Gets the bots own user object.
+	 *
+	 * @return The user object representing this bot
+	 */
+	@Synchronized("accessLock")
+	public User getUserBot() {
+		return getUser(bot.getNick());
+	}
 
 	/**
 	 * Clears all internal maps
