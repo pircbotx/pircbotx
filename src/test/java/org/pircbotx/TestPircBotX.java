@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
+import static org.testng.Assert.*;
 
 /**
  *
@@ -77,4 +78,30 @@ public class TestPircBotX extends PircBotX {
 		closed = true;
 	}
 
+	/**
+	 * After simulating a server response, call this to get a specific Event
+	 * from the Event set. Note that if the event does not exist an Assertion
+	 * error will be thrown. Also note that only the last occurrence of the
+	 * event will be fetched
+	 *
+	 * @param clazz The class of the event type
+	 * @param errorMessage An error message if the event type does not exist
+	 * @return A single requested event
+	 */
+	@SuppressWarnings("unchecked")
+	public <E> E getTestEvent(Class<E> clazz, String errorMessage) {
+		E cevent = null;
+		for (Event curEvent : eventQueue) {
+			log.debug("Dispatched event: " + curEvent);
+			if (curEvent.getClass().isAssignableFrom(clazz))
+				cevent = (E) curEvent;
+		}
+		//Failed, does not exist
+		assertNotNull(cevent, errorMessage);
+		return cevent;
+	}
+	
+	public <E> E getTestEvent(Class<E> clazz) {
+		return getTestEvent(clazz, clazz.getSimpleName() + " not dispatched");
+	}
 }
