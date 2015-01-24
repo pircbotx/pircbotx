@@ -116,12 +116,8 @@ public class Channel implements Comparable<Channel> {
 	 * Channel key (+k)
 	 */
 	protected String channelKey = null;
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	protected boolean modeStale = false;
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	protected CountDownLatch modeLatch = null;
+	protected CountDownLatch modeChangeLatch = null;
+	protected final Object modeChangeLock = new Object();
 
 	@SuppressWarnings("unchecked")
 	protected Channel(PircBotX bot, UserChannelDao<? extends User, ? extends Channel> dao, String name) {
@@ -144,25 +140,28 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	protected void parseMode(String rawMode) {
-		if (rawMode.contains(" ")) {
-			//Mode contains arguments which are impossible to parse.
-			//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
-			//Need to ask server
-			modeStale = true;
-			return;
+		synchronized (modeChangeLock) {
+			if (rawMode.contains(" ") || (mode != null && mode.contains(" "))) {
+				//Mode contains arguments which are impossible to parse.
+				//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
+				//Need to ask server
+				log.trace("Unknown args in mode '{}', getting mode", rawMode);
+				mode = null;
+				send().getMode();
+			} else {
+				//Parse mode by switching between removing and adding by the existance of a + or - sign
+				boolean adding = true;
+				for (char curChar : rawMode.toCharArray())
+					if (curChar == '-')
+						adding = false;
+					else if (curChar == '+')
+						adding = true;
+					else if (adding)
+						mode = mode + curChar;
+					else
+						mode = mode.replace(Character.toString(curChar), "");
+			}
 		}
-
-		//Parse mode by switching between removing and adding by the existance of a + or - sign
-		boolean adding = true;
-		for (char curChar : rawMode.toCharArray())
-			if (curChar == '-')
-				adding = false;
-			else if (curChar == '+')
-				adding = true;
-			else if (adding)
-				mode = mode + curChar;
-			else
-				mode = mode.replace(Character.toString(curChar), "");
 	}
 
 	/**
@@ -179,21 +178,31 @@ public class Channel implements Comparable<Channel> {
 	 * @return A known good mode, either immediately or soon.
 	 */
 	public String getMode() {
-		if (!modeStale)
-			return mode;
+		synchronized (modeChangeLock) {
+			if (mode != null)
+				return mode;
+		}
 
-		//Mode is stale, get new mode from server
-		try {
-			log.debug("Mode is stale for channel " + getName() + ", fetching fresh mode");
-			if (modeLatch == null || modeLatch.getCount() == 0)
-				modeLatch = new CountDownLatch(1);
-			bot.sendRaw().rawLine("MODE " + getName());
-			//Wait for setMode to be called
-			modeLatch.await();
-			//We have known good mode from server, now return
-			return mode;
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Waiting for mode response interrupted", e);
+		log.debug("Pausing mode request until server responds with mode");
+
+		//While unlikely, mode could be reset. Continuously try
+		int counter = 0;
+		while (true) {
+			log.trace("Attempt #{} to get mode", counter++);
+			try {
+				CountDownLatch modeWait;
+				synchronized (modeChangeLock) {
+					modeWait = modeChangeLatch;
+				}
+				modeWait.await();
+			} catch (InterruptedException e) {
+				throw new RuntimeException("Waiting for mode response interrupted", e);
+			}
+
+			synchronized (modeChangeLock) {
+				if (mode != null)
+					return mode;
+			}
 		}
 	}
 
@@ -279,48 +288,51 @@ public class Channel implements Comparable<Channel> {
 	 * @param mode
 	 */
 	protected void setMode(String mode, ImmutableList<String> modeParsed) {
-		this.mode = mode;
-		this.modeStale = false;
-		if (modeLatch != null)
-			modeLatch.countDown();
+		synchronized (modeChangeLock) {
+			this.mode = mode;
 
-		//Parse out mode
-		PeekingIterator<String> params = Iterators.peekingIterator(modeParsed.iterator());
+			//Parse out mode
+			PeekingIterator<String> params = Iterators.peekingIterator(modeParsed.iterator());
 
-		//Process modes letter by letter, grabbing paramaters as needed
-		boolean adding = true;
-		String modeLetters = params.next();
-		for (int i = 0; i < modeLetters.length(); i++) {
-			char curModeChar = modeLetters.charAt(i);
-			if (curModeChar == '+')
-				adding = true;
-			else if (curModeChar == '-')
-				adding = false;
-			else {
-				ChannelModeHandler modeHandler = bot.getConfiguration().getChannelModeHandlers().get(curModeChar);
-				if (modeHandler != null)
-					modeHandler.handleMode(bot, this, null, null, params, adding, false);
+			//Process modes letter by letter, grabbing paramaters as needed
+			boolean adding = true;
+			String modeLetters = params.next();
+			for (int i = 0; i < modeLetters.length(); i++) {
+				char curModeChar = modeLetters.charAt(i);
+				if (curModeChar == '+')
+					adding = true;
+				else if (curModeChar == '-')
+					adding = false;
+				else {
+					ChannelModeHandler modeHandler = bot.getConfiguration().getChannelModeHandlers().get(curModeChar);
+					if (modeHandler != null)
+						modeHandler.handleMode(bot, this, null, null, params, adding, false);
+				}
 			}
+			
+			if(modeChangeLatch != null)
+				modeChangeLatch.countDown();
 		}
 	}
 
 	/**
-	 * Get all users in this channel.
-	 * }
+	 * Get all users in this channel. }
 	 *
 	 * @return An <i>Unmodifiable</i> Set of users in this channel
 	 */
 	public ImmutableSortedSet<User> getUsers() {
 		return getDao().getUsers(this);
 	}
-	
+
 	/**
 	 * Get all the user's nicks in this channel
-	 * @return An <i>Unmodifiable</i> Set of user's nicks as String in this channel
+	 *
+	 * @return An <i>Unmodifiable</i> Set of user's nicks as String in this
+	 * channel
 	 */
 	public ImmutableSortedSet<String> getUsersNicks() {
 		ImmutableSortedSet.Builder<String> builder = ImmutableSortedSet.naturalOrder();
-		for(User curUser : getDao().getUsers(this))
+		for (User curUser : getDao().getUsers(this))
 			builder.add(curUser.getNick());
 		return builder.build();
 	}
@@ -386,8 +398,6 @@ public class Channel implements Comparable<Channel> {
 	 * @return Immutable Channel copy minus the DAO
 	 */
 	public ChannelSnapshot createSnapshot() {
-		if (modeStale)
-			log.warn("Channel {} mode '{}' is stale", getName(), mode);
 		return new ChannelSnapshot(this, mode);
 	}
 
