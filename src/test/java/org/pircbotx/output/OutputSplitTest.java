@@ -1,17 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.pircbotx.output;
 
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +32,6 @@ import org.pircbotx.TestUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
-import org.testng.annotations.DataProvider;
 
 /**
  *
@@ -81,7 +90,7 @@ public class OutputSplitTest {
 				"bktwbljrgfmgsmvgaeqqpdcifkzgahlacilinoaufudgslavywgmuydysasdyg",
 				"ktmqoxzdudvexesxenqhwmrcqgaouahmrqlbvtbixtwfhevxsdptbbgtzbpbme",
 				"ckxavfsouqrdzugtmemxexwjdlufahcnlekbootyhpazkqciughdapgaxvcoze"
-				);
+		);
 		for (String curTest : testStrings) {
 			assertEquals(curTest.length(), MAX_LINE_LENGTH - 6/*prefix+suffix*/ - 2/*Newline*/, "Test string length is wrong for " + curTest);
 		}
@@ -91,7 +100,7 @@ public class OutputSplitTest {
 
 		//Verify output
 		List<String> expectedStrings = Lists.newArrayList();
-		for(String curTestString : testStrings) {
+		for (String curTestString : testStrings) {
 			expectedStrings.add("BEG" + curTestString + "END");
 		}
 		checkOutput(expectedStrings.toArray(new String[]{}));
