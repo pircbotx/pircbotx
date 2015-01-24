@@ -22,21 +22,16 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
-import org.pircbotx.PircBotX;
+import org.pircbotx.TestPircBotX;
 import org.pircbotx.TestUtils;
-import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
-import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,7 +42,7 @@ import static org.testng.Assert.*;
  * @author Leon Blakey
  */
 public class DCCTest {
-	PircBotX bot;
+	protected TestPircBotX bot;
 
 	@BeforeClass(description = "This will fail if you don't have IPv6 support")
 	public void checkIPv6Support() throws UnknownHostException {
@@ -56,9 +51,8 @@ public class DCCTest {
 
 	@BeforeMethod
 	public void setup() throws UnknownHostException {
-		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
-				.setLocalAddress(InetAddress.getByName("::1"))
-				.buildConfiguration());
+		bot = new TestPircBotX(TestUtils.generateConfigurationBuilder()
+				.setLocalAddress(InetAddress.getByName("::1")));
 	}
 
 	@Test
@@ -115,6 +109,64 @@ public class DCCTest {
 			//{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
 			//{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
 		};
+	}
+	
+	@Test
+	public void sendFileEventNormalTest() throws IOException, IrcException {
+		User aUser = TestUtils.generateTestUserSource(bot);
+		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC SEND construction_b1.bsp 134744072 44401 1677168\u0001");
+		
+		IncomingFileTransferEvent event = bot.getTestEvent(IncomingFileTransferEvent.class);
+		assertEquals(event.getUser(), aUser, "User is wrong");
+		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
+		assertEquals(event.getRawFilename(), "construction_b1.bsp", "Raw filename is wrong");
+		assertEquals(event.getSafeFilename(), "construction_b1.bsp", "Safe filename is wrong");
+		assertEquals(event.getAddress(), InetAddress.getByName("8.8.8.8"), "IP is wrong");
+		assertEquals(event.getPort(), 44401, "Port is wrong");
+		assertEquals(event.getFilesize(), 1677168, "Filesize is wrong");
+		assertNull(event.getToken(), "Unexpected token");
+	}
+	
+	@Test
+	public void sendFileEventTokenTest() throws IOException, IrcException {
+		User aUser = TestUtils.generateTestUserSource(bot);
+		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC SEND construction_b1.bsp 134744072 44401 1677168 123f33\u0001");
+		
+		IncomingFileTransferEvent event = bot.getTestEvent(IncomingFileTransferEvent.class);
+		assertEquals(event.getUser(), aUser, "User is wrong");
+		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
+		assertEquals(event.getRawFilename(), "construction_b1.bsp", "Raw filename is wrong");
+		assertEquals(event.getSafeFilename(), "construction_b1.bsp", "Safe filename is wrong");
+		assertEquals(event.getAddress(), InetAddress.getByName("8.8.8.8"), "IP is wrong");
+		assertEquals(event.getPort(), 44401, "Port is wrong");
+		assertEquals(event.getFilesize(), 1677168, "Filesize is wrong");
+		assertEquals(event.getToken(), "123f33", "Token is wrong");
+	}
+	
+	@Test
+	public void sendChatEventNormalTest() throws IOException, IrcException {
+		User aUser = TestUtils.generateTestUserSource(bot);
+		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC CHAT chat 134744072 44401 1677168\u0001");
+		
+		IncomingChatRequestEvent event = bot.getTestEvent(IncomingChatRequestEvent.class);
+		assertEquals(event.getUser(), aUser, "User is wrong");
+		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
+		assertEquals(event.getAddress(), InetAddress.getByName("8.8.8.8"), "IP is wrong");
+		assertEquals(event.getPort(), 44401, "Port is wrong");
+		assertNull(event.getToken(), "Unexpected token");
+	}
+	
+	@Test
+	public void sendChatEventTokenTest() throws IOException, IrcException {
+		User aUser = TestUtils.generateTestUserSource(bot);
+		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC CHAT chat 134744072 44401 1677168 123f33\u0001");
+		
+		IncomingChatRequestEvent event = bot.getTestEvent(IncomingChatRequestEvent.class);
+		assertEquals(event.getUser(), aUser, "User is wrong");
+		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
+		assertEquals(event.getAddress(), InetAddress.getByName("8.8.8.8"), "IP is wrong");
+		assertEquals(event.getPort(), 44401, "Port is wrong");
+		assertEquals(event.getToken(), "123f33", "Token is wrong");
 	}
 
 	protected void debug(String type, InetAddress address) {
