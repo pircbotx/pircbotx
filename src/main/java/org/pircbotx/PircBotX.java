@@ -515,6 +515,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 * Gets the bots own user object.
 	 *
 	 * @return The user object representing this bot
+	 * @see UserChannelDao#getUserBot() 
 	 */
 	public User getUserBot() {
 		return userChannelDao.getUser(getNick());

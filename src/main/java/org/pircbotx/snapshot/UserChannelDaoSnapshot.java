@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.EnumMap;
 import java.util.Locale;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
 import org.pircbotx.UserChannelMap;
 import org.pircbotx.UserLevel;
@@ -31,8 +32,10 @@ import org.pircbotx.UserLevel;
  * @author Leon Blakey
  */
 public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, ChannelSnapshot> {
+	protected final String botNick;
 	public UserChannelDaoSnapshot(PircBotX bot, Locale locale, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableMap<String, UserSnapshot> userNickMap, ImmutableMap<String, ChannelSnapshot> channelNameMap, ImmutableMap<String, UserSnapshot> privateUsers) {
 		super(bot, null, locale, mainMap, levelsMap, userNickMap, channelNameMap, privateUsers);
+		botNick = bot.getNick();
 	}
 
 	@Override
@@ -89,6 +92,11 @@ public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, Channel
 	@Override
 	protected void removeUserFromLevel(UserLevel level, UserSnapshot user, ChannelSnapshot channel) {
 		SnapshotUtils.fail();
+	}
+
+	@Override
+	public UserSnapshot getUserBot() {
+		return getUser(botNick);
 	}
 
 	@Override
