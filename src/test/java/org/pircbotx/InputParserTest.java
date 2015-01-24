@@ -91,36 +91,17 @@ import org.testng.collections.Lists;
 @Test(singleThreaded = true)
 public class InputParserTest {
 	final static String aString = "I'm some super long string that has multiple words";
-	protected List<Event> events;
 	protected UserChannelDao dao;
 	protected InputParser inputParser;
-	protected PircBotX bot;
+	protected TestPircBotX bot;
 
 	/**
 	 * General bot setup: Use GenericListenerManager (no threading), add custom
 	 * listener to add all called events to Event set, set nick, etc
 	 */
 	@BeforeMethod
-	public void setUp() {
-		events = new ArrayList<Event>();
-		Configuration configuration = TestUtils.generateConfigurationBuilder()
-				.addListener(new Listener() {
-					public void onEvent(Event event) throws Exception {
-						events.add(event);
-					}
-				})
-				.buildConfiguration();
-		bot = new PircBotX(configuration) {
-			@Override
-			public boolean isConnected() {
-				return true;
-			}
-
-			@Override
-			protected void sendRawLineToServer(String line) {
-				//Do nothing
-			}
-		};
+	public void setUp() {	
+		bot = new TestPircBotX(TestUtils.generateConfigurationBuilder());
 		bot.nick = "PircBotXBot";
 
 		//Save objects into fields for easier access
@@ -1167,7 +1148,7 @@ public class InputParserTest {
 	@SuppressWarnings("unchecked")
 	protected <E> E getEvent(Class<E> clazz, String errorMessage) {
 		E cevent = null;
-		for (Event curEvent : events) {
+		for (Event curEvent : bot.eventQueue) {
 			log.debug("Dispatched event: " + curEvent);
 			if (curEvent.getClass().isAssignableFrom(clazz))
 				cevent = (E) curEvent;

@@ -17,17 +17,15 @@
  */
 package org.pircbotx.output;
 
+import org.pircbotx.TestPircBotX;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,45 +37,17 @@ import static org.testng.Assert.*;
  */
 @Test(singleThreaded = true)
 public class OutputSplitTest {
-	@Slf4j
-	protected static class TestOutputPircBotX extends PircBotX {
-		protected final Queue<String> outputQueue;
-		@Getter
-		protected boolean closed = false;
-
-		public TestOutputPircBotX(Configuration configuration, Queue<String> outputQueue) {
-			super(configuration);
-			this.outputQueue = outputQueue;
-		}
-
-		@Override
-		protected void sendRawLineToServer(String line) throws IOException {
-			outputQueue.add(line);
-		}
-
-		@Override
-		public boolean isConnected() {
-			return true;
-		}
-
-		@Override
-		public void close() {
-			closed = true;
-		}
-	}
 	protected static final int MAX_LINE_LENGTH = 70;
-	protected TestOutputPircBotX bot;
+	protected TestPircBotX bot;
 	protected Queue<String> outputQueue;
 
 	@BeforeMethod
 	public void setup() {
-		outputQueue = Lists.newLinkedList();
-
-		Configuration config = TestUtils.generateConfigurationBuilder()
+		Configuration.Builder config = TestUtils.generateConfigurationBuilder()
 				.setAutoSplitMessage(true)
-				.setMaxLineLength(MAX_LINE_LENGTH)
-				.buildConfiguration();
-		bot = new TestOutputPircBotX(config, outputQueue);
+				.setMaxLineLength(MAX_LINE_LENGTH);
+		bot = new TestPircBotX(config);
+		outputQueue = bot.outputQueue;
 	}
 
 	@Test
