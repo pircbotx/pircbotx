@@ -80,7 +80,7 @@ public class DccHandler implements Closeable {
 					? rawFilename.substring(1, rawFilename.length() - 1) : rawFilename;
 			InetAddress address = parseRawAddress(requestParts.get(3));
 			int port = Integer.parseInt(requestParts.get(4));
-			long size = Integer.parseInt(Utils.tryGetIndex(requestParts, 5, "-1"));
+			long size = Long.parseLong(Utils.tryGetIndex(requestParts, 5, "-1"));
 			String transferToken = Utils.tryGetIndex(requestParts, 6, null);
 
 			if (transferToken != null)
@@ -115,7 +115,7 @@ public class DccHandler implements Closeable {
 			//Reply with: DCC ACCEPT <filename> 0 <position> <token>
 			String filename = requestParts.get(2);
 			int port = Integer.parseInt(requestParts.get(3));
-			long position = Integer.parseInt(requestParts.get(4));
+			long position = Long.parseLong(requestParts.get(4));
 
 			if (port == 0) {
 				//Passive transfer
@@ -158,7 +158,7 @@ public class DccHandler implements Closeable {
 			//TODO how well does this handle non passive?
 			String filename = requestParts.get(2);
 			int port;
-			int position = Integer.parseInt(requestParts.get(4));
+			long position = Long.parseLong(requestParts.get(4));
 			String transferToken;
 			if(requestParts.size() == 5) {
 				//Standard request
@@ -601,5 +601,9 @@ public class DccHandler implements Closeable {
 		protected final String chatToken;
 		protected InetAddress receiverAddress;
 		protected int receiverPort;
+	}
+	
+	public static void main(String[] args) throws UnknownHostException {
+		log.debug("IP: {}", parseRawAddress("134744072"));
 	}
 }
