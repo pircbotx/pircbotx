@@ -145,7 +145,7 @@ public class Channel implements Comparable<Channel> {
 				//Mode contains arguments which are impossible to parse.
 				//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
 				//Need to ask server
-				log.trace("Unknown args in mode '{}', getting mode", rawMode);
+				log.trace("Unknown args in channel {} mode '{}', getting fresh mode", name, rawMode);
 				mode = null;
 				send().getMode();
 			} else {
@@ -183,12 +183,12 @@ public class Channel implements Comparable<Channel> {
 				return mode;
 		}
 
-		log.debug("Pausing mode request until server responds with mode");
+		log.debug("Pausing channel {} getMode() until server responds with fresh mode", name);
 
 		//While unlikely, mode could be reset. Continuously try
 		int counter = 0;
 		while (true) {
-			log.trace("Attempt #{} to get mode", counter++);
+			log.trace("Attempt #{} to get mode for channel {}", counter++, name);
 			try {
 				CountDownLatch modeWait;
 				synchronized (modeChangeLock) {
@@ -196,7 +196,7 @@ public class Channel implements Comparable<Channel> {
 				}
 				modeWait.await();
 			} catch (InterruptedException e) {
-				throw new RuntimeException("Waiting for mode response interrupted", e);
+				throw new RuntimeException("Waiting for mode response for channel " + name + " interrupted", e);
 			}
 
 			synchronized (modeChangeLock) {
@@ -309,8 +309,8 @@ public class Channel implements Comparable<Channel> {
 						modeHandler.handleMode(bot, this, null, null, params, adding, false);
 				}
 			}
-			
-			if(modeChangeLatch != null)
+
+			if (modeChangeLatch != null)
 				modeChangeLatch.countDown();
 		}
 	}
