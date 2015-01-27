@@ -769,10 +769,10 @@ public class InputParser implements Closeable {
 			String whoisNick = parsedResponse.get(1);
 
 			WhoisEvent.Builder builder = WhoisEvent.builder();
-			builder.setNick(whoisNick);
-			builder.setLogin(parsedResponse.get(2));
-			builder.setHostname(parsedResponse.get(3));
-			builder.setRealname(parsedResponse.get(5));
+			builder.nick(whoisNick);
+			builder.login(parsedResponse.get(2));
+			builder.hostname(parsedResponse.get(3));
+			builder.realname(parsedResponse.get(5));
 			whoisBuilder.put(whoisNick, builder);
 		} else if (code == RPL_AWAY) {
 			//Example: 301 PircBotXUser TheLQ_ :I'm away, sorry
@@ -782,28 +782,28 @@ public class InputParser implements Closeable {
 			if (bot.getUserChannelDao().containsUser(nick))
 				bot.getUserChannelDao().getUser(nick).setAwayMessage(awayMessage);
 			if (whoisBuilder.containsKey(nick))
-				whoisBuilder.get(nick).setAwayMessage(awayMessage);
+				whoisBuilder.get(nick).awayMessage(awayMessage);
 		} else if (code == RPL_WHOISCHANNELS) {
 			//Example: 319 TheLQ Plazma :+#freenode
 			//Channel list from whois. Re-tokenize since they're after the :
 			String whoisNick = parsedResponse.get(1);
 			ImmutableList<String> parsedChannels = ImmutableList.copyOf(Utils.tokenizeLine(parsedResponse.get(2)));
 
-			whoisBuilder.get(whoisNick).setChannels(parsedChannels);
+			whoisBuilder.get(whoisNick).channels(parsedChannels);
 		} else if (code == RPL_WHOISSERVER) {
 			//Server info from whois
 			//312 TheLQ Plazma leguin.freenode.net :Ume?, SE, EU
 			String whoisNick = parsedResponse.get(1);
 
-			whoisBuilder.get(whoisNick).setServer(parsedResponse.get(2));
-			whoisBuilder.get(whoisNick).setServerInfo(parsedResponse.get(3));
+			whoisBuilder.get(whoisNick).server(parsedResponse.get(2));
+			whoisBuilder.get(whoisNick).serverInfo(parsedResponse.get(3));
 		} else if (code == RPL_WHOISIDLE) {
 			//Idle time from whois
 			//317 TheLQ md_5 6077 1347373349 :seconds idle, signon time
 			String whoisNick = parsedResponse.get(1);
 
-			whoisBuilder.get(whoisNick).setIdleSeconds(Long.parseLong(parsedResponse.get(2)));
-			whoisBuilder.get(whoisNick).setSignOnTime(Long.parseLong(parsedResponse.get(3)));
+			whoisBuilder.get(whoisNick).idleSeconds(Long.parseLong(parsedResponse.get(2)));
+			whoisBuilder.get(whoisNick).signOnTime(Long.parseLong(parsedResponse.get(3)));
 		} else if (code == 330) {
 			//RPL_WHOISACCOUNT: Extra Whois info
 			//330 TheLQ Utoxin Utoxin :is logged in as
@@ -811,11 +811,11 @@ public class InputParser implements Closeable {
 			String registeredNick = "";
 			if (!rawResponse.endsWith(":" + parsedResponse.get(2)))
 				registeredNick = parsedResponse.get(2);
-			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs(registeredNick);
+			whoisBuilder.get(parsedResponse.get(1)).registeredAs(registeredNick);
 		} else if (code == 307)
 			//If shown, tells us that the user is registered with nickserv
 			//307 TheLQ TheLQ-PircBotX :has identified for this nick
-			whoisBuilder.get(parsedResponse.get(1)).setRegisteredAs("");
+			whoisBuilder.get(parsedResponse.get(1)).registeredAs("");
 		else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
@@ -823,11 +823,11 @@ public class InputParser implements Closeable {
 			WhoisEvent.Builder builder;
 			if (whoisBuilder.containsKey(whoisNick)) {
 				builder = whoisBuilder.get(whoisNick);
-				builder.setExists(true);
+				builder.exists(true);
 			} else {
 				builder = WhoisEvent.builder();
-				builder.setNick(whoisNick);
-				builder.setExists(false);
+				builder.nick(whoisNick);
+				builder.exists(false);
 			}
 			configuration.getListenerManager().dispatchEvent(builder.generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
