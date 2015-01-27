@@ -176,7 +176,7 @@ public class DccHandler implements Closeable {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
 					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
-							&& transferEvent.getPort() == port && transferEvent.getTransferToken() == transferEvent.getTransferToken()) {
+							&& transferEvent.getPort() == port && transferEvent.getTransferToken() == transferToken) {
 						curEntry.getKey().setPosition(position);
 						log.debug("Receive file transfer of file {} to user {} set to position {}",
 								transferEvent.getRawFilename(), transferEvent.getUser().getNick(), position);
