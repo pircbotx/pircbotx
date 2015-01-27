@@ -176,7 +176,7 @@ public class DccHandler implements Closeable {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
 					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
-							&& transferEvent.getPort() == port && transferEvent.getTransferToken() == transferToken) {
+							&& transferEvent.getPort() == port && transferEvent.getToken() == transferToken) {
 						curEntry.getKey().setPosition(position);
 						log.debug("Receive file transfer of file {} to user {} set to position {}",
 								transferEvent.getRawFilename(), transferEvent.getUser().getNick(), position);
@@ -233,14 +233,14 @@ public class DccHandler implements Closeable {
 		checkNotNull(event, "Event cannot be null");
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
-			bot.sendDCC().chatPassiveAccept(event.getUser().getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getChatToken());
+			bot.sendDCC().chatPassiveAccept(event.getUser().getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), userSocket);
 		} else
-			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getChatAddress(), event.getChatPort()));
+			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getAddress(), event.getPort()));
 	}
 
 	/**
@@ -285,7 +285,7 @@ public class DccHandler implements Closeable {
 
 		//Tell user were going to resume transfering
 		if (event.isPassive())
-			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getTransferToken());
+			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getToken());
 		else
 			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
 		
@@ -309,7 +309,7 @@ public class DccHandler implements Closeable {
 
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
-			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getTransferToken());
+			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
