@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.Builder;
+import lombok.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
@@ -34,7 +34,7 @@ import org.pircbotx.hooks.Event;
  * @author Leon Blakey
  */
 //TODO: Add tests
-@Builder(chain = true, fluent = false, builderClassName = "Builder", buildMethodName = "generateEvent")
+@Builder(builderClassName = "Builder", buildMethodName = "generateEvent")
 @EqualsAndHashCode(callSuper = true)
 @Getter
 public class WhoisEvent extends Event {
@@ -76,7 +76,7 @@ public class WhoisEvent extends Event {
 	}
 	
 	public static Builder builder() {
-		return new Builder().setChannels(ImmutableList.<String>of());
+		return new Builder().channels(ImmutableList.<String>of());
 	}
 
 	/**
@@ -94,6 +94,9 @@ public class WhoisEvent extends Event {
 		getBot().sendIRC().message(getNick(), response);
 	}
 
+	/**
+	 * Internal class to allow data to be collected over multiple lines
+	 */
 	public static class Builder {
 		public WhoisEvent generateEvent(@NonNull PircBotX bot) {
 			return new WhoisEvent(bot, this);
