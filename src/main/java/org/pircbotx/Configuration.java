@@ -57,7 +57,8 @@ import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
 
 /**
- * Immutable configuration for PircBotX created from {@link Configuration.Builder}
+ * Immutable configuration for PircBotX created from
+ * {@link Configuration.Builder}
  *
  * @author Leon Blakey
  */
@@ -225,7 +226,7 @@ public class Configuration {
 	}
 
 	/**
-	 * Builder to create an immutable {@link Configuration}. 
+	 * Builder to create an immutable {@link Configuration}.
 	 */
 	@Accessors(chain = true)
 	@Data
@@ -271,7 +272,7 @@ public class Configuration {
 		 */
 		protected String finger = "You ought to be arrested for fingering a bot!";
 		/**
-		 * The realName/fullname used for WHOIS info. Defaults to version
+		 * The realName/fullname used for WHOIS info, defaults to version
 		 */
 		protected String realName = version;
 		/**
@@ -379,8 +380,8 @@ public class Configuration {
 		protected boolean autoSplitMessage = true;
 		/**
 		 * Enable or disable automatic nick changing if a nick is in use by
-		 * adding a number to the end, default false. If this is false and a
-		 * nick is already in use, a {@link IrcException} will be thrown.
+		 * adding a number to the end, default false which will throw a
+		 * {@link IrcException} if the nick is already in use on the server
 		 */
 		protected boolean autoNickChange = false;
 		/**
