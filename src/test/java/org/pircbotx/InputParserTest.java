@@ -401,27 +401,35 @@ public class InputParserTest {
 	@Test
 	public void modeResponseTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
-		inputParser.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +cnt");
-
-		ModeEvent mevent = bot.getTestEvent(ModeEvent.class, "ModeEvent not dispatched for mode response");
-		assertEquals(mevent.getMode(), "+cnt", "ModeEvent's mode doesn't equal given");
-		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel doesn't match given");
-		assertNull(mevent.getUser(), "ModeEvent's user not null for mode response");
-	}
-
-	@Test
-	public void initModeTest() throws IOException, IrcException {
-		Channel aChannel = dao.createChannel("#aChannel");
 
 		assertFalse(aChannel.isModerated());
 		assertFalse(aChannel.isInviteOnly());
 		assertFalse(aChannel.isChannelPrivate());
 
-		inputParser.handleLine(":irc.someserver.net 324 PircBotX #aChannel +ipmd");
+		inputParser.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +ipmd");
+
+		ModeEvent mevent = bot.getTestEvent(ModeEvent.class, "ModeEvent not dispatched for mode response");
+		assertEquals(mevent.getMode(), "+ipmd", "ModeEvent's mode doesn't equal given");
+		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel doesn't match given");
+		assertNull(mevent.getUser(), "ModeEvent's user not null for mode response");
 
 		assertTrue(aChannel.isModerated());
 		assertTrue(aChannel.isInviteOnly());
 		assertTrue(aChannel.isChannelPrivate());
+		assertEquals(aChannel.getMode(), "+ipmd");
+	}
+
+	@Test
+	public void userModeInitTest() throws Exception {
+		inputParser.handleLine(":" + bot.getNick() + " MODE " + bot.getNick() + " :+i");
+		UserHostmask botHostmask = new UserHostmask(bot, bot.getNick());
+
+		UserModeEvent event = bot.getTestEvent(UserModeEvent.class);
+		assertEquals(event.getMode(), "+i", "Mode is wrong");
+		assertEquals(event.getRecipient(), bot.getUserBot(), "Recipient is wrong");
+		assertEquals(event.getRecipientHostmask(), botHostmask, "Recipient hostmask is wrong");
+		assertEquals(event.getUser(), bot.getUserBot(), "User is wrong");
+		assertEquals(event.getUserHostmask(), bot.getUserBot(), "User hostmask is wrong");
 	}
 
 	@DataProvider
