@@ -288,12 +288,13 @@ public class Configuration {
 		/**
 		 * Enable creation of snapshots, default true. In bulk datasets or very
 		 * lower power devices, creating snapshots can be a relatively expensive
-		 * operation for every {@link GenericSnapshotEvent} (eg PartEvent,
+		 * operation for every
+		 * {@link org.pircbotx.hooks.types.GenericSnapshotEvent} (eg PartEvent,
 		 * QuitEvent) since the entire UserChannelDao with all of its users and
 		 * channels is cloned. This can optionally disabled by setting this to
 		 * false, however this makes all
-		 * {@link GenericSnapshotEvent#getUserChannelDaoSnapshot()} calls return
-		 * null.
+		 * {@link org.pircbotx.hooks.types.GenericSnapshotEvent#getUserChannelDaoSnapshot()}
+		 * calls return null.
 		 * <p>
 		 * In regular usage disabling snapshots is not necessary because there
 		 * relatively few user QUITs and PARTs per second.
@@ -624,7 +625,6 @@ public class Configuration {
 		 *
 		 * @see #getCapHandlers()
 		 * @param handlers
-		 * @return
 		 */
 		public Builder addCapHandlers(@NonNull Iterable<CapHandler> handlers) {
 			for (CapHandler curHandler : handlers) {
@@ -638,7 +638,6 @@ public class Configuration {
 		 *
 		 * @see #getCapHandlers()
 		 * @param handler
-		 * @return
 		 */
 		public Builder addCapHandler(CapHandler handler) {
 			getCapHandlers().add(handler);
@@ -650,7 +649,6 @@ public class Configuration {
 		 *
 		 * @see #getListenerManager()
 		 * @param listeners
-		 * @return
 		 */
 		public Builder addListeners(@NonNull Iterable<Listener> listeners) {
 			for (Listener curListener : listeners) {
@@ -664,7 +662,6 @@ public class Configuration {
 		 *
 		 * @see #getListenerManager()
 		 * @param listener
-		 * @return
 		 */
 		public Builder addListener(Listener listener) {
 			getListenerManager().addListener(listener);
@@ -683,7 +680,6 @@ public class Configuration {
 		 *
 		 * @see #getAutoJoinChannels()
 		 * @param channel
-		 * @return
 		 */
 		public Builder addAutoJoinChannel(@NonNull String channel) {
 			if (StringUtils.isBlank(channel))
@@ -697,7 +693,6 @@ public class Configuration {
 		 * key)</code>
 		 *
 		 * @param channel
-		 * @return
 		 */
 		public Builder addAutoJoinChannel(@NonNull String channel, @NonNull String key) {
 			if (StringUtils.isBlank(channel))
@@ -775,20 +770,17 @@ public class Configuration {
 		}
 
 		/**
-		 * Build a new configuration from this Builder
-		 *
-		 * @return
+		 * Builds a Configuration instance from the information in this builder
 		 */
 		public Configuration buildConfiguration() {
 			return new Configuration(this);
 		}
 
 		/**
-		 * Create a <b>new</b> builder with the specified hostname then build a
+		 * Create a <i>new</i> builder with the specified hostname then build a
 		 * configuration. Useful for template builders
 		 *
 		 * @param hostname
-		 * @return
 		 */
 		public Configuration buildForServer(String hostname) {
 			return new Builder(this)
@@ -797,11 +789,10 @@ public class Configuration {
 		}
 
 		/**
-		 * Create a <b>new</b> builder with the specified hostname and port then
+		 * Create a <i>new</i> builder with the specified hostname and port then
 		 * build a configuration. Useful for template builders
 		 *
 		 * @param hostname
-		 * @return
 		 */
 		public Configuration buildForServer(String hostname, int port) {
 			return new Builder(this)
@@ -810,11 +801,10 @@ public class Configuration {
 		}
 
 		/**
-		 * Create a <b>new</b> builder with the specified hostname, port, and
+		 * Create a <i>new</i> builder with the specified hostname, port, and
 		 * password then build a configuration. Useful for template builders
 		 *
 		 * @param hostname
-		 * @return
 		 */
 		public Configuration buildForServer(String hostname, int port, String password) {
 			return new Builder(this)

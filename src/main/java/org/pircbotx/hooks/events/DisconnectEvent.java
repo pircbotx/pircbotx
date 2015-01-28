@@ -59,7 +59,6 @@ public class DisconnectEvent extends Event implements GenericSnapshotEvent {
 	/**
 	 * @see #getUserChannelDaoSnapshot()
 	 * @see GenericSnapshotEvent
-	 * @return
 	 * @deprecated Use {@link #getUserChannelDaoSnapshot() } from
 	 * {@link GenericSnapshotEvent}
 	 */
