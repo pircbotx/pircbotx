@@ -141,7 +141,7 @@ public class ThreadedListenerManager extends ListenerManager {
 		synchronized (runningListeners) {
 			remainingTasks = Lists.newArrayList(runningListeners.get(bot));
 		}
-		
+
 		//Wait for all remaining tasks to return
 		for (ManagedFutureTask curFuture : remainingTasks)
 			try {

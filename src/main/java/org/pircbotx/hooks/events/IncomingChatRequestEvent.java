@@ -94,25 +94,28 @@ public class IncomingChatRequestEvent extends Event implements GenericDCCEvent {
 	public ReceiveChat accept() throws IOException {
 		return getBot().getDccHandler().acceptChatRequest(this);
 	}
-	
+
 	/**
-	 * @deprecated Use {@link #getAddress() } from {@link GenericDCCEvent} interface
+	 * @deprecated Use {@link #getAddress() } from {@link GenericDCCEvent}
+	 * interface
 	 */
 	@Deprecated
 	public InetAddress getChatAddress() {
 		return getAddress();
 	}
-	
+
 	/**
-	 * @deprecated Use {@link #getPort() } from {@link GenericDCCEvent} interface
+	 * @deprecated Use {@link #getPort() } from {@link GenericDCCEvent}
+	 * interface
 	 */
 	@Deprecated
 	public int getChatPort() {
 		return getPort();
 	}
-	
+
 	/**
-	 * @deprecated Use {@link #getToken() } from {@link GenericDCCEvent} interface
+	 * @deprecated Use {@link #getToken() } from {@link GenericDCCEvent}
+	 * interface
 	 */
 	@Deprecated
 	public String getChatToken() {

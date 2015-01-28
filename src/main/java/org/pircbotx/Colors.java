@@ -141,7 +141,7 @@ public final class Colors {
 	 */
 	public static final String ITALICS = "\u001d";
 	/**
-	 * Pre-built lookup table by String for all the fields in this class. 
+	 * Pre-built lookup table by String for all the fields in this class.
 	 */
 	public static final ImmutableMap<String, String> LOOKUP_TABLE = ImmutableMap.<String, String>builder()
 			.put("NORMAL", NORMAL)
@@ -172,10 +172,12 @@ public final class Colors {
 	 */
 	private Colors() {
 	}
-	
+
 	/**
 	 * Lookup color as a String
-	 * @param colorName Name of field in this class, will be converted to uppercase
+	 *
+	 * @param colorName Name of field in this class, will be converted to
+	 * uppercase
 	 * @return Color value or null
 	 */
 	public static String lookup(String colorName) {

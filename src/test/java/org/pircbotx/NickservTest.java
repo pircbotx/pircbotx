@@ -38,7 +38,7 @@ public class NickservTest {
 				.setNickservPassword("testpw")
 				.buildConfiguration());
 		InputParser inputParser = bot.getInputParser();
-		
+
 		assertFalse(bot.isNickservIdentified(), "Nickserv hasn't even started yet!");
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :jibberish");
 		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
@@ -47,7 +47,7 @@ public class NickservTest {
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :You are now identified for PircBotX");
 		assertTrue(bot.isNickservIdentified(), "Bot isn't identified even when nickserv");
 	}
-	
+
 	@Test
 	public void nickservCustomMessageTest() throws IOException, IrcException {
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
@@ -55,7 +55,7 @@ public class NickservTest {
 				.setNickservOnSuccess("hello der")
 				.buildConfiguration());
 		InputParser inputParser = bot.getInputParser();
-		
+
 		assertFalse(bot.isNickservIdentified(), "Nickserv hasn't even started yet!");
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :jibberish");
 		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");
@@ -64,7 +64,7 @@ public class NickservTest {
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :hello der");
 		assertTrue(bot.isNickservIdentified(), "Bot isn't identified even when nickserv");
 	}
-	
+
 	@Test
 	public void nickservOtherNickTest() throws IOException, IrcException {
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
@@ -72,7 +72,7 @@ public class NickservTest {
 				.setNickservNick("somenick")
 				.buildConfiguration());
 		InputParser inputParser = bot.getInputParser();
-		
+
 		assertFalse(bot.isNickservIdentified(), "Nickserv hasn't even started yet!");
 		inputParser.handleLine(":NickServ!services@swiftirc.net NOTICE PircBotXUser :jibberish");
 		assertFalse(bot.isNickservIdentified(), "Nickserv identified too early");

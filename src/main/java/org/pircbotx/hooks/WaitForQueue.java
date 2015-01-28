@@ -60,7 +60,7 @@ public class WaitForQueue implements Closeable {
 		this.bot = bot;
 		bot.getConfiguration().getListenerManager().addListener(listener = new WaitForQueueListener());
 	}
-	
+
 	/**
 	 * Testing constructor with 0 init
 	 */
@@ -105,7 +105,7 @@ public class WaitForQueue implements Closeable {
 	public <E extends GenericEvent> Event waitFor(@NonNull List<Class<? extends E>> eventClasses) throws InterruptedException {
 		return waitFor(eventClasses, Long.MAX_VALUE, TimeUnit.MILLISECONDS);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <E extends GenericEvent> E waitFor(@NonNull Class<E> eventClass, long timeout, @NonNull TimeUnit unit) throws InterruptedException {
 		List<Class<E>> eventList = new ArrayList<Class<E>>();

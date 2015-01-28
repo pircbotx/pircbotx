@@ -51,7 +51,7 @@ import org.pircbotx.TestUtils;
  * @author Leon Blakey
  */
 @Test(/*dependsOnGroups = "ConnectTests", */singleThreaded = true)
-public class OutputTest {	
+public class OutputTest {
 	protected final String aString = "I'm some super long string that has multiple words";
 	protected PircBotX bot;
 	protected SocketFactory socketFactory;
@@ -116,8 +116,6 @@ public class OutputTest {
 		bot.sendRaw().rawLineSplit(beginning, aString, ending);
 		checkOutput(beginning + aString + ending);
 	}
-
-	
 
 	@Test(description = "Verify sendAction to user")
 	public void sendActionUserTest() throws Exception {

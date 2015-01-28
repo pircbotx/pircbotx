@@ -33,6 +33,7 @@ import org.pircbotx.UserLevel;
  */
 public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, ChannelSnapshot> {
 	protected final String botNick;
+
 	public UserChannelDaoSnapshot(PircBotX bot, Locale locale, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableMap<String, UserSnapshot> userNickMap, ImmutableMap<String, ChannelSnapshot> channelNameMap, ImmutableMap<String, UserSnapshot> privateUsers) {
 		super(bot, null, locale, mainMap, levelsMap, userNickMap, channelNameMap, privateUsers);
 		botNick = bot.getNick();

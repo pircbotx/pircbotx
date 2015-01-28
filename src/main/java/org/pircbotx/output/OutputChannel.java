@@ -78,7 +78,7 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send an action to the channel. 
+	 * Send an action to the channel.
 	 *
 	 * @param action The action message to send
 	 */
@@ -87,7 +87,7 @@ public class OutputChannel {
 	}
 
 	/**
-	 * Send a notice to the channel. 
+	 * Send a notice to the channel.
 	 *
 	 * @param notice The notice to send
 	 */
@@ -187,7 +187,7 @@ public class OutputChannel {
 	 * @param mode The new mode to apply to the channel. This may include zero
 	 * or more arguments if necessary.
 	 *
-	 * @see #op(org.pircbotx.UserHostmask) 
+	 * @see #op(org.pircbotx.UserHostmask)
 	 */
 	public void setMode(String mode) {
 		if (mode == null)

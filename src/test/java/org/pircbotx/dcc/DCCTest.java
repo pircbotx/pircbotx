@@ -103,19 +103,18 @@ public class DCCTest {
 			//IPv6 tests (Just make sure we get back what we put in)
 			{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "2001:db8:85a3:0:0:8a2e:370:7334"},
 			{"fe80:0:0:0:202:b3ff:fe1e:8329", "fe80:0:0:0:202:b3ff:fe1e:8329"},
-			{"fe80::202:b3ff:fe1e:5329", "fe80:0:0:0:202:b3ff:fe1e:5329"},
-			//IPv6 tests (Switch to returning full ip in 2.1) 
-			//{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "42540766452641154071740215577757643572"},
-			//{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
-			//{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
+			{"fe80::202:b3ff:fe1e:5329", "fe80:0:0:0:202:b3ff:fe1e:5329"}, //IPv6 tests (Switch to returning full ip in 2.1) 
+		//{"2001:0db8:85a3:0000:0000:8a2e:0370:7334", "42540766452641154071740215577757643572"},
+		//{"fe80:0:0:0:202:b3ff:fe1e:8329", "338288524927261089654163772891438416681"},
+		//{"fe80::202:b3ff:fe1e:5329", "338288524927261089654163772891438404393"},};
 		};
 	}
-	
+
 	@Test
 	public void sendFileEventNormalTest() throws IOException, IrcException {
 		User aUser = TestUtils.generateTestUserSource(bot);
 		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC SEND construction_b1.bsp 134744072 44401 4157591572\u0001");
-		
+
 		IncomingFileTransferEvent event = bot.getTestEvent(IncomingFileTransferEvent.class);
 		assertEquals(event.getUser(), aUser, "User is wrong");
 		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
@@ -126,12 +125,12 @@ public class DCCTest {
 		assertEquals(event.getFilesize(), 4157591572L, "Filesize is wrong");
 		assertNull(event.getToken(), "Unexpected token");
 	}
-	
+
 	@Test
 	public void sendFileEventTokenTest() throws IOException, IrcException {
 		User aUser = TestUtils.generateTestUserSource(bot);
 		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC SEND construction_b1.bsp 134744072 44401 4157591572 123f33\u0001");
-		
+
 		IncomingFileTransferEvent event = bot.getTestEvent(IncomingFileTransferEvent.class);
 		assertEquals(event.getUser(), aUser, "User is wrong");
 		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
@@ -142,12 +141,12 @@ public class DCCTest {
 		assertEquals(event.getFilesize(), 4157591572L, "Filesize is wrong");
 		assertEquals(event.getToken(), "123f33", "Token is wrong");
 	}
-	
+
 	@Test
 	public void sendChatEventNormalTest() throws IOException, IrcException {
 		User aUser = TestUtils.generateTestUserSource(bot);
 		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC CHAT chat 134744072 44401\u0001");
-		
+
 		IncomingChatRequestEvent event = bot.getTestEvent(IncomingChatRequestEvent.class);
 		assertEquals(event.getUser(), aUser, "User is wrong");
 		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");
@@ -155,12 +154,12 @@ public class DCCTest {
 		assertEquals(event.getPort(), 44401, "Port is wrong");
 		assertNull(event.getToken(), "Unexpected token");
 	}
-	
+
 	@Test
 	public void sendChatEventTokenTest() throws IOException, IrcException {
 		User aUser = TestUtils.generateTestUserSource(bot);
 		bot.getInputParser().handleLine(":" + aUser.getHostmask() + " PRIVMSG PircBotXBot :\u0001DCC CHAT chat 134744072 44401 123f33\u0001");
-		
+
 		IncomingChatRequestEvent event = bot.getTestEvent(IncomingChatRequestEvent.class);
 		assertEquals(event.getUser(), aUser, "User is wrong");
 		assertEquals(event.getUserHostmask(), aUser, "UserHostmask is wrong");

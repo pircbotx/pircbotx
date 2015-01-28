@@ -119,7 +119,7 @@ public class User extends UserHostmask {
 			botLogin = userHostmask.getLogin();
 		}
 	}
-	
+
 	@Override
 	public String getLogin() {
 		if (botLogin != null)
@@ -133,7 +133,7 @@ public class User extends UserHostmask {
 			return botHostname;
 		return super.getHostname();
 	}
-	
+
 	public UserSnapshot createSnapshot() {
 		return new UserSnapshot(this);
 	}

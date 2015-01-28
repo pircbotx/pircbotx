@@ -64,7 +64,7 @@ public class SetChannelBanEvent extends Event implements GenericChannelModeEvent
 		this.user = user;
 		this.banHostmask = banHostmask;
 	}
-	
+
 	/**
 	 * @deprecated Use {@link #getBanHostmask() }
 	 */

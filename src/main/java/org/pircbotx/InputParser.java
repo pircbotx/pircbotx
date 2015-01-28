@@ -542,7 +542,7 @@ public class InputParser implements Closeable {
 				channelSnapshot = null;
 				sourceSnapshot = null;
 			}
-			
+
 			if (source.getNick().equalsIgnoreCase(bot.getNick()))
 				//We parted the channel
 				bot.getUserChannelDao().removeChannel(channel);

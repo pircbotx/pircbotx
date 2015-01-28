@@ -126,21 +126,21 @@ public class ReplayServer {
 			}
 		}
 	}
-	
+
 	public static void replayFile(File file) throws Exception {
 		if (!file.exists()) {
 			throw new IOException("File " + file + " does not exist");
 		}
 		replay(generateConfig(), new FileInputStream(file), "file " + file.getCanonicalPath());
 	}
-	
+
 	public static void replayFile(File file, Configuration.Builder config) throws Exception {
 		if (!file.exists()) {
 			throw new IOException("File " + file + " does not exist");
 		}
 		replay(config, new FileInputStream(file), "file " + file.getCanonicalPath());
 	}
-	
+
 	public static Configuration.Builder generateConfig() {
 		return new Configuration.Builder()
 				.setName("QuackPirc")
@@ -156,13 +156,13 @@ public class ReplayServer {
 		log.info("---Replaying {}---", title);
 		StopWatch timer = new StopWatch();
 		timer.start();
-		
+
 		//Wrap listener manager with ours that siphons off events
 		final Queue<Event> eventQueue = Lists.newLinkedList();
 		WrapperListenerManager newManager = new WrapperListenerManager(config.getListenerManager(), eventQueue);
 		config.setListenerManager(newManager);
 		config.addListener(new ReplayListener());
-		
+
 		final LinkedList<String> outputQueue = Lists.newLinkedList();
 		ReplayPircBotX bot = new ReplayPircBotX(config.buildConfiguration(), outputQueue);
 
@@ -218,12 +218,12 @@ public class ReplayServer {
 
 			for (Event curEvent : Iterables.consumingIterable(eventQueue))
 				log.debug("(events) " + curEvent);
-			
+
 			log.debug("");
 		}
 
 		timer.stop();
-		log.debug("---Replay successful in {}---", 
+		log.debug("---Replay successful in {}---",
 				DurationFormatUtils.formatDuration(timer.getTime(), "mm'min'ss'sec'SSS'ms'"));
 	}
 }

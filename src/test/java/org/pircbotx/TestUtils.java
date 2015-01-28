@@ -180,7 +180,7 @@ public class TestUtils {
 			}
 		}
 	}
-	
+
 	public static boolean isRealMember(Member member) {
 		return !member.isSynthetic() && !member.getName().startsWith("__");
 	}
