@@ -44,7 +44,7 @@ public class ServerPingEvent extends Event {
 	 */
 	protected final String response;
 
-	public ServerPingEvent(PircBotX bot, @NonNull String response) {
+	public ServerPingEvent(PircBotX bot, String response) {
 		super(bot);
 		this.response = response;
 	}
@@ -55,7 +55,7 @@ public class ServerPingEvent extends Event {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getBot().sendRaw().rawLine(response);
 	}
 }

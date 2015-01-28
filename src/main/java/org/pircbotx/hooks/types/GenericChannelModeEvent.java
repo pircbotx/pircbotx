@@ -17,8 +17,6 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.PircBotX;
-
 /**
  * Generic Channel Mode (not users status in the channel) change event
  * <p/>

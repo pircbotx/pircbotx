@@ -18,7 +18,6 @@
 package org.pircbotx.hooks.types;
 
 import javax.annotation.Nullable;
-import org.pircbotx.Configuration;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 
 /**

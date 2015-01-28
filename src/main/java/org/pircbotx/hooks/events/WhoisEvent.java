@@ -59,7 +59,7 @@ public class WhoisEvent extends Event {
 	protected final boolean exists;
 	protected final String awayMessage;
 
-	WhoisEvent(@NonNull PircBotX bot, @NonNull Builder builder) {
+	WhoisEvent(PircBotX bot, @NonNull Builder builder) {
 		super(bot);
 		this.nick = builder.nick;
 		this.login = builder.login;
@@ -90,7 +90,7 @@ public class WhoisEvent extends Event {
 	}
 
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getBot().sendIRC().message(getNick(), response);
 	}
 
@@ -98,7 +98,7 @@ public class WhoisEvent extends Event {
 	 * Internal class to allow data to be collected over multiple lines
 	 */
 	public static class Builder {
-		public WhoisEvent generateEvent(@NonNull PircBotX bot) {
+		public WhoisEvent generateEvent(PircBotX bot) {
 			return new WhoisEvent(bot, this);
 		}
 	}

@@ -17,8 +17,6 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.PircBotX;
-
 /**
  * Any event dealing with CTCP.
  *

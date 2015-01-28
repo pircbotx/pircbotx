@@ -26,7 +26,6 @@ import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
-import org.pircbotx.hooks.types.GenericUserEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
 
 /**
@@ -66,7 +65,7 @@ public class UserModeEvent extends Event implements GenericUserModeEvent {
 	 */
 	protected final String mode;
 
-	public UserModeEvent(@NonNull PircBotX bot, @NonNull UserHostmask userHostmask, User user,
+	public UserModeEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user,
 			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String mode) {
 		super(bot);
 		this.userHostmask = user;
@@ -82,7 +81,7 @@ public class UserModeEvent extends Event implements GenericUserModeEvent {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getUserHostmask().send().message(response);
 	}
 }

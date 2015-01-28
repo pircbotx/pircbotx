@@ -18,10 +18,7 @@
 package org.pircbotx.output;
 
 import static com.google.common.base.Preconditions.*;
-import com.google.common.collect.Lists;
 import java.io.IOException;
-import java.util.List;
-import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -62,11 +59,8 @@ public class OutputRaw {
 	 * @param line The raw line to send to the IRC server.
 	 */
 	public void rawLine(String line) {
-		checkNotNull(line, "Line cannot be null");
-		if (line == null)
-			throw new NullPointerException("Cannot send null messages to server");
-		if (!bot.isConnected())
-			throw new RuntimeException("Not connected to server");
+		checkArgument(StringUtils.isNotBlank(line), "Cannot send empty line to server: '%s'", line);
+		checkArgument(bot.isConnected(), "Not connected to server");
 		writeLock.lock();
 		try {
 			//Block until we can send, taking into account a changing lastSentLine
@@ -108,8 +102,7 @@ public class OutputRaw {
 	 */
 	public void rawLineNow(String line, boolean resetDelay) {
 		checkNotNull(line, "Line cannot be null");
-		if (!bot.isConnected())
-			throw new RuntimeException("Not connected to server");
+		checkArgument(bot.isConnected(), "Not connected to server");
 		writeLock.lock();
 		try {
 			log.info(OUTPUT_MARKER, line);

@@ -76,7 +76,7 @@ public class DisconnectEvent extends Event implements GenericSnapshotEvent {
 	 */
 	@Override
 	@Deprecated
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		throw new UnsupportedOperationException("Attepting to respond to a disconnected server");
 	}
 }

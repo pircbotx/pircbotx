@@ -26,7 +26,6 @@ import java.net.Socket;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**

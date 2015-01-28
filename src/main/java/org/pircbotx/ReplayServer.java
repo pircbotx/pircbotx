@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
+import lombok.Cleanup;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
@@ -128,17 +129,15 @@ public class ReplayServer {
 	}
 
 	public static void replayFile(File file) throws Exception {
-		if (!file.exists()) {
-			throw new IOException("File " + file + " does not exist");
-		}
-		replay(generateConfig(), new FileInputStream(file), "file " + file.getCanonicalPath());
+		replayFile(file, generateConfig());
 	}
 
 	public static void replayFile(File file, Configuration.Builder config) throws Exception {
 		if (!file.exists()) {
 			throw new IOException("File " + file + " does not exist");
 		}
-		replay(config, new FileInputStream(file), "file " + file.getCanonicalPath());
+		@Cleanup FileInputStream fileInput = new FileInputStream(file);
+		replay(config, fileInput, "file " + file.getCanonicalPath());
 	}
 
 	public static Configuration.Builder generateConfig() {
