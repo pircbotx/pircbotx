@@ -45,27 +45,27 @@ public class UtilSSLSocketFactoryTest {
 	@Test
 	public void delegatesAllMethods() {
 		Set<String> implMethodSignatures = new HashSet<String>();
-		for(Method curMethod : findPublicMethods(UtilSSLSocketFactory.class.getMethods())) {
+		for (Method curMethod : findPublicMethods(UtilSSLSocketFactory.class.getMethods())) {
 			implMethodSignatures.add(curMethod.toGenericString());
 			log.debug("added " + curMethod.toGenericString());
 		}
-		
+
 		log.debug("");
-		
+
 		int failCount = 0;
-		for(Method curMethod : findPublicMethods(SSLSocketFactory.class.getMethods())) {
+		for (Method curMethod : findPublicMethods(SSLSocketFactory.class.getMethods())) {
 			String newMethodSignature = curMethod.toGenericString()
 					.replace("javax.net.ssl.SSLSocketFactory", "org.pircbotx.UtilSSLSocketFactory")
 					.replace("javax.net.SocketFactory", "org.pircbotx.UtilSSLSocketFactory")
 					.replace(" java.net.Socket", " javax.net.ssl.SSLSocket")
 					.replace("abstract ", "");
-			if(!implMethodSignatures.contains(newMethodSignature)) {
+			if (!implMethodSignatures.contains(newMethodSignature)) {
 				log.debug(curMethod.toGenericString());
 				log.debug("(expected) " + newMethodSignature);
 				failCount++;
 			}
 		}
-		
+
 		assertEquals(failCount, 0, "UtilSSLSocketFactory fails to implement methods");
 	}
 
@@ -81,7 +81,7 @@ public class UtilSSLSocketFactoryTest {
 		}
 		return publicMethods;
 	}
-	
+
 	@Test
 	public void combineTestLegal() {
 		new UtilSSLSocketFactory().disableDiffieHellman();
@@ -89,14 +89,14 @@ public class UtilSSLSocketFactoryTest {
 		new UtilSSLSocketFactory().trustAllCertificates().disableDiffieHellman();
 		new UtilSSLSocketFactory().disableDiffieHellman().trustAllCertificates();
 	}
-	
+
 	@Test(expectedExceptions = RuntimeException.class)
 	public void combineTestIllegal1() {
-		new UtilSSLSocketFactory().disableDiffieHellman((SSLSocketFactory)SSLSocketFactory.getDefault()).trustAllCertificates();
+		new UtilSSLSocketFactory().disableDiffieHellman((SSLSocketFactory) SSLSocketFactory.getDefault()).trustAllCertificates();
 	}
-	
+
 	@Test(expectedExceptions = RuntimeException.class)
 	public void combineTestIllegal2() {
-		new UtilSSLSocketFactory().trustAllCertificates().disableDiffieHellman((SSLSocketFactory)SSLSocketFactory.getDefault());
+		new UtilSSLSocketFactory().trustAllCertificates().disableDiffieHellman((SSLSocketFactory) SSLSocketFactory.getDefault());
 	}
 }

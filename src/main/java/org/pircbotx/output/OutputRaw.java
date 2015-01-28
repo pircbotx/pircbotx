@@ -148,7 +148,7 @@ public class OutputRaw {
 		//Too long, split it up
 		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
 		//v3 word split, just use Apache commons lang
-		for(String curPart : StringUtils.split(WordUtils.wrap(message, maxMessageLength, "\r\n", true), "\r\n")) {
+		for (String curPart : StringUtils.split(WordUtils.wrap(message, maxMessageLength, "\r\n", true), "\r\n")) {
 			rawLine(prefix + curPart + suffix);
 		}
 	}

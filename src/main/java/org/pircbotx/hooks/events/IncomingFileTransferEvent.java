@@ -101,9 +101,10 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 		this.token = token;
 		this.passive = passive;
 	}
-	
+
 	/**
-	 * @deprecated Use {@link #getToken() } from {@link GenericDCCEvent} interface
+	 * @deprecated Use {@link #getToken() } from {@link GenericDCCEvent}
+	 * interface
 	 */
 	@Deprecated
 	public String getTransferToken() {

@@ -99,6 +99,7 @@ public class MultiBotManager {
 
 	/**
 	 * Alias of {@link #addNetwork(org.pircbotx.Configuration) }
+	 *
 	 * @param config
 	 * @see #addNetwork(org.pircbotx.Configuration)
 	 */
@@ -123,6 +124,7 @@ public class MultiBotManager {
 
 	/**
 	 * Alias of {@link #addNetwork(org.pircbotx.PircBotX) }
+	 *
 	 * @param bot
 	 * @see #addNetwork(org.pircbotx.PircBotX)
 	 */

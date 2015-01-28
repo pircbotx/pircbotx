@@ -100,7 +100,7 @@ public class TestPircBotX extends PircBotX {
 		assertNotNull(cevent, errorMessage);
 		return cevent;
 	}
-	
+
 	public <E> E getTestEvent(Class<E> clazz) {
 		return getTestEvent(clazz, clazz.getSimpleName() + " not dispatched");
 	}

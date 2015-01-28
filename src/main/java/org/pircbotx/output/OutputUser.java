@@ -42,7 +42,7 @@ public class OutputUser {
 
 	/**
 	 * Send an invite to the serverUser
-	 * 
+	 *
 	 * for more information
 	 *
 	 * @param channel The channel you are inviting the serverUser to join.
@@ -53,7 +53,7 @@ public class OutputUser {
 
 	/**
 	 * Send an invite to the serverUser.
-	 * 
+	 *
 	 * for more information
 	 *
 	 * @param channel The channel you are inviting the serverUser to join.
@@ -63,9 +63,7 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a notice to the serverUser.
-	 * }
-	 * for more information
+	 * Send a notice to the serverUser. } for more information
 	 *
 	 * @param notice The notice to send
 	 */
@@ -74,9 +72,7 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send an action to the serverUser.
-	 * }
-	 * for more information
+	 * Send an action to the serverUser. } for more information
 	 *
 	 * @param action The action message to send
 	 */
@@ -85,9 +81,7 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a private message to a serverUser. 
-	 * }
-	 * for more information
+	 * Send a private message to a serverUser. } for more information
 	 *
 	 * @param message The message to send
 	 */
@@ -96,9 +90,7 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a CTCP command to the serverUser.
-	 * }
-	 * for more information
+	 * Send a CTCP command to the serverUser. } for more information
 	 *
 	 * @param command The CTCP command to send
 	 */
@@ -107,9 +99,7 @@ public class OutputUser {
 	}
 
 	/**
-	 * Send a CTCP Response to the serverUser.
-	 * }
-	 * for more information
+	 * Send a CTCP Response to the serverUser. } for more information
 	 *
 	 * @param message The response to send
 	 */
@@ -119,6 +109,7 @@ public class OutputUser {
 
 	/**
 	 * Send usermode
+	 *
 	 * @param mode The modes to change
 	 */
 	public void mode(String mode) {
@@ -132,7 +123,7 @@ public class OutputUser {
 	public SendFileTransfer dccFile(File file, boolean passive) throws IOException, DccException, InterruptedException {
 		return bot.getDccHandler().sendFile(file, bot.getUserChannelDao().getUser(serverUser), passive);
 	}
-	
+
 	public SendFileTransfer dccFileAndTransfer(File file) throws IOException, DccException, InterruptedException {
 		SendFileTransfer transfer = dccFile(file);
 		transfer.transfer();

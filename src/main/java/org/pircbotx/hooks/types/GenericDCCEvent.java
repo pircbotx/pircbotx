@@ -28,7 +28,10 @@ import java.net.InetAddress;
  */
 public interface GenericDCCEvent extends GenericUserEvent {
 	public boolean isPassive();
+
 	public InetAddress getAddress();
+
 	public int getPort();
+
 	public String getToken();
 }

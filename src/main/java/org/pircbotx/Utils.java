@@ -95,16 +95,18 @@ public final class Utils {
 	public static void sendRawLineToServer(PircBotX bot, String rawLine) throws IOException {
 		bot.sendRawLineToServer(rawLine);
 	}
-	
+
 	/**
-	 * Sets bot as identified to nickserv. Needed so {@link PircBotX#setNickservIdentified(boolean) }
+	 * Sets bot as identified to nickserv. Needed so {@link PircBotX#setNickservIdentified(boolean)
+	 * }
 	 * can stay protected
-	 * @param bot 
+	 *
+	 * @param bot
 	 */
 	public static void setNickServIdentified(PircBotX bot) {
 		bot.setNickservIdentified(true);
 	}
-	
+
 	public static String format(String messagePattern, Object... args) {
 		return MessageFormatter.arrayFormat(messagePattern, args).getMessage();
 	}
