@@ -285,7 +285,7 @@ public class InputParser implements Closeable {
 	 * This method handles events when any line of text arrives from the server,
 	 * then dispatching the appropriate event.
 	 *
-	 * @param line The raw line of text from the server.
+	 * @param rawLine The raw line of text from the server.
 	 */
 	public void handleLine(@NonNull String rawLine) throws IOException, IrcException {
 		String line = CharMatcher.WHITESPACE.trimFrom(rawLine);

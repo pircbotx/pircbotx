@@ -122,7 +122,6 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 	 * Accept the request and transfer the file now, blocking until finished.
 	 *
 	 * @param destination
-	 * @return
 	 * @throws IOException
 	 */
 	public ReceiveFileTransfer acceptAndTransfer(File destination) throws IOException {
@@ -136,7 +135,6 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 	 * finished.
 	 *
 	 * @param destination
-	 * @return
 	 * @throws IOException
 	 */
 	public ReceiveFileTransfer acceptResumeAndTransfer(File destination, long startPosition) throws IOException, InterruptedException {

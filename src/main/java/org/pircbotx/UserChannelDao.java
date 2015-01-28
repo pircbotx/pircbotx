@@ -85,7 +85,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @param nick The nick of the user
 	 * @return Known active {@link User}
 	 * @throws DaoException If user does not exist, exception will contain
-	 * {@link DaoException.Reason.UnknownUser} and the nick that doesn't exist
+	 * {@link org.pircbotx.exception.DaoException.Reason#UnknownUser} and the
+	 * nick that doesn't exist
 	 */
 	@Synchronized("accessLock")
 	public U getUser(@NonNull String nick) throws DaoException {
@@ -104,8 +105,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @param userHostmask The hostmask of the user
 	 * @return Known active {@link User}
 	 * @throws DaoException If user does not exist, exception will contain
-	 * {@link DaoException.Reason.UnknownUserHostmask}, hostmask, and wrapped
-	 * exception with nick
+	 * {@link org.pircbotx.exception.DaoException.Reason#UnknownUserHostmask},
+	 * hostmask, and wrapped exception with nick
 	 */
 	@Synchronized("accessLock")
 	public U getUser(@NonNull UserHostmask userHostmask) {
@@ -276,9 +277,9 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
-	 * Gets all currently known channels the user is a part of with the specified level.
-	 * A {@link UserListEvent} for all channels must of been dispatched before
-	 * this method will return complete results
+	 * Gets all currently known channels the user is a part of with the
+	 * specified level. A {@link UserListEvent} for all channels must of been
+	 * dispatched before this method will return complete results
 	 *
 	 * @param user Known user
 	 * @return An immutable sorted set of Channels
@@ -326,6 +327,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	/**
 	 * Lookup channel by name, throwing a {@link DaoException} if not found
+	 *
 	 * @param name Name of channel (eg #pircbotx)
 	 * @return A known channel
 	 */
@@ -354,8 +356,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	/**
 	 * Creates a known channel, internally called when we join a channel
+	 *
 	 * @param name
-	 * @return 
 	 */
 	@Synchronized("accessLock")
 	@SuppressWarnings("unchecked")
@@ -366,8 +368,9 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	}
 
 	/**
-	 * @deprecated Renamed {@link #containsChannel(java.lang.String) } to match the Java Collections API
-	 * @see #containsChannel(java.lang.String) 
+	 * @deprecated Renamed {@link #containsChannel(java.lang.String) } to match
+	 * the Java Collections API
+	 * @see #containsChannel(java.lang.String)
 	 */
 	@Deprecated
 	public boolean channelExists(@NonNull String name) {
@@ -376,6 +379,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	/**
 	 * Check if we are currently in the given channel
+	 *
 	 * @param name Channel name (eg #pircbotx)
 	 * @return True if we are still connected to the channel
 	 */
@@ -440,7 +444,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		//Remove remaining locations
 		channelNameMap.remove(channel.getName());
 	}
-	
+
 	/**
 	 * Gets the bots own user object.
 	 *

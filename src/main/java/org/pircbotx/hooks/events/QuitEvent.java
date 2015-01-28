@@ -69,7 +69,6 @@ public class QuitEvent extends Event implements GenericUserEvent, GenericSnapsho
 	/**
 	 * @see #getUserChannelDaoSnapshot()
 	 * @see GenericSnapshotEvent
-	 * @return
 	 * @deprecated Use {@link #getUserChannelDaoSnapshot() } from
 	 * {@link GenericSnapshotEvent}
 	 */

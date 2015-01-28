@@ -450,11 +450,11 @@ public class DccHandler implements Closeable {
 
 	/**
 	 * Try to get a real InetAddress in this order:
-	 * <ol><li>{@link Configuration#getDccLocalAddress()}</li>
+	 * <ol>
+	 * <li>{@link Configuration#getDccLocalAddress()}</li>
 	 * <li>{@link Configuration#getLocalAddress()}</li>
 	 * <li>{@link PircBotX#getLocalAddress()}</li>
-	 * <p>
-	 * @return
+	 * </ol>
 	 */
 	public InetAddress getRealDccAddress() {
 		//Try dccLocalAddress (which tries to default to dccLocalAddress

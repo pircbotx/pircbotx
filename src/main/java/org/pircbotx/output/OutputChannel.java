@@ -187,7 +187,7 @@ public class OutputChannel {
 	 * @param mode The new mode to apply to the channel. This may include zero
 	 * or more arguments if necessary.
 	 *
-	 * @see #op(org.pircbotx.User)
+	 * @see #op(org.pircbotx.UserHostmask) 
 	 */
 	public void setMode(String mode) {
 		if (mode == null)

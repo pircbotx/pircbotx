@@ -28,7 +28,7 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 public interface GenericSnapshotEvent {
 	/**
 	 * Snapshot of the UserChannelDao data before the event.
-	 * @see Configuration.Builder#setSnapshotsEnabled(boolean) 
+	 * @see org.pircbotx.Configuration.Builder#setSnapshotsEnabled(boolean) 
 	 */
 	@Nullable
 	public UserChannelDaoSnapshot getUserChannelDaoSnapshot();
