@@ -418,6 +418,20 @@ public class InputParserTest {
 		assertTrue(aChannel.isChannelPrivate());
 		assertEquals(aChannel.getMode(), "+ipmd");
 	}
+	
+	@Test
+	public void containsModeTest() throws IOException, IrcException {
+		Channel aChannel = dao.createChannel("#aChannel");
+		inputParser.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +ipmd");
+		
+		assertTrue(aChannel.containsMode('i'));
+		assertTrue(aChannel.containsMode('p'));
+		assertTrue(aChannel.containsMode('m'));
+		assertTrue(aChannel.containsMode('d'));
+		assertFalse(aChannel.containsMode('q'));
+		assertFalse(aChannel.containsMode('r'));
+		assertFalse(aChannel.containsMode('s'));
+	}
 
 	@Test
 	public void userModeInitTest() throws Exception {
