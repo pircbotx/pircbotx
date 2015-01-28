@@ -20,6 +20,7 @@ package org.pircbotx.hooks.events;
 import com.google.common.collect.ImmutableMap;
 import java.net.InetSocketAddress;
 import javax.annotation.Nullable;
+import lombok.Data;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
@@ -28,6 +29,7 @@ import org.pircbotx.hooks.Event;
  *
  * @author Leon Blakey
  */
+@Data
 public class ConnectAttemptFailedEvent extends Event {
 	protected final int remainingAttempts;
 	protected final ImmutableMap<InetSocketAddress, Exception> connectExceptions;
