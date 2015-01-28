@@ -18,7 +18,6 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Set;

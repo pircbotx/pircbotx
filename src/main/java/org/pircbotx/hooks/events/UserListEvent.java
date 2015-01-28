@@ -18,7 +18,6 @@
 package org.pircbotx.hooks.events;
 
 import com.google.common.collect.ImmutableSortedSet;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -59,7 +58,7 @@ public class UserListEvent extends Event implements GenericChannelEvent {
 	 */
 	protected final ImmutableSortedSet<User> users;
 
-	public UserListEvent(@NonNull PircBotX bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
+	public UserListEvent(PircBotX bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
 		super(bot);
 		this.channel = channel;
 		this.users = users;
@@ -71,7 +70,7 @@ public class UserListEvent extends Event implements GenericChannelEvent {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getChannel().send().message(response);
 	}
 }

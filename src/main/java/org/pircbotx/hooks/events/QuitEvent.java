@@ -86,7 +86,7 @@ public class QuitEvent extends Event implements GenericUserEvent, GenericSnapsho
 	 */
 	@Override
 	@Deprecated
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		throw new UnsupportedOperationException("Attempting to respond to a user that quit");
 	}
 }

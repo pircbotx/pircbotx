@@ -38,8 +38,6 @@ public class UnknownEvent extends Event {
 	/**
 	 * The raw line that was received from the server.
 	 */
-	@Getter(onMethod = @_(
-			@Nonnull))
 	protected final String line;
 
 	public UnknownEvent(PircBotX bot, @NonNull String line) {
@@ -53,7 +51,7 @@ public class UnknownEvent extends Event {
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getBot().sendRaw().rawLine(response);
 	}
 }

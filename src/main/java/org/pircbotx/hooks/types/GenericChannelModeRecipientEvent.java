@@ -17,8 +17,6 @@
  */
 package org.pircbotx.hooks.types;
 
-import org.pircbotx.PircBotX;
-
 /**
  *
  * @author Leon Blakey

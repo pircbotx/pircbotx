@@ -95,7 +95,7 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		if (getChannel() == null)
 			getUser().send().message(response);
 		else
@@ -107,7 +107,7 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	 *
 	 * @param response The response to send
 	 */
-	public void respondChannel(@Nullable String response) {
+	public void respondChannel(String response) {
 		if (getChannel() == null)
 			throw new RuntimeException("Event does not contain a channel");
 		getBot().sendIRC().message(channelSource, response);
@@ -118,7 +118,7 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	 *
 	 * @param response The response to send
 	 */
-	public void respondPrivateMessage(@Nullable String response) {
+	public void respondPrivateMessage(String response) {
 		getUser().send().message(response);
 	}
 }

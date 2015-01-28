@@ -151,7 +151,6 @@ public class OutputChannel {
 	 * @param key The key to use when rejoining the channel
 	 */
 	public void cycle(final String key) {
-		final PircBotX bot = channel.getBot();
 		final String channelName = channel.getName();
 		//As we might not immediatly part and you can't join a channel that your
 		//already joined to, wait for the PART event before rejoining

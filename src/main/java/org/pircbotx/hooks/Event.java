@@ -18,6 +18,7 @@
 package org.pircbotx.hooks;
 
 import com.google.common.collect.ComparisonChain;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
@@ -30,6 +31,7 @@ import org.pircbotx.hooks.types.GenericEvent;
  * @author Leon Blakey
  */
 @Getter
+@EqualsAndHashCode
 public abstract class Event implements GenericEvent {
 	/**
 	 * Returns the timestamp of when the event was created.
@@ -52,12 +54,8 @@ public abstract class Event implements GenericEvent {
 	 */
 	protected final long id;
 
-	public Event(@NonNull PircBotX bot) {
+	public Event(PircBotX bot) {
 		this(bot, bot.getConfiguration().getListenerManager());
-	}
-
-	public Event(@NonNull ListenerManager listenerManager) {
-		this(null, listenerManager);
 	}
 
 	public Event(@NonNull PircBotX bot, @NonNull ListenerManager listenerManager) {

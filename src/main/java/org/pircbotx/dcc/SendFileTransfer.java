@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.Socket;
 import lombok.Cleanup;
 import org.pircbotx.Configuration;
-import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 
 /**
