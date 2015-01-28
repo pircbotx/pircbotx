@@ -76,7 +76,6 @@ public class PartEvent extends Event implements GenericChannelUserEvent, Generic
 	/**
 	 * @see #getUserChannelDaoSnapshot()
 	 * @see GenericSnapshotEvent
-	 * @return
 	 * @deprecated Use {@link #getUserChannelDaoSnapshot() } from
 	 * {@link GenericSnapshotEvent}
 	 */

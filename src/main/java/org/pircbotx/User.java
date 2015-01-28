@@ -226,8 +226,6 @@ public class User extends UserHostmask {
 
 	/**
 	 * Hash code generated from UUID
-	 *
-	 * @return
 	 */
 	@Override
 	public int hashCode() {
