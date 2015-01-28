@@ -29,6 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.pircbotx.hooks.managers.ThreadedListenerManager;
@@ -205,6 +206,11 @@ public class Channel implements Comparable<Channel> {
 					return mode;
 			}
 		}
+	}
+	
+	public boolean containsMode(char modeLetter) {
+		String modeLetters = StringUtils.split(getMode(), ' ')[0];
+		return StringUtils.contains(modeLetters, modeLetter);
 	}
 
 	/**
