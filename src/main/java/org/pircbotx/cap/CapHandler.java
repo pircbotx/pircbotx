@@ -23,8 +23,7 @@ import org.pircbotx.exception.CAPException;
 
 /**
  * Generic CAP handler. Relevant handle methods are called when a CAP line is
- * received. Connecting is not considered finished until a method
- * returns true
+ * received. Connecting is not considered finished until a method returns true
  *
  * @author Leon Blakey
  */

@@ -515,7 +515,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 * Gets the bots own user object.
 	 *
 	 * @return The user object representing this bot
-	 * @see UserChannelDao#getUserBot() 
+	 * @see UserChannelDao#getUserBot()
 	 */
 	public User getUserBot() {
 		return userChannelDao.getUser(getNick());
@@ -549,8 +549,10 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 
 	/**
 	 * If for some reason you absolutely need to stop PircBotX now instead of
-	 * gracefully closing with {@link OutputIRC#quitServer() }, this will close the socket which
-	 * causes read loop to terminate which will shutdown PircBotX shortly. 
+	 * gracefully closing with {@link OutputIRC#quitServer() }, this will close
+	 * the socket which causes read loop to terminate which will shutdown
+	 * PircBotX shortly.
+	 *
 	 * @see OutputIRC#quitServer()
 	 */
 	public void close() {

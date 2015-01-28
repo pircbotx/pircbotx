@@ -58,12 +58,10 @@ public abstract class FileTransfer {
 		this.file = file;
 		this.startPosition = startPosition;
 		this.fileSize = fileSize;
-		
+
 		//Clients use bytesTransferred to see where we are in the file
 		this.bytesTransfered = startPosition;
 	}
-	
-	
 
 	/**
 	 * Transfer the file to the user

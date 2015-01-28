@@ -100,7 +100,7 @@ public class InputParserTest {
 	 * listener to add all called events to Event set, set nick, etc
 	 */
 	@BeforeMethod
-	public void setUp() {	
+	public void setUp() {
 		bot = new TestPircBotX(TestUtils.generateConfigurationBuilder());
 		bot.nick = "PircBotXBot";
 
@@ -247,12 +247,12 @@ public class InputParserTest {
 		TopicEvent tevent = bot.getTestEvent(TopicEvent.class, "No topic event dispatched");
 		assertEquals(tevent.getChannel(), aChannel, "Event channel and origional channel do not match");
 	}
-	
+
 	@Test(description = "Verify TopicEvent's extended information from line sent after TOPIC line")
 	public void topicInfoFullHostmaskTest() throws IOException, IrcException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		UserHostmask aUser = TestUtils.generateTestUserSourceHostmask(bot);
-		inputParser.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel "+aUser.getHostmask()+" 1268522937");
+		inputParser.handleLine(":irc.someserver.net 333 PircBotXUser #aChannel " + aUser.getHostmask() + " 1268522937");
 		assertEquals(aChannel.getTopicSetter(), aUser);
 		assertEquals(aChannel.getTopicTimestamp(), (long) 1268522937 * 1000);
 
@@ -1135,5 +1135,4 @@ public class InputParserTest {
 
 	}
 
-	
 }

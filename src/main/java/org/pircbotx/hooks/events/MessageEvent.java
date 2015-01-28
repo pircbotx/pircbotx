@@ -88,19 +88,21 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	public void respond(@Nullable String response) {
 		getBot().sendIRC().message(channelSource, getUser().getNick() + ": " + response);
 	}
-	
+
 	/**
 	 * Respond with a message to the channel without the prefix
+	 *
 	 * @param response The response to send
 	 */
 	public void respondChannel(@Nullable String response) {
-		if(getChannel() == null)
+		if (getChannel() == null)
 			throw new RuntimeException("Event does not contain a channel");
 		getBot().sendIRC().message(channelSource, response);
 	}
-	
+
 	/**
 	 * Respond with a PM directly to the user
+	 *
 	 * @param response The response to send
 	 */
 	@Override

@@ -160,7 +160,7 @@ public class DccHandler implements Closeable {
 			int port;
 			long position = Long.parseLong(requestParts.get(4));
 			String transferToken;
-			if(requestParts.size() == 5) {
+			if (requestParts.size() == 5) {
 				//Standard request
 				port = Integer.parseInt(requestParts.get(3));
 				transferToken = null;
@@ -169,7 +169,7 @@ public class DccHandler implements Closeable {
 				port = 0;
 				transferToken = requestParts.get(5);
 			}
-			
+
 			synchronized (pendingReceiveTransfers) {
 				Iterator<Map.Entry<PendingRecieveFileTransfer, CountDownLatch>> pendingItr = pendingReceiveTransfers.entrySet().iterator();
 				while (pendingItr.hasNext()) {
@@ -288,13 +288,13 @@ public class DccHandler implements Closeable {
 			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getToken());
 		else
 			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
-		
+
 		//Wait for response
 		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
 			throw new DccException(DccException.Reason.FileTransferResumeTimeout, event.getUser(), "Event: " + event);
 		if (shuttingDown)
 			throw new DccException(DccException.Reason.FileTransferResumeCancelled, event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
-		
+
 		//User has accepted resume, begin transfer
 		if (pendingTransfer.getPosition() != startPosition)
 			log.warn("User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
@@ -526,7 +526,7 @@ public class DccHandler implements Closeable {
 		//Shutdown open reverse dcc servers
 		shuttingDown = true;
 		int pendingCount = pendingReceiveTransfers.values().size() + pendingSendPassiveTransfers.values().size();
-		if(pendingCount > 0) {
+		if (pendingCount > 0) {
 			log.info("Terminating {} DCC transfers waiting to be accepted", pendingCount);
 			for (CountDownLatch curCountdown : pendingReceiveTransfers.values())
 				curCountdown.countDown();
@@ -545,7 +545,7 @@ public class DccHandler implements Closeable {
 		//Some IPv6 clients are sending the full IPv6 address instead of a bigint
 		if (rawAddress.contains(":"))
 			return Inet6Address.getByName(rawAddress);
-		
+
 		//Convert the rawInteger into something usable
 		BigInteger bigIp = new BigInteger(rawAddress);
 		byte[] addressBytes = bigIp.toByteArray();
@@ -602,7 +602,7 @@ public class DccHandler implements Closeable {
 		protected InetAddress receiverAddress;
 		protected int receiverPort;
 	}
-	
+
 	public static void main(String[] args) throws UnknownHostException {
 		log.debug("IP: {}", parseRawAddress("134744072"));
 	}

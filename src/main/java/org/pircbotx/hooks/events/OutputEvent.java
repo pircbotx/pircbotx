@@ -25,6 +25,7 @@ import org.pircbotx.hooks.Event;
 
 /**
  * A command sent to the IRC server from PircBotX
+ *
  * @author Leon Blakey
  */
 @Data
@@ -33,6 +34,7 @@ public class OutputEvent extends Event {
 	private final String rawLine;
 	/**
 	 * Raw line split into its individual parts
+	 *
 	 * @see org.pircbotx.Utils#tokenizeLine(java.lang.String)
 	 */
 	private final List<String> lineParsed;

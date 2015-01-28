@@ -74,7 +74,7 @@ public class WhoisEvent extends Event {
 		this.exists = builder.exists;
 		this.awayMessage = builder.awayMessage;
 	}
-	
+
 	public static Builder builder() {
 		return new Builder().channels(ImmutableList.<String>of());
 	}

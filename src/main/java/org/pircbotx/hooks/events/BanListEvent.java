@@ -52,13 +52,14 @@ public class BanListEvent extends Event implements GenericChannelEvent {
 
 	/**
 	 * Send a message to the channel
-	 * @param response 
+	 *
+	 * @param response
 	 */
 	@Override
 	public void respond(String response) {
 		channel.send().message(response);
 	}
-	
+
 	@Data
 	public static class Entry {
 		private final UserHostmask recipient;

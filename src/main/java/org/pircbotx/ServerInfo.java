@@ -199,20 +199,20 @@ public class ServerInfo {
 			else if (key.equalsIgnoreCase("CNOTICE"))
 				cNoticeExists = true;
 			else if (key.equalsIgnoreCase("EXTBAN")) {
-				if(value.contains(",")) {
+				if (value.contains(",")) {
 					String[] valueSplit = StringUtils.split(value, ",", 2);
-					if(valueSplit.length == 2) {
+					if (valueSplit.length == 2) {
 						extBanPrefix = valueSplit[0];
 						extBanList = valueSplit[1];
 					} else {
 						extBanPrefix = null;
-						extBanList =  valueSplit[0];
+						extBanList = valueSplit[0];
 					}
 				} else {
 					extBanList = value;
 				}
 			}
-				
+
 		}
 		//Freenode
 		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server

@@ -37,7 +37,7 @@ import org.pircbotx.output.OutputIRC;
  * channel listings.
  *
  * @author Leon Blakey
- * @see OutputIRC#listChannels() 
+ * @see OutputIRC#listChannels()
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
