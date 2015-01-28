@@ -83,6 +83,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<lombok.version>1.16.0</lombok.version>
 		<guava.version>18.0</guava.version>
+		<src.dir>src/main/java</src.dir>
 	</properties>
 
 	<!--
@@ -150,6 +151,7 @@
 	</dependencies>
 	
 	<build>
+		<sourceDirectory>${src.dir}</sourceDirectory>
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
@@ -321,6 +323,9 @@
 		<!--Delombok sources for tools like javadoc-->
 		<profile>
 			<id>complete-build</id>
+			<properties>
+				<src.dir>target/delombok</src.dir>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -400,7 +405,6 @@
 									<configuration>
 										<defaultAuthor>Leon Blakey</defaultAuthor>
 										<defaultVersion>${project.version}</defaultVersion>
-										<sourcepath>target/delombok</sourcepath>
 										<!-- Temporarily disable Java 8 super strict doclint -->
 										<additionalparam>-Xdoclint:none</additionalparam>
 										<show>public</show>
