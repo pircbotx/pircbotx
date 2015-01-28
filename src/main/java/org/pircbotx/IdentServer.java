@@ -140,7 +140,6 @@ public class IdentServer implements Closeable, Runnable {
 	 */
 	public void run() {
 		log.info("IdentServer running on port " + serverSocket.getLocalPort());
-		//TODO: Multi-thread this
 		while (!serverSocket.isClosed()) {
 			Socket socket = null;
 			try {
@@ -162,14 +161,14 @@ public class IdentServer implements Closeable, Runnable {
 					return;
 				} else
 					//This is not from the server socket closing
-					throw new RuntimeException("Exception encountered when opening user socket");
+					throw new RuntimeException("Exception encountered when opening user socket", e);
 			} finally {
 				//Close user socket
 				try {
 					if (socket != null)
 						socket.close();
 				} catch (IOException e) {
-					throw new RuntimeException("Exception encountered when closing user socket");
+					throw new RuntimeException("Exception encountered when closing user socket", e);
 				}
 			}
 		}

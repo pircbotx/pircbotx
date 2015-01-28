@@ -48,7 +48,6 @@ public class MassEventTest {
 	public void constructorParamToFieldTest(Class<?> event) {
 		if (event == WhoisEvent.class) {
 			//This uses a builder
-			//TODO: Verify?
 			return;
 		}
 

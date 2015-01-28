@@ -33,7 +33,6 @@ import org.pircbotx.hooks.Event;
  *
  * @author Leon Blakey
  */
-//TODO: Add tests
 @Builder(builderClassName = "Builder", buildMethodName = "generateEvent")
 @EqualsAndHashCode(callSuper = true)
 @Getter
