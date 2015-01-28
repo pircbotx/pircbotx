@@ -17,8 +17,6 @@
  */
 package org.pircbotx.hooks;
 
-import org.pircbotx.PircBotX;
-
 /**
  * A generic listener to receive events. Almost all users should use
  * {@link org.pircbotx.hooks.ListenerAdapter}

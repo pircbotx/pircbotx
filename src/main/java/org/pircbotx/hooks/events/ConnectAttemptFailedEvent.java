@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import java.net.InetSocketAddress;
 import javax.annotation.Nullable;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
@@ -30,6 +31,7 @@ import org.pircbotx.hooks.Event;
  * @author Leon Blakey
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ConnectAttemptFailedEvent extends Event {
 	protected final int remainingAttempts;
 	protected final ImmutableMap<InetSocketAddress, Exception> connectExceptions;
@@ -49,7 +51,7 @@ public class ConnectAttemptFailedEvent extends Event {
 	 */
 	@Override
 	@Deprecated
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		throw new UnsupportedOperationException("Attepting to respond to a disconnected server");
 	}
 }

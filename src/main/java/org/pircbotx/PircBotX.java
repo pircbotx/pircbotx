@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -76,6 +77,7 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * href="http://pircbotx.googlecode.com">PircBotX</a>
  */
 @Slf4j
+@EqualsAndHashCode(of = "botId")
 public class PircBotX implements Comparable<PircBotX>, Closeable {
 	/**
 	 * The definitive version number of this release of PircBotX.

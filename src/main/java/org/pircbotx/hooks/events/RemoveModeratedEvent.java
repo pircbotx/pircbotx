@@ -64,7 +64,7 @@ public class RemoveModeratedEvent extends Event implements GenericChannelModeEve
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getChannel().send().message(getUser(), response);
 	}
 }

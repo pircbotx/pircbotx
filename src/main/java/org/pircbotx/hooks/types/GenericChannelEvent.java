@@ -18,7 +18,6 @@
 package org.pircbotx.hooks.types;
 
 import org.pircbotx.Channel;
-import org.pircbotx.PircBotX;
 
 /**
  *

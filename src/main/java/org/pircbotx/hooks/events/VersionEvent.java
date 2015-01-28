@@ -73,7 +73,7 @@ public class VersionEvent extends Event implements GenericCTCPEvent, GenericChan
 	 * @param response The response to send
 	 */
 	@Override
-	public void respond(@Nullable String response) {
+	public void respond(String response) {
 		getUser().send().ctcpResponse(response);
 	}
 }
