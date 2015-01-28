@@ -44,8 +44,6 @@ import org.slf4j.LoggerFactory;
 @Setter(AccessLevel.PROTECTED)
 public class User extends UserHostmask {
 	private final UUID userId = UUID.randomUUID();
-	@Getter(AccessLevel.PROTECTED)
-	private final UserChannelDao<User, Channel> dao;
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	private String botHostname;
@@ -76,13 +74,11 @@ public class User extends UserHostmask {
 	private int hops = 0;
 
 	protected User(UserHostmask hostmask) {
-		this(hostmask, hostmask.getBot().getUserChannelDao());
-	}
-
-	@SuppressWarnings("unchecked")
-	protected User(UserHostmask hostmask, UserChannelDao<? extends User, ? extends Channel> dao) {
 		super(hostmask);
-		this.dao = (UserChannelDao<User, Channel>) dao;
+	}
+	
+	protected UserChannelDao<User, Channel> getDao() {
+		return bot.getUserChannelDao();
 	}
 
 	/**

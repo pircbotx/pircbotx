@@ -41,7 +41,7 @@ import org.pircbotx.output.OutputUser;
 @ToString(exclude = {"bot", "output"})
 public class UserHostmask implements Comparable<User> {
 	@NonNull
-	private final PircBotX bot;
+	protected final PircBotX bot;
 	/**
 	 * Lazily created output since it might not ever be used
 	 */
