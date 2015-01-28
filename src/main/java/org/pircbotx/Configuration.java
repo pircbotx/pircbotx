@@ -887,7 +887,7 @@ public class Configuration {
 		}
 
 		public Channel createChannel(PircBotX bot, String name) {
-			return new Channel(bot, bot.getUserChannelDao(), name);
+			return new Channel(bot, name);
 		}
 	}
 

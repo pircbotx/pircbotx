@@ -41,7 +41,7 @@ public class ChannelSnapshot extends Channel {
 	protected final String mode;
 
 	public ChannelSnapshot(Channel channel, String mode) {
-		super(channel.getBot(), null, channel.getName());
+		super(channel.getBot(), channel.getName());
 		this.generatedFrom = channel;
 		this.mode = mode;
 
