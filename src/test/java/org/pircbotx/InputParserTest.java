@@ -1144,17 +1144,15 @@ public class InputParserTest {
 	}
 
 	@Test
-	public void botUserDataTest() throws IOException, IrcException {
+	public void userDataBotTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getLogin(), "PircBotX", "User bots login doesn't match");
 
 		String otherUser = TestUtils.generateTestUserOtherHostmask(bot).getHostmask();
-		inputParser.handleLine(":" + otherUser + " PRIVMSG #aChannel");
+		inputParser.handleLine(":" + otherUser + " PRIVMSG #aChannel :test");
 		assertEquals(bot.getUserBot().getLogin(), "PircBotX", "User bots login got changed");
 
 		inputParser.handleLine(":PircBotXBot!~PircBotX@some.hostmask JOIN #aChannel");
 		assertEquals(bot.getUserBot().getLogin(), "~PircBotX", "User bots new login doesn't match");
 		assertEquals(bot.getUserBot().getHostname(), "some.hostmask", "User bots new hostmask doesn't match");
-
 	}
-
 }
