@@ -913,10 +913,8 @@ public class InputParser implements Closeable {
 
 	public User createUserIfNull(User otherUser, @NonNull UserHostmask hostmask) {
 		if (otherUser != null) {
-			//Update our users hostmask once we know it
-			if (otherUser == bot.getUserBot()) {
-				otherUser.setBotUserdata(hostmask);
-			}
+			//We could have fresh user data
+			otherUser.updateHostmask(hostmask);
 			return otherUser;
 		} else if (bot.getUserChannelDao().containsUser(hostmask))
 			throw new RuntimeException("User wasn't fetched but user exists in DAO. Please report this bug");

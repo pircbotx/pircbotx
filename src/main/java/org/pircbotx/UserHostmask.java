@@ -25,6 +25,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
@@ -38,7 +39,9 @@ import org.pircbotx.output.OutputUser;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})
 @Getter
+@Setter(AccessLevel.PROTECTED)
 @ToString(exclude = {"bot", "output"})
+@Slf4j
 public class UserHostmask implements Comparable<User> {
 	@NonNull
 	protected final PircBotX bot;
@@ -59,16 +62,16 @@ public class UserHostmask implements Comparable<User> {
 	/**
 	 * Current nick of the user (nick!login@hostname).
 	 */
-	@Setter(AccessLevel.PROTECTED)
+	
 	private String nick;
 	/**
 	 * Login of the user (nick!login@hostname).
 	 */
-	private final String login;
+	private String login;
 	/**
 	 * Hostname of the user (nick!login@hostname).
 	 */
-	private final String hostname;
+	private String hostname;
 
 	protected UserHostmask(PircBotX bot, String rawHostmask) {
 		try {
@@ -103,6 +106,25 @@ public class UserHostmask implements Comparable<User> {
 		this.login = otherHostmask.getLogin();
 		this.hostname = otherHostmask.getHostname();
 		this.extbanPrefix = otherHostmask.getExtbanPrefix();
+	}
+	
+	protected void updateHostmask(@NonNull UserHostmask userHostmask) {
+		if (StringUtils.isNotBlank(userHostmask.getHostname()) && !userHostmask.getHostname().equals(getHostname())) {
+			log.trace("Updating hostname to {} for user {}!{}@{}", 
+					userHostmask.getHostname(),
+					getNick(),
+					getLogin(),
+					getHostname());
+			setHostname(userHostmask.getHostname());
+		}
+		if (StringUtils.isNotBlank(userHostmask.getLogin()) && !userHostmask.getLogin().equals(getLogin())) {
+			log.trace("Updating login to {} for user {}!{}@{}", 
+					userHostmask.getLogin(),
+					getNick(),
+					getLogin(),
+					getHostname());
+			setLogin(userHostmask.getLogin());
+		}
 	}
 
 	/**

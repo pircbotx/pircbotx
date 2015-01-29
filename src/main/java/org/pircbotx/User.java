@@ -26,7 +26,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.WhoisEvent;
-import org.slf4j.LoggerFactory;
 
 /**
  * Represents a User on the server.
@@ -44,12 +43,6 @@ import org.slf4j.LoggerFactory;
 @Setter(AccessLevel.PROTECTED)
 public class User extends UserHostmask {
 	private final UUID userId = UUID.randomUUID();
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	private String botHostname;
-	@Getter(AccessLevel.NONE)
-	@Setter(AccessLevel.NONE)
-	private String botLogin;
 	/**
 	 * Realname/fullname of the user. Never changes
 	 */
@@ -106,28 +99,6 @@ public class User extends UserHostmask {
 		} catch (InterruptedException ex) {
 			throw new RuntimeException("Couldn't finish querying user for verified status", ex);
 		}
-	}
-
-	protected void setBotUserdata(UserHostmask userHostmask) {
-		if (botHostname == null && botLogin == null) {
-			LoggerFactory.getLogger(getClass()).debug("updating user data for " + getNick() + "!" + getLogin() + "@" + getHostname());
-			botHostname = userHostmask.getHostname();
-			botLogin = userHostmask.getLogin();
-		}
-	}
-
-	@Override
-	public String getLogin() {
-		if (botLogin != null)
-			return botLogin;
-		return super.getLogin();
-	}
-
-	@Override
-	public String getHostname() {
-		if (botHostname != null)
-			return botHostname;
-		return super.getHostname();
 	}
 
 	public UserSnapshot createSnapshot() {
