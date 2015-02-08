@@ -719,7 +719,7 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			configuration.getListenerManager().dispatchEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel)));
+			configuration.getListenerManager().dispatchEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -848,6 +848,24 @@ public class InputParser implements Closeable {
 			ImmutableList<BanListEvent.Entry> entries = ImmutableList.copyOf(banListBuilder.removeAll(channel));
 			log.debug("Dispatching event");
 			configuration.getListenerManager().dispatchEvent(new BanListEvent(bot, channel, entries));
+		} else if (code == 353) {
+			//NAMES response
+			//353 PircBotXUser = #aChannel :aUser1 aUser2
+			for(String curUser : StringUtils.split(parsedResponse.get(3))) {
+				User user;
+				if(!bot.getUserChannelDao().containsUser(curUser))
+					//Create user with nick only
+					user = bot.getUserChannelDao().createUser(new UserHostmask(bot, curUser));
+				else 
+					user = bot.getUserChannelDao().getUser(curUser);
+				Channel chan = bot.getUserChannelDao().getChannel(parsedResponse.get(2));
+				bot.getUserChannelDao().addUserToChannel(user, chan);
+			}
+		} else if (code == 366) {
+			//NAMES response finished
+			//366 PircBotXUser #aChannel :End of /NAMES list.
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			configuration.getListenerManager().dispatchEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), false));
 		}
 		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
 	}
