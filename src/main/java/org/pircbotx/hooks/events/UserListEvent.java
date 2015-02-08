@@ -57,11 +57,17 @@ public class UserListEvent extends Event implements GenericChannelEvent {
 	 * An <b>immutable</b> Set of Users belonging to this channel.
 	 */
 	protected final ImmutableSortedSet<User> users;
+	/**
+	 * True if from a WHO response meaning login, hostmask, mode, etc was given,
+	 * false if from a NAMES response meaning only nick was given
+	 */
+	protected final boolean complete;
 
-	public UserListEvent(PircBotX bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users) {
+	public UserListEvent(PircBotX bot, @NonNull Channel channel, @NonNull ImmutableSortedSet<User> users, boolean complete) {
 		super(bot);
 		this.channel = channel;
 		this.users = users;
+		this.complete = complete;
 	}
 
 	/**

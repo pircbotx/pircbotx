@@ -682,6 +682,7 @@ public class InputParserTest {
 
 		//Verify event
 		UserListEvent uevent = bot.getTestEvent(UserListEvent.class, "UserListEvent not dispatched");
+		assertTrue(uevent.isComplete());
 		assertEquals(uevent.getChannel(), aChannel, "UserListEvent's channel does not match given");
 		assertEquals(uevent.getUsers().size(), 2, "UserListEvent's users is larger than it should be");
 		assertTrue(uevent.getUsers().contains(aUser), "UserListEvent doesn't contain aUser");
@@ -1154,5 +1155,34 @@ public class InputParserTest {
 		inputParser.handleLine(":PircBotXBot!~PircBotX@some.hostmask JOIN #aChannel");
 		assertEquals(bot.getUserBot().getLogin(), "~PircBotX", "User bots new login doesn't match");
 		assertEquals(bot.getUserBot().getHostname(), "some.hostmask", "User bots new hostmask doesn't match");
+	}
+	
+	@Test
+	public void namesTest() throws IOException, IrcException {
+		Channel aChannel = dao.createChannel("#aChannel");
+		assertFalse(dao.containsUser("aUser1"));
+		assertFalse(dao.containsUser("aUser2"));
+		
+		inputParser.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :aUser1 aUser2");
+		inputParser.handleLine(":irc.someserver.net 366 PircBotXUser #aChannel :End of /NAMES list.");
+		
+		UserListEvent event = bot.getTestEvent(UserListEvent.class);
+		assertFalse(event.isComplete());
+		assertEquals(event.getChannel(), aChannel, "Channel does not match");
+		assertEquals(event.getUsers(), event.getChannel().getUsers(), "Event has users not in channel");
+		List<User> allUsersExpected = Lists.newArrayList(event.getBot().getUserChannelDao().getAllUsers());
+		allUsersExpected.remove(bot.getUserBot());
+		assertEquals(allUsersExpected, event.getChannel().getUsers(), "Extra users in DAO that don't exist in channel");
+		
+		
+		assertTrue(dao.containsUser("aUser1"));
+		User user = dao.getUser("aUser1");
+		assertNull(user.getLogin(), "Unexpected login for aUser1");
+		assertNull(user.getHostname(), "Unexpected hostmask for aUser1");
+		
+		assertTrue(dao.containsUser("aUser2"));
+		user = dao.getUser("aUser2");
+		assertNull(user.getLogin(), "Unexpected login for aUser2");
+		assertNull(user.getHostname(), "Unexpected hostmask for aUser2");
 	}
 }
