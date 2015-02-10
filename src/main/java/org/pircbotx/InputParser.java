@@ -397,6 +397,10 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 451 CAP :You have not registered
 			//Ignore, this is from servers that don't support CAP
 			log.warn("Ignoring not registered error, server does not support CAP negotiation");
+		} else if (configuration.isCapEnabled() && code.equals("410") && parsedLine.get(1).contains("CAP")) {
+			//EXAMPLE: 410 :Invalid CAP command
+			//Ignore, Twitch.tv uses this code for some reason
+			log.warn("Ignoring invalid command error, server does not support CAP negotiation");
 		} else if ((code.startsWith("5") || code.startsWith("4")) && !code.equals("433"))
 			//Ignore 433 NickAlreadyInUse, handled later
 			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
