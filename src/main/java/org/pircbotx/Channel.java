@@ -54,7 +54,7 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * Unique UUID for this channel <i>instance</i>
 	 */
-	protected final UUID channelId = UUID.randomUUID();
+	protected final UUID channelId;
 	/**
 	 * The bot that this channel came from
 	 */
@@ -118,10 +118,20 @@ public class Channel implements Comparable<Channel> {
 	protected CountDownLatch modeChangeLatch = null;
 	protected final Object modeChangeLock = new Object();
 
-	@SuppressWarnings("unchecked")
 	protected Channel(PircBotX bot, String name) {
 		this.bot = bot;
 		this.name = name;
+		this.channelId = UUID.randomUUID();
+	}
+	
+	/**
+	 * Used by ChannelSnapshot
+	 * @param channel 
+	 */
+	protected Channel(Channel channel) {
+		this.bot = channel.bot;
+		this.name = channel.name;
+		this.channelId = channel.channelId;
 	}
 	
 	protected UserChannelDao<User, Channel> getDao() {

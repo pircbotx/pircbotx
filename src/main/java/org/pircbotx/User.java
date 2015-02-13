@@ -42,7 +42,7 @@ import org.pircbotx.hooks.events.WhoisEvent;
 @ToString(callSuper = true)
 @Setter(AccessLevel.PROTECTED)
 public class User extends UserHostmask {
-	private final UUID userId = UUID.randomUUID();
+	private final UUID userId;
 	/**
 	 * Realname/fullname of the user. Never changes
 	 */
@@ -68,6 +68,16 @@ public class User extends UserHostmask {
 
 	protected User(UserHostmask hostmask) {
 		super(hostmask);
+		userId = UUID.randomUUID();
+	}
+	
+	/**
+	 * Needed for UserSnapshot, 2nd parameter to prevent potential bugs from overloading
+	 * @return 
+	 */
+	protected User(User user, boolean unused) {
+		super(user);
+		userId = user.userId;
 	}
 	
 	protected UserChannelDao<User, Channel> getDao() {

@@ -41,7 +41,7 @@ public class UserSnapshot extends User {
 	protected UserChannelDaoSnapshot dao;
 
 	public UserSnapshot(User user) {
-		super(user);
+		super(user, true);
 		generatedFrom = user;
 
 		//Clone fields
