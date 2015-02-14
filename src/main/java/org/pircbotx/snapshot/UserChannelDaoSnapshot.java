@@ -38,22 +38,6 @@ public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, Channel
 	}
 
 	@Override
-	public UserSnapshot getUser(String nick) {
-		UserSnapshot user = userNickMap.get(nick.toLowerCase(bot.getConfiguration().getLocale()));
-		if (user == null)
-			throw new RuntimeException("User " + nick + " does not exist");
-		return user;
-	}
-
-	@Override
-	public ChannelSnapshot getChannel(String name) {
-		ChannelSnapshot channel = channelNameMap.get(name.toLowerCase(bot.getConfiguration().getLocale()));
-		if (channel == null)
-			throw new RuntimeException("Channel " + name + " does not exist");
-		return channel;
-	}
-
-	@Override
 	protected void removeUserFromChannel(UserSnapshot user, ChannelSnapshot channel) {
 		SnapshotUtils.fail();
 	}
