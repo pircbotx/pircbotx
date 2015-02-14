@@ -477,14 +477,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	public UserChannelDaoSnapshot createSnapshot() {
 		//Create snapshots of all users and channels
-		ImmutableMap.Builder<U, UserSnapshot> userSnapshotBuilder = ImmutableMap.builder();
+		Map<U, UserSnapshot> userSnapshotMap = Maps.newHashMapWithExpectedSize(userNickMap.size());
 		for (U curUser : userNickMap.values())
-			userSnapshotBuilder.put(curUser, curUser.createSnapshot());
-		ImmutableMap<U, UserSnapshot> userSnapshotMap = userSnapshotBuilder.build();
-		ImmutableMap.Builder<C, ChannelSnapshot> channelSnapshotBuilder = ImmutableMap.builder();
+			userSnapshotMap.put(curUser, curUser.createSnapshot());
+		Map<C, ChannelSnapshot> channelSnapshotMap = Maps.newHashMapWithExpectedSize(channelNameMap.size());
 		for (C curChannel : channelNameMap.values())
-			channelSnapshotBuilder.put(curChannel, curChannel.createSnapshot());
-		ImmutableMap<C, ChannelSnapshot> channelSnapshotMap = channelSnapshotBuilder.build();
+			channelSnapshotMap.put(curChannel, curChannel.createSnapshot());
 
 		//Make snapshots of the relationship maps using the above user and channel snapshots
 		UserChannelMapSnapshot mainMapSnapshot = mainMap.createSnapshot(userSnapshotMap, channelSnapshotMap);
