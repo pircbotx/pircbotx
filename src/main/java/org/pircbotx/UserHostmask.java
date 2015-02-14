@@ -39,7 +39,6 @@ import org.pircbotx.output.OutputUser;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"bot", "nick", "login", "hostname"})
 @Getter
-@Setter(AccessLevel.PROTECTED)
 @ToString(exclude = {"bot", "output"})
 @Slf4j
 public class UserHostmask implements Comparable<User> {
@@ -62,7 +61,7 @@ public class UserHostmask implements Comparable<User> {
 	/**
 	 * Current nick of the user (nick!login@hostname).
 	 */
-	
+	@Setter(AccessLevel.PROTECTED)
 	private String nick;
 	/**
 	 * Login of the user (nick!login@hostname).
@@ -115,7 +114,7 @@ public class UserHostmask implements Comparable<User> {
 					getNick(),
 					getLogin(),
 					getHostname());
-			setHostname(userHostmask.getHostname());
+			this.hostname = userHostmask.getHostname();
 		}
 		if (StringUtils.isNotBlank(userHostmask.getLogin()) && !userHostmask.getLogin().equals(getLogin())) {
 			log.trace("Updating login to {} for user {}!{}@{}", 
@@ -123,7 +122,7 @@ public class UserHostmask implements Comparable<User> {
 					getNick(),
 					getLogin(),
 					getHostname());
-			setLogin(userHostmask.getLogin());
+			this.login = userHostmask.getLogin();
 		}
 	}
 
