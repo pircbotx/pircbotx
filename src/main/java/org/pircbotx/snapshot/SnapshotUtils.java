@@ -28,7 +28,7 @@ public final class SnapshotUtils {
 	private SnapshotUtils() {
 	}
 
-	protected static void fail() throws RuntimeException {
+	protected static <V> V fail() throws RuntimeException {
 		throw new RuntimeException("Attempting to modify a snapshot object");
 	}
 }
