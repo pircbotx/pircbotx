@@ -147,7 +147,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	@Synchronized("accessLock")
 	@Deprecated
 	public boolean userExists(@NonNull String nick) {
-		return userNickMap.containsKey(nick.toLowerCase(locale));
+		return containsUser(nick);
 	}
 
 	/**
@@ -170,10 +170,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@Synchronized("accessLock")
 	public boolean containsUser(@NonNull UserHostmask hostmask) {
-		//Rarely we don't get the full hostmask
-		//eg, the server setting your usermode when you connect to the server
-		if (hostmask.getNick() == null)
-			return containsUser(hostmask.getHostmask());
 		return containsUser(hostmask.getNick());
 	}
 
@@ -198,8 +194,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected void addUserToPrivate(@NonNull U user) {
 		String nick = user.getNick().toLowerCase(locale);
 		privateUsers.put(nick, user);
-		if (!userNickMap.containsKey(nick))
-			userNickMap.put(nick, user);
 	}
 
 	@Synchronized("accessLock")
