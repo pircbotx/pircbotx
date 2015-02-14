@@ -115,7 +115,10 @@ public class Channel implements Comparable<Channel> {
 	 * Channel key (+k)
 	 */
 	protected String channelKey = null;
+	@Getter(AccessLevel.NONE)
+	@Setter(AccessLevel.NONE)
 	protected CountDownLatch modeChangeLatch = null;
+	@Getter(AccessLevel.NONE)
 	protected final Object modeChangeLock = new Object();
 
 	protected Channel(PircBotX bot, String name) {
