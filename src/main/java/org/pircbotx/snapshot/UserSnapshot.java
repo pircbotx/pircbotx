@@ -24,6 +24,7 @@ import lombok.ToString;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import org.pircbotx.UserChannelDao;
+import org.pircbotx.UserHostmask;
 
 /**
  * A snapshot of a user in time. Useful to get information before a user leaves
@@ -65,32 +66,37 @@ public class UserSnapshot extends User {
 	}
 
 	@Override
+	protected void updateHostmask(UserHostmask userHostmask) {
+		super.updateHostmask(userHostmask); //To change body of generated methods, choose Tools | Templates.
+	}
+	
+	@Override
 	protected void setAwayMessage(String away) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
+		SnapshotUtils.fail();
 	}
 
 	@Override
 	protected void setHops(int hops) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
+		SnapshotUtils.fail();
 	}
 
 	@Override
 	protected void setIrcop(boolean ircop) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
+		SnapshotUtils.fail();
 	}
 
 	@Override
 	protected void setNick(String nick) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
+		SnapshotUtils.fail();
 	}
 
 	@Override
 	protected void setRealName(String realName) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
+		SnapshotUtils.fail();
 	}
 
 	@Override
 	protected void setServer(String server) {
-		throw new UnsupportedOperationException("Attempting to set field on user snapshot");
+		SnapshotUtils.fail();
 	}
 }

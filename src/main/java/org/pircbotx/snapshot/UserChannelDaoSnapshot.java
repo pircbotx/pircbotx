@@ -23,6 +23,7 @@ import java.util.Locale;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserChannelDao;
 import org.pircbotx.UserChannelMap;
+import org.pircbotx.UserHostmask;
 import org.pircbotx.UserLevel;
 
 /**
@@ -35,6 +36,21 @@ public class UserChannelDaoSnapshot extends UserChannelDao<UserSnapshot, Channel
 	public UserChannelDaoSnapshot(PircBotX bot, Locale locale, UserChannelMapSnapshot mainMap, EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMap, ImmutableMap<String, UserSnapshot> userNickMap, ImmutableMap<String, ChannelSnapshot> channelNameMap, ImmutableMap<String, UserSnapshot> privateUsers) {
 		super(bot, null, locale, mainMap, levelsMap, userNickMap, channelNameMap, privateUsers);
 		botNick = bot.getNick();
+	}
+
+	@Override
+	public UserChannelDaoSnapshot createSnapshot() {
+		throw new UnsupportedOperationException("Attempting to generate UserChannelDao snapshot from a snapshot");
+	}
+
+	@Override
+	public ChannelSnapshot createChannel(String name) {
+		return SnapshotUtils.fail();
+	}
+
+	@Override
+	public UserSnapshot createUser(UserHostmask userHostmask) {
+		return SnapshotUtils.fail();
 	}
 
 	@Override
