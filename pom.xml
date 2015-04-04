@@ -1,469 +1,498 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <!--Sonatype Parent POM-->
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
+	<!--Sonatype Parent POM-->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
 	
-    <!--
-        Maven Information
-    -->
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.pircbotx</groupId>
-    <artifactId>pircbotx</artifactId>
-    <packaging>jar</packaging>
-    <version>2.1-SNAPSHOT</version>
+	<!--
+		Maven Information
+	-->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.pircbotx</groupId>
+	<artifactId>pircbotx</artifactId>
+	<packaging>jar</packaging>
+	<version>2.1-SNAPSHOT</version>
 	
-    <!--
-        Project information
-    -->
-    <name>pircbotx</name>
-    <description>PircBotX is a simple, easy to use, Java IRC Bot Framework based 
-        off of a fork of the popular PircBot framework, bringing many new up-to-date 
-        features and bug fixes in an official alternative distribution. 
-    </description>
-    <url>http://pircbotx.googlecode.com/</url>
-    <inceptionYear>2010</inceptionYear>
+	<!--
+		Project information
+	-->
+	<name>pircbotx</name>
+	<description>PircBotX is a simple, easy to use, Java IRC Bot Framework based 
+		off of a fork of the popular PircBot framework, bringing many new up-to-date 
+		features and bug fixes in an official alternative distribution. 
+	</description>
+	<url>http://pircbotx.googlecode.com/</url>
+	<inceptionYear>2010</inceptionYear>
 
-    <licenses>
-        <license>
-            <name>GPL v3</name>
-            <url>www.gnu.org/licenses/</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>GPL v3</name>
+			<url>www.gnu.org/licenses/</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    <organization>
-        <name>Leon Blakey</name>
-    </organization>
+	<organization>
+		<name>Leon Blakey</name>
+	</organization>
 
-    <developers>
-        <developer>
-            <id>TheLQ</id>
-            <name>Leon Blakey</name>
-            <email>lord.quackstar@gmail.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>-5</timezone>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<id>TheLQ</id>
+			<name>Leon Blakey</name>
+			<email>lord.quackstar@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
 
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/pircbotx/issues/list/</url>
-    </issueManagement>
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/pircbotx/issues/list/</url>
+	</issueManagement>
         
-    <ciManagement>
-        <url>https://thelq.ci.cloudbees.com/job/PircBotX/</url>
-    </ciManagement>
+	<ciManagement>
+		<url>https://thelq.ci.cloudbees.com/job/PircBotX/</url>
+	</ciManagement>
 
-    <scm>
-        <connection>scm:hg:http://code.google.com/p/pircbotx/</connection>
-        <developerConnection>scm:hg:https://code.google.com/p/pircbotx/</developerConnection>
-        <url>https://code.google.com/p/pircbotx/</url>
-        <tag>HEAD</tag>
-    </scm>
+	<scm>
+		<connection>scm:hg:http://code.google.com/p/pircbotx/</connection>
+		<developerConnection>scm:hg:https://code.google.com/p/pircbotx/</developerConnection>
+		<url>https://code.google.com/p/pircbotx/</url>
+		<tag>HEAD</tag>
+	</scm>
 	
-    <mailingLists>
-        <mailingList>
-            <name>pircbotx</name>
-            <subscribe>pircbotx-subscribe@googlegroups.com</subscribe>
-            <unsubscribe>pircbotx-unsubscribe@googlegroups.com</unsubscribe>
-            <archive>http://groups.google.com/group/pircbotx/</archive>
-        </mailingList>
-    </mailingLists>
+	<mailingLists>
+		<mailingList>
+			<name>pircbotx</name>
+			<subscribe>pircbotx-subscribe@googlegroups.com</subscribe>
+			<unsubscribe>pircbotx-unsubscribe@googlegroups.com</unsubscribe>
+			<archive>http://groups.google.com/group/pircbotx/</archive>
+		</mailingList>
+	</mailingLists>
 
-    <prerequisites>
-        <maven>3.0.4</maven>
-    </prerequisites>
+	<prerequisites>
+		<maven>3.0.4</maven>
+	</prerequisites>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lombok.version>1.16.2</lombok.version>
-        <guava.version>18.0</guava.version>
-        <src.dir>src/main/java</src.dir>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<lombok.version>1.16.2</lombok.version>
+		<guava.version>18.0</guava.version>
+		<src.dir>src/main/java</src.dir>
+	</properties>
 
-    <!--
-        Dependancies and Plugins
-    -->
-    <dependencies>
-        <!-- Project Lombok for annotation processing -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Commons Lang for useful utilities -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.3.2</version>
-        </dependency>
-        <!-- Slf4j for logging -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.12</version>
-        </dependency>
-        <!-- Commons codec for base64 -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
-        </dependency>
-        <!-- Guava for collections -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-        <!-- Use TestNG as testing framework -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8.21</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Mockito for mocking test objects-->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.0.5-beta</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Logback for logging to console when testing -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.1.3</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+	<!--
+		Dependancies and Plugins
+	-->
+	<dependencies>
+		<!-- Project Lombok for annotation processing -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Commons Lang for useful utilities -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+		<!-- Slf4j for logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<!-- Commons codec for base64 -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+		<!-- Guava for collections -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${guava.version}</version>
+		</dependency>
+		<!-- Use TestNG as testing framework -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8.21</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Mockito for mocking test objects-->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.0.5-beta</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Logback for logging to console when testing -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.3</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 	
-    <build>
-        <sourceDirectory>${src.dir}</sourceDirectory>
-        <plugins>
-            <!--Makes sure License Headers are consistant across all files-->
-            <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
-                <configuration>
-                    <header>src/etc/license-header.txt</header>
-                    <excludes>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.log</exclude>
-                        <exclude>.hg*</exclude>
-                        <exclude>README.md</exclude>
-                        <exclude>**/nbactions.xml</exclude>
-                    </excludes>
-                    <strictCheck>true</strictCheck>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--Specifically target Java 1.5-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
-                    <compilerArgs>
-                        <arg>-Xlint:unchecked</arg>
-                        <arg>-Xlint:deprecation</arg>
-                    </compilerArgs>
-                </configuration>
-                <!--Do NOT show depreciation in test compile-->
-                <executions>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>test-compile</phase>
-                        <configuration>
-                            <showDeprecation>false</showDeprecation>
-                            <compilerArgs>
-                                <arg>-Xlint:unchecked</arg>
-                            </compilerArgs>
-                        </configuration> 
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>                  
-                </executions>
-            </plugin>
-            <!-- Update version in PircBotX.java -->
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>maven-replacer-plugin</artifactId>
-                <version>1.4.1</version>
-                <executions>                
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <file>src/main/java/org/pircbotx/PircBotX.java</file>
-                    <replacements>
-                        <replacement>
-                            <token>public static final String VERSION .+</token>
-                            <value>public static final String VERSION = "${project.version}";</value>
-                        </replacement>
-                    </replacements>                        
-                </configuration>
-            </plugin>
-            <!--Use very verbose logging while testing-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <properties>
-                        <property>
-                            <name>listener</name>
-                            <value>org.pircbotx.TestLogger</value>
-                        </property>
-                    </properties>
-                </configuration>
-            </plugin>
-            <!-- Make a unified jar with all of the dependencies -->
-            <plugin>              
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>org.thelq.pircbotx.Main</Main-Class>
-                                        <Class-Path>.</Class-Path>
-                                    </manifestEntries>									
-                                </transformer>
-                            </transformers>
-                            <finalName>${project.artifactId}-unified</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <mavenExecutorId>forked-path</mavenExecutorId>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <arguments>-P complete-build,release,sonatype-oss-release</arguments>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <!--
-        Distribution
-    -->
-    <distributionManagement>
-        <!--Site deploy repository-->
-        <site>
-            <id>code.google.com</id>
-            <url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
-        </site>
-    </distributionManagement>
+	<!-- Fix dependency conflicts -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.12</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	
-    <profiles>
-        <!--Lombok tools.jar config-->
-        <profile>
-            <id>default-profile</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-                <file>
-                    <exists>${java.home}/../lib/tools.jar</exists>
-                </file>
-            </activation>
-            <properties>
-                <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-            </properties>
-        </profile>
-        <profile>
-            <id>mac-profile</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <file>
-                    <exists>${java.home}/../Classes/classes.jar</exists>
-                </file>
-            </activation>
-            <properties>
-                <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
-            </properties>
-        </profile>
-        <!--Delombok sources for tools like javadoc-->
-        <profile>
-            <id>complete-build</id>
-            <properties>
-                <src.dir>target/delombok</src.dir>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok-maven-plugin</artifactId>
-                        <version>1.16.2.0</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>sun.jdk</groupId>
-                                <artifactId>tools</artifactId>
-                                <version>1.6</version>
-                                <scope>system</scope>
-                                <systemPath>${toolsjar}</systemPath>
-                            </dependency>
-                            <!-- Override lombok version if plugin is behind lombok
-                            <dependency>
-                                <groupId>org.projectlombok</groupId>
-                                <artifactId>lombok</artifactId>
-                                <version>${lombok.version}</version>
-                            </dependency>-->
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <phase>process-sources</phase>
-                                <goals>
-                                    <goal>delombok</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <sourceDirectory>src/main/java</sourceDirectory>
-                            <!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
-                            <outputDirectory>target/delombok</outputDirectory>
-                        </configuration>
-                    </plugin>
-                    <!--JavaDoc setup for Jars-->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.2</version>
-                        <configuration>
-                            <defaultAuthor>Leon Blakey</defaultAuthor>
-                            <defaultVersion>${project.version}</defaultVersion>
-                            <sourcepath>target/delombok</sourcepath>
-                            <!-- Temporarily disable Java 8 super strict doclint -->
-                            <additionalparam>-Xdoclint:none</additionalparam>
-                            <links>
-                                <link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
-                            </links>
-                        </configuration>
-                    </plugin>
-                    <!--Deploy site with Mercurial (Hg)-->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <version>3.4</version>
-                        <dependencies>
-                            <dependency><!-- add support for scm -->
-                                <groupId>org.apache.maven.wagon</groupId>
-                                <artifactId>wagon-scm</artifactId>
-                                <version>2.8</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.maven.scm</groupId>
-                                <artifactId>maven-scm-provider-hg</artifactId>
-                                <version>1.9.2</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <reportPlugins>
-                                <!--JavaDoc setup for Site-->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-javadoc-plugin</artifactId>
-                                    <version>2.10.2</version>
-                                    <configuration>
-                                        <defaultAuthor>Leon Blakey</defaultAuthor>
-                                        <defaultVersion>${project.version}</defaultVersion>
-                                        <!-- Temporarily disable Java 8 super strict doclint -->
-                                        <additionalparam>-Xdoclint:none</additionalparam>
-                                        <show>public</show>
-                                        <links>
-                                            <link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
-                                        </links>
-                                    </configuration>
-                                    <reportSets>
-                                        <reportSet>
-                                            <id>html</id>
-                                            <reports>
-                                                <report>javadoc</report>
-                                            </reports>
-                                        </reportSet>
-                                    </reportSets>
-                                </plugin>
-                                <!-- Test coverage -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>cobertura-maven-plugin</artifactId>
-                                    <version>2.6</version>
-                                </plugin>
-                                <!-- Checkstyle site -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-checkstyle-plugin</artifactId>
-                                    <version>2.13</version>
-                                    <configuration>
-                                        <configLocation>src/etc/checkstyle.xml</configLocation>
-                                    </configuration>
-                                </plugin>
-                                <!-- FindBugs static analysis -->
-                                <plugin>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>findbugs-maven-plugin</artifactId>
-                                    <version>3.0.0</version>
-                                    <configuration>
-                                        <effort>Max</effort>
-                                        <threshold>Exp</threshold>
-                                        <excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
-                                    </configuration>
-                                </plugin>
-                                <!-- PMD Static Analysis -->
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-pmd-plugin</artifactId>
-                                    <version>3.3</version>
-                                    <configuration>
-                                        <source>1.5</source>
-                                        <rulesets>
-                                            <ruleset>src/etc/pmd-rules.xml</ruleset>
-                                        </rulesets>
-                                    </configuration>
-                                </plugin>
-                            </reportPlugins> 
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+	<build>
+		<sourceDirectory>${src.dir}</sourceDirectory>
+		<plugins>
+			<!--Makes sure License Headers are consistant across all files-->
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.10.b1</version>
+				<configuration>
+					<header>src/etc/license-header.txt</header>
+					<excludes>
+						<exclude>**/*.txt</exclude>
+						<exclude>**/*.log</exclude>
+						<exclude>.hg*</exclude>
+						<exclude>README.md</exclude>
+						<exclude>**/nbactions.xml</exclude>
+					</excludes>
+					<strictCheck>true</strictCheck>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>format</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--Specifically target Java 1.5-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+					<compilerArgs>
+						<arg>-Xlint:unchecked</arg>
+						<arg>-Xlint:deprecation</arg>
+					</compilerArgs>
+				</configuration>
+				<!--Do NOT show depreciation in test compile-->
+				<executions>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>test-compile</phase>
+						<configuration>
+							<showDeprecation>false</showDeprecation>
+							<compilerArgs>
+								<arg>-Xlint:unchecked</arg>
+							</compilerArgs>
+						</configuration> 
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>                  
+				</executions>
+			</plugin>
+			<!-- Update version in PircBotX.java -->
+			<plugin>
+				<groupId>com.google.code.maven-replacer-plugin</groupId>
+				<artifactId>maven-replacer-plugin</artifactId>
+				<version>1.4.1</version>
+				<executions>                
+					<execution>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>src/main/java/org/pircbotx/PircBotX.java</file>
+					<replacements>
+						<replacement>
+							<token>public static final String VERSION .+</token>
+							<value>public static final String VERSION = "${project.version}";</value>
+						</replacement>
+					</replacements>                        
+				</configuration>
+			</plugin>
+			<!--Use very verbose logging while testing-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<properties>
+						<property>
+							<name>listener</name>
+							<value>org.pircbotx.TestLogger</value>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
+			<!-- Make a unified jar with all of the dependencies -->
+			<plugin>              
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Main-Class>org.thelq.pircbotx.Main</Main-Class>
+										<Class-Path>.</Class-Path>
+									</manifestEntries>									
+								</transformer>
+							</transformers>
+							<finalName>${project.artifactId}-unified</finalName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<mavenExecutorId>forked-path</mavenExecutorId>
+					<useReleaseProfile>false</useReleaseProfile>
+					<arguments>-P complete-build,release,sonatype-oss-release</arguments>
+				</configuration>
+			</plugin>
+			<!-- Fail build on dependency conflicts -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>enforce-dependencies</id>
+						<configuration>
+							<rules>
+								<dependencyConvergence/>
+							</rules>
+						</configuration>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!--
+		Distribution
+	-->
+	<distributionManagement>
+		<!--Site deploy repository-->
+		<site>
+			<id>code.google.com</id>
+			<url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
+		</site>
+	</distributionManagement>
+	
+	<profiles>
+		<!--Lombok tools.jar config-->
+		<profile>
+			<id>default-profile</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<file>
+					<exists>${java.home}/../lib/tools.jar</exists>
+				</file>
+			</activation>
+			<properties>
+				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+			</properties>
+		</profile>
+		<profile>
+			<id>mac-profile</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<file>
+					<exists>${java.home}/../Classes/classes.jar</exists>
+				</file>
+			</activation>
+			<properties>
+				<toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
+			</properties>
+		</profile>
+		<!--Delombok sources for tools like javadoc-->
+		<profile>
+			<id>complete-build</id>
+			<properties>
+				<src.dir>target/delombok</src.dir>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok-maven-plugin</artifactId>
+						<version>1.16.2.0</version>
+						<dependencies>
+							<dependency>
+								<groupId>sun.jdk</groupId>
+								<artifactId>tools</artifactId>
+								<version>1.6</version>
+								<scope>system</scope>
+								<systemPath>${toolsjar}</systemPath>
+							</dependency>
+							<!-- Override lombok version if plugin is behind lombok
+							<dependency>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+								<version>${lombok.version}</version>
+							</dependency>-->
+						</dependencies>
+						<executions>
+							<execution>
+								<phase>process-sources</phase>
+								<goals>
+									<goal>delombok</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<addOutputDirectory>false</addOutputDirectory>
+							<sourceDirectory>src/main/java</sourceDirectory>
+							<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
+							<outputDirectory>target/delombok</outputDirectory>
+						</configuration>
+					</plugin>
+					<!--JavaDoc setup for Jars-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.2</version>
+						<configuration>
+							<defaultAuthor>Leon Blakey</defaultAuthor>
+							<defaultVersion>${project.version}</defaultVersion>
+							<sourcepath>target/delombok</sourcepath>
+							<!-- Temporarily disable Java 8 super strict doclint -->
+							<additionalparam>-Xdoclint:none</additionalparam>
+							<links>
+								<link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
+							</links>
+						</configuration>
+					</plugin>
+					<!--Deploy site with Mercurial (Hg)-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-site-plugin</artifactId>
+						<version>3.4</version>
+						<dependencies>
+							<dependency><!-- add support for scm -->
+								<groupId>org.apache.maven.wagon</groupId>
+								<artifactId>wagon-scm</artifactId>
+								<version>2.8</version>
+							</dependency>
+							<dependency>
+								<groupId>org.apache.maven.scm</groupId>
+								<artifactId>maven-scm-provider-hg</artifactId>
+								<version>1.9.2</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<reportPlugins>
+								<!--JavaDoc setup for Site-->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-javadoc-plugin</artifactId>
+									<version>2.10.2</version>
+									<configuration>
+										<defaultAuthor>Leon Blakey</defaultAuthor>
+										<defaultVersion>${project.version}</defaultVersion>
+										<!-- Temporarily disable Java 8 super strict doclint -->
+										<additionalparam>-Xdoclint:none</additionalparam>
+										<show>public</show>
+										<links>
+											<link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
+										</links>
+									</configuration>
+									<reportSets>
+										<reportSet>
+											<id>html</id>
+											<reports>
+												<report>javadoc</report>
+											</reports>
+										</reportSet>
+									</reportSets>
+								</plugin>
+								<!-- Test coverage -->
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>cobertura-maven-plugin</artifactId>
+									<version>2.6</version>
+								</plugin>
+								<!-- Checkstyle site -->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-checkstyle-plugin</artifactId>
+									<version>2.13</version>
+									<configuration>
+										<configLocation>src/etc/checkstyle.xml</configLocation>
+									</configuration>
+								</plugin>
+								<!-- FindBugs static analysis -->
+								<plugin>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>findbugs-maven-plugin</artifactId>
+									<version>3.0.0</version>
+									<configuration>
+										<effort>Max</effort>
+										<threshold>Exp</threshold>
+										<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
+									</configuration>
+								</plugin>
+								<!-- PMD Static Analysis -->
+								<plugin>
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-pmd-plugin</artifactId>
+									<version>3.3</version>
+									<configuration>
+										<source>1.5</source>
+										<rulesets>
+											<ruleset>src/etc/pmd-rules.xml</ruleset>
+										</rulesets>
+									</configuration>
+								</plugin>
+							</reportPlugins> 
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
