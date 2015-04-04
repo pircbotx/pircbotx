@@ -34,7 +34,7 @@ import org.pircbotx.exception.DccException;
  * @author Leon Blakey
  */
 @RequiredArgsConstructor
-public class OutputUser {
+public class OutputUser implements GenericChannelUserOutput {
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull

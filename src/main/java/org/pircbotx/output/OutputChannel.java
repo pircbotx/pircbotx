@@ -32,7 +32,7 @@ import org.pircbotx.hooks.events.PartEvent;
  * @author Leon Blakey
  */
 @RequiredArgsConstructor
-public class OutputChannel {
+public class OutputChannel implements GenericChannelUserOutput {
 	@NonNull
 	protected final PircBotX bot;
 	@NonNull
