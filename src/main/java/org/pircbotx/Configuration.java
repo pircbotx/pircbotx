@@ -78,7 +78,7 @@ public class Configuration {
 	protected final String finger;
 	protected final String realName;
 	protected final String channelPrefixes;
-	protected final String channelModeMessagePrefixes;
+	protected final String userLevelPrefixes;
 	protected final boolean snapshotsEnabled;
 	//DCC
 	protected final boolean dccFilenameQuotes;
@@ -137,7 +137,7 @@ public class Configuration {
 		checkArgument(StringUtils.isNotBlank(builder.getFinger()), "Must specify finger");
 		checkArgument(StringUtils.isNotBlank(builder.getRealName()), "Must specify realName");
 		checkArgument(StringUtils.isNotBlank(builder.getChannelPrefixes()), "Must specify channel prefixes");
-		checkNotNull(StringUtils.isNotBlank(builder.getChannelModeMessagePrefixes()), "Channel mode message prefixes cannot be null");
+		checkNotNull(StringUtils.isNotBlank(builder.getUserLevelPrefixes()), "Channel mode message prefixes cannot be null");
 		checkNotNull(builder.getDccPorts(), "DCC ports list cannot be null");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
@@ -180,7 +180,7 @@ public class Configuration {
 		this.finger = builder.getFinger();
 		this.realName = builder.getRealName();
 		this.channelPrefixes = builder.getChannelPrefixes().trim();
-		this.channelModeMessagePrefixes = builder.getChannelModeMessagePrefixes().trim();
+		this.userLevelPrefixes = builder.getUserLevelPrefixes().trim();
 		this.snapshotsEnabled = builder.isSnapshotsEnabled();
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
@@ -284,7 +284,7 @@ public class Configuration {
 		 * this mode, eg <code>PRIVMSG +#channel :hello</code> will only send a
 		 * message to voiced or higher users, default <code>+%&~!</code>
 		 */
-		protected String channelModeMessagePrefixes = "+%&~!";
+		protected String userLevelPrefixes = "+%&~!";
 		/**
 		 * Enable creation of snapshots, default true. In bulk datasets or very
 		 * lower power devices, creating snapshots can be a relatively expensive
@@ -327,7 +327,7 @@ public class Configuration {
 		 */
 		protected int dccResumeAcceptTimeout = -1;
 		/**
-		 * Size of the DCC file transfer buffer, default 1024
+		 * Size of the DCC file transfer buffer, default 1024 bytes
 		 */
 		protected int dccTransferBufferSize = 1024;
 		/**
@@ -505,7 +505,7 @@ public class Configuration {
 			this.finger = configuration.getFinger();
 			this.realName = configuration.getRealName();
 			this.channelPrefixes = configuration.getChannelPrefixes();
-			this.channelModeMessagePrefixes = configuration.getChannelModeMessagePrefixes();
+			this.userLevelPrefixes = configuration.getUserLevelPrefixes();
 			this.snapshotsEnabled = configuration.isSnapshotsEnabled();
 			this.dccFilenameQuotes = configuration.isDccFilenameQuotes();
 			this.dccPorts.addAll(configuration.getDccPorts());
@@ -559,7 +559,7 @@ public class Configuration {
 			this.finger = otherBuilder.getFinger();
 			this.realName = otherBuilder.getRealName();
 			this.channelPrefixes = otherBuilder.getChannelPrefixes();
-			this.channelModeMessagePrefixes = otherBuilder.getChannelModeMessagePrefixes();
+			this.userLevelPrefixes = otherBuilder.getUserLevelPrefixes();
 			this.snapshotsEnabled = otherBuilder.isSnapshotsEnabled();
 			this.dccFilenameQuotes = otherBuilder.isDccFilenameQuotes();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());

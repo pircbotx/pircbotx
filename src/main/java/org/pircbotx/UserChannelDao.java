@@ -333,7 +333,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			return chan;
 
 		//This could potentially be a mode message, strip off prefixes till we get a channel
-		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
+		String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
 		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
 			String nameTrimmed = name.toLowerCase(locale);
 			do {
@@ -383,7 +383,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			return true;
 
 		//This could potentially be a mode message, strip off prefixes till we get a channel
-		String modePrefixes = bot.getConfiguration().getChannelModeMessagePrefixes();
+		String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
 		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
 			String nameTrimmed = name.toLowerCase(locale);
 			do {
