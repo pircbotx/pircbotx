@@ -243,6 +243,48 @@ public class OutputTest {
 		bot.sendIRC().notice("aUser", aString);
 		checkOutput("NOTICE aUser :" + aString);
 	}
+	
+	@Test(description = "Verify sendAction to channel through generic Interface")
+	public void sendActionChannelInterfaceTest() throws Exception {
+		GenericChannelUserOutput out = aChannel.send();
+		out.action(aString);
+		checkOutput("PRIVMSG #aChannel :\u0001ACTION " + aString + "\u0001");
+	}
+	
+	@Test(description = "Verify sendAction to user through generic Interface")
+	public void sendActionUserInterfaceTest() throws Exception {
+		GenericChannelUserOutput out = aUser.send();
+		out.action(aString);
+		checkOutput("PRIVMSG SourceUser :\u0001ACTION " + aString + "\u0001");
+	}
+	
+	@Test(description = "Verify sendMessage to channel through generic Interface")
+	public void sendMessageChannelInterfaceTest() throws Exception {
+		GenericChannelUserOutput out = aChannel.send();
+		out.message(aString);
+		checkOutput("PRIVMSG #aChannel :" + aString);
+	}
+	
+	@Test(description = "Verify sendMessage to user through generic Interface")
+	public void sendMessageUserInterfaceTest() throws Exception {
+		GenericChannelUserOutput out = aUser.send();
+		out.message(aString);
+		checkOutput("PRIVMSG SourceUser :" + aString);
+	}
+	
+	@Test(description = "Verify sendNotice to channel through generic Interface")
+	public void sendNoticeChannelInterfaceTest() throws Exception {
+		GenericChannelUserOutput out = aChannel.send();
+		out.notice(aString);
+		checkOutput("NOTICE #aChannel :" + aString);
+	}
+	
+	@Test(description = "Verify sendNotice to user through generic Interface")
+	public void sendNoticeUserInterfaceTest() throws Exception {
+		GenericChannelUserOutput out = aUser.send();
+		out.notice(aString);
+		checkOutput("NOTICE SourceUser :" + aString);
+	}
 
 	@Test
 	public void sendQuit() throws Exception {
