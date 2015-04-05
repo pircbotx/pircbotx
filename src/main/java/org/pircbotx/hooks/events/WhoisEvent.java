@@ -53,7 +53,11 @@ public class WhoisEvent extends Event {
 	protected final String serverInfo;
 	protected final long idleSeconds;
 	protected final long signOnTime;
-	@NonNull
+	/**
+	 * If registered, the users nickserv account or if the server doesn't send
+	 * the account an empty string, or if the user isn't registered at all,
+	 * null.
+	 */
 	protected final String registeredAs;
 	protected final boolean exists;
 	protected final String awayMessage;
