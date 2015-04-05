@@ -856,14 +856,28 @@ public class InputParser implements Closeable {
 			//NAMES response
 			//353 PircBotXUser = #aChannel :aUser1 aUser2
 			for(String curUser : StringUtils.split(parsedResponse.get(3))) {
+				//Siphon off any levels this user has
+				String nick = curUser;
+				List<UserLevel> levels = Lists.newArrayList();
+				UserLevel parsedLevel;
+				while((parsedLevel = UserLevel.fromSymbol(nick.charAt(0))) != null) {
+					nick = nick.substring(1);
+					levels.add(parsedLevel);
+				}
+				
 				User user;
-				if(!bot.getUserChannelDao().containsUser(curUser))
+				if(!bot.getUserChannelDao().containsUser(nick))
 					//Create user with nick only
-					user = bot.getUserChannelDao().createUser(new UserHostmask(bot, curUser));
+					user = bot.getUserChannelDao().createUser(new UserHostmask(bot, nick));
 				else 
-					user = bot.getUserChannelDao().getUser(curUser);
+					user = bot.getUserChannelDao().getUser(nick);
 				Channel chan = bot.getUserChannelDao().getChannel(parsedResponse.get(2));
 				bot.getUserChannelDao().addUserToChannel(user, chan);
+				
+				//Now that the user is created, add them to the appropiate levels
+				for(UserLevel curLevel : levels) {
+					bot.getUserChannelDao().addUserToLevel(curLevel, user, chan);
+				}
 			}
 		} else if (code == 366) {
 			//NAMES response finished
