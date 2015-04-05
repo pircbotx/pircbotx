@@ -1160,7 +1160,8 @@ public class InputParserTest {
 		assertFalse(dao.containsUser("aUser1"));
 		assertFalse(dao.containsUser("aUser2"));
 
-		inputParser.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :aUser1 aUser2");
+		//Also test prefixes in names
+		inputParser.handleLine(":irc.someserver.net 353 PircBotXUser = #aChannel :+aUser1 aUser2");
 		inputParser.handleLine(":irc.someserver.net 366 PircBotXUser #aChannel :End of /NAMES list.");
 
 		UserListEvent event = bot.getTestEvent(UserListEvent.class);
@@ -1171,7 +1172,7 @@ public class InputParserTest {
 		allUsersExpected.remove(bot.getUserBot());
 		assertEquals(allUsersExpected, event.getChannel().getUsers(), "Extra users in DAO that don't exist in channel");
 
-		assertTrue(dao.containsUser("aUser1"));
+		assertTrue(dao.containsUser("aUser1"), "Users: " + dao.getAllUsers());
 		User user = dao.getUser("aUser1");
 		assertNull(user.getLogin(), "Unexpected login for aUser1");
 		assertNull(user.getHostname(), "Unexpected hostmask for aUser1");
