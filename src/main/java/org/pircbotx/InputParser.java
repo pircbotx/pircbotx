@@ -918,16 +918,11 @@ public class InputParser implements Closeable {
 	}
 
 	public void processUserStatus(Channel chan, User user, String prefix) {
-		if (prefix.contains("@"))
-			bot.getUserChannelDao().addUserToLevel(UserLevel.OP, user, chan);
-		if (prefix.contains("+"))
-			bot.getUserChannelDao().addUserToLevel(UserLevel.VOICE, user, chan);
-		if (prefix.contains("%"))
-			bot.getUserChannelDao().addUserToLevel(UserLevel.HALFOP, user, chan);
-		if (prefix.contains("~"))
-			bot.getUserChannelDao().addUserToLevel(UserLevel.OWNER, user, chan);
-		if (prefix.contains("&"))
-			bot.getUserChannelDao().addUserToLevel(UserLevel.SUPEROP, user, chan);
+		for(char prefixChar : prefix.toCharArray()) {
+			UserLevel level = UserLevel.fromSymbol(prefixChar);
+			if(level != null)
+				bot.getUserChannelDao().addUserToLevel(level, user, chan);
+		}
 		//Assume here (H) if there is no G
 		user.setAwayMessage(prefix.contains("G") ? "" : null);
 		user.setIrcop(prefix.contains("*"));

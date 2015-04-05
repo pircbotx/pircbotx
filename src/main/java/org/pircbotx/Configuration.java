@@ -282,9 +282,9 @@ public class Configuration {
 		/**
 		 * Supported channel prefixes that restrict a sent message to users with
 		 * this mode, eg <code>PRIVMSG +#channel :hello</code> will only send a
-		 * message to voiced or higher users, default <code>+%&~!</code>
+		 * message to voiced or higher users, default <code>+@%&~!</code>
 		 */
-		protected String userLevelPrefixes = "+%&~!";
+		protected String userLevelPrefixes = UserLevel.getSymbols() + "!";
 		/**
 		 * Enable creation of snapshots, default true. In bulk datasets or very
 		 * lower power devices, creating snapshots can be a relatively expensive

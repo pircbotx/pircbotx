@@ -17,11 +17,41 @@
  */
 package org.pircbotx;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 /**
  * An enum to represent the possible levels a user can have.
  *
  * @author Leon Blakey
  */
+@RequiredArgsConstructor
 public enum UserLevel {
-	VOICE, OP, HALFOP, SUPEROP, OWNER
+	VOICE("+"), OP("@"), HALFOP("%"), SUPEROP("&"), OWNER("~");
+	
+	@Getter
+	private final String symbol;
+	
+	/**
+	 * Combines all UserLevel's symbols into a String
+	 * @return 
+	 */
+	public static String getSymbols() {
+		StringBuilder symbols = new StringBuilder();
+		for(UserLevel curLevel : values())
+			symbols.append(curLevel.getSymbol());
+		return symbols.toString();
+	}
+	
+	/**
+	 * Searches for UserLevel that uses the given symbol
+	 * @param symbol
+	 * @return Matching UserLevel or null if not found
+	 */
+	public static UserLevel fromSymbol(char symbol) {
+		for(UserLevel curLevel : values())
+			if(curLevel.getSymbol().contains(String.valueOf(symbol)))
+				return curLevel;
+		return null;
+	}
 }
