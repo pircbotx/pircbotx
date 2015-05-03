@@ -1,0 +1,24 @@
+-classpath
+'/home/lordquackstar/pircbotx/target/checkout/target/classes:/home/lordquackstar/.m2/repository/org/projectlombok/lombok/0.11.0/lombok-0.11.0.jar'
+-encoding
+'UTF-8'
+-public
+-sourcepath
+'/home/lordquackstar/pircbotx/target/checkout/target/src-delomboked'
+-author
+-bottom
+'Copyright &#169; 2010-2012 Leon Blakey. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/home/lordquackstar/pircbotx/target/checkout/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'pircbotx 1.7 API'
+-linkoffline
+'http://download.oracle.com/javase/1.5.0/docs/api' '/home/lordquackstar/pircbotx/target/checkout/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'pircbotx 1.7 API'

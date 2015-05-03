@@ -1,0 +1,10 @@
+org.pircbotx
+org.pircbotx.cap
+org.pircbotx.dcc
+org.pircbotx.exception
+org.pircbotx.hooks
+org.pircbotx.hooks.events
+org.pircbotx.hooks.managers
+org.pircbotx.hooks.types
+org.pircbotx.output
+org.pircbotx.snapshot

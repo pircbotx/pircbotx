@@ -1,0 +1,26 @@
+-classpath
+'/media/win8/Users/Leon/bin/pircbotx/target/checkout/target/classes:/media/win8/Users/Leon/bin/pircbotx/target/checkout/target/test-classes:/home/lordquackstar/.m2/repository/org/objenesis/objenesis/1.0/objenesis-1.0.jar:/home/lordquackstar/.m2/repository/org/mockito/mockito-core/1.9.5-rc1/mockito-core-1.9.5-rc1.jar:/home/lordquackstar/.m2/repository/org/yaml/snakeyaml/1.6/snakeyaml-1.6.jar:/home/lordquackstar/.m2/repository/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:/home/lordquackstar/.m2/repository/com/beust/jcommander/1.12/jcommander-1.12.jar:/home/lordquackstar/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/home/lordquackstar/.m2/repository/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar:/home/lordquackstar/.m2/repository/org/testng/testng/6.7/testng-6.7.jar:/home/lordquackstar/.m2/repository/junit/junit/4.10/junit-4.10.jar:/home/lordquackstar/.m2/repository/org/projectlombok/lombok/0.11.2/lombok-0.11.2.jar'
+-encoding
+'UTF-8'
+-public
+-sourcepath
+'/media/win8/Users/Leon/bin/pircbotx/target/checkout/target/delombok'
+-author
+-bottom
+'Copyright &#169; 2010-2013 Leon Blakey. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/media/win8/Users/Leon/bin/pircbotx/target/checkout/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'pircbotx 1.8 Test API'
+-link
+'../apidocs'
+-linkoffline
+'http://download.oracle.com/javase/1.5.0/docs/api' '/media/win8/Users/Leon/bin/pircbotx/target/checkout/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'pircbotx 1.8 Test API'

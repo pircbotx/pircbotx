@@ -1,0 +1,24 @@
+-classpath
+'/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/classes:/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/test-classes:/var/lib/jenkins/.m2/repository/ch/qos/logback/logback-core/1.0.12/logback-core-1.0.12.jar:/var/lib/jenkins/.m2/repository/org/objenesis/objenesis/1.0/objenesis-1.0.jar:/var/lib/jenkins/.m2/repository/org/mockito/mockito-core/1.9.5/mockito-core-1.9.5.jar:/var/lib/jenkins/.m2/repository/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:/var/lib/jenkins/.m2/repository/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar:/var/lib/jenkins/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:/var/lib/jenkins/.m2/repository/junit/junit/4.10/junit-4.10.jar:/var/lib/jenkins/.m2/repository/org/projectlombok/lombok/0.11.8/lombok-0.11.8.jar:/var/lib/jenkins/.m2/repository/ch/qos/logback/logback-classic/1.0.12/logback-classic-1.0.12.jar:/var/lib/jenkins/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar:/var/lib/jenkins/.m2/repository/org/yaml/snakeyaml/1.6/snakeyaml-1.6.jar:/var/lib/jenkins/.m2/repository/com/beust/jcommander/1.27/jcommander-1.27.jar:/var/lib/jenkins/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/var/lib/jenkins/.m2/repository/org/testng/testng/6.8/testng-6.8.jar:/var/lib/jenkins/.m2/repository/commons-codec/commons-codec/1.7/commons-codec-1.7.jar'
+-encoding
+'UTF-8'
+-public
+-sourcepath
+'/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/delombok'
+-author
+-bottom
+'Copyright &#169; 2010-2013 Leon Blakey. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'pircbotx 2.0-SNAPSHOT Test API'
+-linkoffline
+'http://download.oracle.com/javase/1.5.0/docs/api' '/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'pircbotx 2.0-SNAPSHOT Test API'

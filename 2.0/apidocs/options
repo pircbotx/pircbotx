@@ -1,0 +1,24 @@
+-classpath
+'/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/classes:/var/lib/jenkins/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar:/var/lib/jenkins/.m2/repository/org/apache/commons/commons-lang3/3.1/commons-lang3-3.1.jar:/var/lib/jenkins/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar:/var/lib/jenkins/.m2/repository/commons-codec/commons-codec/1.7/commons-codec-1.7.jar:/var/lib/jenkins/.m2/repository/org/projectlombok/lombok/0.11.8/lombok-0.11.8.jar'
+-encoding
+'UTF-8'
+-public
+-sourcepath
+'/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/delombok'
+-author
+-bottom
+'Copyright &#169; 2010-2013 Leon Blakey. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'pircbotx 2.0-SNAPSHOT API'
+-linkoffline
+'http://download.oracle.com/javase/1.5.0/docs/api' '/var/lib/jenkins/jobs/PircBotX (dev)/workspace/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'pircbotx 2.0-SNAPSHOT API'

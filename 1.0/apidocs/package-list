@@ -1,0 +1,5 @@
+org.pircbotx
+org.pircbotx.exception
+org.pircbotx.hooks
+org.pircbotx.hooks.helpers
+org.pircbotx.impl

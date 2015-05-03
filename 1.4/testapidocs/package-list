@@ -1,0 +1,7 @@
+org.pircbotx
+org.pircbotx.exception
+org.pircbotx.hooks
+org.pircbotx.hooks.events
+org.pircbotx.hooks.managers
+org.pircbotx.hooks.types
+org.pircbotx.impl
