@@ -36,6 +36,8 @@ public class ColorsTest {
 			if (TestUtils.isRealMember(curField))
 				colorNames.add(curField.getName());
 		colorNames.remove("LOOKUP_TABLE");
+		colorNames.remove("COLORS_TABLE");
+		colorNames.remove("FORMATTING_TABLE");
 
 		Sets.SetView<String> diff = Sets.symmetricDifference(colorNames, Colors.LOOKUP_TABLE.keySet());
 		assertEquals(diff.size(), 0, "Missing keys in LOOKUP_TABLE: " + diff);
