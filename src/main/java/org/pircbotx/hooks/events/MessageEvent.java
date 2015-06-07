@@ -18,7 +18,6 @@
 package org.pircbotx.hooks.events;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
 import lombok.Data;
@@ -70,20 +69,13 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 			@Override))
 	protected final String message;
 
-        /**
-	 * The IrcV3 tags
-	 */
-        @Getter()
-        protected final Map<String, String> v3Tags;
-
-	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message, Map<String, String> v3Tags) {
+	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
 		super(bot);
 		this.channel = channel;
 		this.channelSource = channelSource;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.message = message;
-                this.v3Tags = v3Tags;
 	}
 
 	/**
