@@ -31,8 +31,10 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import lombok.Getter;
@@ -290,7 +292,29 @@ public class InputParser implements Closeable {
 	public void handleLine(@NonNull String rawLine) throws IOException, IrcException {
 		String line = CharMatcher.WHITESPACE.trimFrom(rawLine);
 		log.info(INPUT_MARKER, line);
+                
+                
+                // Parse out v3Tags before
+                String v3Tags = "";
+                Map<String, String> tags = new HashMap<String, String>();
+                if (line.startsWith("@")) {
+                    //This message has tags
+                    v3Tags = line.substring(1, line.indexOf(" "));
+                    line = line.substring(line.indexOf(" ") + 1);
+                    
+                    StringTokenizer tokenizer = new StringTokenizer(v3Tags);
 
+                    while (tokenizer.hasMoreTokens()) {
+                        String tag = tokenizer.nextToken(";");
+                        if (tag.contains("=")) {
+                            String[] parts = tag.split("=");
+                            tags.put(parts[0], (parts.length == 2 ? parts[1] : null));
+                        } else {
+                            tags.put(tag, null);
+                        }
+                    }
+                }
+                
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
 		String sourceRaw = "";
@@ -351,7 +375,7 @@ public class InputParser implements Closeable {
 			processConnect(line, command, target, parsedLine);
 
 		//Must be from user
-		processCommand(target, source, command, line, parsedLine);
+		processCommand(target, source, command, line, parsedLine, tags);
 	}
 
 	/**
@@ -473,7 +497,7 @@ public class InputParser implements Closeable {
 		}
 	}
 
-	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine) throws IOException {
+	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine, Map<String, String> tags) throws IOException {
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && bot.getUserChannelDao().containsChannel(target))
 				? bot.getUserChannelDao().getChannel(target) : null;
@@ -512,7 +536,7 @@ public class InputParser implements Closeable {
 		} else if (command.equals("PRIVMSG") && channel != null) {
 			// This is a normal message to a channel.
 			sourceUser = createUserIfNull(sourceUser, source);
-			configuration.getListenerManager().dispatchEvent(new MessageEvent(bot, channel, target, source, sourceUser, message));
+			configuration.getListenerManager().dispatchEvent(new MessageEvent(bot, channel, target, source, sourceUser, message, tags));
 		} else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
 			//Add to private message
