@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 import java.util.Map;
 import org.pircbotx.Channel;
@@ -69,21 +70,19 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	@Getter(onMethod = @_(
 			@Override))
 	protected final String message;
-
-        /**
+	/**
 	 * The IrcV3 tags
 	 */
-        @Getter()
-        protected final Map<String, String> v3Tags;
+	protected final ImmutableMap<String, String> v3Tags;
 
-	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message, Map<String, String> v3Tags) {
+	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message, ImmutableMap<String, String> v3Tags) {
 		super(bot);
 		this.channel = channel;
 		this.channelSource = channelSource;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.message = message;
-                this.v3Tags = v3Tags;
+		this.v3Tags = v3Tags;
 	}
 
 	/**

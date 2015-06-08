@@ -292,29 +292,27 @@ public class InputParser implements Closeable {
 	public void handleLine(@NonNull String rawLine) throws IOException, IrcException {
 		String line = CharMatcher.WHITESPACE.trimFrom(rawLine);
 		log.info(INPUT_MARKER, line);
-                
-                
-                // Parse out v3Tags before
-                String v3Tags = "";
-                Map<String, String> tags = new HashMap<String, String>();
-                if (line.startsWith("@")) {
-                    //This message has tags
-                    v3Tags = line.substring(1, line.indexOf(" "));
-                    line = line.substring(line.indexOf(" ") + 1);
-                    
-                    StringTokenizer tokenizer = new StringTokenizer(v3Tags);
 
-                    while (tokenizer.hasMoreTokens()) {
-                        String tag = tokenizer.nextToken(";");
-                        if (tag.contains("=")) {
-                            String[] parts = tag.split("=");
-                            tags.put(parts[0], (parts.length == 2 ? parts[1] : null));
-                        } else {
-                            tags.put(tag, null);
-                        }
-                    }
-                }
-                
+		// Parse out v3Tags before
+		ImmutableMap.Builder<String, String> tags = ImmutableMap.builder();
+		if (line.startsWith("@")) {
+			//This message has IRCv3 tags
+			String v3Tags = line.substring(1, line.indexOf(" "));
+			line = line.substring(line.indexOf(" ") + 1);
+
+			StringTokenizer tokenizer = new StringTokenizer(v3Tags);
+
+			while (tokenizer.hasMoreTokens()) {
+				String tag = tokenizer.nextToken(";");
+				if (tag.contains("=")) {
+					String[] parts = tag.split("=");
+					tags.put(parts[0], (parts.length == 2 ? parts[1] : null));
+				} else {
+					tags.put(tag, null);
+				}
+			}
+		}
+
 		List<String> parsedLine = Utils.tokenizeLine(line);
 
 		String sourceRaw = "";
@@ -375,7 +373,7 @@ public class InputParser implements Closeable {
 			processConnect(line, command, target, parsedLine);
 
 		//Must be from user
-		processCommand(target, source, command, line, parsedLine, tags);
+		processCommand(target, source, command, line, parsedLine, tags.build());
 	}
 
 	/**
@@ -497,7 +495,7 @@ public class InputParser implements Closeable {
 		}
 	}
 
-	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine, Map<String, String> tags) throws IOException {
+	public void processCommand(String target, UserHostmask source, String command, String line, List<String> parsedLine, ImmutableMap<String, String> tags) throws IOException {
 		//If the channel matches a prefix, then its a channel
 		Channel channel = (target.length() != 0 && bot.getUserChannelDao().containsChannel(target))
 				? bot.getUserChannelDao().getChannel(target) : null;
@@ -879,27 +877,27 @@ public class InputParser implements Closeable {
 		} else if (code == 353) {
 			//NAMES response
 			//353 PircBotXUser = #aChannel :aUser1 aUser2
-			for(String curUser : StringUtils.split(parsedResponse.get(3))) {
+			for (String curUser : StringUtils.split(parsedResponse.get(3))) {
 				//Siphon off any levels this user has
 				String nick = curUser;
 				List<UserLevel> levels = Lists.newArrayList();
 				UserLevel parsedLevel;
-				while((parsedLevel = UserLevel.fromSymbol(nick.charAt(0))) != null) {
+				while ((parsedLevel = UserLevel.fromSymbol(nick.charAt(0))) != null) {
 					nick = nick.substring(1);
 					levels.add(parsedLevel);
 				}
-				
+
 				User user;
-				if(!bot.getUserChannelDao().containsUser(nick))
+				if (!bot.getUserChannelDao().containsUser(nick))
 					//Create user with nick only
 					user = bot.getUserChannelDao().createUser(new UserHostmask(bot, nick));
-				else 
+				else
 					user = bot.getUserChannelDao().getUser(nick);
 				Channel chan = bot.getUserChannelDao().getChannel(parsedResponse.get(2));
 				bot.getUserChannelDao().addUserToChannel(user, chan);
-				
+
 				//Now that the user is created, add them to the appropiate levels
-				for(UserLevel curLevel : levels) {
+				for (UserLevel curLevel : levels) {
 					bot.getUserChannelDao().addUserToLevel(curLevel, user, chan);
 				}
 			}
@@ -956,9 +954,9 @@ public class InputParser implements Closeable {
 	}
 
 	public void processUserStatus(Channel chan, User user, String prefix) {
-		for(char prefixChar : prefix.toCharArray()) {
+		for (char prefixChar : prefix.toCharArray()) {
 			UserLevel level = UserLevel.fromSymbol(prefixChar);
-			if(level != null)
+			if (level != null)
 				bot.getUserChannelDao().addUserToLevel(level, user, chan);
 		}
 		//Assume here (H) if there is no G
