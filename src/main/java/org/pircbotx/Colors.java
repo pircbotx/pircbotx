@@ -141,13 +141,9 @@ public final class Colors {
 	 */
 	public static final String ITALICS = "\u001d";
 	/**
-	 * Pre-built lookup table by String for all the fields in this class.
+	 * Pre-built lookup table by String for all available colors
 	 */
-	public static final ImmutableMap<String, String> LOOKUP_TABLE = ImmutableMap.<String, String>builder()
-			.put("NORMAL", NORMAL)
-			.put("BOLD", BOLD)
-			.put("UNDERLINE", UNDERLINE)
-			.put("REVERSE", REVERSE)
+	public static final ImmutableMap<String, String> COLORS_TABLE = ImmutableMap.<String, String>builder()
 			.put("WHITE", WHITE)
 			.put("BLACK", BLACK)
 			.put("DARK_BLUE", DARK_BLUE)
@@ -164,8 +160,25 @@ public final class Colors {
 			.put("MAGENTA", MAGENTA)
 			.put("DARK_GRAY", DARK_GRAY)
 			.put("LIGHT_GRAY", LIGHT_GRAY)
+			.build();
+	/**
+	 * Pre-built lookup table by String for all available formatting options
+	 */
+	public static final ImmutableMap<String, String> FORMATTING_TABLE = ImmutableMap.<String, String>builder()
+			.put("NORMAL", NORMAL)
+			.put("BOLD", BOLD)
+			.put("UNDERLINE", UNDERLINE)
+			.put("REVERSE", REVERSE)
 			.put("ITALICS", ITALICS)
 			.build();
+	/**
+	 * Pre-built lookup table by String for all the fields in this class.
+	 */
+	public static final ImmutableMap<String, String> LOOKUP_TABLE = ImmutableMap.<String, String>builder()
+			.putAll(COLORS_TABLE)
+			.putAll(FORMATTING_TABLE)
+			.build();
+	
 
 	/**
 	 * This class should not be constructed.
