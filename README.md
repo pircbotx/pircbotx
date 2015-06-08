@@ -1,10 +1,8 @@
-[Current Version: 2.0.1](https://github.com/TheLQ/pircbotx/wiki/Downloads)
-<br>See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#2.0.1_-_December_3rd,_2013) for more information*
+**June 2015 NEWS:** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/PircBotX)
 
-<!--
-<font color="red">*`*`NEW`*`</font>
-[https://github.com/TheLQ/pircbotx/wiki/Downloads December 3rd, 2013 Version 2.0.1 Released!]
--->
+[Current Version: 2.0.1](https://github.com/TheLQ/pircbotx/wiki/Downloads)
+
+See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#2.0.1_-_December_3rd,_2013) for more information*
 
 **PircBotX** is a powerful and flexible Java IRC library forked from the popular PircBot framework, bringing many new up-to-date features and bug fixes in an official alternative distribution.
  * Robust, multi-threaded Event-Listener system with [over 50](http://thelq.github.io/pircbotx/latest/apidocs/org/pircbotx/hooks/events/package-summary.html) supported IRC events
@@ -57,19 +55,11 @@ public class MyListener extends ListenerAdapter {
 ```
  * Join the #pircbotx channel on irc.freenode.net and send `?helloworld` . Your bot will respond with `Hello world!` Since its a GenericMessageEvent, it will also respond when private messaged. Congratulations, you just wrote your first bot!
 
-PircBotX can do so much more! [Read the docs for more information](https://github.com/TheLQ/pircbotx/wiki/Documentation)
-
-
-<!--
-== #pircbotx Channel Demo Bot ==
-Also on the #pircbotx channel on irc.freenode.net is the bot [http://code.google.com/p/lq-projects/wiki/TheLQPircBotXExplained TheLQ-PircBotX]. It is an example implementation of a bot that supports multiple servers, command system,and [http://thelq-pircbotx.thelq.cloudbees.net/ a jetty-powered webserver with detailed status information].
-
-[http://code.google.com/p/lq-projects/wiki/TheLQPircBotXExplained See this wiki page for more information]
--->
+PircBotX can do so much more! [Read the docs for more information](http://github.com/TheLQ/pircbotx/wiki/Documentation)
 
 ## License 
 This project is licensed under GNU GPL v3 to be compatible with the PircBot license. 
 
 It is assumed that commercial users can buy the commercial license of PircBot which grants "modification of the Product's source-code and incorporation of the modified source-code into your software"
 
-The PircBot developer has ignored multiple emails asking for a less restrictive license and clarification of the commercial license. Users can show support by respectfully asking him directly at [pircbot developer's email](http://site.pircbotx.googlecode.com/hg/0static/pircbot-email.gif). More up to date information is available at in Issue #63
+The PircBot developer has ignored multiple emails asking for a less restrictive license and clarification of the commercial license. Users can show support by respectfully asking him directly at ![pircbot developer's email](http://thelq.github.io/pircbotx/pircbot-email.gif). More up to date information is available at in Issue #63
