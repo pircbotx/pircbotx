@@ -1,4 +1,4 @@
-**June 2015 NEWS:** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/PircBotX)
+**June 2015 NEWS:** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
 
 [Current Version: 2.0.1](https://github.com/TheLQ/pircbotx/wiki/Downloads)
 
