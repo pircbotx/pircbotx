@@ -1,8 +1,6 @@
 **June 2015 NEWS:** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
 
-[Current Version: 2.0.1](https://github.com/TheLQ/pircbotx/wiki/Downloads)
-
-See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#2.0.1_-_December_3rd,_2013) for more information*
+[Current Version: 2.0.1](https://github.com/TheLQ/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#201---december-3rd-2013) for more information
 
 **PircBotX** is a powerful and flexible Java IRC library forked from the popular PircBot framework, bringing many new up-to-date features and bug fixes in an official alternative distribution.
 
