@@ -1,5 +1,9 @@
 language: java
 jdk: oraclejdk8
+
+#Deploy snapshot and javadoc on success
+after_success:
+ - mvn deploy --settings .travis/settings.xml
 notifications:
   irc:
   - irc.freenode.org#pircbotx
