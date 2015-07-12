@@ -3,7 +3,7 @@ jdk: oraclejdk8
 
 #Deploy snapshot and javadoc on success
 after_success:
- - mvn deploy --settings .travis/settings.xml
+ - mvn deploy --settings .travis/maven-settings.xml
 notifications:
   irc:
   - irc.freenode.org#pircbotx
