@@ -5,11 +5,11 @@ after_success:
  #Deploy snapshot to sonatype
  - mvn deploy -DskipTests=true --settings .travis/maven-settings.xml
  #Deploy javadoc to gh-pages branch
- - mvn site site-deploy -Pcomplete-build -DskipTests=true
+ - mvn site site-deploy -Pcomplete-build -DskipTests=true --batch-mode
  - git checkout gh-pages
  - cd latest && rm -rf * && mv ../target/site-deploy-generated/* .
  - git add .
- - GIT_AUTHOR_NAME="Leon Blakey" GIT_AUTHOR_EMAIL=leon.m.blakey@gmail.com git commit -m "Autobuild of maven site"
+ - git config user.name "Leon Blakey" && git config user.email "leon.m.blakey@gmail.com" && git commit -m "Autobuild of maven site"
  - git push https://$DEPLOY_PAGES_USERNAME:$DEPLOY_PAGES_PASSWORD@github.com/TheLQ/pircbotx.git
 notifications:
   irc:
