@@ -6,10 +6,14 @@ after_success:
  - mvn deploy -DskipTests=true --settings .travis/maven-settings.xml
  #Deploy javadoc to gh-pages branch
  - mvn site site-deploy -Pcomplete-build -DskipTests=true --batch-mode
- - git checkout gh-pages
- - cd latest && rm -rf * && mv ../target/site-deploy-generated/* .
- - git add .
- - git config user.name "Leon Blakey" && git config user.email "leon.m.blakey@gmail.com" && git commit -m "Autobuild of maven site"
+ - git clone --depth=50 --branch=master git://github.com/TheLQ/pircbotx.git pircbotx.site
+ - cd pircbotx.site/latest
+ - rm -rf *
+ - mv ../../target/site-deploy-generated/* .
+ - git add -A
+ - git config user.name "Leon Blakey"
+ - git config user.email "leon.m.blakey@gmail.com"
+ - git commit -m "Autobuild of maven site"
  - git push https://$DEPLOY_PAGES_USERNAME:$DEPLOY_PAGES_PASSWORD@github.com/TheLQ/pircbotx.git
 notifications:
   irc:
