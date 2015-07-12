@@ -19,11 +19,9 @@
 		Project information
 	-->
 	<name>pircbotx</name>
-	<description>PircBotX is a simple, easy to use, Java IRC Bot Framework based 
-		off of a fork of the popular PircBot framework, bringing many new up-to-date 
-		features and bug fixes in an official alternative distribution. 
-	</description>
-	<url>http://pircbotx.googlecode.com/</url>
+	<description>PircBotX is a powerful and flexible Java IRC library forked from the popular PircBot framework, 
+		bringing many new up-to-date features and bug fixes in an official alternative distribution.</description>
+	<url>http://github.com/thelq/pircbotx</url>
 	<inceptionYear>2010</inceptionYear>
 
 	<licenses>
@@ -51,19 +49,19 @@
 	</developers>
 
 	<issueManagement>
-		<system>Google Code</system>
-		<url>http://code.google.com/p/pircbotx/issues/list/</url>
+		<system>Github</system>
+		<url>http://github.com/thelq/pircbotx/issues</url>
 	</issueManagement>
         
 	<ciManagement>
-		<url>https://thelq.ci.cloudbees.com/job/PircBotX/</url>
+		<system>Travis-CI</system>
+		<url>http://travis-ci.org/TheLQ/pircbotx</url>
 	</ciManagement>
 
 	<scm>
-		<connection>scm:hg:http://code.google.com/p/pircbotx/</connection>
-		<developerConnection>scm:hg:https://code.google.com/p/pircbotx/</developerConnection>
-		<url>https://code.google.com/p/pircbotx/</url>
-		<tag>HEAD</tag>
+		<connection>scm:git:https://github.com/TheLQ/pircbotx.git</connection>
+		<developerConnection>scm:git:https://github.com/TheLQ/pircbotx.git</developerConnection>
+		<url>https://github.com/TheLQ/pircbotx.git</url>
 	</scm>
 	
 	<mailingLists>
