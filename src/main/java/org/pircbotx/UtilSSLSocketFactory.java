@@ -164,9 +164,15 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 		return prepare(wrappedFactory.createSocket(s, host, port, autoClose));
 	}
 
-	@Override
+	//@Override
 	public SSLSocket createSocket(Socket socket, InputStream in, boolean bln) throws IOException {
-		return prepare(wrappedFactory.createSocket(socket, in, bln));
+		//This method is new in JDK 8, however PircBotX must compile on 7 and below
+		try {
+			return prepare((Socket) getClass().getMethod("createSocket", Socket.class, InputStream.class, boolean.class)
+					.invoke(this, socket, in, bln));
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to create socket", e);
+		}
 	}
 
 	@Override
