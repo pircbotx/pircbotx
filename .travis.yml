@@ -12,7 +12,7 @@ after_success:
  - git checkout gh-pages
  #...
  - mv target/site-deploy-generated/* snapshot/
- - git add -A
+ - git add snapshot
  - git config user.name "Leon Blakey"
  - git config user.email "leon.m.blakey@gmail.com"
  - git commit -m "Autobuild of maven site by Travis CI"
