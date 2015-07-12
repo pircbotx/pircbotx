@@ -316,8 +316,8 @@
 	<distributionManagement>
 		<!--Site deploy repository-->
 		<site>
-			<id>code.google.com</id>
-			<url>scm:hg:https://code.google.com/p/pircbotx.site/</url>
+			<id>tmp-site-deploy</id>
+			<url>file://${project.build.directory}/site-deploy-generated</url>
 		</site>
 	</distributionManagement>
 	
