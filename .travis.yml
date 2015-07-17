@@ -3,7 +3,7 @@ jdk: oraclejdk8
 #skip default travis install step
 install: true
 #build, test, and deploy official snapshot all in one go for faster build time and to stay under Travis's log limit
-script: mvn clean install deploy --settings .travis/maven-settings.xml -Dsnapshot.version=-`git rev-parse --short HEAD`
+script: mvn clean install source:jar deploy --settings .travis/maven-settings.xml -Dsnapshot.version=-`git rev-parse --short HEAD`
 after_success:
  #Deploy javadoc to gh-pages branch
  - mvn site site-deploy -Pcomplete-build -DskipTests=true --batch-mode
