@@ -711,6 +711,64 @@ public class Configuration {
 			getAutoJoinChannels().put(channel, key);
 			return this;
 		}
+		
+		//TODO: Temporary backwards compatibility
+		private void checkSetServerBackwardsCompatible() {
+			if(servers.size() >= 2)
+				throw new RuntimeException("Cannot combine deprecated setServer and addServer");
+		}
+		
+		/**
+		 * @deprecated Use {@link #addServer(java.lang.String)},  
+		 * will be removed in future releases
+		 */
+		@Deprecated
+		public Builder setServer(String hostname) {
+			checkSetServerBackwardsCompatible();
+			servers.clear();
+			servers.add(new ServerEntry(hostname, 6667));
+			return this;
+		}
+		
+		/**
+		 * @deprecated Use {@link #addServer(java.lang.String, int)},  
+		 * will be removed in future releases
+		 */
+		@Deprecated
+		public Builder setServer(String hostname, int port) {
+			checkSetServerBackwardsCompatible();
+			servers.clear();
+			servers.add(new ServerEntry(hostname, 6667));
+			return this;
+		}
+		
+		/**
+		 * @deprecated Use {@link #addServer(java.lang.String)},  
+		 * will be removed in future releases
+		 */
+		@Deprecated
+		public Builder setServerHostname(String hostname) {
+			checkSetServerBackwardsCompatible();
+			if(servers.size() == 1)
+				servers.add(new ServerEntry(hostname, servers.remove(0).port));
+			else
+				servers.add(new ServerEntry(hostname, 6667));
+			return this;
+		}
+		
+		/**
+		 * @deprecated Use {@link #addServer(java.lang.String, int)},  
+		 * will be removed in future releases
+		 */
+		@Deprecated
+		public Builder setServerPort(int port) {
+			checkSetServerBackwardsCompatible();
+			if(servers.size() == 1)
+				servers.add(new ServerEntry(servers.remove(0).hostname, port));
+			else
+				servers.add(new ServerEntry("unset", port));
+			return this;
+		}
 
 		public Builder addServer(@NonNull String server) {
 			servers.add(new ServerEntry(server, 6667));
