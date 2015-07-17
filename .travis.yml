@@ -1,9 +1,10 @@
 language: java
 jdk: oraclejdk8
+script: mvn clean install deploy --settings .travis/maven-settings.xml -Dsnapshot.version=-`git rev-parse --short HEAD`
 after_success:
  #Always skip tests after here, as they already ran and can cause the output to exceed travis's maximum log length
  #Deploy snapshot to sonatype
- - mvn deploy -DskipTests=true --settings .travis/maven-settings.xml
+ #- mvn deploy -DskipTests=true --settings .travis/maven-settings.xml
  #Deploy javadoc to gh-pages branch
  - mvn site site-deploy -Pcomplete-build -DskipTests=true --batch-mode
  #Seriously git?! git checkout, git reset, git pull, all with gh-pages, origin/gh-pages, remotes/origin, gh-pages?
