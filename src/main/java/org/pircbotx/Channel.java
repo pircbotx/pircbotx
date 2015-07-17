@@ -126,17 +126,18 @@ public class Channel implements Comparable<Channel> {
 		this.name = name;
 		this.channelId = UUID.randomUUID();
 	}
-	
+
 	/**
 	 * Used by ChannelSnapshot
-	 * @param channel 
+	 *
+	 * @param channel
 	 */
 	protected Channel(Channel channel) {
 		this.bot = channel.bot;
 		this.name = channel.name;
 		this.channelId = channel.channelId;
 	}
-	
+
 	protected UserChannelDao<User, Channel> getDao() {
 		return bot.getUserChannelDao();
 	}
@@ -160,9 +161,13 @@ public class Channel implements Comparable<Channel> {
 				//Mode contains arguments which are impossible to parse.
 				//Could be a ban command (we shouldn't use this), channel key (should, but where), etc
 				//Need to ask server
-				log.trace("Unknown args in channel {} mode '{}', getting fresh mode", name, rawMode);
-				mode = null;
-				send().getMode();
+				if (mode == null)
+					log.trace("Unknown args in channel {} mode '{}', waiting on server to respond with mode", name, rawMode);
+				else {
+					log.trace("Unknown args in channel {} mode '{}', getting fresh mode", name, rawMode);
+					mode = null;
+					send().getMode();
+				}
 			} else {
 				//Parse mode by switching between removing and adding by the existance of a + or - sign
 				boolean adding = true;
@@ -220,7 +225,7 @@ public class Channel implements Comparable<Channel> {
 			}
 		}
 	}
-	
+
 	public boolean containsMode(char modeLetter) {
 		String modeLetters = StringUtils.split(getMode(), ' ')[0];
 		return StringUtils.contains(modeLetters, modeLetter);
