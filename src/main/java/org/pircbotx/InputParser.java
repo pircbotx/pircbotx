@@ -724,8 +724,8 @@ public class InputParser implements Closeable {
 			//Setup user
 			String nick = parsedResponse.get(5);
 			User curUser = bot.getUserChannelDao().containsUser(nick) ? bot.getUserChannelDao().getUser(nick) : null;
-			UserHostmask curUserHostmask =  bot.getConfiguration().getBotFactory().createUserHostmask(bot, null, 
-						nick, parsedResponse.get(2), parsedResponse.get(3));
+			UserHostmask curUserHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, null,
+					nick, parsedResponse.get(2), parsedResponse.get(3));
 			curUser = createUserIfNull(curUser, curUserHostmask);
 
 			curUser.setServer(parsedResponse.get(4));
@@ -842,11 +842,20 @@ public class InputParser implements Closeable {
 			if (!rawResponse.endsWith(":" + parsedResponse.get(2)))
 				registeredNick = parsedResponse.get(2);
 			whoisBuilder.get(parsedResponse.get(1)).registeredAs(registeredNick);
-		} else if (code == 307)
+		} else if (code == 307) {
 			//If shown, tells us that the user is registered with nickserv
 			//307 TheLQ TheLQ-PircBotX :has identified for this nick
 			whoisBuilder.get(parsedResponse.get(1)).registeredAs("");
-		else if (code == RPL_ENDOFWHOIS) {
+		} else if (code == ERR_NOSUCHSERVER) {
+			//Whois failed when doing "WHOIS invaliduser invaliduser"
+			//402 TheLQ asdfasdf :No such server
+			String whoisNick = parsedResponse.get(1);
+			WhoisEvent event = WhoisEvent.builder()
+					.nick(whoisNick)
+					.exists(false)
+					.generateEvent(bot);
+			configuration.getListenerManager().dispatchEvent(event);
+		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
 			String whoisNick = parsedResponse.get(1);

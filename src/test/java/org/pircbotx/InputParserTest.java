@@ -952,11 +952,23 @@ public class InputParserTest {
 	}
 
 	@Test
-	public void whoisInvalidUserTest() throws IOException, IrcException {
+	public void whoisInvalidUser401Test() throws IOException, IrcException {
 		//Need 001 since processConnect fails on 4XX errors
 		inputParser.handleLine(":irc.someserver.net 001 PircBotXUser :Test server");
 		inputParser.handleLine(":irc.someserver.net 401 PircBotXUser randomuser :No such nick/channel");
 		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser randomuser :End of /WHOIS list.");
+
+		//Make sure we get the correct event
+		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertEquals(event.getNick(), "randomuser", "Nick does not match given");
+		assertFalse(event.isExists(), "User should not exist");
+	}
+
+	@Test
+	public void whoisInvalidUser402Test() throws IOException, IrcException {
+		//Need 001 since processConnect fails on 4XX errors
+		inputParser.handleLine(":irc.someserver.net 001 PircBotXUser :Test server");
+		inputParser.handleLine(":irc.someserver.net 402 PircBotXUser randomuser :No such server");
 
 		//Make sure we get the correct event
 		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
@@ -1196,8 +1208,8 @@ public class InputParserTest {
 	public void nickDifferentTest(String code) throws IOException, IrcException {
 		assertEquals(bot.getNick(), "PircBotXBot", "Starting nick changed");
 
-		inputParser.handleLine(":irc.someserver.net "+code+" PBot :Welcome to the server");
-		
+		inputParser.handleLine(":irc.someserver.net " + code + " PBot :Welcome to the server");
+
 		assertEquals(bot.getNick(), "PBot", "Nick not changed");
 	}
 }
