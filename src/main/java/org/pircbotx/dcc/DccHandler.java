@@ -106,9 +106,9 @@ public class DccHandler implements Closeable {
 			//Nope, this is a new transfer
 			if (port == 0 || transferToken != null)
 				//User is trying to use reverse DCC
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, true));
+				bot.getConfiguration().getListenerManager().onEvent(new IncomingFileTransferEvent(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingFileTransferEvent(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, false));
+				bot.getConfiguration().getListenerManager().onEvent(new IncomingFileTransferEvent(bot, userHostmask, user, rawFilename, safeFilename, address, port, size, transferToken, false));
 		} else if (type.equals("RESUME")) {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
@@ -214,9 +214,9 @@ public class DccHandler implements Closeable {
 
 			//Nope, this is a new chat
 			if (port == 0 && chatToken != null)
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, userHostmask, user, address, port, chatToken, true));
+				bot.getConfiguration().getListenerManager().onEvent(new IncomingChatRequestEvent(bot, userHostmask, user, address, port, chatToken, true));
 			else
-				bot.getConfiguration().getListenerManager().dispatchEvent(new IncomingChatRequestEvent(bot, userHostmask, user, address, port, chatToken, false));
+				bot.getConfiguration().getListenerManager().onEvent(new IncomingChatRequestEvent(bot, userHostmask, user, address, port, chatToken, false));
 		} else
 			return false;
 		return true;

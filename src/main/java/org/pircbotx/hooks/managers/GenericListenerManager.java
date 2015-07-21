@@ -66,7 +66,8 @@ public class GenericListenerManager extends ListenerManager {
 		return listenersImmutable;
 	}
 
-	public void dispatchEvent(Event event) {
+	@Override
+	public void onEvent(Event event) {
 		if (event.getBot() != null)
 			Utils.addBotToMDC(event.getBot());
 		//Make copy in case listener removes itself causing ConcurrentModificationException's

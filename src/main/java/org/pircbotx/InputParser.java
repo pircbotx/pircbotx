@@ -324,7 +324,7 @@ public class InputParser implements Closeable {
 		// Check for server pings.
 		if (command.equals("PING")) {
 			// Respond to the ping and return immediately.
-			configuration.getListenerManager().dispatchEvent(new ServerPingEvent(bot, parsedLine.get(0)));
+			configuration.getListenerManager().onEvent(new ServerPingEvent(bot, parsedLine.get(0)));
 			return;
 		} else if (command.startsWith("ERROR")) {
 			//Server is shutting us down
@@ -339,7 +339,7 @@ public class InputParser implements Closeable {
 		//Make sure this is a valid IRC line
 		if (!sourceRaw.startsWith(":")) {
 			// We don't know what this line means.
-			configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
+			configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
 			if (!bot.loggedIn)
 				//Pass to CapHandlers, could be important
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
@@ -394,7 +394,7 @@ public class InputParser implements Closeable {
 			bot.onLoggedIn(parsedLine.get(0));
 			log.debug("Logged onto server.");
 
-			configuration.getListenerManager().dispatchEvent(new ConnectEvent(bot));
+			configuration.getListenerManager().onEvent(new ConnectEvent(bot));
 
 			//Handle automatic on connect stuff
 			if (configuration.getNickservPassword() != null)
@@ -509,38 +509,38 @@ public class InputParser implements Closeable {
 			String request = message.substring(1, message.length() - 1);
 			if (request.equals("VERSION"))
 				// VERSION request
-				configuration.getListenerManager().dispatchEvent(new VersionEvent(bot, source, sourceUser, channel));
+				configuration.getListenerManager().onEvent(new VersionEvent(bot, source, sourceUser, channel));
 			else if (request.startsWith("ACTION "))
 				// ACTION request
-				configuration.getListenerManager().dispatchEvent(new ActionEvent(bot, source, sourceUser, channel, target, request.substring(7)));
+				configuration.getListenerManager().onEvent(new ActionEvent(bot, source, sourceUser, channel, target, request.substring(7)));
 			else if (request.startsWith("PING "))
 				// PING request
-				configuration.getListenerManager().dispatchEvent(new PingEvent(bot, source, sourceUser, channel, request.substring(5)));
+				configuration.getListenerManager().onEvent(new PingEvent(bot, source, sourceUser, channel, request.substring(5)));
 			else if (request.equals("TIME"))
 				// TIME request
-				configuration.getListenerManager().dispatchEvent(new TimeEvent(bot, channel, source, sourceUser));
+				configuration.getListenerManager().onEvent(new TimeEvent(bot, channel, source, sourceUser));
 			else if (request.equals("FINGER"))
 				// FINGER request
-				configuration.getListenerManager().dispatchEvent(new FingerEvent(bot, source, sourceUser, channel));
+				configuration.getListenerManager().onEvent(new FingerEvent(bot, source, sourceUser, channel));
 			else if (request.startsWith("DCC ")) {
 				// This is a DCC request.
 				boolean success = bot.getDccHandler().processDcc(source, sourceUser, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
-					configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
+					configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
 			} else
 				// An unknown CTCP message - ignore it.
-				configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
+				configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
 		} else if (command.equals("PRIVMSG") && channel != null) {
 			// This is a normal message to a channel.
 			sourceUser = createUserIfNull(sourceUser, source);
-			configuration.getListenerManager().dispatchEvent(new MessageEvent(bot, channel, target, source, sourceUser, message, tags));
+			configuration.getListenerManager().onEvent(new MessageEvent(bot, channel, target, source, sourceUser, message, tags));
 		} else if (command.equals("PRIVMSG")) {
 			// This is a private message to us.
 			//Add to private message
 			sourceUser = createUserIfNull(sourceUser, source);
 			bot.getUserChannelDao().addUserToPrivate(sourceUser);
-			configuration.getListenerManager().dispatchEvent(new PrivateMessageEvent(bot, source, sourceUser, message));
+			configuration.getListenerManager().onEvent(new PrivateMessageEvent(bot, source, sourceUser, message));
 		} else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (source.getNick().equalsIgnoreCase(bot.getNick())) {
@@ -553,7 +553,7 @@ public class InputParser implements Closeable {
 			sourceUser = createUserIfNull(sourceUser, source);
 
 			bot.getUserChannelDao().addUserToChannel(sourceUser, channel);
-			configuration.getListenerManager().dispatchEvent(new JoinEvent(bot, channel, source, sourceUser));
+			configuration.getListenerManager().onEvent(new JoinEvent(bot, channel, source, sourceUser));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			UserChannelDaoSnapshot daoSnapshot;
@@ -575,7 +575,7 @@ public class InputParser implements Closeable {
 			else
 				//Just remove the user from memory
 				bot.getUserChannelDao().removeUserFromChannel(sourceUser, channel);
-			configuration.getListenerManager().dispatchEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, source, sourceSnapshot, message));
+			configuration.getListenerManager().onEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, source, sourceSnapshot, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			sourceUser = createUserIfNull(sourceUser, source);
@@ -584,10 +584,10 @@ public class InputParser implements Closeable {
 			if (source.getNick().equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
 				bot.setNick(newNick);
-			configuration.getListenerManager().dispatchEvent(new NickChangeEvent(bot, source.getNick(), newNick, source, sourceUser));
+			configuration.getListenerManager().onEvent(new NickChangeEvent(bot, source.getNick(), newNick, source, sourceUser));
 		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
-			configuration.getListenerManager().dispatchEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message));
+			configuration.getListenerManager().onEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message));
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot;
 			UserSnapshot sourceSnapshot;
@@ -604,7 +604,7 @@ public class InputParser implements Closeable {
 			if (!source.getNick().equals(bot.getNick()))
 				//Someone else
 				bot.getUserChannelDao().removeUser(sourceUser);
-			configuration.getListenerManager().dispatchEvent(new QuitEvent(bot, daoSnapshot, source, sourceSnapshot, reason));
+			configuration.getListenerManager().onEvent(new QuitEvent(bot, daoSnapshot, source, sourceSnapshot, reason));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			UserHostmask recipientHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, message);
@@ -616,7 +616,7 @@ public class InputParser implements Closeable {
 			else
 				//Someone else
 				bot.getUserChannelDao().removeUserFromChannel(recipient, channel);
-			configuration.getListenerManager().dispatchEvent(new KickEvent(bot, channel, source, sourceUser, recipientHostmask, recipient, parsedLine.get(2)));
+			configuration.getListenerManager().onEvent(new KickEvent(bot, channel, source, sourceUser, recipientHostmask, recipient, parsedLine.get(2)));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -636,10 +636,10 @@ public class InputParser implements Closeable {
 			channel.setTopicSetter(source);
 			channel.setTopicTimestamp(currentTime);
 
-			configuration.getListenerManager().dispatchEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
+			configuration.getListenerManager().onEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
-			configuration.getListenerManager().dispatchEvent(new InviteEvent(bot, source, sourceUser, message));
+			configuration.getListenerManager().onEvent(new InviteEvent(bot, source, sourceUser, message));
 		} else if (command.equals("AWAY"))
 			//IRCv3 AWAY notify
 			if (parsedLine.isEmpty())
@@ -649,7 +649,7 @@ public class InputParser implements Closeable {
 		else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
-			configuration.getListenerManager().dispatchEvent(new UnknownEvent(bot, line));
+			configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
 	}
 
 	/**
@@ -679,7 +679,7 @@ public class InputParser implements Closeable {
 				bot.setNick(autoNewNick);
 				bot.getUserChannelDao().renameUser(bot.getUserChannelDao().getUser(usedNick), autoNewNick);
 			}
-			configuration.getListenerManager().dispatchEvent(new NickAlreadyInUseEvent(bot, usedNick, autoNewNick, autoNickChange));
+			configuration.getListenerManager().onEvent(new NickAlreadyInUseEvent(bot, usedNick, autoNewNick, autoNickChange));
 		} else if (code == RPL_LISTSTART) {
 			//EXAMPLE: 321 Channel :Users Name (actual text)
 			//A channel list is about to be sent
@@ -695,7 +695,7 @@ public class InputParser implements Closeable {
 		} else if (code == RPL_LISTEND) {
 			//EXAMPLE: 323 :End of /LIST
 			//End of channel list, dispatch event
-			configuration.getListenerManager().dispatchEvent(new ChannelInfoEvent(bot, channelListBuilder.build()));
+			configuration.getListenerManager().onEvent(new ChannelInfoEvent(bot, channelListBuilder.build()));
 			channelListBuilder = null;
 			channelListRunning = false;
 		} else if (code == RPL_TOPIC) {
@@ -715,7 +715,7 @@ public class InputParser implements Closeable {
 			channel.setTopicTimestamp(date * 1000);
 			channel.setTopicSetter(setBy);
 
-			configuration.getListenerManager().dispatchEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false));
+			configuration.getListenerManager().onEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
@@ -749,7 +749,7 @@ public class InputParser implements Closeable {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			configuration.getListenerManager().dispatchEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
+			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -758,7 +758,7 @@ public class InputParser implements Closeable {
 			String mode = StringUtils.join(modeParsed, ' ');
 
 			channel.setMode(mode, modeParsed);
-			configuration.getListenerManager().dispatchEvent(new ModeEvent(bot, channel, null, null, mode, modeParsed));
+			configuration.getListenerManager().onEvent(new ModeEvent(bot, channel, null, null, mode, modeParsed));
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
@@ -781,7 +781,7 @@ public class InputParser implements Closeable {
 			ServerInfo serverInfo = bot.getServerInfo();
 			serverInfo.setMotd(motdBuilder.toString().trim());
 			motdBuilder = null;
-			configuration.getListenerManager().dispatchEvent(new MotdEvent(bot, serverInfo.getMotd()));
+			configuration.getListenerManager().onEvent(new MotdEvent(bot, serverInfo.getMotd()));
 		} else if (code == 4 || code == 5) {
 			//Example: 004 PircBotX sendak.freenode.net ircd-seven-1.1.3 DOQRSZaghilopswz CFILMPQbcefgijklmnopqrstvz bkloveqjfI
 			//Server info line, remove ending comment and let ServerInfo class parse it
@@ -854,7 +854,7 @@ public class InputParser implements Closeable {
 					.nick(whoisNick)
 					.exists(false)
 					.generateEvent(bot);
-			configuration.getListenerManager().dispatchEvent(event);
+			configuration.getListenerManager().onEvent(event);
 		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
@@ -868,7 +868,7 @@ public class InputParser implements Closeable {
 				builder.nick(whoisNick);
 				builder.exists(false);
 			}
-			configuration.getListenerManager().dispatchEvent(builder.generateEvent(bot));
+			configuration.getListenerManager().onEvent(builder.generateEvent(bot));
 			whoisBuilder.remove(whoisNick);
 		} else if (code == 367) {
 			//Ban list entry
@@ -886,7 +886,7 @@ public class InputParser implements Closeable {
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 			ImmutableList<BanListEvent.Entry> entries = ImmutableList.copyOf(banListBuilder.removeAll(channel));
 			log.debug("Dispatching event");
-			configuration.getListenerManager().dispatchEvent(new BanListEvent(bot, channel, entries));
+			configuration.getListenerManager().onEvent(new BanListEvent(bot, channel, entries));
 		} else if (code == 353) {
 			//NAMES response
 			//353 PircBotXUser = #aChannel :aUser1 aUser2
@@ -918,9 +918,9 @@ public class InputParser implements Closeable {
 			//NAMES response finished
 			//366 PircBotXUser #aChannel :End of /NAMES list.
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
-			configuration.getListenerManager().dispatchEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), false));
+			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), false));
 		}
-		configuration.getListenerManager().dispatchEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
+		configuration.getListenerManager().onEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
 	}
 
 	/**
@@ -957,12 +957,12 @@ public class InputParser implements Closeable {
 						modeHandler.handleMode(bot, channel, userHostmask, user, params, adding, true);
 				}
 			}
-			configuration.getListenerManager().dispatchEvent(new ModeEvent(bot, channel, userHostmask, user, mode, modeParsed));
+			configuration.getListenerManager().onEvent(new ModeEvent(bot, channel, userHostmask, user, mode, modeParsed));
 		} else {
 			// The mode of a user is being changed.
 			UserHostmask targetHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, target);
 			User targetUser = bot.getUserChannelDao().getUser(target);
-			configuration.getListenerManager().dispatchEvent(new UserModeEvent(bot, userHostmask, user, targetHostmask, targetUser, mode));
+			configuration.getListenerManager().onEvent(new UserModeEvent(bot, userHostmask, user, targetHostmask, targetUser, mode));
 		}
 	}
 

@@ -312,7 +312,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			changeSocket(socket);
 		}
 
-		configuration.getListenerManager().dispatchEvent(new SocketConnectEvent(this));
+		configuration.getListenerManager().onEvent(new SocketConnectEvent(this));
 
 		if (configuration.isIdentServerEnabled())
 			IdentServer.getServer().addIdentEntry(socket.getInetAddress(), socket.getPort(), socket.getLocalPort(), configuration.getLogin());
@@ -416,7 +416,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		outputWriter.flush();
 
 		List<String> lineParts = Utils.tokenizeLine(line);
-		getConfiguration().getListenerManager().dispatchEvent(new OutputEvent(this, line, lineParts));
+		getConfiguration().getListenerManager().onEvent(new OutputEvent(this, line, lineParts));
 	}
 
 	protected void onLoggedIn(String nick) {
@@ -606,7 +606,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		}
 
 		//Dispatch event
-		configuration.getListenerManager().dispatchEvent(new DisconnectEvent(this, daoSnapshot, disconnectException));
+		configuration.getListenerManager().onEvent(new DisconnectEvent(this, daoSnapshot, disconnectException));
 		disconnectException = null;
 		log.debug("Disconnected.");
 

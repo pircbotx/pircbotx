@@ -86,16 +86,16 @@ public class ReplayServer {
 	@Slf4j
 	protected static class WrapperListenerManager extends ListenerManager {
 		private static interface ImplExclude {
-			public void dispatchEvent(Event event);
+			public void onEvent(Event event);
 		}
 		@Delegate(excludes = ImplExclude.class)
 		protected final ListenerManager impl;
 		protected final Queue<Event> eventQueue;
 
 		@Override
-		public void dispatchEvent(Event event) {
+		public void onEvent(Event event) {
 			eventQueue.add(event);
-			impl.dispatchEvent(event);
+			impl.onEvent(event);
 		}
 	}
 

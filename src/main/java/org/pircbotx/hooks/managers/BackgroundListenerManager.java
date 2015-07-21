@@ -58,9 +58,9 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 	}
 
 	@Override
-	public void dispatchEvent(Event event) {
+	public void onEvent(Event event) {
 		//Dispatch to both standard listeners and background listeners
-		super.dispatchEvent(event);
+		super.onEvent(event);
 		for (Map.Entry<Listener, ExecutorService> curEntry : backgroundListeners.entrySet())
 			submitEvent(curEntry.getValue(), curEntry.getKey(), event);
 	}

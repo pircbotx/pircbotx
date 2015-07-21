@@ -31,7 +31,7 @@ import org.pircbotx.hooks.Listener;
  *
  * @author Leon Blakey
  */
-public abstract class ListenerManager {
+public abstract class ListenerManager implements Listener {
 	protected AtomicLong currentId = new AtomicLong();
 	/**
 	 * Handler of any exception thrown by a listener while executing an event
@@ -46,7 +46,8 @@ public abstract class ListenerManager {
 	 *
 	 * @param event The event to send
 	 */
-	public abstract void dispatchEvent(Event event);
+	@Override
+	public abstract void onEvent(Event event);
 
 	/**
 	 * Add a listener to this ListenerManager
