@@ -53,7 +53,7 @@ import com.google.common.collect.ImmutableMap;
  * href="http://www.jibble.org/pircbot.php">PircBot</a>
  * <p>
  * Forked and Maintained by Leon Blakey in <a
- * href="http://pircbotx.googlecode.com">PircBotX</a>
+ * href="http://github.com/thelq/pircbotx">PircBotX</a>
  */
 public final class Colors {
 	/**
