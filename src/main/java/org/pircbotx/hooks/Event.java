@@ -17,7 +17,9 @@
  */
 package org.pircbotx.hooks;
 
+import com.google.common.base.Supplier;
 import com.google.common.collect.ComparisonChain;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -34,7 +36,11 @@ import org.pircbotx.hooks.types.GenericEvent;
 @EqualsAndHashCode
 public abstract class Event implements GenericEvent {
 	/**
-	 * Returns the timestamp of when the event was created.
+	 * Value is 0-based number of events
+	 */
+	protected static final AtomicLong EVENT_COUNTER = new AtomicLong();
+	/**
+	 * Returns the millisecond when the event was created.
 	 *
 	 * @return A timestamp as a long
 	 */
@@ -55,13 +61,9 @@ public abstract class Event implements GenericEvent {
 	protected final long id;
 
 	public Event(PircBotX bot) {
-		this(bot, bot.getConfiguration().getListenerManager());
-	}
-
-	public Event(@NonNull PircBotX bot, @NonNull ListenerManager listenerManager) {
 		this.timestamp = System.currentTimeMillis();
 		this.bot = bot;
-		this.id = listenerManager.incrementCurrentId();
+		this.id = EVENT_COUNTER.getAndIncrement();
 	}
 
 	/**

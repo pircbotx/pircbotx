@@ -102,7 +102,7 @@ public class SASLCapHandler implements CapHandler {
 	public boolean handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (!ignoreFail && capabilities.contains("sasl")) {
 			//Make sure the bot didn't register this capability
-			bot.getEnabledCapabilities().remove("sasl");
+			bot.getEnabledCapabilities().remove("sasl"); 
 			throw new CAPException(CAPException.Reason.UnsupportedCapability, "SASL");
 		}
 		return false;

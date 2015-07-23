@@ -32,7 +32,6 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey
  */
 public abstract class ListenerManager implements Listener {
-	protected AtomicLong currentId = new AtomicLong();
 	/**
 	 * Handler of any exception thrown by a listener while executing an event
 	 */
@@ -79,34 +78,6 @@ public abstract class ListenerManager implements Listener {
 	 * ListenerManager
 	 */
 	public abstract ImmutableSet<Listener> getListeners();
-
-	/**
-	 * Reset the current id to the specified value for the next event
-	 *
-	 * @param currentId The id to set this ListenerManager to
-	 */
-	public void setCurrentId(long currentId) {
-		this.currentId.set(currentId);
-	}
-
-	/**
-	 * Get the current id for the next event
-	 *
-	 * @return The current id
-	 */
-	public long getCurrentId() {
-		return currentId.get();
-	}
-
-	/**
-	 * Get the current id for the next event and increment the id for the next
-	 * call
-	 *
-	 * @return The current id
-	 */
-	public long incrementCurrentId() {
-		return currentId.getAndIncrement();
-	}
 
 	public abstract void shutdown(PircBotX bot);
 }
