@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.CAPException;
 
@@ -74,7 +75,9 @@ public class SASLCapHandler implements CapHandler {
 	public boolean handleUnknown(PircBotX bot, String rawLine) throws CAPException {
 		if (rawLine.equals("AUTHENTICATE +")) {
 			//Server ackowledges our request to use plain authentication
-			String encodedAuth = Base64.encodeBase64String((username + '\0' + username + '\0' + password).getBytes(Charsets.UTF_8));
+			byte[] rawAuth = (username + '\0' + username + '\0' + password).getBytes(Charsets.UTF_8);
+			//Issue #256: Use method available in commons-codec 1.3 for android, copied from encodeBase64String(byte[])
+			String encodedAuth = StringUtils.newStringUtf8(Base64.encodeBase64(rawAuth, false));
 			bot.sendRaw().rawLineNow("AUTHENTICATE " + encodedAuth);
 		}
 
