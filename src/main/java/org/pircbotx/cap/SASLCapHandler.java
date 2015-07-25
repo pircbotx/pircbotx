@@ -66,10 +66,10 @@ public class SASLCapHandler implements CapHandler {
 		if (capabilities.contains("sasl")) {
 			//Server acknowledges our request to use sasl 
 			bot.sendRaw().rawLineNow("AUTHENTICATE PLAIN");
-			//Still not finished
-			return false;
-		} else
-			return true;
+		}
+		//If this is our ack, we still need to send user information
+		//If this isn't, it might be later
+		return false;
 	}
 
 	public boolean handleUnknown(PircBotX bot, String rawLine) throws CAPException {
