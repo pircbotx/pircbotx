@@ -807,6 +807,24 @@ public class InputParserTest {
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
 		assertEquals(qevent.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
 	}
+	
+	/**
+	 * https://github.com/TheLQ/pircbotx/issues/256#issuecomment-124180823
+	 */
+	@Test
+	public void quitTest() throws IOException, IrcException {
+		Channel aChannel = dao.createChannel("#aChannel");
+		User aUser = TestUtils.generateTestUserSource(bot);
+		String quitMessage = "QUIT :this!looks@like a hostmask";
+
+		//Also test prefixes in names
+		inputParser.handleLine(":" + aUser.getHostmask() + " JOIN #aChannel");
+		inputParser.handleLine(":" + aUser.getHostmask() + " QUIT :" + quitMessage);
+		
+		QuitEvent qevent = bot.getTestEvent(QuitEvent.class, "QuitEvent not dispatched");
+		assertEquals(qevent.getUser().getGeneratedFrom(), aUser, "QuitEvent's user does not match given");
+		assertEquals(qevent.getReason(), quitMessage, "QuitEvent's reason does not match given");
+	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify part with message")
 	public void partWithMessageTest() throws IOException, IrcException {

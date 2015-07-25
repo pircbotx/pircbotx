@@ -345,34 +345,23 @@ public class InputParser implements Closeable {
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
 					if (curCapHandler.handleUnknown(bot, line))
 						addCapHandlerFinished(curCapHandler);
-			// Return from the method;
+			//Do not continue
+			return;
+		}
+		
+		if (!bot.loggedIn)
+			processConnect(line, command, target, parsedLine);
+		
+		//Might be a backend code 
+		int code = Utils.tryParseInt(command, -1);
+		if (code != -1) {	
+			processServerResponse(code, line, parsedLine);
+			//Do not continue
 			return;
 		}
 
-		//if user build source hostmask or call server parsing method
-		UserHostmask source;
-		if (StringUtils.containsAny(target, '!', '@'))
-			source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, target);
-		else {
-			//Must be a backend code 
-			int code = Utils.tryParseInt(command, -1);
-			if (code != -1) {
-				if (!bot.loggedIn)
-					processConnect(line, command, target, parsedLine);
-				processServerResponse(code, line, parsedLine);
-				// Return from the method.
-				return;
-			} else
-				// This is not a server response.
-				// It must be a nick without login and hostname.
-				// (or maybe a NOTICE or suchlike from the server)
-				//WARNING: CHANGED v2 FROM PIRCBOT: Assume no nick
-				source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, sourceRaw.substring(1));
-		}
-		if (!bot.loggedIn)
-			processConnect(line, command, target, parsedLine);
-
 		//Must be from user
+		UserHostmask source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, sourceRaw.substring(1));
 		processCommand(target, source, command, line, parsedLine, tags.build());
 	}
 
@@ -591,6 +580,11 @@ public class InputParser implements Closeable {
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot;
 			UserSnapshot sourceSnapshot;
+			log.debug("source {} dao contains source {} dao contains nick {}",
+					source,
+					bot.getUserChannelDao().containsUser(source),
+					bot.getUserChannelDao().containsUser(source.getNick())
+			);
 			if (configuration.isSnapshotsEnabled()) {
 				daoSnapshot = bot.getUserChannelDao().createSnapshot();
 				sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
