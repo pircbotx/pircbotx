@@ -359,7 +359,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 				continue;
 			} catch (Exception e) {
 				if (Thread.interrupted()) {
-					System.out.println("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
+					log.error("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
 					stopBotReconnect();
 					break;
 				} else if (socket.isClosed()) {
@@ -374,7 +374,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			}
 
 			if (Thread.interrupted()) {
-				System.out.println("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
+				log.error("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
 				stopBotReconnect();
 				break;
 			}
@@ -392,7 +392,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			}
 
 			if (Thread.interrupted()) {
-				System.out.println("--- PircBotX interrupted during parsing, aborting reconnect loop and shutting down ---");
+				log.error("--- PircBotX interrupted during parsing, aborting reconnect loop and shutting down ---");
 				stopBotReconnect();
 				break;
 			}
