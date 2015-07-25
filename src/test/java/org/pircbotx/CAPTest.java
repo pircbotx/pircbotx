@@ -123,8 +123,12 @@ public class CAPTest {
 
 	@Test
 	public void SASLTest() throws Exception {
-		capHandlers.add(new SASLCapHandler("jilles", "sesame"));
+		//Also test multiple cap handlers that may or may not fail
+		capHandlers.add(new EnableCapHandler("unused-cap", true));
+		capHandlers.add(new EnableCapHandler("test-cap", true));
+		capHandlers.add(new SASLCapHandler("jilles", "sesame", true));
 		runTest("sasl", new OutputParser() {
+			@Override
 			public String handleOutput(String output) throws Exception {
 				if (output.equals("CAP REQ :sasl"))
 					return ":ircd.test CAP * ACK :sasl";
@@ -144,10 +148,14 @@ public class CAPTest {
 
 	@Test
 	public void EnableTest() throws Exception {
+		//Also test multiple cap handlers that may or may not fail
+		capHandlers.add(new EnableCapHandler("unused-cap", true));
 		capHandlers.add(new EnableCapHandler("test-cap", true));
+		capHandlers.add(new SASLCapHandler("jilles", "sesame", true));
 		runTest("test-cap", new OutputParser() {
 			boolean acked = false;
 
+			@Override
 			public String handleOutput(String output) throws Exception {
 				if (output.equals("CAP REQ :test-cap")) {
 					acked = true;
