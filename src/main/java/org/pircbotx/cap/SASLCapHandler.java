@@ -18,8 +18,6 @@
 package org.pircbotx.cap;
 
 import com.google.common.collect.ImmutableList;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.codec.binary.Base64;
@@ -31,14 +29,10 @@ import org.pircbotx.exception.CAPException;
  *
  * @author Leon Blakey
  */
-@RequiredArgsConstructor
 @ToString(exclude = "password")
-public class SASLCapHandler implements CapHandler {
+public class SASLCapHandler extends EnableCapHandler {
 	protected final String username;
 	protected final String password;
-	protected final boolean ignoreFail;
-	@Getter
-	protected boolean done = false;
 
 	/**
 	 * Create SASLCapHandler not ignoring failed authentication and throwing a
@@ -48,18 +42,13 @@ public class SASLCapHandler implements CapHandler {
 	 * @param password
 	 */
 	public SASLCapHandler(String username, String password) {
+		this(username, password, false);
+	}
+	
+	public SASLCapHandler(String username, String password, boolean ignoreFail) {
+		super("sasl", ignoreFail);
 		this.username = username;
 		this.password = password;
-		this.ignoreFail = false;
-	}
-
-	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
-		if (capabilities.contains("sasl"))
-			//Server supports sasl, send request to use it
-			bot.sendCAP().request("sasl");
-		else
-			throw new CAPException(CAPException.Reason.UnsupportedCapability, "SASL");
-		return false;
 	}
 
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) {
@@ -96,15 +85,6 @@ public class SASLCapHandler implements CapHandler {
 			} else if (parsedLine[1].equals("900") || parsedLine[1].equals("903"))
 				//Success!
 				return true;
-		return false;
-	}
-
-	public boolean handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
-		if (!ignoreFail && capabilities.contains("sasl")) {
-			//Make sure the bot didn't register this capability
-			bot.getEnabledCapabilities().remove("sasl"); 
-			throw new CAPException(CAPException.Reason.UnsupportedCapability, "SASL");
-		}
 		return false;
 	}
 }
