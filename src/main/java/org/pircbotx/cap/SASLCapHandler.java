@@ -51,6 +51,7 @@ public class SASLCapHandler extends EnableCapHandler {
 		this.password = password;
 	}
 
+	@Override
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) {
 		if (capabilities.contains("sasl")) {
 			//Server acknowledges our request to use sasl 
@@ -61,6 +62,7 @@ public class SASLCapHandler extends EnableCapHandler {
 		return false;
 	}
 
+	@Override
 	public boolean handleUnknown(PircBotX bot, String rawLine) throws CAPException {
 		if (rawLine.equals("AUTHENTICATE +")) {
 			//Server ackowledges our request to use plain authentication

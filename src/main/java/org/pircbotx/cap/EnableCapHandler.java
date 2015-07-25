@@ -48,6 +48,7 @@ public class EnableCapHandler implements CapHandler {
 		this.ignoreFail = false;
 	}
 
+	@Override
 	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap)) {
 			//Server supports capability, send request to use it
@@ -64,11 +65,13 @@ public class EnableCapHandler implements CapHandler {
 		}
 	}
 
+	@Override
 	public boolean handleACK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		//Finished if the server is acknowledging the capability
 		return capabilities.contains(cap);
 	}
 
+	@Override
 	public boolean handleNAK(PircBotX bot, ImmutableList<String> capabilities) throws CAPException {
 		if (capabilities.contains(cap)) {
 			//Make sure the bot didn't register this capability
@@ -83,6 +86,7 @@ public class EnableCapHandler implements CapHandler {
 		return false;
 	}
 
+	@Override
 	public boolean handleUnknown(PircBotX bot, String rawLine) {
 		return false;
 	}
