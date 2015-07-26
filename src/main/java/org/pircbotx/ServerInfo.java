@@ -254,4 +254,8 @@ public class ServerInfo {
 	public ImmutableMap<String, String> getIsupportRaw() {
 		return ImmutableMap.copyOf(isupportRaw);
 	}
+	
+	public String getISupportValue(String key) {
+		return isupportRaw.get(key);
+	}
 }
