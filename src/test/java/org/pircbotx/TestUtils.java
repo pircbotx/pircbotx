@@ -41,17 +41,15 @@ import org.testng.collections.Lists;
  * @author Leon Blakey
  */
 public class TestUtils {
+	public static final ExceptionStopperAppender exAppender;
 	static {
 		//when getting a logged exception, fail immediately
 		Logger loggerRoot = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-		if (loggerRoot.getAppender(ExceptionStopperAppender.NAME) == null) {
-			ExceptionStopperAppender exAppender = new ExceptionStopperAppender();
-			exAppender.setContext(loggerRoot.getLoggerContext());
-			exAppender.start();
-
-			loggerRoot.addAppender(exAppender);
-		}
+		exAppender = new ExceptionStopperAppender();
+		exAppender.setContext(loggerRoot.getLoggerContext());
+		exAppender.start();
+		loggerRoot.addAppender(exAppender);
 	}
 
 	@DataProvider
@@ -128,6 +126,7 @@ public class TestUtils {
 	}
 
 	public static class ExceptionStopperAppender extends AppenderBase<ILoggingEvent> {
+		public boolean failOnException = true;
 		public static String NAME = "PircBotX-Test-Exception-Stopper";
 		static final int ALLOWED_REPEATS = 5;
 		private boolean guard = false;
@@ -140,9 +139,9 @@ public class TestUtils {
 		@Override
 		protected void append(ILoggingEvent eventObject) {
 			ThrowableProxy throwProxy = (ThrowableProxy) eventObject.getThrowableProxy();
-			if (throwProxy == null)
+			if (!failOnException || throwProxy == null)
 				return;
-			throw new RuntimeException("Captured logged exception " + throwProxy.getClassName()
+			throw new LogException("Captured logged exception " + throwProxy.getClassName()
 					+ ": " + throwProxy.getMessage(), throwProxy.getThrowable());
 		}
 
@@ -180,6 +179,12 @@ public class TestUtils {
 			} finally {
 				guard = false;
 			}
+		}
+	}
+	
+	public static class LogException extends RuntimeException {
+		public LogException(String message, Throwable cause) {
+			super(message, cause);
 		}
 	}
 
