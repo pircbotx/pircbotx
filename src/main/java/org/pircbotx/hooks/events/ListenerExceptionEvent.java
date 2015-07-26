@@ -26,7 +26,7 @@ import org.pircbotx.hooks.Listener;
 
 /**
  *
- * @author lordquackstar
+ * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

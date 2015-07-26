@@ -50,10 +50,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.Test;
 
 /**
- *
- * @author lordquackstar
+ * Various hooks for easier detailed testing
+ * 
+ * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 public class PircTestRunner implements Closeable {
 	public static final String BOT_NICK = "TestBot";
@@ -95,11 +97,11 @@ public class PircTestRunner implements Closeable {
 		bot.startBot();
 	}
 	
-	@AfterSuite
-	public void closeCheck() {
+	public static void closeCheck() {
 		//TODO: Probably need something that isn't going to break every other test when one forgets to call close
 		//     Also this won't tell were the missing close was
 		//    This won't work if this happens to be the very last test
+		log.error("Checking if tests are remaining");
 		assertEquals(ACTIVE_INSTANCE_COUNT, 0, "Forgot to call close somewhere");
 	}
 
@@ -145,7 +147,6 @@ public class PircTestRunner implements Closeable {
 		checkInputEmpty();
 
 		//If this returns then the event class matches
-		
 		getNextEvent(eventClass);
 
 		return this;

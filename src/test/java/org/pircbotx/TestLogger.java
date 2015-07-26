@@ -17,9 +17,10 @@
  */
 package org.pircbotx;
 
-import java.lang.reflect.Method;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
+import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 
@@ -50,6 +51,12 @@ public class TestLogger extends TestListenerAdapter {
 	@Override
 	public void onTestSuccess(ITestResult tr) {
 		log("SUCCESS", tr);
+	}
+
+	@Override
+	public void onFinish(ITestContext testContext) {
+		PircTestRunner.closeCheck();
+		LoggerFactory.getLogger(getClass()).info("Finshed");
 	}
 
 	protected void log(String status, ITestResult tr) {

@@ -18,7 +18,6 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
