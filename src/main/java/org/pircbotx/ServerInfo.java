@@ -25,6 +25,9 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a giant info bean of various things about the server. This is
@@ -33,12 +36,16 @@ import org.apache.commons.lang3.StringUtils;
  * Most info thanks to <a href="www.irc.org/tech_docs/005.html">this great
  * website
  * </a> on what each one does
+ * <p>
+ * Note: On get methods that return int, -1 means the value exists but is 
+ * unparsable natively
  *
  * @author Leon Blakey
  */
 @Data
 @Setter(AccessLevel.NONE)
 public class ServerInfo {
+	private static final Logger log = LoggerFactory.getLogger(ServerInfo.class);
 	protected final PircBotX bot;
 	//004 information
 	protected String serverName;
@@ -133,20 +140,22 @@ public class ServerInfo {
 			else if (key.equalsIgnoreCase("CHANMODES"))
 				channelModes = value;
 			else if (key.equalsIgnoreCase("MODES"))
-				maxModes = Integer.parseInt(value);
+				maxModes = tryParseInt("MODES", value);
 			else if (key.equalsIgnoreCase("MAXCHANNELS"))
-				maxChannels = Integer.parseInt(value);
+				maxChannels = tryParseInt("MAXCHANNELS", value);
 			else if (key.equalsIgnoreCase("CHANLIMIT"))
 				chanlimit = value;
 			else if (key.equalsIgnoreCase("NICKLEN"))
-				maxNickLength = Integer.parseInt(value);
+				maxNickLength = tryParseInt("NICKLEN", value);
 			else if (key.equalsIgnoreCase("MAXBANS"))
-				maxBans = Integer.parseInt(value);
+				maxBans = tryParseInt("MAXBANS", value);
 			else if (key.equalsIgnoreCase("MAXLIST")) {
 				StringTokenizer maxListTokens = new StringTokenizer(value, ":,");
 				ImmutableMap.Builder<String, Integer> maxListBuilder = ImmutableMap.builder();
-				while (maxListTokens.hasMoreTokens())
-					maxListBuilder.put(maxListTokens.nextToken(), Integer.parseInt(maxListTokens.nextToken()));
+				while (maxListTokens.hasMoreTokens()) {
+					String next = maxListTokens.nextToken();
+					maxListBuilder.put(next, tryParseInt("MAXLIST>" + next, maxListTokens.nextToken()));
+				}
 				maxList = maxListBuilder.build();
 			} else if (key.equalsIgnoreCase("NETWORK"))
 				network = value;
@@ -165,19 +174,19 @@ public class ServerInfo {
 			else if (key.equalsIgnoreCase("ELIST"))
 				eList = value;
 			else if (key.equalsIgnoreCase("TOPICLEN"))
-				topicLength = Integer.parseInt(value);
+				topicLength = tryParseInt("TOPICLEN", value);
 			else if (key.equalsIgnoreCase("KICKLEN"))
-				kickLength = Integer.parseInt(value);
+				kickLength = tryParseInt("KICKLEN", value);
 			else if (key.equalsIgnoreCase("CHANNELLEN"))
-				channelLength = Integer.parseInt(value);
+				channelLength = tryParseInt("CHANNELLEN", value);
 			else if (key.equalsIgnoreCase("CHIDLEN"))
-				channelIDLength = "!:" + Integer.parseInt(value);
+				channelIDLength = "!:" + tryParseInt("CHIDLEN", value);
 			else if (key.equalsIgnoreCase("IDCHAN"))
 				channelIDLength = value;
 			else if (key.equalsIgnoreCase("STD"))
 				standard = value;
 			else if (key.equalsIgnoreCase("SILENCE"))
-				silence = Integer.parseInt(value);
+				silence = tryParseInt("SILENCE", value);
 			else if (key.equalsIgnoreCase("RFC2812"))
 				RFC2812 = true;
 			else if (key.equalsIgnoreCase("PENALTY"))
@@ -212,7 +221,6 @@ public class ServerInfo {
 					extBanList = value;
 				}
 			}
-
 		}
 		//Freenode
 		//005 PircBotX CHANTYPES=# EXCEPTS INVEX CHANMODES=eIbq,k,flj,CFLMPQcgimnprstz CHANLIMIT=#:120 PREFIX=(ov)@+ MAXLIST=bqeI:100 MODES=4 NETWORK=freenode KNOCK STATUSMSG=@+ CALLERID=g :are supported by this server
@@ -225,6 +233,15 @@ public class ServerInfo {
 		//005 QTest AWAYLEN=200 CASEMAPPING=rfc1459 CHANMODES=Zbeg,k,FLfjl,ABCDKMNOQRSTcimnprstuz CHANNELLEN=64 CHANTYPES=# CHARSET=ascii ELIST=MU ESILENCE EXCEPTS=e EXTBAN=,ABCNOQRSTUcmprz FNC KICKLEN=255 MAP :are supported by this server
 		//005 QTest MAXBANS=60 MAXCHANNELS=100 MAXPARA=32 MAXTARGETS=20 MODES=20 NAMESX NETWORK=Mozilla NICKLEN=31 OPERLOG OVERRIDE PREFIX=(Yqaohv)!~&@%+ SECURELIST SILENCE=32 :are supported by this server
 		//005 QTest SSL=[::]:6697 STARTTLS STATUSMSG=!~&@%+ TOPICLEN=307 UHNAMES USERIP VBANLIST WALLCHOPS WALLVOICES WATCH=32 :are supported by this server
+	}
+	
+	private static int tryParseInt(String name, String value) {
+		try {
+			return Integer.parseInt(value);
+		} catch(NumberFormatException e) {
+			log.warn("Unparsable server info key '{}' value '{}' {}", name, value, ExceptionUtils.getMessage(e));
+			return -1;
+		}
 	}
 
 	/**
