@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -110,7 +111,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	@Getter(AccessLevel.PROTECTED)
 	protected Socket socket;
 	protected BufferedReader inputReader;
-	protected OutputStreamWriter outputWriter;
+	protected Writer outputWriter;
 	protected final OutputRaw outputRaw;
 	protected final OutputIRC outputIRC;
 	protected final OutputCAP outputCAP;
@@ -570,7 +571,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 * connections to the server, kill background threads, clear server specific
 	 * state, and dispatch a DisconnectedEvent
 	 */
-	private void shutdown() {
+	protected void shutdown() {
 		UserChannelDaoSnapshot daoSnapshot;
 		synchronized (stateLock) {
 			log.debug("---PircBotX shutdown started---");
