@@ -43,6 +43,8 @@ public class TestLogger extends TestListenerAdapter {
 	@Override
 	public void onTestSkipped(ITestResult tr) {
 		log("SKIPPED", tr);
+		//We should never have skipped tests
+		tr.setStatus(ITestResult.FAILURE);
 	}
 
 	@Override
