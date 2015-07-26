@@ -165,7 +165,7 @@ public class PircTestRunner implements Closeable {
 	public PircTestRunner assertBotHello() {
 		assertEventClass(SocketConnectEvent.class);
 		assertBotOut("NICK TestBot");
-		assertBotOut("USER PircBotX 8 * :PircBotX 2.1-SNAPSHOT Java IRC bot - github.com/thelq/pircbotx");
+		assertBotOut("USER PircBotX 8 * :" + bot.getConfiguration().getVersion());
 
 		checkAllEmpty();
 
