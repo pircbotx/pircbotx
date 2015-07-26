@@ -347,60 +347,70 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	}
 
 	protected void startLineProcessing() {
-		while (true) {
-			//Get line from the server
-			String line;
-			try {
-				line = inputReader.readLine();
-			} catch (InterruptedIOException iioe) {
-				// This will happen if we haven't received anything from the server for a while.
-				// So we shall send it a ping to check that we are still connected.
-				sendRaw().rawLine("PING " + (System.currentTimeMillis() / 1000));
-				// Now we go back to listening for stuff from the server...
-				continue;
-			} catch (Exception e) {
-				if (Thread.interrupted()) {
-					log.error("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
-					stopBotReconnect();
-					break;
-				} else if (socket.isClosed()) {
-					log.info("Socket is closed, stopping read loop and shutting down");
-					break;
-				} else {
-					disconnectException = e;
-					//Something is wrong. Assume its bad and begin disconnect
-					log.error("Exception encountered when reading next line from server", e);
-					line = null;
-				}
-			}
-
-			if (Thread.interrupted()) {
-				log.error("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
-				stopBotReconnect();
-				break;
-			}
-
-			//End the loop if the line is null
-			if (line == null)
-				break;
-
-			//Start acting the line
-			try {
-				inputParser.handleLine(line);
-			} catch (Exception e) {
-				//Exception in client code. Just log and continue
-				log.error("Exception encountered when parsing line " + line, e);
-			}
-
-			if (Thread.interrupted()) {
-				log.error("--- PircBotX interrupted during parsing, aborting reconnect loop and shutting down ---");
-				stopBotReconnect();
-				break;
-			}
+		while (processNextLine()) {
+			//see processNextLine
 		}
 
 		//Now that the socket is definitely closed call event, log, and kill the OutputThread
 		shutdown();
+	}
+	
+	/**
+	 * 
+	 * @return true to continue, false to end
+	 */
+	protected boolean processNextLine() {
+		//Get line from the server
+		String line;
+		try {
+			line = inputReader.readLine();
+		} catch (InterruptedIOException iioe) {
+			// This will happen if we haven't received anything from the server for a while.
+			// So we shall send it a ping to check that we are still connected.
+			sendRaw().rawLine("PING " + (System.currentTimeMillis() / 1000));
+			// Now we go back to listening for stuff from the server...
+			return true;
+		} catch (Exception e) {
+			if (Thread.interrupted()) {
+				log.error("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
+				stopBotReconnect();
+				return false;
+			} else if (socket.isClosed()) {
+				log.info("Socket is closed, stopping read loop and shutting down");
+				return false;
+			} else {
+				disconnectException = e;
+				//Something is wrong. Assume its bad and begin disconnect
+				log.error("Exception encountered when reading next line from server", e);
+				line = null;
+			}
+		}
+
+		if (Thread.interrupted()) {
+			log.error("--- PircBotX interrupted during read, aborting reconnect loop and shutting down ---");
+			stopBotReconnect();
+			return false;
+		}
+
+		//End the loop if the line is null
+		if (line == null)
+			return false;
+
+		//Start acting the line
+		try {
+			inputParser.handleLine(line);
+		} catch (Exception e) {
+			//Exception in client code. Just log and continue
+			log.error("Exception encountered when parsing line " + line, e);
+		}
+
+		if (Thread.interrupted()) {
+			log.error("--- PircBotX interrupted during parsing, aborting reconnect loop and shutting down ---");
+			stopBotReconnect();
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**

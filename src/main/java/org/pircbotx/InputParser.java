@@ -580,11 +580,6 @@ public class InputParser implements Closeable {
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot;
 			UserSnapshot sourceSnapshot;
-			log.debug("source {} dao contains source {} dao contains nick {}",
-					source,
-					bot.getUserChannelDao().containsUser(source),
-					bot.getUserChannelDao().containsUser(source.getNick())
-			);
 			if (configuration.isSnapshotsEnabled()) {
 				daoSnapshot = bot.getUserChannelDao().createSnapshot();
 				sourceSnapshot = daoSnapshot.getUser(sourceUser.getNick());
