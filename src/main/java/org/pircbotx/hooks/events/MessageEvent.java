@@ -93,9 +93,14 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	 */
 	@Override
 	public void respond(String response) {
-		getBot().sendIRC().message(channelSource, getUser().getNick() + ": " + response);
+		respondWith(getUser().getNick() + ": " + response);
 	}
-
+	
+	@Override
+	public void respondWith(String fullLine) {
+		getBot().sendIRC().message(channelSource, fullLine);
+	}
+ 
 	/**
 	 * Respond with a message to the channel without the prefix
 	 *

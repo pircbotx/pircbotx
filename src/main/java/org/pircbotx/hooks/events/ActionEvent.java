@@ -103,10 +103,15 @@ public class ActionEvent extends Event implements GenericMessageEvent, GenericCh
 	 */
 	@Override
 	public void respond(String response) {
+		respond(response);
+	}
+	
+	@Override
+	public void respondWith(String fullLine) {
 		if (getChannel() == null)
-			getUserHostmask().send().action(response);
+			getUserHostmask().send().action(fullLine);
 		else
-			getBot().sendIRC().action(channelSource, response);
+			getBot().sendIRC().action(channelSource, fullLine);
 	}
 
 	/**

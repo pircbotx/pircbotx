@@ -42,4 +42,9 @@ public interface GenericMessageEvent extends GenericUserEvent {
 	 * @param message
 	 */
 	public void respondPrivateMessage(String message);
+	
+	/**
+	 * Like {@link #respond(String)}, without the Username: prefix
+	 */
+	public void respondWith(String fullLine);
 }

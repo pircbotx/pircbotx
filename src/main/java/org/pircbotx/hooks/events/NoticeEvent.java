@@ -94,8 +94,12 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	 *
 	 * @param response The response to send
 	 */
-	@Override
 	public void respond(String response) {
+		respondWith(response);
+	}
+	
+	@Override
+	public void respondWith(String response) {
 		if (getChannel() == null)
 			getUser().send().message(response);
 		else

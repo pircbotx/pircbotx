@@ -70,7 +70,12 @@ public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	 */
 	@Override
 	public void respond(String response) {
-		getUser().send().message(response);
+		respondWith(response);
+	}
+	
+	@Override
+	public void respondWith(String fullLine) {
+		getUser().send().message(fullLine);
 	}
 
 	@Override
