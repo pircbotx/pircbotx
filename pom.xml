@@ -173,8 +173,10 @@
 						<exclude>**/*.txt</exclude>
 						<exclude>**/*.log</exclude>
 						<exclude>.hg*</exclude>
+						<exclude>.git*</exclude>
 						<exclude>README.md</exclude>
 						<exclude>**/nbactions.xml</exclude>
+						<exclude>.travis.yml</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
 				</configuration>
