@@ -308,7 +308,7 @@ public class OutputTest {
 		Iterator<String> outputItr = outputLines.iterator();
 		//Handle the first 3 lines from the bot
 		assertEquals(tryGetNextLine(outputItr), "CAP LS", "Unexpected first line");
-		assertEquals(tryGetNextLine(outputItr), "NICK PircBotXBot", "Unexecpted second line");
+		assertEquals(tryGetNextLine(outputItr), "NICK TestBot", "Unexecpted second line");
 		assertTrue(tryGetNextLine(outputItr).startsWith("USER PircBotX 8 * :"), "Unexpected third line");
 
 		//Make sure the remaining line is okay

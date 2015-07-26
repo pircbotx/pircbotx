@@ -42,6 +42,8 @@ import org.pircbotx.TestUtils;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
@@ -50,6 +52,7 @@ import org.testng.annotations.DataProvider;
  * @author Leon Blakey
  */
 public class ListenerAdapterTest {
+	private static final Logger log = LoggerFactory.getLogger(ListenerAdapterTest.class);	
 	protected PircBotX bot;
 
 	@BeforeMethod
@@ -141,12 +144,24 @@ public class ListenerAdapterTest {
 			//Make sure this is an event method
 			if (curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
 				continue;
-			Class<?> curClass = curMethod.getParameterTypes()[0];
-			if (!curClass.isInterface() || !GenericEvent.class.isAssignableFrom(curClass))
+			Class<?> curEventClass = curMethod.getParameterTypes()[0];
+			
+			//Don't really have a concept of events extending eachother yet
+			Class superClass = curEventClass.getSuperclass();
+			if(!curEventClass.isInterface() && curEventClass != Event.class && superClass != Event.class) {
+				eventToMethod.get(curEventClass)
+						.add(eventToMethod
+								.get(superClass)
+								.iterator()
+								.next());
+				continue;
+			}
+			
+			if (!curEventClass.isInterface() || !GenericEvent.class.isAssignableFrom(curEventClass))
 				continue;
 			//Add this interface method to all events that implement it
 			for (Class curEvent : eventToMethod.keySet())
-				if (curClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
+				if (curEventClass.isAssignableFrom(curEvent) && !eventToMethod.get(curEvent).contains(curMethod))
 					eventToMethod.get(curEvent).add(curMethod);
 		}
 
@@ -158,8 +173,7 @@ public class ListenerAdapterTest {
 		return params;
 	}
 
-	@Test(dependsOnMethods = {"eventImplementTest"}, dataProvider = "onEventTestDataProvider",
-			description = "Tests onEvent's completness")
+	@Test(dataProvider = "onEventTestDataProvider", description = "Tests onEvent's completness")
 	public void onEventTest(Class<? extends Event> eventClass, Set<Method> methodsToCall) throws Exception {
 		//Init, using mocks to store method calls
 		final Set<Method> calledMethods = Sets.newHashSet();

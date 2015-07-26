@@ -49,6 +49,7 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;
+import org.testng.annotations.AfterSuite;
 
 /**
  *
@@ -67,10 +68,6 @@ public class PircTestRunner implements Closeable {
 	public final CapturedPircBotX bot;
 
 	public PircTestRunner(Configuration.Builder config) throws IOException, IrcException {
-		//TODO: Probably need something that isn't going to break every other test when one forgets to call close
-		//     Also this won't tell were the missing close was
-		//    This won't work if this happens to be the very last test
-		assertEquals(ACTIVE_INSTANCE_COUNT, 0, "Forgot to call close somewhere");
 		ACTIVE_INSTANCE_COUNT++;
 		
 		InetAddress address = InetAddress.getByName("127.1.1.1");
@@ -96,6 +93,14 @@ public class PircTestRunner implements Closeable {
 
 		bot = new CapturedPircBotX(config.buildConfiguration());
 		bot.startBot();
+	}
+	
+	@AfterSuite
+	public void closeCheck() {
+		//TODO: Probably need something that isn't going to break every other test when one forgets to call close
+		//     Also this won't tell were the missing close was
+		//    This won't work if this happens to be the very last test
+		assertEquals(ACTIVE_INSTANCE_COUNT, 0, "Forgot to call close somewhere");
 	}
 
 	public PircTestRunner botIn(@NonNull String line) {
@@ -146,6 +151,7 @@ public class PircTestRunner implements Closeable {
 		return this;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <E extends Event> E getNextEvent(Class<E> eventClass) {
 		checkInputEmpty();
 		

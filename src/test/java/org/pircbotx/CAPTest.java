@@ -22,6 +22,7 @@ import static org.testng.Assert.*;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.SASLCapHandler;
 import org.pircbotx.exception.CAPException;
+import org.pircbotx.hooks.events.ExceptionEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
 import org.testng.annotations.Test;
@@ -106,7 +107,7 @@ public class CAPTest {
 		test.close();
 	}
 
-	@Test(expectedExceptions = CAPException.class)
+	@Test
 	public void enableUnsupportedCapExceptionTest() throws Exception {
 		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
 				//Also test multiple cap handlers that may or may not fail
@@ -117,14 +118,23 @@ public class CAPTest {
 		)
 				.assertBotOut("CAP LS")
 				.assertBotHello();
-
+		
+		
 		try {
+			TestUtils.exAppender.failOnException = false;
 			test
 					.botIn(":%server CAP * LS :random-cap2 random-cap")
-					.assertBotOut("CAP END");
+					.assertEventClass(ExceptionEvent.class);
 		} finally {
-			assertTrue(test.bot.getEnabledCapabilities().isEmpty(), "unknown capabilities");
-			test.close();
+			TestUtils.exAppender.failOnException = true;
 		}
+		
+		assertTrue(test.bot.getEnabledCapabilities().isEmpty(), "unknown capabilities");
+		TestUtils.exAppender.failOnException = true;
+		
+		//TODO
+//		test.assertBotOut("CAP END");
+		
+		test.close();
 	}
 }
