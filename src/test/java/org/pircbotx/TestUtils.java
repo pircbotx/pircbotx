@@ -115,14 +115,16 @@ public class TestUtils {
 
 	public static Configuration.Builder generateConfigurationBuilder() {
 		return new Configuration.Builder()
-				.setCapEnabled(true)
+				//Core/required for PircTestRunner
 				.addServer("127.1.1.1")
 				.setListenerManager(new GenericListenerManager())
-				.setName("PircBotXBot")
+				.setName("TestBot")
 				.setMessageDelay(0)
-				.setAutoNickChange(true)
 				.setShutdownHookEnabled(false)
-				.setAutoReconnect(false);
+				.setAutoReconnect(false)
+				//Optional
+				.setCapEnabled(false) //CAP tests can enable this
+				;
 	}
 
 	public static class ExceptionStopperAppender extends AppenderBase<ILoggingEvent> {

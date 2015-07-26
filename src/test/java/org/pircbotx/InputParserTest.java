@@ -56,6 +56,7 @@ import org.pircbotx.hooks.events.RemovePrivateEvent;
 import org.pircbotx.hooks.events.RemoveSecretEvent;
 import org.pircbotx.hooks.events.RemoveTopicProtectionEvent;
 import org.pircbotx.hooks.events.ServerPingEvent;
+import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.SetChannelKeyEvent;
 import org.pircbotx.hooks.events.SetChannelLimitEvent;
 import org.pircbotx.hooks.events.SetInviteOnlyEvent;
@@ -99,7 +100,7 @@ public class InputParserTest {
 	@BeforeMethod
 	public void setUp() {
 		bot = new TestPircBotX(TestUtils.generateConfigurationBuilder());
-		bot.nick = "PircBotXBot";
+		bot.nick = "TestBot";
 
 		//Save objects into fields for easier access
 		this.dao = bot.getUserChannelDao();
@@ -1046,15 +1047,24 @@ public class InputParserTest {
 	public void nickAlreadyInUseTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
-		inputParser.handleLine(":irc.someserver.net 433 * " + bot.getConfiguration().getName() + " :Nickname is already in use.");
+		
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
+			.setAutoNickChange(true)
+		)
+				.botInConnect()
+				.botIn(":%server 433 * %nickbot :Nickname is already in use")
+				.assertBotOut("NICK TestBot1");
 
-		NickAlreadyInUseEvent event = bot.getTestEvent(NickAlreadyInUseEvent.class, "NickAlreadyInUseEvent not dispatched for 433");
+		NickAlreadyInUseEvent event = test.getNextEvent(NickAlreadyInUseEvent.class);
 		assertEquals(event.getUsedNick(), bot.getConfiguration().getName(), "event used nick doesn't match old one in config");
 
 		String newNick = bot.getConfiguration().getName() + "1";
 		assertEquals(event.getAutoNewNick(), newNick, "event auto new nick doesn't match 'nick1'");
 		assertEquals(event.getBot().getNick(), newNick, "bots nick doesn't match events nick");
 		assertEquals(event.getBot().getUserBot().getNick(), newNick, "bots user nick doesn't match events nick");
+		
+		test.assertEventClass(ServerResponseEvent.class);
+		test.close();
 	}
 
 	@Test
@@ -1179,7 +1189,7 @@ public class InputParserTest {
 		inputParser.handleLine(":" + otherUser + " PRIVMSG #aChannel :test");
 		assertEquals(bot.getUserBot().getLogin(), "PircBotX", "User bots login got changed");
 
-		inputParser.handleLine(":PircBotXBot!~PircBotX@some.hostmask JOIN #aChannel");
+		inputParser.handleLine(":TestBot!~PircBotX@some.hostmask JOIN #aChannel");
 		assertEquals(bot.getUserBot().getLogin(), "~PircBotX", "User bots new login doesn't match");
 		assertEquals(bot.getUserBot().getHostname(), "some.hostmask", "User bots new hostmask doesn't match");
 	}
@@ -1224,7 +1234,7 @@ public class InputParserTest {
 
 	@Test(dataProvider = "nickDifferentTestProvider")
 	public void nickDifferentTest(String code) throws IOException, IrcException {
-		assertEquals(bot.getNick(), "PircBotXBot", "Starting nick changed");
+		assertEquals(bot.getNick(), PircTestRunner.BOT_NICK, "Starting nick changed");
 
 		inputParser.handleLine(":irc.someserver.net " + code + " PBot :Welcome to the server");
 
