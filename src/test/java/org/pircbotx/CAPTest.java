@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import static org.testng.Assert.*;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.SASLCapHandler;
+import org.pircbotx.exception.CAPException;
+import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
 import org.testng.annotations.Test;
 
@@ -50,7 +52,9 @@ public class CAPTest {
 				.botIn("AUTHENTICATE +")
 				.assertEventClass(UnknownEvent.class) //TODO: Make CAP Events
 				.assertBotOut("AUTHENTICATE amlsbGVzAGppbGxlcwBzZXNhbWU=")
-				;
+				.botIn(":%server 903 TestBot :SASL auth success")
+				.assertEventClass(ServerResponseEvent.class)
+				.assertBotOut("CAP END");
 
 		assertTrue(test.bot.getEnabledCapabilities().contains("sasl"), "SASL isn't on the enabled capabilities list");
 		assertEquals(test.bot.getEnabledCapabilities().size(), 1, "SASL isn't on the enabled capabilities list");
@@ -59,7 +63,7 @@ public class CAPTest {
 	}
 
 	@Test
-	public void EnableTest() throws Exception {
+	public void enableTest() throws Exception {
 		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
 				//Also test multiple cap handlers that may or may not fail
 				.setCapEnabled(true)
@@ -80,5 +84,47 @@ public class CAPTest {
 		assertEquals(test.bot.getEnabledCapabilities().size(), 1, "SASL isn't on the enabled capabilities list");
 
 		test.close();
+	}
+
+	@Test
+	public void capNoneTest() throws Exception {
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				//Also test multiple cap handlers that may or may not fail
+				.setCapEnabled(true)
+				.addCapHandler(new EnableCapHandler("test-cap", true))
+				.addCapHandler(new SASLCapHandler("jilles", "sesame", true))
+				.addCapHandler(new EnableCapHandler("unused-cap2", true))
+		)
+				.assertBotOut("CAP LS")
+				.assertBotHello()
+				.botIn(":%server CAP * LS :random-cap2 random-cap")
+				.assertEventClass(UnknownEvent.class) //TODO: Make CAP Events
+				.assertBotOut("CAP END");
+
+		assertTrue(test.bot.getEnabledCapabilities().isEmpty(), "unknown capabilities");
+
+		test.close();
+	}
+
+	@Test(expectedExceptions = CAPException.class)
+	public void enableUnsupportedCapExceptionTest() throws Exception {
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				//Also test multiple cap handlers that may or may not fail
+				.setCapEnabled(true)
+				.addCapHandler(new EnableCapHandler("test-cap"))
+				.addCapHandler(new SASLCapHandler("jilles", "sesame", true))
+				.addCapHandler(new EnableCapHandler("unused-cap2", true))
+		)
+				.assertBotOut("CAP LS")
+				.assertBotHello();
+
+		try {
+			test
+					.botIn(":%server CAP * LS :random-cap2 random-cap")
+					.assertBotOut("CAP END");
+		} finally {
+			assertTrue(test.bot.getEnabledCapabilities().isEmpty(), "unknown capabilities");
+			test.close();
+		}
 	}
 }
