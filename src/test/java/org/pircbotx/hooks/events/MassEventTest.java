@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
+import org.pircbotx.hooks.Event;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -56,6 +57,15 @@ public class MassEventTest {
 		for (Field curField : event.getDeclaredFields())
 			if (TestUtils.isRealMember(curField))
 				fieldCount++;
+		
+		//Don't really have a concept of events extending eachother yet
+		Class parentclass = event.getSuperclass();
+		if (parentclass != Event.class) {
+			for (Field curField : parentclass.getDeclaredFields())
+				if (TestUtils.isRealMember(curField))
+					fieldCount++;
+		}
+		
 		Constructor constructor = event.getDeclaredConstructors()[0];
 		//(subtract one parameter to account for bot)
 		assertEquals(constructor.getParameterTypes().length - 1, fieldCount, wrapClass(event, "Number of constructor parameters don't match number of fields"

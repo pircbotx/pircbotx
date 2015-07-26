@@ -153,6 +153,12 @@ public abstract class ListenerAdapter implements Listener {
 			onVoice((VoiceEvent) event);
 		else if (event instanceof WhoisEvent)
 			onWhois((WhoisEvent) event);
+		
+		//Exception methods
+		if (event instanceof ExceptionEvent)
+			onException((ExceptionEvent) event);
+		if (event instanceof ListenerExceptionEvent)
+			onListenerException((ListenerExceptionEvent) event);
 
 		//Generic methods
 		if (event instanceof GenericCTCPEvent)
@@ -193,6 +199,9 @@ public abstract class ListenerAdapter implements Listener {
 	public void onDisconnect(DisconnectEvent event) throws Exception {
 	}
 
+	public void onException(ExceptionEvent event) throws Exception {
+	}
+
 	public void onFinger(FingerEvent event) throws Exception {
 	}
 
@@ -212,6 +221,9 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onKick(KickEvent event) throws Exception {
+	}
+
+	public void onListenerException(ListenerExceptionEvent event) throws Exception {
 	}
 
 	public void onMessage(MessageEvent event) throws Exception {

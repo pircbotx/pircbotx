@@ -381,7 +381,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			} else {
 				disconnectException = e;
 				//Something is wrong. Assume its bad and begin disconnect
-				log.error("Exception encountered when reading next line from server", e);
+				String debug = "Exception encountered when reading next line from server";
+				log.error(debug, e);
+				Utils.dispatchEvent(this, new ExceptionEvent(this, e, debug));
 				line = null;
 			}
 		}
@@ -401,7 +403,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			inputParser.handleLine(line);
 		} catch (Exception e) {
 			//Exception in client code. Just log and continue
-			log.error("Exception encountered when parsing line " + line, e);
+			String debug = "Exception encountered when parsing line " + line;
+			log.error(debug, e);
+			Utils.dispatchEvent(this, new ExceptionEvent(this, e, debug));
 		}
 
 		if (Thread.interrupted()) {
