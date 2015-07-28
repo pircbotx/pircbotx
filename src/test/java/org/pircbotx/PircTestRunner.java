@@ -20,7 +20,6 @@ package org.pircbotx;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.sun.glass.ui.SystemClipboard;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +29,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.concurrent.Callable;
 import javax.net.SocketFactory;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
@@ -49,8 +47,6 @@ import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.Test;
 
 /**
  * Various hooks for easier detailed testing
