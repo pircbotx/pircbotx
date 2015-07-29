@@ -1,5 +1,5 @@
 language: java
-jdk: oraclejdk8
+jdk: openjdk7
 #skip default travis install step
 install: true
 #build, test, and deploy official snapshot all in one go for faster build time and to stay under Travis's log limit
