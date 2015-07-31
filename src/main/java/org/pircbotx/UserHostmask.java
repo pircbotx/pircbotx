@@ -144,6 +144,13 @@ public class UserHostmask implements Comparable<User> {
 		}
 		return hostmask.toString();
 	}
+	
+	/**
+	 * Alias of {@link #getLogin() }
+	 */
+	public String getIdent() {
+		return getLogin();
+	}
 
 	/**
 	 * Send a line to the user.
