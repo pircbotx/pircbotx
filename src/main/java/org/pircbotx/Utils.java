@@ -21,8 +21,11 @@ import com.google.common.base.CharMatcher;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.slf4j.MDC;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -74,6 +77,40 @@ public final class Utils {
 			return list.get(index);
 		else
 			return defaultValue;
+	}
+
+	/**
+	 * Gets the message from the event and calls {@link #parseCommand(java.lang.String, java.lang.String)
+	 * }
+	 *
+	 * @see #parseCommand(java.lang.String, java.lang.String)
+	 */
+	@Nullable
+	public static String parseCommand(String expectedPrefix, GenericMessageEvent event) {
+		return parseCommand(expectedPrefix, event.getMessage());
+	}
+
+	/**
+	 * Parse given command, if it starts with the prefix return the line minus
+	 * the prefix (the arguments), otherwise return null
+	 * <p>
+	 * <ul>
+	 * <li>parseCommand("?say ", "?say hi everybody") == "hi everybody"</li>
+	 * <li>parseCommand("?say ", "?other stuff") == null</li>
+	 * <li>parseCommand("?start", "?start") == ""</li>
+	 * <li>parseCommand("?start", "?stop") == null</li>
+	 * </ul>
+	 *
+	 * @param expectedPrefix The prefix the command must start with and will be
+	 * removed when returned
+	 * @param rawCommand Raw input string
+	 * @return input string minus the prefix or null
+	 */
+	@Nullable
+	public static String parseCommand(@NonNull String expectedPrefix, @NonNull String rawCommand) {
+		if (rawCommand.startsWith(expectedPrefix))
+			return rawCommand.substring(expectedPrefix.length());
+		return null;
 	}
 
 	public static void addBotToMDC(PircBotX bot) {

@@ -53,4 +53,13 @@ public class UtilsTest {
 		assertEquals(tokens.get(0), "PING");
 		assertEquals(tokens.get(1), "sa3214323");
 	}
+
+	@Test
+	public void parseCommandTest() {
+		assertEquals(Utils.parseCommand("?say ", "?say hi everybody"), "hi everybody");
+		assertEquals(Utils.parseCommand("?say ", "?other stuff"), null);
+		assertEquals(Utils.parseCommand("?start", "?start"), "");
+		assertEquals(Utils.parseCommand("?start", "?stop"), null);
+		assertEquals(Utils.parseCommand("?ping", "?ping"), "");
+	}
 }
