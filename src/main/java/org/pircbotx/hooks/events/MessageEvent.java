@@ -73,16 +73,16 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	/**
 	 * The IrcV3 tags
 	 */
-	protected final ImmutableMap<String, String> v3Tags;
+	protected final ImmutableMap<String, String> tags;
 
-	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message, ImmutableMap<String, String> v3Tags) {
+	public MessageEvent(PircBotX bot, @NonNull Channel channel, @NonNull String channelSource, @NonNull UserHostmask userHostmask, User user, @NonNull String message, ImmutableMap<String, String> tags) {
 		super(bot);
 		this.channel = channel;
 		this.channelSource = channelSource;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.message = message;
-		this.v3Tags = v3Tags;
+		this.tags = tags;
 	}
 
 	/**
@@ -120,5 +120,12 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	@Override
 	public void respondPrivateMessage(String response) {
 		getUser().send().message(response);
+	}
+	
+	/**
+	 * Alias of {@link #getTags() }
+	 */
+	public ImmutableMap<String, String> getV3Tags() {
+		return tags;
 	}
 }
