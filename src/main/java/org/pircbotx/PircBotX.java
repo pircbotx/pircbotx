@@ -524,8 +524,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		return "Version{" + configuration.getVersion() + "}"
 				+ " Connected{" + isConnected() + "}"
 				+ " Server{" + getServerHostname() + "}"
-				+ " Port{" + getServerPort() + "}"
-				+ " Password{" + configuration.getServerPassword() + "}";
+				+ " Port{" + getServerPort() + "}";
 	}
 
 	/**
