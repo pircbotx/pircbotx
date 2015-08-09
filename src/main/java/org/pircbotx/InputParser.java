@@ -348,13 +348,13 @@ public class InputParser implements Closeable {
 			//Do not continue
 			return;
 		}
-		
+
 		if (!bot.loggedIn)
 			processConnect(line, command, target, parsedLine);
-		
+
 		//Might be a backend code 
 		int code = Utils.tryParseInt(command, -1);
-		if (code != -1) {	
+		if (code != -1) {
 			processServerResponse(code, line, parsedLine);
 			//Do not continue
 			return;
@@ -535,7 +535,8 @@ public class InputParser implements Closeable {
 			if (source.getNick().equalsIgnoreCase(bot.getNick())) {
 				//Its us, get channel info
 				channel = bot.getUserChannelDao().createChannel(target);
-				bot.sendRaw().rawLine("WHO " + target);
+				if (configuration.isOnJoinWhoEnabled())
+					bot.sendRaw().rawLine("WHO " + target);
 				bot.sendRaw().rawLine("MODE " + target);
 			}
 			//Create user if it doesn't exist already

@@ -162,13 +162,17 @@ public class InputParserTest {
 
 	@Test(description = "Verifies JoinEvent from user joining our channel")
 	public void joinTest() throws IOException, IrcException {
-		Channel aChannel = dao.createChannel("#aChannel");
-		UserHostmask aUserHostmask = TestUtils.generateTestUserSourceHostmask(bot);
-		inputParser.handleLine(":" + aUserHostmask.getHostmask() + " JOIN :#aChannel");
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder())
+				.assertBotHello()
+				.joinChannel()
+				.botIn(":%usersource JOIN #aChannel");
+		JoinEvent jevent = test.getNextEvent(JoinEvent.class);
+
+		UserHostmask aUserHostmask = TestUtils.generateTestUserSourceHostmask(test.bot);
+		UserChannelDao dao = test.bot.getUserChannelDao();
 
 		//Make sure the event gives us the same channels
-		JoinEvent jevent = bot.getTestEvent(JoinEvent.class, "No aChannel dispatched");
-		assertEquals(jevent.getChannel(), aChannel, "Event's channel does not match origional channel");
+		assertEquals(jevent.getChannel().getName(), "#aChannel", "Event's channel does not match origional channel");
 		assertEquals(jevent.getUserHostmask(), aUserHostmask, "Event's user does not match origional user");
 
 		//Make sure user info was updated
@@ -178,10 +182,25 @@ public class InputParserTest {
 		assertEquals(aUser.getLogin(), "~SomeTest", "User login wrong on JoinEvent");
 		assertEquals(aUser.getHostname(), "host.test", "User hostmask wrong on JoinEvent");
 
+		Channel aChannel = dao.getChannel("#aChannel");
+		
 		assertTrue(dao.containsUser(aUserHostmask.getNick()));
 		assertEquals(aUser.getChannels(), ImmutableSortedSet.of(aChannel), "User is not joined to channel after JoinEvent. Channels: " + aUser.getChannels());
-		assertEquals(aChannel.getUsers(), ImmutableSortedSet.of(aUser), "Channel is not joined to user after JoinEvent. Users: " + aChannel.getUsers());
-		assertEquals(aChannel.getUsersNicks(), ImmutableSortedSet.of(aUserHostmask.getNick()), "Channel nicks doesn't contain user");
+		assertEquals(aChannel.getUsers(), ImmutableSortedSet.of(aUser, test.bot.getUserBot()), "Channel is not joined to user after JoinEvent. Users: " + aChannel.getUsers());
+		assertEquals(aChannel.getUsersNicks(), ImmutableSortedSet.of(aUserHostmask.getNick(), test.bot.getUserBot().getNick()), "Channel nicks doesn't contain user");
+		
+		test.close();
+	}
+	
+	public void joinWhoDisabledTest() throws IOException, IrcException {
+		new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				.setOnJoinWhoEnabled(false)
+		)
+				.assertBotHello()
+				.botIn(":%userbot JOIN #aChannel")
+				.assertEventClass(JoinEvent.class)
+				.assertBotOut("MODE #aChannel")
+				.close();
 	}
 
 	@Test(description = "Verifies DAO allows case insensitive lookups")
@@ -808,7 +827,7 @@ public class InputParserTest {
 		assertEquals(qevent.getReason(), "", "QuitEvent's reason does not match given");
 		assertEquals(qevent.getUser().getChannels().first().getName(), "#aChannel", "QuitEvent user contains unexpected channels");
 	}
-	
+
 	/**
 	 * https://github.com/TheLQ/pircbotx/issues/256#issuecomment-124180823
 	 */
@@ -821,7 +840,7 @@ public class InputParserTest {
 		//Also test prefixes in names
 		inputParser.handleLine(":" + aUser.getHostmask() + " JOIN #aChannel");
 		inputParser.handleLine(":" + aUser.getHostmask() + " QUIT :" + quitMessage);
-		
+
 		QuitEvent qevent = bot.getTestEvent(QuitEvent.class, "QuitEvent not dispatched");
 		assertEquals(qevent.getUser().getGeneratedFrom(), aUser, "QuitEvent's user does not match given");
 		assertEquals(qevent.getReason(), quitMessage, "QuitEvent's reason does not match given");
@@ -1047,11 +1066,11 @@ public class InputParserTest {
 	public void nickAlreadyInUseTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
-		
+
 		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
-			.setAutoNickChange(true)
+				.setAutoNickChange(true)
 		)
-				.botInConnect()
+				.assertBotConnect()
 				.botIn(":%server 433 * %nickbot :Nickname is already in use")
 				.assertBotOut("NICK TestBot1");
 
@@ -1062,7 +1081,7 @@ public class InputParserTest {
 		assertEquals(event.getAutoNewNick(), newNick, "event auto new nick doesn't match 'nick1'");
 		assertEquals(event.getBot().getNick(), newNick, "bots nick doesn't match events nick");
 		assertEquals(event.getBot().getUserBot().getNick(), newNick, "bots user nick doesn't match events nick");
-		
+
 		test.assertEventClass(ServerResponseEvent.class);
 		test.close();
 	}

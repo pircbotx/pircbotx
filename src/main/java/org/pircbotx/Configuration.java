@@ -102,6 +102,7 @@ public class Configuration {
 	protected final long messageDelay;
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
+	protected final boolean onJoinWhoEnabled;
 	protected final boolean identServerEnabled;
 	protected final String nickservPassword;
 	protected final String nickservOnSuccess;
@@ -210,6 +211,7 @@ public class Configuration {
 		this.autoReconnectAttempts = builder.getAutoReconnectAttempts();
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
+		this.onJoinWhoEnabled = builder.isOnJoinWhoEnabled();
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = ImmutableList.copyOf(builder.getCapHandlers());
 		ImmutableSortedMap.Builder<Character, ChannelModeHandler> channelModeHandlersBuilder = ImmutableSortedMap.naturalOrder();
@@ -399,6 +401,11 @@ public class Configuration {
 		 */
 		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
 		/**
+		 * Enable or disable sending "WHO #channel" upon joining a channel and
+		 * rely only on the NAMES response
+		 */
+		protected boolean onJoinWhoEnabled = true;
+		/**
 		 * Enable or disable use of an existing {@link IdentServer}, default
 		 * false. Note that the IdentServer must be started separately or else
 		 * an exception will be thrown
@@ -537,6 +544,7 @@ public class Configuration {
 			this.autoReconnectAttempts = configuration.getAutoReconnectAttempts();
 			this.autoJoinChannels.clear();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
+			this.onJoinWhoEnabled = configuration.isOnJoinWhoEnabled();
 			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
 			this.capHandlers.clear();
@@ -595,6 +603,7 @@ public class Configuration {
 			this.autoReconnectDelay = otherBuilder.getAutoReconnectDelay();
 			this.autoReconnectAttempts = otherBuilder.getAutoReconnectAttempts();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
+			this.onJoinWhoEnabled = otherBuilder.isOnJoinWhoEnabled();
 			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();
 			this.capHandlers.clear();
