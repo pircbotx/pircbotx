@@ -983,7 +983,6 @@ public class InputParser implements Closeable {
 	public void close() {
 		capEndSent = false;
 		capHandlersFinished.clear();
-		capHandlersFinished.addAll(configuration.getCapHandlers());
 		whoisBuilder.clear();
 		motdBuilder = null;
 		channelListRunning = false;
