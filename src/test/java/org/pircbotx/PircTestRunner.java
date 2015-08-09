@@ -20,6 +20,7 @@ package org.pircbotx;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,11 +29,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 import javax.net.SocketFactory;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -54,11 +57,11 @@ import static org.testng.Assert.*;
  * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 public class PircTestRunner implements Closeable {
+	public static final HashMap<PircTestRunner, Exception> ACTIVE_INSTANCES = Maps.newHashMap();
 	public static final String BOT_NICK = "TestBot";
 	public static final String USER_SOURCE_HOSTMASK = "SourceUser!~SomeTest@host.test";
 	public static final String USER_OTHER_HOSTMASK = "OtherUser!~SomeTest@host.test";
 	public static final String USER_BOT_HOSTMASK = BOT_NICK + "!PircBotX@host.test";
-	private static int ACTIVE_INSTANCE_COUNT = 0;
 	private static final Logger log = LoggerFactory.getLogger(PircTestRunner.class);	
 	private final LinkedList<Event> eventQueue = new LinkedList<Event>();
 	private final LinkedList<String> outputQueue = new LinkedList<String>();
@@ -66,7 +69,7 @@ public class PircTestRunner implements Closeable {
 	public final CapturedPircBotX bot;
 
 	public PircTestRunner(Configuration.Builder config) throws IOException, IrcException {
-		ACTIVE_INSTANCE_COUNT++;
+		ACTIVE_INSTANCES.put(this, new RuntimeException("This forgot to call close"));
 		
 		InetAddress address = InetAddress.getByName("127.1.1.1");
 		Socket socket = mock(Socket.class);
@@ -98,9 +101,25 @@ public class PircTestRunner implements Closeable {
 		//     Also this won't tell were the missing close was
 		//    This won't work if this happens to be the very last test
 		log.error("Checking if tests are remaining");
-		assertEquals(ACTIVE_INSTANCE_COUNT, 0, "Forgot to call close somewhere");
+		StringBuilder exceptions = new StringBuilder();
+		for(Exception exception : ACTIVE_INSTANCES.values()) {
+			exceptions.append(System.lineSeparator())
+					.append(exception.toString())
+					.append(ExceptionUtils.getStackTrace(exception));
+		}
+		
+		if(!ACTIVE_INSTANCES.isEmpty()) {
+			log.error("Forgot to call cloase somewhere in " + exceptions.toString());
+		}
 	}
 
+	/**
+	 * Replaces "%server",
+	 * "%usersource",
+	 * "%userother",
+	 * "%userbot",
+	 * "%nickbot",
+	 */
 	public PircTestRunner botIn(@NonNull String line) {
 		checkInputEmpty();
 		checkOutputEmpty();
@@ -168,7 +187,7 @@ public class PircTestRunner implements Closeable {
 		return this;
 	}
 
-	public PircTestRunner botInConnect() {
+	public PircTestRunner assertBotConnect() {
 		assertBotHello();
 		botIn(":%server 004 TestBot ircd.test jmeter-ircd-basic-0.1 ov b");
 		assertEventClass(ConnectEvent.class);
@@ -206,7 +225,7 @@ public class PircTestRunner implements Closeable {
 		bot.shutdownEnabled = true;
 		botIn("ERROR: test is over");
 		assertTrue(bot.closeCalled, "Shutdown wasn't called");
-		ACTIVE_INSTANCE_COUNT--;
+		ACTIVE_INSTANCES.remove(this);
 	}
 	
 	protected void checkAllEmpty() {
