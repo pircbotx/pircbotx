@@ -436,4 +436,9 @@ public class Channel implements Comparable<Channel> {
 	public int compareTo(Channel other) {
 		return getName().compareToIgnoreCase(other.getName());
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends PircBotX> T getBot() {
+		return (T) bot;
+	}
 }

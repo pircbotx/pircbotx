@@ -176,4 +176,9 @@ public class UserHostmask implements Comparable<User> {
 	public int compareTo(User other) {
 		return getNick().compareToIgnoreCase(other.getNick());
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends PircBotX> T getBot() {
+		return (T) bot;
+	}
 }

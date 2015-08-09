@@ -258,4 +258,9 @@ public class ServerInfo {
 	public String getISupportValue(String key) {
 		return isupportRaw.get(key);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends PircBotX> T getBot() {
+		return (T) bot;
+	}
 }

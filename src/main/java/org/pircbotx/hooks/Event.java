@@ -17,14 +17,11 @@
  */
 package org.pircbotx.hooks;
 
-import com.google.common.base.Supplier;
 import com.google.common.collect.ComparisonChain;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.managers.ListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 
 /**
@@ -74,6 +71,7 @@ public abstract class Event implements GenericEvent {
 	 *
 	 * @param response The response to send
 	 */
+	@Override
 	public abstract void respond(String response);
 
 	/**
@@ -84,6 +82,7 @@ public abstract class Event implements GenericEvent {
 	 * @param other Other Event to compare to
 	 * @return the result of the comparison
 	 */
+	@Override
 	public int compareTo(Event other) {
 		ComparisonChain comparison = ComparisonChain.start()
 				.compare(getTimestamp(), other.getTimestamp())
@@ -94,6 +93,7 @@ public abstract class Event implements GenericEvent {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T extends PircBotX> T getBot() {
 		return (T) bot;
 	}
