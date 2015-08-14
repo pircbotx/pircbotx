@@ -110,18 +110,7 @@ public class ThreadedListenerManager extends ListenerManager {
 	}
 
 	protected void submitEvent(ExecutorService pool, final Listener listener, final Event event) {
-		pool.execute(new ManagedFutureTask(listener, event, new Callable<Void>() {
-			public Void call() {
-				try {
-					if (event.getBot() != null)
-						Utils.addBotToMDC(event.getBot());
-					listener.onEvent(event);
-				} catch (Throwable e) {
-					getExceptionHandler().onException(listener, event, e);
-				}
-				return null;
-			}
-		}));
+		pool.execute(new ManagedFutureTask(listener, event, new ExecuteListenerRunnable(this, listener, event)));
 	}
 
 	/**
@@ -157,8 +146,8 @@ public class ThreadedListenerManager extends ListenerManager {
 		protected final Listener listener;
 		protected final Event event;
 
-		public ManagedFutureTask(Listener listener, Event event, Callable<Void> callable) {
-			super(callable);
+		public ManagedFutureTask(Listener listener, Event event, Runnable run) {
+			super(run, null);
 			this.listener = listener;
 			this.event = event;
 			if (event.getBot() != null)

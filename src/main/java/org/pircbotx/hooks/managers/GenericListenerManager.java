@@ -72,11 +72,7 @@ public class GenericListenerManager extends ListenerManager {
 			Utils.addBotToMDC(event.getBot());
 		//Make copy in case listener removes itself causing ConcurrentModificationException's
 		for (Listener curListener : listenersImmutable)
-			try {
-				curListener.onEvent(event);
-			} catch (Throwable e) {
-				getExceptionHandler().onException(curListener, event, e);
-			}
+			executeListener(curListener, event);
 	}
 
 	public boolean listenerExists(Listener listener) {
