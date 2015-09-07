@@ -658,17 +658,36 @@ public class InputParser implements Closeable {
 		//Parsed response format: Everything after code
 		if (code == 433) {
 			//EXAMPLE: * AnAlreadyUsedName :Nickname already in use
+			//EXAMPLE: AnAlreadyUsedName :Nickname already in use (spec)
+			//TODO: When output parsing is implemented intercept outgoing NICK?
 			//Nickname in use, rename
-			String usedNick = parsedResponseOrig.get(1);
 			boolean autoNickChange = configuration.isAutoNickChange();
 			String autoNewNick = null;
-			if (autoNickChange) {
+			String usedNick = null;
+
+			boolean doAutoNickChange = false;
+			//Ignore cases where we already have a valid nick but changed to a used one
+			if (parsedResponse.size() == 3) {
+				usedNick = parsedResponse.get(1);
+				if (parsedResponse.get(0).equals("*")) {
+					doAutoNickChange = true;
+				}
+			} //For spec-compilant servers, if were not logged in its safe to assume we don't have a valid nick on connect
+			else {
+				usedNick = parsedResponse.get(0);
+				if (!bot.loggedIn) {
+					doAutoNickChange = true;
+				}
+			}
+
+			if (autoNickChange && doAutoNickChange) {
 				nickSuffix++;
 				autoNewNick = configuration.getName() + nickSuffix;
 				bot.sendIRC().changeNick(autoNewNick);
 				bot.setNick(autoNewNick);
 				bot.getUserChannelDao().renameUser(bot.getUserChannelDao().getUser(usedNick), autoNewNick);
 			}
+
 			configuration.getListenerManager().onEvent(new NickAlreadyInUseEvent(bot, usedNick, autoNewNick, autoNickChange));
 		} else if (code == RPL_LISTSTART) {
 			//EXAMPLE: 321 Channel :Users Name (actual text)

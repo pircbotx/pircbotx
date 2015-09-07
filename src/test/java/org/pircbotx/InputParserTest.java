@@ -1063,7 +1063,7 @@ public class InputParserTest {
 	}
 
 	@Test
-	public void nickAlreadyInUseTest() throws IOException, IrcException {
+	public void nickAlreadyInUse2ParamBeforeConnectTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
 
@@ -1085,6 +1085,77 @@ public class InputParserTest {
 		test.assertEventClass(ServerResponseEvent.class);
 		test.close();
 	}
+	
+	@Test
+	public void nickAlreadyInUse2ParamAfterConnectTest() throws IOException, IrcException {
+		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
+		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
+
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				.setAutoNickChange(true)
+		)
+				.assertBotHelloAndConnect()
+				.botIn(":%server 433 %nickbot AnotherNick :Nickname is already in use");
+
+		NickAlreadyInUseEvent event = test.getNextEvent(NickAlreadyInUseEvent.class);
+		assertNull(event.getAutoNewNick(), "Nick shouldn't of changed");
+		assertEquals(event.getUsedNick(), "AnotherNick", "event used nick doesn't match old one in config");
+
+		String oldNick = bot.getConfiguration().getName();
+		assertEquals(event.getBot().getNick(), oldNick, "bots nick doesn't match events nick");
+		assertEquals(event.getBot().getUserBot().getNick(), oldNick, "bots user nick doesn't match events nick");
+
+		test.assertEventClass(ServerResponseEvent.class);
+		test.close();
+	}
+	
+	@Test
+	public void nickAlreadyInUse1ParamBeforeConnectTest() throws IOException, IrcException {
+		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
+		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
+
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				.setAutoNickChange(true)
+		)
+				.assertBotHello()
+				.botIn(":%server 433 %nickbot :Nickname is already in use")
+				.assertBotOut("NICK TestBot1");
+
+		NickAlreadyInUseEvent event = test.getNextEvent(NickAlreadyInUseEvent.class);
+		assertEquals(event.getUsedNick(), bot.getConfiguration().getName(), "event used nick doesn't match old one in config");
+
+		String newNick = bot.getConfiguration().getName() + "1";
+		assertEquals(event.getAutoNewNick(), newNick, "event auto new nick doesn't match 'nick1'");
+		assertEquals(event.getBot().getNick(), newNick, "bots nick doesn't match events nick");
+		assertEquals(event.getBot().getUserBot().getNick(), newNick, "bots user nick doesn't match events nick");
+
+		test.assertEventClass(ServerResponseEvent.class);
+		test.close();
+	}
+	
+	@Test
+	public void nickAlreadyInUse1ParamAfterConnectTest() throws IOException, IrcException {
+		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
+		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
+
+		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				.setAutoNickChange(true)
+		)
+				.assertBotHelloAndConnect()
+				.botIn(":%server 433 %nickbot :Nickname is already in use");
+
+		NickAlreadyInUseEvent event = test.getNextEvent(NickAlreadyInUseEvent.class);
+		assertNull(event.getAutoNewNick(), "Nick shouldn't of changed");
+		assertEquals(event.getUsedNick(), bot.getConfiguration().getName(), "event used nick doesn't match old one in config");
+
+		assertEquals(event.getBot().getNick(), bot.getConfiguration().getName(), "bots nick doesn't match events nick");
+		assertEquals(event.getBot().getUserBot().getNick(), bot.getConfiguration().getName(), "bots user nick doesn't match events nick");
+
+		test.assertEventClass(ServerResponseEvent.class);
+		test.close();
+	}
+	
+	
 
 	@Test
 	public void nickRenameQuitTest() throws IOException, IrcException {
