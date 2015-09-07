@@ -486,6 +486,7 @@ public class DccHandler implements Closeable {
 				// No ports could be used.
 				throw new DccException(DccException.Reason.DccPortsInUse, user, "Ports " + dccPorts + " are in use.");
 		}
+		ss.setSoTimeout(bot.getConfiguration().getDccAcceptTimeout());
 		return ss;
 	}
 
