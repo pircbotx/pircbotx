@@ -1070,7 +1070,7 @@ public class InputParserTest {
 		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder()
 				.setAutoNickChange(true)
 		)
-				.assertBotConnect()
+				.assertBotHelloAndConnect()
 				.botIn(":%server 433 * %nickbot :Nickname is already in use")
 				.assertBotOut("NICK TestBot1");
 

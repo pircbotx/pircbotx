@@ -190,12 +190,20 @@ public class PircTestRunner implements Closeable {
 
 		return this;
 	}
-
+	
 	public PircTestRunner assertBotConnect() {
-		assertBotHello();
 		botIn(":%server 004 TestBot ircd.test jmeter-ircd-basic-0.1 ov b");
 		assertEventClass(ConnectEvent.class);
 		assertEventClass(ServerResponseEvent.class);
+		
+		checkAllEmpty();
+		
+		return this;
+	}
+
+	public PircTestRunner assertBotHelloAndConnect() {
+		assertBotHello();
+		assertBotConnect();
 		
 		checkAllEmpty();
 
