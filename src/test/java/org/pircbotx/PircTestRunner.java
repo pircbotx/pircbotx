@@ -42,11 +42,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.SocketConnectEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.managers.SequentialListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;
@@ -80,15 +82,17 @@ public class PircTestRunner implements Closeable {
 		when(socketFactory.createSocket(eq(address), anyInt(), eq((InetAddress) null), eq(0))).thenReturn(socket);
 		config.setSocketFactory(socketFactory);
 
-		config.setListenerManager(new GenericListenerManager() {
-			final Logger log = LoggerFactory.getLogger(getClass());
+		config.setListenerManager(SequentialListenerManager.newDefault()
+				.updateExecutorAllInline()
+				.addListenerInline(new Listener() {
+					final Logger log = LoggerFactory.getLogger(getClass());
 
-			@Override
-			public void onEvent(Event event) {
-				log.debug("Dispatched event " + event);
-				eventQueue.addLast(event);
-			}
-		});
+					@Override
+					public void onEvent(Event event) {
+						log.debug("Dispatched event " + event);
+						eventQueue.addLast(event);
+					}
+				}));
 
 		in = new FakeReader();
 
