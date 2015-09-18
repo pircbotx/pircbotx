@@ -1,0 +1,3 @@
+Bundle-SymbolicName: org.pircbotx
+-exportcontents: \
+	org.pircbotx*
