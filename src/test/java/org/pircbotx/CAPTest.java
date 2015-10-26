@@ -17,11 +17,13 @@
  */
 package org.pircbotx;
 
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import static org.testng.Assert.*;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.cap.SASLCapHandler;
 import org.pircbotx.exception.CAPException;
+import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.events.ExceptionEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.UnknownEvent;
@@ -136,5 +138,26 @@ public class CAPTest {
 //		test.assertBotOut("CAP END");
 		
 		test.close();
+	}
+	
+	//TODO
+	@Test(enabled = false)
+	public void capReconnectTest() throws IOException, IrcException {
+		new PircTestRunner(TestUtils.generateConfigurationBuilder()
+				//Also test multiple cap handlers that may or may not fail
+				.setAutoReconnect(true)
+				.setCapEnabled(true)
+				.addCapHandler(new EnableCapHandler("test-cap"))
+		)
+				.assertBotOut("CAP LS")
+				.assertBotHello()
+				.botIn(":%server CAP * LS :test-cap")
+				.assertEventClass(UnknownEvent.class)
+				.assertBotOut("CAP REQ :test-cap")
+				.assertBotConnect()
+				.botIn("ERROR: end")
+				.assertBotHello()
+				.botIn(":%server CAP * LS :test-cap")
+				.close();
 	}
 }

@@ -84,6 +84,7 @@ public class Configuration {
 	protected final boolean dccFilenameQuotes;
 	protected final ImmutableList<Integer> dccPorts;
 	protected final InetAddress dccLocalAddress;
+	protected final InetAddress dccPublicAddress;
 	protected final int dccAcceptTimeout;
 	protected final int dccResumeAcceptTimeout;
 	protected final int dccTransferBufferSize;
@@ -186,6 +187,7 @@ public class Configuration {
 		this.dccFilenameQuotes = builder.isDccFilenameQuotes();
 		this.dccPorts = ImmutableList.copyOf(builder.getDccPorts());
 		this.dccLocalAddress = builder.getDccLocalAddress();
+		this.dccPublicAddress = builder.getDccPublicAddress();
 		this.dccAcceptTimeout = builder.getDccAcceptTimeout();
 		this.dccResumeAcceptTimeout = builder.getDccResumeAcceptTimeout();
 		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
@@ -314,10 +316,15 @@ public class Configuration {
 		 */
 		protected List<Integer> dccPorts = Lists.newArrayList();
 		/**
-		 * The local address to bind DCC connections to, defaults to {@link #getLocalAddress()
-		 * }
+		 * The local address to bind DCC connections to, defaults to null (which
+		 * will be figured out at runtime)
 		 */
 		protected InetAddress dccLocalAddress = null;
+		/**
+		 * The public address advertised to other users, defaults to null (which
+		 * will be figured out at runtime)
+		 */
+		protected InetAddress dccPublicAddress = null;
 		/**
 		 * Timeout for user to accept a sent DCC request, defaults to {@link #getSocketTimeout()
 		 * }
@@ -518,6 +525,7 @@ public class Configuration {
 			this.dccPorts.clear();
 			this.dccPorts.addAll(configuration.getDccPorts());
 			this.dccLocalAddress = configuration.getDccLocalAddress();
+			this.dccPublicAddress = configuration.getDccPublicAddress();
 			this.dccAcceptTimeout = configuration.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = configuration.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
@@ -578,6 +586,7 @@ public class Configuration {
 			this.dccPorts.clear();
 			this.dccPorts.addAll(otherBuilder.getDccPorts());
 			this.dccLocalAddress = otherBuilder.getDccLocalAddress();
+			this.dccPublicAddress = otherBuilder.getDccPublicAddress();
 			this.dccAcceptTimeout = otherBuilder.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = otherBuilder.getDccResumeAcceptTimeout();
 			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
@@ -612,14 +621,6 @@ public class Configuration {
 			this.channelModeHandlers.addAll(otherBuilder.getChannelModeHandlers());
 			this.shutdownHookEnabled = otherBuilder.isShutdownHookEnabled();
 			this.botFactory = otherBuilder.getBotFactory();
-		}
-
-		/**
-		 * The local address to bind DCC connections to. Defaults to {@link #getLocalAddress()
-		 * }
-		 */
-		public InetAddress getDccLocalAddress() {
-			return (dccLocalAddress != null) ? dccLocalAddress : localAddress;
 		}
 
 		/**

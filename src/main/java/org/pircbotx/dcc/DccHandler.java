@@ -233,14 +233,30 @@ public class DccHandler implements Closeable {
 		checkNotNull(event, "Event cannot be null");
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
-			bot.sendDCC().chatPassiveAccept(event.getUser().getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getToken());
+			InetAddress publicAddress = getRealDccPublicAddress(serverSocket);
+			bot.sendDCC().chatPassiveAccept(event.getUser().getNick(), 
+					publicAddress, serverSocket.getLocalPort(), event.getToken());
+			
+			log.debug("Sent DCC recieve chat accept to user {} ({}ms timeout) to passive connect on public address {}, local address {}", 
+					event.getUser().getNick(), 
+					bot.getConfiguration().getDccAcceptTimeout(),
+					publicAddress, 
+					serverSocket.getLocalSocketAddress());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), userSocket);
-		} else
-			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), new Socket(event.getAddress(), event.getPort()));
+		} else {
+			InetAddress localAddress = getRealDccLocalAddress();
+			log.debug("Accepting DCC recieve chat from user {} at address {} port {} from local address {}", 
+					event.getUser().getNick(), 
+					event.getAddress(),
+					event.getPort(),
+					localAddress);
+			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), 
+					new Socket(event.getAddress(), event.getPort(), localAddress, 0));
+		}
 	}
 
 	/**
@@ -309,14 +325,14 @@ public class DccHandler implements Closeable {
 
 		if (event.isPassive()) {
 			ServerSocket serverSocket = createServerSocket(event.getUser());
-			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), serverSocket.getInetAddress(), serverSocket.getLocalPort(), event.getFilesize(), event.getToken());
+			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), getRealDccPublicAddress(serverSocket), serverSocket.getLocalPort(), event.getFilesize(), event.getToken());
 			Socket userSocket = serverSocket.accept();
 
 			//User is connected, begin transfer
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		} else {
-			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccAddress(), 0);
+			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccLocalAddress(), 0);
 			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		}
 	}
@@ -354,10 +370,14 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendPassiveChat) {
 				pendingSendPassiveChat.put(pendingChat, countdown);
 			}
-			bot.sendDCC().chatPassiveRequest(receiver.getNick(), getRealDccAddress(), chatToken);
+			InetAddress publicAddress = getRealDccPublicAddress();
+			bot.sendDCC().chatPassiveRequest(receiver.getNick(), publicAddress, chatToken);
 
 			//Wait for the user to acknowledge
-			log.debug("Waiting {}ms for user {} to accept passive chat", dccAcceptTimeout, receiver.getNick());
+			log.debug("Sent DCC send chat request to user {} ({}ms timeout) for passive connect info using public address {}", 
+					receiver.getNick(), 
+					bot.getConfiguration().getDccAcceptTimeout(),
+					publicAddress);
 			if (!countdown.await(dccAcceptTimeout, TimeUnit.MILLISECONDS))
 				throw new DccException(DccException.Reason.ChatTimeout, receiver, "");
 			if (shuttingDown)
@@ -367,11 +387,18 @@ public class DccHandler implements Closeable {
 		} else {
 			//Get the user to connect to us
 			ServerSocket serverSocket = createServerSocket(receiver);
-			serverSocket.setSoTimeout(dccAcceptTimeout);
-			bot.sendDCC().chatRequest(receiver.getNick(), serverSocket.getInetAddress(), serverSocket.getLocalPort());
+			InetAddress publicAddress = getRealDccPublicAddress(serverSocket);
+			bot.sendDCC().chatRequest(receiver.getNick(), publicAddress, serverSocket.getLocalPort());
 
 			//Wait for user to connect
+			log.debug("Sent DCC send chat request to user {} ({}ms timeout) to connect on public address {}:{}, local address {}", 
+					receiver.getNick(), 
+					bot.getConfiguration().getDccAcceptTimeout(),
+					publicAddress, 
+					serverSocket.getLocalPort(),
+					serverSocket.getLocalSocketAddress());
 			Socket userSocket = serverSocket.accept();
+			log.debug("Recieved connection");
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createSendChat(bot, receiver, userSocket);
 		}
@@ -422,9 +449,15 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendTransfers) {
 				pendingSendPassiveTransfers.put(pendingPassiveTransfer, countdown);
 			}
-			bot.sendDCC().filePassiveRequest(receiver.getNick(), safeFilename, getRealDccAddress(), file.length(), transferToken);
+			InetAddress publicAddress = getRealDccPublicAddress();
+			bot.sendDCC().filePassiveRequest(receiver.getNick(), safeFilename, publicAddress, file.length(), transferToken);
 
 			//Wait for user to acknowledge
+			log.debug("Sent DCC send file request to user {} ({}ms timeout) for passive connect info using public address {} for file {}", 
+					receiver.getNick(), 
+					bot.getConfiguration().getDccAcceptTimeout(),
+					publicAddress, 
+					file.getAbsolutePath());
 			if (!countdown.await(bot.getConfiguration().getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
 				throw new DccException(DccException.Reason.FileTransferTimeout, receiver, "File: " + file.getAbsolutePath());
 			if (shuttingDown)
@@ -439,9 +472,17 @@ public class DccHandler implements Closeable {
 			synchronized (pendingSendTransfers) {
 				pendingSendTransfers.add(pendingSendFileTransfer);
 			}
-			bot.sendDCC().fileRequest(receiver.getNick(), safeFilename, serverSocket.getInetAddress(), serverSocket.getLocalPort(), file.length());
+			InetAddress publicAddress = getRealDccPublicAddress(serverSocket);
+			bot.sendDCC().fileRequest(receiver.getNick(), safeFilename, publicAddress, serverSocket.getLocalPort(), file.length());
 
 			//Wait for the user to connect
+			log.debug("Sent DCC send file request to user {} ({}ms timeout) to connect on public address {}, local address {}, port {} for file {}", 
+					receiver.getNick(), 
+					bot.getConfiguration().getDccAcceptTimeout(),
+					publicAddress, 
+					serverSocket.getLocalSocketAddress(), 
+					serverSocket.getLocalPort(),
+					file.getAbsolutePath());
 			Socket userSocket = serverSocket.accept();
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
@@ -456,18 +497,40 @@ public class DccHandler implements Closeable {
 	 * <li>{@link PircBotX#getLocalAddress()}</li>
 	 * </ol>
 	 */
-	public InetAddress getRealDccAddress() {
-		//Try dccLocalAddress (which tries to default to dccLocalAddress
+	public InetAddress getRealDccLocalAddress() {
 		InetAddress address = bot.getConfiguration().getDccLocalAddress();
-		return (address != null) ? address : bot.getLocalAddress();
+		address = (address != null) ? address : bot.getConfiguration().getLocalAddress();
+		address = (address != null) ? address : bot.getLocalAddress();
+		return address;
+	}
+	
+	/**
+	 * Try to get a real InetAddress in this order:
+	 * <ol>
+	 * <li>{@link Configuration#getDccPublicAddress()}</li>
+	 * <li>{@link #getRealDccLocalAddress() }</li>
+	 * </ol>
+	 */
+	public InetAddress getRealDccPublicAddress() {
+		InetAddress address = bot.getConfiguration().getDccPublicAddress();
+		return (address != null) ? address : getRealDccLocalAddress();
+	}
+	
+	/**
+	 * Try to get a real InetAddress in this order:
+	 * <ol>
+	 * <li>{@link Configuration#getDccPublicAddress()}</li>
+	 * <li>The given ServerSocket's address</li>
+	 * </ol>
+	 */
+	public InetAddress getRealDccPublicAddress(ServerSocket ss) {
+		InetAddress address = bot.getConfiguration().getDccPublicAddress();
+		return (address != null) ? address : ss.getInetAddress();
 	}
 
 	protected ServerSocket createServerSocket(User user) throws IOException, DccException {
-		InetAddress address = bot.getConfiguration().getDccLocalAddress();
+		InetAddress address = getRealDccLocalAddress();
 		ImmutableList<Integer> dccPorts = bot.getConfiguration().getDccPorts();
-		if (address == null)
-			//Default to bots address
-			address = bot.getLocalAddress();
 		ServerSocket ss = null;
 		if (dccPorts.isEmpty())
 			// Use any free port.
