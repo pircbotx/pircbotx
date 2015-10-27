@@ -47,6 +47,7 @@ import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
+import java.net.Inet4Address;
 import java.net.Inet6Address;
 import lombok.NonNull;
 import org.pircbotx.UserHostmask;
@@ -248,7 +249,7 @@ public class DccHandler implements Closeable {
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createReceiveChat(bot, event.getUser(), userSocket);
 		} else {
-			InetAddress localAddress = getRealDccLocalAddress();
+			InetAddress localAddress = getRealDccLocalAddress(event.getAddress());
 			log.debug("Accepting DCC recieve chat from user {} at address {} port {} from local address {}", 
 					event.getUser().getNick(), 
 					event.getAddress(),
@@ -332,7 +333,7 @@ public class DccHandler implements Closeable {
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		} else {
-			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccLocalAddress(), 0);
+			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccLocalAddress(event.getAddress()), 0);
 			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		}
 	}
@@ -497,6 +498,15 @@ public class DccHandler implements Closeable {
 	 * <li>{@link PircBotX#getLocalAddress()}</li>
 	 * </ol>
 	 */
+	public InetAddress getRealDccLocalAddress(InetAddress destAddress) {
+		//Issue #268: Workaround to give IPv6 users an IPv6 address, or return null to let the OS figure it out
+		InetAddress address = bot.getConfiguration().getDccLocalAddress();
+		address = (address != null && destAddress.getClass().equals(address.getClass())) ? address : bot.getConfiguration().getLocalAddress();
+		address = (address != null && destAddress.getClass().equals(address.getClass())) ? address : bot.getLocalAddress();
+		address = (address != null && destAddress.getClass().equals(address.getClass())) ? address : null;
+		return address;
+	}
+	
 	public InetAddress getRealDccLocalAddress() {
 		InetAddress address = bot.getConfiguration().getDccLocalAddress();
 		address = (address != null) ? address : bot.getConfiguration().getLocalAddress();
