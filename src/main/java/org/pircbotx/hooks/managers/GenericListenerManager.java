@@ -47,7 +47,7 @@ import org.pircbotx.hooks.WaitForQueue;
  */
 @Deprecated
 @Slf4j
-public class GenericListenerManager extends ListenerManager {
+public class GenericListenerManager extends AbstractListenerManager {
 	protected Set<Listener> listeners = new HashSet<Listener>();
 	protected ImmutableSet<Listener> listenersImmutable = ImmutableSet.copyOf(listeners);
 

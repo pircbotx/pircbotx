@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -36,7 +35,6 @@ import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.PircBotX;
-import org.pircbotx.Utils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
@@ -46,7 +44,7 @@ import org.pircbotx.hooks.Listener;
  * @author Leon Blakey
  */
 @Slf4j
-public class ThreadedListenerManager extends ListenerManager {
+public class ThreadedListenerManager extends AbstractListenerManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected ExecutorService pool;

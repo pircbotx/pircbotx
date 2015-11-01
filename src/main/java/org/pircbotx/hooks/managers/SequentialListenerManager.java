@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 @Builder
-public class SequentialListenerManager extends ListenerManager {
+public class SequentialListenerManager extends AbstractListenerManager {
 	private static final Logger log = LoggerFactory.getLogger(SequentialListenerManager.class);
 	/**
 	 * Key: The actual listener, Value: The wrapper that calls it
@@ -208,7 +208,7 @@ public class SequentialListenerManager extends ListenerManager {
 
 	@RequiredArgsConstructor
 	public static class InlineListenerExecutor implements ListenerExecutor {
-		protected final ListenerManager listenerManager;
+		protected final AbstractListenerManager listenerManager;
 		protected final Listener wrappedListener;
 
 		@Override
@@ -223,7 +223,7 @@ public class SequentialListenerManager extends ListenerManager {
 
 	@RequiredArgsConstructor
 	public static class PooledListenerExecutor implements ListenerExecutor {
-		protected final ListenerManager listenerManager;
+		protected final AbstractListenerManager listenerManager;
 		protected final Listener wrappedListener;
 		protected final Executor executor;
 
