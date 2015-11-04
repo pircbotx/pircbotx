@@ -77,7 +77,7 @@ public class OutputIRC {
 	 */
 	public void quitServer(String reason) {
 		checkNotNull(reason, "Reason cannot be null");
-		bot.sendRaw().rawLine("QUIT :" + reason);
+		bot.sendRaw().rawLineNow("QUIT :" + reason);
 	}
 
 	/**
