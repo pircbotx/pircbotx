@@ -36,7 +36,7 @@ public class OutputDCC {
 	protected final PircBotX bot;
 
 	public void dcc(String target, String service, Object... parameters) {
-		bot.sendIRC().ctcpCommand(target, SPACE_JOINER.join("DCC", service, (Object[]) parameters));
+		bot.sendIRC().ctcpCommand(target, SPACE_JOINER.join("DCC", service, parameters));
 	}
 
 	public void fileRequest(String target, String filename, InetAddress senderAddress, int senderPort, long filesize) {

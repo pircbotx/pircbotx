@@ -24,6 +24,7 @@ import lombok.Getter;
  * @author Leon Blakey
  */
 public class DaoException extends RuntimeException {
+	protected static final long serialVersionUID = 1L;
 	@Getter
 	protected final Reason reason;
 

@@ -32,6 +32,7 @@ import static com.google.common.base.Preconditions.*;
  * <lord.quackstar at gmail.com>
  */
 public class IrcException extends Exception {
+	protected static final long serialVersionUID = 1L;
 	/**
 	 * Constructs a new IrcException.
 	 *

@@ -25,6 +25,8 @@ import static com.google.common.base.Preconditions.*;
  * @author Leon Blakey
  */
 public class CAPException extends RuntimeException {
+	protected static final long serialVersionUID = 1L;
+	
 	public CAPException(Reason reason, String detail) {
 		this(reason, detail, null);
 	}

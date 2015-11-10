@@ -27,6 +27,7 @@ import org.pircbotx.User;
  * @author Leon Blakey
  */
 public class DccException extends RuntimeException {
+	protected static final long serialVersionUID = 1L;
 	@Getter
 	protected final Reason ourReason;
 	@Getter

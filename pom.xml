@@ -200,8 +200,9 @@
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArgs>
-						<arg>-Xlint:unchecked</arg>
-						<arg>-Xlint:deprecation</arg>
+						<arg>-Xlint</arg>
+						<!-- Disable warning about compiling to 1.5 -->
+						<arg>-Xlint:-options</arg>
 					</compilerArgs>
 				</configuration>
 				<!--Do NOT show depreciation in test compile-->

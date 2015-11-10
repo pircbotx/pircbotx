@@ -27,6 +27,8 @@ import org.pircbotx.hooks.Event;
  * @author Leon Blakey
  */
 public class UnknownEventException extends RuntimeException {
+	protected static final long serialVersionUID = 1L;
+	
 	public UnknownEventException(Event event, Throwable cause) {
 		super("Unknown Event " + event.getClass().toString(), cause);
 		checkNotNull(event, "Event cannot be null");

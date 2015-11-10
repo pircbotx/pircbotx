@@ -895,6 +895,8 @@ public class Configuration {
 	 * Factory for various internal bot classes.
 	 */
 	public static class BotFactory {
+		//Allow subclasses to use own version of User and Channel
+		@SuppressWarnings("rawtypes")
 		public UserChannelDao createUserChannelDao(PircBotX bot) {
 			return new UserChannelDao(bot, bot.getConfiguration().getBotFactory());
 		}
