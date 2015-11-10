@@ -101,11 +101,30 @@ public class UserChannelMap<U extends User, C extends Channel> {
 	public UserChannelMapSnapshot createSnapshot(Map<U, UserSnapshot> userSnapshots, Map<C, ChannelSnapshot> channelSnapshots) {
 		//Create new multimaps replacing each user and channel with their respective snapshots
 		ImmutableMultimap.Builder<UserSnapshot, ChannelSnapshot> userToChannelSnapshotBuilder = ImmutableMultimap.builder();
-		for (Map.Entry<U, C> curEntry : userToChannelMap.entries())
-			userToChannelSnapshotBuilder.put(userSnapshots.get(curEntry.getKey()), channelSnapshots.get(curEntry.getValue()));
+		for (Map.Entry<U, C> curEntry : userToChannelMap.entries()) {
+			//Issue #274: Track down NPE
+			UserSnapshot key = userSnapshots.get(curEntry.getKey());
+			if (key == null) {
+				throw new NullPointerException("Issue #274: No user snapshot for " + curEntry.getKey());
+			}
+			ChannelSnapshot value = channelSnapshots.get(curEntry.getValue());
+			if (value == null) {
+				throw new NullPointerException("Issue #274: No channel snapshot for " + curEntry.getValue());
+			}
+			userToChannelSnapshotBuilder.put(key, value);
+		}
 		ImmutableMultimap.Builder<ChannelSnapshot, UserSnapshot> channelToUserSnapshotBuilder = ImmutableMultimap.builder();
-		for (Map.Entry<C, U> curEntry : channelToUserMap.entries())
-			channelToUserSnapshotBuilder.put(channelSnapshots.get(curEntry.getKey()), userSnapshots.get(curEntry.getValue()));
+		for (Map.Entry<C, U> curEntry : channelToUserMap.entries()) {
+			ChannelSnapshot key = channelSnapshots.get(curEntry.getKey());
+			if (key == null) {
+				throw new NullPointerException("Issue #274: No channel snapshot for " + curEntry.getKey());
+			}
+			UserSnapshot value = userSnapshots.get(curEntry.getValue());
+			if (value == null) {
+				throw new NullPointerException("Issue #274: No user snapshot for " + curEntry.getValue());
+			}
+			channelToUserSnapshotBuilder.put(key, value);
+		}
 
 		//Return a snapshot of the map
 		return new UserChannelMapSnapshot(userToChannelSnapshotBuilder.build(), channelToUserSnapshotBuilder.build());
