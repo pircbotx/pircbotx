@@ -68,8 +68,7 @@ public class GenericListenerManager extends AbstractListenerManager {
 
 	@Override
 	public void onEvent(Event event) {
-		if (event.getBot() != null)
-			Utils.addBotToMDC(event.getBot());
+		super.onEvent(event);
 		for (Listener curListener : listenersImmutable) {
 			executeListener(curListener, event);
 		}

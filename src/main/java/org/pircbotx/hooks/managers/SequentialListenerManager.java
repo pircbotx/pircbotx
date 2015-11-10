@@ -91,6 +91,7 @@ public class SequentialListenerManager extends AbstractListenerManager {
 
 	@Override
 	public void onEvent(Event event) {
+		super.onEvent(event);
 		for (ListenerExecutor executor : listenerExecutors) {
 			executor.handleEvent(event);
 		}

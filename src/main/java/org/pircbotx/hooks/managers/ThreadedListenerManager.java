@@ -102,6 +102,7 @@ public class ThreadedListenerManager extends AbstractListenerManager {
 	@Override
 	@Synchronized("listeners")
 	public void onEvent(Event event) {
+		super.onEvent(event);
 		//For each Listener, add a new Runnable
 		for (Listener curListener : getListenersReal())
 			submitEvent(pool, curListener, event);

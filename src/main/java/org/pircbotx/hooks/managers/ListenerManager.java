@@ -23,7 +23,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- * Manages {@link Listener}'s and handles dispatching events
+ * Track {@link Listener}'s and handles dispatching events
  *
  * @author Leon Blakey
  */
