@@ -105,7 +105,7 @@ public class IdentServer implements Closeable, Runnable {
 	public static void stopServer() throws IOException {
 		if (server == null)
 			throw new RuntimeException("Never created an IdentServer");
-		server.close();
+		server.doClose();
 		server = null;
 	}
 
@@ -254,12 +254,19 @@ public class IdentServer implements Closeable, Runnable {
 	}
 
 	/**
+	 * Calls {@link #stopServer() }
+	 * @throws IOException 
+	 */
+	public void close() throws IOException {
+		stopServer();
+	}
+	
+	/**
 	 * Close the server socket and clear pending ident responses.
 	 *
 	 * @throws IOException If an error occured during closing
 	 */
-	@Synchronized("INSTANCE_CREATE_LOCK")
-	public void close() throws IOException {
+	protected void doClose() throws IOException {
 		serverSocket.close();
 		identEntries.clear();
 		log.info("Closed ident server on port " + port + "/" + serverSocket.getLocalPort());
