@@ -25,7 +25,9 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
 
 /**
- *
+ * Dispatched when a listener throws an Exception. Will not be dispatched again 
+ * if a listener throws an exception while handling this event
+ * 
  * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 @Data

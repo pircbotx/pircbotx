@@ -24,7 +24,8 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.Event;
 
 /**
- *
+ * Dispatched when an Exception is encountered
+ * 
  * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 @Data

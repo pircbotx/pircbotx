@@ -11,7 +11,7 @@
  * CTCP VERSION, ACTION, PING, TIME, and FINGER support
  * IPv6 support
  * Support for op, voice, halfop, superops, and owner modes
- * [CAP negotiation](https://github.com/TheLQ/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, and away-notify
+ * [IRCv3 CAP negotiation](https://github.com/TheLQ/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, and away-notify
  * [WEBIRC](https://github.com/TheLQ/pircbotx/wiki/Documentation#webirc-authentication) support
  * Built in [Ident server](https://github.com/TheLQ/pircbotx/wiki/Documentation#ident-server)
 

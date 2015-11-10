@@ -18,7 +18,8 @@
 package org.pircbotx.hooks.types;
 
 /**
- *
+ * Generic interface for Channel Op, Voice, Half Op, Super Op, and Owner Events
+ * 
  * @author Leon Blakey
  */
 public interface GenericChannelModeRecipientEvent extends GenericUserModeEvent, GenericChannelModeEvent {
