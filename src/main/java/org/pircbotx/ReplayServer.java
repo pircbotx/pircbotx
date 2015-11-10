@@ -84,7 +84,7 @@ public class ReplayServer {
 	 */
 	@RequiredArgsConstructor
 	@Slf4j
-	protected static class WrapperListenerManager extends ListenerManager {
+	protected static class WrapperListenerManager implements ListenerManager {
 		private static interface ImplExclude {
 			public void onEvent(Event event);
 		}
