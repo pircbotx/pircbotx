@@ -56,6 +56,12 @@ public class MyListener extends ListenerAdapter {
 
 PircBotX can do so much more! [Read the docs for more information](http://github.com/TheLQ/pircbotx/wiki/Documentation)
 
+## Support
+
+[Most answers can be found in the docs](http://github.com/TheLQ/pircbotx/wiki/Documentation) and [the wiki](http://github.com/TheLQ/pircbotx/wiki/)
+
+If you can't find an answer, ask on IRC at irc.freenode.net/#pircbotx . [We also have a mailing list](http://groups.google.com/group/pircbotx)
+
 ## License 
 This project is licensed under GNU GPL v3 to be compatible with the PircBot license. 
 
