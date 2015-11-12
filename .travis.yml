@@ -1,23 +1,23 @@
 language: java
 jdk: openjdk7
-#skip default travis install step
+
+# skip default install step
 install: true
-#build, test, and deploy official snapshot all in one go for faster build time and to stay under Travis's log limit
-script: mvn clean install source:jar deploy --settings .travis/maven-settings.xml -Dsnapshot.version=-`git rev-parse --short HEAD`
+
+# codecov
+before_script:
+  - pip install --user codecov
+
+# build
+script: mvn clean install -Dsnapshot.version=-`git rev-parse --short HEAD`
+
 after_success:
- #Deploy javadoc to gh-pages branch
- - mvn site site-deploy -Pcomplete-build -DskipTests=true --batch-mode
- #Seriously git?! git checkout, git reset, git pull, all with gh-pages, origin/gh-pages, remotes/origin, gh-pages?
- #Nope, obviously you do
- - git fetch origin -f gh-pages:gh-pages
- - git checkout gh-pages
- #...
- - mv target/site-deploy-generated/* snapshot/
- - git add snapshot
- - git config user.name "Leon Blakey"
- - git config user.email "leon.m.blakey@gmail.com"
- - git commit -m "Autobuild of maven site by Travis CI"
- - git push https://$DEPLOY_PAGES_USERNAME:$DEPLOY_PAGES_PASSWORD@github.com/TheLQ/pircbotx.git
-notifications:
-  irc:
-  - irc.freenode.org#pircbotx
+ - codecov
+
+deploy:
+  provider: script
+  script: .travis/deploy.sh
+
+#notifications:
+#  irc:
+#  - irc.freenode.org#pircbotx
