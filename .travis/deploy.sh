@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 # Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
 #
 # This file is part of PircBotX.
@@ -15,12 +15,13 @@
 # You should have received a copy of the GNU General Public License along with
 # PircBotX. If not, see <http://www.gnu.org/licenses/>.
 #
-set +x +e
+set +x
+set +e
 mvn source:jar #deploy
 mvn -Pcomplete-build site #site-deploy
 
 #everything is built however build may of changed repo
-git checkout .
+git checkout master
 
 #Seriously git?! git checkout, git reset, git pull, all with gh-pages, origin/gh-pages, remotes/origin, gh-pages?
 #Nope, obviously you do
