@@ -19,6 +19,9 @@
 mvn source:jar #deploy
 mvn -Pcomplete-build site #site-deploy
 
+#everything is built however build may of changed repo
+git checkout .
+
 #Seriously git?! git checkout, git reset, git pull, all with gh-pages, origin/gh-pages, remotes/origin, gh-pages?
 #Nope, obviously you do
 git fetch origin -f gh-pages:gh-pages
