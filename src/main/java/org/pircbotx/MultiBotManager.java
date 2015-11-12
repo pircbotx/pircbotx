@@ -180,11 +180,19 @@ public class MultiBotManager {
 		Futures.addCallback(future, new BotFutureCallback(bot));
 		return future;
 	}
+	
+	/**
+	 * Stop with no quit message
+	 * @see #stop(java.lang.String) 
+	 */
+	public void stop() {
+		stop("");
+	}
 
 	/**
 	 * Disconnect all bots from their respective severs cleanly.
 	 */
-	public void stop() {
+	public void stop(String quitMessage) {
 		synchronized (stateLock) {
 			if (state != State.RUNNING)
 				throw new RuntimeException("MultiBotManager cannot be stopped again or before starting. State: " + state);
@@ -193,7 +201,7 @@ public class MultiBotManager {
 
 		for (PircBotX bot : runningBots.keySet())
 			if (bot.isConnected())
-				bot.sendIRC().quitServer();
+				bot.sendIRC().quitServer(quitMessage);
 
 		botPool.shutdown();
 	}
