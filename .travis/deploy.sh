@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # PircBotX. If not, see <http://www.gnu.org/licenses/>.
 #
-
+set +x +e
 mvn source:jar #deploy
 mvn -Pcomplete-build site #site-deploy
 
