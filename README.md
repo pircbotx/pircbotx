@@ -1,6 +1,8 @@
-**June 2015 NEWS:** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
+**January 2016** PircBotX 2.1 is finally released!
 
-[Current Version: 2.0.1](https://github.com/TheLQ/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#201---december-3rd-2013) for more information
+**June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
+
+[Current Version: 2.1](https://github.com/TheLQ/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#21---january-24-2016) for more information
 
 **PircBotX** is a powerful and flexible Java IRC library forked from the popular PircBot framework, bringing many new up-to-date features and bug fixes in an official alternative distribution.
 
@@ -9,9 +11,9 @@
  * Native SSL support using SSLSocket or STARTTLS
  * Standard and reverse/passive DCC Chat and Filesharing
  * CTCP VERSION, ACTION, PING, TIME, and FINGER support
- * IPv6 support
- * Support for op, voice, halfop, superops, and owner modes
- * [IRCv3 CAP negotiation](https://github.com/TheLQ/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, and away-notify
+ * IPv6 IRC servers and DCC clients
+ * Op, voice, halfop, superops, and owner user modes
+ * [IRCv3 CAP negotiation](https://github.com/TheLQ/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, away-notify, and message tags
  * [WEBIRC](https://github.com/TheLQ/pircbotx/wiki/Documentation#webirc-authentication) support
  * Built in [Ident server](https://github.com/TheLQ/pircbotx/wiki/Documentation#ident-server)
 
