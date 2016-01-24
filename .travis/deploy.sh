@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
 #
 # This file is part of PircBotX.
@@ -15,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # PircBotX. If not, see <http://www.gnu.org/licenses/>.
 #
+
 set +x
 set +e
 mvn source:jar #deploy
