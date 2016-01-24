@@ -13,7 +13,7 @@
 	<groupId>org.pircbotx</groupId>
 	<artifactId>pircbotx</artifactId>
 	<packaging>jar</packaging>
-	<version>2.1-SNAPSHOT</version>
+	<version>2.1</version>
 	
 	<!--
 		Project information
@@ -62,7 +62,8 @@
 		<connection>scm:git:https://github.com/TheLQ/pircbotx.git</connection>
 		<developerConnection>scm:git:https://github.com/TheLQ/pircbotx.git</developerConnection>
 		<url>https://github.com/TheLQ/pircbotx.git</url>
-	</scm>
+	  <tag>2.1</tag>
+  </scm>
 	
 	<mailingLists>
 		<mailingList>
@@ -82,7 +83,7 @@
 		<lombok.version>1.16.6</lombok.version>
 		<guava.version>19.0</guava.version>
 		<src.dir>src/main/java</src.dir>
-		<snapshot.version></snapshot.version>
+		<snapshot.version />
 	</properties>
 
 	<!--
@@ -302,7 +303,7 @@
 						<id>enforce-dependencies</id>
 						<configuration>
 							<rules>
-								<dependencyConvergence/>
+								<dependencyConvergence />
 							</rules>
 						</configuration>
 						<goals>
