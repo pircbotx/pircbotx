@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Colors.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pircbotx</a> &gt; <a href="index.source.html" class="el_package">org.pircbotx</a> &gt; <span class="el_source">Colors.java</span></div><h1>Colors.java</h1><pre class="source lang-java linenums">/**
+ * Copyright (C) 2010-2014 Leon Blakey &lt;lord.quackstar at gmail.com&gt;
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.pircbotx;
+
+import com.google.common.collect.ImmutableMap;
+
+/**
+ * The Colors class provides several static fields and methods that you may find
+ * useful when writing an IRC Bot.
+ * &lt;p&gt;
+ * This class contains constants that are useful for formatting lines sent to
+ * IRC servers. These constants allow you to apply various formatting to the
+ * lines, such as colours, boldness, underlining and reverse text.
+ * &lt;p&gt;
+ * The class contains static methods to remove colours and formatting from lines
+ * of IRC text.
+ * &lt;p&gt;
+ * Here are some examples of how to use the constants
+ * &lt;pre&gt;
+ * message(Colors.BOLD + &quot;A bold hello!&quot;);
+ * &lt;b&gt;A bold hello!&lt;/b&gt;
+ * message(Colors.RED + &quot;Red&quot; + Colors.NORMAL + &quot; text&quot;);
+ * &lt;font color=&quot;red&quot;&gt;Red&lt;/font&gt; text
+ * message(Colors.BOLD + Colors.RED + &quot;Bold and red&quot;);
+ * &lt;b&gt;&lt;font color=&quot;red&quot;&gt;Bold and red&lt;/font&gt;&lt;/b&gt;&lt;/pre&gt;
+ * &lt;p/&gt;
+ * Please note that some IRC channels may be configured to reject any messages
+ * that use colours. Also note that older IRC clients may be unable to correctly
+ * display lines that contain colours and other control characters.
+ * &lt;p&gt;
+ * Note that this class name has been spelt in the American style in order to
+ * remain consistent with the rest of the Java API.
+ *
+ *
+ * @since PircBot 0.9.12
+ * @author Origionally by:
+ * &lt;a href=&quot;http://www.jibble.org/&quot;&gt;Paul James Mutton&lt;/a&gt; for &lt;a
+ * href=&quot;http://www.jibble.org/pircbot.php&quot;&gt;PircBot&lt;/a&gt;
+ * &lt;p&gt;
+ * Forked and Maintained by Leon Blakey in &lt;a
+ * href=&quot;http://github.com/thelq/pircbotx&quot;&gt;PircBotX&lt;/a&gt;
+ */
+public final class Colors {
+	/**
+	 * Removes all previously applied color and formatting attributes.
+	 */
+	public static final String NORMAL = &quot;\u000f&quot;;
+	/**
+	 * Bold text.
+	 */
+	public static final String BOLD = &quot;\u0002&quot;;
+	/**
+	 * Underlined text.
+	 */
+	public static final String UNDERLINE = &quot;\u001f&quot;;
+	/**
+	 * Reversed text (may be rendered as italic text in some clients).
+	 */
+	public static final String REVERSE = &quot;\u0016&quot;;
+	/**
+	 * White coloured text.
+	 */
+	public static final String WHITE = &quot;\u000300&quot;;
+	/**
+	 * Black coloured text.
+	 */
+	public static final String BLACK = &quot;\u000301&quot;;
+	/**
+	 * Dark blue coloured text.
+	 */
+	public static final String DARK_BLUE = &quot;\u000302&quot;;
+	/**
+	 * Dark green coloured text.
+	 */
+	public static final String DARK_GREEN = &quot;\u000303&quot;;
+	/**
+	 * Red coloured text.
+	 */
+	public static final String RED = &quot;\u000304&quot;;
+	/**
+	 * Brown coloured text.
+	 */
+	public static final String BROWN = &quot;\u000305&quot;;
+	/**
+	 * Purple coloured text.
+	 */
+	public static final String PURPLE = &quot;\u000306&quot;;
+	/**
+	 * Olive coloured text.
+	 */
+	public static final String OLIVE = &quot;\u000307&quot;;
+	/**
+	 * Yellow coloured text.
+	 */
+	public static final String YELLOW = &quot;\u000308&quot;;
+	/**
+	 * Green coloured text.
+	 */
+	public static final String GREEN = &quot;\u000309&quot;;
+	/**
+	 * Teal coloured text.
+	 */
+	public static final String TEAL = &quot;\u000310&quot;;
+	/**
+	 * Cyan coloured text.
+	 */
+	public static final String CYAN = &quot;\u000311&quot;;
+	/**
+	 * Blue coloured text.
+	 */
+	public static final String BLUE = &quot;\u000312&quot;;
+	/**
+	 * Magenta coloured text.
+	 */
+	public static final String MAGENTA = &quot;\u000313&quot;;
+	/**
+	 * Dark gray coloured text.
+	 */
+	public static final String DARK_GRAY = &quot;\u000314&quot;;
+	/**
+	 * Light gray coloured text.
+	 */
+	public static final String LIGHT_GRAY = &quot;\u000315&quot;;
+	/**
+	 * Italicized text.
+	 */
+	public static final String ITALICS = &quot;\u001d&quot;;
+	/**
+	 * Pre-built lookup table by String for all available colors
+	 */
+<span class="fc" id="L146">	public static final ImmutableMap&lt;String, String&gt; COLORS_TABLE = ImmutableMap.&lt;String, String&gt;builder()</span>
+<span class="fc" id="L147">			.put(&quot;WHITE&quot;, WHITE)</span>
+<span class="fc" id="L148">			.put(&quot;BLACK&quot;, BLACK)</span>
+<span class="fc" id="L149">			.put(&quot;DARK_BLUE&quot;, DARK_BLUE)</span>
+<span class="fc" id="L150">			.put(&quot;DARK_GREEN&quot;, DARK_GREEN)</span>
+<span class="fc" id="L151">			.put(&quot;RED&quot;, RED)</span>
+<span class="fc" id="L152">			.put(&quot;BROWN&quot;, BROWN)</span>
+<span class="fc" id="L153">			.put(&quot;PURPLE&quot;, PURPLE)</span>
+<span class="fc" id="L154">			.put(&quot;OLIVE&quot;, OLIVE)</span>
+<span class="fc" id="L155">			.put(&quot;YELLOW&quot;, YELLOW)</span>
+<span class="fc" id="L156">			.put(&quot;GREEN&quot;, GREEN)</span>
+<span class="fc" id="L157">			.put(&quot;TEAL&quot;, TEAL)</span>
+<span class="fc" id="L158">			.put(&quot;CYAN&quot;, CYAN)</span>
+<span class="fc" id="L159">			.put(&quot;BLUE&quot;, BLUE)</span>
+<span class="fc" id="L160">			.put(&quot;MAGENTA&quot;, MAGENTA)</span>
+<span class="fc" id="L161">			.put(&quot;DARK_GRAY&quot;, DARK_GRAY)</span>
+<span class="fc" id="L162">			.put(&quot;LIGHT_GRAY&quot;, LIGHT_GRAY)</span>
+<span class="fc" id="L163">			.build();</span>
+	/**
+	 * Pre-built lookup table by String for all available formatting options
+	 */
+<span class="fc" id="L167">	public static final ImmutableMap&lt;String, String&gt; FORMATTING_TABLE = ImmutableMap.&lt;String, String&gt;builder()</span>
+<span class="fc" id="L168">			.put(&quot;NORMAL&quot;, NORMAL)</span>
+<span class="fc" id="L169">			.put(&quot;BOLD&quot;, BOLD)</span>
+<span class="fc" id="L170">			.put(&quot;UNDERLINE&quot;, UNDERLINE)</span>
+<span class="fc" id="L171">			.put(&quot;REVERSE&quot;, REVERSE)</span>
+<span class="fc" id="L172">			.put(&quot;ITALICS&quot;, ITALICS)</span>
+<span class="fc" id="L173">			.build();</span>
+	/**
+	 * Pre-built lookup table by String for all the fields in this class.
+	 */
+<span class="fc" id="L177">	public static final ImmutableMap&lt;String, String&gt; LOOKUP_TABLE = ImmutableMap.&lt;String, String&gt;builder()</span>
+<span class="fc" id="L178">			.putAll(COLORS_TABLE)</span>
+<span class="fc" id="L179">			.putAll(FORMATTING_TABLE)</span>
+<span class="fc" id="L180">			.build();</span>
+	
+
+	/**
+	 * This class should not be constructed.
+	 */
+<span class="nc" id="L186">	private Colors() {</span>
+<span class="nc" id="L187">	}</span>
+
+	/**
+	 * Lookup color as a String
+	 *
+	 * @param colorName Name of field in this class, will be converted to
+	 * uppercase
+	 * @return Color value or null
+	 */
+	public static String lookup(String colorName) {
+<span class="nc" id="L197">		return LOOKUP_TABLE.get(colorName.toUpperCase());</span>
+	}
+
+	/**
+	 * Removes all colours from a line of IRC text.
+	 *
+	 * @since PircBot 1.2.0
+	 *
+	 * @param line the input text.
+	 *
+	 * @return the same text, but with all colours removed.
+	 */
+	public static String removeColors(String line) {
+<span class="nc" id="L210">		int length = line.length();</span>
+<span class="nc" id="L211">		StringBuilder buffer = new StringBuilder();</span>
+<span class="nc" id="L212">		int i = 0;</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">		while (i &lt; length) {</span>
+<span class="nc" id="L214">			char ch = line.charAt(i);</span>
+<span class="nc bnc" id="L215" title="All 2 branches missed.">			if (ch == '\u0003') {</span>
+<span class="nc" id="L216">				i++;</span>
+				// Skip &quot;x&quot; or &quot;xy&quot; (foreground color).
+<span class="nc bnc" id="L218" title="All 2 branches missed.">				if (i &lt; length) {</span>
+<span class="nc" id="L219">					ch = line.charAt(i);</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">					if (Character.isDigit(ch)) {</span>
+<span class="nc" id="L221">						i++;</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">						if (i &lt; length) {</span>
+<span class="nc" id="L223">							ch = line.charAt(i);</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">							if (Character.isDigit(ch))</span>
+<span class="nc" id="L225">								i++;</span>
+						}
+						// Now skip &quot;,x&quot; or &quot;,xy&quot; (background color).
+<span class="nc bnc" id="L228" title="All 2 branches missed.">						if (i &lt; length) {</span>
+<span class="nc" id="L229">							ch = line.charAt(i);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">							if (ch == ',') {</span>
+<span class="nc" id="L231">								i++;</span>
+<span class="nc bnc" id="L232" title="All 2 branches missed.">								if (i &lt; length) {</span>
+<span class="nc" id="L233">									ch = line.charAt(i);</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">									if (Character.isDigit(ch)) {</span>
+<span class="nc" id="L235">										i++;</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">										if (i &lt; length) {</span>
+<span class="nc" id="L237">											ch = line.charAt(i);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">											if (Character.isDigit(ch))</span>
+<span class="nc" id="L239">												i++;</span>
+										}
+									} else
+										// Keep the comma.
+<span class="nc" id="L243">										i--;</span>
+								} else
+									// Keep the comma.
+<span class="nc" id="L246">									i--;</span>
+							}
+						}
+					}
+				}
+<span class="nc bnc" id="L251" title="All 2 branches missed.">			} else if (ch == '\u000f')</span>
+<span class="nc" id="L252">				i++;</span>
+			else {
+<span class="nc" id="L254">				buffer.append(ch);</span>
+<span class="nc" id="L255">				i++;</span>
+			}
+<span class="nc" id="L257">		}</span>
+<span class="nc" id="L258">		return buffer.toString();</span>
+	}
+
+	/**
+	 * Remove formatting from a line of IRC text.
+	 *
+	 * @since PircBot 1.2.0
+	 *
+	 * @param line the input text.
+	 *
+	 * @return the same text, but without any bold, underlining, reverse, etc.
+	 */
+	public static String removeFormatting(String line) {
+<span class="nc" id="L271">		int length = line.length();</span>
+<span class="nc" id="L272">		StringBuilder buffer = new StringBuilder();</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">		for (int i = 0; i &lt; length; i++) {</span>
+<span class="nc" id="L274">			char ch = line.charAt(i);</span>
+			//Filter characters
+<span class="nc bnc" id="L276" title="All 8 branches missed.">			if (ch != '\u000f' &amp;&amp; ch != '\u0002' &amp;&amp; ch != '\u001f' &amp;&amp; ch != '\u0016')</span>
+<span class="nc" id="L277">				buffer.append(ch);</span>
+		}
+<span class="nc" id="L279">		return buffer.toString();</span>
+	}
+
+	/**
+	 * Removes all formatting and colours from a line of IRC text.
+	 *
+	 * @since PircBot 1.2.0
+	 *
+	 * @param line the input text.
+	 *
+	 * @return the same text, but without formatting and colour characters.
+	 *
+	 */
+	public static String removeFormattingAndColors(String line) {
+<span class="nc" id="L293">		return removeFormatting(removeColors(line));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

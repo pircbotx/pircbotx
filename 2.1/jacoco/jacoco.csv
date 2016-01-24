@@ -1,0 +1,163 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+pircbotx,org.pircbotx,IdentServer,1551,1249,24,26,34,79,26,19,8,12
+pircbotx,org.pircbotx,Configuration.BotFactory,211,229,1,1,4,15,8,17,7,17
+pircbotx,org.pircbotx,PircBotX.BotShutdownHook,321,0,8,0,13,0,11,0,7,0
+pircbotx,org.pircbotx,MultiBotManager.BotFutureCallback,506,0,10,0,20,0,14,0,9,0
+pircbotx,org.pircbotx,Configuration.ServerEntry,594,115,18,2,17,8,16,6,6,6
+pircbotx,org.pircbotx,PircBotX,3169,2482,58,38,67,166,52,42,10,36
+pircbotx,org.pircbotx,ReplayServer,1926,0,46,0,73,0,34,0,11,0
+pircbotx,org.pircbotx,ChannelModeHandler,345,72,9,1,11,5,11,5,6,5
+pircbotx,org.pircbotx,UtilSSLSocketFactory.TrustingX509TrustManager,78,22,1,1,3,1,7,3,6,3
+pircbotx,org.pircbotx,UserHostmask,1091,1510,25,39,8,90,27,28,4,19
+pircbotx,org.pircbotx,Channel,1622,2088,19,37,24,122,27,61,11,49
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},56,113,1,5,0,4,4,6,3,4
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},56,113,1,5,0,4,4,6,3,4
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},56,113,1,5,0,4,4,6,3,4
+pircbotx,org.pircbotx,ReplyConstants,63,0,2,0,2,0,7,0,6,0
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},167,23,5,1,4,1,7,3,4,3
+pircbotx,org.pircbotx,Channel.new AtomicSafeInitializer() {...},40,46,1,1,0,2,4,4,3,4
+pircbotx,org.pircbotx,Configuration,8281,2078,310,20,194,136,168,55,6,52
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},91,179,2,6,0,9,5,6,3,4
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},102,215,2,8,0,10,5,7,3,4
+pircbotx,org.pircbotx,ServerInfo,9329,1552,303,77,257,43,223,42,66,9
+pircbotx,org.pircbotx,InputParser.new InputParser.OpChannelModeHandler() {...},40,53,1,1,0,3,4,4,3,4
+pircbotx,org.pircbotx,InputParser.new InputParser.OpChannelModeHandler() {...},40,53,1,1,0,3,4,4,3,4
+pircbotx,org.pircbotx,InputParser.new InputParser.OpChannelModeHandler() {...},40,53,1,1,0,3,4,4,3,4
+pircbotx,org.pircbotx,InputParser.new InputParser.OpChannelModeHandler() {...},40,53,1,1,0,3,4,4,3,4
+pircbotx,org.pircbotx,ReplayServer.ReplayListener,217,0,6,0,6,0,10,0,7,0
+pircbotx,org.pircbotx,InputParser.new InputParser.OpChannelModeHandler() {...},40,53,1,1,0,3,4,4,3,4
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},56,113,1,5,0,4,4,6,3,4
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},56,113,1,5,0,4,4,6,3,4
+pircbotx,org.pircbotx,InputParser.new ChannelModeHandler() {...},106,63,4,2,0,4,6,4,3,4
+pircbotx,org.pircbotx,Configuration.Builder,12051,4167,343,9,313,253,226,76,51,75
+pircbotx,org.pircbotx,PircBotX.State,93,87,1,1,0,4,6,3,5,3
+pircbotx,org.pircbotx,ReplayServer.WrapperListenerManager,289,0,2,0,15,0,13,0,12,0
+pircbotx,org.pircbotx,Utils,415,553,4,14,6,35,9,17,5,12
+pircbotx,org.pircbotx,UserHostmask.new AtomicSafeInitializer() {...},40,46,1,1,0,2,4,4,3,4
+pircbotx,org.pircbotx,UserLevel,154,324,0,8,0,15,4,11,4,7
+pircbotx,org.pircbotx,User,505,572,5,3,9,39,8,28,5,27
+pircbotx,org.pircbotx,InputParser,4485,7397,65,235,39,374,55,113,5,13
+pircbotx,org.pircbotx,MultiBotManager.BotRunner,228,0,4,0,9,0,9,0,7,0
+pircbotx,org.pircbotx,UserChannelMap,638,688,9,13,7,47,12,16,4,13
+pircbotx,org.pircbotx,ProxySocketFactory,398,0,2,0,20,0,12,0,11,0
+pircbotx,org.pircbotx,Colors,1340,298,37,1,46,29,27,2,8,2
+pircbotx,org.pircbotx,IdentServer.IdentEntry,856,117,27,1,24,10,21,7,7,7
+pircbotx,org.pircbotx,MultiBotManager,1920,0,24,0,82,0,31,0,19,0
+pircbotx,org.pircbotx,ReplayServer.ReplayPircBotX,215,0,2,0,11,0,11,0,10,0
+pircbotx,org.pircbotx,UserChannelDao,3779,3031,68,74,90,175,63,46,9,29
+pircbotx,org.pircbotx,UtilSSLSocketFactory,1504,300,34,6,43,21,37,8,19,6
+pircbotx,org.pircbotx,ChannelListEntry,743,126,25,1,21,9,19,7,6,7
+pircbotx,org.pircbotx,InputParser.OpChannelModeHandler,103,210,2,6,0,11,5,6,3,4
+pircbotx,org.pircbotx.hooks.managers,ThreadedListenerManager,638,248,3,3,22,18,11,8,9,7
+pircbotx,org.pircbotx.hooks.managers,GenericListenerManager,147,256,1,3,0,20,4,11,3,10
+pircbotx,org.pircbotx.hooks.managers,SequentialListenerManager.InlineListenerExecutor,74,72,1,1,1,6,5,4,4,4
+pircbotx,org.pircbotx.hooks.managers,AbstractListenerManager,145,213,2,4,1,14,5,7,3,6
+pircbotx,org.pircbotx.hooks.managers,SequentialListenerManager,817,368,10,6,24,27,18,14,12,12
+pircbotx,org.pircbotx.hooks.managers,ThreadedListenerManager.ManagedFutureTask,229,114,3,3,6,8,8,4,5,4
+pircbotx,org.pircbotx.hooks.managers,SequentialListenerManager.SequentialListenerManagerBuilder,150,66,1,1,5,5,7,4,6,4
+pircbotx,org.pircbotx.hooks.managers,SequentialListenerManager.PooledListenerExecutor,126,87,3,1,2,7,6,4,4,4
+pircbotx,org.pircbotx.hooks.managers,BackgroundListenerManager,532,0,10,0,22,0,15,0,10,0
+pircbotx,org.pircbotx.hooks.managers,SequentialListenerManager.SequentialListenerExecutor,68,0,2,0,2,0,7,0,6,0
+pircbotx,org.pircbotx.hooks.managers,AbstractListenerManager.ExecuteListenerRunnable,64,83,1,1,0,7,4,4,3,4
+pircbotx,org.pircbotx.dcc,DccHandler.PendingSendFileTransfer,1026,0,28,0,37,0,29,0,15,0
+pircbotx,org.pircbotx.dcc,FileTransfer,569,0,8,0,26,0,19,0,15,0
+pircbotx,org.pircbotx.dcc,DccHandler.PendingSendChatPassive,1127,0,34,0,39,0,33,0,16,0
+pircbotx,org.pircbotx.dcc,ReceiveFileTransfer,873,0,22,0,33,0,18,0,7,0
+pircbotx,org.pircbotx.dcc,Chat,723,0,8,0,33,0,18,0,14,0
+pircbotx,org.pircbotx.dcc,SendChat,66,0,2,0,2,0,7,0,6,0
+pircbotx,org.pircbotx.dcc,SendFileTransfer,685,0,20,0,24,0,17,0,7,0
+pircbotx,org.pircbotx.dcc,DccHandler,6396,1117,129,33,215,62,89,17,17,8
+pircbotx,org.pircbotx.dcc,DccHandler.PendingRecieveFileTransfer,680,0,18,0,25,0,22,0,13,0
+pircbotx,org.pircbotx.dcc,DccState,154,0,2,0,2,0,9,0,8,0
+pircbotx,org.pircbotx.dcc,DccHandler.PendingSendFileTransferPassive,1510,0,44,0,53,0,41,0,19,0
+pircbotx,org.pircbotx.dcc,ReceiveChat,66,0,2,0,2,0,7,0,6,0
+pircbotx,org.pircbotx.cap,EnableCapHandler,294,305,5,5,5,20,7,11,4,9
+pircbotx,org.pircbotx.cap,TLSCapHandler,319,0,4,0,15,0,13,0,11,0
+pircbotx,org.pircbotx.cap,SASLCapHandler,280,385,8,10,3,19,10,9,3,7
+pircbotx,org.pircbotx.exception,DaoException,70,72,1,1,1,5,5,4,4,4
+pircbotx,org.pircbotx.exception,CAPException,64,98,0,2,0,7,3,6,3,5
+pircbotx,org.pircbotx.exception,IrcException.Reason,157,0,2,0,3,0,9,0,8,0
+pircbotx,org.pircbotx.exception,IrcException,127,0,2,0,5,0,8,0,7,0
+pircbotx,org.pircbotx.exception,CAPException.Reason,93,87,1,1,0,4,6,3,5,3
+pircbotx,org.pircbotx.exception,UnknownEventException,124,0,2,0,5,0,8,0,7,0
+pircbotx,org.pircbotx.exception,DaoException.Reason,93,87,1,1,0,4,6,3,5,3
+pircbotx,org.pircbotx.exception,DccException,237,0,2,0,11,0,11,0,10,0
+pircbotx,org.pircbotx.exception,DccException.Reason,318,0,2,0,10,0,9,0,8,0
+pircbotx,org.pircbotx.hooks,WaitForQueue,997,0,24,0,38,0,25,0,13,0
+pircbotx,org.pircbotx.hooks,CoreHooks,217,317,5,7,1,19,7,11,3,9
+pircbotx,org.pircbotx.hooks,TemporaryListener,94,128,3,3,0,8,6,5,3,5
+pircbotx,org.pircbotx.hooks,Event,659,231,22,2,14,18,18,7,6,7
+pircbotx,org.pircbotx.hooks,ListenerAdapter,1685,3394,1,135,11,192,15,127,14,60
+pircbotx,org.pircbotx.hooks,WaitForQueue.WaitForQueueListener,88,0,2,0,3,0,8,0,7,0
+pircbotx,org.pircbotx.output,OutputChannel.new ListenerAdapter() {...},162,0,4,0,5,0,9,0,7,0
+pircbotx,org.pircbotx.output,OutputCAP,182,134,2,2,5,10,7,6,5,6
+pircbotx,org.pircbotx.output,OutputUser,522,265,3,3,18,20,15,10,12,10
+pircbotx,org.pircbotx.output,OutputRaw,860,643,6,8,21,46,11,10,6,8
+pircbotx,org.pircbotx.output,OutputIRC,712,502,4,2,22,32,14,12,11,12
+pircbotx,org.pircbotx.output,OutputChannel,2817,407,49,7,105,28,70,12,42,12
+pircbotx,org.pircbotx.output,OutputDCC,614,51,1,1,22,4,15,3,14,3
+pircbotx,org.pircbotx.hooks.events,ServerResponseEvent,917,167,29,3,27,11,23,7,7,7
+pircbotx,org.pircbotx.hooks.events,ActionEvent,1665,253,56,4,48,17,40,10,10,10
+pircbotx,org.pircbotx.hooks.events,ListenerExceptionEvent,806,142,27,3,23,9,21,6,6,6
+pircbotx,org.pircbotx.hooks.events,HalfOpEvent,1583,268,56,4,43,18,37,10,7,10
+pircbotx,org.pircbotx.hooks.events,SuperOpEvent,1583,268,56,4,43,18,37,10,7,10
+pircbotx,org.pircbotx.hooks.events,IncomingChatRequestEvent,1496,248,49,3,43,17,37,10,11,10
+pircbotx,org.pircbotx.hooks.events,ConnectAttemptFailedEvent,776,10,21,1,28,0,22,2,11,2
+pircbotx,org.pircbotx.hooks.events,DisconnectEvent,768,100,25,1,23,7,21,6,8,6
+pircbotx,org.pircbotx.hooks.events,KickEvent,1714,288,61,5,47,19,40,10,7,10
+pircbotx,org.pircbotx.hooks.events,UserModeEvent,1481,241,52,4,41,16,35,9,7,9
+pircbotx,org.pircbotx.hooks.events,InviteEvent,1039,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,WhoisEvent.Builder,359,275,0,2,3,25,5,16,5,15
+pircbotx,org.pircbotx.hooks.events,SetTopicProtectionEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,RemoveNoExternalMessagesEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,NickAlreadyInUseEvent,908,147,30,2,26,10,23,7,7,7
+pircbotx,org.pircbotx.hooks.events,JoinEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,VersionEvent,1039,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,BanListEvent,764,100,25,1,23,7,20,6,7,6
+pircbotx,org.pircbotx.hooks.events,SetModeratedEvent,1198,10,37,1,41,0,31,2,12,2
+pircbotx,org.pircbotx.hooks.events,PingEvent,1238,194,43,3,35,13,30,8,7,8
+pircbotx,org.pircbotx.hooks.events,SetPrivateEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,ConnectEvent,341,66,8,2,12,4,11,5,6,5
+pircbotx,org.pircbotx.hooks.events,RemoveChannelKeyEvent,1240,194,43,3,35,13,30,8,7,8
+pircbotx,org.pircbotx.hooks.events,UnknownEvent,603,93,18,2,19,6,17,5,7,5
+pircbotx,org.pircbotx.hooks.events,RemoveChannelBanEvent,1482,10,47,1,50,0,37,2,13,2
+pircbotx,org.pircbotx.hooks.events,SetSecretEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,OwnerEvent,1601,268,56,4,44,18,38,10,8,10
+pircbotx,org.pircbotx.hooks.events,RemoveInviteOnlyEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,WhoisEvent,2010,878,74,20,41,55,46,25,7,17
+pircbotx,org.pircbotx.hooks.events,ExceptionEvent,826,140,27,3,24,9,22,6,7,6
+pircbotx,org.pircbotx.hooks.events,OpEvent,1583,268,56,4,43,18,37,10,7,10
+pircbotx,org.pircbotx.hooks.events,SocketConnectEvent,366,41,9,1,13,3,12,4,7,4
+pircbotx,org.pircbotx.hooks.events,TimeEvent,1001,147,34,2,29,10,25,7,7,7
+pircbotx,org.pircbotx.hooks.events,RemoveTopicProtectionEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,QuitEvent,1248,194,43,3,35,13,31,8,8,8
+pircbotx,org.pircbotx.hooks.events,OutputEvent,750,100,25,1,22,7,20,6,7,6
+pircbotx,org.pircbotx.hooks.events,RemoveSecretEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,IncomingFileTransferEvent,2271,369,73,5,67,25,51,13,12,13
+pircbotx,org.pircbotx.hooks.events,ServerPingEvent,565,73,17,1,18,5,16,5,7,5
+pircbotx,org.pircbotx.hooks.events,SetChannelLimitEvent,1118,194,37,3,32,13,27,8,7,8
+pircbotx,org.pircbotx.hooks.events,TopicEvent,1482,268,50,4,41,18,34,10,7,10
+pircbotx,org.pircbotx.hooks.events,RemovePrivateEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,NickChangeEvent,1276,214,44,4,36,14,31,8,7,8
+pircbotx,org.pircbotx.hooks.events,UserListEvent,946,167,31,3,27,11,24,7,7,7
+pircbotx,org.pircbotx.hooks.events,ChannelInfoEvent,603,93,18,2,19,6,17,5,7,5
+pircbotx,org.pircbotx.hooks.events,PartEvent,1467,221,51,3,41,15,35,9,8,9
+pircbotx,org.pircbotx.hooks.events,NoticeEvent,1665,253,56,4,48,17,40,10,10,10
+pircbotx,org.pircbotx.hooks.events,SetNoExternalMessagesEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,BanListEvent.Entry,764,126,25,1,22,9,19,7,6,7
+pircbotx,org.pircbotx.hooks.events,ModeEvent,1477,241,52,4,41,16,35,9,7,9
+pircbotx,org.pircbotx.hooks.events,MessageEvent,1891,288,63,5,55,19,45,10,11,10
+pircbotx,org.pircbotx.hooks.events,PrivateMessageEvent,1103,167,35,3,34,11,28,7,9,7
+pircbotx,org.pircbotx.hooks.events,VoiceEvent,1599,268,56,4,44,18,38,10,8,10
+pircbotx,org.pircbotx.hooks.events,SetInviteOnlyEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,SetChannelBanEvent,1442,10,45,1,49,0,37,2,14,2
+pircbotx,org.pircbotx.hooks.events,RemoveChannelLimitEvent,1041,167,35,3,30,11,26,7,7,7
+pircbotx,org.pircbotx.hooks.events,SetChannelKeyEvent,1240,194,43,3,35,13,30,8,7,8
+pircbotx,org.pircbotx.hooks.events,MotdEvent,603,93,18,2,19,6,17,5,7,5
+pircbotx,org.pircbotx.hooks.events,FingerEvent,1001,147,34,2,29,10,25,7,7,7
+pircbotx,org.pircbotx.hooks.events,RemoveModeratedEvent,1198,10,37,1,41,0,31,2,12,2
+pircbotx,org.pircbotx.snapshot,ChannelSnapshot,632,227,1,1,31,20,21,5,20,5
+pircbotx,org.pircbotx.snapshot,UserChannelMapSnapshot,176,31,1,1,8,2,8,3,7,3
+pircbotx,org.pircbotx.snapshot,UserSnapshot,464,328,4,6,16,23,15,11,11,10
+pircbotx,org.pircbotx.snapshot,UserChannelDaoSnapshot,462,48,1,1,22,3,17,3,16,3
+pircbotx,org.pircbotx.snapshot,SnapshotUtils,84,0,2,0,3,0,8,0,7,0

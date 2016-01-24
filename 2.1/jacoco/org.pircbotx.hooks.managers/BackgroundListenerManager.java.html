@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BackgroundListenerManager.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pircbotx</a> &gt; <a href="index.source.html" class="el_package">org.pircbotx.hooks.managers</a> &gt; <span class="el_source">BackgroundListenerManager.java</span></div><h1>BackgroundListenerManager.java</h1><pre class="source lang-java linenums">/**
+ * Copyright (C) 2010-2014 Leon Blakey &lt;lord.quackstar at gmail.com&gt;
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.pircbotx.hooks.managers;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
+
+/**
+ * ThreadListenerManager with additional dedicated background threads. Normal
+ * Listeners execute in the same thread pool. Background Listeners however
+ * execute in their own dedicated single threads separate from the rest
+ * &lt;p&gt;
+ * This class is useful for logging listeners or any other listener that needs
+ * to process events one at a time instead of simultaneously.
+ * &lt;p&gt;
+ * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean)
+ * }
+ * with isBackground set to true
+ * &lt;p&gt;
+ * @author Leon Blakey
+ */
+<span class="nc" id="L44">public class BackgroundListenerManager extends ThreadedListenerManager {</span>
+<span class="nc" id="L45">	protected Map&lt;Listener, ExecutorService&gt; backgroundListeners = Maps.newHashMap();</span>
+<span class="nc" id="L46">	protected final AtomicInteger backgroundCount = new AtomicInteger();</span>
+
+	public void addListener(Listener listener, boolean isBackground) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (!isBackground)</span>
+<span class="nc" id="L50">			super.addListener(listener);</span>
+		else {
+<span class="nc" id="L52">			BasicThreadFactory factory = new BasicThreadFactory.Builder()</span>
+<span class="nc" id="L53">					.namingPattern(&quot;backgroundPool&quot; + managerNumber + &quot;-backgroundThread&quot; + backgroundCount.getAndIncrement() + &quot;-%d&quot;)</span>
+<span class="nc" id="L54">					.daemon(true)</span>
+<span class="nc" id="L55">					.build();</span>
+<span class="nc" id="L56">			backgroundListeners.put(listener, Executors.newSingleThreadExecutor(factory));</span>
+		}
+<span class="nc" id="L58">	}</span>
+
+	@Override
+	public void onEvent(Event event) {
+		//Dispatch to both standard listeners and background listeners
+<span class="nc" id="L63">		super.onEvent(event);</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		for (Map.Entry&lt;Listener, ExecutorService&gt; curEntry : backgroundListeners.entrySet())</span>
+<span class="nc" id="L65">			submitEvent(curEntry.getValue(), curEntry.getKey(), event);</span>
+<span class="nc" id="L66">	}</span>
+
+	@Override
+	public ImmutableSet&lt;Listener&gt; getListeners() {
+<span class="nc" id="L70">		return ImmutableSet.&lt;Listener&gt;builder()</span>
+<span class="nc" id="L71">				.addAll(listeners)</span>
+<span class="nc" id="L72">				.addAll(backgroundListeners.keySet())</span>
+<span class="nc" id="L73">				.build();</span>
+	}
+
+	@Override
+	public boolean removeListener(Listener listener) {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">		if (backgroundListeners.containsKey(listener))</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">			return backgroundListeners.remove(listener) != null;</span>
+		else
+<span class="nc" id="L81">			return super.removeListener(listener);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
