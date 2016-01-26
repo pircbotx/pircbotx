@@ -388,6 +388,8 @@ public class InputParser implements Closeable {
 			//Handle automatic on connect stuff
 			if (configuration.getNickservPassword() != null)
 				bot.sendIRC().identify(configuration.getNickservPassword());
+			if (configuration.getNickservCustomMessage() != null)
+				bot.sendRaw().rawLine(configuration.getNickservCustomMessage());
 			ImmutableMap<String, String> autoConnectChannels = bot.reconnectChannels();
 			if (autoConnectChannels == null)
 				if (configuration.isNickservDelayJoin())
