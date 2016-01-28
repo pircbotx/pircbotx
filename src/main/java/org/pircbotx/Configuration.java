@@ -110,7 +110,6 @@ public class Configuration {
 	protected final String nickservNick;
 	protected final String nickservCustomMessage;
 	protected final boolean nickservDelayJoin;
-	protected final int nickservDelayJoinTime;
 	protected final boolean userModeHideRealHost;
 	protected final boolean autoReconnect;
 	protected final int autoReconnectDelay;
@@ -169,7 +168,6 @@ public class Configuration {
 			checkArgument(StringUtils.isNotBlank(builder.getNickservCustomMessage()), "Nickserv custom message cannot be empty");
 		checkArgument(StringUtils.isNotBlank(builder.getNickservOnSuccess()), "Nickserv on success cannot be blank");
 		checkArgument(StringUtils.isNotBlank(builder.getNickservNick()), "Nickserv nick cannot be blank");
-		checkArgument(builder.getNickservDelayJoinTime() >= 0, "setNickServDelayJoinTime must be greater then 0");
 		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be greater than 0");
 		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectDelay must be positive or 0");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
@@ -215,7 +213,6 @@ public class Configuration {
 		this.nickservNick = builder.getNickservNick();
 		this.nickservCustomMessage = builder.getNickservCustomMessage();
 		this.nickservDelayJoin = builder.isNickservDelayJoin();
-		this.nickservDelayJoinTime = builder.getNickservDelayJoinTime();
 		this.userModeHideRealHost = builder.isUserModeHideRealHost();
 		this.autoReconnect = builder.isAutoReconnect();
 		this.autoReconnectDelay = builder.getAutoReconnectDelay();
@@ -469,11 +466,6 @@ public class Configuration {
 		 */
 		protected boolean nickservDelayJoin = false;
 		/**
-		 * Set custom delay before joining channels after being identified to nickserv, default
-		 * 0
-		 */
-		protected int nickservDelayJoinTime = 0;
-		/**
 		 * Sets mode +x on the bot, to hide the real hostname, default = false
 		 */
 		protected boolean userModeHideRealHost = false;
@@ -572,7 +564,6 @@ public class Configuration {
 			this.nickservNick = configuration.getNickservNick();
 			this.nickservCustomMessage = configuration.getNickservCustomMessage();
 			this.nickservDelayJoin = configuration.isNickservDelayJoin();
-			this.nickservDelayJoinTime = configuration.getNickservDelayJoinTime();
 			this.userModeHideRealHost = configuration.isUserModeHideRealHost();
 			this.autoReconnect = configuration.isAutoReconnect();
 			this.autoReconnectDelay = configuration.getAutoReconnectDelay();
@@ -636,7 +627,6 @@ public class Configuration {
 			this.nickservNick = otherBuilder.getNickservNick();
 			this.nickservCustomMessage = otherBuilder.getNickservCustomMessage();
 			this.nickservDelayJoin = otherBuilder.isNickservDelayJoin();
-			this.nickservDelayJoinTime = otherBuilder.getNickservDelayJoinTime();
 			this.userModeHideRealHost = otherBuilder.isUserModeHideRealHost();
 			this.autoReconnect = otherBuilder.isAutoReconnect();
 			this.autoReconnectDelay = otherBuilder.getAutoReconnectDelay();

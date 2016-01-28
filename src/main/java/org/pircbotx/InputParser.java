@@ -390,6 +390,8 @@ public class InputParser implements Closeable {
 				bot.sendIRC().identify(configuration.getNickservPassword());
 			if (configuration.getNickservCustomMessage() != null)
 				bot.sendRaw().rawLine(configuration.getNickservCustomMessage());
+			if (configuration.isUserModeHideRealHost())
+				bot.sendIRC().mode(bot.getNick(), "+x");
 			ImmutableMap<String, String> autoConnectChannels = bot.reconnectChannels();
 			if (autoConnectChannels == null)
 				if (configuration.isNickservDelayJoin())

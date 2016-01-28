@@ -85,17 +85,7 @@ public class CoreHooks extends ListenerAdapter {
 				&& StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess())) {
 			log.info("Successfully identified to nickserv");
 			Utils.setNickServIdentified(event.getBot());
-			//Hide the real host if enabled
-			if (config.isUserModeHideRealHost())
-				event.getBot().sendIRC().mode(event.getBot().getNick(),"+x");
 			if (config.isNickservDelayJoin()) {
-				if (config.getNickservDelayJoinTime() > 0)
-					try {
-						log.debug("Pausing for {} milliseconds before joining channels", config.getNickservDelayJoinTime());
-						Thread.sleep(config.getNickservDelayJoinTime());
-					} catch (InterruptedException e) {
-						throw new RuntimeException("Interrupted while pausing before joining channels", e);
-					}
 				for (Map.Entry<String, String> channelEntry : config.getAutoJoinChannels().entrySet())
 					event.getBot().sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
 			}
