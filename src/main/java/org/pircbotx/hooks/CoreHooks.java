@@ -85,7 +85,6 @@ public class CoreHooks extends ListenerAdapter {
 				&& StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess())) {
 			log.info("Successfully identified to nickserv");
 			Utils.setNickServIdentified(event.getBot());
-
 			if (config.isNickservDelayJoin()) {
 				for (Map.Entry<String, String> channelEntry : config.getAutoJoinChannels().entrySet())
 					event.getBot().sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
