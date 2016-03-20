@@ -63,8 +63,8 @@ public class TestLogger extends TestListenerAdapter {
 		if (disableLogging)
 			return;
 		StringBuilder sb = new StringBuilder();
-		sb.append("[").append(status).append("] ");
-		sb.append(tr.getTestClass().getName()).append(":").append(tr.getName()).append(" - ");
+		sb.append('[').append(status).append("] ");
+		sb.append(tr.getTestClass().getName()).append(':').append(tr.getName()).append(" - ");
 
 		//Add description
 		if (StringUtils.isNotEmpty(tr.getMethod().getDescription()))
