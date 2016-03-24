@@ -42,7 +42,7 @@ public class MyListener extends ListenerAdapter {
                 //Configure what we want our bot to do
                 Configuration configuration = new Configuration.Builder()
                                 .setName("PircBotXUser") //Set the nick of the bot. CHANGE IN YOUR CODE
-                                .setServerHostname("irc.freenode.net") //Join the freenode network
+                                .addServer("irc.freenode.net") //Join the freenode network
                                 .addAutoJoinChannel("#pircbotx") //Join the official #pircbotx channel
                                 .addListener(new MyListener()) //Add our listener that will be called on Events
                                 .buildConfiguration();
