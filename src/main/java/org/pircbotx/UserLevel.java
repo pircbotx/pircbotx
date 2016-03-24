@@ -21,13 +21,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * An enum to represent the possible levels a user can have.
+ * An enum to represent the possible IRC levels a user can have.
  *
  * @author Leon Blakey
  */
 @RequiredArgsConstructor
 public enum UserLevel {
-	VOICE("+"), OP("@"), HALFOP("%"), SUPEROP("&"), OWNER("~");
+	VOICE("+"), HALFOP("%"), OP("@"),SUPEROP("&"), OWNER("~");
 	
 	@Getter
 	private final String symbol;
