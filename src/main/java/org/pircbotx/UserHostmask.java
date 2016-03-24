@@ -136,11 +136,11 @@ public class UserHostmask implements Comparable<User> {
 	public String getHostmask() {
 		StringBuilder hostmask = new StringBuilder();
 		if (StringUtils.isNotBlank(extbanPrefix)) {
-			hostmask.append(extbanPrefix).append(":");
+			hostmask.append(extbanPrefix).append(':');
 		}
 		hostmask.append(nick);
 		if (StringUtils.isNotBlank(login) || StringUtils.isNotBlank(hostname)) {
-			hostmask.append("!").append(login).append("@").append(hostname);
+			hostmask.append('!').append(login).append('@').append(hostname);
 		}
 		return hostmask.toString();
 	}
