@@ -122,9 +122,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	@Getter
 	protected List<String> enabledCapabilities = new ArrayList<String>();
 	protected String nick;
-	protected boolean loggedIn = false;
+	protected boolean loggedIn;
 	protected Thread shutdownHook;
-	protected volatile boolean reconnectStopped = false;
+	protected volatile boolean reconnectStopped;
 	protected ImmutableMap<String, String> reconnectChannels;
 	private State state = State.INIT;
 	protected final Object stateLock = new Object();
@@ -138,9 +138,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 */
 	@Getter
 	@Setter(AccessLevel.PROTECTED)
-	protected boolean nickservIdentified = false;
-	private int connectAttempts = 0;
-	private int connectAttemptTotal = 0;
+	protected boolean nickservIdentified;
+	private int connectAttempts;
+	private int connectAttemptTotal;
 
 	/**
 	 * Constructs a PircBotX with the provided configuration.

@@ -68,7 +68,7 @@ public class DccHandler implements Closeable {
 	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList<PendingSendFileTransfer>();
 	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap<PendingSendFileTransferPassive, CountDownLatch>();
 	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap<PendingSendChatPassive, CountDownLatch>();
-	protected boolean shuttingDown = false;
+	protected boolean shuttingDown;
 
 	public boolean processDcc(UserHostmask userHostmask, final User user, String request) throws IOException {
 		List<String> requestParts = tokenizeDccRequest(request);
@@ -656,7 +656,7 @@ public class DccHandler implements Closeable {
 		protected final User user;
 		protected final String filename;
 		protected final int port;
-		protected long position = 0;
+		protected long position;
 	}
 
 	@Data
@@ -664,7 +664,7 @@ public class DccHandler implements Closeable {
 		protected final User user;
 		protected final String filename;
 		protected final String transferToken;
-		protected long startPosition = 0;
+		protected long startPosition;
 		protected InetAddress receiverAddress;
 		protected int receiverPort;
 	}

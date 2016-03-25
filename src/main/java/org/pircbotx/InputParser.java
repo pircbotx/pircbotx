@@ -264,7 +264,7 @@ public class InputParser implements Closeable {
 	protected final Configuration configuration;
 	protected final PircBotX bot;
 	protected final List<CapHandler> capHandlersFinished = Lists.newArrayList();
-	protected boolean capEndSent = false;
+	protected boolean capEndSent;
 	protected BufferedReader inputReader;
 	//Builders
 	/**
@@ -273,9 +273,9 @@ public class InputParser implements Closeable {
 	protected final Map<String, WhoisEvent.Builder> whoisBuilder = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
 	protected StringBuilder motdBuilder;
 	@Getter
-	protected boolean channelListRunning = false;
+	protected boolean channelListRunning;
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
-	protected int nickSuffix = 0;
+	protected int nickSuffix;
 	protected final Multimap<Channel, BanListEvent.Entry> banListBuilder = LinkedListMultimap.create();
 
 	public InputParser(PircBotX bot) {

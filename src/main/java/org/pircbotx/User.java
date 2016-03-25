@@ -50,11 +50,11 @@ public class User extends UserHostmask {
 	/**
 	 * User's away status
 	 */
-	private String awayMessage = null;
+	private String awayMessage;
 	/**
 	 * Users IRCop status
 	 */
-	private boolean ircop = false;
+	private boolean ircop;
 	/**
 	 * The exact server that this user is joined to.
 	 *
@@ -64,7 +64,7 @@ public class User extends UserHostmask {
 	/**
 	 * The number of hops it takes to this user.
 	 */
-	private int hops = 0;
+	private int hops;
 
 	protected User(UserHostmask hostmask) {
 		super(hostmask);

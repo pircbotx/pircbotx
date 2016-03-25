@@ -46,7 +46,7 @@ public class OutputRaw {
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
 	protected final long delayNanos;
-	protected long lastSentLine = 0;
+	protected long lastSentLine;
 
 	public OutputRaw(PircBotX bot) {
 		this.bot = bot;

@@ -60,10 +60,10 @@ import lombok.extern.slf4j.Slf4j;
 public class UtilSSLSocketFactory extends SSLSocketFactory {
 	protected SSLSocketFactory wrappedFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 	@Getter
-	protected boolean trustingAllCertificates = false;
+	protected boolean trustingAllCertificates;
 	@Getter
-	protected boolean diffieHellmanDisabled = false;
-	protected boolean wrappedFactoryChanged = false;
+	protected boolean diffieHellmanDisabled;
+	protected boolean wrappedFactoryChanged;
 
 	/**
 	 * By default, trust ALL certificates. <b>This is <i>very</i> insecure.</b>
