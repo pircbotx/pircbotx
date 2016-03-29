@@ -12,8 +12,10 @@ before_script:
 script: mvn clean install -Dsnapshot.version=-`git rev-parse --short HEAD`
 
 after_success:
- - bash -x -e .travis/deploy.sh
+ - mvn source:jar deploy --settings .travis/maven-settings.xml
  - codecov
+# - bash -x -e .travis/deploy.sh
+
 
 #notifications:
 #  irc:
