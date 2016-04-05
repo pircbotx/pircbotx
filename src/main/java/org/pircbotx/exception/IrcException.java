@@ -48,8 +48,8 @@ public class IrcException extends Exception {
 		return reason + ": " + detail;
 	}
 
-	public static enum Reason {
-		AlreadyConnected,
-		CannotLogin,
+	public enum Reason {
+		ALREADY_CONNECTED,
+		CANNOT_LOGIN,
 	}
 }

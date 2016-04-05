@@ -55,7 +55,7 @@ public class SendFileTransfer extends FileTransfer {
 
 		byte[] outBuffer = new byte[configuration.getDccTransferBufferSize()];
 		byte[] inBuffer = new byte[4];
-		int bytesRead = 0;
+		int bytesRead;
 		while ((bytesRead = fileInput.read(outBuffer, 0, outBuffer.length)) != -1) {
 			socketOutput.write(outBuffer, 0, bytesRead);
 			socketOutput.flush();

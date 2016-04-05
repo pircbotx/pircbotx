@@ -37,9 +37,9 @@ public class DaoException extends RuntimeException {
 		this.reason = reason;
 	}
 
-	public static enum Reason {
-		UnknownChannel,
-		UnknownUser,
-		UnknownUserHostmask,
+	public enum Reason {
+		UNKNOWN_CHANNEL,
+		UNKNOWN_USER,
+		UNKNOWN_USER_HOSTMASK,
 	}
 }

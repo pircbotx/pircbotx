@@ -79,7 +79,7 @@ public class SASLCapHandler extends EnableCapHandler {
 				bot.getEnabledCapabilities().remove("sasl");
 
 				if (!ignoreFail)
-					throw new CAPException(CAPException.Reason.SASLFailed, "SASL Authentication failed with message: " + parsedLine[3].substring(1));
+					throw new CAPException(CAPException.Reason.SASL_FAILED, "SASL Authentication failed with message: " + parsedLine[3].substring(1));
 
 				//Pretend like nothing happened
 				return true;

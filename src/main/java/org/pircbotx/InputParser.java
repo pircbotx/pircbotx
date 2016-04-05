@@ -31,7 +31,6 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -418,7 +417,7 @@ public class InputParser implements Closeable {
 			log.warn("Ignoring invalid command error, server does not support CAP negotiation");
 		} else if ((code.startsWith("5") || code.startsWith("4")) && !code.equals("433"))
 			//Ignore 433 NickAlreadyInUse, handled later
-			throw new IrcException(IrcException.Reason.CannotLogin, "Received error: " + rawLine);
+			throw new IrcException(IrcException.Reason.CANNOT_LOGIN, "Received error: " + rawLine);
 		else if (code.equals("670")) {
 			//Server is saying that we can upgrade to TLS
 			log.debug("Upgrading to TLS connection");
@@ -667,7 +666,7 @@ public class InputParser implements Closeable {
 			//Nickname in use, rename
 			boolean autoNickChange = configuration.isAutoNickChange();
 			String autoNewNick = null;
-			String usedNick = null;
+			String usedNick;
 
 			boolean doAutoNickChange = false;
 			//Ignore cases where we already have a valid nick but changed to a used one

@@ -41,9 +41,9 @@ public class CAPException extends RuntimeException {
 		return reason + ": " + message;
 	}
 
-	public static enum Reason {
-		UnsupportedCapability,
-		SASLFailed,
-		Other
+	public enum Reason {
+		UNSUPPORTED_CAPABILITY,
+		SASL_FAILED,
+		OTHER
 	}
 }
