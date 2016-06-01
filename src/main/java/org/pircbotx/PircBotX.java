@@ -286,7 +286,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 					);
 					log.debug("{}Atempting to connect to {} on port {}", debug, curAddress, curServerEntry.getPort());
 					try {
-						socket = configuration.getSocketFactory().createSocket(curAddress, curServerEntry.getPort(), configuration.getLocalAddress(), 0);
+						socket = configuration.getSocketFactory().createSocket();
+						socket.bind(new InetSocketAddress(configuration.getLocalAddress(), 0));
+						socket.connect(new InetSocketAddress(curAddress, curServerEntry.getPort()), configuration.getSocketConnectTimeout());
 
 						//No exception, assume successful
 						serverPort = curServerEntry.getPort();
