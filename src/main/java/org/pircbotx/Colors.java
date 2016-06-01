@@ -17,7 +17,9 @@
  */
 package org.pircbotx;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Colors class provides several static fields and methods that you may find
@@ -36,8 +38,10 @@ import com.google.common.collect.ImmutableMap;
  * <b>A bold hello!</b>
  * message(Colors.RED + "Red" + Colors.NORMAL + " text");
  * <font color="red">Red</font> text
- * message(Colors.BOLD + Colors.RED + "Bold and red");
- * <b><font color="red">Bold and red</font></b></pre>
+ * message(Colors.BOLD + "bold and " + Colors.RED + "," + Colors.BLUE + " red/blue");
+ * or
+ * message(Colors.BOLD + "bold and " + Colors.bg(Colors.RED, Colors.BLUE) + " red/blue");
+ * <b><font style="background-color:blue;" color="red">Bold and red</font></b></pre>
  * <p/>
  * Please note that some IRC channels may be configured to reject any messages
  * that use colours. Also note that older IRC clients may be unable to correctly
@@ -195,6 +199,41 @@ public final class Colors {
 	 */
 	public static String lookup(String colorName) {
 		return LOOKUP_TABLE.get(colorName.toUpperCase());
+	}
+	
+	/**
+	 * Set text and background color
+	 * 
+	 * @param foreground
+	 * @param background
+	 * @return The two colors separated by a comma
+	 */
+	public static String bg(String foreground, String background) {
+		Preconditions.checkArgument(StringUtils.isNotEmpty(foreground), "foreground");
+		Preconditions.checkArgument(StringUtils.isNotEmpty(background), "background");
+		return foreground + "," + background;
+	}
+	
+	/**
+	 * Sets the text color for a given message and appends {@link #NORMAL}
+	 * 
+	 * @param message
+	 * @param foregroundColor
+	 * @return 
+	 */
+	public static String set(String message, String foregroundColor) {
+		return foregroundColor + message + NORMAL;
+	}
+	
+	/**
+	 * Sets the text and background color for a given message and appends {@link #NORMAL}
+	 * 
+	 * @param message
+	 * @param foregroundColor
+	 * @return 
+	 */
+	public static String set(String message, String foregroundColor, String backgroundColor) {
+		return bg(foregroundColor, backgroundColor) + message + NORMAL;
 	}
 
 	/**
