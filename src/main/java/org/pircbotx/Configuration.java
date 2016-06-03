@@ -561,6 +561,7 @@ public class Configuration {
 			this.localAddress = configuration.getLocalAddress();
 			this.encoding = configuration.getEncoding();
 			this.locale = configuration.getLocale();
+			this.socketConnectTimeout = configuration.getSocketConnectTimeout();
 			this.socketTimeout = configuration.getSocketTimeout();
 			this.maxLineLength = configuration.getMaxLineLength();
 			this.autoSplitMessage = configuration.isAutoSplitMessage();
@@ -624,6 +625,7 @@ public class Configuration {
 			this.localAddress = otherBuilder.getLocalAddress();
 			this.encoding = otherBuilder.getEncoding();
 			this.locale = otherBuilder.getLocale();
+			this.socketConnectTimeout = otherBuilder.getSocketConnectTimeout();
 			this.socketTimeout = otherBuilder.getSocketTimeout();
 			this.maxLineLength = otherBuilder.getMaxLineLength();
 			this.autoSplitMessage = otherBuilder.isAutoSplitMessage();

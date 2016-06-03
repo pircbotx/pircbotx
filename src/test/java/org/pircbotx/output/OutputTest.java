@@ -74,7 +74,7 @@ public class OutputTest {
 		when(socket.getInputStream()).thenReturn(in);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket(localhost, 6667, null, 0)).thenReturn(socket);
+		when(socketFactory.createSocket()).thenReturn(socket);
 
 		//Configure and connect bot
 		bot = new PircBotX(TestUtils.generateConfigurationBuilder()
@@ -83,9 +83,6 @@ public class OutputTest {
 				.setSocketFactory(socketFactory)
 				.buildConfiguration());
 		bot.startBot();
-
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket(localhost, 6667, null, 0);
 
 		//Setup useful vars
 		aUser = TestUtils.generateTestUserSource(bot);

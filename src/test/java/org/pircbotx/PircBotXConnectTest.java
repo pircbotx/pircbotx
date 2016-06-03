@@ -81,7 +81,7 @@ public class PircBotXConnectTest {
 		when(socket.getInputStream()).thenReturn(botIn);
 		when(socket.getOutputStream()).thenReturn(botOut);
 		socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket(eq(address), anyInt(), eq((InetAddress) null), eq(0))).thenReturn(socket);
+		when(socketFactory.createSocket()).thenReturn(socket);
 
 		//Setup bot
 		events = new ArrayList<Event>();
@@ -131,9 +131,6 @@ public class PircBotXConnectTest {
 				.buildConfiguration());
 		bot.connect();
 
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket(address, 6667, null, 0);
-
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 
@@ -158,9 +155,6 @@ public class PircBotXConnectTest {
 				.buildConfiguration());
 		bot.connect();
 
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket(address, 6667, null, 0);
-
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
 
@@ -183,9 +177,6 @@ public class PircBotXConnectTest {
 				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
-
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket(address, 25622, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -210,9 +201,6 @@ public class PircBotXConnectTest {
 				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
-
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket(address, 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");
@@ -241,9 +229,6 @@ public class PircBotXConnectTest {
 				.setCapEnabled(true)
 				.buildConfiguration());
 		bot.connect();
-
-		//Make sure the bot is connected
-		verify(socketFactory).createSocket(address, 6667, null, 0);
 
 		//Verify lines
 		String[] lines = botOut.toString().split("\r\n");

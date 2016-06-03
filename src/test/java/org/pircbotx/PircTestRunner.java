@@ -79,7 +79,7 @@ public class PircTestRunner implements Closeable {
 		when(socket.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[0]));
 		when(socket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
 		SocketFactory socketFactory = mock(SocketFactory.class);
-		when(socketFactory.createSocket(eq(address), anyInt(), eq((InetAddress) null), eq(0))).thenReturn(socket);
+		when(socketFactory.createSocket()).thenReturn(socket);
 		config.setSocketFactory(socketFactory);
 
 		config.setListenerManager(SequentialListenerManager.newDefault()
