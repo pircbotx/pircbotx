@@ -28,7 +28,7 @@ import org.testng.TestListenerAdapter;
  *
  * @author Leon Blakey
  */
-public class TestLogger extends TestListenerAdapter {
+public class TestngListener extends TestListenerAdapter {
 	protected static boolean disableLogging = Boolean.valueOf(System.getProperty("pircbotx.disableTestDetail", "false"));
 
 	@Override
@@ -38,6 +38,7 @@ public class TestLogger extends TestListenerAdapter {
 
 	@Override
 	public void onTestFailure(ITestResult tr) {
+		onTestDone(tr);
 		log("FAILURE", tr);
 	}
 
@@ -45,36 +46,48 @@ public class TestLogger extends TestListenerAdapter {
 	public void onTestSkipped(ITestResult tr) {
 		log("SKIPPED", tr);
 		//We should never have skipped tests
+		//Usually from a DataProvider or other listener throwing an exception
 		tr.setStatus(ITestResult.FAILURE);
 	}
 
 	@Override
 	public void onTestSuccess(ITestResult tr) {
+		onTestDone(tr);
 		log("SUCCESS", tr);
+	}
+
+	private void onTestDone(ITestResult tr) {
+		PircTestRunner activeInstance = PircTestRunner.THREAD_INSTANCE.get();
+		if (activeInstance != null) {
+			throw new RuntimeException("Test's PircTestRunner is not closed: " + tr.getMethod());
+		}
+
 	}
 
 	@Override
 	public void onFinish(ITestContext testContext) {
-		PircTestRunner.closeCheck();
-		LoggerFactory.getLogger(getClass()).info("Finshed");
+		System.out.println("--- TESTNG FINISHED ---");
 	}
 
 	protected void log(String status, ITestResult tr) {
-		if (disableLogging)
+		if (disableLogging) {
 			return;
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append('[').append(status).append("] ");
 		sb.append(tr.getTestClass().getName()).append(':').append(tr.getName()).append(" - ");
 
 		//Add description
-		if (StringUtils.isNotEmpty(tr.getMethod().getDescription()))
+		if (StringUtils.isNotEmpty(tr.getMethod().getDescription())) {
 			sb.append(tr.getMethod().getDescription());
-		else
+		} else {
 			sb.append("(no description)");
+		}
 
 		//Add params
-		if (ArrayUtils.isNotEmpty(tr.getParameters()))
+		if (ArrayUtils.isNotEmpty(tr.getParameters())) {
 			sb.append(" - Params: ").append(StringUtils.join(tr.getParameters(), ", "));
+		}
 
 		System.out.println(sb.toString());
 	}

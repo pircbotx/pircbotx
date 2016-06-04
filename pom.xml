@@ -254,7 +254,7 @@
 					<properties>
 						<property>
 							<name>listener</name>
-							<value>org.pircbotx.TestLogger</value>
+							<value>org.pircbotx.TestngListener</value>
 						</property>
 					</properties>
 				</configuration>

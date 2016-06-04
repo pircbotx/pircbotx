@@ -52,6 +52,7 @@ import org.pircbotx.hooks.managers.SequentialListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.testng.Assert.*;
+import org.testng.ITestContext;
 
 /**
  * Various hooks for easier detailed testing
@@ -59,7 +60,7 @@ import static org.testng.Assert.*;
  * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 public class PircTestRunner implements Closeable {
-	public static final HashMap<PircTestRunner, Exception> ACTIVE_INSTANCES = Maps.newHashMap();
+	public static final ThreadLocal<PircTestRunner> THREAD_INSTANCE = new ThreadLocal<PircTestRunner>();
 	public static final String BOT_NICK = "TestBot";
 	public static final String USER_SOURCE_HOSTMASK = "SourceUser!~SomeTest@host.test";
 	public static final String USER_OTHER_HOSTMASK = "OtherUser!~SomeTest@host.test";
@@ -71,8 +72,6 @@ public class PircTestRunner implements Closeable {
 	public final CapturedPircBotX bot;
 
 	public PircTestRunner(Configuration.Builder config) throws IOException, IrcException {
-		ACTIVE_INSTANCES.put(this, new RuntimeException("This forgot to call close"));
-		
 		InetAddress address = InetAddress.getByName("127.1.1.1");
 		Socket socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
@@ -98,23 +97,8 @@ public class PircTestRunner implements Closeable {
 
 		bot = new CapturedPircBotX(config.buildConfiguration());
 		bot.startBot();
-	}
-	
-	public static void closeCheck() {
-		//TODO: Probably need something that isn't going to break every other test when one forgets to call close
-		//     Also this won't tell were the missing close was
-		//    This won't work if this happens to be the very last test
-		log.error("Checking if tests are remaining");
-		StringBuilder exceptions = new StringBuilder();
-		for(Exception exception : ACTIVE_INSTANCES.values()) {
-			exceptions.append(System.lineSeparator())
-					.append(exception.toString())
-					.append(ExceptionUtils.getStackTrace(exception));
-		}
 		
-		if(!ACTIVE_INSTANCES.isEmpty()) {
-			log.error("Forgot to call cloase somewhere in " + exceptions.toString());
-		}
+		THREAD_INSTANCE.set(this);
 	}
 
 	/**
@@ -237,7 +221,7 @@ public class PircTestRunner implements Closeable {
 		bot.shutdownEnabled = true;
 		botIn("ERROR: test is over");
 		assertTrue(bot.closeCalled, "Shutdown wasn't called");
-		ACTIVE_INSTANCES.remove(this);
+		THREAD_INSTANCE.remove();
 	}
 	
 	protected void checkAllEmpty() {
