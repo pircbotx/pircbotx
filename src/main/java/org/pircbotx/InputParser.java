@@ -31,7 +31,6 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -339,7 +338,7 @@ public class InputParser implements Closeable {
 		//Make sure this is a valid IRC line
 		if (!sourceRaw.startsWith(":")) {
 			// We don't know what this line means.
-			configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
+			configuration.getListenerManager().onEvent(new UnknownEvent(bot, target, "", command, line, parsedLine, tags.build()));
 			if (!bot.loggedIn)
 				//Pass to CapHandlers, could be important
 				for (CapHandler curCapHandler : configuration.getCapHandlers())
@@ -520,10 +519,10 @@ public class InputParser implements Closeable {
 				boolean success = bot.getDccHandler().processDcc(source, sourceUser, request);
 				if (!success)
 					// The DccManager didn't know what to do with the line.
-					configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
+					configuration.getListenerManager().onEvent(new UnknownEvent(bot, target, source.getNick(), command, line, parsedLine, tags));
 			} else
 				// An unknown CTCP message - ignore it.
-				configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
+				configuration.getListenerManager().onEvent(new UnknownEvent(bot, target, source.getNick(), command, line, parsedLine, tags));
 		} else if (command.equals("PRIVMSG") && channel != null) {
 			// This is a normal message to a channel.
 			sourceUser = createUserIfNull(sourceUser, source);
@@ -643,7 +642,7 @@ public class InputParser implements Closeable {
 		else
 			// If we reach this point, then we've found something that the PircBotX
 			// Doesn't currently deal with.
-			configuration.getListenerManager().onEvent(new UnknownEvent(bot, line));
+			configuration.getListenerManager().onEvent(new UnknownEvent(bot, target, source.getNick(), command, line, parsedLine, tags));
 	}
 
 	/**

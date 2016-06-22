@@ -19,12 +19,16 @@ package org.pircbotx.hooks.events;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
+
+import java.util.List;
 
 /**
  * This event is dispatched whenever we receive a line from the server that
@@ -36,13 +40,51 @@ import org.pircbotx.PircBotX;
 @EqualsAndHashCode(callSuper = true)
 public class UnknownEvent extends Event {
 	/**
+	 * The target of the event
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final String target;
+	/**
+	 * The nickname (if any) of the originating user
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final String nick;
+	/**
+	 * The IRC command that was issued
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final String command;
+	/**
 	 * The raw line that was received from the server.
 	 */
+	@Getter(onMethod = @_(
+			@Override))
 	protected final String line;
+	/**
+	 * The parsed line
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final List<String> parsedLine;
+	/**
+	 * The IRCv3 tags (if any)
+	 */
+	@Getter(onMethod = @_(
+			@Override))
+	protected final ImmutableMap<String, String> tags;
 
-	public UnknownEvent(PircBotX bot, @NonNull String line) {
+
+	public UnknownEvent(PircBotX bot, String target, String nick, String command, @NonNull String line, List<String> parsedLine, ImmutableMap<String, String> tags) {
 		super(bot);
+		this.target = target;
+		this.nick = nick;
+		this.command = command;
 		this.line = line;
+		this.parsedLine = parsedLine;
+		this.tags = tags;
 	}
 
 	/**
