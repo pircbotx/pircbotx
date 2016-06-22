@@ -42,38 +42,32 @@ public class UnknownEvent extends Event {
 	/**
 	 * The target of the event
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter
 	protected final String target;
 	/**
 	 * The nickname (if any) of the originating user
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter
 	protected final String nick;
 	/**
 	 * The IRC command that was issued
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter
 	protected final String command;
 	/**
 	 * The raw line that was received from the server.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter
 	protected final String line;
 	/**
 	 * The parsed line
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter
 	protected final List<String> parsedLine;
 	/**
 	 * The IRCv3 tags (if any)
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter
 	protected final ImmutableMap<String, String> tags;
 
 
