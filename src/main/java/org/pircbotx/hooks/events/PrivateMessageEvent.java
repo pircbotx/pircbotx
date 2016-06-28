@@ -18,6 +18,9 @@
 package org.pircbotx.hooks.events;
 
 import javax.annotation.Nullable;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 import org.pircbotx.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -55,12 +58,17 @@ public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	@Getter(onMethod = @_(
 			@Override))
 	protected final String message;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
-	public PrivateMessageEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull String message) {
+	public PrivateMessageEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, @NonNull String message, ImmutableMap<String, String> tags) {
 		super(bot);
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.message = message;
+		this.tags = tags;
 	}
 
 	/**
@@ -81,5 +89,12 @@ public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	@Override
 	public void respondPrivateMessage(String message) {
 		respond(message);
+	}
+
+	/**
+	 * Alias of {@link #getTags() }
+	 */
+	public ImmutableMap<String, String> getV3Tags() {
+		return tags;
 	}
 }
