@@ -73,77 +73,82 @@ public final class Colors {
 	 */
 	public static final String UNDERLINE = "\u001f";
 	/**
+	 * Italicized text.
+	 */
+	public static final String ITALICS = "\u001d";	
+	/**
 	 * Reversed text (may be rendered as italic text in some clients).
 	 */
 	public static final String REVERSE = "\u0016";
 	/**
-	 * White coloured text.
+	 * Coloured text.
 	 */
-	public static final String WHITE = "\u000300";
+	 public static final String COLOR = "\u0003";
+	 
 	/**
-	 * Black coloured text.
+	 * White colour.
 	 */
-	public static final String BLACK = "\u000301";
+	public static final String WHITE = "00";
 	/**
-	 * Dark blue coloured text.
+	 * Black colour.
 	 */
-	public static final String DARK_BLUE = "\u000302";
+	public static final String BLACK = "01";
 	/**
-	 * Dark green coloured text.
+	 * Dark blue colour.
 	 */
-	public static final String DARK_GREEN = "\u000303";
+	public static final String DARK_BLUE = "02";
 	/**
-	 * Red coloured text.
+	 * Dark green colour.
 	 */
-	public static final String RED = "\u000304";
+	public static final String DARK_GREEN = "03";
 	/**
-	 * Brown coloured text.
+	 * Red colour.
 	 */
-	public static final String BROWN = "\u000305";
+	public static final String RED = "04";
 	/**
-	 * Purple coloured text.
+	 * Brown colour.
 	 */
-	public static final String PURPLE = "\u000306";
+	public static final String BROWN = "05";
 	/**
-	 * Olive coloured text.
+	 * Purple colour.
 	 */
-	public static final String OLIVE = "\u000307";
+	public static final String PURPLE = "06";
 	/**
-	 * Yellow coloured text.
+	 * Olive colour.
 	 */
-	public static final String YELLOW = "\u000308";
+	public static final String OLIVE = "07";
 	/**
-	 * Green coloured text.
+	 * Yellow colour.
 	 */
-	public static final String GREEN = "\u000309";
+	public static final String YELLOW = "08";
 	/**
-	 * Teal coloured text.
+	 * Green colourt.
 	 */
-	public static final String TEAL = "\u000310";
+	public static final String GREEN = "09";
 	/**
-	 * Cyan coloured text.
+	 * Teal colour.
 	 */
-	public static final String CYAN = "\u000311";
+	public static final String TEAL = "10";
 	/**
-	 * Blue coloured text.
+	 * Cyan colour.
 	 */
-	public static final String BLUE = "\u000312";
+	public static final String CYAN = "11";
 	/**
-	 * Magenta coloured text.
+	 * Blue colour.
 	 */
-	public static final String MAGENTA = "\u000313";
+	public static final String BLUE = "12";
 	/**
-	 * Dark gray coloured text.
+	 * Magenta colour.
 	 */
-	public static final String DARK_GRAY = "\u000314";
+	public static final String MAGENTA = "13";
 	/**
-	 * Light gray coloured text.
+	 * Dark gray colour.
 	 */
-	public static final String LIGHT_GRAY = "\u000315";
+	public static final String DARK_GRAY = "14";
 	/**
-	 * Italicized text.
+	 * Light gray colour.
 	 */
-	public static final String ITALICS = "\u001d";
+	public static final String LIGHT_GRAY = "15";
 	/**
 	 * Pre-built lookup table by String for all available colors
 	 */
@@ -211,7 +216,7 @@ public final class Colors {
 	public static String bg(String foreground, String background) {
 		Preconditions.checkArgument(StringUtils.isNotEmpty(foreground), "foreground");
 		Preconditions.checkArgument(StringUtils.isNotEmpty(background), "background");
-		return foreground + "," + background;
+		return COLOR + foreground + "," + background;
 	}
 	
 	/**
@@ -222,7 +227,7 @@ public final class Colors {
 	 * @return 
 	 */
 	public static String set(String message, String foregroundColor) {
-		return foregroundColor + message + NORMAL;
+		return COLOR + foregroundColor + message + NORMAL;
 	}
 	
 	/**
