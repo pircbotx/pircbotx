@@ -130,7 +130,8 @@ public class WaitForQueue implements Closeable {
 			Event curEvent = eventQueue.poll(timeout, unit);
 			//When poll times out it returns null. Repeat that behavior here
 			if (curEvent == null)
-				return null;
+				//return null;
+				throw new InterruptedException();
 			for (Class<? extends GenericEvent> curEventClass : eventClasses)
 				if (curEventClass.isInstance(curEvent))
 					return curEvent;
