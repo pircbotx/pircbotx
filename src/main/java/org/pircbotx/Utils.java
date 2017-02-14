@@ -18,16 +18,21 @@
 package org.pircbotx;
 
 import com.google.common.base.CharMatcher;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Nullable;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.slf4j.MDC;
 import org.slf4j.helpers.MessageFormatter;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Useful utilities for internal PircBotX use. Users should not use this class
@@ -176,5 +181,46 @@ public final class Utils {
 		//No more spaces, add last part of line
 		stringParts.add(trimmedInput.substring(pos));
 		return stringParts;
+	}
+
+	private static final Map<String, String> V3_TAGS_UNESCAPE_MAPPING = createV3TagsUnescapeMapping();
+
+	private static Map<String, String> createV3TagsUnescapeMapping() {
+		Map<String, String> mapping = new HashMap<String, String>();
+		mapping.put("\\:", ";");
+		mapping.put("\\s", " ");
+		mapping.put("\\\\", "\\");
+		mapping.put("\\r", "\r");
+		mapping.put("\\n", "\n");
+		return mapping;
+	}
+
+	private static final Pattern V3_TAGS_UNESCAPE_PATTERN = createV3TagsUnescapePattern();
+
+	private static Pattern createV3TagsUnescapePattern() {
+		List<String> regexGroups = new ArrayList<String>();
+		for (String mappingKey : V3_TAGS_UNESCAPE_MAPPING.keySet()) {
+			regexGroups.add(mappingKey.replace("\\", "\\\\"));
+		}
+		return Pattern.compile("(" + StringUtils.join(regexGroups, "|") + ")");
+	}
+
+	/**
+	 * Unescape IRCv3 message tag values which have been escaped before
+	 * (e.g. if received from the server).
+	 *
+	 * @param v3TagValue Escaped IRCv3 message tag value
+	 * @return Unescaped IRCv3 message tag value
+	 * @see <a href="http://ircv3.net/specs/core/message-tags-3.2.html">http://ircv3.net/specs/core/message-tags-3.2.html</a>
+	 */
+	public static String unescapeV3TagValue(String v3TagValue) {
+		Matcher matcher = V3_TAGS_UNESCAPE_PATTERN.matcher(v3TagValue);
+		StringBuffer stringBuffer = new StringBuffer();
+		while (matcher.find()) {
+			String replacement = V3_TAGS_UNESCAPE_MAPPING.get(matcher.group(1)).replace("\\", "\\\\");
+			matcher.appendReplacement(stringBuffer, replacement);
+		}
+		matcher.appendTail(stringBuffer);
+		return stringBuffer.toString();
 	}
 }

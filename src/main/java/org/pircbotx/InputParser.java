@@ -305,8 +305,9 @@ public class InputParser implements Closeable {
 			while (tokenizer.hasMoreTokens()) {
 				String tag = tokenizer.nextToken(";");
 				if (tag.contains("=")) {
-					String[] parts = tag.split("=");
-					tags.put(parts[0], (parts.length == 2 ? parts[1] : ""));
+					String[] parts = tag.split("=", 2);
+					String value = (parts.length == 2 ? parts[1] : "");
+					tags.put(parts[0], Utils.unescapeV3TagValue(value));
 				} else {
 					tags.put(tag, "");
 				}
