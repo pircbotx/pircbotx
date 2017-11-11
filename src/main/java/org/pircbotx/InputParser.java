@@ -868,6 +868,10 @@ public class InputParser implements Closeable {
 					.exists(false)
 					.generateEvent(bot);
 			configuration.getListenerManager().onEvent(event);
+		} else if (code == RPL_WHOIS_SECURE) {
+			//If present, tells us that the user is using a secure connection
+			//671 TheLQ TheLQ-PircBotX :is using a secure connection
+			whoisBuilder.get(parsedResponse.get(1)).secureConnection(true);
 		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.
