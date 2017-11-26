@@ -79,7 +79,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lombok.version>1.16.6</lombok.version>
+		<lombok.version>1.16.18</lombok.version>
 		<guava.version>19.0</guava.version>
 		<src.dir>src/main/java</src.dir>
 		<snapshot.version />
