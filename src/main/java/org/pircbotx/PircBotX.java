@@ -57,8 +57,7 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * PircBotX is a Java framework for writing IRC bots quickly and easily.
  * <p>
  * It provides an event-driven architecture to handle common IRC events, flood
- * protection, DCC support, ident support, and more. The comprehensive logfile
- * format is suitable for use with pisg to generate channel statistics.
+ * protection, DCC support, ident support, and more. 
  * <p>
  * Methods of the PircBotX class can be called to send events to the IRC server
  * that it connects to. For example, calling the sendMessage method will send a
