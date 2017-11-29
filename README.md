@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pircbotx/pircbotx.svg?branch=list)](https://travis-ci.org/pircbotx/pircbotx)
+[![Build Status](https://travis-ci.org/pircbotx/pircbotx.svg?branch=master)](https://travis-ci.org/pircbotx/pircbotx)
 
 **January 2016** PircBotX 2.1 is finally released!
 
