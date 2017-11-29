@@ -151,6 +151,7 @@ public final class ReplyConstants {
 	public static final int RPL_USERS = 393;
 	public static final int RPL_ENDOFUSERS = 394;
 	public static final int RPL_NOUSERS = 395;
+	public static final int RPL_WHOIS_SECURE = 671;
 	// Reserved Numerics.
 	public static final int RPL_TRACECLASS = 209;
 	public static final int RPL_STATSQLINE = 217;

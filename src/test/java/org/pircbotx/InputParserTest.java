@@ -939,6 +939,7 @@ public class InputParserTest {
 		assertEquals(event.getSignOnTime(), 1347373349, "Sign on time doesn't match given");
 		assertNull(event.getRegisteredAs(), "User isn't registered");
 		assertTrue(event.isExists(), "User should exist");
+		assertFalse(event.isSecureConnection(), "User should have insecure connection");
 
 		//Verify channels
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
@@ -1023,6 +1024,17 @@ public class InputParserTest {
 		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
 		assertNotNull(event.getChannels(), "WhoisEvent.channels is null");
 		assertTrue(event.getChannels().isEmpty(), "Unknown channels " + event.getChannels());
+	}
+
+	@Test
+	public void whoisSecureConnectionTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 671 PircBotXUser OtherUser :is using a secure connection");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser otheruser :End of /WHOIS list.");
+
+		//Make sure we get the correct event
+		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertTrue(event.isSecureConnection(), "Event used insecure connection");
 	}
 
 	@Test
