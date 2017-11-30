@@ -211,7 +211,7 @@ public final class Colors {
 	public static String bg(String foreground, String background) {
 		Preconditions.checkArgument(StringUtils.isNotEmpty(foreground), "foreground");
 		Preconditions.checkArgument(StringUtils.isNotEmpty(background), "background");
-		return foreground + "," + background;
+		return foreground + "," + background.replace("\u0003", ""); 
 	}
 	
 	/**
