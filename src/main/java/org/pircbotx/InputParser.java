@@ -732,7 +732,9 @@ public class InputParser implements Closeable {
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
-			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			
+			String channelName = parsedResponse.get(1);
+			Channel channel = bot.getUserChannelDao().channelExists(channelName) ? bot.getUserChannelDao().getChannel(channelName) : null;
 
 			//Setup user
 			String nick = parsedResponse.get(5);
@@ -757,11 +759,14 @@ public class InputParser implements Closeable {
 			}
 
 			//Associate with channel
-			bot.getUserChannelDao().addUserToChannel(curUser, channel);
+			if (bot.getUserChannelDao().channelExists(channelName)) {
+				bot.getUserChannelDao().addUserToChannel(curUser, channel);
+			}
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
-			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			String channelName = parsedResponse.get(1);
+			Channel channel = bot.getUserChannelDao().channelExists(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
 			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
