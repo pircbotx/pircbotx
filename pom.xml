@@ -50,18 +50,18 @@
 
 	<issueManagement>
 		<system>Github</system>
-		<url>http://github.com/thelq/pircbotx/issues</url>
+		<url>http://github.com/pircbotx/pircbotx/issues</url>
 	</issueManagement>
         
 	<ciManagement>
 		<system>Travis-CI</system>
-		<url>http://travis-ci.org/TheLQ/pircbotx</url>
+		<url>http://travis-ci.org/pircbotx/pircbotx</url>
 	</ciManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/TheLQ/pircbotx.git</connection>
-		<developerConnection>scm:git:https://github.com/TheLQ/pircbotx.git</developerConnection>
-		<url>https://github.com/TheLQ/pircbotx.git</url>
+		<connection>scm:git:https://github.com/pircbotx/pircbotx.git</connection>
+		<developerConnection>scm:git:https://github.com/pircbotx/pircbotx.git</developerConnection>
+		<url>https://github.com/pircbotx/pircbotx.git</url>
 	</scm>
 	
 	<mailingLists>
@@ -273,7 +273,6 @@
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
-										<Main-Class>org.thelq.pircbotx.Main</Main-Class>
 										<Class-Path>.</Class-Path>
 									</manifestEntries>									
 								</transformer>

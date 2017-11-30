@@ -2,9 +2,9 @@
 
 **January 2016** PircBotX 2.1 is finally released!
 
-**June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/TheLQ/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
+**June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/pircbotx/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
 
-[Current Version: 2.1](https://github.com/TheLQ/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/TheLQ/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/TheLQ/pircbotx/wiki/ChangeLog#21---january-24-2016) for more information
+[Current Version: 2.1](https://github.com/pircbotx/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/pircbotx/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/pircbotx/pircbotx/wiki/ChangeLog#21---january-24-2016) for more information
 
 **PircBotX** is a powerful and flexible Java IRC library forked from the popular PircBot framework, bringing many new up-to-date features and bug fixes in an official alternative distribution.
 
@@ -15,16 +15,16 @@
  * CTCP VERSION, ACTION, PING, TIME, and FINGER support
  * IPv6 IRC servers and DCC clients
  * Op, voice, halfop, superops, and owner user modes
- * [IRCv3 CAP negotiation](https://github.com/TheLQ/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, away-notify, and message tags
- * [WEBIRC](https://github.com/TheLQ/pircbotx/wiki/Documentation#webirc-authentication) support
- * Built in [Ident server](https://github.com/TheLQ/pircbotx/wiki/Documentation#ident-server)
+ * [IRCv3 CAP negotiation](https://github.com/pircbotx/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, away-notify, and message tags
+ * [WEBIRC](https://github.com/pircbotx/pircbotx/wiki/Documentation#webirc-authentication) support
+ * Built in [Ident server](https://github.com/pircbotx/pircbotx/wiki/Documentation#ident-server)
 
-**Checkout the [Wiki](https://github.com/TheLQ/pircbotx/wiki/) for tutorials and documentation**
+**Checkout the [Wiki](https://github.com/pircbotx/pircbotx/wiki/) for tutorials and documentation**
 
 ##PircBotX in 3 Steps
 A brief getting started guide
 
- * [Download PircBotX](https://github.com/TheLQ/pircbotx/wiki/Downloads)
+ * [Download PircBotX](https://github.com/pircbotx/pircbotx/wiki/Downloads)
  * Create and execute the following class:
 ```java
 import org.pircbotx.Configuration;
@@ -58,11 +58,11 @@ public class MyListener extends ListenerAdapter {
 ```
  * Join the #pircbotx channel on irc.freenode.net and send `?helloworld` . Your bot will respond with `Hello world!` Since its a GenericMessageEvent, it will also respond when private messaged. Congratulations, you just wrote your first bot!
 
-PircBotX can do so much more! [Read the docs for more information](http://github.com/TheLQ/pircbotx/wiki/Documentation)
+PircBotX can do so much more! [Read the docs for more information](http://github.com/pircbotx/pircbotx/wiki/Documentation)
 
 ## Support
 
-[Most answers can be found in the docs](http://github.com/TheLQ/pircbotx/wiki/Documentation), javadocs (http://thelq.github.io/pircbotx/latest/apidocs/) and [the wiki](http://github.com/TheLQ/pircbotx/wiki/)
+[Most answers can be found in the docs](http://github.com/pircbotx/pircbotx/wiki/Documentation), javadocs (http://thelq.github.io/pircbotx/latest/apidocs/) and [the wiki](http://github.com/pircbotx/pircbotx/wiki/)
 
 If you can't find an answer, ask on IRC at irc.freenode.net/#pircbotx . [We also have a mailing list](http://groups.google.com/group/pircbotx)
 
