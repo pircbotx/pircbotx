@@ -18,6 +18,8 @@
 package org.pircbotx.hooks.events;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -67,14 +69,19 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	 * The notice message.
 	 */
 	protected final String notice;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
-	public NoticeEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String notice) {
+	public NoticeEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user, Channel channel, @NonNull String channelSource, @NonNull String notice, ImmutableMap<String, String> tags) {
 		super(bot);
 		this.user = user;
 		this.userHostmask = userHostmask;
 		this.channel = channel;
 		this.channelSource = channelSource;
 		this.notice = notice;
+		this.tags = tags;
 	}
 
 	/**
@@ -124,5 +131,12 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	 */
 	public void respondPrivateMessage(String response) {
 		getUser().send().message(response);
+	}
+
+	/**
+	 * Alias of {@link #getTags() }
+	 */
+	public ImmutableMap<String, String> getV3Tags() {
+		return tags;
 	}
 }

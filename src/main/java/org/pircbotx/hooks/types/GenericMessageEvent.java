@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.types;
 
+import com.google.common.collect.ImmutableMap;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 
@@ -47,4 +48,9 @@ public interface GenericMessageEvent extends GenericUserEvent {
 	 * Like {@link #respond(String)}, without the Username: prefix
 	 */
 	public void respondWith(String fullLine);
+
+	/**
+	 * Accessor for the IRCv3 Message tags
+	 */
+	public ImmutableMap<String, String> getV3Tags();
 }

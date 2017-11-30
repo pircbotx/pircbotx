@@ -505,7 +505,7 @@ public class InputParser implements Closeable {
 				configuration.getListenerManager().onEvent(new VersionEvent(bot, source, sourceUser, channel));
 			else if (request.startsWith("ACTION "))
 				// ACTION request
-				configuration.getListenerManager().onEvent(new ActionEvent(bot, source, sourceUser, channel, target, request.substring(7)));
+				configuration.getListenerManager().onEvent(new ActionEvent(bot, source, sourceUser, channel, target, request.substring(7), tags));
 			else if (request.startsWith("PING "))
 				// PING request
 				configuration.getListenerManager().onEvent(new PingEvent(bot, source, sourceUser, channel, request.substring(5)));
@@ -533,7 +533,7 @@ public class InputParser implements Closeable {
 			//Add to private message
 			sourceUser = createUserIfNull(sourceUser, source);
 			bot.getUserChannelDao().addUserToPrivate(sourceUser);
-			configuration.getListenerManager().onEvent(new PrivateMessageEvent(bot, source, sourceUser, message));
+			configuration.getListenerManager().onEvent(new PrivateMessageEvent(bot, source, sourceUser, message, tags));
 		} else if (command.equals("JOIN")) {
 			// Someone is joining a channel.
 			if (source.getNick().equalsIgnoreCase(bot.getNick())) {
@@ -581,7 +581,7 @@ public class InputParser implements Closeable {
 			configuration.getListenerManager().onEvent(new NickChangeEvent(bot, source.getNick(), newNick, source, sourceUser));
 		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
-			configuration.getListenerManager().onEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message));
+			configuration.getListenerManager().onEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message, tags));
 		} else if (command.equals("QUIT")) {
 			UserChannelDaoSnapshot daoSnapshot;
 			UserSnapshot sourceSnapshot;
