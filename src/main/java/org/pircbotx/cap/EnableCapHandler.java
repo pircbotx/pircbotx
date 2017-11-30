@@ -57,7 +57,7 @@ public class EnableCapHandler implements CapHandler {
 			//Need to wait for server ACK
 			return false;
 		} else if (!ignoreFail)
-			throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
+			throw new CAPException(CAPException.Reason.UNSUPPORTED_CAPABILITY, cap);
 		else {
 			//Server doesn't support capability but were ignoring exceptions
 			log.debug("Unsupported capability " + cap);
@@ -77,7 +77,7 @@ public class EnableCapHandler implements CapHandler {
 			//Make sure the bot didn't register this capability
 			bot.getEnabledCapabilities().remove(cap);
 			if (!ignoreFail)
-				throw new CAPException(CAPException.Reason.UnsupportedCapability, cap);
+				throw new CAPException(CAPException.Reason.UNSUPPORTED_CAPABILITY, cap);
 			else
 				//Nothing more to do
 				return true;

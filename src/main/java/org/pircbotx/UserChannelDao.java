@@ -19,7 +19,6 @@ package org.pircbotx;
 
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Maps;
 import java.io.Closeable;
@@ -85,7 +84,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @param nick The nick of the user
 	 * @return Known active {@link User}
 	 * @throws DaoException If user does not exist, exception will contain
-	 * {@link org.pircbotx.exception.DaoException.Reason#UnknownUser} and the
+	 * {@link org.pircbotx.exception.DaoException.Reason#UNKNOWN_USER} and the
 	 * nick that doesn't exist
 	 */
 	@Synchronized("accessLock")
@@ -96,7 +95,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			return user;
 
 		//Does not exist
-		throw new DaoException(DaoException.Reason.UnknownUser, nick);
+		throw new DaoException(DaoException.Reason.UNKNOWN_USER, nick);
 	}
 
 	/**
@@ -105,7 +104,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @param userHostmask The hostmask of the user
 	 * @return Known active {@link User}
 	 * @throws DaoException If user does not exist, exception will contain
-	 * {@link org.pircbotx.exception.DaoException.Reason#UnknownUserHostmask},
+	 * {@link org.pircbotx.exception.DaoException.Reason#UNKNOWN_USER_HOSTMASK},
 	 * hostmask, and wrapped exception with nick
 	 */
 	@Synchronized("accessLock")
@@ -118,7 +117,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			return getUser(userHostmask.getNick());
 		} catch (Exception e) {
 			//Does not exist, wrap with detail about hostmask
-			throw new DaoException(DaoException.Reason.UnknownUserHostmask, userHostmask.toString(), e);
+			throw new DaoException(DaoException.Reason.UNKNOWN_USER_HOSTMASK, userHostmask.toString(), e);
 		}
 	}
 
@@ -345,7 +344,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		}
 
 		//Channel does not exist
-		throw new DaoException(DaoException.Reason.UnknownChannel, name);
+		throw new DaoException(DaoException.Reason.UNKNOWN_CHANNEL, name);
 	}
 
 	/**

@@ -74,7 +74,7 @@ public class Chat {
 	 */
 	public String readLine() throws IOException {
 		if (finished)
-			throw new DccException(DccException.Reason.ChatNotConnected, user, "Chat has already finished");
+			throw new DccException(DccException.Reason.CHAT_NOT_CONNECTED, user, "Chat has already finished");
 		String line = bufferedReader.readLine();
 		log.info(INPUT_CHAT_MARKER, "<<<" + line);
 		return line;
@@ -92,7 +92,7 @@ public class Chat {
 	public void sendLine(String line) throws IOException {
 		checkNotNull(line, "Line cannot be null");
 		if (finished)
-			throw new DccException(DccException.Reason.ChatNotConnected, user, "Chat has already finished");
+			throw new DccException(DccException.Reason.CHAT_NOT_CONNECTED, user, "Chat has already finished");
 		synchronized (bufferedWriter) {
 			log.info(OUTPUT_CHAT_MARKER, ">>>" + line);
 			bufferedWriter.write(line + "\r\n");
@@ -107,7 +107,7 @@ public class Chat {
 	 */
 	public void close() throws IOException {
 		if (finished)
-			throw new DccException(DccException.Reason.ChatNotConnected, user, "Chat has already finished");
+			throw new DccException(DccException.Reason.CHAT_NOT_CONNECTED, user, "Chat has already finished");
 		finished = true;
 		socket.close();
 	}

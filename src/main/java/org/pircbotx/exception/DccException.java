@@ -49,15 +49,15 @@ public class DccException extends RuntimeException {
 		return reason + " from user " + user.getNick() + ": " + detail;
 	}
 
-	public static enum Reason {
-		UnknownFileTransferResume,
-		ChatNotConnected,
-		ChatCancelled,
-		ChatTimeout,
-		FileTransferCancelled,
-		FileTransferTimeout,
-		FileTransferResumeTimeout,
-		FileTransferResumeCancelled,
-		DccPortsInUse
+	public enum Reason {
+		UNKNOWN_FILE_TRANSFER_RESUME,
+		CHAT_NOT_CONNECTED,
+		CHAT_CANCELLED,
+		CHAT_TIMEOUT,
+		FILE_TRANSFER_CANCELLED,
+		FILE_TRANSFER_TIMEOUT,
+		FILE_TRANSFER_RESUME_TIMEOUT,
+		FILE_TRANSFER_RESUME_CANCELLED,
+		DCC_PORTS_IN_USE
 	}
 }

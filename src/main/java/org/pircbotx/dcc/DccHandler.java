@@ -47,7 +47,7 @@ import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableList;
-import java.net.Inet4Address;
+
 import java.net.Inet6Address;
 import lombok.NonNull;
 import org.pircbotx.UserHostmask;
@@ -151,7 +151,7 @@ public class DccHandler implements Closeable {
 				}
 
 			//Haven't returned yet, received an unknown transfer
-			throw new DccException(DccException.Reason.UnknownFileTransferResume, user, "Transfer line: " + request);
+			throw new DccException(DccException.Reason.UNKNOWN_FILE_TRANSFER_RESUME, user, "Transfer line: " + request);
 		} else if (type.equals("ACCEPT")) {
 			//Someone is acknowledging a transfer resume
 			//Example (normal):  DCC ACCEPT <filename> <port> <position>
@@ -308,9 +308,9 @@ public class DccHandler implements Closeable {
 
 		//Wait for response
 		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
-			throw new DccException(DccException.Reason.FileTransferResumeTimeout, event.getUser(), "Event: " + event);
+			throw new DccException(DccException.Reason.FILE_TRANSFER_RESUME_TIMEOUT, event.getUser(), "Event: " + event);
 		if (shuttingDown)
-			throw new DccException(DccException.Reason.FileTransferResumeCancelled, event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
+			throw new DccException(DccException.Reason.FILE_TRANSFER_RESUME_CANCELLED, event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
 
 		//User has accepted resume, begin transfer
 		if (pendingTransfer.getPosition() != startPosition)
@@ -380,9 +380,9 @@ public class DccHandler implements Closeable {
 					bot.getConfiguration().getDccAcceptTimeout(),
 					publicAddress);
 			if (!countdown.await(dccAcceptTimeout, TimeUnit.MILLISECONDS))
-				throw new DccException(DccException.Reason.ChatTimeout, receiver, "");
+				throw new DccException(DccException.Reason.CHAT_TIMEOUT, receiver, "");
 			if (shuttingDown)
-				throw new DccException(DccException.Reason.ChatCancelled, receiver, "");
+				throw new DccException(DccException.Reason.CHAT_CANCELLED, receiver, "");
 			Socket chatSocket = new Socket(pendingChat.getReceiverAddress(), pendingChat.getReceiverPort());
 			return bot.getConfiguration().getBotFactory().createSendChat(bot, receiver, chatSocket);
 		} else {
@@ -460,9 +460,9 @@ public class DccHandler implements Closeable {
 					publicAddress, 
 					file.getAbsolutePath());
 			if (!countdown.await(bot.getConfiguration().getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
-				throw new DccException(DccException.Reason.FileTransferTimeout, receiver, "File: " + file.getAbsolutePath());
+				throw new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT, receiver, "File: " + file.getAbsolutePath());
 			if (shuttingDown)
-				throw new DccException(DccException.Reason.FileTransferCancelled, receiver, "Transfer of file " + file.getAbsolutePath()
+				throw new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED, receiver, "Transfer of file " + file.getAbsolutePath()
 						+ " canceled due to bot shutdown");
 			Socket transferSocket = new Socket(pendingPassiveTransfer.getReceiverAddress(), pendingPassiveTransfer.getReceiverPort());
 			return bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, transferSocket, receiver, file, pendingPassiveTransfer.getStartPosition());
@@ -557,7 +557,7 @@ public class DccHandler implements Closeable {
 				}
 			if (ss == null)
 				// No ports could be used.
-				throw new DccException(DccException.Reason.DccPortsInUse, user, "Ports " + dccPorts + " are in use.");
+				throw new DccException(DccException.Reason.DCC_PORTS_IN_USE, user, "Ports " + dccPorts + " are in use.");
 		}
 		ss.setSoTimeout(bot.getConfiguration().getDccAcceptTimeout());
 		return ss;

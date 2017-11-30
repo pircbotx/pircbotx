@@ -247,7 +247,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			//Server id
 			Utils.addBotToMDC(this);
 			if (isConnected())
-				throw new IrcException(IrcException.Reason.AlreadyConnected, "Must disconnect from server before connecting again");
+				throw new IrcException(IrcException.Reason.ALREADY_CONNECTED, "Must disconnect from server before connecting again");
 			if (getState() == State.CONNECTED)
 				throw new RuntimeException("Bot is not connected but state is State.CONNECTED. This shouldn't happen");
 			if (configuration.isIdentServerEnabled() && IdentServer.getServer() == null)
@@ -672,7 +672,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		}
 	}
 
-	public static enum State {
+	public enum State {
 		INIT,
 		CONNECTED,
 		DISCONNECTED
