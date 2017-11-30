@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/pircbotx/pircbotx.svg?branch=master)](https://travis-ci.org/pircbotx/pircbotx)
 
+**November 2017** Project moved from /TheLQ/pircbotx to a new github organisation /pircbotx/pircbotx
+
 **January 2016** PircBotX 2.1 is finally released!
 
 **June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/pircbotx/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
