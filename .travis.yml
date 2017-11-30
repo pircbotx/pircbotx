@@ -11,7 +11,7 @@ before_script:
 # build
 script: 
   - echo -en "\ntravis_fold:start:dependencies\r"
-  - mvn dependency:resolve dependency:resolve-plugins 
+  - mvn dependency:go-offline
   - echo -en "\ntravis_fold:end:dependencies\r"
   - mvn clean install -Dsnapshot.version=-`git rev-parse --short HEAD`
 
