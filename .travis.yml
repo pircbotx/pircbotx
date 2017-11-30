@@ -9,7 +9,11 @@ before_script:
   - pip install --user codecov
 
 # build
-script: mvn clean install -Dsnapshot.version=-`git rev-parse --short HEAD`
+script: 
+  - echo -en "\ntravis_fold:start:dependencies\r"
+  - mvn dependency:resolve
+  - echo -en "\ntravis_fold:end:dependencies\r"
+  - mvn clean install -Dsnapshot.version=-`git rev-parse --short HEAD`
 
 after_success:
  - mvn source:jar deploy --settings .travis/maven-settings.xml
