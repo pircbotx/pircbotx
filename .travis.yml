@@ -1,8 +1,10 @@
 language: java
 jdk: openjdk7
 
-# skip default install step
-install: true
+
+install:
+  - mvn dependency:go-offline
+  - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-compiler-plugin:3.5 -Dartifact=org.apache.maven.plugins:maven-enforcer-plugin:1.4.1
 
 # codecov
 before_script:
@@ -10,10 +12,6 @@ before_script:
 
 # build
 script: 
-  - echo -en "\ntravis_fold:start:dependencies\r"
-  - mvn dependency:go-offline
-  - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-compiler-plugin:3.5 -Dartifact=org.apache.maven.plugins:maven-enforcer-plugin:1.4.1
-  - echo -en "\ntravis_fold:end:dependencies\r"
   - mvn clean install -Dsnapshot.version=-`git rev-parse --short HEAD`
 
 after_success:
