@@ -48,22 +48,22 @@ public class PingEvent extends Event implements GenericCTCPEvent {
 	/**
 	 * The user that sent the PING request.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that sent the PING request.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User user;
 	/**
 	 * The channel that received the ping request. A value of <code>null</code>
 	 * means the target was us.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final Channel channel;
 	/**
 	 * The value that was supplied as an argument to the PING command.

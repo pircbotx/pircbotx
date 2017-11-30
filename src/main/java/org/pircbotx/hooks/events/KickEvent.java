@@ -41,34 +41,34 @@ public class KickEvent extends Event implements GenericChannelModeRecipientEvent
 	/**
 	 * The channel from which the recipient was kicked.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final Channel channel;
 	/**
 	 * The user hostmask that performed the kick.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user who performed the kick.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User user;
 	/**
 	 * The unfortunate recipient hostmask of the kick.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask recipientHostmask;
 	/**
 	 * The unfortunate recipient of the kick.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User recipient;
 	/**
 	 * The reason given by the user who performed the kick.

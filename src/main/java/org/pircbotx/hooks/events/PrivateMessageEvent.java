@@ -42,21 +42,21 @@ public class PrivateMessageEvent extends Event implements GenericMessageEvent {
 	/**
 	 * The user hostmask who sent the private message.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user who sent the private message.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User user;
 	/**
 	 * The actual message.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final String message;
 	/**
 	 * The IrcV3 tags

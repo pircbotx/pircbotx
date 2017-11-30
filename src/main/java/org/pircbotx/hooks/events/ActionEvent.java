@@ -44,23 +44,23 @@ public class ActionEvent extends Event implements GenericMessageEvent, GenericCh
 	/**
 	 * The user hostmask that sent the action.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that sent the action.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User user;
 	/**
 	 * The channel that the action message was sent in. A value of
 	 * <code>null</code> means that this is a private message, not a channel
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final Channel channel;
 	/**
 	 * The raw channel name, could be a special mode message eg +#channel that

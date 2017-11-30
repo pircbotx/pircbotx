@@ -43,8 +43,8 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	/**
 	 * The channel to which the message was sent.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final Channel channel;
 	/**
 	 * The raw channel name, could be a special mode message eg +#channel that
@@ -54,21 +54,21 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	/**
 	 * The user hostmask who sent the message.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user who sent the message.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User user;
 	/**
 	 * The actual message sent to the channel.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final String message;
 	/**
 	 * The IrcV3 tags

@@ -43,22 +43,22 @@ public class NoticeEvent extends Event implements GenericMessageEvent, GenericCh
 	/**
 	 * The user hostmask that sent the hostmask.
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that sent the notice.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @_({
 			@Override,
-			@Nullable))
+			@Nullable}))
 	protected final User user;
 	/**
 	 * The target channel of the notice. A value of <code>null</code> means that
 	 * the target is us
 	 */
-	@Getter(onMethod = @_(
-			@Override))
+	@Getter(onMethod = @_({
+			@Override}))
 	protected final Channel channel;
 	/**
 	 * The raw channel name, could be a special mode message eg +#channel that
