@@ -110,7 +110,7 @@ public class ActionEvent extends Event implements GenericMessageEvent, GenericCh
 	 */
 	@Override
 	public void respond(String response) {
-		respond(response);
+		respondWith(response);
 	}
 	
 	@Override
