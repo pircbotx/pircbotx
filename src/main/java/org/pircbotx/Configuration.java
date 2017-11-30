@@ -246,29 +246,28 @@ public class Configuration {
 	public static class Builder {
 		//WebIRC
 		/**
-		 * Enable or disable sending WEBIRC line on connect, default disabled
+		 * Enable or disable sending WEBIRC line on connect
 		 */
-		protected boolean webIrcEnabled = false;
+		protected boolean webIrcEnabled;
 		/**
-		 * Username of WEBIRC connection, must not be blank if WEBIRC is enabled
+		 * Username of WEBIRC connection
 		 */
-		protected String webIrcUsername = null;
+		protected String webIrcUsername;
 		/**
-		 * Hostname of WEBIRC connection, must not be blank if WEBIRC is enabled
+		 * Hostname of WEBIRC connection
 		 */
-		protected String webIrcHostname = null;
+		protected String webIrcHostname;
 		/**
-		 * IP address of WEBIRC connection, must be set if WEBIRC is enabled
+		 * IP address of WEBIRC connection
 		 */
-		protected InetAddress webIrcAddress = null;
+		protected InetAddress webIrcAddress;
 		/**
-		 * Password of WEBIRC connection, must not be blank if WEBIRC is enabled
+		 * Password of WEBIRC connection
 		 */
-		protected String webIrcPassword = null;
+		protected String webIrcPassword;
 		//Bot information
 		/**
-		 * The nick to be used for the IRC connection (nick!login@host), must
-		 * not be blank
+		 * The nick to be used for the IRC connection (nick!login@host)
 		 */
 		protected String name;
 		/**
@@ -315,25 +314,22 @@ public class Configuration {
 		protected boolean snapshotsEnabled = true;
 		//DCC
 		/**
-		 * If true sends filenames in quotes, otherwise uses underscores,
-		 * default enabled.
+		 * If true sends filenames in quotes, otherwise uses underscores
 		 */
-		protected boolean dccFilenameQuotes = false;
+		protected boolean dccFilenameQuotes;
 		/**
 		 * Ports to allow DCC incoming connections, recommended to set multiple
 		 * as DCC connections will be rejected if no free port can be found
 		 */
 		protected List<Integer> dccPorts = Lists.newArrayList();
 		/**
-		 * The local address to bind DCC connections to, defaults to null (which
-		 * will be figured out at runtime)
+		 * The local address to bind DCC connections to
 		 */
-		protected InetAddress dccLocalAddress = null;
+		protected InetAddress dccLocalAddress;
 		/**
-		 * The public address advertised to other users, defaults to null (which
-		 * will be figured out at runtime)
+		 * The public address advertised to other users
 		 */
-		protected InetAddress dccPublicAddress = null;
+		protected InetAddress dccPublicAddress;
 		/**
 		 * Timeout for user to accept a sent DCC request, defaults to {@link #getSocketTimeout()
 		 * }
@@ -350,27 +346,26 @@ public class Configuration {
 		protected int dccTransferBufferSize = 1024;
 		/**
 		 * Send DCC requests as passive/reverse requests if not specified
-		 * otherwise, default false
 		 */
-		protected boolean dccPassiveRequest = false;
+		protected boolean dccPassiveRequest;
 		//Connect information
 		/**
 		 * List of servers to connect to, easily add with the addServer methods
 		 */
 		protected List<ServerEntry> servers = Lists.newLinkedList();
 		/**
-		 * Password for IRC server, default null
+		 * Password for IRC server
 		 */
-		protected String serverPassword = null;
+		protected String serverPassword;
 		/**
 		 * Socket factory for connections, defaults to {@link SocketFactory#getDefault()
 		 * }
 		 */
 		protected SocketFactory socketFactory = SocketFactory.getDefault();
 		/**
-		 * Address to bind to when connecting to IRC server, default null
+		 * Address to bind to when connecting to IRC server
 		 */
-		protected InetAddress localAddress = null;
+		protected InetAddress localAddress;
 		/**
 		 * Charset encoding to use for connection, defaults to
 		 * {@link Charset#defaultCharset()}
@@ -404,10 +399,10 @@ public class Configuration {
 		protected boolean autoSplitMessage = true;
 		/**
 		 * Enable or disable automatic nick changing if a nick is in use by
-		 * adding a number to the end, default false which will throw a
+		 * adding a number to the end, will throw a
 		 * {@link IrcException} if the nick is already in use on the server
 		 */
-		protected boolean autoNickChange = false;
+		protected boolean autoNickChange;
 		/**
 		 * Millisecond delay between sending messages, default 1000 milliseconds
 		 */
@@ -427,18 +422,17 @@ public class Configuration {
 		 */
 		protected boolean onJoinWhoEnabled = true;
 		/**
-		 * Enable or disable use of an existing {@link IdentServer}, default
-		 * false. Note that the IdentServer must be started separately or else
+		 * Enable or disable use of an existing {@link IdentServer}
+		 * Note that the IdentServer must be started separately or else
 		 * an exception will be thrown
 		 *
 		 * @see IdentServer
 		 */
-		protected boolean identServerEnabled = false;
+		protected boolean identServerEnabled;
 		/**
-		 * Password to authenticate against NICKSERV, default null (will not try
-		 * to identify)
+		 * Password to authenticate against NICKSERV
 		 */
-		protected String nickservPassword = null;
+		protected String nickservPassword;
 		/**
 		 * Case-insensitive message a user with 
 		 * {@link #setNickservNick(java.lang.String) } in its hostmask will
@@ -465,28 +459,26 @@ public class Configuration {
 		/**
 		 * Some irc servers require a custom identify string.
 		 * eg: Quakenet: <code>PRIVMSG Q@CServe.quakenet.org :AUTH USER PASS</code>
-		 * default = null
 		 */
-		protected String nickservCustomMessage = null;
+		protected String nickservCustomMessage;
 		/**
-		 * Delay joining channels until were identified to nickserv, default
-		 * false
+		 * Delay joining channels until were identified to nickserv
 		 */
-		protected boolean nickservDelayJoin = false;
+		protected boolean nickservDelayJoin;
 		/**
-		 * Sets mode +x on the bot, to hide the real hostname, default = false
+		 * Sets mode +x on the bot, to hide the real hostname
 		 */
-		protected boolean userModeHideRealHost = false;
+		protected boolean userModeHideRealHost;
 		/**
-		 * Enable or disable automatic reconnecting, default false. Note that
+		 * Enable or disable automatic reconnecting. Note that
 		 * you MUST call {@link PircBotX#stopBotReconnect() } when you do not
 		 * want the bot to reconnect anymore!
 		 */
-		protected boolean autoReconnect = false;
+		protected boolean autoReconnect;
 		/**
-		 * Delay in milliseconds between reconnect attempts, default 0.
+		 * Delay in milliseconds between reconnect attempts.
 		 */
-		protected int autoReconnectDelay = 0;
+		protected int autoReconnectDelay;
 		/**
 		 * Number of times to attempt to reconnect, default 5.
 		 */
@@ -497,7 +489,7 @@ public class Configuration {
 		 * {@link ThreadedListenerManager}.
 		 */
 		//This is lazy loaded in {@link #getListenerManager()} since creating a thread pool is expensive
-		protected ListenerManager listenerManager = null;
+		protected ListenerManager listenerManager;
 		/**
 		 * Enable or disable CAP handling, defaults true.
 		 */

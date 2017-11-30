@@ -56,7 +56,7 @@ public class ReplayServer {
 	protected static class ReplayPircBotX extends PircBotX {
 		protected final Queue<String> outputQueue;
 		@Getter
-		protected boolean closed = false;
+		protected boolean closed;
 
 		public ReplayPircBotX(Configuration configuration, Queue<String> outputQueue) {
 			super(configuration);

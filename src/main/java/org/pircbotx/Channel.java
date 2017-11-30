@@ -88,25 +88,25 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * Moderated (+m) status
 	 */
-	protected boolean moderated = false;
+	protected boolean moderated;
 	/**
 	 * No external messages (+n) status
 	 */
-	protected boolean noExternalMessages = false;
+	protected boolean noExternalMessages;
 	/**
 	 * Invite only (+i) status
 	 */
-	protected boolean inviteOnly = false;
+	protected boolean inviteOnly;
 	/**
 	 * Secret (+s) status
 	 */
-	protected boolean secret = false;
+	protected boolean secret;
 	/**
 	 * Private (+p) status
 	 */
-	protected boolean channelPrivate = false;
+	protected boolean channelPrivate;
 	@Getter(AccessLevel.NONE)
-	protected boolean topicProtection = false;
+	protected boolean topicProtection;
 	/**
 	 * Channel limit (+l #)
 	 */
@@ -114,10 +114,10 @@ public class Channel implements Comparable<Channel> {
 	/**
 	 * Channel key (+k)
 	 */
-	protected String channelKey = null;
+	protected String channelKey;
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
-	protected CountDownLatch modeChangeLatch = null;
+	protected CountDownLatch modeChangeLatch;
 	@Getter(AccessLevel.NONE)
 	protected final Object modeChangeLock = new Object();
 
