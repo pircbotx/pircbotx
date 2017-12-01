@@ -17,12 +17,9 @@
  */
 package org.pircbotx;
 
-import static com.google.common.base.Preconditions.*;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -31,11 +28,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.net.SocketFactory;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.ToString;
-import lombok.experimental.Accessors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
@@ -44,6 +39,8 @@ import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
+import org.pircbotx.delay.Delay;
+import org.pircbotx.delay.StaticDelay;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
@@ -55,6 +52,17 @@ import org.pircbotx.output.OutputDCC;
 import org.pircbotx.output.OutputIRC;
 import org.pircbotx.output.OutputRaw;
 import org.pircbotx.output.OutputUser;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import lombok.Data;
+import lombok.NonNull;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
  * Immutable configuration for PircBotX created from
@@ -101,7 +109,7 @@ public class Configuration {
 	protected final int maxLineLength;
 	protected final boolean autoSplitMessage;
 	protected final boolean autoNickChange;
-	protected final long messageDelay;
+	protected final Delay messageDelay;
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean onJoinWhoEnabled;
@@ -113,7 +121,7 @@ public class Configuration {
 	protected final boolean nickservDelayJoin;
 	protected final boolean userModeHideRealHost;
 	protected final boolean autoReconnect;
-	protected final int autoReconnectDelay;
+	protected final Delay autoReconnectDelay;
 	protected final int autoReconnectAttempts;
 	//Bot classes
 	protected final ListenerManager listenerManager;
@@ -159,7 +167,7 @@ public class Configuration {
 		checkArgument(builder.getSocketConnectTimeout() > 0, "Socket connect timeout must greater than 0");
 		checkArgument(builder.getSocketTimeout() > 0, "Socket timeout must greater than 0");
 		checkArgument(builder.getMaxLineLength() > 0, "Max line length must be positive");
-		checkArgument(builder.getMessageDelay() >= 0, "Message delay must be positive");
+		checkNotNull(builder.getMessageDelay(), "Message delay cannot be null");
 		checkNotNull(builder.getAutoJoinChannels(), "Auto join channels map cannot be null");
 		for (Map.Entry<String, String> curEntry : builder.getAutoJoinChannels().entrySet())
 			if (StringUtils.isBlank(curEntry.getKey()))
@@ -171,7 +179,7 @@ public class Configuration {
 		checkArgument(StringUtils.isNotBlank(builder.getNickservOnSuccess()), "Nickserv on success cannot be blank");
 		checkArgument(StringUtils.isNotBlank(builder.getNickservNick()), "Nickserv nick cannot be blank");
 		checkArgument(builder.getAutoReconnectAttempts() > 0, "setAutoReconnectAttempts must be greater than 0");
-		checkArgument(builder.getAutoReconnectDelay() >= 0, "setAutoReconnectDelay must be positive or 0");
+		checkNotNull(builder.getAutoReconnectDelay(), "setAutoReconnectDelay cannot be null");
 		checkNotNull(builder.getListenerManager(), "Must specify listener manager");
 		checkNotNull(builder.getCapHandlers(), "Cap handlers list cannot be null");
 		checkNotNull(builder.getChannelModeHandlers(), "Channel mode handlers list cannot be null");
@@ -411,7 +419,7 @@ public class Configuration {
 		/**
 		 * Millisecond delay between sending messages, default 1000 milliseconds
 		 */
-		protected long messageDelay = 1000;
+		protected Delay messageDelay = new StaticDelay( 1000 );
 		/**
 		 * Enable or disable creating a JVM shutdown hook which will properly
 		 * QUIT the IRC server and shutdown the bot, default true
@@ -486,7 +494,7 @@ public class Configuration {
 		/**
 		 * Delay in milliseconds between reconnect attempts, default 0.
 		 */
-		protected int autoReconnectDelay = 0;
+		protected Delay autoReconnectDelay = new StaticDelay(0);
 		/**
 		 * Number of times to attempt to reconnect, default 5.
 		 */

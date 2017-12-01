@@ -17,24 +17,28 @@
  */
 package org.pircbotx;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableProxy;
-import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.status.WarnStatus;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.lang.reflect.Member;
 import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.delay.StaticDelay;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.collections.Lists;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.status.WarnStatus;
 
 /**
  *
@@ -117,7 +121,7 @@ public class TestUtils {
 				.addServer("127.1.1.1")
 				.setListenerManager(new GenericListenerManager())
 				.setName("TestBot")
-				.setMessageDelay(0)
+				.setMessageDelay( new StaticDelay(0) )
 				.setShutdownHookEnabled(false)
 				.setAutoReconnect(false)
 				//Optional

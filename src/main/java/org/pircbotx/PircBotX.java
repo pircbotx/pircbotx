@@ -217,10 +217,10 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			}
 
 			//Optionally pause between attempts, useful if network is temporarily down
-			if (configuration.getAutoReconnectDelay() > 0)
+			if (configuration.getAutoReconnectDelay().getDelay() > 0)
 				try {
 					log.debug("Pausing for {} milliseconds before connecting again", configuration.getAutoReconnectDelay());
-					Thread.sleep(configuration.getAutoReconnectDelay());
+					Thread.sleep(configuration.getAutoReconnectDelay().getDelay());
 				} catch (InterruptedException e) {
 					throw new RuntimeException("Interrupted while pausing before the next connect attempt", e);
 				}
