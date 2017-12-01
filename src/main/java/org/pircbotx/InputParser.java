@@ -400,7 +400,7 @@ public class InputParser implements Closeable {
 					autoConnectChannels = configuration.getAutoJoinChannels();
 			for (Map.Entry<String, String> channelEntry : autoConnectChannels.entrySet())
 				bot.sendIRC().joinChannel(channelEntry.getKey(), channelEntry.getValue());
-		} else if (code.equals("439"))
+		} else if (code.equals("439")) // TODO: Use ReplyConstants.ERR_TARGETTOOFAST
 			//EXAMPLE: PircBotX: Target change too fast. Please wait 104 seconds
 			// No action required.
 			//TODO: Should we delay joining channels here or something?

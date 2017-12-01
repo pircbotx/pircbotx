@@ -39,7 +39,7 @@ public class BinaryBackoffDelay implements Delay {
 	}
 	
 	public void setInitialDelay(long initialDelay) {
-		checkArgument(initialDelay >= 0, "initialDelay may not be negative");
+		checkArgument(initialDelay > 0, "initialDelay must be larger than zero");
 		this.initialDelay = initialDelay;
 	}
 	

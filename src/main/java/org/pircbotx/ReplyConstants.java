@@ -51,6 +51,7 @@ public final class ReplyConstants {
 	public static final int ERR_ERRONEUSNICKNAME = 432;
 	public static final int ERR_NICKNAMEINUSE = 433;
 	public static final int ERR_NICKCOLLISION = 436;
+	public static final int ERR_TARGETTOOFAST = 439;	
 	public static final int ERR_USERNOTINCHANNEL = 441;
 	public static final int ERR_NOTONCHANNEL = 442;
 	public static final int ERR_USERONCHANNEL = 443;
