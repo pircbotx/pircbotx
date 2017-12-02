@@ -428,6 +428,9 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	protected void sendRawLineToServer(String line) throws IOException {
 		if (line.length() > configuration.getMaxLineLength() - 2)
 			line = line.substring(0, configuration.getMaxLineLength() - 2);
+		if (line.indexOf('\n') > -1)
+			line = line.substring(0, line.indexOf('\n') ).trim();// do NOT send messages containing newlines
+		
 		outputWriter.write(line + "\r\n");
 		outputWriter.flush();
 
