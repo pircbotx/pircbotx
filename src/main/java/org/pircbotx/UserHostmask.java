@@ -78,9 +78,15 @@ public class UserHostmask implements Comparable<User> {
 			this.bot = bot;
 			if (StringUtils.contains(rawHostmask, "!") && StringUtils.contains(rawHostmask, "@")) {
 				String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
-				this.nick = hostmaskParts[0];
-				this.login = hostmaskParts[1];
-				this.hostname = hostmaskParts[2];
+				if (hostmaskParts.length >= 3) {
+					this.nick = hostmaskParts[0];
+					this.login = hostmaskParts[1];
+					this.hostname = hostmaskParts[2];
+				} else {
+					this.nick = rawHostmask;
+					this.login = null;
+					this.hostname = null;
+				}
 			} else {
 				this.nick = rawHostmask;
 				this.login = null;
