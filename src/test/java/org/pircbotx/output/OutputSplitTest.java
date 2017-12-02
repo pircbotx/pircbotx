@@ -75,6 +75,30 @@ public class OutputSplitTest {
 		}
 		checkOutput(expectedStrings.toArray(new String[]{}));
 	}
+	
+	@Test
+	public void sendRawLineSplitLines() throws IOException {
+		assertTrue(bot.getConfiguration().isAutoSplitMessage(), "Auto split not enabled");
+		assertEquals(bot.getConfiguration().getMaxLineLength(), MAX_LINE_LENGTH, "Size is different");
+
+		//Test strings
+		List<String> testStrings = Arrays.asList(
+				"aaaaabbbbb",
+				"cccccddddd",
+				"eeeeefffff"
+		);
+		
+
+		//Combine and send
+		bot.sendRaw().rawLineSplit("BEG", StringUtils.join(testStrings, "\n"), "END");
+
+		//Verify output
+		List<String> expectedStrings = Lists.newArrayList();
+		for (String curTestString : testStrings) {
+			expectedStrings.add("BEG" + curTestString + "END");
+		}
+		checkOutput(expectedStrings.toArray(new String[]{}));
+	}	
 
 	protected void checkOutput(String... expected) {
 		int counter = 0;

@@ -17,20 +17,27 @@
  */
 package org.pircbotx.output;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+
+import com.google.common.base.Splitter;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Send raw lines to the server with locking and message delay support.
@@ -132,17 +139,24 @@ public class OutputRaw {
 		//Find if final line is going to be shorter than the max line length
 		String finalMessage = prefix + message + suffix;
 		int realMaxLineLength = bot.getConfiguration().getMaxLineLength() - 2;
-		if (!bot.getConfiguration().isAutoSplitMessage() || finalMessage.length() < realMaxLineLength) {
+		if (!bot.getConfiguration().isAutoSplitMessage() || (finalMessage.length() < realMaxLineLength && finalMessage.indexOf('\n')== -1) ) {
 			//Length is good (or auto split message is false), just go ahead and send it
 			rawLine(finalMessage);
 			return;
 		}
 
-		//Too long, split it up
 		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
-		//v3 word split, just use Apache commons lang
-		for (String curPart : StringUtils.split(WordUtils.wrap(message, maxMessageLength, "\r\n", true), "\r\n")) {
-			rawLine(prefix + curPart + suffix);
+		
+		
+		List<String> lines = Splitter.on('\n').omitEmptyStrings().trimResults().splitToList(message);
+		for(String line : lines) {
+			finalMessage = prefix + line + suffix;
+		
+			//Too long, split it up
+			//v3 word split, just use Apache commons lang
+			for (String curPart : StringUtils.split(WordUtils.wrap(line, maxMessageLength, "\r\n", true), "\r\n")) {
+				rawLine(prefix + curPart + suffix);
+			}
 		}
 	}
 
