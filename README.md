@@ -65,7 +65,7 @@ PircBotX can do so much more! [Read the docs for more information](http://github
 
 ## Support
 
-[Most answers can be found in the docs](http://github.com/pircbotx/pircbotx/wiki/Documentation), javadocs (http://thelq.github.io/pircbotx/latest/apidocs/) and [the wiki](http://github.com/pircbotx/pircbotx/wiki/)
+[Most answers can be found in the docs](http://github.com/pircbotx/pircbotx/wiki/Documentation), javadocs (http://pircbotx.github.io/pircbotx/latest/apidocs/) and [the wiki](http://github.com/pircbotx/pircbotx/wiki/)
 
 If you can't find an answer, ask on IRC at irc.freenode.net/#pircbotx . [We also have a mailing list](http://groups.google.com/group/pircbotx)
 
