@@ -17,18 +17,17 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
 
 import com.google.common.collect.ImmutableMap;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.PircBotX;
-
-import java.util.List;
 
 /**
  * This event is dispatched whenever we receive a line from the server that

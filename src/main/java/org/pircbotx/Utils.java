@@ -45,7 +45,6 @@ public final class Utils {
 	private Utils() {
 	}
 
-	@SuppressWarnings("unchecked")
 	public static void dispatchEvent(PircBotX bot, Event event) {
 		bot.getConfiguration().getListenerManager().onEvent(event);
 	}

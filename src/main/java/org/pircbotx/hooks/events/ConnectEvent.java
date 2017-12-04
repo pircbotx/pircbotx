@@ -17,11 +17,11 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.pircbotx.hooks.Event;
-import org.pircbotx.PircBotX;
 
 /**
  * This event is dispatched once we successfully connected to the IRC server.

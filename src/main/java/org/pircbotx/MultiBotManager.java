@@ -113,7 +113,6 @@ public class MultiBotManager {
 	 * @param config A configuration to pass to the created bot
 	 */
 	@Synchronized("stateLock")
-	@SuppressWarnings("unchecked")
 	public void addNetwork(Configuration config) {
 		checkNotNull(config, "Configuration cannot be null");
 		//Since creating a bot is expensive, verify the state first

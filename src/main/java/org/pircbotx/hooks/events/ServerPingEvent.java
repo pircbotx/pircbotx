@@ -17,13 +17,12 @@
  */
 package org.pircbotx.hooks.events;
 
-import javax.annotation.Nullable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import org.pircbotx.hooks.Event;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.CoreHooks;
+import org.pircbotx.hooks.Event;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * The actions to perform when a PING request comes from the server.

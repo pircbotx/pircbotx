@@ -19,7 +19,6 @@ package org.pircbotx.hooks.events;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import org.pircbotx.User;
 import lombok.Data;

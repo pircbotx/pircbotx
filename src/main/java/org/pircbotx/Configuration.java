@@ -843,7 +843,6 @@ public class Configuration {
 		 *
 		 * @param listenerManager The listener manager
 		 */
-		@SuppressWarnings("unchecked")
 		public Builder setListenerManager(ListenerManager listenerManager) {
 			this.listenerManager = listenerManager;
 			for (Listener curListener : this.listenerManager.getListeners())

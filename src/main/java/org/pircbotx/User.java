@@ -92,7 +92,6 @@ public class User extends UserHostmask {
 	 *
 	 * @return True if the user is verified
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean isVerified() {
 		try {
 			send().whoisDetail();
