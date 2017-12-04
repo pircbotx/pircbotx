@@ -877,6 +877,15 @@ public class InputParser implements Closeable {
 			//If present, tells us that the user is using a secure connection
 			//671 TheLQ TheLQ-PircBotX :is using a secure connection
 			whoisBuilder.get(parsedResponse.get(1)).secureConnection(true);
+		} else if (code == RPL_WHOISOPERATOR) {
+			//If present, tells us that the user is using a irc operator
+			//313 TheLQ TheLQ-PircBotX :is a IRCop
+			String nick = parsedResponse.get(1);
+			if (bot.getUserChannelDao().containsUser(nick)) {
+				bot.getUserChannelDao().getUser(nick).setIrcop(true);
+			}
+			whoisBuilder.get(nick).ircOp(true);
+		
 		} else if (code == RPL_ENDOFWHOIS) {
 			//End of whois
 			//318 TheLQ Plazma :End of /WHOIS list.

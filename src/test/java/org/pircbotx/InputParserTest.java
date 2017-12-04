@@ -940,6 +940,7 @@ public class InputParserTest {
 		assertNull(event.getRegisteredAs(), "User isn't registered");
 		assertTrue(event.isExists(), "User should exist");
 		assertFalse(event.isSecureConnection(), "User should have insecure connection");
+		assertFalse(event.isIrcOp(), "User should not be ircop");
 
 		//Verify channels
 		assertTrue(event.getChannels().contains("+#aChannel"), "Doesn't contain first given voice channel");
@@ -1036,6 +1037,37 @@ public class InputParserTest {
 		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
 		assertTrue(event.isSecureConnection(), "Event used insecure connection");
 	}
+	
+	
+	
+	@Test
+	public void whoisIrcOpTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 313 PircBotXUser OtherUser :is a IRC operator");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser otheruser :End of /WHOIS list.");
+
+		//Make sure we get the correct event
+		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertTrue(event.isIrcOp(), "User is not IRC operator");
+	}
+
+	@Test
+	public void whoisIrcOpRegisteredTest() throws IOException, IrcException {
+		User otherUser = TestUtils.generateTestUserOther(bot);
+		assertFalse(otherUser.isIrcop(), "User is IRCop at start");
+		
+		inputParser.handleLine(":irc.someserver.net 311 PircBotXUser OtherUser ~OtherLogin some.host1 * :" + aString);
+		inputParser.handleLine(":irc.someserver.net 313 PircBotXUser OtherUser :is a IRC operator");
+		inputParser.handleLine(":irc.someserver.net 318 PircBotXUser otheruser :End of /WHOIS list.");
+
+		//Make sure we get the correct event
+		WhoisEvent event = bot.getTestEvent(WhoisEvent.class, "WhoisEvent not dispatched");
+		assertTrue(event.isIrcOp(), "User is not IRC operator");
+		
+		//make sure the user object is registered as ircop
+		assertTrue(otherUser.isIrcop(), "User is not IRCop after WHOIS response");
+	}
+
 
 	@Test
 	public void serverPingTest() throws IOException, IrcException {

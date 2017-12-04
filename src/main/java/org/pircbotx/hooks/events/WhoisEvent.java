@@ -62,6 +62,7 @@ public class WhoisEvent extends Event {
 	protected final boolean exists;
 	protected final String awayMessage;
 	protected final boolean secureConnection;
+	protected final boolean ircOp;
 
 	WhoisEvent(PircBotX bot, @NonNull Builder builder) {
 		super(bot);
@@ -78,6 +79,7 @@ public class WhoisEvent extends Event {
 		this.exists = builder.exists;
 		this.awayMessage = builder.awayMessage;
 		this.secureConnection = builder.secureConnection;
+		this.ircOp = builder.ircOp;
 	}
 
 	public static Builder builder() {
