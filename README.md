@@ -24,7 +24,7 @@
 
 **Checkout the [Wiki](https://github.com/pircbotx/pircbotx/wiki/) for tutorials and documentation**
 
-##PircBotX in 3 Steps
+## PircBotX in 3 Steps
 A brief getting started guide
 
  * [Download PircBotX](https://github.com/pircbotx/pircbotx/wiki/Downloads)
@@ -61,17 +61,17 @@ public class MyListener extends ListenerAdapter {
 ```
  * Join the #pircbotx channel on irc.freenode.net and send `?helloworld` . Your bot will respond with `Hello world!` Since its a GenericMessageEvent, it will also respond when private messaged. Congratulations, you just wrote your first bot!
 
-PircBotX can do so much more! [Read the docs for more information](http://github.com/pircbotx/pircbotx/wiki/Documentation)
+PircBotX can do so much more! [Read the docs for more information](http://github.com/pircbotx/pircbotx/wiki/Documentation).
 
 ## Support
 
-[Most answers can be found in the docs](http://github.com/pircbotx/pircbotx/wiki/Documentation), javadocs (http://pircbotx.github.io/pircbotx/latest/apidocs/) and [the wiki](http://github.com/pircbotx/pircbotx/wiki/)
+[Most answers can be found in the docs](http://github.com/pircbotx/pircbotx/wiki/Documentation), javadocs (http://pircbotx.github.io/pircbotx/latest/apidocs/) and [the wiki](http://github.com/pircbotx/pircbotx/wiki/).
 
-If you can't find an answer, ask on IRC at irc.freenode.net/#pircbotx . [We also have a mailing list](http://groups.google.com/group/pircbotx)
+If you can't find an answer, ask on IRC at irc.freenode.net/#pircbotx . [We also have a mailing list](http://groups.google.com/group/pircbotx).
 
 ## License 
 This project is licensed under GNU GPL v3 to be compatible with the PircBot license. 
 
 It is assumed that commercial users can buy the commercial license of PircBot which grants "modification of the Product's source-code and incorporation of the modified source-code into your software"
 
-The PircBot developer has ignored multiple emails asking for a less restrictive license and clarification of the commercial license. Users can show support by respectfully asking him directly at ![pircbot developer's email](http://thelq.github.io/pircbotx/pircbot-email.gif). More up to date information is available at in Issue #63
+The PircBot developer has ignored multiple emails asking for a less restrictive license and clarification of the commercial license. Users can show support by respectfully asking him directly at ![pircbot developer's email](http://pircbotx.github.io/pircbotx/pircbot-email.gif). More up to date information is available at in [Issue #63](https://github.com/pircbotx/pircbotx/issues/63).
