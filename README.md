@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/pircbotx/pircbotx.svg?branch=master)](https://travis-ci.org/pircbotx/pircbotx)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/25ed005ec882435fb5f7ce6b05e097c0)](https://www.codacy.com/app/pircbotx/pircbotx?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pircbotx/pircbotx/&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/25ed005ec882435fb5f7ce6b05e097c0)](https://www.codacy.com/app/pircbotx/pircbotx?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pircbotx/pircbotx/&amp;utm_campaign=Badge_Grade) [![Join the chat at https://gitter.im/pircbotx-irc/Lobby](https://badges.gitter.im/pircbotx-irc/Lobby.svg)](https://gitter.im/pircbotx-irc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **November 2017** Project moved from /TheLQ/pircbotx to a new github organisation /pircbotx/pircbotx
 
