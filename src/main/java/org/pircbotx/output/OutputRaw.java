@@ -52,13 +52,7 @@ public class OutputRaw {
 	protected final PircBotX bot;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
-	protected final long delayNanos;
 	protected long lastSentLine = 0;
-
-	public OutputRaw(PircBotX bot) {
-		this.bot = bot;
-		this.delayNanos = bot.getConfiguration().getMessageDelay() * 1000000;
-	}
 
 	/**
 	 * Sends a raw line through the outgoing message queue.
@@ -68,6 +62,9 @@ public class OutputRaw {
 	public void rawLine(String line) {
 		checkArgument(StringUtils.isNotBlank(line), "Cannot send empty line to server: '%s'", line);
 		checkArgument(bot.isConnected(), "Not connected to server");
+		
+		long delayNanos = bot.getConfiguration().getMessageDelay().getDelay() * 1000000;
+		
 		writeLock.lock();
 		try {
 			//Block until we can send, taking into account a changing lastSentLine
