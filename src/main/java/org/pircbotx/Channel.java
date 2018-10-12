@@ -166,6 +166,8 @@ public class Channel implements Comparable<Channel> {
 				else {
 					log.trace("Unknown args in channel {} mode '{}', getting fresh mode", name, rawMode);
 					mode = null;
+					if (modeChangeLatch == null)
+						modeChangeLatch = new CountDownLatch(1);
 					send().getMode();
 				}
 			} else {
