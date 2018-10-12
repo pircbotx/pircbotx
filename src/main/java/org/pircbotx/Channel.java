@@ -222,8 +222,10 @@ public class Channel implements Comparable<Channel> {
 			}
 
 			synchronized (modeChangeLock) {
-				if (mode != null)
+				if (mode != null) {
+					log.debug("Exiting pause for channel {} getMode()", name);
 					return mode;
+				}
 			}
 		}
 	}
