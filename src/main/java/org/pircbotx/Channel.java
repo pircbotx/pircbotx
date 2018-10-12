@@ -23,6 +23,8 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -166,8 +168,8 @@ public class Channel implements Comparable<Channel> {
 				else {
 					log.trace("Unknown args in channel {} mode '{}', getting fresh mode", name, rawMode);
 					mode = null;
-					if (modeChangeLatch == null)
-						modeChangeLatch = new CountDownLatch(1);
+					modeChangeLatch = new CountDownLatch(1); 
+					
 					send().getMode();
 				}
 			} else {
@@ -216,7 +218,7 @@ public class Channel implements Comparable<Channel> {
 				synchronized (modeChangeLock) {
 					modeWait = modeChangeLatch;
 				}
-				modeWait.await();
+				modeWait.await(250, TimeUnit.MILLISECONDS);//Don't wait forever
 			} catch (InterruptedException e) {
 				throw new RuntimeException("Waiting for mode response for channel " + name + " interrupted", e);
 			}
