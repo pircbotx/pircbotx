@@ -569,7 +569,7 @@ public class InputParser implements Closeable {
 			else
 				//Just remove the user from memory
 				bot.getUserChannelDao().removeUserFromChannel(sourceUser, channel);
-			configuration.getListenerManager().onEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, source, sourceSnapshot, message));
+			configuration.getListenerManager().onEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, channel.getName(), source, sourceSnapshot, message));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			sourceUser = createUserIfNull(sourceUser, source);
