@@ -233,7 +233,11 @@ public class Channel implements Comparable<Channel> {
 	}
 
 	public boolean containsMode(char modeLetter) {
-		String modeLetters = StringUtils.split(getMode(), ' ')[0];
+		final String mode = getMode();
+		if (mode.isEmpty())
+			return false;
+		
+		String modeLetters = StringUtils.split(mode, ' ')[0];
 		return StringUtils.contains(modeLetters, modeLetter);
 	}
 
