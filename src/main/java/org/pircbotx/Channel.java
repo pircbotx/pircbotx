@@ -174,6 +174,12 @@ public class Channel implements Comparable<Channel> {
 				}
 			} else {
 				//Parse mode by switching between removing and adding by the existance of a + or - sign
+				if (mode == null) {
+					log.error("Channel mode for {} was null - initializing to empty", this.name);
+					mode = "";
+				}
+					
+				
 				boolean adding = true;
 				for (char curChar : rawMode.toCharArray())
 					if (curChar == '-')
