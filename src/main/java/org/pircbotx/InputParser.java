@@ -165,6 +165,17 @@ public class InputParser implements Closeable {
 						}
 					}
 				})
+				.add(new ChannelModeHandler('f') {
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser,PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						if (adding) {
+							//TODO: we don't have event for +f flood control
+							//but we use this dummy to consume the next paramter
+							params.next();
+						}
+					}
+					
+				})
 				.add(new ChannelModeHandler('l') {
 					@Override
 					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
