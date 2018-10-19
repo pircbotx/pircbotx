@@ -234,6 +234,11 @@ public class Channel implements Comparable<Channel> {
 					log.debug("Exiting pause for channel {} getMode()", name);
 					return mode;
 				}
+				
+				if (counter >= 20) { //if we have iterated more than 20x250ms (5 seconds) then we set mode to empty
+					mode = "";
+					return mode;
+				}
 			}
 		}
 	}
