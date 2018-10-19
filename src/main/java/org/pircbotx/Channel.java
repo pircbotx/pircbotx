@@ -235,7 +235,8 @@ public class Channel implements Comparable<Channel> {
 					return mode;
 				}
 				
-				if (counter >= 20) { //if we have iterated more than 20x250ms (5 seconds) then we set mode to empty
+				if (counter >= 10) { //if we have iterated more than 10x250ms (2½ seconds) then we set mode to empty
+					log.warn("gave up on waithing for channel mode, channel {} getMode()", name);
 					mode = "";
 					return mode;
 				}
