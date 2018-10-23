@@ -90,7 +90,7 @@ public class UnknownEvent extends Event {
 		getBot().sendRaw().rawLine(response);
 	}
 	
-	public void respondWith(String response) {
-        	getBot().send().message(target, response);
+	public void respondWith(String fullLine) {
+        	getBot().send().message(target, fullLine);
     	}
 }
