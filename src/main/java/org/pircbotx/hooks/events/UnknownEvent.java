@@ -89,4 +89,8 @@ public class UnknownEvent extends Event {
 	public void respond(String response) {
 		getBot().sendRaw().rawLine(response);
 	}
+	
+	public void respondWith(String response) {
+        	getBot().send().message(target, response);
+    	}
 }
