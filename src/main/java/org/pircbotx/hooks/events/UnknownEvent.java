@@ -91,6 +91,6 @@ public class UnknownEvent extends Event {
 	}
 	
 	public void respondWith(String fullLine) {
-        	getBot().send().message(target, fullLine);
+        	getBot().sendIRC().message(target, fullLine);
     	}
 }
