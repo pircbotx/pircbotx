@@ -80,7 +80,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<lombok.version>1.16.18</lombok.version>
-		<guava.version>19.0</guava.version>
+		<guava.version>27.0-jre</guava.version>
 		<src.dir>src/main/java</src.dir>
 		<snapshot.version />
 	</properties>
@@ -189,19 +189,19 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--Specifically target Java 1.5-->
+			<!--Specifically target Java 1.6-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>6</source>
+					<target>6</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArgs>
 						<arg>-Xlint</arg>
-						<!-- Disable warning about compiling to 1.5 -->
+						<!-- Disable warning about compiling to 1.6 -->
 						<arg>-Xlint:-options</arg>
 					</compilerArgs>
 				</configuration>
@@ -525,7 +525,7 @@
 									<artifactId>maven-pmd-plugin</artifactId>
 									<version>3.3</version>
 									<configuration>
-										<source>1.5</source>
+										<source>1.6</source>
 										<rulesets>
 											<ruleset>src/etc/pmd-rules.xml</ruleset>
 										</rulesets>
