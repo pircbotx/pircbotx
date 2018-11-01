@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
-			<version>3.0.1</version>
+			<version>3.0.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- Commons Lang for useful utilities -->
@@ -189,19 +189,19 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--Specifically target Java 1.6-->
+			<!--Specifically target Java 1.8-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.5</version>
 				<configuration>
-					<source>6</source>
-					<target>6</target>
+					<source>8</source>
+					<target>8</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArgs>
 						<arg>-Xlint</arg>
-						<!-- Disable warning about compiling to 1.6 -->
+						<!-- Disable warning about compiling to 1.8 -->
 						<arg>-Xlint:-options</arg>
 					</compilerArgs>
 				</configuration>
@@ -386,9 +386,9 @@
 						<version>1.16.6.1</version>
 						<dependencies>
 							<dependency>
-								<groupId>sun.jdk</groupId>
-								<artifactId>tools</artifactId>
-								<version>1.6</version>
+								<groupId>jdk.tools</groupId>
+								<artifactId>jdk.tools</artifactId>
+								<version>1.8</version>
 								<scope>system</scope>
 								<systemPath>${toolsjar}</systemPath>
 							</dependency>
@@ -525,7 +525,7 @@
 									<artifactId>maven-pmd-plugin</artifactId>
 									<version>3.3</version>
 									<configuration>
-										<source>1.6</source>
+										<source>1.8</source>
 										<rulesets>
 											<ruleset>src/etc/pmd-rules.xml</ruleset>
 										</rulesets>

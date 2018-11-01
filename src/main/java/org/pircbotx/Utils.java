@@ -167,7 +167,7 @@ public final class Utils {
 		//Heavily optimized string split by space with all characters after :
 		//added as a single entry. Under benchmarks, this is faster than 
 		//StringTokenizer, String.split, toCharArray, and charAt
-		String trimmedInput = CharMatcher.WHITESPACE.trimFrom(input);
+		String trimmedInput = CharMatcher.whitespace().trimFrom(input);
 		int pos = 0, end;
 		while ((end = trimmedInput.indexOf(' ', pos)) >= 0) {
 			stringParts.add(trimmedInput.substring(pos, end));
