@@ -49,6 +49,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
+	private static final Pattern JOIN_PATTERN = Pattern.compile("JOIN(\\s+)(\\S+)(\\s+)\\S+");
+	private static final Pattern OPER_PATTERN = Pattern.compile("OPER(\\s+)(\\S+)(\\s+)\\S+");
+	private static final Pattern PASS_PATTERN = Pattern.compile("PASS(\\s+)\\S+");
+	private static final String PASSWORD_REPLACEMENT = "********";
+
 	public static final Marker OUTPUT_MARKER = MarkerFactory.getMarker("pircbotx.output");
 	@NonNull
 	protected final PircBotX bot;
@@ -126,26 +131,23 @@ public class OutputRaw {
 		}
 	}
 
-	private static final Pattern joinPattern = Pattern.compile("JOIN(\\s+)(\\S+)(\\s+)\\S+");
-	private static final Pattern operPattern = Pattern.compile("OPER(\\s+)(\\S+)(\\s+)\\S+");
-	private static final Pattern passPattern = Pattern.compile("PASS(\\s+)\\S+");
-	private static final String PASSWORD_REPLACEMENT = "********";
-
 	private String obfuscatePasswords(final String line) {
+		checkNotNull(line, "Line cannot be null");
+
 		if(line.startsWith("PASS")) {
-			final Matcher matcher = joinPattern.matcher(line);
+			final Matcher matcher = PASS_PATTERN.matcher(line);
 
 			if(matcher.matches()) {
 				return String.format("PASS%s%s", matcher.group(1), PASSWORD_REPLACEMENT);
 			}
 		} else if(line.startsWith("JOIN")) {
-			final Matcher matcher = joinPattern.matcher(line);
+			final Matcher matcher = JOIN_PATTERN.matcher(line);
 
 			if(matcher.matches()) {
 				return String.format("JOIN%s%s%s%s", matcher.group(1), matcher.group(2), matcher.group(3), PASSWORD_REPLACEMENT);
 			}
 		} else if(line.startsWith("OPER")) {
-			final Matcher matcher = operPattern.matcher(line);
+			final Matcher matcher = OPER_PATTERN.matcher(line);
 
 			if(matcher.matches()) {
 				return String.format("OPER%s%s%s%s", matcher.group(1), matcher.group(2), matcher.group(3), PASSWORD_REPLACEMENT);
