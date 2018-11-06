@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
@@ -73,7 +75,7 @@ public class OutputRaw {
 				writeNowCondition.await(lastSentLine + delayNanos - curNanos, TimeUnit.NANOSECONDS);
 				curNanos = System.nanoTime();
 			}
-			log.info(OUTPUT_MARKER, line);
+			log.info(OUTPUT_MARKER, obfuscatePasswords(line));
 			Utils.sendRawLineToServer(bot, line);
 			lastSentLine = System.nanoTime();
 		} catch (IOException e) {
@@ -109,7 +111,7 @@ public class OutputRaw {
 		checkArgument(bot.isConnected(), "Not connected to server");
 		writeLock.lock();
 		try {
-			log.info(OUTPUT_MARKER, line);
+			log.info(OUTPUT_MARKER, obfuscatePasswords(line));
 			Utils.sendRawLineToServer(bot, line);
 			lastSentLine = System.nanoTime();
 			if (resetDelay)
@@ -122,6 +124,34 @@ public class OutputRaw {
 		} finally {
 			writeLock.unlock();
 		}
+	}
+
+	private static final Pattern joinPattern = Pattern.compile("JOIN(\\s+)(\\S+)(\\s+)\\S+");
+	private static final Pattern operPattern = Pattern.compile("OPER(\\s+)(\\S+)(\\s+)\\S+");
+	private static final Pattern passPattern = Pattern.compile("PASS(\\s+)\\S+");
+	private static final String PASSWORD_REPLACEMENT = "********";
+
+	private String obfuscatePasswords(final String line) {
+		if(line.startsWith("PASS")) {
+			final Matcher matcher = joinPattern.matcher(line);
+
+			if(matcher.matches()) {
+				return String.format("PASS%s%s", matcher.group(1), PASSWORD_REPLACEMENT);
+			}
+		} else if(line.startsWith("JOIN")) {
+			final Matcher matcher = joinPattern.matcher(line);
+
+			if(matcher.matches()) {
+				return String.format("JOIN%s%s%s%s", matcher.group(1), matcher.group(2), matcher.group(3), PASSWORD_REPLACEMENT);
+			}
+		} else if(line.startsWith("OPER")) {
+			final Matcher matcher = operPattern.matcher(line);
+
+			if(matcher.matches()) {
+				return String.format("OPER%s%s%s%s", matcher.group(1), matcher.group(2), matcher.group(3), PASSWORD_REPLACEMENT);
+			}
+		}
+		return line;
 	}
 
 	public void rawLineSplit(String prefix, String message) {
