@@ -176,7 +176,7 @@ public class MultiBotManager {
 			runningBots.put(bot, future);
 			runningBotsNumbers.put(bot, bot.getBotId());
 		}
-		Futures.addCallback(future, new BotFutureCallback(bot));
+		Futures.addCallback(future, new BotFutureCallback(bot), MoreExecutors.directExecutor());
 		return future;
 	}
 	
