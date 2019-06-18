@@ -124,6 +124,11 @@ public class OutputRaw {
 		}
 	}
 	
+	/**
+	 * Sends password to server without logging password
+	 * <p>
+	 * @param password String contains password
+	 */
 	public void sendPass(String password){
 		checkNotNull(password, "Line cannot be null");
 		checkArgument(bot.isConnected(), "Not connected to server");
