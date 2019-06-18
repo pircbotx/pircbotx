@@ -123,6 +123,24 @@ public class OutputRaw {
 			writeLock.unlock();
 		}
 	}
+	
+	public void sendPass(String password){
+		checkNotNull(password, "Line cannot be null");
+		checkArgument(bot.isConnected(), "Not connected to server");
+		writeLock.lock();
+		try {
+			log.info(OUTPUT_MARKER, "PASS ****************");
+			Utils.sendRawLineToServer(bot, "PASS " + password);
+			lastSentLine = System.nanoTime();
+			writeNowCondition.signalAll();
+		} catch (IOException e) {
+			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
+		} catch (Exception e) {
+			throw new RuntimeException("Could not send line to server. " + exceptionDebug(), e);
+		} finally {
+			writeLock.unlock();
+		}
+	}
 
 	public void rawLineSplit(String prefix, String message) {
 		rawLineSplit(prefix, message, "");
