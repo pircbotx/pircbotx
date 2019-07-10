@@ -131,6 +131,8 @@ public class DccHandler implements Closeable {
 							transfer.setStartPosition(position);
 							log.debug("Passive send file transfer of file {} to user {} set to position {}",
 									transfer.getFilename(), transfer.getUser().getNick(), position);
+							bot.sendDCC().filePassiveResumeAccept(transfer.getUser().getNick(), transfer.getFilename(),
+									transfer.getStartPosition(), transfer.getTransferToken());
 							return true;
 						}
 					}
@@ -145,6 +147,8 @@ public class DccHandler implements Closeable {
 							transfer.setPosition(position);
 							log.debug("Send file transfer of file {} to user {} set to position {}",
 									transfer.getFilename(), transfer.getUser().getNick(), position);
+							bot.sendDCC().fileResumeAccept(transfer.getUser().getNick(), transfer.getFilename(),
+									transfer.getPort(), transfer.getPosition());
 							return true;
 						}
 					}
