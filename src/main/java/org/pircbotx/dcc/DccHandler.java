@@ -114,7 +114,7 @@ public class DccHandler implements Closeable {
 			//Someone is trying to resume sending a file to us
 			//Example: DCC RESUME <filename> 0 <position> <token>
 			//Reply with: DCC ACCEPT <filename> 0 <position> <token>
-			String filename = requestParts.get(2);
+			String filename = requestParts.get(2).replaceAll("\"", "");
 			int port = Integer.parseInt(requestParts.get(3));
 			long position = Long.parseLong(requestParts.get(4));
 
