@@ -46,9 +46,9 @@ public class SendFileTransfer extends FileTransfer {
 			// https://stackoverflow.com/questions/7379469/filechannel-transferto-for-large-file-in-windows/20916464
 			long bufferSize = (64 * 1024 * 1024) - (32 * 1024);
 			long size = inChannel.size();
-			long position = startPosition;
-			while (position < size) {
-				position += inChannel.transferTo(position, bufferSize, outChannel);
+			this.bytesTransfered = this.startPosition;
+			while (this.bytesTransfered < size) {
+				this.bytesTransfered += inChannel.transferTo(this.bytesTransfered, bufferSize, outChannel);
 			}
 		}
 	}
