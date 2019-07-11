@@ -17,13 +17,13 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
-import lombok.Cleanup;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SocketChannel;
+
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
@@ -39,29 +39,17 @@ public class SendFileTransfer extends FileTransfer {
 
 	@Override
 	protected void transferFile() throws IOException {
-		@Cleanup
-		BufferedOutputStream socketOutput = new BufferedOutputStream(socket.getOutputStream());
-		@Cleanup
-		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
-		@Cleanup
-		BufferedInputStream fileInput = new BufferedInputStream(new FileInputStream(file));
-
-		// Check for resuming.
-		if (startPosition > 0) {
-			long bytesSkipped = 0;
-			while (bytesSkipped < startPosition)
-				bytesSkipped += fileInput.skip(startPosition - bytesSkipped);
-		}
-
-		byte[] outBuffer = new byte[configuration.getDccTransferBufferSize()];
-		byte[] inBuffer = new byte[4];
-		int bytesRead;
-		while ((bytesRead = fileInput.read(outBuffer, 0, outBuffer.length)) != -1) {
-			socketOutput.write(outBuffer, 0, bytesRead);
-			socketOutput.flush();
-			socketInput.read(inBuffer, 0, inBuffer.length);
-			bytesTransfered += bytesRead;
-			onAfterSend();
+		try (FileInputStream inputStream = new FileInputStream(file);) {
+			FileChannel inChannel = inputStream.getChannel();
+			SocketChannel outChannel = socket.getChannel();
+			// Windows optimized buffer size.  It seems to help
+			// https://stackoverflow.com/questions/7379469/filechannel-transferto-for-large-file-in-windows/20916464
+			long bufferSize = (64 * 1024 * 1024) - (32 * 1024);
+			long size = inChannel.size();
+			this.bytesTransfered = this.startPosition;
+			while (this.bytesTransfered < size) {
+				this.bytesTransfered += inChannel.transferTo(this.bytesTransfered, bufferSize, outChannel);
+			}
 		}
 	}
 }

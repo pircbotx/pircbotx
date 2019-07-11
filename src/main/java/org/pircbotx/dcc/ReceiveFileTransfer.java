@@ -49,7 +49,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 		fileOutput.seek(startPosition);
 
 		//Recieve file
-		int defaultBufferSize = configuration.getDccTransferBufferSize();
+		int defaultBufferSize = configuration.getDccReceiveTransferBufferSize();
 		byte[] inBuffer = new byte[defaultBufferSize];
 		byte[] outBuffer = new byte[4];
 		while (true) {
