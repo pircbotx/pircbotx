@@ -95,7 +95,7 @@ public class Configuration {
 	protected final InetAddress dccPublicAddress;
 	protected final int dccAcceptTimeout;
 	protected final int dccResumeAcceptTimeout;
-	protected final int dccTransferBufferSize;
+	protected final int dccReceiveTransferBufferSize;
 	protected final boolean dccPassiveRequest;
 	//Connect information
 	protected final ImmutableList<ServerEntry> servers;
@@ -154,7 +154,7 @@ public class Configuration {
 		checkNotNull(builder.getDccPorts(), "DCC ports list cannot be null");
 		checkArgument(builder.getDccAcceptTimeout() > 0, "dccAcceptTimeout must be positive");
 		checkArgument(builder.getDccResumeAcceptTimeout() > 0, "dccResumeAcceptTimeout must be positive");
-		checkArgument(builder.getDccTransferBufferSize() > 0, "dccTransferBufferSize must be positive");
+		checkArgument(builder.getDccReceiveTransferBufferSize() > 0, "dccReceiveTransferBufferSize must be positive");
 		checkNotNull(builder.getServers(), "Servers list cannot be null");
 		checkArgument(!builder.getServers().isEmpty(), "Must specify servers to connect to");
 		for (ServerEntry serverEntry : builder.getServers()) {
@@ -204,7 +204,7 @@ public class Configuration {
 		this.dccPublicAddress = builder.getDccPublicAddress();
 		this.dccAcceptTimeout = builder.getDccAcceptTimeout();
 		this.dccResumeAcceptTimeout = builder.getDccResumeAcceptTimeout();
-		this.dccTransferBufferSize = builder.getDccTransferBufferSize();
+		this.dccReceiveTransferBufferSize = builder.getDccReceiveTransferBufferSize();
 		this.dccPassiveRequest = builder.isDccPassiveRequest();
 		this.servers = ImmutableList.copyOf(builder.getServers());
 		this.serverPassword = builder.getServerPassword();
@@ -353,9 +353,9 @@ public class Configuration {
 		 */
 		protected int dccResumeAcceptTimeout = -1;
 		/**
-		 * Size of the DCC file transfer buffer, default 1024 bytes
+		 * Size of the DCC Receive file transfer buffer, default 1024 bytes
 		 */
-		protected int dccTransferBufferSize = 1024;
+		protected int dccReceiveTransferBufferSize = 1024;
 		/**
 		 * Send DCC requests as passive/reverse requests if not specified
 		 * otherwise, default false
@@ -560,7 +560,7 @@ public class Configuration {
 			this.dccPublicAddress = configuration.getDccPublicAddress();
 			this.dccAcceptTimeout = configuration.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = configuration.getDccResumeAcceptTimeout();
-			this.dccTransferBufferSize = configuration.getDccTransferBufferSize();
+			this.dccReceiveTransferBufferSize = configuration.getDccReceiveTransferBufferSize();
 			this.dccPassiveRequest = configuration.isDccPassiveRequest();
 			this.servers.clear();
 			this.servers.addAll(configuration.getServers());
@@ -624,7 +624,7 @@ public class Configuration {
 			this.dccPublicAddress = otherBuilder.getDccPublicAddress();
 			this.dccAcceptTimeout = otherBuilder.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = otherBuilder.getDccResumeAcceptTimeout();
-			this.dccTransferBufferSize = otherBuilder.getDccTransferBufferSize();
+			this.dccReceiveTransferBufferSize = otherBuilder.getDccReceiveTransferBufferSize();
 			this.dccPassiveRequest = otherBuilder.isDccPassiveRequest();
 			this.servers.clear();
 			this.servers.addAll(otherBuilder.getServers());

@@ -22,9 +22,11 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.channels.ServerSocketChannel;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -545,26 +547,26 @@ public class DccHandler implements Closeable {
 	protected ServerSocket createServerSocket(User user) throws IOException, DccException {
 		InetAddress address = getRealDccLocalAddress();
 		ImmutableList<Integer> dccPorts = bot.getConfiguration().getDccPorts();
-		ServerSocket ss = null;
+		ServerSocketChannel sc = ServerSocketChannel.open();
 		if (dccPorts.isEmpty())
 			// Use any free port.
-			ss = new ServerSocket(0, 1, address);
+			sc.socket().bind(new InetSocketAddress(address, 0));
 		else {
 			for (int currentPort : dccPorts)
 				try {
-					ss = new ServerSocket(currentPort, 1, address);
+					sc.socket().bind(new InetSocketAddress(address, currentPort));
 					// Found a port number we could use.
 					break;
 				} catch (Exception e) {
 					// Do nothing; go round and try another port.
 					log.debug("Failed to create server socket on port " + currentPort + ", trying next one", e);
 				}
-			if (ss == null)
+			if (sc == null)
 				// No ports could be used.
 				throw new DccException(DccException.Reason.DCC_PORTS_IN_USE, user, "Ports " + dccPorts + " are in use.");
 		}
-		ss.setSoTimeout(bot.getConfiguration().getDccAcceptTimeout());
-		return ss;
+		sc.socket().setSoTimeout(bot.getConfiguration().getDccAcceptTimeout());
+		return sc.socket();
 	}
 
 	protected static List<String> tokenizeDccRequest(String request) {
