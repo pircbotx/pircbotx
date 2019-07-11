@@ -27,6 +27,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -339,8 +340,11 @@ public class DccHandler implements Closeable {
 			serverSocket.close();
 			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
 		} else {
-			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccLocalAddress(event.getAddress()), 0);
-			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
+			SocketChannel socketChannel = SocketChannel.open();
+			socketChannel.bind(new InetSocketAddress(getRealDccLocalAddress(event.getAddress()), 0));
+			socketChannel.connect(new InetSocketAddress(event.getAddress(), event.getPort()));
+			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, socketChannel.socket(),
+					event.getUser(), destination, startPosition, event.getFilesize());
 		}
 	}
 

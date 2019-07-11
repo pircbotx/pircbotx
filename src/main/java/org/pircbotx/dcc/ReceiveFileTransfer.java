@@ -17,14 +17,14 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.net.Socket;
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SocketChannel;
+
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
@@ -33,53 +33,36 @@ import org.pircbotx.User;
  *
  * @author Leon Blakey
  */
-@Slf4j
 public class ReceiveFileTransfer extends FileTransfer {
-	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
+	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition,
+			long fileSize) {
 		super(configuration, socket, user, file, startPosition, fileSize);
 	}
 
 	protected void transferFile() throws IOException {
-		@Cleanup
-		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
-		@Cleanup
-		OutputStream socketOutput = socket.getOutputStream();
-		@Cleanup
-		RandomAccessFile fileOutput = new RandomAccessFile(file.getCanonicalPath(), "rw");
-		fileOutput.seek(startPosition);
-
-		//Recieve file
-		int defaultBufferSize = configuration.getDccReceiveTransferBufferSize();
-		byte[] inBuffer = new byte[defaultBufferSize];
 		byte[] outBuffer = new byte[4];
-		while (true) {
-			//Adjust buffer based on remaining bytes (if we know how big the file is)
-			long remainingBytes = fileSize - bytesTransfered;
-			int bufferSize = (remainingBytes > 0 && remainingBytes < defaultBufferSize)
-					? (int) remainingBytes : defaultBufferSize;
+		long bytesToRead = 1024 * 1024;
 
-			//Read next part of incomming file
-			int bytesRead = socketInput.read(inBuffer, 0, bufferSize);
-			if (bytesRead == -1)
-				//Done
-				break;
+		try (SocketChannel inChannel = socket.getChannel();
+				FileOutputStream outputStream = new FileOutputStream(file);
+				FileChannel outChannel = outputStream.getChannel();) {
 
-			//Write to file
-			fileOutput.write(inBuffer, 0, bytesRead);
-			bytesTransfered += bytesRead;
+			long bytesAcknowledged = 0;
+			outChannel.position(this.startPosition);
+			while (bytesAcknowledged < fileSize) {
+				if (bytesToRead > (fileSize - bytesAcknowledged)) {
+					bytesToRead = (fileSize - bytesAcknowledged);
+				}
+				bytesAcknowledged += outChannel.transferFrom(inChannel, outChannel.position(), bytesToRead);
+				outChannel.position(bytesAcknowledged);
 
-			//Send back an acknowledgement of how many bytes we have got so far.
-			//Convert bytesTransfered to an "unsigned, 4 byte integer in network byte order", per DCC specification
-			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
-			outBuffer[1] = (byte) ((bytesTransfered >> 16) & 0xff);
-			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
-			outBuffer[3] = (byte) (bytesTransfered & 0xff);
-			socketOutput.write(outBuffer);
-			onAfterSend();
-
-			if (remainingBytes - bufferSize == 0)
-				//Were done
-				break;
+				outBuffer[0] = (byte) ((bytesAcknowledged >> 24) & 0xff);
+				outBuffer[1] = (byte) ((bytesAcknowledged >> 16) & 0xff);
+				outBuffer[2] = (byte) ((bytesAcknowledged >> 8) & 0xff);
+				outBuffer[3] = (byte) (bytesAcknowledged & 0xff);
+				inChannel.write(ByteBuffer.wrap(outBuffer));
+				onAfterSend();
+			}
 		}
 	}
 }
