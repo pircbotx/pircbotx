@@ -20,6 +20,7 @@ package org.pircbotx.dcc;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+
 import lombok.Getter;
 import lombok.NonNull;
 import org.pircbotx.Configuration;
@@ -51,16 +52,14 @@ public abstract class FileTransfer {
 	protected DccState state = DccState.INIT;
 	protected final Object stateLock = new Object();
 
-	public FileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
+	public FileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition,
+			long fileSize) {
 		this.configuration = configuration;
 		this.socket = socket;
 		this.user = user;
 		this.file = file;
 		this.startPosition = startPosition;
 		this.fileSize = fileSize;
-
-		//Clients use bytesTransferred to see where we are in the file
-		this.bytesTransfered = startPosition;
 	}
 
 	/**
@@ -69,7 +68,7 @@ public abstract class FileTransfer {
 	 * @throws IOException If an error occurred during transfer
 	 */
 	public void transfer() throws IOException {
-		//Prevent being called multiple times
+		// Prevent being called multiple times
 		if (state != DccState.INIT)
 			synchronized (stateLock) {
 				if (state != DccState.INIT)
@@ -83,18 +82,6 @@ public abstract class FileTransfer {
 	}
 
 	protected abstract void transferFile() throws IOException;
-
-	/**
-	 * Callback at end of read/write loop:
-	 * <p>
-	 * Receive: Socket read -> file write -> socket write (bytes transferred) ->
-	 * callback -> repeat
-	 * <p>
-	 * Send: File read -> socket write -> socket read (bytes transferred) ->
-	 * callback -> repeat
-	 */
-	protected void onAfterSend() {
-	}
 
 	/**
 	 * Is the transfer finished?

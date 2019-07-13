@@ -18,51 +18,61 @@
 package org.pircbotx.dcc;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.User;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * A DCC File Transfer initiated by another user.
  *
  * @author Leon Blakey
  */
+@Slf4j
 public class ReceiveFileTransfer extends FileTransfer {
+
+	SendFileTransferAcknowlegement acknowledge;
+
 	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition,
 			long fileSize) {
 		super(configuration, socket, user, file, startPosition, fileSize);
 	}
 
+	@Override
 	protected void transferFile() throws IOException {
-		byte[] outBuffer = new byte[4];
+
+		// TODO same as send files, does this buffer matter?
 		long bytesToRead = 1024 * 1024;
 
 		try (SocketChannel inChannel = socket.getChannel();
-				FileOutputStream outputStream = new FileOutputStream(file);
+				RandomAccessFile outputStream = new RandomAccessFile(file, "rw");
 				FileChannel outChannel = outputStream.getChannel();) {
 
-			long bytesAcknowledged = 0;
-			outChannel.position(this.startPosition);
-			while (bytesAcknowledged < fileSize) {
-				if (bytesToRead > (fileSize - bytesAcknowledged)) {
-					bytesToRead = (fileSize - bytesAcknowledged);
-				}
-				bytesAcknowledged += outChannel.transferFrom(inChannel, outChannel.position(), bytesToRead);
-				outChannel.position(bytesAcknowledged);
+			acknowledge = new SendFileTransferAcknowlegement(inChannel, outChannel);
 
-				outBuffer[0] = (byte) ((bytesAcknowledged >> 24) & 0xff);
-				outBuffer[1] = (byte) ((bytesAcknowledged >> 16) & 0xff);
-				outBuffer[2] = (byte) ((bytesAcknowledged >> 8) & 0xff);
-				outBuffer[3] = (byte) (bytesAcknowledged & 0xff);
-				inChannel.write(ByteBuffer.wrap(outBuffer));
-				onAfterSend();
+			outChannel.position(startPosition);
+			while (outChannel.position() < fileSize) {
+				if (bytesToRead > (fileSize - outChannel.position())) {
+					bytesToRead = (fileSize - outChannel.position());
+				}
+				outChannel.position(
+						outChannel.position() + outChannel.transferFrom(inChannel, outChannel.position(), bytesToRead));
+
+				// TODO move this into a status object
+				bytesTransfered = outChannel.position();
+
+				acknowledge.call();
 			}
+		} catch (IOException e) {
+			// TODO catch exceptions here and return an error and reason
+			this.state = DccState.ERROR;
+			log.debug("Receive file transfer of file {} entered {} state: ", file.getName(), this.state.name());
 		}
 	}
 }
