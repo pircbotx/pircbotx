@@ -23,8 +23,6 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.TimeUnit;
 
-import lombok.extern.slf4j.Slf4j;
-
 public class ReceiveFileTransferAcknowlegement extends Thread {
 
 	protected SendFileTransfer sendFileTransfer;
