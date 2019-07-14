@@ -23,6 +23,11 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.Callable;
 
+/**
+ * Send current number of bytes received from a file transfer
+ *
+ * @author Rob
+ */
 public class SendFileTransferAcknowlegement implements Callable<Long> {
 
 	protected SocketChannel socketChannel;

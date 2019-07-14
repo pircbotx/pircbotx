@@ -20,27 +20,28 @@ package org.pircbotx.dcc;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 
-import org.pircbotx.Configuration;
-import org.pircbotx.User;
+import org.pircbotx.PircBotX;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A DCC File Transfer initiated by the bot
+ * Send a file to a user and wait for all acknowledgement. Report statistics
+ * about the file and file transfer.
  *
- * @author Leon Blakey
+ * @author Rob
  */
 @Slf4j
 public class SendFileTransfer extends FileTransfer {
 
 	private ReceiveFileTransferAcknowlegement acknowledgement;
 
-	public SendFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition) {
-		super(configuration, socket, user, file, startPosition, file.length());
+	public SendFileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer, File file) {
+		super(bot, dccHandler, pendingFileTransfer, file);
 	}
 
 	// TODO Does this need to be configurable?
@@ -50,33 +51,67 @@ public class SendFileTransfer extends FileTransfer {
 	long bytesToTransfer = (1024 * 1024);
 
 	@Override
-	protected void transferFile() throws IOException {
-
+	protected void transferFile() {
 		try (SocketChannel outChannel = socket.getChannel();
 				FileInputStream inputStream = new FileInputStream(file);
 				FileChannel inChannel = inputStream.getChannel();) {
+
 			acknowledgement = new ReceiveFileTransferAcknowlegement(this, outChannel, inChannel);
 			acknowledgement.start();
-			inChannel.position(this.startPosition);
-			while (inChannel.position() < fileSize) {
-				if (bytesToTransfer > (fileSize - inChannel.position())) {
-					bytesToTransfer = (fileSize - inChannel.position());
+			fileTransferStatus.start();
+
+			inChannel.position(fileTransferStatus.startPosition);
+			while (inChannel.position() < fileTransferStatus.fileSize) {
+				if (dccHandler.shuttingDown || fileTransferStatus.dccState == DccState.SHUTDOWN) {
+					acknowledgement.running = false;
+					break;
+				}
+
+				if (fileTransferStatus.dccState == DccState.ERROR) {
+					// Acknowledgement failed
+					throw fileTransferStatus.exception;
+				}
+
+				if (bytesToTransfer > (fileTransferStatus.fileSize - inChannel.position())) {
+					bytesToTransfer = (fileTransferStatus.fileSize - inChannel.position());
 				}
 				inChannel.transferTo(inChannel.position(), bytesToTransfer, outChannel);
 				inChannel.position(inChannel.position() + bytesToTransfer);
+				fileTransferStatus.bytesTransfered = inChannel.position();
 
-				// TODO move this into a status object
-				bytesTransfered = inChannel.position();
 			}
-			this.state = DccState.WAITING;
-			log.debug("Send file transfer of file {} entered {} state for client acknowledgement", file.getName(),
-					this.state.name());
-			acknowledgement.join();
-		} catch (IOException | InterruptedException e) {
-			// TODO catch exceptions here and return an error and reason
-			this.state = DccState.ERROR;
-			log.debug("Send file transfer of file {} entered {} state: ", file.getName(), this.state.name());
-		}
 
+			fileTransferStatus.dccState = DccState.WAITING;
+			log.info("Send file transfer of file {} entered {} state for client acknowledgement", file.getName(),
+					fileTransferStatus.dccState);
+
+			try {
+				acknowledgement.join();
+				fileTransferStatus.join();
+			} catch (InterruptedException e) {
+				fileTransferStatus.dccState = DccState.ERROR;
+				log.error(
+						"Send file transfer of file {} failed to clean up gracefully! Please report this error with logs.",
+						file.getName(), e);
+			}
+
+		} catch (IOException e) {
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = e;
+			log.info("Send file transfer of file {} entered {} state: {}", file.getName(), fileTransferStatus.dccState,
+					e.getMessage());
+		} finally {
+
+			if (fileTransferStatus.dccState != DccState.ERROR) {
+				fileTransferStatus.dccState = DccState.DONE;
+			}
+
+			log.info("Send file transfer of file {} ended with state {}", file.getName(), fileTransferStatus.dccState);
+
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
+							this.socket.getInetAddress(), this.socket.getPort(), this.fileTransferStatus.fileSize,
+							this.pendingFileTransfer.passive, true));
+		}
 	}
 }

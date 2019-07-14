@@ -39,6 +39,7 @@ import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
 import org.pircbotx.delay.Delay;
 import org.pircbotx.delay.StaticDelay;
 import org.pircbotx.exception.IrcException;
@@ -973,12 +974,14 @@ public class Configuration {
 			return new ReceiveChat(user, socket, bot.getConfiguration().getEncoding());
 		}
 
-		public SendFileTransfer createSendFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition) {
-			return new SendFileTransfer(bot.getConfiguration(), socket, user, file, startPosition);
+		public SendFileTransfer createSendFileTransfer(PircBotX bot, DccHandler dccHandler,
+				PendingFileTransfer pendingFileTransfer, File file) {
+			return new SendFileTransfer(bot, dccHandler, pendingFileTransfer, file);
 		}
 
-		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, Socket socket, User user, File file, long startPosition, long fileSize) {
-			return new ReceiveFileTransfer(bot.getConfiguration(), socket, user, file, startPosition, fileSize);
+		public ReceiveFileTransfer createReceiveFileTransfer(PircBotX bot, DccHandler dccHandler,
+				PendingFileTransfer pendingFileTransfer, File file) {
+			return new ReceiveFileTransfer(bot, dccHandler, pendingFileTransfer, file);
 		}
 
 		public ServerInfo createServerInfo(PircBotX bot) {

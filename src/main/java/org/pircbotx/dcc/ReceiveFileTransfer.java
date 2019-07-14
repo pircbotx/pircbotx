@@ -20,32 +20,33 @@ package org.pircbotx.dcc;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.net.Socket;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 
-import org.pircbotx.Configuration;
-import org.pircbotx.User;
+import org.pircbotx.PircBotX;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A DCC File Transfer initiated by another user.
+ * Receive a file from a user and send acknowledgement. Report statistics about
+ * the file and file transfer.
  *
- * @author Leon Blakey
+ * @author Rob
  */
 @Slf4j
 public class ReceiveFileTransfer extends FileTransfer {
 
 	SendFileTransferAcknowlegement acknowledge;
 
-	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition,
-			long fileSize) {
-		super(configuration, socket, user, file, startPosition, fileSize);
+	public ReceiveFileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer,
+			File file) {
+		super(bot, dccHandler, pendingFileTransfer, file);
 	}
 
 	@Override
-	protected void transferFile() throws IOException {
+	protected void transferFile() {
 
 		// TODO same as send files, does this buffer matter?
 		long bytesToRead = 1024 * 1024;
@@ -55,24 +56,53 @@ public class ReceiveFileTransfer extends FileTransfer {
 				FileChannel outChannel = outputStream.getChannel();) {
 
 			acknowledge = new SendFileTransferAcknowlegement(inChannel, outChannel);
+			fileTransferStatus.start();
 
-			outChannel.position(startPosition);
-			while (outChannel.position() < fileSize) {
-				if (bytesToRead > (fileSize - outChannel.position())) {
-					bytesToRead = (fileSize - outChannel.position());
+			outChannel.position(fileTransferStatus.startPosition);
+			while (outChannel.position() < fileTransferStatus.fileSize) {
+				if (dccHandler.shuttingDown || fileTransferStatus.dccState == DccState.SHUTDOWN) {
+					break;
+				}
+
+				if (bytesToRead > (fileTransferStatus.fileSize - outChannel.position())) {
+					bytesToRead = (fileTransferStatus.fileSize - outChannel.position());
 				}
 				outChannel.position(
 						outChannel.position() + outChannel.transferFrom(inChannel, outChannel.position(), bytesToRead));
 
-				// TODO move this into a status object
-				bytesTransfered = outChannel.position();
+				fileTransferStatus.bytesTransfered = outChannel.position();
+				fileTransferStatus.bytesAcknowledged = acknowledge.call();
+			}
 
-				acknowledge.call();
+			fileTransferStatus.dccState = DccState.WAITING;
+			log.info("Receive file transfer of file {} entered {} state for server to close the socket", file.getName(),
+					fileTransferStatus.dccState);
+			try {
+				fileTransferStatus.join();
+			} catch (InterruptedException e) {
+				fileTransferStatus.dccState = DccState.ERROR;
+				log.error(
+						"Receive file transfer of file {} failed to clean up gracefully! Please report this error with logs.",
+						file.getName(), e);
 			}
 		} catch (IOException e) {
-			// TODO catch exceptions here and return an error and reason
-			this.state = DccState.ERROR;
-			log.debug("Receive file transfer of file {} entered {} state: ", file.getName(), this.state.name());
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = e;
+			log.error("Receive file transfer of file {} entered {} state: {}", file.getName(),
+					fileTransferStatus.dccState, e.getMessage());
+		} finally {
+
+			if (fileTransferStatus.dccState != DccState.ERROR) {
+				fileTransferStatus.dccState = DccState.DONE;
+			}
+
+			log.info("Receive file transfer of file {} ended with state {}", file.getName(),
+					fileTransferStatus.dccState);
+
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
+							this.socket.getInetAddress(), this.socket.getPort(), this.fileTransferStatus.fileSize,
+							this.pendingFileTransfer.passive, false));
 		}
 	}
 }

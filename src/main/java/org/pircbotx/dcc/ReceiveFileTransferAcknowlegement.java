@@ -21,52 +21,65 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
-import java.util.concurrent.TimeUnit;
 
+/**
+ * This class will Receive the acknowledgement of bytes when sending a file.
+ * This will keep the SendFileTransfer alive until all bytes are received by the
+ * client.
+ *
+ * @author Rob
+ */
 public class ReceiveFileTransferAcknowlegement extends Thread {
 
 	protected SendFileTransfer sendFileTransfer;
 	protected SocketChannel inChannel;
 	protected FileChannel outChannel;
+	protected ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[4]);
+	protected Boolean running = true;
+	protected long totalBytesAcknowleged = 0;
+	protected int previousBytesAcknowleged = 0;
 
 	public ReceiveFileTransferAcknowlegement(SendFileTransfer sendFileTransfer, SocketChannel inChannel,
 			FileChannel outChannel) {
 		this.inChannel = inChannel;
 		this.outChannel = outChannel;
+		this.sendFileTransfer = sendFileTransfer;
 	}
 
-	protected int receiveAcknowledge() throws IOException {
-		ByteBuffer buffer = ByteBuffer.wrap(new byte[4]);
-		inChannel.read(buffer);
-		return buffer.getInt(0);
+	/**
+	 * mIRC sends Acks of bytes/4gb to help calculate file position. KVIrc and
+	 * HexChat do not.
+	 *
+	 * Ignore the mIRC position Acks and use this internal counter for bytes
+	 * received.
+	 *
+	 * @throws IOException
+	 */
+	protected void receiveAcknowledge() throws IOException {
+		inChannel.read(byteBuffer);
+		byteBuffer.clear();
+		int bytesAcknowledged = byteBuffer.getInt(0);
+		if (bytesAcknowledged != (int) (totalBytesAcknowleged / ((long) Integer.MAX_VALUE * 2))
+				&& totalBytesAcknowleged != bytesAcknowledged) {
+			totalBytesAcknowleged += (bytesAcknowledged - previousBytesAcknowleged);
+			sendFileTransfer.fileTransferStatus.bytesAcknowledged = totalBytesAcknowleged;
+			previousBytesAcknowleged = bytesAcknowledged;
+		}
 	}
 
 	@Override
 	public void run() {
 		try {
-
-			long bytesAcknowleged = 0;
-			// Wait until the client has some data
-			while (bytesAcknowleged == 0) {
-				bytesAcknowleged = receiveAcknowledge();
-				TimeUnit.SECONDS.sleep(1);
+			totalBytesAcknowleged = outChannel.position();
+			previousBytesAcknowleged = (int) totalBytesAcknowleged;
+			while (running && totalBytesAcknowleged != outChannel.size()) {
+				receiveAcknowledge();
 			}
-
-			while (true) {
-				int bytesRespondedFromClient = receiveAcknowledge();
-				// Break loop after no more bytes transferred.
-				// This implies the client has finished the transfer.
-				// TODO how does DCC handle files over MAX_INT? It would be nice to compare
-				// explicit bytes transferred.
-				// TODO add some timeout mechanism if outChannel.pointer() < fileSize instead of
-				// ending abruptly.
-				if (bytesAcknowleged == bytesRespondedFromClient) {
-					break;
-				}
-				bytesAcknowleged = bytesRespondedFromClient;
+		} catch (IOException e) {
+			if (sendFileTransfer != null) {
+				sendFileTransfer.fileTransferStatus.exception = e;
+				sendFileTransfer.fileTransferStatus.dccState = DccState.ERROR;
 			}
-		} catch (IOException | InterruptedException e) {
-			sendFileTransfer.state = DccState.ERROR;
 		}
 	}
 }

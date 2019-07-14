@@ -111,37 +111,24 @@ public class IncomingFileTransferEvent extends Event implements GenericDCCEvent 
 		return getToken();
 	}
 
-	public ReceiveFileTransfer accept(@NonNull File destination) throws IOException {
-		return getBot().getDccHandler().acceptFileTransfer(this, destination);
-	}
-
-	public ReceiveFileTransfer acceptResume(@NonNull File destination, long startPosition) throws IOException, InterruptedException {
-		return getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
-	}
-
 	/**
 	 * Accept the request and transfer the file now, blocking until finished.
 	 *
 	 * @param destination
 	 * @throws IOException
 	 */
-	public ReceiveFileTransfer acceptAndTransfer(File destination) throws IOException {
-		ReceiveFileTransfer transfer = accept(destination);
-		transfer.transfer();
-		return transfer;
+	public ReceiveFileTransfer accept(@NonNull File destination) throws IOException {
+		return getBot().getDccHandler().acceptFileTransfer(this, destination);
 	}
 
 	/**
-	 * Accept the resume request and transfer the file now, blocking until
-	 * finished.
+	 * Accept the resume request and transfer the file now, blocking until finished.
 	 *
 	 * @param destination
 	 * @throws IOException
 	 */
-	public ReceiveFileTransfer acceptResumeAndTransfer(File destination, long startPosition) throws IOException, InterruptedException {
-		ReceiveFileTransfer transfer = acceptResume(destination, startPosition);
-		transfer.transfer();
-		return transfer;
+	public ReceiveFileTransfer acceptResume(@NonNull File destination, long startPosition) throws IOException, InterruptedException {
+		return getBot().getDccHandler().acceptFileTransferResume(this, destination, startPosition);
 	}
 
 	/**

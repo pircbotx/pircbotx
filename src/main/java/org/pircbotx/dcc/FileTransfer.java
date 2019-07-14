@@ -23,19 +23,28 @@ import java.net.Socket;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
 
 /**
  * A general active DCC file transfer
  *
  * @author Leon Blakey
  */
+@Slf4j
 public abstract class FileTransfer {
+	@NonNull
+	protected final PircBotX bot;
 	@NonNull
 	protected final Configuration configuration;
 	@NonNull
-	protected final Socket socket;
+	protected final DccHandler dccHandler;
+	@NonNull
+	protected Socket socket;
 	@NonNull
 	@Getter
 	protected final User user;
@@ -43,23 +52,29 @@ public abstract class FileTransfer {
 	@Getter
 	protected final File file;
 	@Getter
-	protected final long startPosition;
-	@Getter
-	protected final long fileSize;
-	@Getter
-	protected long bytesTransfered;
-	@Getter
-	protected DccState state = DccState.INIT;
+	protected FileTransferStatus fileTransferStatus;
+
+	protected PendingFileTransfer pendingFileTransfer;
+
 	protected final Object stateLock = new Object();
 
-	public FileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition,
-			long fileSize) {
-		this.configuration = configuration;
-		this.socket = socket;
-		this.user = user;
+	public FileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer,
+			File file) {
+		this.bot = bot;
+		this.configuration = bot.getConfiguration();
+		this.pendingFileTransfer = pendingFileTransfer;
+		this.user = pendingFileTransfer.user;
 		this.file = file;
-		this.startPosition = startPosition;
-		this.fileSize = fileSize;
+		this.dccHandler = dccHandler;
+		fileTransferStatus = new FileTransferStatus(pendingFileTransfer.fileSize, pendingFileTransfer.position);
+	}
+
+	private void connectSocket() throws IOException {
+		socket = dccHandler.establishSocketConnection(pendingFileTransfer);
+	}
+
+	public void shutdown() {
+		fileTransferStatus.dccState = DccState.SHUTDOWN;
 	}
 
 	/**
@@ -67,28 +82,33 @@ public abstract class FileTransfer {
 	 *
 	 * @throws IOException If an error occurred during transfer
 	 */
-	public void transfer() throws IOException {
+	public void transfer() {
+
 		// Prevent being called multiple times
-		if (state != DccState.INIT)
+		if (fileTransferStatus.dccState != DccState.INIT) {
 			synchronized (stateLock) {
-				if (state != DccState.INIT)
-					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
+				if (fileTransferStatus.dccState != DccState.INIT) {
+					throw new RuntimeException(
+							"Cannot receive file twice (Current state: " + fileTransferStatus.dccState + ")");
+				}
 			}
-		state = DccState.RUNNING;
+		}
+
+		fileTransferStatus.dccState = DccState.CONNECTING;
+
+		try {
+			connectSocket();
+		} catch (IOException e) {
+			log.error("FAILED ESTABLISHING SOCKET!!!", e);
+			return;
+		}
+
+		fileTransferStatus.dccState = DccState.RUNNING;
 
 		transferFile();
 
-		state = DccState.DONE;
 	}
 
-	protected abstract void transferFile() throws IOException;
+	protected abstract void transferFile();
 
-	/**
-	 * Is the transfer finished?
-	 *
-	 * @return True if its finished
-	 */
-	public boolean isFinished() {
-		return state == DccState.DONE;
-	}
 }
