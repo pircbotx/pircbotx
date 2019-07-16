@@ -18,8 +18,6 @@
 package org.pircbotx.hooks.events;
 
 import java.net.InetAddress;
-import java.net.Socket;
-
 import javax.annotation.Nullable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,6 +46,7 @@ public class FileTransferCompleteEvent extends Event implements GenericDCCEvent 
 	protected final User user;
 	@Getter
 	protected final FileTransferStatus transferStatus;
+	@Getter
 	protected final String fileName;
 	@Getter(onMethod = @__({
 			@Override}))
@@ -55,6 +54,7 @@ public class FileTransferCompleteEvent extends Event implements GenericDCCEvent 
 	@Getter(onMethod = @__({
 			@Override}))
 	protected final int port;
+	@Getter
 	protected final long filesize;
 	@Getter(onMethod = @__({
 			@Override}))
@@ -63,13 +63,13 @@ public class FileTransferCompleteEvent extends Event implements GenericDCCEvent 
 	protected final boolean outbound;
 
 	public FileTransferCompleteEvent(PircBotX bot, @NonNull FileTransferStatus transferStatus, User user,
-			@NonNull String fileName, Socket socket, long filesize, boolean passive, boolean outbound) {
+			@NonNull String fileName, InetAddress address, int port, long filesize, boolean passive, boolean outbound) {
 		super(bot);
 		this.user = user;
 		this.transferStatus = transferStatus;
 		this.fileName = fileName;
-		this.address = (socket != null) ? socket.getInetAddress() : null;
-		this.port = (socket != null) ? socket.getLocalPort() : 0;
+		this.address = address;
+		this.port = port;
 		this.filesize = filesize;
 		this.passive = passive;
 		this.outbound = outbound;

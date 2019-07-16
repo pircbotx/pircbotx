@@ -105,9 +105,12 @@ public abstract class FileTransfer {
 			fileTransferStatus.dccState = DccState.ERROR;
 			fileTransferStatus.exception = e;
 		} finally {
+
 			bot.getConfiguration().getListenerManager()
 					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
-							socket, fileTransferStatus.fileSize, pendingFileTransfer.passive, true));
+							(socket != null) ? socket.getInetAddress() : null,
+							(socket != null) ? socket.getLocalPort() : 0, fileTransferStatus.fileSize,
+							pendingFileTransfer.passive, true));
 		}
 
 	}
