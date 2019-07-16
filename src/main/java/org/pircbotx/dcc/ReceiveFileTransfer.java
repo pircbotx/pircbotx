@@ -25,7 +25,6 @@ import java.nio.channels.SocketChannel;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
-import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +48,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 	protected void transferFile() {
 
 		// TODO same as send files, does this buffer matter?
-		long bytesToRead = 1024 * 1024;
+		long bytesToRead = 8192;
 
 		try (SocketChannel inChannel = socket.getChannel();
 				RandomAccessFile outputStream = new RandomAccessFile(file, "rw");
@@ -79,6 +78,9 @@ public class ReceiveFileTransfer extends FileTransfer {
 					fileTransferStatus.dccState);
 			try {
 				fileTransferStatus.join();
+
+				fileTransferStatus.dccState = DccState.DONE;
+
 			} catch (InterruptedException e) {
 				fileTransferStatus.dccState = DccState.ERROR;
 				log.error(
@@ -88,21 +90,11 @@ public class ReceiveFileTransfer extends FileTransfer {
 		} catch (IOException e) {
 			fileTransferStatus.dccState = DccState.ERROR;
 			fileTransferStatus.exception = e;
-			log.error("Receive file transfer of file {} entered {} state: {}", file.getName(),
-					fileTransferStatus.dccState, e.getMessage());
 		} finally {
-
-			if (fileTransferStatus.dccState != DccState.ERROR) {
-				fileTransferStatus.dccState = DccState.DONE;
-			}
 
 			log.info("Receive file transfer of file {} ended with state {}", file.getName(),
 					fileTransferStatus.dccState);
 
-			bot.getConfiguration().getListenerManager()
-					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
-							this.socket.getInetAddress(), this.socket.getPort(), this.fileTransferStatus.fileSize,
-							this.pendingFileTransfer.passive, false));
 		}
 	}
 }

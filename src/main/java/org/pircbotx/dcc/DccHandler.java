@@ -161,6 +161,7 @@ public class DccHandler implements Closeable {
 									transfer.getFilename(), transfer.getUser().getNick(), position);
 							bot.sendDCC().fileResumeAccept(transfer.getUser().getNick(), transfer.getFilename(),
 									transfer.getPort(), transfer.getPosition());
+							pendingItr.remove();
 							return true;
 						}
 					}
@@ -368,7 +369,7 @@ public class DccHandler implements Closeable {
 
 		ReceiveFileTransfer receiveFileTransfer = bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot,
 				this, pendingTransfer, destination);
-		pendingReceiveTransfers.remove(pendingTransfer);
+
 		activeSendTransfers.submit(() -> {
 			receiveFileTransfer.transfer();
 		});
@@ -494,7 +495,7 @@ public class DccHandler implements Closeable {
 			CountDownLatch countdown = new CountDownLatch(1);
 			PendingSendFileTransferPassive pendingPassiveTransfer = new PendingSendFileTransferPassive(receiver,
 					safeFilename, file.length(), transferToken);
-			synchronized (pendingSendTransfers) {
+			synchronized (pendingSendPassiveTransfers) {
 				pendingSendPassiveTransfers.put(pendingPassiveTransfer, countdown);
 			}
 			InetAddress publicAddress = getRealDccPublicAddress();
@@ -518,25 +519,20 @@ public class DccHandler implements Closeable {
 			sendFileTransfer = bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, this,
 					pendingPassiveTransfer, file);
 
-			pendingSendPassiveTransfers.remove(pendingPassiveTransfer);
-
 			activeSendTransfers.submit(() -> {
 				sendFileTransfer.transfer();
 			});
 
 		} else {
 			// Try to get the user to connect to us
-			ServerSocket serverSocket = createServerSocket(receiver);
 			PendingSendFileTransfer pendingSendFileTransfer = new PendingSendFileTransfer(receiver, safeFilename,
-					file.length(), serverSocket.getLocalPort());
+					file.length(), createServerSocket(receiver));
 			synchronized (pendingSendTransfers) {
 				pendingSendTransfers.add(pendingSendFileTransfer);
 			}
 
 			sendFileTransfer = bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, this,
 					pendingSendFileTransfer, file);
-
-			pendingSendTransfers.remove(pendingSendFileTransfer);
 
 			activeSendTransfers.submit(() -> {
 				sendFileTransfer.transfer();
@@ -658,22 +654,20 @@ public class DccHandler implements Closeable {
 
 			PendingSendFileTransfer fileTransfer = (PendingSendFileTransfer) pendingFileTransfer;
 
-			ServerSocket serverSocket = createServerSocket(fileTransfer.getUser());
-
-			InetAddress publicAddress = getRealDccPublicAddress(serverSocket);
+			InetAddress publicAddress = getRealDccPublicAddress(fileTransfer.serverSocket);
 
 			// Wait for the user to connect
 			log.debug(
 					"Sent DCC send file request to user {} ({}ms timeout) to connect on public address {}, local address {}, port {} for file {}",
 					pendingFileTransfer.getUser().getNick(), bot.getConfiguration().getDccAcceptTimeout(),
-					publicAddress, serverSocket.getLocalSocketAddress(), serverSocket.getLocalPort(),
+					publicAddress, fileTransfer.serverSocket.getLocalSocketAddress(), fileTransfer.serverSocket.getLocalPort(),
 					fileTransfer.filename);
 
 			bot.sendDCC().fileRequest(fileTransfer.user.getNick(), fileTransfer.filename, publicAddress,
-					serverSocket.getLocalPort(), fileTransfer.fileSize);
+					fileTransfer.serverSocket.getLocalPort(), fileTransfer.fileSize);
 
-			Socket socket = serverSocket.accept();
-			serverSocket.close();
+			Socket socket = fileTransfer.serverSocket.accept();
+			fileTransfer.serverSocket.close();
 
 			return socket;
 
@@ -791,6 +785,7 @@ public class DccHandler implements Closeable {
 		protected final long fileSize;
 		protected final Boolean passive;
 		protected Socket socket;
+		protected ServerSocket serverSocket;
 		protected long position = 0;
 	}
 
@@ -813,9 +808,10 @@ public class DccHandler implements Closeable {
 		protected final int port;
 
 		@Builder
-		public PendingSendFileTransfer(User user, String filename, long fileSize, int port) {
+		public PendingSendFileTransfer(User user, String filename, long fileSize, ServerSocket serverSocket) {
 			super(user, filename, fileSize, false);
-			this.port = port;
+			this.port = serverSocket.getLocalPort();
+			this.serverSocket = serverSocket;
 		}
 
 	}

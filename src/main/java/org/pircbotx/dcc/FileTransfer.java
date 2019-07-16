@@ -23,19 +23,18 @@ import java.net.Socket;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 /**
  * A general active DCC file transfer
  *
  * @author Leon Blakey
  */
-@Slf4j
 public abstract class FileTransfer {
 	@NonNull
 	protected final PircBotX bot;
@@ -58,8 +57,7 @@ public abstract class FileTransfer {
 
 	protected final Object stateLock = new Object();
 
-	public FileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer,
-			File file) {
+	public FileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer, File file) {
 		this.bot = bot;
 		this.configuration = bot.getConfiguration();
 		this.pendingFileTransfer = pendingFileTransfer;
@@ -98,14 +96,19 @@ public abstract class FileTransfer {
 
 		try {
 			connectSocket();
+
+			fileTransferStatus.dccState = DccState.RUNNING;
+
+			transferFile();
+
 		} catch (IOException e) {
-			log.error("FAILED ESTABLISHING SOCKET!!!", e);
-			return;
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = e;
+		} finally {
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
+							socket, fileTransferStatus.fileSize, pendingFileTransfer.passive, true));
 		}
-
-		fileTransferStatus.dccState = DccState.RUNNING;
-
-		transferFile();
 
 	}
 

@@ -25,7 +25,6 @@ import java.nio.channels.SocketChannel;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
-import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +47,7 @@ public class SendFileTransfer extends FileTransfer {
 	// The only benefit to having it small is updating the file pointer more
 	// frequently
 	// Transfer stats can be polled via Acknowledge bytes
-	long bytesToTransfer = (1024 * 1024);
+	long bytesToTransfer = 8192;
 
 	@Override
 	protected void transferFile() {
@@ -88,6 +87,9 @@ public class SendFileTransfer extends FileTransfer {
 			try {
 				acknowledgement.join();
 				fileTransferStatus.join();
+
+				fileTransferStatus.dccState = DccState.DONE;
+
 			} catch (InterruptedException e) {
 				fileTransferStatus.dccState = DccState.ERROR;
 				log.error(
@@ -102,16 +104,8 @@ public class SendFileTransfer extends FileTransfer {
 					e.getMessage());
 		} finally {
 
-			if (fileTransferStatus.dccState != DccState.ERROR) {
-				fileTransferStatus.dccState = DccState.DONE;
-			}
-
 			log.info("Send file transfer of file {} ended with state {}", file.getName(), fileTransferStatus.dccState);
 
-			bot.getConfiguration().getListenerManager()
-					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
-							this.socket.getInetAddress(), this.socket.getPort(), this.fileTransferStatus.fileSize,
-							this.pendingFileTransfer.passive, true));
 		}
 	}
 }
