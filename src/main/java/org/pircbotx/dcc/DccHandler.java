@@ -51,6 +51,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.Utils;
 import org.pircbotx.exception.DccException;
+import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import static com.google.common.base.Preconditions.*;
@@ -167,8 +168,14 @@ public class DccHandler implements Closeable {
 					}
 				}
 
-			//Haven't returned yet, received an unknown transfer
-			throw new DccException(DccException.Reason.UNKNOWN_FILE_TRANSFER_RESUME, user, "Transfer line: " + request);
+			// Haven't returned yet, received an unknown transfer
+			FileTransferStatus fileTransferStatus = new FileTransferStatus(0, position);
+			fileTransferStatus.exception = new DccException(DccException.Reason.UNKNOWN_FILE_TRANSFER_RESUME, user,
+					"Transfer line: " + request);
+			bot.getConfiguration().getListenerManager().onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus,
+					user, filename, null, port, fileTransferStatus.fileSize, false, true));
+
+			return true;
 		} else if (type.equals("ACCEPT")) {
 			//Someone is acknowledging a transfer resume
 			//Example (normal):  DCC ACCEPT <filename> <port> <position>
@@ -343,12 +350,24 @@ public class DccHandler implements Closeable {
 
 		// Wait for response
 		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS)) {
-			throw new DccException(DccException.Reason.FILE_TRANSFER_RESUME_TIMEOUT, event.getUser(),
-					"Event: " + event);
+			FileTransferStatus fileTransferStatus = new FileTransferStatus(0, startPosition);
+			fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT,
+					event.getUser(), "Event: " + event);
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, event.getUser(),
+							event.getSafeFilename(), null, event.getPort(), event.getFilesize(), event.isPassive(),
+							false));
+			return null;
 		}
 		if (shuttingDown) {
-			throw new DccException(DccException.Reason.FILE_TRANSFER_RESUME_CANCELLED, event.getUser(),
-					"Transfer " + event + " canceled due to bot shutting down");
+			FileTransferStatus fileTransferStatus = new FileTransferStatus(0, startPosition);
+			fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED,
+					event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, event.getUser(),
+							event.getSafeFilename(), null, event.getPort(), event.getFilesize(), event.isPassive(),
+							false));
+			return null;
 		}
 
 		// User has accepted resume, begin transfer
@@ -508,12 +527,20 @@ public class DccHandler implements Closeable {
 					receiver.getNick(), bot.getConfiguration().getDccAcceptTimeout(), publicAddress,
 					file.getAbsolutePath());
 			if (!countdown.await(bot.getConfiguration().getDccAcceptTimeout(), TimeUnit.MILLISECONDS)) {
-				throw new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT, receiver,
+				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
+				fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT, receiver,
 						"File: " + file.getAbsolutePath());
+				bot.getConfiguration().getListenerManager().onEvent(new FileTransferCompleteEvent(bot,
+						fileTransferStatus, receiver, safeFilename, publicAddress, 0, file.length(), passive, true));
+				return null;
 			}
 			if (shuttingDown) {
-				throw new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED, receiver,
+				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
+				fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED, receiver,
 						"Transfer of file " + file.getAbsolutePath() + " canceled due to bot shutdown");
+				bot.getConfiguration().getListenerManager().onEvent(new FileTransferCompleteEvent(bot,
+						fileTransferStatus, receiver, safeFilename, publicAddress, 0, file.length(), passive, true));
+				return null;
 			}
 
 			sendFileTransfer = bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, this,
@@ -607,9 +634,15 @@ public class DccHandler implements Closeable {
 					// Do nothing; go round and try another port.
 					log.debug("Failed to create server socket on port " + currentPort + ", trying next one", e);
 				}
-			if (sc == null)
+			if (sc == null) {
 				// No ports could be used.
-				throw new DccException(DccException.Reason.DCC_PORTS_IN_USE, user, "Ports " + dccPorts + " are in use.");
+				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
+				fileTransferStatus.exception = new DccException(DccException.Reason.DCC_PORTS_IN_USE, user,
+						"Ports " + dccPorts + " are in use.");
+				bot.getConfiguration().getListenerManager().onEvent(
+						new FileTransferCompleteEvent(bot, fileTransferStatus, user, null, address, 0, 0, false, true));
+				return null;
+			}
 		}
 		sc.socket().setSoTimeout(bot.getConfiguration().getDccAcceptTimeout());
 		return sc.socket();

@@ -20,6 +20,7 @@ package org.pircbotx.dcc;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -28,6 +29,8 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.exception.DccException;
+import org.pircbotx.exception.DccException.Reason;
 import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 /**
@@ -101,9 +104,12 @@ public abstract class FileTransfer {
 
 			transferFile();
 
+		} catch (SocketTimeoutException e) {
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_TIMEOUT, user, "Socket connection timeout", e);
 		} catch (IOException e) {
 			fileTransferStatus.dccState = DccState.ERROR;
-			fileTransferStatus.exception = e;
+			fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_TIMEOUT, user, "General IOException", e);
 		} finally {
 
 			bot.getConfiguration().getListenerManager()

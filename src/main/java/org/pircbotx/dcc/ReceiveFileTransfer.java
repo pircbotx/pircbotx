@@ -25,6 +25,8 @@ import java.nio.channels.SocketChannel;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.exception.DccException;
+import org.pircbotx.exception.DccException.Reason;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,7 +91,8 @@ public class ReceiveFileTransfer extends FileTransfer {
 			}
 		} catch (IOException e) {
 			fileTransferStatus.dccState = DccState.ERROR;
-			fileTransferStatus.exception = e;
+			fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_CANCELLED, user, "User closed socket",
+					e);
 		} finally {
 
 			log.info("Receive file transfer of file {} ended with state {}", file.getName(),

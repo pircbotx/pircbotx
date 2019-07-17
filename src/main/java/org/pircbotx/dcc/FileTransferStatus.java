@@ -17,8 +17,9 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import org.pircbotx.exception.DccException;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class FileTransferStatus extends Thread {
 	@Getter
 	protected long averageBytesPerSecond = 0;
 	@Getter
-	protected IOException exception;
+	protected DccException exception;
 
 	public FileTransferStatus(long fileSize, long startPosition) {
 		this.fileSize = fileSize;

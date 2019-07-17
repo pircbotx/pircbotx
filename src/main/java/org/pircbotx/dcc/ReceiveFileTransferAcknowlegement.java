@@ -22,6 +22,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 
+import org.pircbotx.User;
+import org.pircbotx.exception.DccException;
+import org.pircbotx.exception.DccException.Reason;
+
 /**
  * This class will Receive the acknowledgement of bytes when sending a file.
  * This will keep the SendFileTransfer alive until all bytes are received by the
@@ -31,6 +35,7 @@ import java.nio.channels.SocketChannel;
  */
 public class ReceiveFileTransferAcknowlegement extends Thread {
 
+	protected User user;
 	protected SendFileTransfer sendFileTransfer;
 	protected SocketChannel inChannel;
 	protected FileChannel outChannel;
@@ -39,8 +44,9 @@ public class ReceiveFileTransferAcknowlegement extends Thread {
 	protected long totalBytesAcknowleged = 0;
 	protected int previousBytesAcknowleged = 0;
 
-	public ReceiveFileTransferAcknowlegement(SendFileTransfer sendFileTransfer, SocketChannel inChannel,
+	public ReceiveFileTransferAcknowlegement(User user, SendFileTransfer sendFileTransfer, SocketChannel inChannel,
 			FileChannel outChannel) {
+		this.user = user;
 		this.inChannel = inChannel;
 		this.outChannel = outChannel;
 		this.sendFileTransfer = sendFileTransfer;
@@ -77,7 +83,8 @@ public class ReceiveFileTransferAcknowlegement extends Thread {
 			}
 		} catch (IOException e) {
 			if (sendFileTransfer != null) {
-				sendFileTransfer.fileTransferStatus.exception = e;
+				sendFileTransfer.fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_CANCELLED, user,
+						"User closed socket", e);
 				sendFileTransfer.fileTransferStatus.dccState = DccState.ERROR;
 			}
 		}
