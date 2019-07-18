@@ -17,69 +17,87 @@
  */
 package org.pircbotx.dcc;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.net.Socket;
-import lombok.Cleanup;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SocketChannel;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.exception.DccException;
+import org.pircbotx.exception.DccException.Reason;
+
 import lombok.extern.slf4j.Slf4j;
-import org.pircbotx.Configuration;
-import org.pircbotx.User;
 
 /**
- * A DCC File Transfer initiated by another user.
+ * Receive a file from a user and send acknowledgement. Report statistics about
+ * the file and file transfer.
  *
- * @author Leon Blakey
+ * @author Rob
  */
 @Slf4j
 public class ReceiveFileTransfer extends FileTransfer {
-	public ReceiveFileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
-		super(configuration, socket, user, file, startPosition, fileSize);
+
+	SendFileTransferAcknowlegement acknowledge;
+
+	public ReceiveFileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer,
+			File file) {
+		super(bot, dccHandler, pendingFileTransfer, file);
 	}
 
-	protected void transferFile() throws IOException {
-		@Cleanup
-		BufferedInputStream socketInput = new BufferedInputStream(socket.getInputStream());
-		@Cleanup
-		OutputStream socketOutput = socket.getOutputStream();
-		@Cleanup
-		RandomAccessFile fileOutput = new RandomAccessFile(file.getCanonicalPath(), "rw");
-		fileOutput.seek(startPosition);
+	@Override
+	protected void transferFile() {
 
-		//Recieve file
-		int defaultBufferSize = configuration.getDccReceiveTransferBufferSize();
-		byte[] inBuffer = new byte[defaultBufferSize];
-		byte[] outBuffer = new byte[4];
-		while (true) {
-			//Adjust buffer based on remaining bytes (if we know how big the file is)
-			long remainingBytes = fileSize - bytesTransfered;
-			int bufferSize = (remainingBytes > 0 && remainingBytes < defaultBufferSize)
-					? (int) remainingBytes : defaultBufferSize;
+		// TODO same as send files, does this buffer matter?
+		long bytesToRead = 8192;
 
-			//Read next part of incomming file
-			int bytesRead = socketInput.read(inBuffer, 0, bufferSize);
-			if (bytesRead == -1)
-				//Done
-				break;
+		try (SocketChannel inChannel = socket.getChannel();
+				RandomAccessFile outputStream = new RandomAccessFile(file, "rw");
+				FileChannel outChannel = outputStream.getChannel();) {
 
-			//Write to file
-			fileOutput.write(inBuffer, 0, bytesRead);
-			bytesTransfered += bytesRead;
+			acknowledge = new SendFileTransferAcknowlegement(inChannel, outChannel);
+			fileTransferStatus.start();
 
-			//Send back an acknowledgement of how many bytes we have got so far.
-			//Convert bytesTransfered to an "unsigned, 4 byte integer in network byte order", per DCC specification
-			outBuffer[0] = (byte) ((bytesTransfered >> 24) & 0xff);
-			outBuffer[1] = (byte) ((bytesTransfered >> 16) & 0xff);
-			outBuffer[2] = (byte) ((bytesTransfered >> 8) & 0xff);
-			outBuffer[3] = (byte) (bytesTransfered & 0xff);
-			socketOutput.write(outBuffer);
-			onAfterSend();
+			outChannel.position(fileTransferStatus.startPosition);
+			while (outChannel.position() < fileTransferStatus.fileSize) {
+				if (dccHandler.shuttingDown || fileTransferStatus.dccState == DccState.SHUTDOWN) {
+					break;
+				}
 
-			if (remainingBytes - bufferSize == 0)
-				//Were done
-				break;
+				if (bytesToRead > (fileTransferStatus.fileSize - outChannel.position())) {
+					bytesToRead = (fileTransferStatus.fileSize - outChannel.position());
+				}
+				outChannel.position(
+						outChannel.position() + outChannel.transferFrom(inChannel, outChannel.position(), bytesToRead));
+
+				fileTransferStatus.bytesTransfered = outChannel.position();
+				fileTransferStatus.bytesAcknowledged = acknowledge.call();
+			}
+
+			fileTransferStatus.dccState = DccState.WAITING;
+			log.info("Receive file transfer of file {} entered {} state for server to close the socket", file.getName(),
+					fileTransferStatus.dccState);
+			try {
+				fileTransferStatus.join();
+
+				fileTransferStatus.dccState = DccState.DONE;
+
+			} catch (InterruptedException e) {
+				fileTransferStatus.dccState = DccState.ERROR;
+				log.error(
+						"Receive file transfer of file {} failed to clean up gracefully! Please report this error with logs.",
+						file.getName(), e);
+			}
+		} catch (IOException e) {
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_CANCELLED, user, "User closed socket",
+					e);
+		} finally {
+
+			log.info("Receive file transfer of file {} ended with state {}", file.getName(),
+					fileTransferStatus.dccState);
+
 		}
 	}
 }

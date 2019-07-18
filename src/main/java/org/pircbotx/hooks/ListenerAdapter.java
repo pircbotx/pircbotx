@@ -61,6 +61,8 @@ public abstract class ListenerAdapter implements Listener {
 			onIncomingChatRequest((IncomingChatRequestEvent) event);
 		else if (event instanceof IncomingFileTransferEvent)
 			onIncomingFileTransfer((IncomingFileTransferEvent) event);
+		else if (event instanceof FileTransferCompleteEvent)
+			onFileTransferComplete((FileTransferCompleteEvent) event);
 		else if (event instanceof InviteEvent)
 			onInvite((InviteEvent) event);
 		else if (event instanceof JoinEvent)
@@ -212,6 +214,9 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
+	}
+
+	public void onFileTransferComplete(FileTransferCompleteEvent event) throws Exception {
 	}
 
 	public void onInvite(InviteEvent event) throws Exception {

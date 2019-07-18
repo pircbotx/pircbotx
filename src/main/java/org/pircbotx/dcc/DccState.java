@@ -23,5 +23,5 @@ package org.pircbotx.dcc;
  * @author Leon Blakey
  */
 public enum DccState {
-	INIT, RUNNING, DONE;
+	INIT, CONNECTING, RUNNING, WAITING, DONE, SHUTDOWN, ERROR;
 }

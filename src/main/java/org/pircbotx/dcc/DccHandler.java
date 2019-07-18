@@ -27,6 +27,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,8 +37,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.pircbotx.Configuration;
@@ -45,6 +51,7 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.Utils;
 import org.pircbotx.exception.DccException;
+import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 import org.pircbotx.hooks.events.IncomingChatRequestEvent;
 import org.pircbotx.hooks.events.IncomingFileTransferEvent;
 import static com.google.common.base.Preconditions.*;
@@ -57,6 +64,7 @@ import org.pircbotx.UserHostmask;
 /**
  * Handler of all DCC requests
  * <p>
+ * 
  * @author Leon Blakey
  */
 @RequiredArgsConstructor
@@ -70,6 +78,9 @@ public class DccHandler implements Closeable {
 	protected final List<PendingSendFileTransfer> pendingSendTransfers = new ArrayList<PendingSendFileTransfer>();
 	protected final Map<PendingSendFileTransferPassive, CountDownLatch> pendingSendPassiveTransfers = new HashMap<PendingSendFileTransferPassive, CountDownLatch>();
 	protected final Map<PendingSendChatPassive, CountDownLatch> pendingSendPassiveChat = new HashMap<PendingSendChatPassive, CountDownLatch>();
+	protected final ExecutorService activeReceiveTransfers = Executors.newCachedThreadPool();
+	protected final ExecutorService activeSendTransfers = Executors.newCachedThreadPool();
+
 	protected boolean shuttingDown = false;
 
 	public boolean processDcc(UserHostmask userHostmask, final User user, String request) throws IOException {
@@ -130,11 +141,11 @@ public class DccHandler implements Closeable {
 						PendingSendFileTransferPassive transfer = curEntry.getKey();
 						if (transfer.getUser() == user && transfer.getFilename().equals(filename)
 								&& transfer.getTransferToken().equals(transferToken)) {
-							transfer.setStartPosition(position);
+							transfer.setPosition(position);
 							log.debug("Passive send file transfer of file {} to user {} set to position {}",
 									transfer.getFilename(), transfer.getUser().getNick(), position);
 							bot.sendDCC().filePassiveResumeAccept(transfer.getUser().getNick(), transfer.getFilename(),
-									transfer.getStartPosition(), transfer.getTransferToken());
+									transfer.getPosition(), transfer.getTransferToken());
 							return true;
 						}
 					}
@@ -151,13 +162,20 @@ public class DccHandler implements Closeable {
 									transfer.getFilename(), transfer.getUser().getNick(), position);
 							bot.sendDCC().fileResumeAccept(transfer.getUser().getNick(), transfer.getFilename(),
 									transfer.getPort(), transfer.getPosition());
+							pendingItr.remove();
 							return true;
 						}
 					}
 				}
 
-			//Haven't returned yet, received an unknown transfer
-			throw new DccException(DccException.Reason.UNKNOWN_FILE_TRANSFER_RESUME, user, "Transfer line: " + request);
+			// Haven't returned yet, received an unknown transfer
+			FileTransferStatus fileTransferStatus = new FileTransferStatus(0, position);
+			fileTransferStatus.exception = new DccException(DccException.Reason.UNKNOWN_FILE_TRANSFER_RESUME, user,
+					"Transfer line: " + request);
+			bot.getConfiguration().getListenerManager().onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus,
+					user, filename, null, port, fileTransferStatus.fileSize, false, true));
+
+			return true;
 		} else if (type.equals("ACCEPT")) {
 			//Someone is acknowledging a transfer resume
 			//Example (normal):  DCC ACCEPT <filename> <port> <position>
@@ -183,7 +201,8 @@ public class DccHandler implements Closeable {
 					Map.Entry<PendingRecieveFileTransfer, CountDownLatch> curEntry = pendingItr.next();
 					IncomingFileTransferEvent transferEvent = curEntry.getKey().getEvent();
 					if (transferEvent.getUser() == user && transferEvent.getRawFilename().equals(filename)
-							&& transferEvent.getPort() == port && transferEvent.getToken().equals(transferToken)) {
+							&& transferEvent.getPort() == port
+							&& (transferEvent.getToken() == null || transferEvent.getToken().equals(transferToken))) {
 						curEntry.getKey().setPosition(position);
 						log.debug("Receive file transfer of file {} to user {} set to position {}",
 								transferEvent.getRawFilename(), transferEvent.getUser().getNick(), position);
@@ -232,6 +251,7 @@ public class DccHandler implements Closeable {
 	/**
 	 * Accept chat request, blocking until the connection is active
 	 * <p>
+	 * 
 	 * @param event The chat request event
 	 * @return An active {@link ReceiveChat}
 	 * @throws IOException If an error occurred during connection
@@ -267,81 +287,113 @@ public class DccHandler implements Closeable {
 	}
 
 	/**
-	 * Accept file transfer at position 0, blocking until the connection is
-	 * active
+	 * Accept file transfer at position 0, blocking until the connection is active
 	 * <p>
-	 * @param event The file request event
+	 * 
+	 * @param event       The file request event
 	 * @param destination The destination file
 	 * @return An active {@link ReceiveFileTransfer}
 	 * @throws IOException If an error occurred during connection
 	 */
-	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination) throws IOException {
+	public ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination)
+			throws IOException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
-		return acceptFileTransfer(event, destination, 0);
+
+		CountDownLatch countdown = new CountDownLatch(1);
+		PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(event, event.getSafeFilename(),
+				event.getFilesize());
+		synchronized (pendingReceiveTransfers) {
+			pendingReceiveTransfers.put(pendingTransfer, countdown);
+		}
+
+		return acceptFileTransfer(pendingTransfer, destination);
 	}
 
 	/**
 	 * Accept file transfer resuming at specified position, blocking until the
 	 * connection is active
 	 * <p>
-	 * @param event The file request event
-	 * @param destination The destination file
+	 * 
+	 * @param event         The file request event
+	 * @param destination   The destination file
 	 * @param startPosition The position to start the transfer at
 	 * @return An active {@link ReceiveFileTransfer}
-	 * @throws IOException If an error occurred during connection
+	 * @throws IOException          If an error occurred during connection
 	 * @throws InterruptedException If this is interrupted while waiting for a
-	 * connection
-	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 *                              connection
+	 * @throws DccException         If a timeout is reached or the bot is shutting
+	 *                              down
 	 */
-	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException, InterruptedException, DccException {
+	public ReceiveFileTransfer acceptFileTransferResume(IncomingFileTransferEvent event, File destination,
+			long startPosition) throws IOException, InterruptedException, DccException {
 		checkNotNull(event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
 		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
 
-		//Add to pending map so we can be notified when the user has accepted
+		// Add to pending map so we can be notified when the user has accepted
 		CountDownLatch countdown = new CountDownLatch(1);
-		PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(event);
+		PendingRecieveFileTransfer pendingTransfer = new PendingRecieveFileTransfer(event, event.getSafeFilename(),
+				event.getFilesize());
 		synchronized (pendingReceiveTransfers) {
 			pendingReceiveTransfers.put(pendingTransfer, countdown);
 		}
 
-		//Tell user were going to resume transfering
-		if (event.isPassive())
-			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition, event.getToken());
-		else
-			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(), startPosition);
+		// Tell user were going to resume transfering
+		if (event.isPassive()) {
+			bot.sendDCC().filePassiveResumeRequest(event.getUser().getNick(), event.getRawFilename(), startPosition,
+					event.getToken());
+		} else {
+			bot.sendDCC().fileResumeRequest(event.getUser().getNick(), event.getRawFilename(), event.getPort(),
+					startPosition);
+		}
 
-		//Wait for response
-		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS))
-			throw new DccException(DccException.Reason.FILE_TRANSFER_RESUME_TIMEOUT, event.getUser(), "Event: " + event);
-		if (shuttingDown)
-			throw new DccException(DccException.Reason.FILE_TRANSFER_RESUME_CANCELLED, event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
+		// Wait for response
+		if (!countdown.await(bot.getConfiguration().getDccResumeAcceptTimeout(), TimeUnit.MILLISECONDS)) {
+			FileTransferStatus fileTransferStatus = new FileTransferStatus(0, startPosition);
+			fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT,
+					event.getUser(), "Event: " + event);
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, event.getUser(),
+							event.getSafeFilename(), null, event.getPort(), event.getFilesize(), event.isPassive(),
+							false));
+			return null;
+		}
+		if (shuttingDown) {
+			FileTransferStatus fileTransferStatus = new FileTransferStatus(0, startPosition);
+			fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED,
+					event.getUser(), "Transfer " + event + " canceled due to bot shutting down");
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, event.getUser(),
+							event.getSafeFilename(), null, event.getPort(), event.getFilesize(), event.isPassive(),
+							false));
+			return null;
+		}
 
-		//User has accepted resume, begin transfer
-		if (pendingTransfer.getPosition() != startPosition)
-			log.warn("User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
+		// User has accepted resume, begin transfer
+		if (pendingTransfer.getPosition() != startPosition) {
+			log.warn(
+					"User is resuming transfer at position {} instead of requested position {} for transfer {}. Defaulting to users position",
 					pendingTransfer.getPosition(), startPosition, event);
-		return acceptFileTransfer(event, destination, pendingTransfer.getPosition());
+		}
+
+		return acceptFileTransfer(pendingTransfer, destination);
 	}
 
-	protected ReceiveFileTransfer acceptFileTransfer(IncomingFileTransferEvent event, File destination, long startPosition) throws IOException {
-		checkNotNull(event, "Event cannot be null");
+	protected ReceiveFileTransfer acceptFileTransfer(PendingRecieveFileTransfer pendingTransfer, File destination)
+			throws IOException {
+		checkNotNull(pendingTransfer.event, "Event cannot be null");
 		checkNotNull(destination, "Destination file cannot be null");
-		checkArgument(startPosition >= 0, "Start position %s must be positive", startPosition);
+		checkArgument(pendingTransfer.position >= 0, "Start position %s must be positive", pendingTransfer.position);
 
-		if (event.isPassive()) {
-			ServerSocket serverSocket = createServerSocket(event.getUser());
-			bot.sendDCC().filePassiveAccept(event.getUser().getNick(), event.getRawFilename(), getRealDccPublicAddress(serverSocket), serverSocket.getLocalPort(), event.getFilesize(), event.getToken());
-			Socket userSocket = serverSocket.accept();
+		ReceiveFileTransfer receiveFileTransfer = bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot,
+				this, pendingTransfer, destination);
 
-			//User is connected, begin transfer
-			serverSocket.close();
-			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
-		} else {
-			Socket userSocket = new Socket(event.getAddress(), event.getPort(), getRealDccLocalAddress(event.getAddress()), 0);
-			return bot.getConfiguration().getBotFactory().createReceiveFileTransfer(bot, userSocket, event.getUser(), destination, startPosition, event.getFilesize());
-		}
+		activeSendTransfers.submit(() -> {
+			receiveFileTransfer.transfer();
+		});
+
+		return receiveFileTransfer;
 	}
 
 	/**
@@ -414,11 +466,13 @@ public class DccHandler implements Closeable {
 	/**
 	 * Send file using {@link Configuration#isDccPassiveRequest() }
 	 * <p>
-	 * @param file The file to send
+	 * 
+	 * @param file     The file to send
 	 * @param receiver The user to send the file to
 	 * @return An active {@link SendFileTransfer}
-	 * @throws IOException If an error occurred during connecting
-	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 * @throws IOException          If an error occurred during connecting
+	 * @throws DccException         If a timeout is reached or the bot is shutting
+	 *                              down
 	 * @throws InterruptedException If passive connection was interrupted
 	 */
 	public SendFileTransfer sendFile(File file, User receiver) throws IOException, DccException, InterruptedException {
@@ -428,20 +482,25 @@ public class DccHandler implements Closeable {
 	/**
 	 * Send file using {@link Configuration#isDccPassiveRequest() }
 	 * <p>
-	 * @param file The file to send
+	 * 
+	 * @param file     The file to send
 	 * @param receiver The user to send the file to
-	 * @param passive Whether to connect passively
+	 * @param passive  Whether to connect passively
 	 * @return An active {@link SendFileTransfer}
-	 * @throws IOException If an error occurred during connecting
-	 * @throws DccException If a timeout is reached or the bot is shutting down
+	 * @throws IOException          If an error occurred during connecting
+	 * @throws DccException         If a timeout is reached or the bot is shutting
+	 *                              down
 	 * @throws InterruptedException If passive connection was interrupted
 	 */
-	public SendFileTransfer sendFile(File file, User receiver, boolean passive) throws IOException, DccException, InterruptedException {
+	public SendFileTransfer sendFile(File file, User receiver, boolean passive)
+			throws IOException, DccException, InterruptedException {
 		checkNotNull(file, "Source file cannot be null");
 		checkNotNull(receiver, "Receiver cannot be null");
 		checkArgument(file.exists(), "File must exist");
 
-		//Make the filename safe to send
+		SendFileTransfer sendFileTransfer;
+
+		// Make the filename safe to send
 		String safeFilename = file.getName();
 		if (safeFilename.contains(" "))
 			if (bot.getConfiguration().isDccFilenameQuotes())
@@ -450,50 +509,64 @@ public class DccHandler implements Closeable {
 				safeFilename = safeFilename.replace(" ", "_");
 
 		if (passive) {
+
 			String transferToken = Integer.toString(TOKEN_RANDOM.nextInt(TOKEN_RANDOM_MAX));
 			CountDownLatch countdown = new CountDownLatch(1);
-			PendingSendFileTransferPassive pendingPassiveTransfer = new PendingSendFileTransferPassive(receiver, safeFilename, transferToken);
-			synchronized (pendingSendTransfers) {
+			PendingSendFileTransferPassive pendingPassiveTransfer = new PendingSendFileTransferPassive(receiver,
+					safeFilename, file.length(), transferToken);
+			synchronized (pendingSendPassiveTransfers) {
 				pendingSendPassiveTransfers.put(pendingPassiveTransfer, countdown);
 			}
 			InetAddress publicAddress = getRealDccPublicAddress();
-			bot.sendDCC().filePassiveRequest(receiver.getNick(), safeFilename, publicAddress, file.length(), transferToken);
+			bot.sendDCC().filePassiveRequest(receiver.getNick(), safeFilename, publicAddress, file.length(),
+					transferToken);
 
-			//Wait for user to acknowledge
-			log.debug("Sent DCC send file request to user {} ({}ms timeout) for passive connect info using public address {} for file {}", 
-					receiver.getNick(), 
-					bot.getConfiguration().getDccAcceptTimeout(),
-					publicAddress, 
+			// Wait for user to acknowledge
+			log.debug(
+					"Sent DCC send file request to user {} ({}ms timeout) for passive connect info using public address {} for file {}",
+					receiver.getNick(), bot.getConfiguration().getDccAcceptTimeout(), publicAddress,
 					file.getAbsolutePath());
-			if (!countdown.await(bot.getConfiguration().getDccAcceptTimeout(), TimeUnit.MILLISECONDS))
-				throw new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT, receiver, "File: " + file.getAbsolutePath());
-			if (shuttingDown)
-				throw new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED, receiver, "Transfer of file " + file.getAbsolutePath()
-						+ " canceled due to bot shutdown");
-			Socket transferSocket = new Socket(pendingPassiveTransfer.getReceiverAddress(), pendingPassiveTransfer.getReceiverPort());
-			return bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, transferSocket, receiver, file, pendingPassiveTransfer.getStartPosition());
+			if (!countdown.await(bot.getConfiguration().getDccAcceptTimeout(), TimeUnit.MILLISECONDS)) {
+				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
+				fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_TIMEOUT, receiver,
+						"File: " + file.getAbsolutePath());
+				bot.getConfiguration().getListenerManager().onEvent(new FileTransferCompleteEvent(bot,
+						fileTransferStatus, receiver, safeFilename, publicAddress, 0, file.length(), passive, true));
+				return null;
+			}
+			if (shuttingDown) {
+				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
+				fileTransferStatus.exception = new DccException(DccException.Reason.FILE_TRANSFER_CANCELLED, receiver,
+						"Transfer of file " + file.getAbsolutePath() + " canceled due to bot shutdown");
+				bot.getConfiguration().getListenerManager().onEvent(new FileTransferCompleteEvent(bot,
+						fileTransferStatus, receiver, safeFilename, publicAddress, 0, file.length(), passive, true));
+				return null;
+			}
+
+			sendFileTransfer = bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, this,
+					pendingPassiveTransfer, file);
+
+			activeSendTransfers.submit(() -> {
+				sendFileTransfer.transfer();
+			});
+
 		} else {
-			//Try to get the user to connect to us
-			final ServerSocket serverSocket = createServerSocket(receiver);
-			PendingSendFileTransfer pendingSendFileTransfer = new PendingSendFileTransfer(receiver, safeFilename, serverSocket.getLocalPort());
+			// Try to get the user to connect to us
+			PendingSendFileTransfer pendingSendFileTransfer = new PendingSendFileTransfer(receiver, safeFilename,
+					file.length(), createServerSocket(receiver));
 			synchronized (pendingSendTransfers) {
 				pendingSendTransfers.add(pendingSendFileTransfer);
 			}
-			InetAddress publicAddress = getRealDccPublicAddress(serverSocket);
-			bot.sendDCC().fileRequest(receiver.getNick(), safeFilename, publicAddress, serverSocket.getLocalPort(), file.length());
 
-			//Wait for the user to connect
-			log.debug("Sent DCC send file request to user {} ({}ms timeout) to connect on public address {}, local address {}, port {} for file {}", 
-					receiver.getNick(), 
-					bot.getConfiguration().getDccAcceptTimeout(),
-					publicAddress, 
-					serverSocket.getLocalSocketAddress(), 
-					serverSocket.getLocalPort(),
-					file.getAbsolutePath());
-			Socket userSocket = serverSocket.accept();
-			serverSocket.close();
-			return bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, userSocket, receiver, file, pendingSendFileTransfer.getPosition());
+			sendFileTransfer = bot.getConfiguration().getBotFactory().createSendFileTransfer(bot, this,
+					pendingSendFileTransfer, file);
+
+			activeSendTransfers.submit(() -> {
+				sendFileTransfer.transfer();
+			});
 		}
+
+		return sendFileTransfer;
 	}
 
 	/**
@@ -512,7 +585,7 @@ public class DccHandler implements Closeable {
 		address = (address != null && destAddress.getClass().equals(address.getClass())) ? address : null;
 		return address;
 	}
-	
+
 	public InetAddress getRealDccLocalAddress() {
 		InetAddress address = bot.getConfiguration().getDccLocalAddress();
 		address = (address != null) ? address : bot.getConfiguration().getLocalAddress();
@@ -561,12 +634,89 @@ public class DccHandler implements Closeable {
 					// Do nothing; go round and try another port.
 					log.debug("Failed to create server socket on port " + currentPort + ", trying next one", e);
 				}
-			if (sc == null)
+			if (sc == null) {
 				// No ports could be used.
-				throw new DccException(DccException.Reason.DCC_PORTS_IN_USE, user, "Ports " + dccPorts + " are in use.");
+				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
+				fileTransferStatus.exception = new DccException(DccException.Reason.DCC_PORTS_IN_USE, user,
+						"Ports " + dccPorts + " are in use.");
+				bot.getConfiguration().getListenerManager().onEvent(
+						new FileTransferCompleteEvent(bot, fileTransferStatus, user, null, address, 0, 0, false, true));
+				return null;
+			}
 		}
 		sc.socket().setSoTimeout(bot.getConfiguration().getDccAcceptTimeout());
 		return sc.socket();
+	}
+
+	/**
+	 * Create the socket connection to the user
+	 *
+	 * @throws IOException
+	 *
+	 */
+	public Socket establishSocketConnection(PendingFileTransfer pendingFileTransfer) throws IOException {
+
+		if (pendingFileTransfer instanceof PendingRecieveFileTransfer) {
+
+			PendingRecieveFileTransfer fileTransfer = (PendingRecieveFileTransfer) pendingFileTransfer;
+
+			if (fileTransfer.event.isPassive()) {
+
+				ServerSocket serverSocket = createServerSocket(fileTransfer.event.getUser());
+
+				bot.sendDCC().filePassiveAccept(fileTransfer.event.getUser().getNick(),
+						fileTransfer.event.getRawFilename(), getRealDccPublicAddress(serverSocket),
+						serverSocket.getLocalPort(), fileTransfer.event.getFilesize(), fileTransfer.event.getToken());
+
+				Socket socket = serverSocket.accept();
+				serverSocket.close();
+
+				return socket;
+
+			} else {
+				SocketChannel socketChannel = SocketChannel.open();
+				socketChannel.bind(new InetSocketAddress(getRealDccLocalAddress(fileTransfer.event.getAddress()), 0));
+				socketChannel
+						.connect(new InetSocketAddress(fileTransfer.event.getAddress(), fileTransfer.event.getPort()));
+
+				return socketChannel.socket();
+
+			}
+
+		} else if (pendingFileTransfer instanceof PendingSendFileTransfer) {
+
+			PendingSendFileTransfer fileTransfer = (PendingSendFileTransfer) pendingFileTransfer;
+
+			InetAddress publicAddress = getRealDccPublicAddress(fileTransfer.serverSocket);
+
+			// Wait for the user to connect
+			log.debug(
+					"Sent DCC send file request to user {} ({}ms timeout) to connect on public address {}, local address {}, port {} for file {}",
+					pendingFileTransfer.getUser().getNick(), bot.getConfiguration().getDccAcceptTimeout(),
+					publicAddress, fileTransfer.serverSocket.getLocalSocketAddress(), fileTransfer.serverSocket.getLocalPort(),
+					fileTransfer.filename);
+
+			bot.sendDCC().fileRequest(fileTransfer.user.getNick(), fileTransfer.filename, publicAddress,
+					fileTransfer.serverSocket.getLocalPort(), fileTransfer.fileSize);
+
+			Socket socket = fileTransfer.serverSocket.accept();
+			fileTransfer.serverSocket.close();
+
+			return socket;
+
+		} else if (pendingFileTransfer instanceof PendingSendFileTransferPassive) {
+
+			PendingSendFileTransferPassive fileTransfer = (PendingSendFileTransferPassive) pendingFileTransfer;
+
+			SocketChannel socketChannel = SocketChannel.open();
+			socketChannel.bind(new InetSocketAddress(getRealDccLocalAddress(fileTransfer.receiverAddress), 0));
+			socketChannel.connect(new InetSocketAddress(fileTransfer.receiverAddress, fileTransfer.receiverPort));
+
+			return socketChannel.socket();
+
+		} else {
+			throw new IOException("Failed to determine type of dcc transfer method");
+		}
 	}
 
 	protected static List<String> tokenizeDccRequest(String request) {
@@ -613,6 +763,16 @@ public class DccHandler implements Closeable {
 			for (CountDownLatch curCountdown : pendingSendPassiveTransfers.values())
 				curCountdown.countDown();
 		}
+		try {
+			log.info("Terminating active DCC Receive transfers");
+			activeReceiveTransfers.shutdown();
+			activeReceiveTransfers.awaitTermination(10, TimeUnit.SECONDS);
+			log.info("Terminating active DCC Send transfers");
+			activeSendTransfers.shutdown();
+			activeSendTransfers.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			log.error("Failed to gracefully close Send and Receive Transfers!", e);
+		}
 	}
 
 	public static String addressToInteger(InetAddress address) {
@@ -652,27 +812,58 @@ public class DccHandler implements Closeable {
 	}
 
 	@Data
-	protected static class PendingRecieveFileTransfer {
-		protected final IncomingFileTransferEvent event;
-		protected long position;
-	}
-
-	@Data
-	protected static class PendingSendFileTransfer {
+	public static class PendingFileTransfer {
 		protected final User user;
 		protected final String filename;
-		protected final int port;
+		protected final long fileSize;
+		protected final Boolean passive;
+		protected Socket socket;
+		protected ServerSocket serverSocket;
 		protected long position = 0;
 	}
 
 	@Data
-	protected static class PendingSendFileTransferPassive {
-		protected final User user;
+	@EqualsAndHashCode(callSuper = false)
+	protected static class PendingRecieveFileTransfer extends PendingFileTransfer {
+		protected final IncomingFileTransferEvent event;
+
+		@Builder
+		public PendingRecieveFileTransfer(IncomingFileTransferEvent event, String filename, long fileSize) {
+			super(event.getUser(), filename, fileSize, event.isPassive());
+			this.event = event;
+		}
+	}
+
+	@Data
+	@EqualsAndHashCode(callSuper = false)
+	protected static class PendingSendFileTransfer extends PendingFileTransfer {
+
+		protected final int port;
+
+		@Builder
+		public PendingSendFileTransfer(User user, String filename, long fileSize, ServerSocket serverSocket) {
+			super(user, filename, fileSize, false);
+			this.port = serverSocket.getLocalPort();
+			this.serverSocket = serverSocket;
+		}
+
+	}
+
+	@Data
+	@EqualsAndHashCode(callSuper = false)
+	protected static class PendingSendFileTransferPassive extends PendingFileTransfer {
 		protected final String filename;
 		protected final String transferToken;
-		protected long startPosition = 0;
 		protected InetAddress receiverAddress;
 		protected int receiverPort;
+
+		@Builder
+		public PendingSendFileTransferPassive(User user, String filename, long fileSize, String transferToken) {
+			super(user, filename, fileSize, true);
+			this.filename = filename;
+			this.transferToken = transferToken;
+		}
+
 	}
 
 	@Data

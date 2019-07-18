@@ -20,10 +20,18 @@ package org.pircbotx.dcc;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+
 import lombok.Getter;
 import lombok.NonNull;
+
 import org.pircbotx.Configuration;
+import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
+import org.pircbotx.exception.DccException;
+import org.pircbotx.exception.DccException.Reason;
+import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 
 /**
  * A general active DCC file transfer
@@ -32,9 +40,13 @@ import org.pircbotx.User;
  */
 public abstract class FileTransfer {
 	@NonNull
+	protected final PircBotX bot;
+	@NonNull
 	protected final Configuration configuration;
 	@NonNull
-	protected final Socket socket;
+	protected final DccHandler dccHandler;
+	@NonNull
+	protected Socket socket;
 	@NonNull
 	@Getter
 	protected final User user;
@@ -42,25 +54,28 @@ public abstract class FileTransfer {
 	@Getter
 	protected final File file;
 	@Getter
-	protected final long startPosition;
-	@Getter
-	protected final long fileSize;
-	@Getter
-	protected long bytesTransfered;
-	@Getter
-	protected DccState state = DccState.INIT;
+	protected FileTransferStatus fileTransferStatus;
+
+	protected PendingFileTransfer pendingFileTransfer;
+
 	protected final Object stateLock = new Object();
 
-	public FileTransfer(Configuration configuration, Socket socket, User user, File file, long startPosition, long fileSize) {
-		this.configuration = configuration;
-		this.socket = socket;
-		this.user = user;
+	public FileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer, File file) {
+		this.bot = bot;
+		this.configuration = bot.getConfiguration();
+		this.pendingFileTransfer = pendingFileTransfer;
+		this.user = pendingFileTransfer.user;
 		this.file = file;
-		this.startPosition = startPosition;
-		this.fileSize = fileSize;
+		this.dccHandler = dccHandler;
+		fileTransferStatus = new FileTransferStatus(pendingFileTransfer.fileSize, pendingFileTransfer.position);
+	}
 
-		//Clients use bytesTransferred to see where we are in the file
-		this.bytesTransfered = startPosition;
+	private void connectSocket() throws IOException {
+		socket = dccHandler.establishSocketConnection(pendingFileTransfer);
+	}
+
+	public void shutdown() {
+		fileTransferStatus.dccState = DccState.SHUTDOWN;
 	}
 
 	/**
@@ -68,40 +83,44 @@ public abstract class FileTransfer {
 	 *
 	 * @throws IOException If an error occurred during transfer
 	 */
-	public void transfer() throws IOException {
-		//Prevent being called multiple times
-		if (state != DccState.INIT)
+	public void transfer() {
+
+		// Prevent being called multiple times
+		if (fileTransferStatus.dccState != DccState.INIT) {
 			synchronized (stateLock) {
-				if (state != DccState.INIT)
-					throw new RuntimeException("Cannot receive file twice (Current state: " + state + ")");
+				if (fileTransferStatus.dccState != DccState.INIT) {
+					throw new RuntimeException(
+							"Cannot receive file twice (Current state: " + fileTransferStatus.dccState + ")");
+				}
 			}
-		state = DccState.RUNNING;
+		}
 
-		transferFile();
+		fileTransferStatus.dccState = DccState.CONNECTING;
 
-		state = DccState.DONE;
+		try {
+			connectSocket();
+
+			fileTransferStatus.dccState = DccState.RUNNING;
+
+			transferFile();
+
+		} catch (SocketTimeoutException e) {
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_TIMEOUT, user, "Socket connection timeout", e);
+		} catch (IOException e) {
+			fileTransferStatus.dccState = DccState.ERROR;
+			fileTransferStatus.exception = new DccException(Reason.FILE_TRANSFER_TIMEOUT, user, "General IOException", e);
+		} finally {
+
+			bot.getConfiguration().getListenerManager()
+					.onEvent(new FileTransferCompleteEvent(bot, fileTransferStatus, user, this.getFile().getName(),
+							(socket != null) ? socket.getInetAddress() : null,
+							(socket != null) ? socket.getLocalPort() : 0, fileTransferStatus.fileSize,
+							pendingFileTransfer.passive, true));
+		}
+
 	}
 
-	protected abstract void transferFile() throws IOException;
+	protected abstract void transferFile();
 
-	/**
-	 * Callback at end of read/write loop:
-	 * <p>
-	 * Receive: Socket read -> file write -> socket write (bytes transferred) ->
-	 * callback -> repeat
-	 * <p>
-	 * Send: File read -> socket write -> socket read (bytes transferred) ->
-	 * callback -> repeat
-	 */
-	protected void onAfterSend() {
-	}
-
-	/**
-	 * Is the transfer finished?
-	 *
-	 * @return True if its finished
-	 */
-	public boolean isFinished() {
-		return state == DccState.DONE;
-	}
 }
