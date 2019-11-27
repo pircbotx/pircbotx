@@ -312,7 +312,7 @@ public final class Colors {
 		for (int i = 0; i < length; i++) {
 			char ch = line.charAt(i);
 			//Filter characters
-			if (ch != '\u000f' && ch != '\u0002' && ch != '\u001f' && ch != '\u0016')
+			if (ch != '\u000f' && ch != '\u0002' && ch != '\u001f' && ch != '\u0016' && ch != '\u001d')
 				buffer.append(ch);
 		}
 		return buffer.toString();
