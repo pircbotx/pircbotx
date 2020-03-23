@@ -156,7 +156,7 @@ public class InputParserTest {
 		assertEquals(ievent.getChannel(), "#aChannel", "InviteEvent channel is wrong");
 
 		//Make sure the event doesn't create a user or a channel
-		assertFalse(dao.channelExists("#aChannel"), "InviteEvent created channel, shouldn't have");
+		assertFalse(dao.containsChannel("#aChannel"), "InviteEvent created channel, shouldn't have");
 		assertFalse(dao.containsUser(sourceUser), "InviteEvent created user, shouldn't have");
 	}
 
@@ -687,9 +687,9 @@ public class InputParserTest {
 		inputParser.handleLine(":irc.someserver.net 315 PircBotXUser #aChannel :End of /WHO list.");
 
 		//Make sure all information was created correctly
-		assertTrue(dao.channelExists("#aChannel"), "WHO response didn't create channel");
-		assertTrue(dao.userExists("AUser"), "WHO response didn't create user AUser");
-		assertTrue(dao.userExists("OtherUser"), "WHO response didn't create user OtherUser");
+		assertTrue(dao.containsChannel("#aChannel"), "WHO response didn't create channel");
+		assertTrue(dao.containsUser("AUser"), "WHO response didn't create user AUser");
+		assertTrue(dao.containsUser("OtherUser"), "WHO response didn't create user OtherUser");
 		Channel aChannel = dao.getChannel("#aChannel");
 		User aUser = dao.getUser("AUser");
 		User otherUser = dao.getUser("OtherUser");
@@ -733,14 +733,14 @@ public class InputParserTest {
 
 	@Test(description = "Veryfy that we don't falsely registers all WHO responses as valid channels")
 	public void whoTestFalseChannels() throws IOException, IrcException {
-		assertFalse(dao.channelExists("#randomChannel"), "Intial test to ensure channel doesn't exist");
+		assertFalse(dao.containsChannel("#randomChannel"), "Intial test to ensure channel doesn't exist");
 
 		//Sending out a "WHO AUser" command
 		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #randomChannel ~ALogin 8dce28.83b021.3a4fde.2fed84 irc.someserver.net AUser H :0 " + aString);
 		inputParser.handleLine(":irc.someserver.net 315 PircBotXUser AUser :End of /WHO list.");
 
-		assertFalse(dao.channelExists("#randomChannel"), "WHO response for a user may not result in unrelated channel creation");
-		assertFalse(dao.channelExists("AUser"), "WHO response for a user may not result in channel creation");
+		assertFalse(dao.containsChannel("#randomChannel"), "WHO response for a user may not result in unrelated channel creation");
+		assertFalse(dao.containsChannel("AUser"), "WHO response for a user may not result in channel creation");
 	}
 
 	@Test(dependsOnMethods = "joinTest", description = "Verify KickEvent from some user kicking another user")
@@ -761,7 +761,7 @@ public class InputParserTest {
 		//Make sure we've sufficently forgotten about the user
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that was kicked an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that was kicked with voice");
-		assertFalse(dao.userExists("OtherUser"), "Bot still considers user to exist after kick");
+		assertFalse(dao.containsUser("OtherUser"), "Bot still considers user to exist after kick");
 	}
 
 	@Test(description = "Verify QuitEvent from user that just joined quitting")
@@ -795,7 +795,7 @@ public class InputParserTest {
 		//Make sure user is gone
 		assertFalse(aChannel.isOp(otherUser), "Channel still considers user that quit an op");
 		assertFalse(aChannel.hasVoice(otherUser), "Channel still considers user that quit with voice");
-		assertFalse(dao.userExists("OtherUser"), "Bot still considers user to exist after quit");
+		assertFalse(dao.containsUser("OtherUser"), "Bot still considers user to exist after quit");
 		assertTrue(otherUser.getChannels().isEmpty(), "User still connected to other channels after quit");
 		assertFalse(aChannel.getUsers().contains(otherUser), "Channel still associated with user that quit");
 	}

@@ -75,7 +75,7 @@ public class UserChannelDaoTest {
 	public void channelExistsTest() {
 		dao.createChannel("#aChannel");
 		//Make sure it exists
-		assertTrue(dao.channelExists("#aChannel"));
+		assertTrue(dao.containsChannel("#aChannel"));
 	}
 
 	@Test
