@@ -21,17 +21,15 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.Getter;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.pircbotx.PircBotX;
@@ -48,7 +46,7 @@ public class ThreadedListenerManager extends AbstractListenerManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
 	protected ExecutorService pool;
-	protected Set<Listener> listeners = Collections.synchronizedSet(new HashSet<Listener>());
+	protected Set<Listener> listeners = ConcurrentHashMap.newKeySet();
 	protected final Multimap<PircBotX, ManagedFutureTask> runningListeners = LinkedListMultimap.create();
 
 	/**
@@ -100,7 +98,6 @@ public class ThreadedListenerManager extends AbstractListenerManager {
 	}
 
 	@Override
-	@Synchronized("listeners")
 	public void onEvent(Event event) {
 		super.onEvent(event);
 		//For each Listener, add a new Runnable
