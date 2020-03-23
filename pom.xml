@@ -79,8 +79,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lombok.version>1.16.18</lombok.version>
-		<guava.version>27.0-jre</guava.version>
+		<lombok.version>1.18.12</lombok.version>
+		<guava.version>28.2-jre</guava.version>
 		<src.dir>src/main/java</src.dir>
 		<snapshot.version />
 	</properties>
@@ -106,7 +106,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
+			<version>3.9</version>
 		</dependency>
 		<!-- Slf4j for logging -->
 		<dependency>
