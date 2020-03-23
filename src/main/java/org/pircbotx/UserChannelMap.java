@@ -21,6 +21,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+
 import java.util.Map;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +44,9 @@ public class UserChannelMap<U extends User, C extends Channel> {
 	 * Create with HashMultimaps.
 	 */
 	public UserChannelMap() {
-		channelToUserMap = HashMultimap.create();
-		userToChannelMap = HashMultimap.create();
+		channelToUserMap = Multimaps.synchronizedMultimap(HashMultimap.create());
+		userToChannelMap = Multimaps.synchronizedMultimap(HashMultimap.create());
+		
 	}
 
 	public void addUserToChannel(U user, C channel) {
