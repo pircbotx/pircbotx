@@ -754,7 +754,7 @@ public class InputParser implements Closeable {
 			//Part of a WHO reply on information on individual users
 			
 			String channelName = parsedResponse.get(1);
-			Channel channel = bot.getUserChannelDao().channelExists(channelName) ? bot.getUserChannelDao().getChannel(channelName) : null;
+			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : null;
 
 			//Setup user
 			String nick = parsedResponse.get(5);
@@ -779,14 +779,14 @@ public class InputParser implements Closeable {
 			}
 
 			//Associate with channel
-			if (bot.getUserChannelDao().channelExists(channelName)) {
+			if (bot.getUserChannelDao().containsChannel(channelName)) {
 				bot.getUserChannelDao().addUserToChannel(curUser, channel);
 			}
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
 			String channelName = parsedResponse.get(1);
-			Channel channel = bot.getUserChannelDao().channelExists(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
+			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
 			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt

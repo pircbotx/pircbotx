@@ -107,7 +107,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * {@link org.pircbotx.exception.DaoException.Reason#UNKNOWN_USER_HOSTMASK},
 	 * hostmask, and wrapped exception with nick
 	 */
-	@Synchronized("accessLock")
+	//@Synchronized("accessLock") - don't lock here we call methods that are locked
 	public U getUser(@NonNull UserHostmask userHostmask) {
 		try {
 			//Rarely we don't get the full hostmask
@@ -138,16 +138,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return user;
 	}
 
-	/**
-	 * @deprecated Renamed {@link #containsUser(java.lang.String) } to match
-	 * Java Collections API
-	 * @see #containsUser(java.lang.String)
-	 */
-	@Synchronized("accessLock")
-	@Deprecated
-	public boolean userExists(@NonNull String nick) {
-		return containsUser(nick);
-	}
 
 	/**
 	 * Check if user exists by nick
@@ -360,15 +350,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		return chan;
 	}
 
-	/**
-	 * @deprecated Renamed {@link #containsChannel(java.lang.String) } to match
-	 * the Java Collections API
-	 * @see #containsChannel(java.lang.String)
-	 */
-	@Deprecated
-	public boolean channelExists(@NonNull String name) {
-		return containsChannel(name);
-	}
 
 	/**
 	 * Check if we are currently in the given channel
