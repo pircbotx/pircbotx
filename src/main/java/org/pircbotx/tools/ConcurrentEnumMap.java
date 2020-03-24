@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public final class ConcurrentEnumMap<K extends Enum<K>, V> extends EnumMap<K, V> implements Serializable { //TODO: Implement Externalizable.
+public final class ConcurrentEnumMap<K extends Enum<K>, V> extends EnumMap<K, V> implements Serializable { 
 
     private static final long serialVersionUID = 11920818021L;
     private ReentrantReadWriteLock reentlock = new ReentrantReadWriteLock();
@@ -43,7 +43,7 @@ public final class ConcurrentEnumMap<K extends Enum<K>, V> extends EnumMap<K, V>
     public boolean containsKey(Object key) {
         rL.lock();
         try {
-            return super.containsKey(key); // An apparent infinite recursive loop
+            return super.containsKey(key); 
         } finally {
             rL.unlock();
         }
@@ -53,7 +53,7 @@ public final class ConcurrentEnumMap<K extends Enum<K>, V> extends EnumMap<K, V>
     public boolean containsValue(Object value) {
         rL.lock();
         try {
-            return super.containsValue(value); // An apparent infinite recursive loop
+            return super.containsValue(value); 
         } finally {
             rL.unlock();
         }

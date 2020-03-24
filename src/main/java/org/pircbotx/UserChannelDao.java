@@ -64,9 +64,9 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Object accessLock = new Object();
 	protected final UserChannelMap<U, C> mainMap;
 	protected final Map<UserLevel, UserChannelMap<U, C>> levelsMap;
-	protected final Map<String, U> userNickMap;// = new ConcurrentHashMap<>();
-	protected final Map<String, C> channelNameMap;// = new ConcurrentHashMap<>();
-	protected final Map<String, U> privateUsers;// = new ConcurrentHashMap<>();
+	protected final Map<String, U> userNickMap;
+	protected final Map<String, C> channelNameMap;
+	protected final Map<String, U> privateUsers;
 
 	protected UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
