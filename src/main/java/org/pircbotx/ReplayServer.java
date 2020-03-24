@@ -29,7 +29,7 @@ import java.util.Queue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.pircbotx.delay.StaticDelay;
+import org.pircbotx.delay.StaticReadonlyDelay;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.managers.GenericListenerManager;
@@ -150,7 +150,7 @@ public class ReplayServer {
 				.setLogin("QP")
 				.addServer("example.com")
 				.setNickservPassword(System.getProperty("nickserv"))
-				.setMessageDelay( new StaticDelay(0) )
+				.setMessageDelay( new StaticReadonlyDelay(0) )
 				.setListenerManager(new GenericListenerManager())
 				.setShutdownHookEnabled(false);
 	}

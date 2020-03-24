@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,9 +33,9 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import com.google.common.base.Splitter;
+import com.google.common.util.concurrent.RateLimiter;
 
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -44,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * @author Leon Blakey
  */
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class OutputRaw {
 	public static final Marker OUTPUT_MARKER = MarkerFactory.getMarker("pircbotx.output");
@@ -52,7 +51,16 @@ public class OutputRaw {
 	protected final PircBotX bot;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
 	protected final Condition writeNowCondition = writeLock.newCondition();
-	protected long lastSentLine = 0;
+	
+	
+	protected final RateLimiter limiter;
+	
+	public OutputRaw(PircBotX bot) {
+		this.bot = bot;
+		long delayMs = bot.getConfiguration().getMessageDelay().getDelay(); 
+		
+		limiter = RateLimiter.create(1000.0 / delayMs);
+	}
 
 	/**
 	 * Sends a raw line through the outgoing message queue.
@@ -61,25 +69,17 @@ public class OutputRaw {
 	 */
 	public void rawLine(String line) {
 		checkArgument(StringUtils.isNotBlank(line), "Cannot send empty line to server: '%s'", line);
-		checkArgument(bot.isConnected(), "Not connected to server");
+		checkArgument(bot.isConnected(), "Not connected to server");				
 		
-		long delayNanos = bot.getConfiguration().getMessageDelay().getDelay() * 1000000;
+		limiter.acquire();
+		
 		
 		writeLock.lock();
+		log.info(OUTPUT_MARKER, line);
 		try {
-			//Block until we can send, taking into account a changing lastSentLine
-			long curNanos = System.nanoTime();
-			while (lastSentLine + delayNanos > curNanos) {
-				writeNowCondition.await(lastSentLine + delayNanos - curNanos, TimeUnit.NANOSECONDS);
-				curNanos = System.nanoTime();
-			}
-			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
-			lastSentLine = System.nanoTime();
 		} catch (IOException e) {
 			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Couldn't pause thread for message delay. " + exceptionDebug(), e);
 		} catch (Exception e) {
 			throw new RuntimeException("Could not send line to server. " + exceptionDebug(), e);
 		} finally {
@@ -111,7 +111,7 @@ public class OutputRaw {
 		try {
 			log.info(OUTPUT_MARKER, line);
 			Utils.sendRawLineToServer(bot, line);
-			lastSentLine = System.nanoTime();
+			
 			if (resetDelay)
 				//Reset the 
 				writeNowCondition.signalAll();

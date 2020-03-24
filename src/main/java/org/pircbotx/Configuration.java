@@ -35,13 +35,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.EnableCapHandler;
 import org.pircbotx.dcc.DccHandler;
+import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
 import org.pircbotx.dcc.ReceiveChat;
 import org.pircbotx.dcc.ReceiveFileTransfer;
 import org.pircbotx.dcc.SendChat;
 import org.pircbotx.dcc.SendFileTransfer;
-import org.pircbotx.dcc.DccHandler.PendingFileTransfer;
 import org.pircbotx.delay.Delay;
 import org.pircbotx.delay.StaticDelay;
+import org.pircbotx.delay.StaticReadonlyDelay;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.CoreHooks;
 import org.pircbotx.hooks.Listener;
@@ -109,7 +110,7 @@ public class Configuration {
 	protected final int maxLineLength;
 	protected final boolean autoSplitMessage;
 	protected final boolean autoNickChange;
-	protected final Delay messageDelay;
+	protected final StaticReadonlyDelay messageDelay;
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean onJoinWhoEnabled;
@@ -413,7 +414,7 @@ public class Configuration {
 		/**
 		 * Millisecond delay between sending messages, default 1000 milliseconds
 		 */
-		protected Delay messageDelay = new StaticDelay( 1000 );
+		protected StaticReadonlyDelay messageDelay = new StaticReadonlyDelay( 1000 );
 		/**
 		 * Enable or disable creating a JVM shutdown hook which will properly
 		 * QUIT the IRC server and shutdown the bot, default true
