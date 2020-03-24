@@ -20,7 +20,6 @@ package org.pircbotx;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Closeable;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -35,6 +34,7 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
 import org.pircbotx.snapshot.UserChannelMapSnapshot;
 import org.pircbotx.snapshot.UserSnapshot;
+import org.pircbotx.tools.ConcurrentEnumMap;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -78,8 +78,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		channelNameMap = new ConcurrentHashMap<>();
 		privateUsers = new ConcurrentHashMap<>();		
 
-		//Initialize levels map with a UserChannelMap for each level
-		this.levelsMap = Collections.synchronizedMap( Maps.newEnumMap(UserLevel.class) );
+		//Initialize levels map with a UserChannelMap for each level		
+		this.levelsMap = new ConcurrentEnumMap<>(UserLevel.class);
 		for (UserLevel level : UserLevel.values())
 			levelsMap.put(level, new UserChannelMap<U, C>());
 	}
