@@ -43,7 +43,8 @@ public class UserChannelMap<U extends User, C extends Channel> {
 	protected final Multimap<C, U> channelToUserMap;
 	
     private final ReentrantReadWriteLock reentlock = new ReentrantReadWriteLock();
-    private final Lock rL = reentlock.readLock(), wL = reentlock.writeLock();
+    private final Lock rL = reentlock.readLock();
+    private final Lock wL = reentlock.writeLock();
 
 	/**
 	 * Create with HashMultimaps.

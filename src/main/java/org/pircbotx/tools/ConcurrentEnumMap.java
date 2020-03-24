@@ -12,7 +12,8 @@ public final class ConcurrentEnumMap<K extends Enum<K>, V> extends EnumMap<K, V>
 
     private static final long serialVersionUID = 11920818021L;
     private ReentrantReadWriteLock reentlock = new ReentrantReadWriteLock();
-    private Lock rL = reentlock.readLock(), wL = reentlock.writeLock();
+    private Lock rL = reentlock.readLock();
+    private Lock wL = reentlock.writeLock();
 
     public ConcurrentEnumMap(Class<K> keyType) {
         super(keyType);
