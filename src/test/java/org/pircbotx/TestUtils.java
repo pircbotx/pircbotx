@@ -22,7 +22,7 @@ import java.lang.reflect.Member;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.delay.StaticDelay;
+import org.pircbotx.delay.StaticReadonlyDelay;
 import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.types.GenericEvent;
@@ -121,7 +121,7 @@ public class TestUtils {
 				.addServer("127.1.1.1")
 				.setListenerManager(new GenericListenerManager())
 				.setName("TestBot")
-				.setMessageDelay( new StaticDelay(0) )
+				.setMessageDelay( new StaticReadonlyDelay(0) )
 				.setShutdownHookEnabled(false)
 				.setAutoReconnect(false)
 				//Optional
