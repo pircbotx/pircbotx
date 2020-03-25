@@ -324,13 +324,18 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 			sendCAP().getSupported();
 
 		// Attempt to join the server.
-		if (configuration.isWebIrcEnabled())
-			sendRaw().rawLineNow("WEBIRC " + configuration.getWebIrcPassword()
+		if (configuration.isWebIrcEnabled()) {
+			String webIrcCommand = "WEBIRC " + configuration.getWebIrcPassword()
 					+ " " + configuration.getWebIrcUsername()
 					+ " " + configuration.getWebIrcHostname()
-					+ " " + configuration.getWebIrcAddress().getHostAddress());
+					+ " " + configuration.getWebIrcAddress().getHostAddress();
+						
+			sendRaw().rawLineNow(webIrcCommand, webIrcCommand.replace(configuration.getWebIrcPassword(), "XXXXXXXX"));
+		}
+		
+		
 		if (StringUtils.isNotBlank(configuration.getServerPassword()))
-			sendRaw().rawLineNow("PASS " + configuration.getServerPassword());
+			sendRaw().rawLineNow("PASS " + configuration.getServerPassword(), "PASS XXXXXXXX");
 
 		sendRaw().rawLineNow("NICK " + configuration.getName());
 		sendRaw().rawLineNow("USER " + configuration.getLogin() + " 8 * :" + configuration.getRealName());
