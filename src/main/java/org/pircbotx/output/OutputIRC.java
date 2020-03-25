@@ -282,7 +282,12 @@ public class OutputIRC {
 		bot.sendRaw().rawLine("WHOIS " + target + " " + target);
 	}
 	
-	
+	/**
+	 * Send "OPER username password" to oper up
+	 *
+	 * @param O-line username
+	 * @param O-line password 
+	 */	
 	public void oper(final String username, final String password) {
 		checkArgument(StringUtils.isNotBlank(username), "Username '%s' is blank", password);
 		checkArgument(StringUtils.isNotBlank(password), "Password '%s' is blank", password);
