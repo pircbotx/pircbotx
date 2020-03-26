@@ -26,7 +26,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.Utils;
 import org.slf4j.Marker;

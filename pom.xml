@@ -107,7 +107,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.9</version>
-		</dependency>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>1.8</version>
+		</dependency>		
 		<!-- Slf4j for logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
