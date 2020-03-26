@@ -50,7 +50,6 @@ public class OutputRaw {
 	@NonNull
 	protected final PircBotX bot;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
-	protected final Condition writeNowCondition = writeLock.newCondition();
 	
 	
 	protected final RateLimiter limiter;
@@ -68,6 +67,17 @@ public class OutputRaw {
 	 * @param line The raw line to send to the IRC server.
 	 */
 	public void rawLine(String line) {
+		rawLine(line, null); 
+	}
+	
+	
+	/**
+	 * Sends a raw line through the outgoing message queue.
+	 *
+	 * @param line The raw line to send to the IRC server.
+	 * @param logline the line to be used in log, if you don't want the real line logged because it contains secrets.
+	 */
+	public void rawLine(String line, String logline) {
 		checkArgument(StringUtils.isNotBlank(line), "Cannot send empty line to server: '%s'", line);
 		checkArgument(bot.isConnected(), "Not connected to server");				
 		
@@ -75,7 +85,11 @@ public class OutputRaw {
 		
 		
 		writeLock.lock();
-		log.info(OUTPUT_MARKER, line);
+		if (StringUtils.isNotBlank(logline))
+			log.info(OUTPUT_MARKER, logline);
+		else
+			log.info(OUTPUT_MARKER, line);
+		
 		try {
 			Utils.sendRawLineToServer(bot, line);
 		} catch (IOException e) {
@@ -92,29 +106,31 @@ public class OutputRaw {
 	 * the message delay for messages waiting to send
 	 *
 	 * @param line The raw line to send to the IRC server.
-	 * @see #rawLineNow(java.lang.String, boolean)
+	 * @see #rawLineNow(java.lang.String, java.lang.String)
 	 */
 	public void rawLineNow(String line) {
-		rawLineNow(line, false);
+		rawLineNow(line, null);
 	}
 
 	/**
 	 * Sends a raw line to the IRC server as soon as possible
 	 * <p>
 	 * @param line The raw line to send to the IRC server
-	 * @param resetDelay If true, pending messages will reset their delay.
+	 * @param @param logline the line to be used in log, if you don't want the real line logged because it contains secrets.
 	 */
-	public void rawLineNow(String line, boolean resetDelay) {
+	public void rawLineNow(String line, String logline) {
 		checkNotNull(line, "Line cannot be null");
 		checkArgument(bot.isConnected(), "Not connected to server");
 		writeLock.lock();
 		try {
-			log.info(OUTPUT_MARKER, line);
+			if (StringUtils.isNotBlank(logline))
+				log.info(OUTPUT_MARKER, logline);
+			else
+				log.info(OUTPUT_MARKER, line);
+			
 			Utils.sendRawLineToServer(bot, line);
 			
-			if (resetDelay)
-				//Reset the 
-				writeNowCondition.signalAll();
+
 		} catch (IOException e) {
 			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
 		} catch (Exception e) {

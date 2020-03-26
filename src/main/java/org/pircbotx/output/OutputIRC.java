@@ -56,7 +56,7 @@ public class OutputIRC {
 	public void joinChannel(String channel, String key) {
 		checkArgument(StringUtils.isNotBlank(channel), "Channel '%s' is blank", channel);
 		checkNotNull(key, "Key for channel %s cannot be null", channel);
-		joinChannel(channel + " " + key);
+		bot.sendRaw().rawLine("JOIN " + channel + " " + key, "JOIN " + channel + " XXXXXXXX" );
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class OutputIRC {
 	 */
 	public void identify(final String password) {
 		checkArgument(StringUtils.isNotBlank(password), "Password '%s' is blank", password);
-		bot.sendRaw().rawLine("NICKSERV IDENTIFY " + password);
+		bot.sendRaw().rawLine("NICKSERV IDENTIFY " + password, "NICKSERV IDENTIFY XXXXXXXX" );
 	}
 
 	public void mode(String target, String mode) {
@@ -280,5 +280,18 @@ public class OutputIRC {
 	 */
 	public void whoisDetail(String target) {
 		bot.sendRaw().rawLine("WHOIS " + target + " " + target);
+	}
+	
+	/**
+	 * Send "OPER username password" to oper up
+	 *
+	 * @param O-line username
+	 * @param O-line password 
+	 */	
+	public void oper(final String username, final String password) {
+		checkArgument(StringUtils.isNotBlank(username), "Username '%s' is blank", password);
+		checkArgument(StringUtils.isNotBlank(password), "Password '%s' is blank", password);
+		
+		bot.sendRaw().rawLine("OPER " + username + " " + password,  "OPER " + username + " XXXXXXXX" );
 	}
 }
