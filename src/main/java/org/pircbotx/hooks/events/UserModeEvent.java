@@ -39,13 +39,13 @@ public class UserModeEvent extends Event implements GenericUserModeEvent {
 	/**
 	 * The user hostmask that set the mode.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override}))
 	protected final User userHostmask;
 	/**
 	 * The user that set the mode.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override,
 		@Nullable}))
 	protected final User user;
@@ -56,7 +56,7 @@ public class UserModeEvent extends Event implements GenericUserModeEvent {
 	/**
 	 * The user that the mode operation applies to.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override,
 		@Nullable}))
 	protected final User recipient;

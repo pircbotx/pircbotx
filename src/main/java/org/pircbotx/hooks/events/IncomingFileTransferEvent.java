@@ -65,26 +65,26 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class IncomingFileTransferEvent extends Event implements GenericDCCEvent {
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override,
 			@Nullable}))
 	protected final User user;
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
 	protected final String rawFilename;
 	protected final String safeFilename;
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final InetAddress address;
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final int port;
 	protected final long filesize;
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final String token;
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final boolean passive;
 

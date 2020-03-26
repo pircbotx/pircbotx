@@ -51,7 +51,7 @@ public class UserListEvent extends Event implements GenericChannelEvent {
 	/**
 	 * The channel that the user list is from.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override}))
 	protected final Channel channel;
 	/**

@@ -40,16 +40,16 @@ import lombok.NonNull;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class QuitEvent extends Event implements GenericUserEvent, GenericSnapshotEvent {
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserChannelDaoSnapshot userChannelDaoSnapshot;
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserHostmask userHostmask;
 	/**
 	 * Snapshot of the user as of before the user quit.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserSnapshot user;
 	/**

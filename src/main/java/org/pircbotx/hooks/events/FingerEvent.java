@@ -47,13 +47,13 @@ public class FingerEvent extends Event implements GenericChannelUserEvent {
 	/**
 	 * The user hostmask that sent the FINGER request.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that sent the FINGER request.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override,
 		@Nullable}))
 	protected final User user;

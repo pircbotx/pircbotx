@@ -43,13 +43,13 @@ import lombok.NonNull;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SetChannelBanEvent extends Event implements GenericChannelModeEvent {
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final Channel channel;
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserHostmask userHostmask;
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final User user;
 	/**

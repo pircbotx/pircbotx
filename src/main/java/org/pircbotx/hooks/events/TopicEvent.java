@@ -40,7 +40,7 @@ public class TopicEvent extends Event implements GenericChannelEvent {
 	/**
 	 * The channel that the topic belongs to.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final Channel channel;
 	/**

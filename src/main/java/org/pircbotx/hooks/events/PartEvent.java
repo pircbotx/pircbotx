@@ -40,22 +40,22 @@ import lombok.NonNull;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PartEvent extends Event implements GenericChannelUserEvent, GenericSnapshotEvent {
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserChannelDaoSnapshot userChannelDaoSnapshot;
 	/**
 	 * Snapshot of the channel as of before the user parted.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final ChannelSnapshot channel;
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserHostmask userHostmask;
 	/**
 	 * Snapshot of the user as of before the user parted.
 	 */
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserSnapshot user;
 	

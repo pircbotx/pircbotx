@@ -42,7 +42,7 @@ import lombok.Getter;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class DisconnectEvent extends Event implements GenericSnapshotEvent {
-	@Getter(onMethod = @_(
+	@Getter(onMethod = @__(
 			@Override))
 	protected final UserChannelDaoSnapshot userChannelDaoSnapshot;
 	/**

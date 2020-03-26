@@ -48,19 +48,19 @@ public class TimeEvent extends Event implements GenericCTCPEvent {
 	 * The target channel of the TIME request. A value of <code>null</code>
 	 * means that target is us
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final Channel channel;
 	/**
 	 * The user that sent the TIME request.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that sent the TIME request.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override,
 			@Nullable}))
 	protected final User user;

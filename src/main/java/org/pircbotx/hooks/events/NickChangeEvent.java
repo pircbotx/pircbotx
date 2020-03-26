@@ -48,13 +48,13 @@ public class NickChangeEvent extends Event implements GenericUserEvent {
 	/**
 	 * The user that changed their nick.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that changed their nick.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override,
 			@Nullable}))
 	protected final User user;

@@ -43,19 +43,19 @@ public class RemoveChannelBanEvent extends Event implements GenericChannelModeEv
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final Channel channel;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override,
 			@Nullable}))
 	protected final User user;

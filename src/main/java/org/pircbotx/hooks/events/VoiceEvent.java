@@ -44,32 +44,32 @@ public class VoiceEvent extends Event implements GenericChannelModeRecipientEven
 	/**
 	 * The channel in which the mode change took place.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override}))
 	protected final Channel channel;
 	/**
 	 * The user hostmask that performed the mode change.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user that performed the mode change.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override,
 		@Nullable}))
 	protected final User user;
 	/**
 	 * The user hostmask that got 'voiced'
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override}))
 	protected final UserHostmask recipientHostmask;
 	/**
 	 * The nick of the user that got 'voiced'.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 		@Override,
 		@Nullable}))
 	protected final User recipient;

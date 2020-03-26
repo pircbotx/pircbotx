@@ -42,7 +42,7 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	/**
 	 * The channel to which the message was sent.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final Channel channel;
 	/**
@@ -53,20 +53,20 @@ public class MessageEvent extends Event implements GenericMessageEvent, GenericC
 	/**
 	 * The user hostmask who sent the message.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
 	 * The user who sent the message.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override,
 			@Nullable}))
 	protected final User user;
 	/**
 	 * The actual message sent to the channel.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final String message;
 	/**

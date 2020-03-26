@@ -39,14 +39,14 @@ public class InviteEvent extends Event implements GenericUserEvent {
 	/**
 	 * The user that sent the invite.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override,
 			@Nullable}))
 	protected final User user;
 	/**
 	 * The user hostmask that sent the invite.
 	 */
-	@Getter(onMethod = @_({
+	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
 	/**
