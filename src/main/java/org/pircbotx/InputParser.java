@@ -17,16 +17,9 @@
  */
 package org.pircbotx;
 
-import org.pircbotx.snapshot.UserSnapshot;
-import com.google.common.base.CharMatcher;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.PeekingIterator;
+
+import static org.pircbotx.ReplyConstants.*;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -34,14 +27,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.StringUtils;
-import static org.pircbotx.ReplyConstants.*;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.exception.IrcException;
@@ -61,6 +51,8 @@ import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
+import org.pircbotx.hooks.events.OperFailedEvent;
+import org.pircbotx.hooks.events.OperSuccessEvent;
 import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PingEvent;
@@ -97,8 +89,24 @@ import org.pircbotx.hooks.events.VoiceEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
+import org.pircbotx.snapshot.UserSnapshot;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+
+import com.google.common.base.CharMatcher;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.PeekingIterator;
+
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Parse received input from IRC server.
@@ -938,7 +946,7 @@ public class InputParser implements Closeable {
 			ImmutableList<BanListEvent.Entry> entries = ImmutableList.copyOf(banListBuilder.removeAll(channel));
 			log.debug("Dispatching event");
 			configuration.getListenerManager().onEvent(new BanListEvent(bot, channel, entries));
-		} else if (code == 353) {
+		} else if (code == RPL_NAMREPLY) {
 			//NAMES response
 			//353 PircBotXUser = #aChannel :aUser1 aUser2
 			for (String curUser : StringUtils.split(parsedResponse.get(3))) {
@@ -965,11 +973,19 @@ public class InputParser implements Closeable {
 					bot.getUserChannelDao().addUserToLevel(curLevel, user, chan);
 				}
 			}
-		} else if (code == 366) {
+		} else if (code == RPL_ENDOFNAMES) {
 			//NAMES response finished
 			//366 PircBotXUser #aChannel :End of /NAMES list.
 			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
 			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), false));
+		} else if (code == RPL_YOUREOPER) {
+			//OPER success response
+			//381 PircBotXUser :You are now an IRCOp
+			configuration.getListenerManager().onEvent(new OperSuccessEvent(bot) );
+		} else if (code == ERR_NOOPERHOST) {
+			//OPER failed response
+			//491 PircBotXUser :Invalid oper credentials
+			configuration.getListenerManager().onEvent(new OperFailedEvent(bot) );
 		}
 		configuration.getListenerManager().onEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
 	}
