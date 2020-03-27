@@ -762,7 +762,7 @@ public class InputParser implements Closeable {
 			//Part of a WHO reply on information on individual users
 			
 			String channelName = parsedResponse.get(1);
-			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : null;
+			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
 
 			//Setup user
 			String nick = parsedResponse.get(5);
@@ -799,7 +799,8 @@ public class InputParser implements Closeable {
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
-			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			String channelName = parsedResponse.get(1);
+			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
 			ImmutableList<String> modeParsed = parsedResponse.subList(2, parsedResponse.size());
 			String mode = StringUtils.join(modeParsed, ' ');
 
