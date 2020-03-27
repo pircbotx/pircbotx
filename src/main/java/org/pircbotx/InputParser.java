@@ -809,7 +809,8 @@ public class InputParser implements Closeable {
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
-			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			String channelName = parsedResponse.get(1);
+			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
 			int createDate = Utils.tryParseInt(parsedResponse.get(2), -1);
 
 			//Set in channel
