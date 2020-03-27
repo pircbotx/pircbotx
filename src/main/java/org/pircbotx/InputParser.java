@@ -817,11 +817,15 @@ public class InputParser implements Closeable {
 			//Example: 375 PircBotX :- wolfe.freenode.net Message of the Day -
 			//Motd is starting, reset the StringBuilder
 			motdBuilder = new StringBuilder();
-		else if (code == RPL_MOTD)
+		else if (code == RPL_MOTD) {
 			//Example: 372 PircBotX :- Welcome to wolfe.freenode.net in Manchester, England, Uk!  Thanks to
-			//This is part of the MOTD, add a new line
-			motdBuilder.append(CharMatcher.whitespace().trimFrom(parsedResponse.get(1).substring(1))).append('\n');
-		else if (code == RPL_ENDOFMOTD) {
+			//This is part of the MOTD, aidd a new line
+			if (StringUtils.isNotBlank(parsedResponse.get(1))) {
+				motdBuilder.append(CharMatcher.whitespace().trimFrom(parsedResponse.get(1).substring(1))).append('\n');
+			} else {
+				motdBuilder.append('\n');
+			}
+		} else if (code == RPL_ENDOFMOTD) {
 			//Example: PircBotX :End of /MOTD command.
 			//End of MOTD, clean it and dispatch MotdEvent
 			ServerInfo serverInfo = bot.getServerInfo();
