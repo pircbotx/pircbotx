@@ -72,9 +72,12 @@ public class UserHostmask implements Comparable<User> {
 	 */
 	private String hostname;
 
-	protected UserHostmask(PircBotX bot, String rawHostmask) {
+	protected UserHostmask(PircBotX bot, String rawHostmask) {		
 		try {
 			Preconditions.checkArgument(StringUtils.isNotBlank(rawHostmask), "Cannot parse blank hostmask");
+			
+
+			
 			this.bot = bot;
 			if (StringUtils.contains(rawHostmask, "!") && StringUtils.contains(rawHostmask, "@")) {
 				String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
@@ -92,7 +95,10 @@ public class UserHostmask implements Comparable<User> {
 				this.login = null;
 				this.hostname = null;
 			}
-
+			
+			if (nick.startsWith(":"))  
+				nick = nick.substring(1);
+			
 			if (nick.contains(":")) {
 				String[] nickParts = StringUtils.split(nick, ":");
 				this.extbanPrefix = nickParts[0];
