@@ -161,12 +161,12 @@ public class ReplayServer {
 		timer.start();
 
 		//Wrap listener manager with ours that siphons off events
-		final Queue<Event> eventQueue = Lists.newLinkedList();
+		final Queue<Event> eventQueue = new LinkedList<>();
 		WrapperListenerManager newManager = new WrapperListenerManager(config.getListenerManager(), eventQueue);
 		config.setListenerManager(newManager);
 		config.addListener(new ReplayListener());
 
-		final LinkedList<String> outputQueue = Lists.newLinkedList();
+		final LinkedList<String> outputQueue = new LinkedList<>();
 		ReplayPircBotX bot = new ReplayPircBotX(config.buildConfiguration(), outputQueue);
 
 		BufferedReader fileInput = new BufferedReader(new InputStreamReader(input));

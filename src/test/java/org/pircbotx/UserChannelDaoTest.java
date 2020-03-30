@@ -31,7 +31,7 @@ import static org.testng.Assert.*;
 @Test(singleThreaded = true)
 public class UserChannelDaoTest {
 	protected PircBotX smallBot;
-	protected UserChannelDao dao;
+	protected UserChannelDao<User,Channel> dao;
 
 	@BeforeMethod
 	public void setup() {

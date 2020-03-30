@@ -96,14 +96,14 @@ public class TestUtils {
 			classesBuilder.addAll(classPath.getTopLevelClasses(GenericEvent.class.getPackage().getName()));
 		List<Object[]> argumentBuilder = Lists.newArrayList();
 		for (ClassPath.ClassInfo curClassInfo : classesBuilder.build()) {
-			Class loadedClass = curClassInfo.load();
+			Class<?> loadedClass = curClassInfo.load();
 			if (GenericEvent.class.isAssignableFrom(loadedClass) && !loadedClass.equals(GenericEvent.class))
 				argumentBuilder.add(new Object[]{loadedClass});
 		}
 		return argumentBuilder.toArray(new Object[0][]);
 	}
 
-	public static String getRootName(Class aClass) {
+	public static String getRootName(Class<?> aClass) {
 		String name = aClass.getSimpleName();
 
 		if (StringUtils.endsWith(name, "Event"))
@@ -187,6 +187,8 @@ public class TestUtils {
 	}
 	
 	public static class LogException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+
 		public LogException(String message, Throwable cause) {
 			super(message, cause);
 		}

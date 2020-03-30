@@ -23,10 +23,12 @@ import static org.pircbotx.ReplyConstants.*;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -99,7 +101,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.PeekingIterator;
 
@@ -290,14 +291,14 @@ public class InputParser implements Closeable {
 	}
 	protected final Configuration configuration;
 	protected final PircBotX bot;
-	protected final List<CapHandler> capHandlersFinished = Lists.newArrayList();
+	protected final List<CapHandler> capHandlersFinished = new ArrayList<>();
 	protected boolean capEndSent = false;
 	protected BufferedReader inputReader;
 	//Builders
 	/**
 	 * Map to keep active WhoisEvents. Must be a treemap to be case insensitive
 	 */
-	protected final Map<String, WhoisEvent.Builder> whoisBuilder = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+	protected final Map<String, WhoisEvent.Builder> whoisBuilder = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	protected StringBuilder motdBuilder;
 	@Getter
 	protected boolean channelListRunning = false;
@@ -958,7 +959,7 @@ public class InputParser implements Closeable {
 			for (String curUser : StringUtils.split(parsedResponse.get(3))) {
 				//Siphon off any levels this user has
 				String nick = curUser;
-				List<UserLevel> levels = Lists.newArrayList();
+				List<UserLevel> levels = new ArrayList<>();
 				UserLevel parsedLevel;
 				while ((parsedLevel = UserLevel.fromSymbol(nick.charAt(0))) != null) {
 					nick = nick.substring(1);

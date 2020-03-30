@@ -454,7 +454,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 		//Make snapshots of the relationship maps using the above user and channel snapshots
 		UserChannelMapSnapshot mainMapSnapshot = mainMap.createSnapshot(userSnapshotMap, channelSnapshotMap);
-		EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = Maps.newEnumMap(UserLevel.class);
+		EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = new EnumMap<>(UserLevel.class);
 		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
 			levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
 		ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();

@@ -17,35 +17,36 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
 import java.io.IOException;
-import org.pircbotx.hooks.events.MotdEvent;
-import org.pircbotx.hooks.events.HalfOpEvent;
-import org.pircbotx.hooks.events.OwnerEvent;
-import org.pircbotx.hooks.events.SuperOpEvent;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.pircbotx.exception.DaoException;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.BanListEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.FingerEvent;
+import org.pircbotx.hooks.events.HalfOpEvent;
 import org.pircbotx.hooks.events.InviteEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.ModeEvent;
+import org.pircbotx.hooks.events.MotdEvent;
 import org.pircbotx.hooks.events.NickAlreadyInUseEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.OpEvent;
+import org.pircbotx.hooks.events.OwnerEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PingEvent;
-import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.RemoveChannelKeyEvent;
@@ -64,7 +65,9 @@ import org.pircbotx.hooks.events.SetNoExternalMessagesEvent;
 import org.pircbotx.hooks.events.SetPrivateEvent;
 import org.pircbotx.hooks.events.SetSecretEvent;
 import org.pircbotx.hooks.events.SetTopicProtectionEvent;
+import org.pircbotx.hooks.events.SuperOpEvent;
 import org.pircbotx.hooks.events.TimeEvent;
+import org.pircbotx.hooks.events.TopicEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
@@ -76,8 +79,12 @@ import org.pircbotx.snapshot.ChannelSnapshot;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 import org.testng.collections.Lists;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
@@ -89,7 +96,7 @@ import org.testng.collections.Lists;
 @Test(singleThreaded = true)
 public class InputParserTest {
 	final static String aString = "I'm some super long string that has multiple words";
-	protected UserChannelDao dao;
+	protected UserChannelDao<User,Channel> dao;
 	protected InputParser inputParser;
 	protected TestPircBotX bot;
 
@@ -161,6 +168,7 @@ public class InputParserTest {
 	}
 
 	@Test(description = "Verifies JoinEvent from user joining our channel")
+	@SuppressWarnings("resource")
 	public void joinTest() throws IOException, IrcException {
 		PircTestRunner test = new PircTestRunner(TestUtils.generateConfigurationBuilder())
 				.assertBotHello()
@@ -192,6 +200,7 @@ public class InputParserTest {
 		test.close();
 	}
 	
+	@SuppressWarnings("resource")
 	public void joinWhoDisabledTest() throws IOException, IrcException {
 		new PircTestRunner(TestUtils.generateConfigurationBuilder()
 				.setOnJoinWhoEnabled(false)
@@ -1107,6 +1116,7 @@ public class InputParserTest {
 	}
 
 	@Test
+	@SuppressWarnings("resource")
 	public void nickAlreadyInUse2ParamBeforeConnectTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
@@ -1131,6 +1141,7 @@ public class InputParserTest {
 	}
 	
 	@Test
+	@SuppressWarnings("resource")
 	public void nickAlreadyInUse2ParamAfterConnectTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
@@ -1154,6 +1165,7 @@ public class InputParserTest {
 	}
 	
 	@Test
+	@SuppressWarnings("resource")
 	public void nickAlreadyInUse1ParamBeforeConnectTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");
@@ -1178,6 +1190,7 @@ public class InputParserTest {
 	}
 	
 	@Test
+	@SuppressWarnings("resource")
 	public void nickAlreadyInUse1ParamAfterConnectTest() throws IOException, IrcException {
 		assertEquals(bot.getUserBot().getNick(), bot.getConfiguration().getName(), "bots user name doesn't match config username");
 		assertEquals(bot.getUserBot().getNick(), bot.getNick(), "bots user name doesn't match nick");

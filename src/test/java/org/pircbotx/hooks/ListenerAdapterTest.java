@@ -17,35 +17,35 @@
  */
 package org.pircbotx.hooks;
 
-import com.google.common.collect.Sets;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.pircbotx.hooks.events.MessageEvent;
-import org.pircbotx.hooks.types.GenericMessageEvent;
-import org.testng.annotations.Test;
-import static org.testng.Assert.*;
-import static org.mockito.Mockito.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.TestUtils;
-import org.pircbotx.hooks.events.WhoisEvent;
-import org.pircbotx.hooks.managers.GenericListenerManager;
+import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.types.GenericEvent;
+import org.pircbotx.hooks.types.GenericMessageEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.google.common.collect.Sets;
 
 /**
  *
@@ -124,7 +124,7 @@ public class ListenerAdapterTest {
 	@SuppressWarnings("unchecked")
 	public static Object[][] onEventTestDataProvider() {
 		//Map events to methods
-		Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap();
+		Map<Class<? extends Event>, Set<Method>> eventToMethod = new HashMap<>();
 		for (Method curMethod : ListenerAdapter.class.getDeclaredMethods()) {
 			//Filter out methods by basic criteria
 			if (curMethod.getName().equals("onEvent") || curMethod.getParameterTypes().length != 1 || curMethod.isSynthetic())
@@ -134,7 +134,7 @@ public class ListenerAdapterTest {
 			if (curClass.isAssignableFrom(Event.class) || curClass.isInterface()
 					|| (eventToMethod.containsKey(curClass) && eventToMethod.get(curClass).contains(curMethod)))
 				continue;
-			Set<Method> methods = Sets.newHashSet();
+			Set<Method> methods = new HashSet<>();
 			methods.add(curMethod);
 			eventToMethod.put((Class<? extends Event>) curClass, methods);
 		}
@@ -176,7 +176,7 @@ public class ListenerAdapterTest {
 	@Test(dataProvider = "onEventTestDataProvider", description = "Tests onEvent's completness")
 	public void onEventTest(Class<? extends Event> eventClass, Set<Method> methodsToCall) throws Exception {
 		//Init, using mocks to store method calls
-		final Set<Method> calledMethods = Sets.newHashSet();
+		final Set<Method> calledMethods = new HashSet<>();
 		ListenerAdapter mockListener = mock(ListenerAdapter.class, new Answer() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				calledMethods.add(invocation.getMethod());

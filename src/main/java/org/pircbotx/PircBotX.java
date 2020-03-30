@@ -18,8 +18,6 @@
 package org.pircbotx;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import com.google.common.primitives.Ints;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -180,7 +178,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 		reconnectStopped = false;
 		do {
 			//Try to connect to the server, grabbing any exceptions
-			LinkedHashMap<InetSocketAddress, Exception> connectExceptions = Maps.newLinkedHashMap();
+			LinkedHashMap<InetSocketAddress, Exception> connectExceptions = new LinkedHashMap<>();
 			try {
 				connectAttemptTotal++;
 				connectAttempts++;
@@ -649,7 +647,7 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 	 * @return the result of calling compareToIgnoreCase on channel names.
 	 */
 	public int compareTo(PircBotX other) {
-		return Ints.compare(getBotId(), other.getBotId());
+		return Integer.compare(getBotId(), other.getBotId());
 	}
 
 	/**

@@ -29,6 +29,7 @@ import org.testng.annotations.Test;
  */
 public class ServerInfoTest {
 	@Test
+	@SuppressWarnings("resource")
 	public void rawParseTest() throws IOException, IrcException {
 		//Just make sure it doesn't throw an exception
 		new PircTestRunner(TestUtils.generateConfigurationBuilder())

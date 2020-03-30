@@ -17,14 +17,17 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.Lists;
+import static org.testng.Assert.assertNotNull;
+
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Queue;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
-import static org.testng.Assert.*;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -33,7 +36,7 @@ import static org.testng.Assert.*;
 @Slf4j
 public class TestPircBotX extends PircBotX {
 	public static class EventQueueListener implements Listener {
-		public final Queue<Event> eventQueue = Lists.newLinkedList();
+		public final Queue<Event> eventQueue = new LinkedList<>();
 
 		@Override
 		public void onEvent(Event event) throws Exception {
@@ -41,7 +44,7 @@ public class TestPircBotX extends PircBotX {
 		}
 	}
 
-	public final Queue<String> outputQueue = Lists.newLinkedList();
+	public final Queue<String> outputQueue = new LinkedList<>();
 	public final Queue<Event> eventQueue;
 	protected final EventQueueListener listener;
 	@Getter

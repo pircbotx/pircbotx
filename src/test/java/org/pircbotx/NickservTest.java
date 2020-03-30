@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
  */
 public class NickservTest {
 	@Test
+	@SuppressWarnings("resource")
 	public void nickservTest() throws IOException, IrcException {
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setNickservPassword("testpw")
@@ -44,6 +45,7 @@ public class NickservTest {
 	}
 
 	@Test
+	@SuppressWarnings("resource")
 	public void nickservCustomMessageTest() throws IOException, IrcException {
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setNickservPassword("testpw")
@@ -61,6 +63,7 @@ public class NickservTest {
 	}
 
 	@Test
+	@SuppressWarnings("resource")
 	public void nickservOtherNickTest() throws IOException, IrcException {
 		PircBotX bot = new PircBotX(TestUtils.generateConfigurationBuilder()
 				.setNickservPassword("testpw")

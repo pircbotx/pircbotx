@@ -17,6 +17,9 @@
  */
 package org.pircbotx;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,12 +28,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import lombok.extern.slf4j.Slf4j;
+
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
-import org.testng.annotations.AfterTest;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *

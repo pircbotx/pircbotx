@@ -25,6 +25,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,7 +62,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -330,7 +332,7 @@ public class Configuration {
 		 * Ports to allow DCC incoming connections, recommended to set multiple
 		 * as DCC connections will be rejected if no free port can be found
 		 */
-		protected List<Integer> dccPorts = Lists.newArrayList();
+		protected List<Integer> dccPorts = new ArrayList<>();
 		/**
 		 * The local address to bind DCC connections to, defaults to null (which
 		 * will be figured out at runtime)
@@ -360,7 +362,7 @@ public class Configuration {
 		/**
 		 * List of servers to connect to, easily add with the addServer methods
 		 */
-		protected List<ServerEntry> servers = Lists.newLinkedList();
+		protected List<ServerEntry> servers = new LinkedList<>();
 		/**
 		 * Password for IRC server, default null
 		 */
@@ -423,7 +425,7 @@ public class Configuration {
 		/**
 		 * Map of channels and keys to automatically join upon connecting.
 		 */
-		protected final Map<String, String> autoJoinChannels = Maps.newHashMap();
+		protected final Map<String, String> autoJoinChannels = new HashMap<>();
 		/**
 		 * Enable or disable sending "WHO #channel" upon joining a channel and
 		 * rely only on the NAMES response

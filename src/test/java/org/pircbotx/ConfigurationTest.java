@@ -17,24 +17,27 @@
  */
 package org.pircbotx;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.Maps;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.withSettings;
+import static org.testng.Assert.assertTrue;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
+
+import com.google.common.base.Function;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 
 /**
  *
@@ -43,7 +46,7 @@ import static org.testng.Assert.*;
 public class ConfigurationTest {
 	@DataProvider
 	public Object[][] fieldNamesDataProvider() throws NoSuchMethodException {
-		List<Object[]> params = Lists.newArrayList();
+		List<Object[]> params = new ArrayList<>();
 		for (Field curField : Configuration.class.getDeclaredFields())
 			if (TestUtils.isRealMember(curField)) {
 				String prefix = (curField.getType().equals(boolean.class)) ? "is" : "get";

@@ -17,11 +17,15 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.Sets;
+import static org.testng.Assert.assertEquals;
+
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.Set;
+
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
+
+import com.google.common.collect.Sets;
 
 /**
  *
@@ -31,7 +35,7 @@ public class ColorsTest {
 	@Test
 	public void lookupTableTest() {
 		//Gather all the field names of the class
-		Set<String> colorNames = Sets.newHashSet();
+		Set<String> colorNames = new HashSet<>();
 		for (Field curField : Colors.class.getFields())
 			if (TestUtils.isRealMember(curField))
 				colorNames.add(curField.getName());

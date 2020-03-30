@@ -28,8 +28,8 @@ import com.google.common.util.concurrent.MoreExecutors;
 import static com.google.common.util.concurrent.Service.State;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -67,12 +67,12 @@ import org.slf4j.LoggerFactory;
 public class MultiBotManager {
 	protected static final AtomicInteger MANAGER_COUNT = new AtomicInteger();
 	protected final int managerNumber;
-	protected final LinkedHashMap<PircBotX, ListenableFuture<Void>> runningBots = Maps.newLinkedHashMap();
+	protected final LinkedHashMap<PircBotX, ListenableFuture<Void>> runningBots = new LinkedHashMap<>();
 	protected final BiMap<PircBotX, Integer> runningBotsNumbers = HashBiMap.create();
 	protected final Object runningBotsLock = new Object[0];
 	protected final ListeningExecutorService botPool;
 	//Code for starting
-	protected List<PircBotX> startQueue = Lists.newArrayList();
+	protected List<PircBotX> startQueue = new ArrayList<>();
 	protected State state = State.NEW;
 	protected final Object stateLock = new Object[0];
 

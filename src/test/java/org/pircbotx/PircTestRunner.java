@@ -17,10 +17,12 @@
  */
 package org.pircbotx;
 
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,17 +31,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.LinkedList;
+
 import javax.net.SocketFactory;
-import lombok.NonNull;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.Listener;
@@ -47,12 +44,15 @@ import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.SocketConnectEvent;
-import org.pircbotx.hooks.managers.GenericListenerManager;
 import org.pircbotx.hooks.managers.SequentialListenerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static org.testng.Assert.*;
-import org.testng.ITestContext;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+
+import lombok.NonNull;
 
 /**
  * Various hooks for easier detailed testing
@@ -72,7 +72,7 @@ public class PircTestRunner implements Closeable {
 	public final CapturedPircBotX bot;
 
 	public PircTestRunner(Configuration.Builder config) throws IOException, IrcException {
-		InetAddress address = InetAddress.getByName("127.1.1.1");
+
 		Socket socket = mock(Socket.class);
 		when(socket.isConnected()).thenReturn(true);
 		when(socket.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[0]));

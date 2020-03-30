@@ -17,15 +17,18 @@
  */
 package org.pircbotx;
 
-import com.google.common.collect.Sets;
+import static org.testng.Assert.assertEquals;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.net.ssl.SSLSocketFactory;
-import lombok.extern.slf4j.Slf4j;
-import static org.testng.Assert.*;
+
 import org.testng.annotations.Test;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -65,7 +68,7 @@ public class UtilSSLSocketFactoryTest {
 	}
 
 	private Set<Method> findPublicMethods(Method[] methods) {
-		HashSet<Method> publicMethods = Sets.newHashSet();
+		HashSet<Method> publicMethods = new HashSet<>();
 		for (Method curMethod : methods) {
 			if (!curMethod.isSynthetic()
 					&& curMethod.getDeclaringClass() != Object.class

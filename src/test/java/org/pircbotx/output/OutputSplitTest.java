@@ -17,19 +17,22 @@
  */
 package org.pircbotx.output;
 
-import org.pircbotx.TestPircBotX;
-import com.google.common.collect.Lists;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.pircbotx.Configuration;
+import org.pircbotx.TestPircBotX;
 import org.pircbotx.TestUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.testng.Assert.*;
 
 /**
  *
@@ -69,7 +72,7 @@ public class OutputSplitTest {
 		bot.sendRaw().rawLineSplit("BEG", StringUtils.join(testStrings, ""), "END");
 
 		//Verify output
-		List<String> expectedStrings = Lists.newArrayList();
+		List<String> expectedStrings = new ArrayList<>();
 		for (String curTestString : testStrings) {
 			expectedStrings.add("BEG" + curTestString + "END");
 		}
@@ -93,7 +96,7 @@ public class OutputSplitTest {
 		bot.sendRaw().rawLineSplit("BEG", StringUtils.join(testStrings, "\n"), "END");
 
 		//Verify output
-		List<String> expectedStrings = Lists.newArrayList();
+		List<String> expectedStrings = new ArrayList<>();
 		for (String curTestString : testStrings) {
 			expectedStrings.add("BEG" + curTestString + "END");
 		}

@@ -18,11 +18,9 @@
 package org.pircbotx.hooks.managers;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -76,8 +74,8 @@ public class SequentialListenerManager extends AbstractListenerManager {
 	/**
 	 * Key: The actual listener, Value: The wrapper that calls it
 	 */
-	protected final LinkedList<Listener> listeners = Lists.newLinkedList();
-	protected final LinkedList<ListenerExecutor> listenerExecutors = Lists.newLinkedList();
+	protected final LinkedList<Listener> listeners = new LinkedList<>();
+	protected final LinkedList<ListenerExecutor> listenerExecutors = new LinkedList<>();
 	/**
 	 * Creates threads used in sequential listeners
 	 */
