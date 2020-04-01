@@ -57,7 +57,10 @@ public class OutputRaw {
 		this.bot = bot;
 		long delayMs = bot.getConfiguration().getMessageDelay().getDelay(); 
 		
-		limiter = RateLimiter.create(1000.0 / delayMs);
+		if (delayMs >= 1)
+			limiter = RateLimiter.create(1000.0 / delayMs);
+		else
+			limiter = RateLimiter.create(10000);
 	}
 
 	/**
