@@ -17,13 +17,21 @@
  */
 package org.pircbotx;
 
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
+import org.apache.commons.lang3.concurrent.ConcurrentException;
+import org.pircbotx.exception.NotReadyException;
+import org.pircbotx.hooks.managers.ThreadedListenerManager;
+import org.pircbotx.output.OutputChannel;
+import org.pircbotx.snapshot.ChannelSnapshot;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -31,12 +39,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
-import org.apache.commons.lang3.concurrent.ConcurrentException;
-import org.pircbotx.hooks.managers.ThreadedListenerManager;
-import org.pircbotx.output.OutputChannel;
-import org.pircbotx.snapshot.ChannelSnapshot;
 
 /**
  * Represents a Channel that we're joined to.
@@ -207,50 +209,43 @@ public class Channel implements Comparable<Channel> {
 	 *
 	 * @return A known good mode, either immediately or soon.
 	 */
-	public String getMode() {
+	public String getMode() throws NotReadyException {
 		synchronized (modeChangeLock) {
 			if (mode != null)
 				return mode;
+			else
+				throw new NotReadyException("Mode not ready yet");
 		}
-
-		log.debug("Pausing channel {} getMode() until server responds with fresh mode", name);
-
-		//While unlikely, mode could be reset. Continuously try
-		int counter = 0;
-		while (true) {
-			log.trace("Attempt #{} to get mode for channel {}", counter++, name);
-			try {
-				CountDownLatch modeWait;
-				synchronized (modeChangeLock) {
-					modeWait = modeChangeLatch;
-				}
-				modeWait.await(250, TimeUnit.MILLISECONDS);//Don't wait forever
-			} catch (InterruptedException e) {
-				throw new RuntimeException("Waiting for mode response for channel " + name + " interrupted", e);
-			}
-
-			synchronized (modeChangeLock) {
-				if (mode != null) {
-					log.debug("Exiting pause for channel {} getMode()", name);
-					return mode;
-				}
-				
-				if (counter >= 10) { //if we have iterated more than 10x250ms (2½ seconds) then we set mode to empty
-					log.warn("gave up on waithing for channel mode, channel {} getMode()", name);
-					mode = "";
-					return mode;
-				}
-			}
+	}
+	
+	public String getMode(String defaultValue)  {
+		try {
+			return getMode();
+		} catch (NotReadyException e) {
+			return defaultValue;
 		}
 	}
 
-	public boolean containsMode(char modeLetter) {
+	public boolean containsMode(char modeLetter) throws NotReadyException {
 		final String mode = getMode();
 		if (mode.isEmpty())
 			return false;
 		
 		String modeLetters = StringUtils.split(mode, ' ')[0];
 		return StringUtils.contains(modeLetters, modeLetter);
+	}
+	
+	public boolean containsMode(char modeLetter, boolean defaultValue) {
+		try {
+			final String mode = getMode();
+			if (mode.isEmpty())
+				return false;
+			
+			String modeLetters = StringUtils.split(mode, ' ')[0];
+			return StringUtils.contains(modeLetters, modeLetter);
+		} catch (NotReadyException e) {
+			return defaultValue;
+		}
 	}
 
 	/**
