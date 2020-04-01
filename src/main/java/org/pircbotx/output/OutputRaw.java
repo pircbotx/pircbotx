@@ -85,12 +85,12 @@ public class OutputRaw {
 		
 		limiter.acquire();
 		
-		
-		writeLock.lock();
 		if (StringUtils.isNotBlank(logline))
 			log.info(OUTPUT_MARKER, logline);
 		else
-			log.info(OUTPUT_MARKER, line);
+			log.info(OUTPUT_MARKER, line);		
+		writeLock.lock();
+
 		
 		try {
 			Utils.sendRawLineToServer(bot, line);
@@ -123,12 +123,13 @@ public class OutputRaw {
 	public void rawLineNow(String line, String logline) {
 		checkNotNull(line, "Line cannot be null");
 		checkArgument(bot.isConnected(), "Not connected to server");
+		
+		if (StringUtils.isNotBlank(logline))
+			log.info(OUTPUT_MARKER, logline);
+		else
+			log.info(OUTPUT_MARKER, line);		
 		writeLock.lock();
 		try {
-			if (StringUtils.isNotBlank(logline))
-				log.info(OUTPUT_MARKER, logline);
-			else
-				log.info(OUTPUT_MARKER, line);
 			
 			Utils.sendRawLineToServer(bot, line);
 			
