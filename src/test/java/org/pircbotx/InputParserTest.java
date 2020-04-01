@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.exception.IrcException;
+import org.pircbotx.exception.NotReadyException;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.BanListEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
@@ -425,7 +426,7 @@ public class InputParserTest {
 	}
 
 	@Test
-	public void modeResponseTest() throws IOException, IrcException {
+	public void modeResponseTest() throws IOException, IrcException, NotReadyException {
 		Channel aChannel = dao.createChannel("#aChannel");
 
 		assertFalse(aChannel.isModerated());
@@ -446,7 +447,7 @@ public class InputParserTest {
 	}
 
 	@Test
-	public void containsModeTest() throws IOException, IrcException {
+	public void containsModeTest() throws IOException, IrcException, NotReadyException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 324 PircBotXUser #aChannel +ipmd");
 
@@ -563,7 +564,7 @@ public class InputParserTest {
 	}
 
 	@Test(dataProvider = "channelModeProvider")
-	public void channelModeChangeTest(String mode, String parentMode, Class<?> modeClass) throws IOException, IrcException {
+	public void channelModeChangeTest(String mode, String parentMode, Class<?> modeClass) throws IOException, IrcException, NotReadyException {
 		Channel aChannel = dao.createChannel("#aChannel");
 		User aUser = TestUtils.generateTestUserSource(bot);
 		if (mode.startsWith("-")) {
