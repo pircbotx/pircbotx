@@ -475,16 +475,18 @@ public class InputParserTest {
 
 	@DataProvider
 	public Object[][] channelUserModeProvider() {
-		return new Object[][]{{"+o", OpEvent.class, "isOp"},
-		{"-o", OpEvent.class, "isOp"},
-		{"+v", VoiceEvent.class, "hasVoice"},
-		{"-v", VoiceEvent.class, "hasVoice"},
-		{"+q", OwnerEvent.class, "isOwner"},
-		{"-q", OwnerEvent.class, "isOwner"},
-		{"+h", HalfOpEvent.class, "isHalfOp"},
-		{"-h", HalfOpEvent.class, "isHalfOp"},
-		{"+a", SuperOpEvent.class, "isSuperOp"},
-		{"-a", SuperOpEvent.class, "isSuperOp"}};
+		return new Object[][]{
+			{"+o", OpEvent.class, "isOp"},
+			{"-o", OpEvent.class, "isOp"},
+			{"+v", VoiceEvent.class, "hasVoice"},
+			{"-v", VoiceEvent.class, "hasVoice"},
+			{"+q", OwnerEvent.class, "isOwner"},
+			{"-q", OwnerEvent.class, "isOwner"},
+			{"+h", HalfOpEvent.class, "isHalfOp"},
+			{"-h", HalfOpEvent.class, "isHalfOp"},
+			{"+a", SuperOpEvent.class, "isSuperOp"},
+			{"-a", SuperOpEvent.class, "isSuperOp"}
+		};
 	}
 
 	@Test(dataProvider = "channelUserModeProvider", description = "Test setting various user modes and verifying events")
@@ -512,6 +514,35 @@ public class InputParserTest {
 		//Make sure the channels is* method returns the correct value
 		assertEquals(aChannel.getClass().getMethod(checkMethod, User.class).invoke(aChannel, aUser2), mode.startsWith("+"), "Channels's " + checkMethod + " method doesn't return correct value");
 	}
+	
+	
+	//Tests the same as previous but with a : befor the target name
+	//Inspircd 3 uses this variant
+	@Test(dataProvider = "channelUserModeProvider", description = "Test setting various user modes and verifying events")
+	public void channelUserModeTest2(String mode, Class<?> eventClass, String checkMethod) throws Exception {
+		Channel aChannel = dao.createChannel("#aChannel");
+		User aUser = TestUtils.generateTestUserSource(bot);
+		User aUser2 = TestUtils.generateTestUserOther(bot);
+		inputParser.handleLine(":" + aUser.getHostmask() + " MODE #aChannel " + mode + " :" + aUser2.getNick()); 
+
+		//Verify generic ModeEvent contents
+		ModeEvent mevent = bot.getTestEvent(ModeEvent.class, "No ModeEvent dispatched with " + mode);
+		assertEquals(mevent.getChannel(), aChannel, "ModeEvent's channel does not match given with mode " + mode);
+		assertEquals(mevent.getUser(), aUser, "ModeEvent's user does not match given with mode " + mode);
+		assertEquals(mevent.getMode(), mode + " :OtherUser", "ModeEvent's mode does not match given mode");
+
+		//Verify specific event contents
+		GenericUserModeEvent event = (GenericUserModeEvent) bot.getTestEvent(eventClass, "No " + eventClass.getSimpleName() + " dispatched with " + mode);
+//		assertEquals(event.getChannel(), aChannel, eventClass.getSimpleName() + "'s channel does not match given with mode " + mode);
+		assertEquals(event.getUser(), aUser, eventClass.getSimpleName() + "'s source user does not match given with mode " + mode);
+		assertEquals(event.getRecipient(), aUser2, eventClass.getSimpleName() + "'s recipient user does not match given with mode " + mode);
+
+		//Make sure the event's is* method returns the correct value
+		assertEquals(eventClass.getMethod(checkMethod).invoke(event), mode.startsWith("+"), "Event's " + checkMethod + " method doesn't return correct value");
+
+		//Make sure the channels is* method returns the correct value
+		assertEquals(aChannel.getClass().getMethod(checkMethod, User.class).invoke(aChannel, aUser2), mode.startsWith("+"), "Channels's " + checkMethod + " method doesn't return correct value");
+	}	
 
 	@DataProvider
 	protected Object[][] channelModeProvider() {
