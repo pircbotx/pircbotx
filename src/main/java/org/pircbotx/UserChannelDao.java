@@ -149,12 +149,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@SuppressWarnings("unchecked")
 	public U createUser(@NonNull UserHostmask userHostmask) {
+		String nickLowercase = userHostmask.getNick().toLowerCase(locale);
+		
 		wL.lock();
 		try {
 			if (containsUser(userHostmask))
 				throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
 			U user = (U) botFactory.createUser(userHostmask);
-			userNickMap.put(userHostmask.getNick().toLowerCase(locale), user);
+			userNickMap.put(nickLowercase, user);
 			return user;
 		} finally {
 			wL.unlock();
@@ -374,6 +376,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	
 	protected void removeUser(@NonNull U user) {
+		String nickLowercase = user.getNick().toLowerCase(locale);
+		
 		wL.lock();
 		try {							
 			mainMap.removeUser(user);
@@ -381,8 +385,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 				curLevelMap.removeUser(user);
 	
 			//Remove remaining locations
-			userNickMap.remove(user.getNick().toLowerCase(locale));
-			privateUsers.remove(user.getNick().toLowerCase(locale));
+			userNickMap.remove(nickLowercase);
+			privateUsers.remove(nickLowercase);
 		} finally {
 			wL.unlock();
 		}			
@@ -421,16 +425,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public C getChannel(@NonNull String name) throws DaoException {
 		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
 	
+		String nameLowercase = name.toLowerCase(locale);
 		rL.lock();
 		try {					
-			C chan = channelNameMap.get(name.toLowerCase(locale));
+			C chan = channelNameMap.get(nameLowercase);
 			if (chan != null)
 				return chan;
 	
 			//This could potentially be a mode message, strip off prefixes till we get a channel
 			String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
 			if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
-				String nameTrimmed = name.toLowerCase(locale);
+				String nameTrimmed = nameLowercase;
 				do {
 					nameTrimmed = nameTrimmed.substring(1);
 					chan = channelNameMap.get(nameTrimmed);
@@ -454,10 +459,13 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@SuppressWarnings("unchecked")
 	public C createChannel(@NonNull String name) {
+		
+		String nameLowercase = name.toLowerCase(locale);
+		
 		wL.lock();
 		try {		
 			C chan = (C) botFactory.createChannel(bot, name);
-			channelNameMap.put(name.toLowerCase(locale), chan);
+			channelNameMap.put(nameLowercase, chan);
 			return chan;
 		} finally {
 			wL.unlock();
@@ -472,15 +480,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @return True if we are still connected to the channel
 	 */
 	public boolean containsChannel(@NonNull String name) {
+		
+		String nameLowercase = name.toLowerCase(locale);
+		
 		rL.lock();
 		try {		
-			if (channelNameMap.containsKey(name.toLowerCase(locale)))
+			if (channelNameMap.containsKey(nameLowercase))
 				return true;
 	
 			//This could potentially be a mode message, strip off prefixes till we get a channel
 			String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
 			if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
-				String nameTrimmed = name.toLowerCase(locale);
+				String nameTrimmed = nameLowercase;
 				do {
 					nameTrimmed = nameTrimmed.substring(1);
 					if (channelNameMap.containsKey(nameTrimmed))
