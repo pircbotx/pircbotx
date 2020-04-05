@@ -21,11 +21,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Closeable;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.exception.DaoException;
@@ -67,6 +69,10 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Map<String, U> userNickMap;
 	protected final Map<String, C> channelNameMap;
 	protected final Map<String, U> privateUsers;
+	
+    private final ReentrantReadWriteLock reentlock = new ReentrantReadWriteLock();
+    private final Lock rL = reentlock.readLock();
+    private final Lock wL = reentlock.writeLock();
 
 	protected UserChannelDao(PircBotX bot, Configuration.BotFactory botFactory) {
 		this.bot = bot;
@@ -74,9 +80,9 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		this.locale = bot.getConfiguration().getLocale();
 		this.mainMap = new UserChannelMap<U, C>();
 		
-		userNickMap = new ConcurrentHashMap<>();
-		channelNameMap = new ConcurrentHashMap<>();
-		privateUsers = new ConcurrentHashMap<>();		
+		userNickMap = new HashMap<>();
+		channelNameMap = new HashMap<>();
+		privateUsers = new HashMap<>();		
 
 		//Initialize levels map with a UserChannelMap for each level		
 		this.levelsMap = new ConcurrentEnumMap<>(UserLevel.class);
@@ -95,12 +101,18 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */	
 	public U getUser(@NonNull String nick) throws DaoException {
 		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
-		U user = userNickMap.get(nick.toLowerCase(locale));
-		if (user != null)
-			return user;
-
-		//Does not exist
-		throw new DaoException(DaoException.Reason.UNKNOWN_USER, nick);
+		
+		rL.lock();
+		try {			
+			U user = userNickMap.get(nick.toLowerCase(locale));
+			if (user != null)
+				return user;
+	
+			//Does not exist
+			throw new DaoException(DaoException.Reason.UNKNOWN_USER, nick);
+		} finally {
+			rL.unlock();
+		}
 	}
 
 	/**
@@ -113,6 +125,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * hostmask, and wrapped exception with nick
 	 */
 	public U getUser(@NonNull UserHostmask userHostmask) {
+		rL.lock();
 		try {
 			//Rarely we don't get the full hostmask
 			//eg, the server setting your usermode when you connect to the server
@@ -122,6 +135,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		} catch (Exception e) {
 			//Does not exist, wrap with detail about hostmask
 			throw new DaoException(DaoException.Reason.UNKNOWN_USER_HOSTMASK, userHostmask.toString(), e);
+		} finally {
+			rL.unlock();
 		}
 	}
 
@@ -134,11 +149,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@SuppressWarnings("unchecked")
 	public U createUser(@NonNull UserHostmask userHostmask) {
-		if (containsUser(userHostmask))
-			throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
-		U user = (U) botFactory.createUser(userHostmask);
-		userNickMap.put(userHostmask.getNick().toLowerCase(locale), user);
-		return user;
+		wL.lock();
+		try {
+			if (containsUser(userHostmask))
+				throw new RuntimeException("Cannot create a user from hostmask that already exists: " + userHostmask);
+			U user = (U) botFactory.createUser(userHostmask);
+			userNickMap.put(userHostmask.getNick().toLowerCase(locale), user);
+			return user;
+		} finally {
+			wL.unlock();
+		}			
+			
 	}
 
 
@@ -150,7 +171,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	public boolean containsUser(@NonNull String nick) {
 		String nickLowercase = nick.toLowerCase(locale);
-		return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
+		
+		rL.lock();
+		try {					
+			return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
+		} finally {
+			rL.unlock();
+		}			
+			
 	}
 
 	/**
@@ -160,7 +188,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @return True if user exists
 	 */
 	public boolean containsUser(@NonNull UserHostmask hostmask) {
-		return containsUser(hostmask.getNick());
+		rL.lock();
+		try {				
+			return containsUser(hostmask.getNick());
+		} finally {
+			rL.unlock();
+		}				
 	}
 
 	/**
@@ -171,27 +204,53 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @see UserListEvent
 	 */
 	public ImmutableSortedSet<U> getAllUsers() {
-		return ImmutableSortedSet.copyOf(userNickMap.values());
+		rL.lock();
+		try {		
+			return ImmutableSortedSet.copyOf(userNickMap.values());
+		} finally {
+			rL.unlock();
+		}			
 	}
 
 	
 	protected void addUserToChannel(@NonNull U user, @NonNull C channel) {
-		mainMap.addUserToChannel(user, channel);
+		wL.lock();
+		try {				
+			mainMap.addUserToChannel(user, channel);
+		} finally {
+			wL.unlock();
+		}			
 	}
 
 	protected void addUserToPrivate(@NonNull U user) {
 		String nick = user.getNick().toLowerCase(locale);
-		privateUsers.put(nick, user);
+		
+		wL.lock();
+		try {									
+			privateUsers.put(nick, user);
+		} finally {
+			wL.unlock();
+		}				
 	}
 
 	
 	protected void addUserToLevel(@NonNull UserLevel level, @NonNull U user, @NonNull C channel) {
-		levelsMap.get(level).addUserToChannel(user, channel);
+		wL.lock();
+		try {		
+			levelsMap.get(level).addUserToChannel(user, channel);
+		} finally {
+			wL.unlock();
+		}				
 	}
 
 	
 	protected void removeUserFromLevel(@NonNull UserLevel level, @NonNull U user, @NonNull C channel) {
-		levelsMap.get(level).removeUserFromChannel(user, channel);
+		wL.lock();
+		try {		
+			levelsMap.get(level).removeUserFromChannel(user, channel);
+		} finally {
+			wL.unlock();
+		}							
 	}
 
 	/**
@@ -204,10 +263,15 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<U> getNormalUsers(@NonNull C channel) {
-		Set<U> remainingUsers = new HashSet<U>(mainMap.getUsers(channel));
-		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
-			remainingUsers.removeAll(curLevelMap.getUsers(channel));
-		return ImmutableSortedSet.copyOf(remainingUsers);
+		rL.lock();
+		try {				
+			Set<U> remainingUsers = new HashSet<U>(mainMap.getUsers(channel));
+			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
+				remainingUsers.removeAll(curLevelMap.getUsers(channel));
+			return ImmutableSortedSet.copyOf(remainingUsers);
+		} finally {
+			rL.unlock();
+		}			
 	}
 
 	/**
@@ -221,7 +285,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<U> getUsers(@NonNull C channel, @NonNull UserLevel level) {
-		return levelsMap.get(level).getUsers(channel);
+		rL.lock();
+		try {						
+			return levelsMap.get(level).getUsers(channel);
+		} finally {
+			rL.unlock();
+		}				
 	}
 
 	/**
@@ -235,11 +304,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<UserLevel> getLevels(@NonNull C channel, @NonNull U user) {
-		ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.naturalOrder();
-		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curEntry : levelsMap.entrySet())
-			if (curEntry.getValue().containsEntry(user, channel))
-				builder.add(curEntry.getKey());
-		return builder.build();
+		rL.lock();
+		try {						
+			ImmutableSortedSet.Builder<UserLevel> builder = ImmutableSortedSet.naturalOrder();
+			for (Map.Entry<UserLevel, UserChannelMap<U, C>> curEntry : levelsMap.entrySet())
+				if (curEntry.getValue().containsEntry(user, channel))
+					builder.add(curEntry.getKey());
+			return builder.build();
+		} finally {
+			rL.unlock();
+		}				
+			
 	}
 
 	/**
@@ -252,10 +327,15 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<C> getNormalUserChannels(@NonNull U user) {
-		Set<C> remainingChannels = new HashSet<C>(mainMap.getChannels(user));
-		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
-			remainingChannels.removeAll(curLevelMap.getChannels(user));
-		return ImmutableSortedSet.copyOf(remainingChannels);
+		rL.lock();
+		try {						
+			Set<C> remainingChannels = new HashSet<C>(mainMap.getChannels(user));
+			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
+				remainingChannels.removeAll(curLevelMap.getChannels(user));
+			return ImmutableSortedSet.copyOf(remainingChannels);
+		} finally {
+			rL.unlock();
+		}			
 	}
 
 	/**
@@ -268,43 +348,68 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<C> getChannels(@NonNull U user, @NonNull UserLevel level) {
-		return levelsMap.get(level).getChannels(user);
+		rL.lock();
+		try {				
+			return levelsMap.get(level).getChannels(user);
+		} finally {
+			rL.unlock();
+		}				
 	}
 
 	
 	protected void removeUserFromChannel(@NonNull U user, @NonNull C channel) {
-		mainMap.removeUserFromChannel(user, channel);
-		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
-			curLevelMap.removeUserFromChannel(user, channel);
-
-		if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
-			//Completely remove user
-			userNickMap.remove(user.getNick().toLowerCase(locale));
+		wL.lock();
+		try {						
+			mainMap.removeUserFromChannel(user, channel);
+			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
+				curLevelMap.removeUserFromChannel(user, channel);
+	
+			if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
+				//Completely remove user
+				userNickMap.remove(user.getNick().toLowerCase(locale));
+		} finally {
+			wL.unlock();
+		}						
 	}
 
 	
 	protected void removeUser(@NonNull U user) {
-		mainMap.removeUser(user);
-		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
-			curLevelMap.removeUser(user);
-
-		//Remove remaining locations
-		userNickMap.remove(user.getNick().toLowerCase(locale));
-		privateUsers.remove(user.getNick().toLowerCase(locale));
+		wL.lock();
+		try {							
+			mainMap.removeUser(user);
+			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
+				curLevelMap.removeUser(user);
+	
+			//Remove remaining locations
+			userNickMap.remove(user.getNick().toLowerCase(locale));
+			privateUsers.remove(user.getNick().toLowerCase(locale));
+		} finally {
+			wL.unlock();
+		}			
 	}
 
 	
 	protected boolean levelContainsUser(@NonNull UserLevel level, @NonNull C channel, @NonNull U user) {
-		return levelsMap.get(level).containsEntry(user, channel);
+		rL.lock();
+		try {		
+			return levelsMap.get(level).containsEntry(user, channel);
+		} finally {
+			rL.unlock();
+		}						
 	}
 
 	
 	protected void renameUser(@NonNull U user, @NonNull String newNick) {
-		String oldNick = user.getNick();
-
-		user.setNick(newNick);
-		userNickMap.remove(oldNick.toLowerCase(locale));
-		userNickMap.put(newNick.toLowerCase(locale), user);
+		wL.lock();
+		try {		
+			String oldNick = user.getNick();
+	
+			user.setNick(newNick);
+			userNickMap.remove(oldNick.toLowerCase(locale));
+			userNickMap.put(newNick.toLowerCase(locale), user);
+		} finally {
+			wL.unlock();
+		}			
 	}
 
 	/**
@@ -315,24 +420,31 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	public C getChannel(@NonNull String name) throws DaoException {
 		checkArgument(StringUtils.isNotBlank(name), "Cannot get a blank channel");
-		C chan = channelNameMap.get(name.toLowerCase(locale));
-		if (chan != null)
-			return chan;
-
-		//This could potentially be a mode message, strip off prefixes till we get a channel
-		String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
-		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
-			String nameTrimmed = name.toLowerCase(locale);
-			do {
-				nameTrimmed = nameTrimmed.substring(1);
-				chan = channelNameMap.get(nameTrimmed);
-				if (chan != null)
-					return chan;
-			} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
-		}
-
-		//Channel does not exist
-		throw new DaoException(DaoException.Reason.UNKNOWN_CHANNEL, name);
+	
+		rL.lock();
+		try {					
+			C chan = channelNameMap.get(name.toLowerCase(locale));
+			if (chan != null)
+				return chan;
+	
+			//This could potentially be a mode message, strip off prefixes till we get a channel
+			String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
+			if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
+				String nameTrimmed = name.toLowerCase(locale);
+				do {
+					nameTrimmed = nameTrimmed.substring(1);
+					chan = channelNameMap.get(nameTrimmed);
+					if (chan != null)
+						return chan;
+				} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
+			}
+	
+			//Channel does not exist
+			throw new DaoException(DaoException.Reason.UNKNOWN_CHANNEL, name);
+		} finally {
+			rL.unlock();
+		}			
+			
 	}
 
 	/**
@@ -342,9 +454,14 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	@SuppressWarnings("unchecked")
 	public C createChannel(@NonNull String name) {
-		C chan = (C) botFactory.createChannel(bot, name);
-		channelNameMap.put(name.toLowerCase(locale), chan);
-		return chan;
+		wL.lock();
+		try {		
+			C chan = (C) botFactory.createChannel(bot, name);
+			channelNameMap.put(name.toLowerCase(locale), chan);
+			return chan;
+		} finally {
+			wL.unlock();
+		}				
 	}
 
 
@@ -355,22 +472,28 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @return True if we are still connected to the channel
 	 */
 	public boolean containsChannel(@NonNull String name) {
-		if (channelNameMap.containsKey(name.toLowerCase(locale)))
-			return true;
-
-		//This could potentially be a mode message, strip off prefixes till we get a channel
-		String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
-		if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
-			String nameTrimmed = name.toLowerCase(locale);
-			do {
-				nameTrimmed = nameTrimmed.substring(1);
-				if (channelNameMap.containsKey(nameTrimmed))
-					return true;
-			} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
-		}
-
-		//Nope, doesn't exist
-		return false;
+		rL.lock();
+		try {		
+			if (channelNameMap.containsKey(name.toLowerCase(locale)))
+				return true;
+	
+			//This could potentially be a mode message, strip off prefixes till we get a channel
+			String modePrefixes = bot.getConfiguration().getUserLevelPrefixes();
+			if (modePrefixes.contains(Character.toString(name.charAt(0)))) {
+				String nameTrimmed = name.toLowerCase(locale);
+				do {
+					nameTrimmed = nameTrimmed.substring(1);
+					if (channelNameMap.containsKey(nameTrimmed))
+						return true;
+				} while (modePrefixes.contains(Character.toString(nameTrimmed.charAt(0))));
+			}
+	
+			//Nope, doesn't exist
+			return false;
+		} finally {
+			rL.unlock();
+		}				
+			
 	}
 
 	/**
@@ -381,7 +504,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<U> getUsers(@NonNull C channel) {
-		return mainMap.getUsers(channel);
+		rL.lock();
+		try {		
+			return mainMap.getUsers(channel);
+		} finally {
+			rL.unlock();
+		}				
 	}
 
 	/**
@@ -390,7 +518,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 * @return An immutable set of channels
 	 */
 	public ImmutableSortedSet<C> getAllChannels() {
-		return ImmutableSortedSet.copyOf(channelNameMap.values());
+		rL.lock();
+		try {		
+			return ImmutableSortedSet.copyOf(channelNameMap.values());
+		} finally {
+			rL.unlock();
+		}				
 	}
 
 	/**
@@ -401,17 +534,27 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public ImmutableSortedSet<C> getChannels(@NonNull U user) {
-		return mainMap.getChannels(user);
+		rL.lock();
+		try {		
+			return mainMap.getChannels(user);
+		} finally {
+			rL.unlock();
+		}
 	}
 
 	
 	protected void removeChannel(@NonNull C channel) {
-		mainMap.removeChannel(channel);
-		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
-			curLevelMap.removeChannel(channel);
-
-		//Remove remaining locations
-		channelNameMap.remove(channel.getName());
+		wL.lock();
+		try {		
+			mainMap.removeChannel(channel);
+			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
+				curLevelMap.removeChannel(channel);
+	
+			//Remove remaining locations
+			channelNameMap.remove(channel.getName());
+		} finally {
+			wL.unlock();
+		}
 	}
 
 	/**
@@ -419,7 +562,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 *
 	 * @return The user object representing this bot
 	 */
-	public User getUserBot() {
+	public User getUserBot() {		
 		return getUser(bot.getNick());
 	}
 
@@ -428,12 +571,17 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public void close() {
-		mainMap.clear();
-		for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
-			curLevelMap.clear();
-		channelNameMap.clear();
-		privateUsers.clear();
-		userNickMap.clear();
+		wL.lock();
+		try {		
+			mainMap.clear();
+			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
+				curLevelMap.clear();
+			channelNameMap.clear();
+			privateUsers.clear();
+			userNickMap.clear();
+		} finally {
+			wL.unlock();
+		}
 	}
 
 	/**
@@ -444,45 +592,51 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	 */
 	
 	public UserChannelDaoSnapshot createSnapshot() {
-		//Create snapshots of all users and channels
-		Map<U, UserSnapshot> userSnapshotMap = Maps.newHashMapWithExpectedSize(userNickMap.size());
-		for (U curUser : userNickMap.values())
-			userSnapshotMap.put(curUser, curUser.createSnapshot());
-		Map<C, ChannelSnapshot> channelSnapshotMap = Maps.newHashMapWithExpectedSize(channelNameMap.size());
-		for (C curChannel : channelNameMap.values())
-			channelSnapshotMap.put(curChannel, curChannel.createSnapshot());
-
-		//Make snapshots of the relationship maps using the above user and channel snapshots
-		UserChannelMapSnapshot mainMapSnapshot = mainMap.createSnapshot(userSnapshotMap, channelSnapshotMap);
-		EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = new EnumMap<>(UserLevel.class);
-		for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
-			levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
-		ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, U> curNickEntry : userNickMap.entrySet())
-			userNickMapSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
-		ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, C> curName : channelNameMap.entrySet())
-			channelNameMapSnapshotBuilder.put(curName.getKey(), channelSnapshotMap.get(curName.getValue()));
-		ImmutableBiMap.Builder<String, UserSnapshot> privateUserSnapshotBuilder = ImmutableBiMap.builder();
-		for (Map.Entry<String, U> curNickEntry : privateUsers.entrySet())
-			privateUserSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
-
-		//Finally can create the snapshot object
-		UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,
-				locale,
-				mainMapSnapshot,
-				levelsMapSnapshot,
-				userNickMapSnapshotBuilder.build(),
-				channelNameMapSnapshotBuilder.build(),
-				privateUserSnapshotBuilder.build());
-
-		//Tell UserSnapshots and ChannelSnapshots what the new backing dao is
-		for (UserSnapshot curUserSnapshot : userSnapshotMap.values())
-			curUserSnapshot.setDao(daoSnapshot);
-		for (ChannelSnapshot curChannelSnapshot : channelSnapshotMap.values())
-			curChannelSnapshot.setDao(daoSnapshot);
-
-		//Finally
-		return daoSnapshot;
+		rL.lock();
+		try {		
+			//Create snapshots of all users and channels
+			Map<U, UserSnapshot> userSnapshotMap = Maps.newHashMapWithExpectedSize(userNickMap.size());
+			for (U curUser : userNickMap.values())
+				userSnapshotMap.put(curUser, curUser.createSnapshot());
+			Map<C, ChannelSnapshot> channelSnapshotMap = Maps.newHashMapWithExpectedSize(channelNameMap.size());
+			for (C curChannel : channelNameMap.values())
+				channelSnapshotMap.put(curChannel, curChannel.createSnapshot());
+	
+			//Make snapshots of the relationship maps using the above user and channel snapshots
+			UserChannelMapSnapshot mainMapSnapshot = mainMap.createSnapshot(userSnapshotMap, channelSnapshotMap);
+			EnumMap<UserLevel, UserChannelMap<UserSnapshot, ChannelSnapshot>> levelsMapSnapshot = new EnumMap<>(UserLevel.class);
+			for (Map.Entry<UserLevel, UserChannelMap<U, C>> curLevel : levelsMap.entrySet())
+				levelsMapSnapshot.put(curLevel.getKey(), curLevel.getValue().createSnapshot(userSnapshotMap, channelSnapshotMap));
+			ImmutableBiMap.Builder<String, UserSnapshot> userNickMapSnapshotBuilder = ImmutableBiMap.builder();
+			for (Map.Entry<String, U> curNickEntry : userNickMap.entrySet())
+				userNickMapSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
+			ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
+			for (Map.Entry<String, C> curName : channelNameMap.entrySet())
+				channelNameMapSnapshotBuilder.put(curName.getKey(), channelSnapshotMap.get(curName.getValue()));
+			ImmutableBiMap.Builder<String, UserSnapshot> privateUserSnapshotBuilder = ImmutableBiMap.builder();
+			for (Map.Entry<String, U> curNickEntry : privateUsers.entrySet())
+				privateUserSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
+	
+			//Finally can create the snapshot object
+			UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,
+					locale,
+					mainMapSnapshot,
+					levelsMapSnapshot,
+					userNickMapSnapshotBuilder.build(),
+					channelNameMapSnapshotBuilder.build(),
+					privateUserSnapshotBuilder.build());
+	
+			//Tell UserSnapshots and ChannelSnapshots what the new backing dao is
+			for (UserSnapshot curUserSnapshot : userSnapshotMap.values())
+				curUserSnapshot.setDao(daoSnapshot);
+			for (ChannelSnapshot curChannelSnapshot : channelSnapshotMap.values())
+				curChannelSnapshot.setDao(daoSnapshot);
+	
+			//Finally
+			return daoSnapshot;
+		} finally {
+			rL.unlock();
+		}
+			
 	}
 }
