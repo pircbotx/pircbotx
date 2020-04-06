@@ -372,7 +372,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	
 			if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
 				//Completely remove user
-				userNickMap.remove(nickLowercase.toLowerCase(locale));
+				userNickMap.remove(nickLowercase);
 		} finally {
 			wL.unlock();
 		}						
