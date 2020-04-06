@@ -102,9 +102,11 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	public U getUser(@NonNull String nick) throws DaoException {
 		checkArgument(StringUtils.isNotBlank(nick), "Cannot get a blank user");
 		
+		String nickLowercase = nick.toLowerCase(locale);
+		
 		rL.lock();
 		try {			
-			U user = userNickMap.get(nick.toLowerCase(locale));
+			U user = userNickMap.get(nickLowercase);
 			if (user != null)
 				return user;
 	
@@ -360,6 +362,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	
 	protected void removeUserFromChannel(@NonNull U user, @NonNull C channel) {
+		String nickLowercase = user.getNick().toLowerCase(locale);
+		
 		wL.lock();
 		try {						
 			mainMap.removeUserFromChannel(user, channel);
@@ -368,7 +372,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	
 			if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
 				//Completely remove user
-				userNickMap.remove(user.getNick().toLowerCase(locale));
+				userNickMap.remove(nickLowercase.toLowerCase(locale));
 		} finally {
 			wL.unlock();
 		}						
@@ -404,13 +408,16 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 
 	
 	protected void renameUser(@NonNull U user, @NonNull String newNick) {
+		String oldNick = user.getNick();
+		String oldNickLowercase = oldNick.toLowerCase(locale);
+		String newNickLowercase = newNick.toLowerCase(locale);
+		
 		wL.lock();
 		try {		
-			String oldNick = user.getNick();
-	
+				
 			user.setNick(newNick);
-			userNickMap.remove(oldNick.toLowerCase(locale));
-			userNickMap.put(newNick.toLowerCase(locale), user);
+			userNickMap.remove(oldNickLowercase);
+			userNickMap.put(newNickLowercase, user);
 		} finally {
 			wL.unlock();
 		}			
