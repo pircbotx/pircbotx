@@ -198,7 +198,7 @@ public class InputParser implements Closeable {
 					@Override
 					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 						if (adding) {
-							int limit = Integer.parseInt(params.next());
+							int limit = Integer.parseInt(StringUtils.removeStart(params.next(), ":"));
 							channel.setChannelLimit(limit);
 							if (dispatchEvent)
 								Utils.dispatchEvent(bot, new SetChannelLimitEvent(bot, channel, sourceHostmask, sourceUser, limit));
