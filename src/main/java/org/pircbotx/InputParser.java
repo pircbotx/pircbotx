@@ -561,7 +561,6 @@ public class InputParser implements Closeable {
 			// This is a private message to us.
 			//Add to private message
 			sourceUser = createUserIfNull(sourceUser, source);
-			bot.getUserChannelDao().addUserToPrivate(sourceUser);
 			configuration.getListenerManager().onEvent(new PrivateMessageEvent(bot, source, sourceUser, message, tags));
 		} else if (command.equals("JOIN")) {
 			// Someone is joining a channel.

@@ -68,7 +68,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	protected final Map<UserLevel, UserChannelMap<U, C>> levelsMap;
 	protected final Map<String, U> userNickMap;
 	protected final Map<String, C> channelNameMap;
-	protected final Map<String, U> privateUsers;
+
 	
     private final ReentrantReadWriteLock reentlock = new ReentrantReadWriteLock();
     private final Lock rL = reentlock.readLock();
@@ -81,8 +81,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		this.mainMap = new UserChannelMap<U, C>();
 		
 		userNickMap = new HashMap<>();
-		channelNameMap = new HashMap<>();
-		privateUsers = new HashMap<>();		
+		channelNameMap = new HashMap<>();		
 
 		//Initialize levels map with a UserChannelMap for each level		
 		this.levelsMap = new ConcurrentEnumMap<>(UserLevel.class);
@@ -178,7 +177,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		
 		rL.lock();
 		try {					
-			return userNickMap.containsKey(nickLowercase) || privateUsers.containsKey(nickLowercase);
+			return userNickMap.containsKey(nickLowercase);
 		} finally {
 			rL.unlock();
 		}			
@@ -226,16 +225,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		}			
 	}
 
-	protected void addUserToPrivate(@NonNull U user) {
-		String nick = user.getNick().toLowerCase(locale);
-		
-		wL.lock();
-		try {									
-			privateUsers.put(nick, user);
-		} finally {
-			wL.unlock();
-		}				
-	}
 
 	
 	protected void addUserToLevel(@NonNull UserLevel level, @NonNull U user, @NonNull C channel) {
@@ -370,7 +359,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 				curLevelMap.removeUserFromChannel(user, channel);
 	
-			if (!privateUsers.values().contains(user) && !mainMap.containsUser(user))
+			if (!mainMap.containsUser(user))
 				//Completely remove user
 				userNickMap.remove(nickLowercase);
 		} finally {
@@ -390,7 +379,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	
 			//Remove remaining locations
 			userNickMap.remove(nickLowercase);
-			privateUsers.remove(nickLowercase);
 		} finally {
 			wL.unlock();
 		}			
@@ -595,7 +583,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			for (UserChannelMap<U, C> curLevelMap : levelsMap.values())
 				curLevelMap.clear();
 			channelNameMap.clear();
-			privateUsers.clear();
 			userNickMap.clear();
 		} finally {
 			wL.unlock();
@@ -631,9 +618,7 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 			ImmutableBiMap.Builder<String, ChannelSnapshot> channelNameMapSnapshotBuilder = ImmutableBiMap.builder();
 			for (Map.Entry<String, C> curName : channelNameMap.entrySet())
 				channelNameMapSnapshotBuilder.put(curName.getKey(), channelSnapshotMap.get(curName.getValue()));
-			ImmutableBiMap.Builder<String, UserSnapshot> privateUserSnapshotBuilder = ImmutableBiMap.builder();
-			for (Map.Entry<String, U> curNickEntry : privateUsers.entrySet())
-				privateUserSnapshotBuilder.put(curNickEntry.getKey(), userSnapshotMap.get(curNickEntry.getValue()));
+
 	
 			//Finally can create the snapshot object
 			UserChannelDaoSnapshot daoSnapshot = new UserChannelDaoSnapshot(bot,
@@ -641,8 +626,8 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 					mainMapSnapshot,
 					levelsMapSnapshot,
 					userNickMapSnapshotBuilder.build(),
-					channelNameMapSnapshotBuilder.build(),
-					privateUserSnapshotBuilder.build());
+					channelNameMapSnapshotBuilder.build()
+					);
 	
 			//Tell UserSnapshots and ChannelSnapshots what the new backing dao is
 			for (UserSnapshot curUserSnapshot : userSnapshotMap.values())
