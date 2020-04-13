@@ -112,7 +112,7 @@ public class Configuration {
 	protected final int maxLineLength;
 	protected final boolean autoSplitMessage;
 	protected final boolean autoNickChange;
-	protected final StaticReadonlyDelay messageDelay;
+	protected final Delay messageDelay;
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean onJoinWhoEnabled;
@@ -415,8 +415,11 @@ public class Configuration {
 		protected boolean autoNickChange = false;
 		/**
 		 * Millisecond delay between sending messages, default 1000 milliseconds
+		 * 
+		 * For backwards compatibility the type is {@link Delay}, BUT it should be a StaticReadOnlyDelay, since 
+		 * it can't be changed after initialization.
 		 */
-		protected StaticReadonlyDelay messageDelay = new StaticReadonlyDelay( 1000 );
+		protected Delay messageDelay = new StaticReadonlyDelay( 1000 );
 		/**
 		 * Enable or disable creating a JVM shutdown hook which will properly
 		 * QUIT the IRC server and shutdown the bot, default true
