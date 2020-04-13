@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>AdaptingDelay.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pircbotx</a> &gt; <a href="index.source.html" class="el_package">org.pircbotx.delay</a> &gt; <span class="el_source">AdaptingDelay.java</span></div><h1>AdaptingDelay.java</h1><pre class="source lang-java linenums">/**
+ * Copyright (C) 2010-2014 Leon Blakey &lt;lord.quackstar at gmail.com&gt;
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.pircbotx.delay;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
+import org.pircbotx.ReplyConstants;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ServerResponseEvent;
+
+public class AdaptingDelay extends ListenerAdapter implements Delay {
+	long currentDelay;
+	long initialDelay;
+	long maxDelay;
+	
+	long lastChange;
+
+<span class="nc" id="L33">	public AdaptingDelay(long initialDelay, long maxDelay) {</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		checkArgument(maxDelay &gt;= initialDelay, &quot;initialDelay may not be larger than maxdelay&quot;);</span>
+<span class="nc" id="L35">		setInitialDelay(initialDelay);</span>
+<span class="nc" id="L36">		setMaxDelay(maxDelay);</span>
+		
+<span class="nc" id="L38">		currentDelay = initialDelay;</span>
+		
+<span class="nc" id="L40">		lastChange = System.currentTimeMillis();</span>
+<span class="nc" id="L41">	}</span>
+	
+	public void setInitialDelay(long initialDelay) {
+<span class="nc bnc" id="L44" title="All 2 branches missed.">		checkArgument(initialDelay &gt; 0, &quot;initialDelay must be larger than zero&quot;);</span>
+<span class="nc" id="L45">		this.initialDelay = initialDelay;</span>
+<span class="nc" id="L46">	}</span>
+	
+	public void setMaxDelay(long maxDelay) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		checkArgument(maxDelay &gt;= 0, &quot;maxDelay may not be negative&quot;);</span>
+<span class="nc" id="L50">		this.maxDelay = maxDelay;</span>
+<span class="nc" id="L51">	}</span>
+	
+	public void reset() {
+<span class="nc" id="L54">		currentDelay = initialDelay;</span>
+<span class="nc" id="L55">	}</span>
+
+	@Override
+	public long getDelay() {
+<span class="nc bnc" id="L59" title="All 4 branches missed.">		if (currentDelay&gt;initialDelay &amp;&amp; lastChange + 10000 &lt; System.currentTimeMillis() ) {</span>
+<span class="nc" id="L60">			currentDelay = Math.max(currentDelay/2, initialDelay);</span>
+<span class="nc" id="L61">			lastChange = System.currentTimeMillis();</span>
+		}
+		
+<span class="nc" id="L64">		return currentDelay;</span>
+	}
+
+	@Override
+	public void onServerResponse(ServerResponseEvent event) throws Exception {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">		if (event.getCode() == ReplyConstants.ERR_TARGETTOOFAST) {</span>
+<span class="nc" id="L70">			currentDelay = Math.min(currentDelay*2, maxDelay);			</span>
+<span class="nc" id="L71">			lastChange = System.currentTimeMillis();</span>
+		}
+<span class="nc" id="L73">	}</span>
+	
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

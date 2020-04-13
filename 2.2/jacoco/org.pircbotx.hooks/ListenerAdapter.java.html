@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ListenerAdapter.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pircbotx</a> &gt; <a href="index.source.html" class="el_package">org.pircbotx.hooks</a> &gt; <span class="el_source">ListenerAdapter.java</span></div><h1>ListenerAdapter.java</h1><pre class="source lang-java linenums">/**
+ * Copyright (C) 2010-2014 Leon Blakey &lt;lord.quackstar at gmail.com&gt;
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.pircbotx.hooks;
+
+import org.pircbotx.hooks.events.*;
+import org.pircbotx.hooks.types.*;
+
+/**
+ * Adapter that provides methods to capture each event separately, removing the
+ * need to check, cast, and call your custom method for each event you want to
+ * capture.
+ * &lt;p&gt;
+ * To use, simply override the method that has the event you want to capture.
+ * &lt;p&gt;
+ * &lt;b&gt;WARNING:&lt;/b&gt; If you are going to be implementing {@link Listener}'s
+ * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
+ * &lt;code&gt;super.onEvent(event)&lt;/code&gt;, otherwise none of the Adapter hook methods
+ * will be called!
+ *
+ * @author Leon Blakey
+ */
+<span class="fc" id="L37">public abstract class ListenerAdapter implements Listener {</span>
+	public void onEvent(Event event) throws Exception {
+		//While reflection would make this significantly shorter, 
+		//nothing beats if statements in performance.
+		//Also polymorphism, while theoretically correct, just means that this code
+		//would be in every single Event and make an explicit dependency on this.
+		//This is just simple and fast
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		if (event instanceof ActionEvent)</span>
+<span class="fc" id="L45">			onAction((ActionEvent) event);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">		else if (event instanceof BanListEvent)</span>
+<span class="fc" id="L47">			onBanList((BanListEvent) event);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		else if (event instanceof ChannelInfoEvent)</span>
+<span class="fc" id="L49">			onChannelInfo((ChannelInfoEvent) event);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		else if (event instanceof ConnectEvent)</span>
+<span class="fc" id="L51">			onConnect((ConnectEvent) event);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		else if (event instanceof ConnectAttemptFailedEvent)</span>
+<span class="fc" id="L53">			onConnectAttemptFailed((ConnectAttemptFailedEvent) event);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		else if (event instanceof DisconnectEvent)</span>
+<span class="fc" id="L55">			onDisconnect((DisconnectEvent) event);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		else if (event instanceof FingerEvent)</span>
+<span class="fc" id="L57">			onFinger((FingerEvent) event);</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">		else if (event instanceof HalfOpEvent)</span>
+<span class="fc" id="L59">			onHalfOp((HalfOpEvent) event);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		else if (event instanceof IncomingChatRequestEvent)</span>
+<span class="fc" id="L61">			onIncomingChatRequest((IncomingChatRequestEvent) event);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		else if (event instanceof IncomingFileTransferEvent)</span>
+<span class="fc" id="L63">			onIncomingFileTransfer((IncomingFileTransferEvent) event);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		else if (event instanceof InviteEvent)</span>
+<span class="fc" id="L65">			onInvite((InviteEvent) event);</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">		else if (event instanceof JoinEvent)</span>
+<span class="fc" id="L67">			onJoin((JoinEvent) event);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">		else if (event instanceof KickEvent)</span>
+<span class="fc" id="L69">			onKick((KickEvent) event);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">		else if (event instanceof MessageEvent)</span>
+<span class="fc" id="L71">			onMessage((MessageEvent) event);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">		else if (event instanceof ModeEvent)</span>
+<span class="fc" id="L73">			onMode((ModeEvent) event);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">		else if (event instanceof MotdEvent)</span>
+<span class="fc" id="L75">			onMotd((MotdEvent) event);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		else if (event instanceof NickAlreadyInUseEvent)</span>
+<span class="fc" id="L77">			onNickAlreadyInUse((NickAlreadyInUseEvent) event);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">		else if (event instanceof NickChangeEvent)</span>
+<span class="fc" id="L79">			onNickChange((NickChangeEvent) event);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		else if (event instanceof NoticeEvent)</span>
+<span class="fc" id="L81">			onNotice((NoticeEvent) event);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		else if (event instanceof OpEvent)</span>
+<span class="fc" id="L83">			onOp((OpEvent) event);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		else if (event instanceof OutputEvent)</span>
+<span class="fc" id="L85">			onOutput((OutputEvent) event);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">		else if (event instanceof OwnerEvent)</span>
+<span class="fc" id="L87">			onOwner((OwnerEvent) event);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		else if (event instanceof PartEvent)</span>
+<span class="fc" id="L89">			onPart((PartEvent) event);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		else if (event instanceof PingEvent)</span>
+<span class="fc" id="L91">			onPing((PingEvent) event);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">		else if (event instanceof PrivateMessageEvent)</span>
+<span class="fc" id="L93">			onPrivateMessage((PrivateMessageEvent) event);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		else if (event instanceof QuitEvent)</span>
+<span class="fc" id="L95">			onQuit((QuitEvent) event);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">		else if (event instanceof RemoveChannelBanEvent)</span>
+<span class="fc" id="L97">			onRemoveChannelBan((RemoveChannelBanEvent) event);</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">		else if (event instanceof RemoveChannelKeyEvent)</span>
+<span class="fc" id="L99">			onRemoveChannelKey((RemoveChannelKeyEvent) event);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">		else if (event instanceof RemoveChannelLimitEvent)</span>
+<span class="fc" id="L101">			onRemoveChannelLimit((RemoveChannelLimitEvent) event);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">		else if (event instanceof RemoveInviteOnlyEvent)</span>
+<span class="fc" id="L103">			onRemoveInviteOnly((RemoveInviteOnlyEvent) event);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		else if (event instanceof RemoveModeratedEvent)</span>
+<span class="fc" id="L105">			onRemoveModerated((RemoveModeratedEvent) event);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		else if (event instanceof RemoveNoExternalMessagesEvent)</span>
+<span class="fc" id="L107">			onRemoveNoExternalMessages((RemoveNoExternalMessagesEvent) event);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		else if (event instanceof RemovePrivateEvent)</span>
+<span class="fc" id="L109">			onRemovePrivate((RemovePrivateEvent) event);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		else if (event instanceof RemoveSecretEvent)</span>
+<span class="fc" id="L111">			onRemoveSecret((RemoveSecretEvent) event);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">		else if (event instanceof RemoveTopicProtectionEvent)</span>
+<span class="fc" id="L113">			onRemoveTopicProtection((RemoveTopicProtectionEvent) event);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		else if (event instanceof ServerPingEvent)</span>
+<span class="fc" id="L115">			onServerPing((ServerPingEvent) event);</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">		else if (event instanceof ServerResponseEvent)</span>
+<span class="fc" id="L117">			onServerResponse((ServerResponseEvent) event);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">		else if (event instanceof SetChannelBanEvent)</span>
+<span class="fc" id="L119">			onSetChannelBan((SetChannelBanEvent) event);</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">		else if (event instanceof SetChannelKeyEvent)</span>
+<span class="fc" id="L121">			onSetChannelKey((SetChannelKeyEvent) event);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">		else if (event instanceof SetChannelLimitEvent)</span>
+<span class="fc" id="L123">			onSetChannelLimit((SetChannelLimitEvent) event);</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">		else if (event instanceof SetInviteOnlyEvent)</span>
+<span class="fc" id="L125">			onSetInviteOnly((SetInviteOnlyEvent) event);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">		else if (event instanceof SetModeratedEvent)</span>
+<span class="fc" id="L127">			onSetModerated((SetModeratedEvent) event);</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">		else if (event instanceof SetNoExternalMessagesEvent)</span>
+<span class="fc" id="L129">			onSetNoExternalMessages((SetNoExternalMessagesEvent) event);</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">		else if (event instanceof SetPrivateEvent)</span>
+<span class="fc" id="L131">			onSetPrivate((SetPrivateEvent) event);</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">		else if (event instanceof SetSecretEvent)</span>
+<span class="fc" id="L133">			onSetSecret((SetSecretEvent) event);</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">		else if (event instanceof SetTopicProtectionEvent)</span>
+<span class="fc" id="L135">			onSetTopicProtection((SetTopicProtectionEvent) event);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">		else if (event instanceof SocketConnectEvent)</span>
+<span class="fc" id="L137">			onSocketConnect((SocketConnectEvent) event);</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">		else if (event instanceof SuperOpEvent)</span>
+<span class="fc" id="L139">			onSuperOp((SuperOpEvent) event);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">		else if (event instanceof TimeEvent)</span>
+<span class="fc" id="L141">			onTime((TimeEvent) event);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">		else if (event instanceof TopicEvent)</span>
+<span class="fc" id="L143">			onTopic((TopicEvent) event);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		else if (event instanceof UnknownEvent)</span>
+<span class="fc" id="L145">			onUnknown((UnknownEvent) event);</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		else if (event instanceof UserListEvent)</span>
+<span class="fc" id="L147">			onUserList((UserListEvent) event);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">		else if (event instanceof UserModeEvent)</span>
+<span class="fc" id="L149">			onUserMode((UserModeEvent) event);</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">		else if (event instanceof VersionEvent)</span>
+<span class="fc" id="L151">			onVersion((VersionEvent) event);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">		else if (event instanceof VoiceEvent)</span>
+<span class="fc" id="L153">			onVoice((VoiceEvent) event);</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">		else if (event instanceof WhoisEvent)</span>
+<span class="fc" id="L155">			onWhois((WhoisEvent) event);</span>
+		
+		//Exception methods
+<span class="fc bfc" id="L158" title="All 2 branches covered.">		if (event instanceof ExceptionEvent)</span>
+<span class="fc" id="L159">			onException((ExceptionEvent) event);</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">		if (event instanceof ListenerExceptionEvent)</span>
+<span class="fc" id="L161">			onListenerException((ListenerExceptionEvent) event);</span>
+
+		//Generic methods
+<span class="fc bfc" id="L164" title="All 2 branches covered.">		if (event instanceof GenericCTCPEvent)</span>
+<span class="fc" id="L165">			onGenericCTCP((GenericCTCPEvent) event);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">		if (event instanceof GenericUserModeEvent)</span>
+<span class="fc" id="L167">			onGenericUserMode((GenericUserModeEvent) event);</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">		if (event instanceof GenericChannelModeEvent)</span>
+<span class="fc" id="L169">			onGenericChannelMode((GenericChannelModeEvent) event);</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">		if (event instanceof GenericChannelModeRecipientEvent)</span>
+<span class="fc" id="L171">			onGenericChannelModeRecipient((GenericChannelModeRecipientEvent) event);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">		if (event instanceof GenericDCCEvent)</span>
+<span class="fc" id="L173">			onGenericDCC((GenericDCCEvent) event);</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">		if (event instanceof GenericMessageEvent)</span>
+<span class="fc" id="L175">			onGenericMessage((GenericMessageEvent) event);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">		if (event instanceof GenericUserEvent)</span>
+<span class="fc" id="L177">			onGenericUser((GenericUserEvent) event);</span>
+<span class="fc bfc" id="L178" title="All 2 branches covered.">		if (event instanceof GenericChannelEvent)</span>
+<span class="fc" id="L179">			onGenericChannel((GenericChannelEvent) event);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">		if (event instanceof GenericChannelUserEvent)</span>
+<span class="fc" id="L181">			onGenericChannelUser((GenericChannelUserEvent) event);</span>
+<span class="fc" id="L182">	}</span>
+
+	public void onAction(ActionEvent event) throws Exception {
+<span class="fc" id="L185">	}</span>
+
+	public void onBanList(BanListEvent event) throws Exception {
+<span class="fc" id="L188">	}</span>
+
+	public void onChannelInfo(ChannelInfoEvent event) throws Exception {
+<span class="fc" id="L191">	}</span>
+
+	public void onConnect(ConnectEvent event) throws Exception {
+<span class="fc" id="L194">	}</span>
+
+	public void onConnectAttemptFailed(ConnectAttemptFailedEvent event) throws Exception {
+<span class="nc" id="L197">	}</span>
+
+	public void onDisconnect(DisconnectEvent event) throws Exception {
+<span class="fc" id="L200">	}</span>
+
+	public void onException(ExceptionEvent event) throws Exception {
+<span class="fc" id="L203">	}</span>
+
+	public void onFinger(FingerEvent event) throws Exception {
+<span class="nc" id="L206">	}</span>
+
+	public void onHalfOp(HalfOpEvent event) throws Exception {
+<span class="fc" id="L209">	}</span>
+
+	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
+<span class="fc" id="L212">	}</span>
+
+	public void onIncomingFileTransfer(IncomingFileTransferEvent event) throws Exception {
+<span class="fc" id="L215">	}</span>
+
+	public void onInvite(InviteEvent event) throws Exception {
+<span class="fc" id="L218">	}</span>
+
+	public void onJoin(JoinEvent event) throws Exception {
+<span class="fc" id="L221">	}</span>
+
+	public void onKick(KickEvent event) throws Exception {
+<span class="fc" id="L224">	}</span>
+
+	public void onListenerException(ListenerExceptionEvent event) throws Exception {
+<span class="nc" id="L227">	}</span>
+
+	public void onMessage(MessageEvent event) throws Exception {
+<span class="fc" id="L230">	}</span>
+
+	public void onMode(ModeEvent event) throws Exception {
+<span class="fc" id="L233">	}</span>
+
+	public void onMotd(MotdEvent event) throws Exception {
+<span class="fc" id="L236">	}</span>
+
+	public void onNickAlreadyInUse(NickAlreadyInUseEvent event) throws Exception {
+<span class="fc" id="L239">	}</span>
+
+	public void onNickChange(NickChangeEvent event) throws Exception {
+<span class="fc" id="L242">	}</span>
+
+	public void onNotice(NoticeEvent event) throws Exception {
+<span class="fc" id="L245">	}</span>
+
+	public void onOp(OpEvent event) throws Exception {
+<span class="fc" id="L248">	}</span>
+
+	public void onOutput(OutputEvent event) throws Exception {
+<span class="fc" id="L251">	}</span>
+
+	public void onOwner(OwnerEvent event) throws Exception {
+<span class="fc" id="L254">	}</span>
+
+	public void onPart(PartEvent event) throws Exception {
+<span class="fc" id="L257">	}</span>
+
+	public void onPing(PingEvent event) throws Exception {
+<span class="nc" id="L260">	}</span>
+
+	public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
+<span class="fc" id="L263">	}</span>
+
+	public void onQuit(QuitEvent event) throws Exception {
+<span class="fc" id="L266">	}</span>
+
+	public void onRemoveChannelBan(RemoveChannelBanEvent event) throws Exception {
+<span class="nc" id="L269">	}</span>
+
+	public void onRemoveChannelKey(RemoveChannelKeyEvent event) throws Exception {
+<span class="fc" id="L272">	}</span>
+
+	public void onRemoveChannelLimit(RemoveChannelLimitEvent event) throws Exception {
+<span class="fc" id="L275">	}</span>
+
+	public void onRemoveInviteOnly(RemoveInviteOnlyEvent event) throws Exception {
+<span class="fc" id="L278">	}</span>
+
+	public void onRemoveModerated(RemoveModeratedEvent event) throws Exception {
+<span class="nc" id="L281">	}</span>
+
+	public void onRemoveNoExternalMessages(RemoveNoExternalMessagesEvent event) throws Exception {
+<span class="fc" id="L284">	}</span>
+
+	public void onRemovePrivate(RemovePrivateEvent event) throws Exception {
+<span class="fc" id="L287">	}</span>
+
+	public void onRemoveSecret(RemoveSecretEvent event) throws Exception {
+<span class="fc" id="L290">	}</span>
+
+	public void onRemoveTopicProtection(RemoveTopicProtectionEvent event) throws Exception {
+<span class="fc" id="L293">	}</span>
+
+	public void onServerPing(ServerPingEvent event) throws Exception {
+<span class="nc" id="L296">	}</span>
+
+	public void onServerResponse(ServerResponseEvent event) throws Exception {
+<span class="fc" id="L299">	}</span>
+
+	public void onSetChannelBan(SetChannelBanEvent event) throws Exception {
+<span class="nc" id="L302">	}</span>
+
+	public void onSetChannelKey(SetChannelKeyEvent event) throws Exception {
+<span class="fc" id="L305">	}</span>
+
+	public void onSetChannelLimit(SetChannelLimitEvent event) throws Exception {
+<span class="fc" id="L308">	}</span>
+
+	public void onSetInviteOnly(SetInviteOnlyEvent event) throws Exception {
+<span class="fc" id="L311">	}</span>
+
+	public void onSetModerated(SetModeratedEvent event) throws Exception {
+<span class="nc" id="L314">	}</span>
+
+	public void onSetNoExternalMessages(SetNoExternalMessagesEvent event) throws Exception {
+<span class="fc" id="L317">	}</span>
+
+	public void onSetPrivate(SetPrivateEvent event) throws Exception {
+<span class="fc" id="L320">	}</span>
+
+	public void onSetSecret(SetSecretEvent event) throws Exception {
+<span class="fc" id="L323">	}</span>
+
+	public void onSetTopicProtection(SetTopicProtectionEvent event) throws Exception {
+<span class="fc" id="L326">	}</span>
+
+	public void onSocketConnect(SocketConnectEvent event) throws Exception {
+<span class="fc" id="L329">	}</span>
+
+	public void onSuperOp(SuperOpEvent event) throws Exception {
+<span class="fc" id="L332">	}</span>
+
+	public void onTime(TimeEvent event) throws Exception {
+<span class="nc" id="L335">	}</span>
+
+	public void onTopic(TopicEvent event) throws Exception {
+<span class="fc" id="L338">	}</span>
+
+	public void onUnknown(UnknownEvent event) throws Exception {
+<span class="fc" id="L341">	}</span>
+
+	public void onUserList(UserListEvent event) throws Exception {
+<span class="fc" id="L344">	}</span>
+
+	public void onUserMode(UserModeEvent event) throws Exception {
+<span class="fc" id="L347">	}</span>
+
+	public void onVersion(VersionEvent event) throws Exception {
+<span class="nc" id="L350">	}</span>
+
+	public void onVoice(VoiceEvent event) throws Exception {
+<span class="fc" id="L353">	}</span>
+
+	public void onWhois(WhoisEvent event) throws Exception {
+<span class="fc" id="L356">	}</span>
+
+	public void onGenericCTCP(GenericCTCPEvent event) throws Exception {
+<span class="fc" id="L359">	}</span>
+
+	public void onGenericUserMode(GenericUserModeEvent event) throws Exception {
+<span class="fc" id="L362">	}</span>
+
+	public void onGenericChannelMode(GenericChannelModeEvent event) throws Exception {
+<span class="fc" id="L365">	}</span>
+
+	public void onGenericChannelModeRecipient(GenericChannelModeRecipientEvent event) throws Exception {
+<span class="fc" id="L368">	}</span>
+
+	public void onGenericDCC(GenericDCCEvent event) throws Exception {
+<span class="fc" id="L371">	}</span>
+
+	public void onGenericMessage(GenericMessageEvent event) throws Exception {
+<span class="fc" id="L374">	}</span>
+
+	public void onGenericChannel(GenericChannelEvent event) throws Exception {
+<span class="fc" id="L377">	}</span>
+
+	public void onGenericUser(GenericUserEvent event) throws Exception {
+<span class="fc" id="L380">	}</span>
+
+	public void onGenericChannelUser(GenericChannelUserEvent event) throws Exception {
+<span class="fc" id="L383">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>CAPException.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pircbotx</a> &gt; <a href="index.source.html" class="el_package">org.pircbotx.exception</a> &gt; <span class="el_source">CAPException.java</span></div><h1>CAPException.java</h1><pre class="source lang-java linenums">/**
+ * Copyright (C) 2010-2014 Leon Blakey &lt;lord.quackstar at gmail.com&gt;
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.pircbotx.exception;
+
+import static com.google.common.base.Preconditions.*;
+
+/**
+ * General Exception for problems during CAP negotiation
+ *
+ * @author Leon Blakey
+ */
+public class CAPException extends RuntimeException {
+	protected static final long serialVersionUID = 1L;
+	
+	public CAPException(Reason reason, String detail) {
+<span class="fc" id="L31">		this(reason, detail, null);</span>
+<span class="fc" id="L32">	}</span>
+
+	public CAPException(Reason reason, String detail, Throwable cause) {
+<span class="fc" id="L35">		super(generateMessage(reason, detail), cause);</span>
+<span class="fc" id="L36">		checkNotNull(reason, &quot;Reason cannot be null&quot;);</span>
+<span class="fc" id="L37">		checkNotNull(detail, &quot;Detail cannot be null&quot;);</span>
+<span class="fc" id="L38">	}</span>
+
+	protected static String generateMessage(Reason reason, String message) {
+<span class="fc" id="L41">		return reason + &quot;: &quot; + message;</span>
+	}
+
+<span class="pc" id="L44">	public enum Reason {</span>
+<span class="fc" id="L45">		UNSUPPORTED_CAPABILITY,</span>
+<span class="fc" id="L46">		SASL_FAILED,</span>
+<span class="fc" id="L47">		OTHER</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

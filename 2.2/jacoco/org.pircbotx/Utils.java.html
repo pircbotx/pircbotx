@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Utils.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">pircbotx</a> &gt; <a href="index.source.html" class="el_package">org.pircbotx</a> &gt; <span class="el_source">Utils.java</span></div><h1>Utils.java</h1><pre class="source lang-java linenums">/**
+ * Copyright (C) 2010-2014 Leon Blakey &lt;lord.quackstar at gmail.com&gt;
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+ */
+package org.pircbotx;
+
+import com.google.common.base.CharMatcher;
+import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.types.GenericMessageEvent;
+import org.slf4j.MDC;
+import org.slf4j.helpers.MessageFormatter;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Useful utilities for internal PircBotX use. Users should not use this class
+ * directly
+ *
+ * @author Leon Blakey
+ */
+public final class Utils {
+	//Do not create instances of this
+<span class="nc" id="L45">	private Utils() {</span>
+<span class="nc" id="L46">	}</span>
+
+	public static void dispatchEvent(PircBotX bot, Event event) {
+<span class="fc" id="L49">		bot.getConfiguration().getListenerManager().onEvent(event);</span>
+<span class="fc" id="L50">	}</span>
+
+	/**
+	 * Try to parse int string, returning -1 if it fails.
+	 *
+	 * @return The string as an int or -1
+	 */
+	public static int tryParseInt(String intString, int defaultValue) {
+		try {
+<span class="fc" id="L59">			return Integer.parseInt(intString);</span>
+<span class="fc" id="L60">		} catch (NumberFormatException e) {</span>
+<span class="fc" id="L61">			return defaultValue;</span>
+		}
+	}
+
+	/**
+	 * Try to parse long string, returning -1 if it fails.
+	 *
+	 * @param longString
+	 * @return The string as a long or -1
+	 */
+	public static long tryParseLong(String longString, int defaultValue) {
+		try {
+<span class="fc" id="L73">			return Long.parseLong(longString);</span>
+<span class="nc" id="L74">		} catch (NumberFormatException e) {</span>
+<span class="nc" id="L75">			return defaultValue;</span>
+		}
+	}
+
+	public static &lt;V&gt; V tryGetIndex(List&lt;V&gt; list, int index, V defaultValue) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">		if (index &lt; list.size())</span>
+<span class="fc" id="L81">			return list.get(index);</span>
+		else
+<span class="fc" id="L83">			return defaultValue;</span>
+	}
+
+	/**
+	 * Gets the message from the event and calls {@link #parseCommand(java.lang.String, java.lang.String)
+	 * }
+	 *
+	 * @see #parseCommand(java.lang.String, java.lang.String)
+	 */
+	@Nullable
+	public static String parseCommand(String expectedPrefix, GenericMessageEvent event) {
+<span class="nc" id="L94">		return parseCommand(expectedPrefix, event.getMessage());</span>
+	}
+
+	/**
+	 * Parse given command, if it starts with the prefix return the line minus
+	 * the prefix (the arguments), otherwise return null
+	 * &lt;p&gt;
+	 * &lt;ul&gt;
+	 * &lt;li&gt;parseCommand(&quot;?say &quot;, &quot;?say hi everybody&quot;) == &quot;hi everybody&quot;&lt;/li&gt;
+	 * &lt;li&gt;parseCommand(&quot;?say &quot;, &quot;?other stuff&quot;) == null&lt;/li&gt;
+	 * &lt;li&gt;parseCommand(&quot;?start&quot;, &quot;?start&quot;) == &quot;&quot;&lt;/li&gt;
+	 * &lt;li&gt;parseCommand(&quot;?start&quot;, &quot;?stop&quot;) == null&lt;/li&gt;
+	 * &lt;/ul&gt;
+	 *
+	 * @param expectedPrefix The prefix the command must start with and will be
+	 * removed when returned
+	 * @param rawCommand Raw input string
+	 * @return input string minus the prefix or null
+	 */
+	@Nullable
+<span class="pc bpc" id="L114" title="2 of 4 branches missed.">	public static String parseCommand(@NonNull String expectedPrefix, @NonNull String rawCommand) {</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">		if (rawCommand.startsWith(expectedPrefix))</span>
+<span class="fc" id="L116">			return rawCommand.substring(expectedPrefix.length());</span>
+<span class="fc" id="L117">		return null;</span>
+	}
+
+	public static void addBotToMDC(PircBotX bot) {
+<span class="fc" id="L121">		MDC.put(&quot;pircbotx.id&quot;, String.valueOf(bot.getBotId()));</span>
+<span class="fc" id="L122">		MDC.put(&quot;pircbotx.connectionId&quot;, bot.getServerHostname() + &quot;-&quot; + bot.getBotId() + &quot;-&quot; + bot.getConnectionId());</span>
+<span class="fc" id="L123">		MDC.put(&quot;pircbotx.server&quot;, StringUtils.defaultString(bot.getServerHostname()));</span>
+<span class="fc" id="L124">		MDC.put(&quot;pircbotx.port&quot;, String.valueOf(bot.getServerPort()));</span>
+<span class="fc" id="L125">	}</span>
+
+	/**
+	 * Sends a raw line to the server. Needed so {@link PircBotX#sendRawLineToServer(java.lang.String)
+	 * }
+	 * can stay protected but still be callable from the org.pircbotx.output
+	 * package
+	 *
+	 * @param bot The bot that sends the raw line
+	 * @param rawLine The raw line to send
+	 */
+	public static void sendRawLineToServer(PircBotX bot, String rawLine) throws IOException {
+<span class="fc" id="L137">		bot.sendRawLineToServer(rawLine);</span>
+<span class="fc" id="L138">	}</span>
+
+	/**
+	 * Sets bot as identified to nickserv. Needed so {@link PircBotX#setNickservIdentified(boolean)
+	 * }
+	 * can stay protected
+	 *
+	 * @param bot
+	 */
+	public static void setNickServIdentified(PircBotX bot) {
+<span class="fc" id="L148">		bot.setNickservIdentified(true);</span>
+<span class="fc" id="L149">	}</span>
+
+	public static String format(String messagePattern, Object... args) {
+<span class="fc" id="L152">		return MessageFormatter.arrayFormat(messagePattern, args).getMessage();</span>
+	}
+
+	/**
+	 * Tokenize IRC raw input into it's components, keeping the 'sender' and
+	 * 'message' fields intact.
+	 *
+	 * @param input A string in the format [:]item [item] ... [:item [item] ...]
+	 * @return List of strings.
+	 */
+	public static List&lt;String&gt; tokenizeLine(String input) {
+<span class="fc" id="L163">		List&lt;String&gt; stringParts = new ArrayList&lt;String&gt;();</span>
+<span class="pc bpc" id="L164" title="2 of 4 branches missed.">		if (input == null || input.length() == 0)</span>
+<span class="nc" id="L165">			return stringParts;</span>
+
+		//Heavily optimized string split by space with all characters after :
+		//added as a single entry. Under benchmarks, this is faster than 
+		//StringTokenizer, String.split, toCharArray, and charAt
+<span class="fc" id="L170">		String trimmedInput = CharMatcher.WHITESPACE.trimFrom(input);</span>
+<span class="fc" id="L171">		int pos = 0, end;</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">		while ((end = trimmedInput.indexOf(' ', pos)) &gt;= 0) {</span>
+<span class="fc" id="L173">			stringParts.add(trimmedInput.substring(pos, end));</span>
+<span class="fc" id="L174">			pos = end + 1;</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">			if (trimmedInput.charAt(pos) == ':') {</span>
+<span class="fc" id="L176">				stringParts.add(trimmedInput.substring(pos + 1));</span>
+<span class="fc" id="L177">				return stringParts;</span>
+			}
+		}
+		//No more spaces, add last part of line
+<span class="fc" id="L181">		stringParts.add(trimmedInput.substring(pos));</span>
+<span class="fc" id="L182">		return stringParts;</span>
+	}
+
+<span class="fc" id="L185">	private static final Map&lt;String, String&gt; V3_TAGS_UNESCAPE_MAPPING = createV3TagsUnescapeMapping();</span>
+
+	private static Map&lt;String, String&gt; createV3TagsUnescapeMapping() {
+<span class="fc" id="L188">		Map&lt;String, String&gt; mapping = new HashMap&lt;String, String&gt;();</span>
+<span class="fc" id="L189">		mapping.put(&quot;\\:&quot;, &quot;;&quot;);</span>
+<span class="fc" id="L190">		mapping.put(&quot;\\s&quot;, &quot; &quot;);</span>
+<span class="fc" id="L191">		mapping.put(&quot;\\\\&quot;, &quot;\\&quot;);</span>
+<span class="fc" id="L192">		mapping.put(&quot;\\r&quot;, &quot;\r&quot;);</span>
+<span class="fc" id="L193">		mapping.put(&quot;\\n&quot;, &quot;\n&quot;);</span>
+<span class="fc" id="L194">		return mapping;</span>
+	}
+
+<span class="fc" id="L197">	private static final Pattern V3_TAGS_UNESCAPE_PATTERN = createV3TagsUnescapePattern();</span>
+
+	private static Pattern createV3TagsUnescapePattern() {
+<span class="fc" id="L200">		List&lt;String&gt; regexGroups = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">		for (String mappingKey : V3_TAGS_UNESCAPE_MAPPING.keySet()) {</span>
+<span class="fc" id="L202">			regexGroups.add(mappingKey.replace(&quot;\\&quot;, &quot;\\\\&quot;));</span>
+<span class="fc" id="L203">		}</span>
+<span class="fc" id="L204">		return Pattern.compile(&quot;(&quot; + StringUtils.join(regexGroups, &quot;|&quot;) + &quot;)&quot;);</span>
+	}
+
+	/**
+	 * Unescape IRCv3 message tag values which have been escaped before
+	 * (e.g. if received from the server).
+	 *
+	 * @param v3TagValue Escaped IRCv3 message tag value
+	 * @return Unescaped IRCv3 message tag value
+	 * @see &lt;a href=&quot;http://ircv3.net/specs/core/message-tags-3.2.html&quot;&gt;http://ircv3.net/specs/core/message-tags-3.2.html&lt;/a&gt;
+	 */
+	public static String unescapeV3TagValue(String v3TagValue) {
+<span class="nc" id="L216">		Matcher matcher = V3_TAGS_UNESCAPE_PATTERN.matcher(v3TagValue);</span>
+<span class="nc" id="L217">		StringBuffer stringBuffer = new StringBuffer();</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">		while (matcher.find()) {</span>
+<span class="nc" id="L219">			String replacement = V3_TAGS_UNESCAPE_MAPPING.get(matcher.group(1)).replace(&quot;\\&quot;, &quot;\\\\&quot;);</span>
+<span class="nc" id="L220">			matcher.appendReplacement(stringBuffer, replacement);</span>
+<span class="nc" id="L221">		}</span>
+<span class="nc" id="L222">		matcher.appendTail(stringBuffer);</span>
+<span class="nc" id="L223">		return stringBuffer.toString();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
