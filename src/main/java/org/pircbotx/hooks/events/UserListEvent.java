@@ -34,7 +34,8 @@ import lombok.NonNull;
  * This event is dispatched when we receive a user list from the server after
  * joining a channel.
  * <p>
- * Shortly after joining a channel, the IRC server sends a list of all users in
+ * Shortly after joining a channel, PircBotX sends a WHO command to which the 
+ * IRC server responds with a list of all users in
  * that channel. The PircBotX collects this information and dispatched this
  * event as soon as it has the full list.
  * <p>

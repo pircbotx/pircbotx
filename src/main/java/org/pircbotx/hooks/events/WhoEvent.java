@@ -30,7 +30,9 @@ import lombok.Getter;
 /**
  * Contains the userlist responded from a WHO query
  * 
- * This is very close to UserListEvent, but where UserListEvent is bound to a channel WhoEvent just refers to the query with WHO  
+ * This is very close to UserListEvent, but where UserListEvent is bound to a channel WhoEvent just refers to the query with WHO
+ * 
+ * @see UserListEvent
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
