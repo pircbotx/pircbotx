@@ -73,6 +73,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.events.WhoEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.hooks.types.GenericChannelModeEvent;
 import org.pircbotx.hooks.types.GenericUserModeEvent;
@@ -720,7 +721,7 @@ public class InputParserTest {
 	 * Simulate WHO response.
 	 */
 	@Test(description = "Verify WHO response handling + UserListEvent")
-	public void whoTest() throws IOException, IrcException {
+	public void userlistTest() throws IOException, IrcException {
 		dao.createChannel("#aChannel");
 		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
 		//Issue #151: Test without full name
@@ -771,6 +772,52 @@ public class InputParserTest {
 		assertFalse(aChannel.isOp(otherUser), "User is labeled as an op even though specified as one in WHO");
 		assertFalse(aChannel.hasVoice(otherUser), "User is labeled as voiced even though specified as one in WHO");
 	}
+	
+	/**
+	 * Simulate WHO response eg a /WHO 1.2.3.4 i on inspircd for finding users origination on said IP
+	 */
+	@Test(description = "Verify WHO response handling + UserListEvent")
+	public void whoTest() throws IOException, IrcException {
+		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aChannel ~ALogin some.host irc.someserver.net AUser H@+ :2 " + aString);
+		//Issue #151: Test without full name
+		inputParser.handleLine(":irc.someserver.net 352 PircBotXUser #aAnotherchannel ~OtherLogin some.host1 irc.otherserver.net OtherUser G :4");
+		inputParser.handleLine(":irc.someserver.net 315 PircBotXUser 1.2.3.4 :End of /WHO list.");
+
+		//Make sure all information was created correctly
+		assertFalse(dao.containsChannel("#aChannel"), "WHO response should not create channel");
+		assertFalse(dao.containsChannel("#aAnotherchannel"), "WHO response should not create channel"); 
+		assertFalse(dao.containsUser("AUser"), "WHO response should not create user AUser"); // TODO are we sure we want this to happen ??
+		assertFalse(dao.containsUser("OtherUser"), "WHO response should not create user OtherUser");
+		
+
+		//Verify event
+		WhoEvent wevent = bot.getTestEvent(WhoEvent.class, "WhoEvent not dispatched");
+		
+		assertEquals(wevent.getQuery(), "1.2.3.4", "WhoEvent's query does not match given");
+		assertEquals(wevent.getUsers().size(), 2, "WhoEvent's users is different than it should be");
+
+		User entryOne = wevent.getUsers().get(0);
+		User entryTwo = wevent.getUsers().get(1);
+
+		//Verify AUser
+		assertEquals(entryOne.getNick(), "AUser", "Login doesn't match one given during WHO");
+		assertEquals(entryOne.getLogin(), "~ALogin", "Login doesn't match one given during WHO");
+		assertEquals(entryOne.getHostname(), "some.host", "Host doesn't match one given during WHO");
+		assertEquals(entryOne.getHops(), 2, "Hops doesn't match one given during WHO");
+		assertEquals(entryOne.getRealName(), aString, "RealName doesn't match one given during WHO");
+		assertEquals(entryOne.getServer(), "irc.someserver.net", "Server doesn't match one given during WHO");
+
+
+
+		//Verify otherUser
+		assertEquals(entryTwo.getNick(), "OtherUser", "Login doesn't match one given during WHO");
+		assertEquals(entryTwo.getLogin(), "~OtherLogin", "Login doesn't match one given during WHO");
+		assertEquals(entryTwo.getHostname(), "some.host1", "Host doesn't match one given during WHO");
+		assertEquals(entryTwo.getHops(), 4, "Hops doesn't match one given during WHO");
+		assertEquals(entryTwo.getRealName(), "", "RealName doesn't match one given during WHO");
+		assertEquals(entryTwo.getServer(), "irc.otherserver.net", "Server doesn't match one given during WHO");
+
+	}	
 
 	@Test(description = "Veryfy that we don't falsely registers all WHO responses as valid channels")
 	public void whoTestFalseChannels() throws IOException, IrcException {

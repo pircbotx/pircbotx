@@ -156,10 +156,12 @@ public abstract class ListenerAdapter implements Listener {
 		else if (event instanceof VersionEvent)
 			onVersion((VersionEvent) event);
 		else if (event instanceof VoiceEvent)
-			onVoice((VoiceEvent) event);
-		
+			onVoice((VoiceEvent) event);		
 		else if (event instanceof WhoisEvent)
-			onWhois((WhoisEvent) event);		
+			onWhois((WhoisEvent) event);
+		else if (event instanceof WhoEvent)
+			onWho((WhoEvent) event);	
+		
 		//Exception methods
 		if (event instanceof ExceptionEvent)
 			onException((ExceptionEvent) event);
@@ -363,6 +365,9 @@ public abstract class ListenerAdapter implements Listener {
 
 	public void onWhois(WhoisEvent event) throws Exception {
 	}
+	
+	public void onWho(WhoEvent event) throws Exception {
+	}	
 
 	public void onGenericCTCP(GenericCTCPEvent event) throws Exception {
 	}
