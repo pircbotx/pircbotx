@@ -846,7 +846,7 @@ public class InputParser implements Closeable {
 			String query = parsedResponse.get(1);
 			Channel channel = bot.getUserChannelDao().containsChannel(query) ? bot.getUserChannelDao().getChannel(query) : new Channel(bot, query);
 			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
-			configuration.getListenerManager().onEvent(new WhoEvent(bot, query, whoListBuilder.build()));
+			configuration.getListenerManager().onEvent(new WhoEvent(bot, query, whoListBuilder != null ? whoListBuilder.build() : ImmutableList.of() ));
 			
 			whoListBuilder = null;
 			
