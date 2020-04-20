@@ -7,7 +7,7 @@
 
 **January 2016** PircBotX 2.1 is finally released!
 
-**June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/pircbotx/PircBotX). [Mercurial mirror is on BitBucket](http://bitbucket.org/TheLQ/pircbotx)
+**June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/pircbotx/PircBotX). 
 
 [Current Version: 2.2](https://github.com/pircbotx/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/pircbotx/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/pircbotx/pircbotx/wiki/ChangeLog#21---january-24-2016) for more information
 
