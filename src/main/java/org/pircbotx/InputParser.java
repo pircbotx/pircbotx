@@ -18,7 +18,30 @@
 package org.pircbotx;
 
 
-import static org.pircbotx.ReplyConstants.*;
+import static org.pircbotx.ReplyConstants.ERR_NOOPERHOST;
+import static org.pircbotx.ReplyConstants.ERR_NOSUCHSERVER;
+import static org.pircbotx.ReplyConstants.RPL_AWAY;
+import static org.pircbotx.ReplyConstants.RPL_CHANNELMODEIS;
+import static org.pircbotx.ReplyConstants.RPL_ENDOFMOTD;
+import static org.pircbotx.ReplyConstants.RPL_ENDOFNAMES;
+import static org.pircbotx.ReplyConstants.RPL_ENDOFWHO;
+import static org.pircbotx.ReplyConstants.RPL_ENDOFWHOIS;
+import static org.pircbotx.ReplyConstants.RPL_LIST;
+import static org.pircbotx.ReplyConstants.RPL_LISTEND;
+import static org.pircbotx.ReplyConstants.RPL_LISTSTART;
+import static org.pircbotx.ReplyConstants.RPL_MOTD;
+import static org.pircbotx.ReplyConstants.RPL_MOTDSTART;
+import static org.pircbotx.ReplyConstants.RPL_NAMREPLY;
+import static org.pircbotx.ReplyConstants.RPL_TOPIC;
+import static org.pircbotx.ReplyConstants.RPL_TOPICINFO;
+import static org.pircbotx.ReplyConstants.RPL_WHOISCHANNELS;
+import static org.pircbotx.ReplyConstants.RPL_WHOISIDLE;
+import static org.pircbotx.ReplyConstants.RPL_WHOISOPERATOR;
+import static org.pircbotx.ReplyConstants.RPL_WHOISSERVER;
+import static org.pircbotx.ReplyConstants.RPL_WHOISUSER;
+import static org.pircbotx.ReplyConstants.RPL_WHOIS_SECURE;
+import static org.pircbotx.ReplyConstants.RPL_WHOREPLY;
+import static org.pircbotx.ReplyConstants.RPL_YOUREOPER;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -88,6 +111,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 import org.pircbotx.hooks.events.UserModeEvent;
 import org.pircbotx.hooks.events.VersionEvent;
 import org.pircbotx.hooks.events.VoiceEvent;
+import org.pircbotx.hooks.events.WhoEvent;
 import org.pircbotx.hooks.events.WhoisEvent;
 import org.pircbotx.snapshot.ChannelSnapshot;
 import org.pircbotx.snapshot.UserChannelDaoSnapshot;
@@ -305,6 +329,8 @@ public class InputParser implements Closeable {
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
 	protected final Multimap<Channel, BanListEvent.Entry> banListBuilder = LinkedListMultimap.create();
+	protected ImmutableList.Builder<User> whoListBuilder;
+		
 
 	public InputParser(PircBotX bot) {
 		this.bot = bot;
@@ -765,26 +791,48 @@ public class InputParser implements Closeable {
 			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
 
 			//Setup user
+			
+			String login = parsedResponse.get(2);
+			String userHost = parsedResponse.get(3);
+			String serverName = parsedResponse.get(4);
 			String nick = parsedResponse.get(5);
-			User curUser = bot.getUserChannelDao().containsUser(nick) ? bot.getUserChannelDao().getUser(nick) : null;
-			UserHostmask curUserHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, null,
-					nick, parsedResponse.get(2), parsedResponse.get(3));
-			curUser = createUserIfNull(curUser, curUserHostmask);
+			String rawFlags = parsedResponse.get(6);
 
-			curUser.setServer(parsedResponse.get(4));
-			processUserStatus(channel, curUser, parsedResponse.get(6));
+			UserHostmask curUserHostmask = bot.getConfiguration()
+					.getBotFactory()
+					.createUserHostmask(bot, null, nick, login, userHost);
+			User curUser = bot.getUserChannelDao().containsUser(nick) ? bot.getUserChannelDao().getUser(nick) : bot.getConfiguration()
+					.getBotFactory()
+					.createUser(curUserHostmask);
+
+			
+			
+			curUser.setServer(serverName);
+			processUserStatus(channel, curUser, rawFlags);
 			//Extra parsing needed since tokenizer stopped at :
 			String rawEnding = parsedResponse.get(7);
 			int rawEndingSpaceIndex = rawEnding.indexOf(' ');
+			
+			int hops;
+			String realName;
 			if (rawEndingSpaceIndex == -1) {
 				//parsedResponse data is trimmed, so if the index == -1, then there was no real name given and the space separating hops from real name was trimmed.
-				curUser.setHops(Integer.parseInt(rawEnding));
-				curUser.setRealName("");
+				hops = Integer.parseInt(rawEnding);
+				realName = "";
 			} else {
 				//parsedResponse data contains a real name
-				curUser.setHops(Integer.parseInt(rawEnding.substring(0, rawEndingSpaceIndex)));
-				curUser.setRealName(rawEnding.substring(rawEndingSpaceIndex + 1));
+				hops =  Integer.parseInt(rawEnding.substring(0, rawEndingSpaceIndex));
+				realName = rawEnding.substring(rawEndingSpaceIndex + 1);
 			}
+			
+			curUser.setHops(hops);
+			curUser.setRealName(realName);
+			
+			
+			if (whoListBuilder == null) {
+				whoListBuilder = new ImmutableList.Builder<User>();
+			}
+			whoListBuilder.add(curUser);
 
 			//Associate with channel
 			if (bot.getUserChannelDao().containsChannel(channelName)) {
@@ -793,9 +841,16 @@ public class InputParser implements Closeable {
 		} else if (code == RPL_ENDOFWHO) {
 			//EXAMPLE: 315 PircBotX #aChannel :End of /WHO list
 			//End of the WHO reply
-			String channelName = parsedResponse.get(1);
-			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
+			
+						
+			String query = parsedResponse.get(1);
+			Channel channel = bot.getUserChannelDao().containsChannel(query) ? bot.getUserChannelDao().getChannel(query) : new Channel(bot, query);
 			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), true));
+			configuration.getListenerManager().onEvent(new WhoEvent(bot, query, whoListBuilder != null ? whoListBuilder.build() : ImmutableList.of() ));
+			
+			whoListBuilder = null;
+			
+			
 		} else if (code == RPL_CHANNELMODEIS) {
 			//EXAMPLE: 324 PircBotX #aChannel +cnt
 			//Full channel mode (In response to MODE <channel>)
@@ -981,13 +1036,13 @@ public class InputParser implements Closeable {
 			}
 		} else if (code == RPL_ENDOFNAMES) {
 			//NAMES response finished
-			//366 PircBotXUser #aChannel :End of /NAMES list.
-			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			//366 PircBotXUser #aChannel :End of /NAMES list.			
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));			
 			configuration.getListenerManager().onEvent(new UserListEvent(bot, channel, bot.getUserChannelDao().getUsers(channel), false));
 		} else if (code == RPL_YOUREOPER) {
 			//OPER success response
 			//381 PircBotXUser :You are now an IRCOp
-			configuration.getListenerManager().onEvent(new OperSuccessEvent(bot) );
+			configuration.getListenerManager().onEvent(new OperSuccessEvent(bot) );	
 		} else if (code == ERR_NOOPERHOST) {
 			//OPER failed response
 			//491 PircBotXUser :Invalid oper credentials

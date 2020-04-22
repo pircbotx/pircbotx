@@ -162,7 +162,6 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 		} finally {
 			wL.unlock();
 		}			
-			
 	}
 
 
@@ -218,7 +217,12 @@ public class UserChannelDao<U extends User, C extends Channel> implements Closea
 	
 	protected void addUserToChannel(@NonNull U user, @NonNull C channel) {
 		wL.lock();
-		try {				
+		try {
+			if (!containsUser(user)) {
+				String nickLowercase = user.getNick().toLowerCase(locale);
+				userNickMap.put(nickLowercase, user);
+			}
+			
 			mainMap.addUserToChannel(user, channel);
 		} finally {
 			wL.unlock();
