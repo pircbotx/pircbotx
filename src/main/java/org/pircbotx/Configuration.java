@@ -710,9 +710,8 @@ public class Configuration {
 		 * @param listeners
 		 */
 		public Builder addListeners(@NonNull Iterable<Listener> listeners) {
-			for (Listener curListener : listeners) {
-				addListener(curListener);
-			}
+			listeners.forEach(this::addListener);
+
 			return this;
 		}
 
