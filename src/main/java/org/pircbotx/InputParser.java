@@ -152,6 +152,16 @@ public class InputParser implements Closeable {
 
 	static {
 		DEFAULT_CHANNEL_MODE_HANDLERS = ImmutableList.<ChannelModeHandler>builder()
+				.add(new ChannelModeHandler('J') {
+					@Override
+					public void dispatchEvent(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, UserHostmask recipientHostmask, User recipientUser, boolean adding) {
+						if (adding) {
+							//TODO: we don't have event for +J  (inspircd 'kicknorejoin' )
+							//but we use this dummy to consume the next parameter
+							params.next();
+						}
+					}
+				})			
 				.add(new OpChannelModeHandler('o', UserLevel.OP) {
 					@Override
 					public void dispatchEvent(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, UserHostmask recipientHostmask, User recipientUser, boolean adding) {
