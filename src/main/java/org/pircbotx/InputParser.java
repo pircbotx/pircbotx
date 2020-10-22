@@ -151,17 +151,7 @@ public class InputParser implements Closeable {
 	protected static final ImmutableList<ChannelModeHandler> DEFAULT_CHANNEL_MODE_HANDLERS;
 
 	static {
-		DEFAULT_CHANNEL_MODE_HANDLERS = ImmutableList.<ChannelModeHandler>builder()
-				.add(new ChannelModeHandler('J') {
-					@Override
-					public void dispatchEvent(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, UserHostmask recipientHostmask, User recipientUser, boolean adding) {
-						if (adding) {
-							//TODO: we don't have event for +J  (inspircd 'kicknorejoin' )
-							//but we use this dummy to consume the next parameter
-							params.next();
-						}
-					}
-				})			
+		DEFAULT_CHANNEL_MODE_HANDLERS = ImmutableList.<ChannelModeHandler>builder()	
 				.add(new OpChannelModeHandler('o', UserLevel.OP) {
 					@Override
 					public void dispatchEvent(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, UserHostmask recipientHostmask, User recipientUser, boolean adding) {
@@ -218,6 +208,16 @@ public class InputParser implements Closeable {
 						}
 					}					
 				})
+				.add(new ChannelModeHandler('J') {
+					@Override
+					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser,PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
+						if (adding) {
+							//TODO: we don't have event for +J  (inspircd 'kicknorejoin' )
+							//but we use this dummy to consume the next parameter
+							params.next();
+						}
+					}
+				})					
 				.add(new ChannelModeHandler('L') {
 					@Override
 					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser,PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
