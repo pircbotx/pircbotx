@@ -62,6 +62,7 @@ import org.pircbotx.cap.TLSCapHandler;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.BanListEvent;
+import org.pircbotx.hooks.events.QuietListEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.FingerEvent;
@@ -339,6 +340,7 @@ public class InputParser implements Closeable {
 	protected ImmutableList.Builder<ChannelListEntry> channelListBuilder;
 	protected int nickSuffix = 0;
 	protected final Multimap<Channel, BanListEvent.Entry> banListBuilder = LinkedListMultimap.create();
+	protected final Multimap<Channel, QuietListEvent.Entry> quietListBuilder = LinkedListMultimap.create();
 	protected ImmutableList.Builder<User> whoListBuilder;
 		
 
@@ -1057,7 +1059,22 @@ public class InputParser implements Closeable {
 			//OPER failed response
 			//491 PircBotXUser :Invalid oper credentials
 			configuration.getListenerManager().onEvent(new OperFailedEvent(bot) );
-		}
+		} else if (code == 728) {
+			//Quiet list entry
+      //728 TheLQ #aChannel q *!*@test1.host TheLQ!~quackstar@some.host 162602897
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+
+			UserHostmask recipient = bot.getConfiguration().getBotFactory().createUserHostmask(bot, parsedResponse.get(3));
+			UserHostmask source = bot.getConfiguration().getBotFactory().createUserHostmask(bot, parsedResponse.get(4));
+			long time = Long.parseLong(parsedResponse.get(5));
+			quietListBuilder.put(channel, new QuietListEvent.Entry(recipient, source, time));
+		} else if (code == 729) {
+			//Quiet list is finished
+      //729 TheLQ #aChannel q :End of Channel Quiet List
+			Channel channel = bot.getUserChannelDao().getChannel(parsedResponse.get(1));
+			ImmutableList<QuietListEvent.Entry> entries = ImmutableList.copyOf(quietListBuilder.removeAll(channel));
+			configuration.getListenerManager().onEvent(new QuietListEvent(bot, channel, entries));
+    }
 		configuration.getListenerManager().onEvent(new ServerResponseEvent(bot, code, rawResponse, parsedResponse));
 	}
 
