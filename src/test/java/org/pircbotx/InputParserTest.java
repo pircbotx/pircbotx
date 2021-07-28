@@ -32,6 +32,7 @@ import org.pircbotx.exception.IrcException;
 import org.pircbotx.exception.NotReadyException;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.BanListEvent;
+import org.pircbotx.hooks.events.QuietListEvent;
 import org.pircbotx.hooks.events.ChannelInfoEvent;
 import org.pircbotx.hooks.events.FingerEvent;
 import org.pircbotx.hooks.events.HalfOpEvent;
@@ -1388,6 +1389,48 @@ public class InputParserTest {
 		inputParser.handleLine(":irc.someserver.net 368 PircBotXUser #aChannel :End of Channel Ban List");
 
 		BanListEvent event = bot.getTestEvent(BanListEvent.class, "BanListEvent not dispatched");
+		assertEquals(event.getEntries().get(0).getRecipient().getExtbanPrefix(), "$a", "No extban prefix on prefix:nick");
+		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, null, "sutekh", null, null));
+		assertEquals(event.getEntries().get(1).getRecipient().getExtbanPrefix(), "~b", "No extban prefix on prefix:nick!login@hostmask");
+		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, null, "sutekh", "alogin", "ahostmask"));
+	}
+
+	@Test
+	public void quietListTest() throws IOException, IrcException {
+		Channel channel = dao.createChannel("#aChannel");
+		User source = TestUtils.generateTestUserSource(bot);
+		long time = 1415143822;
+
+		inputParser.handleLine(":irc.someserver.net 728 PircBotXUser #aChannel q *!test1@host.test " + source.getHostmask() + " " + time);
+		inputParser.handleLine(":irc.someserver.net 728 PircBotXUser #aChannel q test2!*@host.test " + source.getHostmask() + " " + (time + 1));
+		inputParser.handleLine(":irc.someserver.net 729 PircBotXUser #aChannel q :End of Channel Quiet List");
+
+		QuietListEvent event = bot.getTestEvent(QuietListEvent.class, "QuietListEvent not dispatched");
+		assertEquals(event.getChannel(), channel, "Channel is wrong");
+
+		//Verify all the sources and times
+		int timeCounter = 0;
+		for (QuietListEvent.Entry curEntry : event.getEntries()) {
+			assertEquals(curEntry.getSource(), source, "Source is wrong in entry " + curEntry);
+			assertEquals(curEntry.getTime(), time + (timeCounter++), "Time is wrong in entry " + curEntry);
+		}
+
+		//Verify recipient hostmasks
+		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, null, "*", "test1", "host.test"), "Hostname in 0 is wrong");
+		assertEquals(event.getEntries().get(1).getRecipient(), new UserHostmask(bot, null, "test2", "*", "host.test"), "Hostname in 0 is wrong");
+	}
+
+	@Test
+	public void quietExtquietListTest() throws IOException, IrcException {
+		Channel channel = dao.createChannel("#aChannel");
+		User source = TestUtils.generateTestUserSource(bot);
+		long time = 1415143822;
+
+		inputParser.handleLine(":irc.someserver.net 728 PircBotXUser #aChannel q $a:sutekh " + source.getHostmask() + " " + time);
+		inputParser.handleLine(":irc.someserver.net 728 PircBotXUser #aChannel q ~b:sutekh!alogin@ahostmask " + source.getHostmask() + " " + time);
+		inputParser.handleLine(":irc.someserver.net 729 PircBotXUser #aChannel q :End of Channel Quiet List");
+
+		QuietListEvent event = bot.getTestEvent(QuietListEvent.class, "QuietListEvent not dispatched");
 		assertEquals(event.getEntries().get(0).getRecipient().getExtbanPrefix(), "$a", "No extban prefix on prefix:nick");
 		assertEquals(event.getEntries().get(0).getRecipient(), new UserHostmask(bot, null, "sutekh", null, null));
 		assertEquals(event.getEntries().get(1).getRecipient().getExtbanPrefix(), "~b", "No extban prefix on prefix:nick!login@hostmask");

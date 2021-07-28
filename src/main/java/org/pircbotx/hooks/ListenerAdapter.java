@@ -45,6 +45,8 @@ public abstract class ListenerAdapter implements Listener {
 			onAction((ActionEvent) event);
 		else if (event instanceof BanListEvent)
 			onBanList((BanListEvent) event);
+		else if (event instanceof QuietListEvent)
+			onQuietList((QuietListEvent) event);
 		else if (event instanceof ChannelInfoEvent)
 			onChannelInfo((ChannelInfoEvent) event);
 		else if (event instanceof ConnectEvent)
@@ -193,6 +195,9 @@ public abstract class ListenerAdapter implements Listener {
 	}
 
 	public void onBanList(BanListEvent event) throws Exception {
+	}
+
+	public void onQuietList(QuietListEvent event) throws Exception {
 	}
 
 	public void onChannelInfo(ChannelInfoEvent event) throws Exception {
