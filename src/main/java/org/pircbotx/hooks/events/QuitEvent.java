@@ -17,6 +17,8 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
@@ -56,14 +58,20 @@ public class QuitEvent extends Event implements GenericUserEvent, GenericSnapsho
 	 * The reason the user quit from the server.
 	 */
 	protected final String reason;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
 	public QuitEvent(PircBotX bot, UserChannelDaoSnapshot userChannelDaoSnapshot,
-			@NonNull UserHostmask userHostmask, UserSnapshot user, @NonNull String reason) {
+			@NonNull UserHostmask userHostmask, UserSnapshot user, @NonNull String reason,
+      ImmutableMap<String, String> tags) {
 		super(bot);
 		this.userChannelDaoSnapshot = userChannelDaoSnapshot;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.reason = reason;
+		this.tags = tags;
 	}
 
 	/**

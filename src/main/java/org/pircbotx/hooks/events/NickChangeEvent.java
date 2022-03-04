@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 import org.pircbotx.User;
 import lombok.Data;
@@ -58,14 +59,19 @@ public class NickChangeEvent extends Event implements GenericUserEvent {
 			@Override,
 			@Nullable}))
 	protected final User user;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
 	public NickChangeEvent(PircBotX bot, @NonNull String oldNick, @NonNull String newNick,
-			@NonNull UserHostmask userHostmask, User user) {
+			@NonNull UserHostmask userHostmask, User user, ImmutableMap<String, String> tags) {
 		super(bot);
 		this.oldNick = oldNick;
 		this.newNick = newNick;
 		this.userHostmask = userHostmask;
 		this.user = user;
+		this.tags = tags;
 	}
 
 	/**

@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 import org.pircbotx.User;
 import lombok.Data;
@@ -64,15 +65,21 @@ public class UserModeEvent extends Event implements GenericUserModeEvent {
 	 * The mode that has been set.
 	 */
 	protected final String mode;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
 	public UserModeEvent(PircBotX bot, @NonNull UserHostmask userHostmask, User user,
-			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String mode) {
+			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String mode,
+      ImmutableMap<String, String> tags) {
 		super(bot);
 		this.userHostmask = user;
 		this.user = user;
 		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.mode = mode;
+		this.tags = tags;
 	}
 
 	/**

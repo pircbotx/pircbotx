@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -57,12 +58,17 @@ public class JoinEvent extends Event implements GenericChannelUserEvent {
 	@Getter(onMethod = @__({
 			@Override}))
 	protected final UserHostmask userHostmask;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
-	public JoinEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user) {
+	public JoinEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user, ImmutableMap<String, String> tags) {
 		super(bot);
 		this.channel = channel;
 		this.user = user;
 		this.userHostmask = userHostmask;
+    this.tags = tags;
 	}
 
 	/**

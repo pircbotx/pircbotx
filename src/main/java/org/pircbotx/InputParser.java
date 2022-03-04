@@ -613,7 +613,7 @@ public class InputParser implements Closeable {
 			sourceUser = createUserIfNull(sourceUser, source);
 
 			bot.getUserChannelDao().addUserToChannel(sourceUser, channel);
-			configuration.getListenerManager().onEvent(new JoinEvent(bot, channel, source, sourceUser));
+			configuration.getListenerManager().onEvent(new JoinEvent(bot, channel, source, sourceUser, tags));
 		} else if (command.equals("PART")) {
 			// Someone is parting from a channel.
 			UserChannelDaoSnapshot daoSnapshot;
@@ -635,7 +635,7 @@ public class InputParser implements Closeable {
 			else
 				//Just remove the user from memory
 				bot.getUserChannelDao().removeUserFromChannel(sourceUser, channel);
-			configuration.getListenerManager().onEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, channel.getName(), source, sourceSnapshot, message));
+			configuration.getListenerManager().onEvent(new PartEvent(bot, daoSnapshot, channelSnapshot, channel.getName(), source, sourceSnapshot, message, tags));
 		} else if (command.equals("NICK")) {
 			// Somebody is changing their nick.
 			sourceUser = createUserIfNull(sourceUser, source);
@@ -644,7 +644,7 @@ public class InputParser implements Closeable {
 			if (source.getNick().equals(bot.getNick()))
 				// Update our nick if it was us that changed nick.
 				bot.setNick(newNick);
-			configuration.getListenerManager().onEvent(new NickChangeEvent(bot, source.getNick(), newNick, source, sourceUser));
+			configuration.getListenerManager().onEvent(new NickChangeEvent(bot, source.getNick(), newNick, source, sourceUser, tags));
 		} else if (command.equals("NOTICE")) {
 			// Someone is sending a notice.
 			configuration.getListenerManager().onEvent(new NoticeEvent(bot, source, sourceUser, channel, target, message, tags));
@@ -664,7 +664,7 @@ public class InputParser implements Closeable {
 			if (!source.getNick().equals(bot.getNick()))
 				//Someone else
 				bot.getUserChannelDao().removeUser(sourceUser);
-			configuration.getListenerManager().onEvent(new QuitEvent(bot, daoSnapshot, source, sourceSnapshot, reason));
+			configuration.getListenerManager().onEvent(new QuitEvent(bot, daoSnapshot, source, sourceSnapshot, reason, tags));
 		} else if (command.equals("KICK")) {
 			// Somebody has been kicked from a channel.
 			UserHostmask recipientHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, message);
@@ -676,7 +676,7 @@ public class InputParser implements Closeable {
 			else
 				//Someone else
 				bot.getUserChannelDao().removeUserFromChannel(recipient, channel);
-			configuration.getListenerManager().onEvent(new KickEvent(bot, channel, source, sourceUser, recipientHostmask, recipient, parsedLine.get(2)));
+			configuration.getListenerManager().onEvent(new KickEvent(bot, channel, source, sourceUser, recipientHostmask, recipient, parsedLine.get(2), tags));
 		} else if (command.equals("MODE")) {
 			// Somebody is changing the mode on a channel or user (Use long form since mode isn't after a : )
 			String mode = line.substring(line.indexOf(target, 2) + target.length() + 1);
@@ -687,7 +687,7 @@ public class InputParser implements Closeable {
 			//User sourceModeUser = sourceUser;
 			//if (sourceModeUser == null)
 			//	sourceModeUser = bot.getUserChannelDao().getUser(source);
-			processMode(source, sourceUser, target, mode);
+			processMode(source, sourceUser, target, mode, tags);
 		} else if (command.equals("TOPIC")) {
 			// Someone is changing the topic.
 			long currentTime = System.currentTimeMillis();
@@ -696,7 +696,7 @@ public class InputParser implements Closeable {
 			channel.setTopicSetter(source);
 			channel.setTopicTimestamp(currentTime);
 
-			configuration.getListenerManager().onEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true));
+			configuration.getListenerManager().onEvent(new TopicEvent(bot, channel, oldTopic, message, source, currentTime, true, tags));
 		} else if (command.equals("INVITE")) {
 			// Somebody is inviting somebody else into a channel.
 			configuration.getListenerManager().onEvent(new InviteEvent(bot, source, sourceUser, message));
@@ -794,7 +794,7 @@ public class InputParser implements Closeable {
 			channel.setTopicTimestamp(date * 1000);
 			channel.setTopicSetter(setBy);
 
-			configuration.getListenerManager().onEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false));
+			configuration.getListenerManager().onEvent(new TopicEvent(bot, channel, null, channel.getTopic(), setBy, date, false, ImmutableMap.of()));
 		} else if (code == RPL_WHOREPLY) {
 			//EXAMPLE: 352 PircBotX #aChannel ~someName 74.56.56.56.my.Hostmask wolfe.freenode.net someNick H :0 Full Name
 			//Part of a WHO reply on information on individual users
@@ -872,7 +872,7 @@ public class InputParser implements Closeable {
 			String mode = StringUtils.join(modeParsed, ' ');
 
 			channel.setMode(mode, modeParsed);
-			configuration.getListenerManager().onEvent(new ModeEvent(bot, channel, null, null, mode, modeParsed));
+			configuration.getListenerManager().onEvent(new ModeEvent(bot, channel, null, null, mode, modeParsed, ImmutableMap.of()));
 		} else if (code == 329) {
 			//EXAMPLE: 329 lordquackstar #botters 1199140245
 			//Tells when channel was created. From /JOIN
@@ -1089,7 +1089,7 @@ public class InputParser implements Closeable {
 	 * @param target The channel or nick that the mode operation applies to.
 	 * @param mode The mode that has been set.
 	 */
-	public void processMode(UserHostmask userHostmask, User user, String target, String mode) {
+	public void processMode(UserHostmask userHostmask, User user, String target, String mode, ImmutableMap<String, String> tags) {
 		if (configuration.getChannelPrefixes().indexOf(target.charAt(0)) >= 0) {
 			// The mode of a channel is being changed.
 			Channel channel = bot.getUserChannelDao().getChannel(target);
@@ -1112,12 +1112,12 @@ public class InputParser implements Closeable {
 						modeHandler.handleMode(bot, channel, userHostmask, user, params, adding, true);
 				}
 			}
-			configuration.getListenerManager().onEvent(new ModeEvent(bot, channel, userHostmask, user, mode, modeParsed));
+			configuration.getListenerManager().onEvent(new ModeEvent(bot, channel, userHostmask, user, mode, modeParsed, tags));
 		} else {
 			// The mode of a user is being changed.
 			UserHostmask targetHostmask = bot.getConfiguration().getBotFactory().createUserHostmask(bot, target);
 			User targetUser = bot.getUserChannelDao().getUser(target);
-			configuration.getListenerManager().onEvent(new UserModeEvent(bot, userHostmask, user, targetHostmask, targetUser, mode));
+			configuration.getListenerManager().onEvent(new UserModeEvent(bot, userHostmask, user, targetHostmask, targetUser, mode, tags));
 		}
 	}
 

@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.hooks.Event;
@@ -71,8 +72,13 @@ public class PartEvent extends Event implements GenericChannelUserEvent, Generic
 	 */
 	protected final String reason;
 
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
+
 	public PartEvent(PircBotX bot, UserChannelDaoSnapshot daoSnapshot, ChannelSnapshot channel, @NonNull String channelName,
-			@NonNull UserHostmask userHostmask, UserSnapshot user, @NonNull String reason) {
+			@NonNull UserHostmask userHostmask, UserSnapshot user, @NonNull String reason, ImmutableMap<String, String> tags) {
 		super(bot);
 		this.userChannelDaoSnapshot = daoSnapshot;
 		this.channel = channel;
@@ -80,6 +86,7 @@ public class PartEvent extends Event implements GenericChannelUserEvent, Generic
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.reason = reason;
+		this.tags = tags;
 	}
 
 	/**

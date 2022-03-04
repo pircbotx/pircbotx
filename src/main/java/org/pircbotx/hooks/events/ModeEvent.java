@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 import org.pircbotx.Channel;
@@ -69,15 +70,21 @@ public class ModeEvent extends Event implements GenericChannelUserEvent {
 	 */
 	protected final String mode;
 	protected final ImmutableList<String> modeParsed;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
 	public ModeEvent(PircBotX bot, @NonNull Channel channel, UserHostmask userHostmask,
-			User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed) {
+			User user, @NonNull String mode, @NonNull ImmutableList<String> modeParsed,
+      ImmutableMap<String, String> tags) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
 		this.user = user;
 		this.mode = mode;
 		this.modeParsed = modeParsed;
+		this.tags = tags;
 	}
 
 	/**
