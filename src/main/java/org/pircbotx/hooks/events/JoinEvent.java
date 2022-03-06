@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -33,8 +33,6 @@ import org.pircbotx.hooks.types.GenericChannelUserEvent;
 /**
  * This event is dispatched whenever someone (possibly us) joins a channel which
  * we are on.
- *
- * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -36,8 +36,6 @@ import lombok.NonNull;
  * This event is dispatched whenever someone (possibly us) quits from the
  * server. We will only observe this if the user was in one of the channels to
  * which we are connected.
- *
- * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

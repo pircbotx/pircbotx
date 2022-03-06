@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -29,7 +29,6 @@ import org.testng.collections.Lists;
 
 /**
  *
- * @author Leon Blakey
  */
 public class WaitForQueueTest {
 	@SuppressWarnings("unchecked")

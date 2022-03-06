@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -24,7 +24,6 @@ import org.pircbotx.hooks.events.OpEvent;
 /**
  * Any user status change in a channel. Eg {@link OpEvent}
  * <p/>
- * @author Leon Blakey
  */
 public interface GenericUserModeEvent extends GenericUserEvent {
 	/**

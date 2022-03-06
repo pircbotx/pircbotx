@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -24,8 +24,6 @@ import org.pircbotx.exception.CAPException;
 /**
  * Generic CAP handler. Relevant handle methods are called when a CAP line is
  * received. Connecting is not considered finished until a method returns true
- *
- * @author Leon Blakey
  */
 public interface CapHandler {
 	public boolean handleLS(PircBotX bot, ImmutableList<String> capabilities) throws CAPException;

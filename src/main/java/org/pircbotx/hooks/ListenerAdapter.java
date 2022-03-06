@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -31,8 +31,6 @@ import org.pircbotx.hooks.types.*;
  * {@link Listener#onEvent(org.pircbotx.hooks.Event) } method, you must call
  * <code>super.onEvent(event)</code>, otherwise none of the Adapter hook methods
  * will be called!
- *
- * @author Leon Blakey
  */
 public abstract class ListenerAdapter implements Listener {
 	public void onEvent(Event event) throws Exception {

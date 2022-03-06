@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -20,8 +20,6 @@ package org.pircbotx.hooks;
 /**
  * A generic listener to receive events. Almost all users should use
  * {@link org.pircbotx.hooks.ListenerAdapter}
- *
- * @author Leon Blakey
  */
 public interface Listener {
 	public void onEvent(Event event) throws Exception;

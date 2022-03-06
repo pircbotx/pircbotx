@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -39,8 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Send raw lines to the server with locking and message delay support.
- * <p>
- * @author Leon Blakey
  */
 //@RequiredArgsConstructor
 @Slf4j

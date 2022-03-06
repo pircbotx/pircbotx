@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -93,7 +93,6 @@ import lombok.extern.slf4j.Slf4j;
  * Usability tests for PircBotX that test how PircBotX handles lines and events.
  * Any other tests not involving processing lines should be in PircBotXTest
  * <p/>
- * @author Leon Blakey
  */
 @Slf4j
 @Test(singleThreaded = true)
@@ -918,7 +917,7 @@ public class InputParserTest {
 	}
 
 	/**
-	 * https://github.com/TheLQ/pircbotx/issues/256#issuecomment-124180823
+	 * https://github.com/pircbotx/pircbotx/issues/256#issuecomment-124180823
 	 */
 	@Test
 	public void quitTest() throws IOException, IrcException {

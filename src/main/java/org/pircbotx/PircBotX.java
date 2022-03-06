@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -66,13 +66,6 @@ import org.pircbotx.snapshot.UserChannelDaoSnapshot;
  * server, you would listen for the MessageEvent in your listener (see
  * {@link ListenerAdapter}). Many other events are dispatched as well for other
  * incoming lines
- *
- * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
- * href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>
- * Forked and Maintained by Leon Blakey in <a
- * href="http://github.com/thelq/pircbotx">PircBotX</a>
  */
 @Slf4j
 @EqualsAndHashCode(of = "botId")

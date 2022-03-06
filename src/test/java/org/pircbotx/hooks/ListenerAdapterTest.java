@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -49,7 +49,6 @@ import com.google.common.collect.Sets;
 
 /**
  *
- * @author Leon Blakey
  */
 public class ListenerAdapterTest {
 	private static final Logger log = LoggerFactory.getLogger(ListenerAdapterTest.class);	

@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -30,8 +30,6 @@ import org.pircbotx.exception.DccException.Reason;
  * This class will Receive the acknowledgement of bytes when sending a file.
  * This will keep the SendFileTransfer alive until all bytes are received by the
  * client.
- *
- * @author Rob
  */
 public class ReceiveFileTransferAcknowlegement extends Thread {
 

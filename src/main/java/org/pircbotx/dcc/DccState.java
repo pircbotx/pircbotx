@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -19,8 +19,6 @@ package org.pircbotx.dcc;
 
 /**
  * The state of a DCC connection
- *
- * @author Leon Blakey
  */
 public enum DccState {
 	INIT, CONNECTING, RUNNING, WAITING, DONE, SHUTDOWN, ERROR;

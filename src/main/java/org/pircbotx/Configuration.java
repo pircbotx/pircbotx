@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -71,8 +71,6 @@ import lombok.experimental.Accessors;
 /**
  * Immutable configuration for PircBotX created from
  * {@link Configuration.Builder}
- *
- * @author Leon Blakey
  */
 @Data
 @ToString(exclude = {"serverPassword", "nickservPassword", "nickservCustomMessage"})
@@ -288,7 +286,7 @@ public class Configuration {
 		/**
 		 * CTCP version response.
 		 */
-		protected String version = "PircBotX " + PircBotX.VERSION + " Java IRC bot - github.com/thelq/pircbotx";
+		protected String version = "PircBotX " + PircBotX.VERSION + " Java IRC bot - github.com/pircbotx/pircbotx";
 		/**
 		 * CTCP finger response
 		 */
