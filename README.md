@@ -1,36 +1,40 @@
 [![Build Status](https://travis-ci.org/pircbotx/pircbotx.svg?branch=master)](https://travis-ci.org/pircbotx/pircbotx)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/25ed005ec882435fb5f7ce6b05e097c0)](https://www.codacy.com/app/pircbotx/pircbotx?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pircbotx/pircbotx/&amp;utm_campaign=Badge_Grade) [![Join the chat at https://gitter.im/pircbotx-irc/Lobby](https://badges.gitter.im/pircbotx-irc/Lobby.svg)](https://gitter.im/pircbotx-irc/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**November 2018** PircBotX 2.2 released
+**PircBotX** is a powerful event-based Java IRC library for bots and user clients. Version v2.3 (2022)
 
-**November 2017** Project moved from /TheLQ/pircbotx to a new github organisation /pircbotx/pircbotx
-
-**January 2016** PircBotX 2.1 is finally released!
-
-**June 2015** We've moved from Google Code! [Issues, wiki, javadocs, and git mirror are on GitHub](https://github.com/pircbotx/PircBotX). 
-
-[Current Version: 2.2](https://github.com/pircbotx/pircbotx/wiki/Downloads) - See [Migration Guide to 2.x](https://github.com/pircbotx/pircbotx/wiki/MigrationGuide2) and [ChangeLog](https://github.com/pircbotx/pircbotx/wiki/ChangeLog#21---january-24-2016) for more information
-
-**PircBotX** is a powerful and flexible Java IRC library forked from the popular PircBot framework, bringing many new up-to-date features and bug fixes in an official alternative distribution.
-
- * Robust, multi-threaded Event-Listener system with [over 50](http://pircbotx.github.io/pircbotx/latest/apidocs/org/pircbotx/hooks/events/package-summary.html) supported IRC events
- * Powerful Channel/User Model
- * Native SSL support using SSLSocket or STARTTLS
- * Standard and reverse/passive DCC Chat and Filesharing
- * CTCP VERSION, ACTION, PING, TIME, and FINGER support
- * IPv6 IRC servers and DCC clients
- * Op, voice, halfop, superops, and owner user modes
- * [IRCv3 CAP negotiation](https://github.com/pircbotx/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, away-notify, and message tags
- * [WEBIRC](https://github.com/pircbotx/pircbotx/wiki/Documentation#webirc-authentication) support
- * Built in [Ident server](https://github.com/pircbotx/pircbotx/wiki/Documentation#ident-server)
+* Provides [63 IRC events](http://pircbotx.github.io/pircbotx/latest/apidocs/org/pircbotx/hooks/events/package-summary.html) in multi-threaded listener system, including
+  * Extensive Channel/User Model with high performance in high concurrency workload
+  * Standard and reverse/passive DCC Chat and Filesharing powered by `java.nio`
+  * CTCP VERSION, ACTION, PING, TIME, and FINGER
+  * User modes op, voice, halfop, superops, and owner
+  * Channel modes invite only, quiet, moderated, secret, limit, key 
+  * WHO, NAMES, LIST (Channels), BANLIST, and QUIETLIST
+  * 001-005 server info, MOTD, WHOIS
+  * Core IRC commands JOIN, QUIT, KICK, BAN, INVITE, AWAY, MODE, TOPIC
+  * Nickserv integration with self register and other user's registration status
+  * Auto join channels, auto WHO and MODE on channel join
+* Connection features
+  * [IRCv3 CAP negotiation](https://github.com/pircbotx/pircbotx/wiki/Documentation#cap-support) with native support for SASL, TLS, away-notify, and message tags
+  * Robust connection handling with server list, attempt all DNS entries, auto retry, auto reconnect
+  * TLS with SSLSocket or STARTTLS upgrade
+  * Supports IPv6 IRC servers and DCC clients
+  * Output message throttling, auto long line split
+  * [WEBIRC authentication](https://github.com/pircbotx/pircbotx/wiki/Documentation#webirc-authentication)
+  * Built in [Ident server](https://github.com/pircbotx/pircbotx/wiki/Documentation#ident-server)
+  * MultiBotManager utility runs multiple bots on multiple servers
+* Formatting utility for color, bold/underline/italics, and reverse
+* Adds context info to Slf4j MDC, Marker on IO logs
+* Java 8 to 17 Compatible
+* High performance Parser
 
 **Checkout the [Wiki](https://github.com/pircbotx/pircbotx/wiki/) for tutorials and documentation**
 
 ## PircBotX in 3 Steps
 A brief getting started guide
 
- * [Download PircBotX](https://github.com/pircbotx/pircbotx/wiki/Downloads)
- * Create and execute the following class:
+* [Download PircBotX](https://github.com/pircbotx/pircbotx/wiki/Downloads)
+* Create and execute the following class:
 ```java
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -61,7 +65,7 @@ public class MyListener extends ListenerAdapter {
         }
 }
 ```
- * Join the #pircbotx channel on irc.freenode.net and send `?helloworld` . Your bot will respond with `Hello world!` Since its a GenericMessageEvent, it will also respond when private messaged. Congratulations, you just wrote your first bot!
+* Join the #pircbotx channel on irc.freenode.net and send `?helloworld` . Your bot will respond with `Hello world!` Since its a GenericMessageEvent, it will also respond when private messaged. Congratulations, you just wrote your first bot!
 
 PircBotX can do so much more! [Read the docs for more information](http://github.com/pircbotx/pircbotx/wiki/Documentation).
 
@@ -71,9 +75,6 @@ PircBotX can do so much more! [Read the docs for more information](http://github
 
 If you can't find an answer, ask on IRC at irc.freenode.net/#pircbotx . [We also have a mailing list](http://groups.google.com/group/pircbotx).
 
-## License 
-This project is licensed under GNU GPL v3 to be compatible with the PircBot license. 
+## Status
 
-It is assumed that commercial users can buy the commercial license of PircBot which grants "modification of the Product's source-code and incorporation of the modified source-code into your software"
-
-The PircBot developer has ignored multiple emails asking for a less restrictive license and clarification of the commercial license. Users can show support by respectfully asking him directly at ![pircbot developer's email](http://pircbotx.github.io/pircbotx/pircbot-email.gif). More up to date information is available at in [Issue #63](https://github.com/pircbotx/pircbotx/issues/63).
+PircBotX is stable with a majority of the modern IRC spec implemented. Feature requests and pull requests welcome.

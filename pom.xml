@@ -38,8 +38,7 @@
 		Project information
 	-->
 	<name>pircbotx</name>
-	<description>PircBotX is a powerful and flexible Java IRC library forked from the popular PircBot framework, 
-		bringing many new up-to-date features and bug fixes in an official alternative distribution.</description>
+	<description>PircBotX is a powerful event-based Java IRC library for bots and user clients.</description>
 	<url>http://github.com/pircbotx/pircbotx</url>
 	<inceptionYear>2010</inceptionYear>
 
