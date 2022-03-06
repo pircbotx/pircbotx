@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -31,8 +31,6 @@ import lombok.NonNull;
  * Dispatched when we receive a completed Whois request. Note this is completely
  * independent of User and Channel objects since a user might not be connected
  * to us directly
- *
- * @author Leon Blakey
  */
 @Builder(builderClassName = "Builder", buildMethodName = "generateEvent")
 @EqualsAndHashCode(callSuper = true)

@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -41,8 +41,6 @@ import lombok.NonNull;
  * <p>
  * To obtain the nick of each user in the channel, call the
  * {@link User#getNick()} method on each User object in {@link #getUsers() }
- *
- * @author Leon Blakey
  * @see User
  * @see Channel#getUsers()
  */

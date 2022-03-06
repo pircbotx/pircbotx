@@ -1,6 +1,6 @@
 <!--
 
-    Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+    Copyright (C) 2010-2022 The PircBotX Project Authors
 
     This file is part of PircBotX.
 
@@ -52,20 +52,8 @@
 	</licenses>
 
 	<organization>
-		<name>Leon Blakey</name>
+		<name>The PircBotX Project</name>
 	</organization>
-
-	<developers>
-		<developer>
-			<id>TheLQ</id>
-			<name>Leon Blakey</name>
-			<email>lord.quackstar@gmail.com</email>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>-5</timezone>
-		</developer>
-	</developers>
 
 	<issueManagement>
 		<system>Github</system>
@@ -454,7 +442,7 @@
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>2.10.3</version>
 						<configuration>
-							<defaultAuthor>Leon Blakey</defaultAuthor>
+							<defaultAuthor>The PircBotX Project Authors</defaultAuthor>
 							<defaultVersion>${project.version}</defaultVersion>
 							<sourcepath>target/delombok</sourcepath>
 							<!-- Temporarily disable Java 8 super strict doclint -->
@@ -509,7 +497,7 @@
 									<artifactId>maven-javadoc-plugin</artifactId>
 									<version>2.10.3</version>
 									<configuration>
-										<defaultAuthor>Leon Blakey</defaultAuthor>
+										<defaultAuthor>The PircBotX Project Authors</defaultAuthor>
 										<defaultVersion>${project.version}</defaultVersion>
 										<!-- Temporarily disable Java 8 super strict doclint -->
 										<additionalparam>-Xdoclint:none</additionalparam>

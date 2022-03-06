@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -39,8 +39,6 @@ import org.pircbotx.hooks.Listener;
  * To mark a listener as a background listener, use {@link #addListener(org.pircbotx.hooks.Listener, boolean)
  * }
  * with isBackground set to true
- * <p>
- * @author Leon Blakey
  */
 public class BackgroundListenerManager extends ThreadedListenerManager {
 	protected Map<Listener, ExecutorService> backgroundListeners = new HashMap<>();

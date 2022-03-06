@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -21,8 +21,6 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * General Exception for problems during CAP negotiation
- *
- * @author Leon Blakey
  */
 public class CAPException extends RuntimeException {
 	protected static final long serialVersionUID = 1L;

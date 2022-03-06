@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -28,8 +28,6 @@ import org.pircbotx.exception.CAPException;
 /**
  * Enables the specified capability with the server. This handler should cover
  * almost all CAP features except SASL since most only need to be requested.
- *
- * @author Leon Blakey
  */
 @Slf4j
 @RequiredArgsConstructor

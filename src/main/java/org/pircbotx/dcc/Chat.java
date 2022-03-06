@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -34,8 +34,6 @@ import org.slf4j.MarkerFactory;
 
 /**
  * Generic DCC chat handling class that represents an active dcc chat.
- * <p>
- * @author Leon Blakey
  */
 @Slf4j
 public class Chat {

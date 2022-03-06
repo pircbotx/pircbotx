@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -46,8 +46,6 @@ import org.testng.annotations.BeforeClass;
 /**
  * Do various connect tests. Note that this is in a separate class since
  * PircBotXOutputTest relies on a working mock implementation
- *
- * @author Leon Blakey
  */
 @Slf4j
 @Test(groups = "ConnectTests", singleThreaded = true)
