@@ -17,6 +17,8 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.pircbotx.Channel;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UserHostmask;
@@ -64,8 +66,13 @@ public class TopicEvent extends Event implements GenericChannelEvent {
 	 * When the topic was set (milliseconds since the epoch).
 	 */
 	protected final long date;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
-	public TopicEvent(PircBotX bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull UserHostmask user, long date, boolean changed) {
+	public TopicEvent(PircBotX bot, @NonNull Channel channel, String oldTopic, @NonNull String topic, @NonNull UserHostmask user, long date, boolean changed,
+      ImmutableMap<String, String> tags) {
 		super(bot);
 		this.channel = channel;
 		this.oldTopic = oldTopic;
@@ -73,6 +80,7 @@ public class TopicEvent extends Event implements GenericChannelEvent {
 		this.user = user;
 		this.changed = changed;
 		this.date = date;
+		this.tags = tags;
 	}
 
 	/**

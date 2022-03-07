@@ -17,6 +17,7 @@
  */
 package org.pircbotx.hooks.events;
 
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.Nullable;
 import org.pircbotx.Channel;
 import org.pircbotx.User;
@@ -74,9 +75,14 @@ public class KickEvent extends Event implements GenericChannelModeRecipientEvent
 	 * The reason given by the user who performed the kick.
 	 */
 	protected final String reason;
+	/**
+	 * The IrcV3 tags
+	 */
+	protected final ImmutableMap<String, String> tags;
 
 	public KickEvent(PircBotX bot, @NonNull Channel channel, @NonNull UserHostmask userHostmask, User user,
-			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String reason) {
+			@NonNull UserHostmask recipientHostmask, User recipient, @NonNull String reason,
+      ImmutableMap<String, String> tags) {
 		super(bot);
 		this.channel = channel;
 		this.userHostmask = userHostmask;
@@ -84,6 +90,7 @@ public class KickEvent extends Event implements GenericChannelModeRecipientEvent
 		this.recipientHostmask = recipientHostmask;
 		this.recipient = recipient;
 		this.reason = reason;
+		this.tags = tags;
 	}
 
 	/**
