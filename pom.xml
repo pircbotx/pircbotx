@@ -17,14 +17,8 @@
     PircBotX. If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<!--Sonatype Parent POM-->
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>9</version>
-	</parent>
-	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<!--
 		Maven Information
 	-->
@@ -33,7 +27,7 @@
 	<artifactId>pircbotx</artifactId>
 	<packaging>jar</packaging>
 	<version>2.3-SNAPSHOT</version>
-	
+
 	<!--
 		Project information
 	-->
@@ -58,7 +52,7 @@
 		<system>Github</system>
 		<url>http://github.com/pircbotx/pircbotx/issues</url>
 	</issueManagement>
-        
+
 	<ciManagement>
 		<system>Travis-CI</system>
 		<url>http://travis-ci.org/pircbotx/pircbotx</url>
@@ -69,7 +63,7 @@
 		<developerConnection>scm:git:https://github.com/pircbotx/pircbotx.git</developerConnection>
 		<url>https://github.com/pircbotx/pircbotx.git</url>
 	</scm>
-	
+
 	<mailingLists>
 		<mailingList>
 			<name>pircbotx</name>
@@ -78,10 +72,6 @@
 			<archive>http://groups.google.com/group/pircbotx/</archive>
 		</mailingList>
 	</mailingLists>
-
-	<prerequisites>
-		<maven>3.0.4</maven>
-	</prerequisites>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -113,12 +103,12 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.9</version>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 			<version>1.8</version>
-		</dependency>		
+		</dependency>
 		<!-- Slf4j for logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -158,7 +148,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<!-- Fix dependency conflicts -->
 	<dependencyManagement>
 		<dependencies>
@@ -169,15 +159,19 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
 		<sourceDirectory>${src.dir}</sourceDirectory>
+		<!--
+		 <reporting> plugins redeclared here
+		 See https://maven.apache.org/pom.html#Reporting
+		 -->
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>3.0</version>
+				<version>4.1</version>
 				<configuration>
 					<header>src/etc/license-header.txt</header>
 					<excludes>
@@ -200,20 +194,17 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--Specifically target Java 1.8-->
+			<!--Specifically target Java 8-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5</version>
+				<version>3.10.0</version>
 				<configuration>
-					<source>8</source>
-					<target>8</target>
+					<release>8</release>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerArgs>
 						<arg>-Xlint</arg>
-						<!-- Disable warning about compiling to 1.8 -->
-						<arg>-Xlint:-options</arg>
 					</compilerArgs>
 				</configuration>
 				<!--Do NOT show depreciation in test compile-->
@@ -226,11 +217,11 @@
 							<compilerArgs>
 								<arg>-Xlint:unchecked</arg>
 							</compilerArgs>
-						</configuration> 
+						</configuration>
 						<goals>
 							<goal>testCompile</goal>
 						</goals>
-					</execution>                  
+					</execution>
 				</executions>
 			</plugin>
 			<!-- Update version in PircBotX.java -->
@@ -238,7 +229,7 @@
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
 				<artifactId>maven-replacer-plugin</artifactId>
 				<version>1.4.1</version>
-				<executions>                
+				<executions>
 					<execution>
 						<phase>process-sources</phase>
 						<goals>
@@ -253,14 +244,14 @@
 							<token>public static final String VERSION .+</token>
 							<value>public static final String VERSION = "${project.version}${snapshot.version}";</value>
 						</replacement>
-					</replacements>                        
+					</replacements>
 				</configuration>
 			</plugin>
 			<!--Use very verbose logging while testing-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
+				<version>3.0.0-M5</version>
 				<configuration>
 					<properties>
 						<property>
@@ -270,62 +261,25 @@
 					</properties>
 				</configuration>
 			</plugin>
-			<!-- Make a unified jar with all of the dependencies -->
-			<plugin>              
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.4.3</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<manifestEntries>
-										<Class-Path>.</Class-Path>
-									</manifestEntries>									
-								</transformer>
-							</transformers>
-							<finalName>${project.artifactId}-unified</finalName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
-				<configuration>
-					<mavenExecutorId>forked-path</mavenExecutorId>
-					<useReleaseProfile>false</useReleaseProfile>
-					<arguments>-P complete-build,release,sonatype-oss-release</arguments>
-				</configuration>
-			</plugin>
 			<!-- Fail build on dependency conflicts -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.4.1</version>
-				<executions>
-					<execution>
-						<id>enforce-dependencies</id>
-						<configuration>
-							<rules>
-								<dependencyConvergence />
-							</rules>
-						</configuration>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-					</execution>
-				</executions>
+				<version>3.0.0</version>
+				<configuration>
+					<rules>
+						<dependencyConvergence/>
+						<requireMavenVersion>
+							<version>3.0</version>
+						</requireMavenVersion>
+					</rules>
+				</configuration>
 			</plugin>
 			<!-- Generate OSGi manifest metadata -->
 			<plugin>
 				<groupId>biz.aQute.bnd</groupId>
 				<artifactId>bnd-maven-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>6.2.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -338,21 +292,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<useDefaultManifestFile>true</useDefaultManifestFile>
-				</configuration>
+				<version>3.2.2</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.gaul</groupId>
 				<artifactId>modernizer-maven-plugin</artifactId>
-				<version>2.1.0</version>
+				<version>2.3.0</version>
 				<configuration>
-					<javaVersion>1.8</javaVersion>
+					<javaVersion>8</javaVersion>
 				</configuration>
-			</plugin>    
-			
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -366,33 +317,8 @@
 			<url>file://${project.build.directory}/site-deploy-generated</url>
 		</site>
 	</distributionManagement>
-	
+
 	<profiles>
-		<!--Lombok tools.jar config-->
-		<profile>
-			<id>default-profile</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-				<file>
-					<exists>${java.home}/../lib/tools.jar</exists>
-				</file>
-			</activation>
-			<properties>
-				<toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-			</properties>
-		</profile>
-		<profile>
-			<id>mac-profile</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<file>
-					<exists>${java.home}/../Classes/classes.jar</exists>
-				</file>
-			</activation>
-			<properties>
-				<toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
-			</properties>
-		</profile>
 		<!--Delombok sources for tools like javadoc-->
 		<profile>
 			<id>complete-build</id>
@@ -400,26 +326,93 @@
 				<src.dir>target/delombok</src.dir>
 			</properties>
 			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>3.3.2</version>
+							<configuration>
+								<sourcepath>target/delombok</sourcepath>
+								<!-- Temporarily disable Java 8 super strict doclint -->
+								<additionalOptions>
+									<additionalOption>-Xdoclint:none</additionalOption>
+								</additionalOptions>
+								<links>
+									<link>https://guava.dev/releases/${guava.version}/api/docs/</link>
+								</links>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-checkstyle-plugin</artifactId>
+							<version>3.1.2</version>
+							<dependencies>
+								<dependency>
+									<groupId>com.puppycrawl.tools</groupId>
+									<artifactId>checkstyle</artifactId>
+									<version>10.0</version>
+								</dependency>
+							</dependencies>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+
 				<plugins>
+					<!-- Make a unified jar with all of the dependencies -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>3.2.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+								<configuration>
+									<transformers>
+										<transformer
+												implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+											<manifestEntries>
+												<Class-Path>.</Class-Path>
+											</manifestEntries>
+										</transformer>
+									</transformers>
+									<finalName>${project.artifactId}-unified</finalName>
+									<filters>
+										<filter>
+											<artifact>*:*</artifact>
+											<excludes>
+												<exclude>META-INF/*.MF</exclude>
+												<exclude>META-INF/LICENSE.txt</exclude>
+												<exclude>META-INF/NOTICE.txt</exclude>
+											</excludes>
+										</filter>
+									</filters>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Make sources jar -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Isolated delombok for javadoc tool -->
 					<plugin>
 						<groupId>org.projectlombok</groupId>
 						<artifactId>lombok-maven-plugin</artifactId>
-						<version>1.16.6.1</version>
-						<dependencies>
-							<dependency>
-								<groupId>jdk.tools</groupId>
-								<artifactId>jdk.tools</artifactId>
-								<version>1.8</version>
-								<scope>system</scope>
-								<systemPath>${toolsjar}</systemPath>
-							</dependency>
-							<!-- Override lombok version if plugin is behind lombok
-							<dependency>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-								<version>${lombok.version}</version>
-							</dependency>-->
-						</dependencies>
+						<version>1.18.20.0</version>
 						<executions>
 							<execution>
 								<phase>process-sources</phase>
@@ -431,26 +424,95 @@
 						<configuration>
 							<addOutputDirectory>false</addOutputDirectory>
 							<sourceDirectory>src/main/java</sourceDirectory>
-							<!-- Netbeans assumes all errors go to generated sources, which is wrong for lombok-->
 							<outputDirectory>target/delombok</outputDirectory>
+							<verbose>true</verbose>
 						</configuration>
 					</plugin>
+					<!-- DUPLICATES <reporting> - Generate jar on  -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.3.2</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!--Site generator -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-site-plugin</artifactId>
+						<version>3.11.0</version>
+					</plugin>
+				</plugins>
+			</build>
+
+			<reporting>
+				<plugins>
 					<!--JavaDoc setup for Jars-->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.3</version>
+						<version>3.3.2</version>
+						<reportSets>
+							<reportSet>
+								<id>html</id>
+								<reports>
+									<report>javadoc</report>
+								</reports>
+							</reportSet>
+						</reportSets>
+					</plugin>
+					<!-- Checkstyle site -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>3.1.2</version>
 						<configuration>
-							<defaultAuthor>The PircBotX Project Authors</defaultAuthor>
-							<defaultVersion>${project.version}</defaultVersion>
-							<sourcepath>target/delombok</sourcepath>
-							<!-- Temporarily disable Java 8 super strict doclint -->
-							<additionalparam>-Xdoclint:none</additionalparam>
-							<links>
-								<link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
-							</links>
+							<configLocation>src/etc/checkstyle.xml</configLocation>
 						</configuration>
 					</plugin>
+					<!-- FindBugs static analysis -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>findbugs-maven-plugin</artifactId>
+						<version>3.0.5</version>
+						<configuration>
+							<effort>Max</effort>
+							<threshold>Exp</threshold>
+							<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
+						</configuration>
+					</plugin>
+					<!-- PMD Static Analysis -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<version>3.16.0</version>
+						<configuration>
+							<targetJdk>1.8</targetJdk>
+							<rulesets>
+								<ruleset>src/etc/pmd-rules.xml</ruleset>
+							</rulesets>
+						</configuration>
+					</plugin>
+					<!-- Fix no <version> tag warning -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-project-info-reports-plugin</artifactId>
+						<version>3.2.2</version>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
+		<profile>
+			<id>codecov</id>
+			<build>
+				<plugins>
 					<!-- For analysis by codecov at http://codecov.io/github/TheLQ/pircbotx -->
 					<plugin>
 						<groupId>org.jacoco</groupId>
@@ -470,90 +532,6 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>
-					<!--Deploy site with Mercurial (Hg)-->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-site-plugin</artifactId>
-						<version>3.4</version>
-						<dependencies>
-							<dependency><!-- add support for scm -->
-								<groupId>org.apache.maven.wagon</groupId>
-								<artifactId>wagon-scm</artifactId>
-								<version>2.8</version>
-							</dependency>
-							<dependency>
-								<groupId>org.apache.maven.scm</groupId>
-								<artifactId>maven-scm-provider-hg</artifactId>
-								<version>1.9.2</version>
-							</dependency>
-						</dependencies>
-						<configuration>
-							<reportPlugins>
-								<!--JavaDoc setup for Site-->
-								<plugin>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-javadoc-plugin</artifactId>
-									<version>2.10.3</version>
-									<configuration>
-										<defaultAuthor>The PircBotX Project Authors</defaultAuthor>
-										<defaultVersion>${project.version}</defaultVersion>
-										<!-- Temporarily disable Java 8 super strict doclint -->
-										<additionalparam>-Xdoclint:none</additionalparam>
-										<show>public</show>
-										<links>
-											<link>http://docs.guava-libraries.googlecode.com/git-history/v${guava.version}/javadoc/</link>
-										</links>
-									</configuration>
-									<reportSets>
-										<reportSet>
-											<id>html</id>
-											<reports>
-												<report>javadoc</report>
-											</reports>
-										</reportSet>
-									</reportSets>
-								</plugin>
-								<!-- Test coverage -->
-								<plugin>
-									<groupId>org.codehaus.mojo</groupId>
-									<artifactId>cobertura-maven-plugin</artifactId>
-									<version>2.6</version>
-								</plugin>
-								<!-- Checkstyle site -->
-								<plugin>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-checkstyle-plugin</artifactId>
-									<version>2.13</version>
-									<configuration>
-										<configLocation>src/etc/checkstyle.xml</configLocation>
-									</configuration>
-								</plugin>
-								<!-- FindBugs static analysis -->
-								<plugin>
-									<groupId>org.codehaus.mojo</groupId>
-									<artifactId>findbugs-maven-plugin</artifactId>
-									<version>3.0.0</version>
-									<configuration>
-										<effort>Max</effort>
-										<threshold>Exp</threshold>
-										<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
-									</configuration>
-								</plugin>
-								<!-- PMD Static Analysis -->
-								<plugin>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-pmd-plugin</artifactId>
-									<version>3.3</version>
-									<configuration>
-										<source>1.8</source>
-										<rulesets>
-											<ruleset>src/etc/pmd-rules.xml</ruleset>
-										</rulesets>
-									</configuration>
-								</plugin>
-							</reportPlugins> 
-						</configuration>
 					</plugin>
 				</plugins>
 			</build>
