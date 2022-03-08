@@ -116,7 +116,7 @@ public class OutputRaw {
 	 * Sends a raw line to the IRC server as soon as possible
 	 * <p>
 	 * @param line The raw line to send to the IRC server
-	 * @param @param logline the line to be used in log, if you don't want the real line logged because it contains secrets.
+	 * @param logline the line to be used in log, if you don't want the real line logged because it contains secrets.
 	 */
 	public void rawLineNow(String line, String logline) {
 		checkNotNull(line, "Line cannot be null");
