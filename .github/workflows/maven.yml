@@ -1,0 +1,99 @@
+name: maven snapshot
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # TODO
+    # strategy:
+    #   matrix:
+    #     java: [ '8', '17 ]
+
+    env:
+      # `showDateTime` will show the passed time in milliseconds.
+      MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Djava.awt.headless=true -Dorg.slf4j.simpleLogger.showDateTime=true"
+      MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+      REVIEWDOG_OPTS: "-reporter=github-check -diff 'git diff ${{  github.event.pull_request.base.sha || github.event.before }}'"
+
+    steps:
+      #
+      # environment setup
+      #
+      - uses: actions/checkout@v2
+
+      - name: Setup build - JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Setup lint - reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Setup lint - scarfco
+        run: curl -sfL https://raw.githubusercontent.com/mallowlabs/scarfco/main/install.sh | sh -s
+
+      #
+      # build
+      #
+
+      - name: Build - Download Maven Dependencies
+        # TODO: Add -Pcomplete-build
+        # mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-compiler-plugin:3.5 -Dartifact=org.apache.maven.plugins:maven-enforcer-plugin:1.4.1
+        run: mvn $MAVEN_CLI_OPTS -Pcode-analysis dependency:go-offline
+
+      - name: Build - Maven Install
+        run: mvn $MAVEN_CLI_OPTS -Pcode-analysis,extra-jars "-Dsnapshot.version=-$( git rev-parse --short=7 HEAD )" install
+
+      - name: Reproducible Build Hashes
+        run: sha256sum target/*.jar
+
+      - name: Github Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: Package
+          path: target/*.jar
+
+      #
+      # Reporting
+      #
+
+      - name: Lint - Publish Maven Test Report
+        if: always()
+        uses: scacap/action-surefire-report@v1
+
+      - name: Lint - checkstyle
+        run: reviewdog -name=jcheckstyle -f=checkstyle $REVIEWDOG_OPTS < target/checkstyle-result.xml
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+        continue-on-error: true
+
+      - name: Lint - spotbugs
+        run: bin/scarfco target/spotbugsXml.xml | reviewdog -name=spotbugs -f=checkstyle $REVIEWDOG_OPTS
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+        continue-on-error: true
+
+      - name: Lint - pmd
+        run: bin/scarfco target/pmd.xml | reviewdog -name=pmd -f=checkstyle $REVIEWDOG_OPTS
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+        continue-on-error: true
+
+      - name: Lint - Github Action itself
+        uses: reviewdog/action-actionlint@v1
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+        continue-on-error: true
+        with:
+          reporter: github-check
+          level: warning
+
+#- test "$TRAVIS_BRANCH" = "master" &&  test "$TRAVIS_PULL_REQUEST" = "false" && mvn source:jar deploy --settings .travis/maven-settings.xml -Dmaven.test.skip=true
+#- test "$TRAVIS_TAG" != "" && mvn source:jar deploy --settings .travis/maven-settings-release.xml -Dmaven.test.skip=true
+

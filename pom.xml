@@ -54,8 +54,8 @@
 	</issueManagement>
 
 	<ciManagement>
-		<system>Travis-CI</system>
-		<url>http://travis-ci.org/pircbotx/pircbotx</url>
+		<system>Github Actions</system>
+		<url>https://github.com/pircbotx/pircbotx/actions</url>
 	</ciManagement>
 
 	<scm>
@@ -159,15 +159,21 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.36</version>
 			</dependency>
+			<dependency>
+				<groupId>com.google.code.findbugs</groupId>
+				<artifactId>jsr305</artifactId>
+				<version>3.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.12.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
 		<sourceDirectory>${src.dir}</sourceDirectory>
-		<!--
-		 <reporting> plugins redeclared here
-		 See https://maven.apache.org/pom.html#Reporting
-		 -->
 		<plugins>
 			<!--Makes sure License Headers are consistant across all files-->
 			<plugin>
@@ -179,11 +185,11 @@
 					<excludes>
 						<exclude>**/*.txt</exclude>
 						<exclude>**/*.log</exclude>
-						<exclude>.hg*</exclude>
 						<exclude>.git*</exclude>
 						<exclude>README.md</exclude>
-						<exclude>**/nbactions.xml</exclude>
-						<exclude>.travis.yml</exclude>
+						<exclude>.</exclude>
+						<exclude>.github/workflows/*.yml</exclude>
+						<exclude>src/etc/pom.properties</exclude>
 					</excludes>
 					<strictCheck>true</strictCheck>
 				</configuration>
@@ -244,7 +250,7 @@
 					<replacements>
 						<replacement>
 							<token>public static final String VERSION .+</token>
-							<value>public static final String VERSION = "${project.version}${snapshot.version}";</value>
+							<value>public static final String VERSION = "${project.version}-${snapshot.version}";</value>
 						</replacement>
 					</replacements>
 				</configuration>
@@ -272,10 +278,19 @@
 					<rules>
 						<dependencyConvergence/>
 						<requireMavenVersion>
-							<version>3.0</version>
+							<version>3.8</version>
 						</requireMavenVersion>
 					</rules>
 				</configuration>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<phase>initialize</phase>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- Generate OSGi manifest metadata -->
 			<plugin>
@@ -295,6 +310,18 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.2.2</version>
+			</plugin>
+			<!-- Improve dependency:go-offline -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.3.0</version>
+			</plugin>
+			<!-- improve pom update checks -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.10.0</version>
 			</plugin>
 
 			<plugin>
@@ -325,47 +352,9 @@
 	</distributionManagement>
 
 	<profiles>
-		<!--Delombok sources for tools like javadoc-->
 		<profile>
-			<id>complete-build</id>
-			<properties>
-				<src.dir>target/delombok</src.dir>
-			</properties>
+			<id>extra-jars</id>
 			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>3.3.2</version>
-							<configuration>
-								<sourcepath>target/delombok</sourcepath>
-								<!-- Reproducible builds -->
-								<notimestamp>true</notimestamp>
-								<!-- Temporarily disable Java 8 super strict doclint -->
-								<additionalOptions>
-									<additionalOption>-Xdoclint:none</additionalOption>
-								</additionalOptions>
-								<links>
-									<link>https://guava.dev/releases/${guava.version}/api/docs/</link>
-								</links>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>3.1.2</version>
-							<dependencies>
-								<dependency>
-									<groupId>com.puppycrawl.tools</groupId>
-									<artifactId>checkstyle</artifactId>
-									<version>10.0</version>
-								</dependency>
-							</dependencies>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-
 				<plugins>
 					<!-- Make a unified jar with all of the dependencies -->
 					<plugin>
@@ -416,6 +405,39 @@
 							</execution>
 						</executions>
 					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!--Delombok sources for tools like javadoc-->
+		<profile>
+			<id>complete-build</id>
+			<properties>
+				<src.dir>target/delombok</src.dir>
+			</properties>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-javadoc-plugin</artifactId>
+							<version>3.3.2</version>
+							<configuration>
+								<sourcepath>target/delombok</sourcepath>
+								<!-- Reproducible builds -->
+								<notimestamp>true</notimestamp>
+								<!-- Temporarily disable Java 8 super strict doclint -->
+								<additionalOptions>
+									<additionalOption>-Xdoclint:none</additionalOption>
+								</additionalOptions>
+								<links>
+									<link>https://guava.dev/releases/${guava.version}/api/docs/</link>
+								</links>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+
+				<plugins>
 					<!-- Isolated delombok for javadoc tool -->
 					<plugin>
 						<groupId>org.projectlombok</groupId>
@@ -476,38 +498,6 @@
 							</reportSet>
 						</reportSets>
 					</plugin>
-					<!-- Checkstyle site -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-checkstyle-plugin</artifactId>
-						<version>3.1.2</version>
-						<configuration>
-							<configLocation>src/etc/checkstyle.xml</configLocation>
-						</configuration>
-					</plugin>
-					<!-- FindBugs static analysis -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>findbugs-maven-plugin</artifactId>
-						<version>3.0.5</version>
-						<configuration>
-							<effort>Max</effort>
-							<threshold>Exp</threshold>
-							<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
-						</configuration>
-					</plugin>
-					<!-- PMD Static Analysis -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-pmd-plugin</artifactId>
-						<version>3.16.0</version>
-						<configuration>
-							<targetJdk>1.8</targetJdk>
-							<rulesets>
-								<ruleset>src/etc/pmd-rules.xml</ruleset>
-							</rulesets>
-						</configuration>
-					</plugin>
 					<!-- Fix no <version> tag warning -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -554,14 +544,69 @@
 			</build>
 		</profile>
 		<profile>
-			<id>codecov</id>
+			<id>code-analysis</id>
 			<build>
 				<plugins>
-					<!-- For analysis by codecov at http://codecov.io/github/TheLQ/pircbotx -->
+					<!-- Checkstyle site -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>3.1.2</version>
+						<configuration>
+							<configLocation>src/etc/checkstyle.xml</configLocation>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>checkstyle</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Spotbugs static analysis -->
+					<plugin>
+						<groupId>com.github.spotbugs</groupId>
+						<artifactId>spotbugs-maven-plugin</artifactId>
+						<version>4.6.0.0</version>
+						<configuration>
+							<effort>Max</effort>
+							<threshold>Exp</threshold>
+							<excludeFilterFile>src/etc/findbugs-exclude.xml</excludeFilterFile>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>spotbugs</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- PMD Static Analysis -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<version>3.16.0</version>
+						<configuration>
+							<rulesets>
+								<ruleset>src/etc/pmd-rules.xml</ruleset>
+							</rulesets>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>pmd</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Unit test coverage -->
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.7.5.201505241946</version>
+						<version>0.8.7</version>
 						<executions>
 							<execution>
 								<goals>
