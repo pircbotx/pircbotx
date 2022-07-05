@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -39,8 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Send raw lines to the server with locking and message delay support.
- * <p>
- * @author Leon Blakey
  */
 //@RequiredArgsConstructor
 @Slf4j
@@ -118,7 +116,7 @@ public class OutputRaw {
 	 * Sends a raw line to the IRC server as soon as possible
 	 * <p>
 	 * @param line The raw line to send to the IRC server
-	 * @param @param logline the line to be used in log, if you don't want the real line logged because it contains secrets.
+	 * @param logline the line to be used in log, if you don't want the real line logged because it contains secrets.
 	 */
 	public void rawLineNow(String line, String logline) {
 		checkNotNull(line, "Line cannot be null");

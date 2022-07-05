@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -37,8 +37,6 @@ import java.util.regex.Pattern;
 /**
  * Useful utilities for internal PircBotX use. Users should not use this class
  * directly
- *
- * @author Leon Blakey
  */
 public final class Utils {
 	//Do not create instances of this

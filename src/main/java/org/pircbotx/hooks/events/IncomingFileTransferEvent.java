@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -58,8 +58,6 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * If you allow resuming and the file already partly exists, it will be appended
  * to instead of overwritten. If resuming is not enabled, the file will be
  * overwritten if it already exists.
- *
- * @author Leon Blakey
  * @see FileTransfer
  */
 @Data

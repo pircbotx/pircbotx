@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -23,8 +23,6 @@ import java.net.InetAddress;
  * Any event dealing with DCC. This includes chat and file transfers. This is
  * more of a marker event then anything else as DCC events don't have much in
  * common
- *
- * @author Leon Blakey
  */
 public interface GenericDCCEvent extends GenericUserEvent {
 	public boolean isPassive();

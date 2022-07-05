@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -53,7 +53,6 @@ import org.apache.commons.lang3.StringUtils;
  * server and sending out apparently correct responses.
  *
  * @since PircBot 0.9c
- * @author Leon Blakey
  */
 @Slf4j
 public class IdentServer implements Closeable, Runnable {

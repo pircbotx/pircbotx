@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -26,8 +26,6 @@ import org.pircbotx.PircBotX;
  * IRCv3 CAP Negoation commands. See <a
  * href="http://ircv3.atheme.org/">http://ircv3.atheme.org/</a>
  * for more information
- *
- * @author Leon Blakey
  */
 @RequiredArgsConstructor
 public class OutputCAP {

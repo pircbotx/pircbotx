@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -27,8 +27,6 @@ import org.pircbotx.hooks.Event;
 /**
  * A nick is already in use error from server. If auto nick change isn't
  * enabled, must send a nick before server disconnects us.
- *
- * @author Leon Blakey
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

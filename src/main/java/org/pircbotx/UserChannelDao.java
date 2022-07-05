@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -56,7 +56,6 @@ import lombok.RequiredArgsConstructor;
  *
  * @see User
  * @see Channel
- * @author Leon Blakey
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserChannelDao<U extends User, C extends Channel> implements Closeable {

@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -21,15 +21,6 @@ import static com.google.common.base.Preconditions.*;
 
 /**
  * A fatal IRC error.
- *
- * @since PircBot 0.9
- * @author Origionally by:
- * <a href="http://www.jibble.org/">Paul James Mutton</a> for <a
- * href="http://www.jibble.org/pircbot.php">PircBot</a>
- * <p>
- * Forked and Maintained by in <a
- * href="http://github.com/thelq/pircbotx">PircBotX</a>: Leon Blakey
- * <lord.quackstar at gmail.com>
  */
 public class IrcException extends Exception {
 	protected static final long serialVersionUID = 1L;

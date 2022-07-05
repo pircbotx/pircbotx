@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -43,16 +43,6 @@ import lombok.extern.slf4j.Slf4j;
  * <p>
  * Most methods follow the builder pattern, meaning you can declare and setup
  * this Socket Factory in one line
- *
- * @author Trusting all certificates code by <a
- * href="http://www.howardism.org/Technical/Java/SelfSignedCerts.html">Howardism</a>
- * <p>
- * Disabling Diffie Hellman code by <a
- * href="http://stackoverflow.com/questions/6851461/java-why-does-ssl-handshake-give-could-not-generate-dh-keypair-exception/6862383#6862383">Sam
- * on StackOverflow</a>
- * <p>
- * Implemented and Maintained in PircBotX by: Leon Blakey <lord.quackstar at
- * gmail.com>
  */
 @EqualsAndHashCode(callSuper = false)
 @ToString
@@ -129,6 +119,7 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 
 	protected SSLSocket prepare(Socket socket) {
 		SSLSocket sslSocket = (SSLSocket) socket;
+		// Source: https://stackoverflow.com/questions/6851461/why-does-ssl-handshake-give-could-not-generate-dh-keypair-exception/6862383#6862383
 		if (diffieHellmanDisabled) {
 			List<String> limited = new LinkedList<String>();
 			for (String suite : sslSocket.getEnabledCipherSuites())
@@ -193,6 +184,8 @@ public class UtilSSLSocketFactory extends SSLSocketFactory {
 	/**
 	 * X509TrustManager that trusts all certificates. <b>This is very
 	 * insecure</b>
+	 *
+	 * Source: http://www.howardism.org/Technical/Java/SelfSignedCerts.html
 	 */
 	public static class TrustingX509TrustManager implements X509TrustManager {
 		/**

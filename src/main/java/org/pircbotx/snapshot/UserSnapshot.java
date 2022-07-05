@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -29,8 +29,6 @@ import org.pircbotx.UserHostmask;
 /**
  * A snapshot of a user in time. Useful to get information before a user leaves
  * a channel or server. Any attempts to modify data throw an exception
- *
- * @author Leon Blakey
  */
 //Only use super implementation which uses UIDs
 @EqualsAndHashCode(callSuper = true, of = {})

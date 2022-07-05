@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -25,8 +25,6 @@ import java.util.concurrent.Callable;
 
 /**
  * Send current number of bytes received from a file transfer
- *
- * @author Rob
  */
 public class SendFileTransferAcknowlegement implements Callable<Long> {
 

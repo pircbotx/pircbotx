@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -22,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * An enum to represent the possible IRC levels a user can have.
- *
- * @author Leon Blakey
  */
 @RequiredArgsConstructor
 public enum UserLevel {

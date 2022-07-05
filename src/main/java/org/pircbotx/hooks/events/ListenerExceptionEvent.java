@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -27,8 +27,6 @@ import org.pircbotx.hooks.Listener;
 /**
  * Dispatched when a listener throws an Exception. Will not be dispatched again 
  * if a listener throws an exception while handling this event
- * 
- * @author Leon Blakey <leon.m.blakey at gmail.com>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

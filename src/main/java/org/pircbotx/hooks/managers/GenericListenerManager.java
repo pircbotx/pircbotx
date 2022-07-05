@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -42,7 +42,7 @@ import org.pircbotx.hooks.WaitForQueue;
  * multiple threads, this class is deprecated and is only kept for legacy
  * reasons or special cases. Use of this class will have unexpected results. All
  * bots should now use {@link ThreadedListenerManager}.
- * @author Leon Blakey
+ *
  * @see ThreadedListenerManager
  */
 @Deprecated

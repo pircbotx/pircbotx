@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
  *
  * This file is part of PircBotX.
  *
@@ -26,7 +26,6 @@ import org.pircbotx.hooks.managers.ListenerManager;
  * event matches the specified bot. Listener can easily be removed with {@link #done()
  * }.
  * <p>
- * @author Leon Blakey
  */
 public class TemporaryListener extends ListenerAdapter {
 	protected final PircBotX bot;

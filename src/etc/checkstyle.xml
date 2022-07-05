@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
-    Copyright (C) 2010-2014 Leon Blakey <lord.quackstar at gmail.com>
+    Copyright (C) 2010-2022 The PircBotX Project Authors
 
     This file is part of PircBotX.
 
@@ -170,7 +170,6 @@ Slightly modified version of standard sun coding convention
 		<module name="InnerAssignment"/>
 		<module name="MagicNumber"/>
 		<module name="MissingSwitchDefault"/>
-		<module name="RedundantThrows"/>
 		<module name="SimplifyBooleanExpression"/>
 		<module name="SimplifyBooleanReturn"/>
 		<module name="ParameterAssignment"/>
