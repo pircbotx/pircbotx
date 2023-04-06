@@ -62,6 +62,8 @@ public final class Colors {
 	 * Bold text.
 	 */
 	public static final String BOLD = "\u0002";
+
+	private static final String INVALID_CHARACTERS ="\u000f\u0002\u001f\u0016\u001d";
 	/**
 	 * Underlined text.
 	 */
@@ -176,7 +178,7 @@ public final class Colors {
 			.putAll(COLORS_TABLE)
 			.putAll(FORMATTING_TABLE)
 			.build();
-	
+
 
 	/**
 	 * This class should not be constructed.
@@ -194,10 +196,10 @@ public final class Colors {
 	public static String lookup(String colorName) {
 		return LOOKUP_TABLE.get(colorName.toUpperCase());
 	}
-	
+
 	/**
 	 * Set text and background color
-	 * 
+	 *
 	 * @param foreground
 	 * @param background
 	 * @return The two colors separated by a comma
@@ -205,26 +207,26 @@ public final class Colors {
 	public static String bg(String foreground, String background) {
 		Preconditions.checkArgument(StringUtils.isNotEmpty(foreground), "foreground");
 		Preconditions.checkArgument(StringUtils.isNotEmpty(background), "background");
-		return foreground + "," + background.replace("\u0003", ""); 
+		return foreground + "," + background.replace("\u0003", "");
 	}
-	
+
 	/**
 	 * Sets the text color for a given message and appends {@link #NORMAL}
-	 * 
+	 *
 	 * @param message
 	 * @param foregroundColor
-	 * @return 
+	 * @return
 	 */
 	public static String set(String message, String foregroundColor) {
 		return foregroundColor + message + NORMAL;
 	}
-	
+
 	/**
 	 * Sets the text and background color for a given message and appends {@link #NORMAL}
-	 * 
+	 *
 	 * @param message
 	 * @param foregroundColor
-	 * @return 
+	 * @return
 	 */
 	public static String set(String message, String foregroundColor, String backgroundColor) {
 		return bg(foregroundColor, backgroundColor) + message + NORMAL;
@@ -300,18 +302,23 @@ public final class Colors {
 	 *
 	 * @return the same text, but without any bold, underlining, reverse, etc.
 	 */
+
+	//Decompose the condition  to make it more readable and understandable
 	public static String removeFormatting(String line) {
-		int length = line.length();
 		StringBuilder buffer = new StringBuilder();
+		int length = line.length();
 		for (int i = 0; i < length; i++) {
 			char ch = line.charAt(i);
-			//Filter characters
-			if (ch != '\u000f' && ch != '\u0002' && ch != '\u001f' && ch != '\u0016' && ch != '\u001d')
+			if (shouldKeepChar(ch)) {
 				buffer.append(ch);
+			}
 		}
 		return buffer.toString();
 	}
 
+	private static boolean shouldKeepChar(char ch) {
+		return (!INVALID_CHARACTERS.contains(Character.toString(ch)));
+	}
 	/**
 	 * Removes all formatting and colours from a line of IRC text.
 	 *
