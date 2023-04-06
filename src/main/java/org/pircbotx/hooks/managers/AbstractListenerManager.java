@@ -40,11 +40,11 @@ public abstract class AbstractListenerManager implements ListenerManager {
 	 * Aid in log submission
 	 */
 	private final Logger sublog = LoggerFactory.getLogger(getClass());
-	
+
 	protected void executeListener(Listener listener, Event event) {
 		executeListener(listener, event, "Failed in " + getClass().getName());
 	}
-	
+
 	protected void executeListener(Listener listener, Event event, String debug) {
 		try {
 			listener.onEvent(event);
@@ -62,9 +62,13 @@ public abstract class AbstractListenerManager implements ListenerManager {
 	public void onEvent(Event event) {
 		if (event.getBot() != null)
 			Utils.addBotToMDC(event.getBot());
-		sublog.debug("Recieved event " + event);
+		sublog.debug("Received event " + event);
+		processEvent(event);
 	}
-	
+
+	protected void processEvent(Event event) {
+		// Empty implementation, can be overridden by sub classes
+	}
 	@RequiredArgsConstructor
 	protected static class ExecuteListenerRunnable implements Runnable {
 		protected final AbstractListenerManager listenerManager;
