@@ -95,7 +95,7 @@ public class PircBotXExample extends ListenerAdapter {
 	@Override
 	public void onIncomingChatRequest(IncomingChatRequestEvent event) throws Exception {
 		//Accept the incoming chat request. If it fails it will throw an exception
-		ReceiveChat chat = event.accept();
+		ReceiveChat chat = event.receiveChat();
 		//Read lines from the server
 		String line;
 		while ((line = chat.readLine()) != null)
