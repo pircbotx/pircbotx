@@ -76,7 +76,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<lombok.version>1.18.22</lombok.version>
-		<guava.version>31.1-jre</guava.version>
+		<guava.version>32.0.0-jre</guava.version>
 		<src.dir>src/main/java</src.dir>
 		<snapshot.version/>
 		<!-- Reproducible builds -->
