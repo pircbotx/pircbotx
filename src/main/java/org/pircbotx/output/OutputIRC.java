@@ -57,6 +57,18 @@ public class OutputIRC {
 		bot.sendRaw().rawLine("JOIN " + channel + " " + key, "JOIN " + channel + " XXXXXXXX" );
 	}
 
+    /**
+     * Leaves a channel
+     *
+     * @param channel The name of the channel to leave
+     */
+    public void partChannel(String channel) {
+        if (!channel.startsWith("#")) {
+            channel = "#"+channel;
+        }
+        bot.sendRaw().rawLine("PART " + channel);
+    }
+
 	/**
 	 * Quits from the IRC server. Providing we are actually connected to an IRC
 	 * server, a {@link DisconnectEvent} will be dispatched as soon as the IRC
