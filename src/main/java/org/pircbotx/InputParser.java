@@ -605,7 +605,8 @@ public class InputParser implements Closeable {
 				channel = bot.getUserChannelDao().createChannel(target);
 				if (configuration.isOnJoinWhoEnabled())
 					bot.sendRaw().rawLine("WHO " + target);
-				bot.sendRaw().rawLine("MODE " + target);
+				if (configuration.isOnJoinModeEnabled())
+					bot.sendRaw().rawLine("MODE " + target);
 			}
 			//Create user if it doesn't exist already
 			sourceUser = createUserIfNull(sourceUser, source);
