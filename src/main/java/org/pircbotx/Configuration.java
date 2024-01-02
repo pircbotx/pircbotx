@@ -114,6 +114,7 @@ public class Configuration {
 	protected final boolean shutdownHookEnabled;
 	protected final ImmutableMap<String, String> autoJoinChannels;
 	protected final boolean onJoinWhoEnabled;
+	protected final boolean onJoinModeEnabled;
 	protected final boolean identServerEnabled;
 	protected final String nickservPassword;
 	protected final String nickservOnSuccess;
@@ -230,6 +231,7 @@ public class Configuration {
 		this.listenerManager = builder.getListenerManager();
 		this.autoJoinChannels = ImmutableMap.copyOf(builder.getAutoJoinChannels());
 		this.onJoinWhoEnabled = builder.isOnJoinWhoEnabled();
+		this.onJoinModeEnabled = builder.isOnJoinModeEnabled();
 		this.capEnabled = builder.isCapEnabled();
 		this.capHandlers = ImmutableList.copyOf(builder.getCapHandlers());
 		ImmutableSortedMap.Builder<Character, ChannelModeHandler> channelModeHandlersBuilder = ImmutableSortedMap.naturalOrder();
@@ -432,6 +434,10 @@ public class Configuration {
 		 * rely only on the NAMES response
 		 */
 		protected boolean onJoinWhoEnabled = true;
+		/**
+		 * Enable or disable sending "MODE #channel" upon joining a channel.
+		 */
+		protected boolean onJoinModeEnabled = true;
 		/**
 		 * Enable or disable use of an existing {@link IdentServer}, default
 		 * false. Note that the IdentServer must be started separately or else
@@ -647,6 +653,7 @@ public class Configuration {
 			this.autoReconnectAttempts = otherBuilder.getAutoReconnectAttempts();
 			this.autoJoinChannels.putAll(otherBuilder.getAutoJoinChannels());
 			this.onJoinWhoEnabled = otherBuilder.isOnJoinWhoEnabled();
+			this.onJoinModeEnabled = otherBuilder.isOnJoinModeEnabled();
 			this.identServerEnabled = otherBuilder.isIdentServerEnabled();
 			this.capEnabled = otherBuilder.isCapEnabled();
 			this.capHandlers.clear();
