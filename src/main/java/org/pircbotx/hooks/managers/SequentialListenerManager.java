@@ -84,16 +84,16 @@ public class SequentialListenerManager extends AbstractListenerManager {
 	@Getter
 	private final Executor executorPool;
 
+
 	@Override
-	public void onEvent(Event event) {
-		super.onEvent(event);
+	protected void processEvent(Event event) {
 		for (ListenerExecutor executor : listenerExecutors) {
 			executor.handleEvent(event);
 		}
 	}
 
 	/**
-	 * Alias of {@link #appendListenerPooled(org.pircbotx.hooks.Listener) }
+	 * Alias of {@link #//appendListenerPooled(org.pircbotx.hooks.Listener) }
 	 *
 	 * @param listener
 	 */

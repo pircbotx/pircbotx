@@ -50,7 +50,8 @@ public class ThreadedListenerManager extends AbstractListenerManager {
 	/**
 	 * Configures with default cached thread thread pool.
 	 */
-	public ThreadedListenerManager() {
+	public ThreadedListenerManager()
+	{
 		managerNumber = MANAGER_COUNT.getAndIncrement();
 		BasicThreadFactory factory = new BasicThreadFactory.Builder()
 				.namingPattern("listenerPool" + managerNumber + "-thread%d")
@@ -96,11 +97,11 @@ public class ThreadedListenerManager extends AbstractListenerManager {
 	}
 
 	@Override
-	public void onEvent(Event event) {
-		super.onEvent(event);
-		//For each Listener, add a new Runnable
-		for (Listener curListener : getListenersReal())
+	protected void processEvent(Event event) {
+		// For each Listener, add a new Runnable
+		for (Listener curListener : getListenersReal()) {
 			submitEvent(pool, curListener, event);
+		}
 	}
 
 	protected void submitEvent(ExecutorService pool, final Listener listener, final Event event) {

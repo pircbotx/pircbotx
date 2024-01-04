@@ -799,8 +799,14 @@ public class InputParser implements Closeable {
 			//Part of a WHO reply on information on individual users
 			
 			String channelName = parsedResponse.get(1);
-			Channel channel = bot.getUserChannelDao().containsChannel(channelName) ? bot.getUserChannelDao().getChannel(channelName) : new Channel(bot, channelName);
-
+			//Introduce Explaining variable and add if else condition to make it more understandable and readable
+			boolean doesChannelExist = bot.getUserChannelDao().containsChannel(channelName);
+			Channel channel;
+			if (doesChannelExist) {
+				channel = bot.getUserChannelDao().getChannel(channelName);
+			} else {
+				channel = new Channel(bot, channelName);
+			}
 			//Setup user
 			
 			String login = parsedResponse.get(2);

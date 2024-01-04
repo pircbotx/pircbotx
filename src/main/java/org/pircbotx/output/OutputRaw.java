@@ -47,14 +47,14 @@ public class OutputRaw {
 	@NonNull
 	protected final PircBotX bot;
 	protected final ReentrantLock writeLock = new ReentrantLock(true);
-	
-	
+
+
 	protected final RateLimiter limiter;
-	
+
 	public OutputRaw(PircBotX bot) {
 		this.bot = bot;
-		long delayMs = bot.getConfiguration().getMessageDelay().getDelay(); 
-		
+		long delayMs = bot.getConfiguration().getMessageDelay().getDelay();
+
 		if (delayMs >= 1)
 			limiter = RateLimiter.create(1000.0 / delayMs);
 		else
@@ -67,10 +67,10 @@ public class OutputRaw {
 	 * @param line The raw line to send to the IRC server.
 	 */
 	public void rawLine(String line) {
-		rawLine(line, null); 
+		rawLine(line, null);
 	}
-	
-	
+
+
 	/**
 	 * Sends a raw line through the outgoing message queue.
 	 *
@@ -79,17 +79,17 @@ public class OutputRaw {
 	 */
 	public void rawLine(String line, String logline) {
 		checkArgument(StringUtils.isNotBlank(line), "Cannot send empty line to server: '%s'", line);
-		checkArgument(bot.isConnected(), "Not connected to server");				
-		
+		checkArgument(bot.isConnected(), "Not connected to server");
+
 		limiter.acquire();
-		
+
 		if (StringUtils.isNotBlank(logline))
 			log.info(OUTPUT_MARKER, logline);
 		else
-			log.info(OUTPUT_MARKER, line);		
+			log.info(OUTPUT_MARKER, line);
 		writeLock.lock();
 
-		
+
 		try {
 			Utils.sendRawLineToServer(bot, line);
 		} catch (IOException e) {
@@ -121,16 +121,16 @@ public class OutputRaw {
 	public void rawLineNow(String line, String logline) {
 		checkNotNull(line, "Line cannot be null");
 		checkArgument(bot.isConnected(), "Not connected to server");
-		
+
 		if (StringUtils.isNotBlank(logline))
 			log.info(OUTPUT_MARKER, logline);
 		else
-			log.info(OUTPUT_MARKER, line);		
+			log.info(OUTPUT_MARKER, line);
 		writeLock.lock();
 		try {
-			
+
 			Utils.sendRawLineToServer(bot, line);
-			
+
 
 		} catch (IOException e) {
 			throw new RuntimeException("IO exception when sending line to server, is the network still up? " + exceptionDebug(), e);
@@ -160,12 +160,12 @@ public class OutputRaw {
 		}
 
 		int maxMessageLength = realMaxLineLength - (prefix + suffix).length();
-		
-		
+
+
 		List<String> lines = Splitter.on('\n').omitEmptyStrings().trimResults().splitToList(message);
 		for(String line : lines) {
 			finalMessage = prefix + line + suffix;
-		
+
 			//Too long, split it up
 			//v3 word split, just use Apache commons lang
 			for (String curPart : StringUtils.split(WordUtils.wrap(line, maxMessageLength, "\r\n", true), "\r\n")) {
@@ -187,7 +187,8 @@ public class OutputRaw {
 		return writeLock.getHoldCount();
 	}
 
+	//move getBotStatus method to PircBotX.java to remove feature envy smell
 	protected String exceptionDebug() {
-		return "Connected: " + bot.isConnected() + " | Bot State: " + bot.getState();
+		return bot.getBotStatus();
 	}
 }
