@@ -591,6 +591,7 @@ public class Configuration {
 			this.autoJoinChannels.clear();
 			this.autoJoinChannels.putAll(configuration.getAutoJoinChannels());
 			this.onJoinWhoEnabled = configuration.isOnJoinWhoEnabled();
+			this.onJoinModeEnabled = configuration.isOnJoinModeEnabled();
 			this.identServerEnabled = configuration.isIdentServerEnabled();
 			this.capEnabled = configuration.isCapEnabled();
 			this.capHandlers.clear();

@@ -815,6 +815,7 @@ public class InputParser implements Closeable {
 			User curUser = bot.getUserChannelDao().containsUser(nick) ? bot.getUserChannelDao().getUser(nick) : bot.getConfiguration()
 					.getBotFactory()
 					.createUser(curUserHostmask);
+			curUser.updateHostmask(curUserHostmask);
 
 			
 			
