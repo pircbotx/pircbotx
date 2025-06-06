@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -263,31 +264,44 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 				Utils.addBotToMDC(this);
 				log.info("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
 
-				int serverAddressCounter = 0;
-				InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
-				for (InetAddress curAddress : serverAddresses) {
-					serverAddressCounter++;
-					String debug = Utils.format("[{}/{} address left from {}, {}/{} hostnames left] ",
-							String.valueOf(serverAddresses.length - serverAddressCounter),
-							String.valueOf(serverAddresses.length),
-							serverHostname,
-							String.valueOf(configuration.getServers().size() - serverEntryCounter),
-							String.valueOf(configuration.getServers().size())
-					);
-					log.debug("{}Atempting to connect to {} on port {}", debug, curAddress, curServerEntry.getPort());
-					try {
-						socket = configuration.getSocketFactory().createSocket();
-						socket.bind(new InetSocketAddress(configuration.getLocalAddress(), 0));
-						socket.connect(new InetSocketAddress(curAddress, curServerEntry.getPort()), configuration.getSocketConnectTimeout());
+				try {
+					int serverAddressCounter = 0;
+					InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
+					for (InetAddress curAddress : serverAddresses) {
+						serverAddressCounter++;
+						String debug = Utils.format("[{}/{} address left from {}, {}/{} hostnames left] ",
+								String.valueOf(serverAddresses.length - serverAddressCounter),
+								String.valueOf(serverAddresses.length),
+								serverHostname,
+								String.valueOf(configuration.getServers().size() - serverEntryCounter),
+								String.valueOf(configuration.getServers().size())
+						);
+						log.debug("{}Atempting to connect to {} on port {}", debug, curAddress, curServerEntry.getPort());
+						try {
+							socket = configuration.getSocketFactory().createSocket();
+							socket.bind(new InetSocketAddress(configuration.getLocalAddress(), 0));
+							socket.connect(new InetSocketAddress(curAddress, curServerEntry.getPort()), configuration.getSocketConnectTimeout());
 
-						//No exception, assume successful
+							//No exception, assume successful
+							serverPort = curServerEntry.getPort();
+							break ServerEntryLoop;
+						} catch (Exception e) {
+							connectExceptions.put(new InetSocketAddress(curAddress, curServerEntry.getPort()), e);
+							log.warn("{}Failed to connect to {} on port {}",
+									debug,
+									curAddress,
+									curServerEntry.getPort(),
+									e);
+						}
+					}
+				} catch(UnknownHostException e) {
+					try {
+						socket = configuration.getSocketFactory().createSocket(serverHostname, curServerEntry.getPort());
 						serverPort = curServerEntry.getPort();
-						break ServerEntryLoop;
-					} catch (Exception e) {
-						connectExceptions.put(new InetSocketAddress(curAddress, curServerEntry.getPort()), e);
-						log.warn("{}Failed to connect to {} on port {}",
-								debug,
-								curAddress,
+					} catch (Exception ex) {
+						connectExceptions.put(new InetSocketAddress(curServerEntry.getHostname(), curServerEntry.getPort()), e);
+						log.warn("Failed to connect to {} on port {}",
+								curServerEntry.getHostname(),
 								curServerEntry.getPort(),
 								e);
 					}
