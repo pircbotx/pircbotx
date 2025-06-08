@@ -29,6 +29,7 @@ import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -262,9 +263,24 @@ public class PircBotX implements Comparable<PircBotX>, Closeable {
 				//Hostname and port
 				Utils.addBotToMDC(this);
 				log.info("---Starting Connect attempt {}/{}", connectAttempts, configuration.getAutoReconnectAttempts() + "---");
-
+				InetAddress[] serverAddresses;
+				try {
+					serverAddresses = InetAddress.getAllByName(serverHostname);
+				} catch (UnknownHostException hostException) {
+					try {
+						socket = configuration.getSocketFactory().createSocket(serverHostname, curServerEntry.getPort());
+						serverPort = curServerEntry.getPort();
+						break ServerEntryLoop;
+					} catch (Exception ex) {
+						connectExceptions.put(new InetSocketAddress(curServerEntry.getHostname(), curServerEntry.getPort()), ex);
+						log.warn("Failed to connect to {} on port {}",
+								curServerEntry.getHostname(),
+								curServerEntry.getPort(),
+								ex);
+					}
+					continue;
+				}
 				int serverAddressCounter = 0;
-				InetAddress[] serverAddresses = InetAddress.getAllByName(serverHostname);
 				for (InetAddress curAddress : serverAddresses) {
 					serverAddressCounter++;
 					String debug = Utils.format("[{}/{} address left from {}, {}/{} hostnames left] ",
