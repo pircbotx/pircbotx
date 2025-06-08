@@ -70,25 +70,25 @@ jobs:
       - name: Lint - checkstyle
         run: reviewdog -name=jcheckstyle -f=checkstyle $REVIEWDOG_OPTS < target/checkstyle-result.xml
         env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - name: Lint - spotbugs
         run: bin/scarfco target/spotbugsXml.xml | reviewdog -name=spotbugs -f=checkstyle $REVIEWDOG_OPTS
         env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - name: Lint - pmd
         run: bin/scarfco target/pmd.xml | reviewdog -name=pmd -f=checkstyle $REVIEWDOG_OPTS
         env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - name: Lint - Github Action itself
         uses: reviewdog/action-actionlint@v1
         env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.reviewdog_token }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
         with:
           reporter: github-check
