@@ -23,17 +23,17 @@ jobs:
       #
       # environment setup
       #
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup build - JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
 
       - name: Setup lint - reviewdog
-        uses: reviewdog/action-setup@v1
+        uses: reviewdog/action-setup@v1.3.2
 
       - name: Setup lint - scarfco
         run: curl -sfL https://raw.githubusercontent.com/mallowlabs/scarfco/main/install.sh | sh -s
@@ -54,7 +54,7 @@ jobs:
         run: sha256sum target/*.jar
 
       - name: Github Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Package
           path: target/*.jar
