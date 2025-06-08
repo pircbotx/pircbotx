@@ -356,41 +356,6 @@
 			<id>extra-jars</id>
 			<build>
 				<plugins>
-					<!-- Make a unified jar with all of the dependencies -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-shade-plugin</artifactId>
-						<version>3.2.4</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>shade</goal>
-								</goals>
-								<configuration>
-									<transformers>
-										<transformer
-												implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-											<manifestEntries>
-												<Class-Path>.</Class-Path>
-											</manifestEntries>
-										</transformer>
-									</transformers>
-									<finalName>${project.artifactId}-unified</finalName>
-									<filters>
-										<filter>
-											<artifact>*:*</artifact>
-											<excludes>
-												<exclude>META-INF/*.MF</exclude>
-												<exclude>META-INF/LICENSE.txt</exclude>
-												<exclude>META-INF/NOTICE.txt</exclude>
-											</excludes>
-										</filter>
-									</filters>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 					<!-- Make sources jar -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
