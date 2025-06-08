@@ -42,7 +42,7 @@ import org.pircbotx.hooks.types.GenericDCCEvent;
  * be ignored by default.
  * <p>
  * If you wish to accept the connection, then you listen for this event and call
- * the {@link #accept() } method, which connects to the sender of the chat
+ * the {@link #receiveChat() } method, which connects to the sender of the chat
  * request and allows lines to be sent to and from the bot.
  * <p>
  * Your bot must be able to connect directly to the user that sent the request.
@@ -88,8 +88,8 @@ public class IncomingChatRequestEvent extends Event implements GenericDCCEvent {
 		this.token = token;
 		this.passive = passive;
 	}
-
-	public ReceiveChat accept() throws IOException {
+	//Rename the method from accept to receiveChat
+	public ReceiveChat receiveChat() throws IOException {
 		return getBot().getDccHandler().acceptChatRequest(this);
 	}
 
