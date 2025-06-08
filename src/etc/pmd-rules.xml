@@ -24,13 +24,19 @@
 		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
 	<description>Exclude unnessesary rules</description>
 	
-	<rule ref="rulesets/java/basic.xml">
+	<rule ref="category/java/bestpractices.xml">
+		<exclude name="GuardLogStatement"/>
 	</rule>
-	
-	<rule ref="rulesets/java/unusedcode.xml">
-		<exclude name="UnusedModifier"/>
+
+	<rule ref="category/java/codestyle.xml">
 	</rule>
-	
-	<rule ref="rulesets/java/imports.xml">
+
+	<rule ref="category/java/errorprone.xml">
+	</rule>
+
+	<rule ref="category/java/performance.xml">
+	</rule>
+
+	<rule ref="category/java/security.xml">
 	</rule>
 </ruleset>
