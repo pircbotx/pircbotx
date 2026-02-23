@@ -98,6 +98,7 @@ public class Configuration {
 	protected final int dccAcceptTimeout;
 	protected final int dccResumeAcceptTimeout;
 	protected final boolean dccPassiveRequest;
+	protected final int dccPacketSize;
 	//Connect information
 	protected final ImmutableList<ServerEntry> servers;
 	protected final String serverPassword;
@@ -206,6 +207,7 @@ public class Configuration {
 		this.dccAcceptTimeout = builder.getDccAcceptTimeout();
 		this.dccResumeAcceptTimeout = builder.getDccResumeAcceptTimeout();
 		this.dccPassiveRequest = builder.isDccPassiveRequest();
+		this.dccPacketSize = builder.getDccPacketSize();
 		this.servers = ImmutableList.copyOf(builder.getServers());
 		this.serverPassword = builder.getServerPassword();
 		this.socketFactory = builder.getSocketFactory();
@@ -358,6 +360,10 @@ public class Configuration {
 		 * otherwise, default false
 		 */
 		protected boolean dccPassiveRequest = false;
+		/**
+		 * Packet Size for dcc transfers, defaults to 8192. Reduce loop overhead by increasing this to e.g. 32768
+		 */
+		protected int dccPacketSize = 8192;
 		//Connect information
 		/**
 		 * List of servers to connect to, easily add with the addServer methods
@@ -565,6 +571,7 @@ public class Configuration {
 			this.dccAcceptTimeout = configuration.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = configuration.getDccResumeAcceptTimeout();
 			this.dccPassiveRequest = configuration.isDccPassiveRequest();
+			this.dccPacketSize = configuration.getDccPacketSize();
 			this.servers.clear();
 			this.servers.addAll(configuration.getServers());
 			this.serverPassword = configuration.getServerPassword();
@@ -629,6 +636,7 @@ public class Configuration {
 			this.dccAcceptTimeout = otherBuilder.getDccAcceptTimeout();
 			this.dccResumeAcceptTimeout = otherBuilder.getDccResumeAcceptTimeout();
 			this.dccPassiveRequest = otherBuilder.isDccPassiveRequest();
+			this.dccPacketSize = otherBuilder.getDccPacketSize();
 			this.servers.clear();
 			this.servers.addAll(otherBuilder.getServers());
 			this.serverPassword = otherBuilder.getServerPassword();
