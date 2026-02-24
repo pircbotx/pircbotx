@@ -60,9 +60,17 @@ public class ReceiveFileTransferAcknowlegement extends Thread {
 	 * @throws IOException
 	 */
 	protected void receiveAcknowledge() throws IOException {
-		inChannel.read(byteBuffer);
+		// SocketChannel.read() only guarantees at least 1 byte per call in blocking mode
+		// (see SocketChannel.read javadoc), so loop until all 4 bytes of the ACK are read.
+		// Without this, a partial read would misalign all subsequent reads in the stream.
+		while (byteBuffer.hasRemaining()) {
+			if (inChannel.read(byteBuffer) < 0) {
+				throw new IOException("Connection closed before full ACK was received");
+			}
+		}
+		byteBuffer.flip();
+		int bytesAcknowledged = byteBuffer.getInt();
 		byteBuffer.clear();
-		int bytesAcknowledged = byteBuffer.getInt(0);
 		if (bytesAcknowledged != (int) (totalBytesAcknowleged / ((long) Integer.MAX_VALUE * 2))
 				&& totalBytesAcknowleged != bytesAcknowledged) {
 			totalBytesAcknowleged += (bytesAcknowledged - previousBytesAcknowleged);
