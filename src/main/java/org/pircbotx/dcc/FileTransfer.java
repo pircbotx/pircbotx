@@ -24,6 +24,7 @@ import java.net.SocketTimeoutException;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -36,6 +37,7 @@ import org.pircbotx.hooks.events.FileTransferCompleteEvent;
 /**
  * A general active DCC file transfer
  */
+@Slf4j
 public abstract class FileTransfer {
 	@NonNull
 	protected final PircBotX bot;
@@ -72,8 +74,21 @@ public abstract class FileTransfer {
 		socket = dccHandler.establishSocketConnection(pendingFileTransfer);
 	}
 
+	/**
+	 * Shut down an active file transfer. This sets the transfer state to
+	 * {@link DccState#SHUTDOWN} and closes the underlying socket, which
+	 * interrupts any blocking {@code transferFrom}/{@code transferTo} operation
+	 * on the transfer thread.
+	 */
 	public void shutdown() {
 		fileTransferStatus.dccState = DccState.SHUTDOWN;
+		if (socket != null && !socket.isClosed()) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				log.warn("Failed to close socket during shutdown of transfer for file {}", file.getName(), e);
+			}
+		}
 	}
 
 	/**
