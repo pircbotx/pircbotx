@@ -74,8 +74,12 @@ public class SendFileTransfer extends FileTransfer {
 				if (bytesToTransfer > (fileTransferStatus.fileSize - inChannel.position())) {
 					bytesToTransfer = (fileTransferStatus.fileSize - inChannel.position());
 				}
-				inChannel.transferTo(inChannel.position(), bytesToTransfer, outChannel);
-				inChannel.position(inChannel.position() + bytesToTransfer);
+				// FileChannel.transferTo does not guarantee all bytes are transferred
+				// in a single call (see FileChannel.transferTo javadoc), so advance
+				// the position by the actual number of bytes sent, not the requested amount.
+				// The outer while loop handles any remaining bytes on the next iteration.
+				long transferred = inChannel.transferTo(inChannel.position(), bytesToTransfer, outChannel);
+				inChannel.position(inChannel.position() + transferred);
 				fileTransferStatus.bytesTransfered = inChannel.position();
 
 			}
