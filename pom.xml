@@ -384,6 +384,7 @@
 												<exclude>META-INF/*.MF</exclude>
 												<exclude>META-INF/LICENSE.txt</exclude>
 												<exclude>META-INF/NOTICE.txt</exclude>
+												<exclude>META-INF/versions/9/module-info.class</exclude>
 											</excludes>
 										</filter>
 									</filters>
