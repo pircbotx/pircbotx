@@ -26,6 +26,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.AtomicSafeInitializer;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
@@ -77,7 +78,7 @@ public class UserHostmask implements Comparable<User> {
 
 			
 			this.bot = bot;
-			if (StringUtils.contains(rawHostmask, "!") && StringUtils.contains(rawHostmask, "@")) {
+			if (Strings.CS.contains(rawHostmask, "!") && Strings.CS.contains(rawHostmask, "@")) {
 				String[] hostmaskParts = StringUtils.split(rawHostmask, "!@");
 				if (hostmaskParts.length >= 3) {
 					this.nick = hostmaskParts[0];

@@ -26,6 +26,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -201,9 +202,9 @@ public class ReplayServer {
 				bot.getInputParser().handleLine(line);
 			} else if (command.equals("pircbotx.output")) {
 				String lastOutput = outputQueue.isEmpty() ? null : outputQueue.pop();
-				if (StringUtils.startsWith(line, "JOIN")) {
+				if (Strings.CS.startsWith(line, "JOIN")) {
 					log.debug("Skipping JOIN output, server should send its own JOIN");
-				} else if (StringUtils.startsWith(line, "QUIT")) {
+				} else if (Strings.CS.startsWith(line, "QUIT")) {
 					log.debug("Skipping QUIT output, server should send its own QUIT");
 				} else if (!line.equals(lastOutput)) {
 					log.error("Expected last output: " + line);

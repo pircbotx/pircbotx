@@ -20,7 +20,7 @@ package org.pircbotx.hooks;
 import java.util.Date;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.pircbotx.Configuration;
 import org.pircbotx.UserHostmask;
 import org.pircbotx.Utils;
@@ -80,8 +80,8 @@ public class CoreHooks extends ListenerAdapter {
 		//The hostmask must contain "nickserv"
 		//The message must contain the on success text
 		if (config.getNickservOnSuccess() != null
-				&& StringUtils.containsIgnoreCase(hostmask.getHostmask(), config.getNickservNick())
-				&& StringUtils.containsIgnoreCase(event.getMessage(), config.getNickservOnSuccess())) {
+				&& Strings.CI.contains(hostmask.getHostmask(), config.getNickservNick())
+				&& Strings.CI.contains(event.getMessage(), config.getNickservOnSuccess())) {
 			log.info("Successfully identified to nickserv");
 			Utils.setNickServIdentified(event.getBot());
 			if (config.isNickservDelayJoin()) {

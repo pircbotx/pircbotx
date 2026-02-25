@@ -75,7 +75,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<lombok.version>1.18.22</lombok.version>
+		<lombok.version>1.18.42</lombok.version>
 		<guava.version>32.0.0-jre</guava.version>
 		<src.dir>src/main/java</src.dir>
 		<snapshot.version/>
@@ -384,6 +384,7 @@
 												<exclude>META-INF/*.MF</exclude>
 												<exclude>META-INF/LICENSE.txt</exclude>
 												<exclude>META-INF/NOTICE.txt</exclude>
+												<exclude>META-INF/versions/9/module-info.class</exclude>
 											</excludes>
 										</filter>
 									</filters>
