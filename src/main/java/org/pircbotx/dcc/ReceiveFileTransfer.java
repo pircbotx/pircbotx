@@ -47,8 +47,7 @@ public class ReceiveFileTransfer extends FileTransfer {
 	@Override
 	protected void transferFile() {
 
-		// TODO same as send files, does this buffer matter?
-		long bytesToRead = 8192;
+		long bytesToRead = configuration.getDccPacketSize();
 
 		try (SocketChannel inChannel = socket.getChannel();
 				RandomAccessFile outputStream = new RandomAccessFile(file, "rw");

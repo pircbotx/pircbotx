@@ -41,13 +41,10 @@ public class SendFileTransfer extends FileTransfer {
 
 	public SendFileTransfer(PircBotX bot, DccHandler dccHandler, PendingFileTransfer pendingFileTransfer, File file) {
 		super(bot, dccHandler, pendingFileTransfer, file);
+		this.bytesToTransfer = configuration.getDccPacketSize();
 	}
 
-	// TODO Does this need to be configurable?
-	// The only benefit to having it small is updating the file pointer more
-	// frequently
-	// Transfer stats can be polled via Acknowledge bytes
-	long bytesToTransfer = 8192;
+	long bytesToTransfer;
 
 	@Override
 	protected void transferFile() {
