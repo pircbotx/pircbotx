@@ -56,6 +56,7 @@ import java.util.TreeMap;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.cap.CapHandler;
 import org.pircbotx.cap.TLSCapHandler;
@@ -231,7 +232,7 @@ public class InputParser implements Closeable {
 					@Override
 					public void handleMode(PircBotX bot, Channel channel, UserHostmask sourceHostmask, User sourceUser, PeekingIterator<String> params, boolean adding, boolean dispatchEvent) {
 						if (adding) {
-							int limit = Integer.parseInt(StringUtils.removeStart(params.next(), ":"));
+							int limit = Integer.parseInt(Strings.CS.removeStart(params.next(), ":"));
 							channel.setChannelLimit(limit);
 							if (dispatchEvent)
 								Utils.dispatchEvent(bot, new SetChannelLimitEvent(bot, channel, sourceHostmask, sourceUser, limit));

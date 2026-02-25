@@ -52,7 +52,7 @@ public class ThreadedListenerManager extends AbstractListenerManager {
 	 */
 	public ThreadedListenerManager() {
 		managerNumber = MANAGER_COUNT.getAndIncrement();
-		BasicThreadFactory factory = new BasicThreadFactory.Builder()
+		BasicThreadFactory factory = BasicThreadFactory.builder()
 				.namingPattern("listenerPool" + managerNumber + "-thread%d")
 				.daemon(true)
 				.build();

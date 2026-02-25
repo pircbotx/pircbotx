@@ -48,7 +48,7 @@ public class BackgroundListenerManager extends ThreadedListenerManager {
 		if (!isBackground)
 			super.addListener(listener);
 		else {
-			BasicThreadFactory factory = new BasicThreadFactory.Builder()
+			BasicThreadFactory factory = BasicThreadFactory.builder()
 					.namingPattern("backgroundPool" + managerNumber + "-backgroundThread" + backgroundCount.getAndIncrement() + "-%d")
 					.daemon(true)
 					.build();
