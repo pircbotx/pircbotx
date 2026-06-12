@@ -2,6 +2,10 @@
 /.idea/
 pircbotx.iml
 
+#ignore gradle
+/build/
+/.gradle/
+
 #ignore eclipse
 .classpath
 .project

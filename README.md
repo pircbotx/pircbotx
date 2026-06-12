@@ -1,4 +1,4 @@
-[![Java CI](https://github.com/pircbotx/pircbotx/actions/workflows/maven.yml/badge.svg?branch=pr_actions)](https://github.com/pircbotx/pircbotx/actions/workflows/maven.yml)
+[![Java CI](https://github.com/pircbotx/pircbotx/actions/workflows/gradle.yml/badge.svg?branch=pr_actions)](https://github.com/pircbotx/pircbotx/actions/workflows/gradle.yml)
 
 **PircBotX** is a powerful Java IRC Client library for bots and user clients. Version v2.3 (2022)
 

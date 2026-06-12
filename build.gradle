@@ -1,0 +1,299 @@
+/*
+ * Copyright (C) 2010-2022 The PircBotX Project Authors
+ *
+ * This file is part of PircBotX.
+ *
+ * PircBotX is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * PircBotX is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * PircBotX. If not, see <http://www.gnu.org/licenses/>.
+ */
+import com.github.spotbugs.snom.Effort
+import com.github.spotbugs.snom.Confidence
+import com.github.spotbugs.snom.SpotBugsTask
+
+plugins {
+	id 'java-library'
+	id 'maven-publish'
+	id 'signing'
+	id 'jacoco'
+	id 'checkstyle'
+	id 'pmd'
+	id 'io.freefair.lombok' version '8.10'
+	id 'com.gradleup.shadow' version '8.3.10'
+	id 'biz.aQute.bnd.builder' version '7.1.0'
+	id 'com.github.spotbugs' version '6.5.5'
+	id 'com.github.hierynomus.license' version '0.16.1'
+	id 'com.github.andygoossens.modernizer' version '1.13.0'
+}
+
+description = 'PircBotX is a powerful Java IRC Client library for bots and user clients'
+
+ext {
+	guavaVersion = project.findProperty('guavaVersion') ?: '32.0.0-jre'
+	// Equivalent of Maven's <snapshot.version/> property, overridable with -Psnapshot.version=...
+	snapshotVersion = project.findProperty('snapshot.version') ?: ''
+}
+
+repositories {
+	mavenCentral()
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+lombok {
+	version = project.findProperty('lombokVersion') ?: '1.18.42'
+}
+
+dependencies {
+	// jsr305 annotations are compile-time only (Maven "provided" scope)
+	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+	testCompileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
+	// Maven "compile" scope is transitive, which maps to the Gradle "api" configuration
+	api 'org.apache.commons:commons-lang3:3.18.0'
+	api 'org.apache.commons:commons-text:1.10.0'
+	api 'org.slf4j:slf4j-api:2.0.16'
+	api 'commons-codec:commons-codec:1.15'
+	api "com.google.guava:guava:${guavaVersion}"
+
+	testImplementation 'org.testng:testng:7.7.0'
+	testImplementation 'org.mockito:mockito-core:4.3.1'
+	testImplementation 'ch.qos.logback:logback-classic:1.3.12'
+
+	// Mirror Maven <dependencyManagement> to converge transitive versions
+	constraints {
+		api 'org.slf4j:slf4j-api:2.0.16'
+		compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+		api 'org.apache.commons:commons-lang3:3.18.0'
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+}
+
+compileJava {
+	// Specifically target Java 8 for the published artifact
+	options.release = 8
+	options.deprecation = true
+	options.compilerArgs.add('-Xlint')
+}
+
+compileTestJava {
+	// Do NOT show deprecation in test compile
+	options.deprecation = false
+	options.compilerArgs.add('-Xlint:unchecked')
+}
+
+// Update version in PircBotX.java (replaces maven-replacer-plugin)
+def pircbotxSource = file('src/main/java/org/pircbotx/PircBotX.java')
+tasks.register('updateVersion') {
+	description = 'Writes the project version into PircBotX.VERSION'
+	doLast {
+		def replacement = "public static final String VERSION = \"${version}-${snapshotVersion}\";".toString()
+		def original = pircbotxSource.text
+		def updated = original.replaceAll(/public static final String VERSION .+/,
+				java.util.regex.Matcher.quoteReplacement(replacement))
+		if (updated != original) {
+			pircbotxSource.text = updated
+		}
+	}
+}
+tasks.named('compileJava') { dependsOn 'updateVersion' }
+tasks.named('sourcesJar') { dependsOn 'updateVersion' }
+tasks.matching { it.name == 'delombok' }.configureEach { dependsOn 'updateVersion' }
+
+// Use very verbose logging while testing, with the custom TestNG listener
+test {
+	useTestNG {
+		listeners.add('org.pircbotx.TestngListener')
+	}
+	testLogging {
+		exceptionFormat = 'full'
+	}
+}
+
+// Generate OSGi manifest metadata (replaces bnd-maven-plugin and bnd.bnd)
+tasks.named('jar') {
+	bundle {
+		bnd(
+				'Bundle-SymbolicName: org.pircbotx',
+				'-exportcontents: org.pircbotx*'
+		)
+	}
+}
+
+// Reproducible builds (Maven project.build.outputTimestamp)
+tasks.withType(AbstractArchiveTask).configureEach {
+	preserveFileTimestamps = false
+	reproducibleFileOrder = true
+}
+
+// Javadoc runs against the delombok output (wired by io.freefair.lombok)
+javadoc {
+	// delombok copies package.html resources alongside sources; keep them out of javadoc
+	exclude '**/*.html'
+	options.encoding = 'UTF-8'
+	// Temporarily disable Java 8 super strict doclint
+	options.addStringOption('Xdoclint:none', '-quiet')
+	options.links("https://guava.dev/releases/${guavaVersion}/api/docs/")
+}
+
+// Make a unified jar with all of the dependencies (replaces maven-shade-plugin)
+shadowJar {
+	archiveBaseName = 'pircbotx'
+	archiveClassifier = 'unified'
+	archiveVersion = ''
+	manifest {
+		attributes 'Class-Path': '.'
+	}
+	exclude 'META-INF/*.MF'
+	exclude 'META-INF/LICENSE.txt'
+	exclude 'META-INF/NOTICE.txt'
+	exclude 'META-INF/versions/9/module-info.class'
+}
+
+//
+// License headers, static analysis and coverage (Maven code-analysis profile)
+//
+license {
+	header = file('src/etc/license-header.txt')
+	strictCheck = true
+	mapping('java', 'SLASHSTAR_STYLE')
+	excludes(['**/*.txt', '**/*.log'])
+}
+
+checkstyle {
+	toolVersion = '9.3'
+	configFile = file('src/etc/checkstyle.xml')
+	ignoreFailures = true
+}
+
+pmd {
+	toolVersion = '6.55.0'
+	ruleSetFiles = files('src/etc/pmd-rules.xml')
+	ruleSets = []
+	ignoreFailures = true
+}
+
+spotbugs {
+	// valueOf() avoids a Groovy property-assignment gotcha with these enums
+	effort = Effort.valueOf('MAX')
+	reportLevel = Confidence.valueOf('LOW')
+	excludeFilter = file('src/etc/findbugs-exclude.xml')
+	ignoreFailures = true
+}
+tasks.withType(SpotBugsTask).configureEach {
+	reports {
+		xml.required = true
+		html.required = false
+	}
+}
+
+modernizer {
+	javaVersion = '8'
+	failOnViolations = false
+}
+
+tasks.named('jacocoTestReport') {
+	dependsOn 'test'
+	reports {
+		xml.required = true
+		html.required = true
+	}
+}
+
+// In Maven these analysers lived in an opt-in profile, so keep them off the
+// default check/build lifecycle and expose a dedicated aggregate task instead.
+// This afterEvaluate runs last, so it wins over the wiring added by the
+// checkstyle/pmd/spotbugs/modernizer plugins.
+afterEvaluate {
+	tasks.named('check').configure {
+		setDependsOn([tasks.named('test'), tasks.named('license')])
+	}
+}
+tasks.register('codeAnalysis') {
+	description = 'Runs checkstyle, PMD, SpotBugs and the coverage report'
+	group = 'verification'
+	dependsOn 'checkstyleMain', 'pmdMain', 'spotbugsMain', 'jacocoTestReport'
+}
+
+//
+// Publishing and signing (Maven distributionManagement + release profile)
+//
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			pom {
+				name = 'pircbotx'
+				description = project.description
+				url = 'https://github.com/pircbotx/pircbotx'
+				inceptionYear = '2010'
+				organization {
+					name = 'The PircBotX Project'
+				}
+				licenses {
+					license {
+						name = 'GPL v3'
+						url = 'www.gnu.org/licenses/'
+						distribution = 'repo'
+					}
+				}
+				issueManagement {
+					system = 'Github'
+					url = 'https://github.com/pircbotx/pircbotx/issues'
+				}
+				scm {
+					connection = 'scm:git:https://github.com/pircbotx/pircbotx.git'
+					developerConnection = 'scm:git:https://github.com/pircbotx/pircbotx.git'
+					url = 'https://github.com/pircbotx/pircbotx.git'
+				}
+			}
+		}
+	}
+	repositories {
+		maven {
+			name = 'ossrh'
+			url = version.toString().endsWith('SNAPSHOT')
+					? 'https://oss.sonatype.org/content/repositories/snapshots'
+					: 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+			credentials {
+				username = project.findProperty('ossrhUsername') ?: ''
+				password = project.findProperty('ossrhPassword') ?: ''
+			}
+		}
+	}
+}
+
+// Alias used by JitPack (and familiar from Maven) to publish to the local repo
+tasks.register('install') {
+	description = 'Installs the artifacts to the local Maven repository'
+	group = 'publishing'
+	dependsOn 'publishToMavenLocal'
+}
+
+// Sign artifacts only when a signing key is actually configured (mirrors Maven's
+// opt-in release profile + GPG). Local installs, snapshots, CI and JitPack builds
+// have no key, so signing is skipped entirely rather than failing on missing keys.
+def hasSigningKey = project.hasProperty('signing.gnupg.keyName') ||
+		project.hasProperty('signing.keyId') ||
+		project.hasProperty('signingKey')
+signing {
+	required = hasSigningKey
+	if (hasSigningKey) {
+		useGpgCmd()
+		sign publishing.publications.mavenJava
+	}
+}
