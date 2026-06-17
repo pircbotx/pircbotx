@@ -622,16 +622,18 @@ public class DccHandler implements Closeable {
 			// Use any free port.
 			sc.socket().bind(new InetSocketAddress(address, 0));
 		else {
+			boolean bound = false;
 			for (int currentPort : dccPorts)
 				try {
 					sc.socket().bind(new InetSocketAddress(address, currentPort));
 					// Found a port number we could use.
+					bound = true;
 					break;
 				} catch (Exception e) {
 					// Do nothing; go round and try another port.
 					log.debug("Failed to create server socket on port " + currentPort + ", trying next one", e);
 				}
-			if (sc == null) {
+			if (!bound) {
 				// No ports could be used.
 				FileTransferStatus fileTransferStatus = new FileTransferStatus(0, 0);
 				fileTransferStatus.exception = new DccException(DccException.Reason.DCC_PORTS_IN_USE, user,
